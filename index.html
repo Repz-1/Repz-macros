@@ -23,53 +23,53 @@
 
 body {
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:linear-gradient(to bottom,#f8fafc,#e2e8f0);
-    padding:16px; min-height:100vh; color:#0f172a;
+    background:#f7f8fa;
+    padding:16px; min-height:100vh; color:#1a1a1a;
 }
-.container { max-width:900px; margin:0 auto; padding-bottom:80px; }
+.container { max-width:900px; margin:0 auto; padding-bottom:90px; }
 .logo-container {
-    text-align:center; margin-bottom:18px;
-    background:#000; border-radius:14px; padding:18px 16px;
-    box-shadow:0 4px 16px rgba(0,0,0,.15);
+    text-align:center; margin-bottom:20px;
+    background:#0a0a0a; border-radius:16px; padding:22px 16px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
-.app-logo { width:100%; max-width:340px; height:auto; display:block; margin:0 auto; }
+.app-logo { width:100%; max-width:200px; height:auto; display:block; margin:0 auto; }
 h1 { font-size:26px; font-weight:700; text-align:center; }
 .date-banner {
-    text-align:center; color:#64748b; font-size:15px; font-weight:600;
+    text-align:center; color:#94a3b8; font-size:14px; font-weight:600;
     margin-bottom:20px; text-transform:capitalize;
 }
 
 /* OBJECTIF */
 .goal-card {
-    background:#1a1a1a; color:white; border-radius:12px;
+    background:#0a0a0a; color:white; border-radius:14px;
     padding:20px; margin-bottom:16px;
 }
 .goal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
 .goal-top h2 { font-size:15px; font-weight:600; color:#FF8C00; }
-.goal-edit { font-size:12px; color:#94a3b8; background:#333; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
+.goal-edit { font-size:12px; color:#cbd5e1; background:#262626; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
 .goal-current { font-size:32px; font-weight:800; }
 .goal-current span { font-size:16px; color:#94a3b8; font-weight:500; }
-.progress-track { background:#333; border-radius:10px; height:14px; margin:12px 0 6px; overflow:hidden; }
+.progress-track { background:#262626; border-radius:10px; height:14px; margin:12px 0 6px; overflow:hidden; }
 .progress-fill { background:linear-gradient(90deg,#FF8C00,#ffa733); height:100%; border-radius:10px; transition:width .3s; }
 .progress-label { font-size:13px; color:#94a3b8; }
 .goal-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
-.goal-macro { background:#262626; border-radius:8px; padding:10px; text-align:center; }
+.goal-macro { background:#1f1f1f; border-radius:8px; padding:10px; text-align:center; }
 .goal-macro .gm-label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
 .goal-macro .gm-val { font-size:16px; font-weight:700; margin-top:2px; }
 .goal-macro .gm-target { font-size:11px; color:#64748b; }
 
 /* RECIPES */
 .recipe-card {
-    background:white; border-radius:12px; padding:18px; margin-bottom:16px;
-    box-shadow:0 1px 3px rgba(0,0,0,.1); border-left:4px solid #3b82f6;
+    background:white; border-radius:14px; padding:18px; margin-bottom:16px;
+    box-shadow:0 1px 3px rgba(0,0,0,.08); border-left:4px solid #FF8C00;
 }
 .recipe-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:8px; }
 .recipe-header input.recipe-name {
     font-size:16px; font-weight:600; border:none; background:transparent;
-    color:#0f172a; flex:1; padding:4px;
+    color:#1a1a1a; flex:1; padding:4px;
 }
 .recipe-header input.recipe-name:focus { outline:none; background:#f1f5f9; border-radius:4px; }
-.recipe-mult-badge { font-size:12px; background:#dbeafe; color:#1e40af; padding:4px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
+.recipe-mult-badge { font-size:12px; background:#fff1e0; color:#c2410c; padding:4px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
 
 .ing-row {
     background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:8px;
@@ -98,10 +98,10 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     position:relative; margin-top:10px;
 }
 .add-ing input {
-    width:100%; padding:10px; border:2px dashed #3b82f6; border-radius:8px;
-    font-size:14px; background:#eff6ff;
+    width:100%; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px;
+    font-size:14px; background:#f7f8fa; transition:border-color .15s, background .15s;
 }
-.add-ing input:focus { outline:none; border-style:solid; }
+.add-ing input:focus { outline:none; border-color:#FF8C00; background:#fff; }
 .search-results {
     position:absolute; top:100%; left:0; right:0; z-index:50;
     background:white; border:1px solid #cbd5e1; border-radius:8px;
@@ -119,71 +119,117 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .search-none { padding:14px; text-align:center; color:#94a3b8; font-size:13px; }
 
 .recipe-total {
-    background:linear-gradient(135deg,#fff7ed,#fef3c7); border:2px solid #f59e0b;
-    border-radius:8px; padding:12px; margin-top:12px; font-size:14px; font-weight:700; color:#92400e;
+    background:#fff8f0; border:1px solid #ffe0bd;
+    border-radius:10px; padding:12px; margin-top:12px; font-size:14px; font-weight:700; color:#c2410c;
 }
-.recipe-total .rt-mult { color:#b45309; background:rgba(245,158,11,.12); padding:6px 8px; border-radius:4px; margin-top:6px; font-size:13px; }
+.recipe-total .rt-mult { color:#9a3412; background:#ffedd5; padding:6px 8px; border-radius:6px; margin-top:6px; font-size:13px; }
 
-.recipe-actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
-.recipe-actions button { padding:8px 10px; border:none; border-radius:6px; cursor:pointer; font-weight:500; font-size:13px; }
-.btn-mult { background:#dbeafe; color:#1e40af; }
-.btn-del-recipe { background:#fee2e2; color:#b91c1c; flex:1; }
-.mult-input { width:54px; padding:8px; border:1px solid #cbd5e1; border-radius:6px; text-align:center; font-weight:600; }
+.recipe-actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+.recipe-actions button { padding:9px 12px; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:13px; }
+.btn-mult { background:#fff1e0; color:#c2410c; }
+.btn-del-recipe { background:#f8fafc; color:#94a3b8; border:1px solid #e2e8f0; flex:1; }
+.btn-del-recipe:active { background:#fee2e2; color:#b91c1c; }
+.mult-input { width:54px; padding:9px; border:1px solid #e2e8f0; border-radius:8px; text-align:center; font-weight:600; }
 
 .add-recipe-btn {
-    width:100%; background:#10b981; color:white; padding:13px; border:none;
-    border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; margin-bottom:20px;
+    width:100%; background:#FF8C00; color:white; padding:14px; border:none;
+    border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(255,140,0,.25);
 }
-.add-recipe-btn:active { background:#059669; }
+.add-recipe-btn:active { background:#ea7c00; }
 
 /* BOUTON FLOTTANT (FAB) */
 .fab {
-    position:fixed; bottom:20px; right:16px; z-index:80;
-    display:flex; align-items:center; gap:6px;
-    background:#10b981; color:white; border:none;
-    padding:14px 18px; border-radius:30px; cursor:pointer;
-    box-shadow:0 4px 14px rgba(16,185,129,.3);
-    font-size:15px; font-weight:700;
-    opacity:.75;
+    position:fixed; bottom:24px; right:16px; z-index:80;
+    display:flex; align-items:center; gap:5px;
+    background:#FF8C00; color:white; border:none;
+    padding:12px 16px; border-radius:30px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(255,140,0,.4);
+    font-size:14px; font-weight:700;
+    opacity:.95;
     transition:transform .15s, opacity .15s, box-shadow .15s;
 }
 .fab:hover { opacity:1; }
-.fab:active { transform:scale(.94); opacity:1; background:#059669; box-shadow:0 4px 14px rgba(16,185,129,.5); }
-.fab-plus { font-size:20px; line-height:1; }
-.fab-label { font-size:14px; }
+.fab:active { transform:scale(.94); opacity:1; background:#ea7c00; box-shadow:0 4px 16px rgba(255,140,0,.5); }
+.fab-plus { font-size:18px; line-height:1; }
+.fab-label { font-size:13px; }
 @media (max-width:480px){
-    .fab { padding:14px 16px; bottom:16px; right:14px; }
+    .fab { padding:12px 15px; bottom:20px; right:14px; }
 }
 
 /* DAILY TOTAL */
 .day-total-card {
-    background:#0f172a; color:white; border-radius:12px; padding:20px; margin-bottom:16px;
+    background:#0a0a0a; color:white; border-radius:14px; padding:20px; margin-bottom:16px;
 }
 .day-total-card h2 { font-size:14px; color:#FF8C00; margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
 .dt-kcal { font-size:34px; font-weight:800; }
 .dt-kcal span { font-size:15px; color:#94a3b8; }
 .dt-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
-.dt-macro { background:#1e293b; border-radius:8px; padding:10px; text-align:center; }
+.dt-macro { background:#1f1f1f; border-radius:8px; padding:10px; text-align:center; }
 .dt-macro .label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
 .dt-macro .val { font-size:17px; font-weight:700; margin-top:2px; }
 .save-day-btn {
-    width:100%; background:#FF8C00; color:#1a1a1a; padding:12px; border:none;
-    border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px;
+    width:100%; background:#16a34a; color:white; padding:13px; border:none;
+    border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px;
 }
-.save-day-btn:active { background:#e07b00; }
+.save-day-btn:active { background:#15803d; }
 
 /* HISTORIQUE */
 .history-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); }
 .history-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
 
+/* ===== BOUTON NOUVELLE JOURNÉE ===== */
+.newday-btn {
+    width:100%; background:#fef2f2; color:#dc2626; border:1.5px solid #fecaca;
+    padding:11px; border-radius:8px; font-size:14px; font-weight:600;
+    cursor:pointer; margin-top:8px;
+}
+.newday-btn:active { background:#fee2e2; }
+
+/* ===== SUIVI DU POIDS ===== */
+.weight-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); margin-bottom:14px; }
+.weight-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
+.weight-input-row { display:flex; gap:8px; margin-bottom:14px; }
+.weight-input-row input {
+    flex:1; padding:11px; border:1px solid #e2e8f0; border-radius:8px; font-size:15px;
+}
+.weight-add-btn {
+    background:#FF8C00; color:white; border:none; padding:11px 18px;
+    border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap;
+}
+.weight-add-btn:active { background:#ea7c00; }
+.weight-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 0; border-bottom:1px solid #f1f5f9; font-size:14px;
+}
+.weight-row:last-child { border-bottom:none; }
+.weight-date { color:#64748b; }
+.weight-val { font-weight:700; color:#FF8C00; }
+.weight-del { background:none; border:none; color:#cbd5e1; cursor:pointer; font-size:15px; padding:2px 6px; }
+.weight-empty { color:#94a3b8; font-size:13px; text-align:center; padding:14px; }
+
+/* ===== SAUVEGARDE ===== */
+.backup-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); margin-bottom:14px; }
+.backup-card h2 { font-size:15px; font-weight:600; margin-bottom:6px; }
+.backup-note { font-size:12px; color:#94a3b8; margin-bottom:14px; line-height:1.4; }
+.backup-btns { display:flex; gap:10px; }
+.backup-export, .backup-import {
+    flex:1; text-align:center; padding:12px; border-radius:8px; font-size:14px;
+    font-weight:600; cursor:pointer; border:none;
+}
+.backup-export { background:#eff6ff; color:#2563eb; border:1.5px solid #bfdbfe; }
+.backup-export:active { background:#dbeafe; }
+.backup-import { background:#f0fdf4; color:#16a34a; border:1.5px solid #bbf7d0; }
+.backup-import:active { background:#dcfce7; }
+
 /* ===== CALCULATEUR DE MAINTIEN (TDEE) ===== */
 .tdee-card { background:white; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,.1); margin-bottom:14px; overflow:hidden; }
 .tdee-toggle {
     width:100%; display:flex; align-items:center; justify-content:space-between;
-    background:#fff7ed; color:#c2410c; border:none; padding:15px 18px;
-    font-size:15px; font-weight:600; cursor:pointer;
+    background:#fff1e0; color:#c2410c; border:none; padding:16px 18px;
+    font-size:15px; font-weight:700; cursor:pointer;
 }
-.tdee-toggle:active { background:#ffedd5; }
+.tdee-toggle:active { background:#ffe4c4; }
 .tdee-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 18px; }
 .tdee-body.open { max-height:1200px; padding:8px 18px 18px; }
 .tdee-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
@@ -343,6 +389,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
             <div class="dt-macro"><div class="label">Lipides</div><div class="val" id="dtLip">0g</div></div>
         </div>
         <button class="save-day-btn" onclick="saveDay()">💾 Enregistrer cette journée</button>
+        <button class="newday-btn" onclick="newDay()">🔄 Nouvelle journée (archiver + vider)</button>
     </div>
 
     <!-- HISTORIQUE -->
@@ -350,6 +397,29 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
         <h2>📆 Historique & évolution</h2>
         <div id="historyChart"></div>
         <div id="historyList"></div>
+    </div>
+
+    <!-- SUIVI DU POIDS -->
+    <div class="weight-card">
+        <h2>⚖️ Suivi du poids</h2>
+        <div class="weight-input-row">
+            <input type="number" id="weightInput" placeholder="Poids (kg)" step="0.1">
+            <button class="weight-add-btn" onclick="addWeight()">+ Peser</button>
+        </div>
+        <div id="weightChart"></div>
+        <div id="weightList"></div>
+    </div>
+
+    <!-- SAUVEGARDE -->
+    <div class="backup-card">
+        <h2>💾 Sauvegarde des données</h2>
+        <p class="backup-note">Exporte un fichier pour ne rien perdre si tu changes de téléphone ou vides le cache.</p>
+        <div class="backup-btns">
+            <button class="backup-export" onclick="exportData()">⬇️ Exporter</button>
+            <label class="backup-import">⬆️ Importer
+                <input type="file" accept="application/json" onchange="importData(this)" style="display:none;">
+            </label>
+        </div>
     </div>
 </div>
 
@@ -655,6 +725,7 @@ let goal = { kcal:4000, weight:97, protRatio:2 };
 let recipes = [];
 let nextRid = 1;
 let history = [];
+let weightLog = []; // suivi du poids corporel : [{iso, date, weight}]
 
 // ===== STOCKAGE LOCAL =====
 function save(){
@@ -663,6 +734,7 @@ function save(){
         localStorage.setItem('repz_recipes', JSON.stringify(recipes));
         localStorage.setItem('repz_history', JSON.stringify(history));
         localStorage.setItem('repz_nextRid', String(nextRid));
+        localStorage.setItem('repz_weightLog', JSON.stringify(weightLog));
     } catch(e){}
 }
 function load(){
@@ -671,6 +743,7 @@ function load(){
         const r = localStorage.getItem('repz_recipes'); if(r) recipes = JSON.parse(r);
         const h = localStorage.getItem('repz_history'); if(h) history = JSON.parse(h);
         const n = localStorage.getItem('repz_nextRid'); if(n) nextRid = parseInt(n);
+        const w = localStorage.getItem('repz_weightLog'); if(w) weightLog = JSON.parse(w);
     } catch(e){}
 }
 
@@ -925,6 +998,96 @@ function saveDay(){
     alert('✅ Journée enregistrée !');
 }
 function delHistory(iso){ history=history.filter(h=>h.iso!==iso); renderHistory(); save(); }
+
+function newDay(){
+    const t=dayTotals();
+    if(t.kcal>0){
+        // Archiver d'abord la journée en cours
+        const today=new Date().toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
+        const iso=new Date().toISOString().slice(0,10);
+        const existing=history.findIndex(h=>h.iso===iso);
+        const entry={iso,date:today,kcal:t.kcal.toFixed(0),prot:t.prot.toFixed(0),carbs:t.carbs.toFixed(0),lip:t.lip.toFixed(0)};
+        if(existing>=0) history[existing]=entry; else history.unshift(entry);
+    }
+    if(!confirm('Archiver la journée et repartir à zéro ?\n\nTes recettes du jour seront effacées (la journée reste dans l\'historique).')) return;
+    // Vider les recettes
+    recipes=[{id:0,name:'Nouvelle recette',mult:1,ings:[]}];
+    nextRid=1;
+    renderRecipes();
+    renderHistory();
+    save();
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== SUIVI DU POIDS =====
+function addWeight(){
+    const val=parseFloat(document.getElementById('weightInput').value);
+    if(!val||val<=0){ alert('Entre un poids valide'); return; }
+    const iso=new Date().toISOString().slice(0,10);
+    const date=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+    const existing=weightLog.findIndex(w=>w.iso===iso);
+    const entry={iso,date,weight:val};
+    if(existing>=0) weightLog[existing]=entry; else weightLog.push(entry);
+    weightLog.sort((a,b)=>a.iso.localeCompare(b.iso));
+    document.getElementById('weightInput').value='';
+    renderWeight();
+    save();
+}
+function delWeight(iso){ weightLog=weightLog.filter(w=>w.iso!==iso); renderWeight(); save(); }
+
+function renderWeight(){
+    const chart=document.getElementById('weightChart');
+    const list=document.getElementById('weightList');
+    if(weightLog.length===0){
+        chart.innerHTML='';
+        list.innerHTML='<div class="weight-empty">Aucune pesée. Ajoute ton poids pour suivre ton évolution.</div>';
+        return;
+    }
+    // Graphique (14 dernières pesées)
+    const data=weightLog.slice(-14);
+    if(data.length>=2){
+        const W=320,H=130,padL=34,padB=20,padT=12,padR=12;
+        const vals=data.map(w=>w.weight);
+        let maxV=Math.max(...vals), minV=Math.min(...vals);
+        const margin=(maxV-minV)*0.15||1; maxV+=margin; minV-=margin;
+        const range=maxV-minV||1;
+        const plotW=W-padL-padR, plotH=H-padT-padB;
+        const x=i=>padL+(plotW*i/(data.length-1));
+        const y=v=>padT+plotH-(plotH*(v-minV)/range);
+        let path='',pts='';
+        data.forEach((w,i)=>{
+            const px=x(i),py=y(w.weight);
+            path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
+            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#FF8C00"/>`;
+        });
+        const labels=data.map((w,i)=>`<text x="${x(i).toFixed(1)}" y="${H-5}" font-size="8" fill="#94a3b8" text-anchor="middle">${w.date.split(' ')[0]}</text>`).join('');
+        chart.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;margin-bottom:14px;background:#f8fafc;border-radius:8px;">
+            <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(1)}</text>
+            <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(1)}</text>
+            <path d="${path}" fill="none" stroke="#FF8C00" stroke-width="2"/>${pts}${labels}
+        </svg>`;
+    } else {
+        chart.innerHTML='<div style="font-size:12px;color:#94a3b8;text-align:center;padding:8px;">Ajoute au moins 2 pesées pour voir la courbe 📈</div>';
+    }
+    // Liste (plus récent en premier) avec variation
+    list.innerHTML='';
+    const rev=[...weightLog].reverse();
+    rev.forEach((w,i)=>{
+        let diff='';
+        if(i<rev.length-1){
+            const d=(w.weight-rev[i+1].weight);
+            const sign=d>0?'+':'';
+            const color=d>0?'#10b981':(d<0?'#ef4444':'#94a3b8');
+            diff=`<span style="font-size:12px;color:${color};margin-left:8px;">${sign}${d.toFixed(1)}</span>`;
+        }
+        const row=document.createElement('div');
+        row.className='weight-row';
+        row.innerHTML=`<span class="weight-date">${w.date}</span>
+            <span style="display:flex;align-items:center;"><span class="weight-val">${w.weight} kg</span>${diff}
+            <button class="weight-del" onclick="delWeight('${w.iso}')">🗑</button></span>`;
+        list.appendChild(row);
+    });
+}
 function renderHistory(){
     const c=document.getElementById('historyList');
     const chart=document.getElementById('historyChart');
@@ -1022,6 +1185,39 @@ document.addEventListener('click',function(e){
     }
 });
 
+// ===== EXPORT / IMPORT DES DONNÉES =====
+function exportData(){
+    const data={ goal, recipes, history, weightLog, nextRid, version:1, exported:new Date().toISOString() };
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const dateStr=new Date().toISOString().slice(0,10);
+    a.href=url; a.download=`repz-sauvegarde-${dateStr}.json`;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function importData(input){
+    const file=input.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=e=>{
+        try {
+            const data=JSON.parse(e.target.result);
+            if(!confirm('Remplacer toutes tes données actuelles par cette sauvegarde ?\n\n⚠️ Tes données actuelles seront écrasées.')) return;
+            if(data.goal) goal=data.goal;
+            if(data.recipes) recipes=data.recipes;
+            if(data.history) history=data.history;
+            if(data.weightLog) weightLog=data.weightLog;
+            if(data.nextRid) nextRid=data.nextRid;
+            save();
+            renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
+            alert('✅ Données restaurées !');
+        } catch(err){ alert('❌ Fichier invalide. Vérifie que c\'est bien une sauvegarde REPZ.'); }
+        input.value='';
+    };
+    reader.readAsText(file);
+}
+
 // ===== INIT =====
 load();
 
@@ -1037,6 +1233,7 @@ if(recipes.length===0){
 renderDate();
 renderRecipes();
 renderHistory();
+renderWeight();
 </script>
 </body>
 </html>
