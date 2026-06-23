@@ -17,7 +17,7 @@ body {
     background:linear-gradient(to bottom,#f8fafc,#e2e8f0);
     padding:16px; min-height:100vh; color:#0f172a;
 }
-.container { max-width:900px; margin:0 auto; }
+.container { max-width:900px; margin:0 auto; padding-bottom:80px; }
 .logo-container { text-align:center; margin-bottom:16px; }
 h1 { font-size:26px; font-weight:700; text-align:center; }
 .date-banner {
@@ -121,11 +121,25 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; margin-bottom:20px;
 }
 .add-recipe-btn:active { background:#059669; }
-.add-recipe-inline {
-    width:100%; background:#ecfdf5; color:#059669; padding:9px; border:1.5px dashed #10b981;
-    border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; margin-top:10px;
+
+/* BOUTON FLOTTANT (FAB) */
+.fab {
+    position:fixed; bottom:20px; right:16px; z-index:80;
+    display:flex; align-items:center; gap:6px;
+    background:#10b981; color:white; border:none;
+    padding:14px 18px; border-radius:30px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(16,185,129,.3);
+    font-size:15px; font-weight:700;
+    opacity:.75;
+    transition:transform .15s, opacity .15s, box-shadow .15s;
 }
-.add-recipe-inline:active { background:#d1fae5; }
+.fab:hover { opacity:1; }
+.fab:active { transform:scale(.94); opacity:1; background:#059669; box-shadow:0 4px 14px rgba(16,185,129,.5); }
+.fab-plus { font-size:20px; line-height:1; }
+.fab-label { font-size:14px; }
+@media (max-width:480px){
+    .fab { padding:14px 16px; bottom:16px; right:14px; }
+}
 
 /* DAILY TOTAL */
 .day-total-card {
@@ -242,6 +256,12 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
         </div>
     </div>
 </div>
+
+<!-- BOUTON FLOTTANT AJOUTER RECETTE -->
+<button class="fab" onclick="addRecipe()" aria-label="Ajouter une recette">
+    <span class="fab-plus">＋</span>
+    <span class="fab-label">Recette</span>
+</button>
 
 <!-- MODAL OBJECTIF -->
 <div class="modal-overlay" id="goalModal">
@@ -621,7 +641,6 @@ function renderRecipes(){
             <input type="number" min="1" max="20" value="${rc.mult||1}" class="mult-input" onchange="updateMult(${rc.id},this.value)">
             <button class="btn-del-recipe" onclick="delRecipe(${rc.id})">🗑 Supprimer recette</button>
         </div>`;
-        h += `<button class="add-recipe-inline" onclick="addRecipe()">➕ Ajouter une recette</button>`;
         card.innerHTML=h;
         c.appendChild(card);
     });
