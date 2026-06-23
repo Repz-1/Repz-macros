@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculatrice Macros - REPZ</title>
+<meta name="theme-color" content="#FF8C00">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="REPZ Macros">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -595,6 +601,30 @@ document.addEventListener('click',function(e){
 
 // ===== INIT =====
 load();
+
+// Charger PROG 1 si c'est la première visite
+if(recipes.length===0){
+    recipes=[
+        {id:0,name:'R1 - Whey+Avoine+Beurre',mult:1,ings:[
+            {id:0,name:'Whey isolate',portion:30},
+            {id:1,name:'Avoine',portion:70},
+            {id:2,name:'Beurre cacahuète',portion:12}
+        ]},
+        {id:1,name:'R2-R5 - Riz+Poulet+Huile',mult:4,ings:[
+            {id:0,name:'Riz cru',portion:125},
+            {id:1,name:'Poulet cuit',portion:95},
+            {id:2,name:'Huile olive',portion:11}
+        ]},
+        {id:2,name:'R6 - Yaourt+Avoine+Pécan',mult:1,ings:[
+            {id:0,name:'Yaourt 0%',portion:400},
+            {id:1,name:'Avoine',portion:40},
+            {id:2,name:'Pécan',portion:12}
+        ]}
+    ];
+    nextRid=3;
+    save();
+}
+
 renderDate();
 renderRecipes();
 renderHistory();
