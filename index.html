@@ -51,7 +51,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .goal-current span { font-size:16px; color:#94a3b8; font-weight:500; }
 .progress-track { background:#262626; border-radius:10px; height:14px; margin:12px 0 6px; overflow:hidden; }
 .progress-fill { background:linear-gradient(90deg,#FF8C00,#ffa733); height:100%; border-radius:10px; transition:width .3s; }
-.progress-label { font-size:13px; color:#94a3b8; }
+.progress-label { font-size:18px; color:#FF8C00; font-weight:700; margin-top:2px; }
 .goal-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
 .goal-macro { background:#1f1f1f; border-radius:8px; padding:10px; text-align:center; }
 .goal-macro .gm-label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
@@ -173,6 +173,13 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px;
 }
 .save-day-btn:active { background:#15803d; }
+
+/* ===== MACROS RESTANTES (carte objectif) ===== */
+.progress-macros-left {
+    font-size:12px; color:#94a3b8; font-weight:600; margin-top:4px;
+}
+.progress-macros-left .pml-done { color:#22c55e; }
+.progress-macros-left .pml-over { color:#fb923c; }
 
 /* HISTORIQUE */
 .history-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); }
@@ -305,6 +312,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
         <div class="goal-current"><span id="goalConsumed">0</span> / <span id="goalKcal">4000</span> <span>kcal</span></div>
         <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
         <div class="progress-label" id="progressLabel">Reste 4000 kcal</div>
+        <div class="progress-macros-left" id="progressMacrosLeft"></div>
         <div class="goal-macros">
             <div class="goal-macro"><div class="gm-label">Protéine</div><div class="gm-val" id="gmProt">0g</div><div class="gm-target" id="gmProtTarget">/ 194g</div></div>
             <div class="goal-macro"><div class="gm-label">Glucides</div><div class="gm-val" id="gmCarbs">0g</div><div class="gm-target" id="gmCarbsTarget">/ 500g</div></div>
@@ -847,7 +855,26 @@ function renderTotals(){
     document.getElementById('gmProtTarget').textContent = '/ '+protTarget+'g';
     document.getElementById('gmCarbsTarget').textContent = '/ '+carbTarget+'g';
     document.getElementById('gmLipTarget').textContent = '/ '+lipTarget+'g';
+
+    // Code couleur protéines : vert si cible atteinte (>=95%), orange sinon
+    const protEl = document.getElementById('gmProt');
+    if(t.prot >= protTarget*0.95){
+        protEl.style.color = '#22c55e'; // vert : cible protéines atteinte
+    } else {
+        protEl.style.color = '#fb923c'; // orange : protéines insuffisantes
+    }
+
+    // Suggestion : combler les calories restantes avec une recette existante
+    renderSuggestion(reste, t);
+
     save();
+}
+
+// ===== MACROS RESTANTES (dans la carte objectif) =====
+function renderSuggestion(reste, totals){
+    const el = document.getElementById('progressMacrosLeft');
+    if(!el) return;
+    el.innerHTML = '';
 }
 
 // ===== ACTIONS =====
