@@ -27,7 +27,12 @@ body {
     padding:16px; min-height:100vh; color:#0f172a;
 }
 .container { max-width:900px; margin:0 auto; padding-bottom:80px; }
-.logo-container { text-align:center; margin-bottom:16px; }
+.logo-container {
+    text-align:center; margin-bottom:18px;
+    background:#000; border-radius:14px; padding:18px 16px;
+    box-shadow:0 4px 16px rgba(0,0,0,.15);
+}
+.app-logo { width:100%; max-width:340px; height:auto; display:block; margin:0 auto; }
 h1 { font-size:26px; font-weight:700; text-align:center; }
 .date-banner {
     text-align:center; color:#64748b; font-size:15px; font-weight:600;
@@ -170,6 +175,45 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 /* HISTORIQUE */
 .history-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); }
 .history-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
+
+/* ===== CALCULATEUR DE MAINTIEN (TDEE) ===== */
+.tdee-card { background:white; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,.1); margin-bottom:14px; overflow:hidden; }
+.tdee-toggle {
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:#fff7ed; color:#c2410c; border:none; padding:15px 18px;
+    font-size:15px; font-weight:600; cursor:pointer;
+}
+.tdee-toggle:active { background:#ffedd5; }
+.tdee-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 18px; }
+.tdee-body.open { max-height:1200px; padding:8px 18px 18px; }
+.tdee-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.tdee-field { margin-bottom:10px; }
+.tdee-field label { display:block; font-size:12px; color:#64748b; font-weight:500; margin-bottom:4px; }
+.tdee-field input, .tdee-field select {
+    width:100%; padding:9px 10px; border:1px solid #e2e8f0; border-radius:8px;
+    font-size:14px; background:white; color:#0f172a;
+}
+.tdee-calc-btn {
+    width:100%; background:#FF8C00; color:white; border:none; padding:12px;
+    border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; margin-top:4px;
+}
+.tdee-calc-btn:active { background:#ea7c00; }
+.tdee-result { margin-top:16px; }
+.tdee-res-main { background:#f8fafc; border-radius:10px; padding:12px; margin-bottom:12px; }
+.tdee-res-line { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:14px; color:#475569; }
+.tdee-res-line span:last-child { font-weight:600; color:#0f172a; }
+.tdee-res-target { border-top:1px solid #e2e8f0; margin-top:4px; padding-top:10px; }
+.tdee-res-target span { font-size:16px; }
+.tdee-res-target span:last-child { color:#FF8C00; font-weight:800; }
+.tdee-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.tdee-macro { background:#fff7ed; border-radius:8px; padding:10px; text-align:center; }
+.tm-label { font-size:11px; color:#64748b; }
+.tm-val { font-size:16px; font-weight:700; color:#c2410c; margin-top:2px; }
+.tdee-apply-btn {
+    width:100%; background:#10b981; color:white; border:none; padding:12px;
+    border-radius:8px; font-size:15px; font-weight:700; cursor:pointer;
+}
+.tdee-apply-btn:active { background:#059669; }
 .history-empty { color:#94a3b8; font-size:13px; text-align:center; padding:16px; }
 .history-row {
     display:flex; justify-content:space-between; align-items:center;
@@ -199,21 +243,9 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 <body>
 <div class="container">
     <div class="logo-container">
-        <svg width="240" height="100" viewBox="0 0 280 120" style="max-width:100%;height:auto;">
-            <rect width="280" height="120" fill="#1a1a1a" rx="8"/>
-            <rect x="20" y="35" width="8" height="40" fill="#FF8C00" rx="4"/>
-            <rect x="18" y="28" width="12" height="8" fill="#FF8C00" rx="2"/>
-            <rect x="18" y="64" width="12" height="8" fill="#FF8C00" rx="2"/>
-            <rect x="252" y="35" width="8" height="40" fill="#FF8C00" rx="4"/>
-            <rect x="250" y="28" width="12" height="8" fill="#FF8C00" rx="2"/>
-            <rect x="250" y="64" width="12" height="8" fill="#FF8C00" rx="2"/>
-            <rect x="35" y="52" width="210" height="6" fill="#666" rx="3"/>
-            <text x="140" y="85" font-size="48" font-weight="bold" fill="#FF8C00" text-anchor="middle" font-family="Arial">REPZ</text>
-            <line x1="80" y1="92" x2="200" y2="92" stroke="#FF8C00" stroke-width="2"/>
-        </svg>
+        <img src="logo-header.png" alt="REPZ - Training, Body Prep, Nutrition" class="app-logo">
     </div>
 
-    <h1>Calculatrice Macros</h1>
     <div class="date-banner" id="dateBanner"></div>
 
     <!-- OBJECTIF -->
@@ -229,6 +261,72 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
             <div class="goal-macro"><div class="gm-label">Protéine</div><div class="gm-val" id="gmProt">0g</div><div class="gm-target" id="gmProtTarget">/ 194g</div></div>
             <div class="goal-macro"><div class="gm-label">Glucides</div><div class="gm-val" id="gmCarbs">0g</div><div class="gm-target" id="gmCarbsTarget">/ 500g</div></div>
             <div class="goal-macro"><div class="gm-label">Lipides</div><div class="gm-val" id="gmLip">0g</div><div class="gm-target" id="gmLipTarget">/ 90g</div></div>
+        </div>
+    </div>
+
+    <!-- CALCULATEUR DE MAINTIEN (TDEE) -->
+    <div class="tdee-card">
+        <button class="tdee-toggle" onclick="toggleTdee()">
+            <span>🧮 Calculer mes calories de maintien</span>
+            <span id="tdeeArrow">▾</span>
+        </button>
+        <div id="tdeeBody" class="tdee-body">
+            <div class="tdee-grid">
+                <div class="tdee-field">
+                    <label>Sexe</label>
+                    <select id="tdeeSex">
+                        <option value="h">Homme</option>
+                        <option value="f">Femme</option>
+                    </select>
+                </div>
+                <div class="tdee-field">
+                    <label>Âge</label>
+                    <input type="number" id="tdeeAge" placeholder="ans" value="25">
+                </div>
+                <div class="tdee-field">
+                    <label>Poids (kg)</label>
+                    <input type="number" id="tdeeWeight" placeholder="kg" value="75">
+                </div>
+                <div class="tdee-field">
+                    <label>Taille (cm)</label>
+                    <input type="number" id="tdeeHeight" placeholder="cm" value="175">
+                </div>
+            </div>
+            <div class="tdee-field">
+                <label>Niveau d'activité</label>
+                <select id="tdeeActivity">
+                    <option value="1.2">Sédentaire (peu/pas de sport)</option>
+                    <option value="1.375">Léger (1-3 séances/sem)</option>
+                    <option value="1.55" selected>Modéré (3-5 séances/sem)</option>
+                    <option value="1.725">Intense (6-7 séances/sem)</option>
+                    <option value="1.9">Très intense (2x/jour, travail physique)</option>
+                </select>
+            </div>
+            <div class="tdee-field">
+                <label>Objectif</label>
+                <select id="tdeeGoal">
+                    <option value="-500">Sèche agressive (-500 kcal)</option>
+                    <option value="-300">Sèche modérée (-300 kcal)</option>
+                    <option value="0" selected>Maintien (0 kcal)</option>
+                    <option value="300">Prise de masse propre (+300 kcal)</option>
+                    <option value="500">Prise de masse (+500 kcal)</option>
+                </select>
+            </div>
+            <button class="tdee-calc-btn" onclick="calcTdee()">Calculer</button>
+
+            <div id="tdeeResult" class="tdee-result" style="display:none;">
+                <div class="tdee-res-main">
+                    <div class="tdee-res-line"><span>Métabolisme de base (BMR)</span><span id="resBmr">–</span></div>
+                    <div class="tdee-res-line"><span>Maintien (TDEE)</span><span id="resTdee">–</span></div>
+                    <div class="tdee-res-line tdee-res-target"><span>Objectif calorique</span><span id="resTarget">–</span></div>
+                </div>
+                <div class="tdee-macros">
+                    <div class="tdee-macro"><div class="tm-label">Protéines</div><div class="tm-val" id="resProt">–</div></div>
+                    <div class="tdee-macro"><div class="tm-label">Glucides</div><div class="tm-val" id="resCarbs">–</div></div>
+                    <div class="tdee-macro"><div class="tm-label">Lipides</div><div class="tm-val" id="resLip">–</div></div>
+                </div>
+                <button class="tdee-apply-btn" onclick="applyTdee()">✅ Appliquer comme objectif</button>
+            </div>
         </div>
     </div>
 
@@ -554,14 +652,8 @@ const DB = {
 
 // ===== ÉTAT =====
 let goal = { kcal:4000, weight:97, protRatio:2 };
-let recipes = [{
-    id:1, name:'Petit Déj', mult:1,
-    ings:[
-        {id:1, name:'Avoine', portion:70},
-        {id:2, name:'Whey Iso', portion:30},
-    ]
-}];
-let nextRid = 2;
+let recipes = [];
+let nextRid = 1;
 let history = [];
 
 // ===== STOCKAGE LOCAL =====
@@ -758,6 +850,66 @@ function saveGoal(){
     goal.protRatio=parseFloat(document.getElementById('inputProtRatio').value)||2;
     closeGoalModal();
     renderTotals();
+}
+
+// ===== CALCULATEUR DE MAINTIEN (TDEE) =====
+let lastTdee = null; // stocke le dernier résultat pour l'appliquer
+
+function toggleTdee(){
+    const body=document.getElementById('tdeeBody');
+    const arrow=document.getElementById('tdeeArrow');
+    body.classList.toggle('open');
+    arrow.textContent = body.classList.contains('open') ? '▴' : '▾';
+    // Pré-remplir le poids depuis l'objectif (évite de le retaper)
+    if(body.classList.contains('open') && goal.weight){
+        document.getElementById('tdeeWeight').value = goal.weight;
+    }
+}
+
+function calcTdee(){
+    const sex=document.getElementById('tdeeSex').value;
+    const age=parseFloat(document.getElementById('tdeeAge').value)||25;
+    const weight=parseFloat(document.getElementById('tdeeWeight').value)||75;
+    const height=parseFloat(document.getElementById('tdeeHeight').value)||175;
+    const activity=parseFloat(document.getElementById('tdeeActivity').value)||1.55;
+    const adjust=parseFloat(document.getElementById('tdeeGoal').value)||0;
+
+    // Formule Mifflin-St Jeor
+    let bmr = 10*weight + 6.25*height - 5*age + (sex==='h' ? 5 : -161);
+    const tdee = bmr * activity;
+    const target = Math.round(tdee + adjust);
+
+    // Répartition macros : protéines 2g/kg, lipides 25% des kcal, reste en glucides
+    const prot = Math.round(weight * 2);
+    const lip = Math.round((target * 0.25) / 9);
+    const carbs = Math.round((target - (prot*4) - (lip*9)) / 4);
+
+    // Affichage
+    document.getElementById('resBmr').textContent = Math.round(bmr)+' kcal';
+    document.getElementById('resTdee').textContent = Math.round(tdee)+' kcal';
+    document.getElementById('resTarget').textContent = target+' kcal';
+    document.getElementById('resProt').textContent = prot+'g';
+    document.getElementById('resCarbs').textContent = carbs+'g';
+    document.getElementById('resLip').textContent = lip+'g';
+    document.getElementById('tdeeResult').style.display='block';
+
+    // Stocke pour application
+    lastTdee = { kcal:target, weight:weight, protRatio:2 };
+}
+
+function applyTdee(){
+    if(!lastTdee) return;
+    goal.kcal = lastTdee.kcal;
+    goal.weight = lastTdee.weight;
+    goal.protRatio = lastTdee.protRatio;
+    save();
+    renderTotals();
+    // Petit feedback visuel
+    const btn=document.querySelector('.tdee-apply-btn');
+    const orig=btn.textContent;
+    btn.textContent='✅ Objectif appliqué !';
+    btn.style.background='#059669';
+    setTimeout(()=>{ btn.textContent=orig; btn.style.background=''; }, 1800);
 }
 
 // ===== HISTORIQUE =====
