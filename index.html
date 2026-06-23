@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculatrice Macros - REPZ</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:linear-gradient(to bottom,#f8fafc,#e2e8f0);
+    padding:16px; min-height:100vh; color:#0f172a;
+}
+.container { max-width:900px; margin:0 auto; }
+.logo-container { text-align:center; margin-bottom:16px; }
+h1 { font-size:26px; font-weight:700; text-align:center; }
+.date-banner {
+    text-align:center; color:#64748b; font-size:15px; font-weight:600;
+    margin-bottom:20px; text-transform:capitalize;
+}
+
+/* OBJECTIF */
+.goal-card {
+    background:#1a1a1a; color:white; border-radius:12px;
+    padding:20px; margin-bottom:16px;
+}
+.goal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.goal-top h2 { font-size:15px; font-weight:600; color:#FF8C00; }
+.goal-edit { font-size:12px; color:#94a3b8; background:#333; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
+.goal-current { font-size:32px; font-weight:800; }
+.goal-current span { font-size:16px; color:#94a3b8; font-weight:500; }
+.progress-track { background:#333; border-radius:10px; height:14px; margin:12px 0 6px; overflow:hidden; }
+.progress-fill { background:linear-gradient(90deg,#FF8C00,#ffa733); height:100%; border-radius:10px; transition:width .3s; }
+.progress-label { font-size:13px; color:#94a3b8; }
+.goal-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
+.goal-macro { background:#262626; border-radius:8px; padding:10px; text-align:center; }
+.goal-macro .gm-label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
+.goal-macro .gm-val { font-size:16px; font-weight:700; margin-top:2px; }
+.goal-macro .gm-target { font-size:11px; color:#64748b; }
+
+/* RECIPES */
+.recipe-card {
+    background:white; border-radius:12px; padding:18px; margin-bottom:16px;
+    box-shadow:0 1px 3px rgba(0,0,0,.1); border-left:4px solid #3b82f6;
+}
+.recipe-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:8px; }
+.recipe-header input.recipe-name {
+    font-size:16px; font-weight:600; border:none; background:transparent;
+    color:#0f172a; flex:1; padding:4px;
+}
+.recipe-header input.recipe-name:focus { outline:none; background:#f1f5f9; border-radius:4px; }
+.recipe-mult-badge { font-size:12px; background:#dbeafe; color:#1e40af; padding:4px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
+
+.ing-row {
+    background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:8px;
+    display:grid; grid-template-columns:1fr 78px 110px 34px; gap:8px; align-items:center;
+}
+@media (max-width:768px){
+    .ing-row { grid-template-columns:1fr 64px 1fr 30px; gap:6px; }
+}
+.ing-name { font-weight:600; font-size:14px; }
+.ing-base { font-size:11px; color:#64748b; margin-top:2px; }
+.ing-input { display:flex; align-items:center; gap:4px; }
+.ing-input input {
+    width:100%; padding:8px 4px; border:2px solid #3b82f6; border-radius:6px;
+    font-size:15px; font-weight:700; text-align:center;
+}
+.ing-input input:focus { outline:none; border-color:#2563eb; }
+.ing-unit { font-weight:600; font-size:12px; }
+.ing-macros {
+    background:#f0fdf4; border:1px solid #86efac; border-radius:6px;
+    padding:6px; font-size:11px; font-weight:600; color:#166534; text-align:center; line-height:1.4;
+}
+.del-btn { background:#ef4444; color:white; border:none; border-radius:6px; padding:6px; cursor:pointer; font-size:14px; }
+.del-btn:active { background:#dc2626; }
+
+.add-ing {
+    position:relative; margin-top:10px;
+}
+.add-ing input {
+    width:100%; padding:10px; border:2px dashed #3b82f6; border-radius:8px;
+    font-size:14px; background:#eff6ff;
+}
+.add-ing input:focus { outline:none; border-style:solid; }
+.search-results {
+    position:absolute; top:100%; left:0; right:0; z-index:50;
+    background:white; border:1px solid #cbd5e1; border-radius:8px;
+    margin-top:4px; max-height:240px; overflow-y:auto;
+    box-shadow:0 4px 12px rgba(0,0,0,.15); display:none;
+}
+.search-results.show { display:block; }
+.search-item {
+    padding:11px 14px; cursor:pointer; font-size:14px;
+    border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;
+}
+.search-item:last-child { border-bottom:none; }
+.search-item:active, .search-item:hover { background:#eff6ff; }
+.search-item .si-kcal { font-size:12px; color:#64748b; }
+.search-none { padding:14px; text-align:center; color:#94a3b8; font-size:13px; }
+
+.recipe-total {
+    background:linear-gradient(135deg,#fff7ed,#fef3c7); border:2px solid #f59e0b;
+    border-radius:8px; padding:12px; margin-top:12px; font-size:14px; font-weight:700; color:#92400e;
+}
+.recipe-total .rt-mult { color:#b45309; background:rgba(245,158,11,.12); padding:6px 8px; border-radius:4px; margin-top:6px; font-size:13px; }
+
+.recipe-actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+.recipe-actions button { padding:8px 10px; border:none; border-radius:6px; cursor:pointer; font-weight:500; font-size:13px; }
+.btn-mult { background:#dbeafe; color:#1e40af; }
+.btn-del-recipe { background:#fee2e2; color:#b91c1c; flex:1; }
+.mult-input { width:54px; padding:8px; border:1px solid #cbd5e1; border-radius:6px; text-align:center; font-weight:600; }
+
+.add-recipe-btn {
+    width:100%; background:#10b981; color:white; padding:13px; border:none;
+    border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; margin-bottom:20px;
+}
+.add-recipe-btn:active { background:#059669; }
+
+/* DAILY TOTAL */
+.day-total-card {
+    background:#0f172a; color:white; border-radius:12px; padding:20px; margin-bottom:16px;
+}
+.day-total-card h2 { font-size:14px; color:#FF8C00; margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
+.dt-kcal { font-size:34px; font-weight:800; }
+.dt-kcal span { font-size:15px; color:#94a3b8; }
+.dt-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
+.dt-macro { background:#1e293b; border-radius:8px; padding:10px; text-align:center; }
+.dt-macro .label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
+.dt-macro .val { font-size:17px; font-weight:700; margin-top:2px; }
+.save-day-btn {
+    width:100%; background:#FF8C00; color:#1a1a1a; padding:12px; border:none;
+    border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px;
+}
+.save-day-btn:active { background:#e07b00; }
+
+/* HISTORIQUE */
+.history-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); }
+.history-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
+.history-empty { color:#94a3b8; font-size:13px; text-align:center; padding:16px; }
+.history-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px; border-radius:8px; background:#f8fafc; margin-bottom:8px;
+}
+.history-date { font-weight:600; font-size:14px; }
+.history-detail { font-size:12px; color:#64748b; margin-top:2px; }
+.history-del { background:none; border:none; color:#ef4444; cursor:pointer; font-size:16px; }
+
+.modal-overlay {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.5);
+    align-items:center; justify-content:center; padding:20px; z-index:100;
+}
+.modal-overlay.show { display:flex; }
+.modal {
+    background:white; border-radius:12px; padding:20px; max-width:360px; width:100%;
+}
+.modal h3 { margin-bottom:16px; font-size:17px; }
+.modal label { display:block; font-size:13px; font-weight:600; margin:10px 0 4px; color:#475569; }
+.modal input { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:15px; }
+.modal-btns { display:flex; gap:8px; margin-top:18px; }
+.modal-btns button { flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; }
+.modal-save { background:#10b981; color:white; }
+.modal-cancel { background:#e2e8f0; color:#475569; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="logo-container">
+        <svg width="240" height="100" viewBox="0 0 280 120" style="max-width:100%;height:auto;">
+            <rect width="280" height="120" fill="#1a1a1a" rx="8"/>
+            <rect x="20" y="35" width="8" height="40" fill="#FF8C00" rx="4"/>
+            <rect x="18" y="28" width="12" height="8" fill="#FF8C00" rx="2"/>
+            <rect x="18" y="64" width="12" height="8" fill="#FF8C00" rx="2"/>
+            <rect x="252" y="35" width="8" height="40" fill="#FF8C00" rx="4"/>
+            <rect x="250" y="28" width="12" height="8" fill="#FF8C00" rx="2"/>
+            <rect x="250" y="64" width="12" height="8" fill="#FF8C00" rx="2"/>
+            <rect x="35" y="52" width="210" height="6" fill="#666" rx="3"/>
+            <text x="140" y="85" font-size="48" font-weight="bold" fill="#FF8C00" text-anchor="middle" font-family="Arial">REPZ</text>
+            <line x1="80" y1="92" x2="200" y2="92" stroke="#FF8C00" stroke-width="2"/>
+        </svg>
+    </div>
+
+    <h1>Calculatrice Macros</h1>
+    <div class="date-banner" id="dateBanner"></div>
+
+    <!-- OBJECTIF -->
+    <div class="goal-card">
+        <div class="goal-top">
+            <h2>🎯 Objectif du jour</h2>
+            <button class="goal-edit" onclick="openGoalModal()">⚙️ Modifier</button>
+        </div>
+        <div class="goal-current"><span id="goalConsumed">0</span> / <span id="goalKcal">4000</span> <span>kcal</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="progress-label" id="progressLabel">Reste 4000 kcal</div>
+        <div class="goal-macros">
+            <div class="goal-macro"><div class="gm-label">Protéine</div><div class="gm-val" id="gmProt">0g</div><div class="gm-target" id="gmProtTarget">/ 194g</div></div>
+            <div class="goal-macro"><div class="gm-label">Glucides</div><div class="gm-val" id="gmCarbs">0g</div><div class="gm-target" id="gmCarbsTarget">/ 500g</div></div>
+            <div class="goal-macro"><div class="gm-label">Lipides</div><div class="gm-val" id="gmLip">0g</div><div class="gm-target" id="gmLipTarget">/ 90g</div></div>
+        </div>
+    </div>
+
+    <button class="add-recipe-btn" onclick="addRecipe()">➕ Ajouter une recette</button>
+    <div id="recipesContainer"></div>
+
+    <!-- TOTAL JOUR -->
+    <div class="day-total-card">
+        <h2>📊 Total de la journée</h2>
+        <div class="dt-kcal"><span id="dtKcal">0</span> <span>kcal</span></div>
+        <div class="dt-macros">
+            <div class="dt-macro"><div class="label">Prot</div><div class="val" id="dtProt">0g</div></div>
+            <div class="dt-macro"><div class="label">Carbs</div><div class="val" id="dtCarbs">0g</div></div>
+            <div class="dt-macro"><div class="label">Lipides</div><div class="val" id="dtLip">0g</div></div>
+        </div>
+        <button class="save-day-btn" onclick="saveDay()">💾 Enregistrer cette journée</button>
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div class="history-card">
+        <h2>📆 Historique</h2>
+        <div id="historyList"></div>
+    </div>
+</div>
+
+<!-- MODAL OBJECTIF -->
+<div class="modal-overlay" id="goalModal">
+    <div class="modal">
+        <h3>🎯 Mon objectif</h3>
+        <label>Calories cibles (kcal)</label>
+        <input type="number" id="inputGoalKcal" value="4000">
+        <label>Poids corporel (kg)</label>
+        <input type="number" id="inputWeight" value="97">
+        <label>Protéine cible (g/kg)</label>
+        <input type="number" id="inputProtRatio" value="2" step="0.1">
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeGoalModal()">Annuler</button>
+            <button class="modal-save" onclick="saveGoal()">Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== BASE INGRÉDIENTS (pour 100g / 100ml) =====
+const DB = {
+    // Céréales & féculents
+    'Avoine':{kcal:380,prot:13,carbs:66,lip:8},
+    'Flocons avoine':{kcal:380,prot:13,carbs:66,lip:8},
+    'Riz cru':{kcal:347,prot:7,carbs:77,lip:0.7},
+    'Riz cuit':{kcal:130,prot:2.7,carbs:28,lip:0.3},
+    'Pâtes crues':{kcal:371,prot:13,carbs:75,lip:1.1},
+    'Pâtes cuites':{kcal:158,prot:5.8,carbs:31,lip:0.9},
+    'Pain complet':{kcal:247,prot:9,carbs:43,lip:3.4},
+    'Pain blanc':{kcal:265,prot:9,carbs:49,lip:3.2},
+    'Pomme de terre':{kcal:77,prot:2,carbs:17,lip:0.1},
+    'Patate douce':{kcal:86,prot:1.6,carbs:20,lip:0.1},
+    'Quinoa cru':{kcal:368,prot:14,carbs:64,lip:6},
+    'Semoule':{kcal:360,prot:12,carbs:73,lip:1.8},
+    // Protéines
+    'Poulet cuit':{kcal:165,prot:31,carbs:0,lip:3.6},
+    'Poulet cru':{kcal:120,prot:23,carbs:0,lip:2.6},
+    'Dinde':{kcal:135,prot:29,carbs:0,lip:1.7},
+    'Bœuf haché 5%':{kcal:137,prot:21,carbs:0,lip:5},
+    'Bœuf haché 15%':{kcal:215,prot:19,carbs:0,lip:15},
+    'Steak':{kcal:158,prot:26,carbs:0,lip:6},
+    'Saumon':{kcal:208,prot:20,carbs:0,lip:13},
+    'Thon naturel':{kcal:116,prot:26,carbs:0,lip:1},
+    'Cabillaud':{kcal:82,prot:18,carbs:0,lip:0.7},
+    'Œuf entier':{kcal:155,prot:13,carbs:1.1,lip:11},
+    'Blanc d\'œuf':{kcal:52,prot:11,carbs:0.7,lip:0.2},
+    'Crevettes':{kcal:99,prot:24,carbs:0.2,lip:0.3},
+    'Jambon blanc':{kcal:110,prot:18,carbs:1,lip:3.5},
+    // Produits laitiers
+    'Whey Iso':{kcal:360,prot:90,carbs:2,lip:1},
+    'Whey':{kcal:400,prot:80,carbs:8,lip:6},
+    'Fromage blanc 0%':{kcal:47,prot:8,carbs:4,lip:0.2},
+    'Skyr':{kcal:63,prot:11,carbs:4,lip:0.2},
+    'Yaourt grec':{kcal:97,prot:9,carbs:4,lip:5},
+    'Lait 1/2 écrémé':{kcal:46,prot:3.2,carbs:4.8,lip:1.5},
+    'Mozzarella':{kcal:280,prot:28,carbs:3,lip:17},
+    'Parmesan':{kcal:392,prot:36,carbs:3,lip:26},
+    'Comté':{kcal:410,prot:27,carbs:0,lip:34},
+    // Légumineuses
+    'Lentilles cuites':{kcal:116,prot:9,carbs:20,lip:0.4},
+    'Pois chiches cuits':{kcal:164,prot:9,carbs:27,lip:2.6},
+    'Haricots rouges':{kcal:127,prot:9,carbs:23,lip:0.5},
+    // Lipides & oléagineux
+    'Huile olive':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile colza':{kcal:900,prot:0,carbs:0,lip:100},
+    'Beurre cacahuète':{kcal:588,prot:25,carbs:20,lip:50},
+    'Amandes':{kcal:579,prot:21,carbs:22,lip:50},
+    'Noix':{kcal:654,prot:15,carbs:14,lip:65},
+    'Noix de cajou':{kcal:553,prot:18,carbs:30,lip:44},
+    'Avocat':{kcal:160,prot:2,carbs:9,lip:15},
+    // Fruits
+    'Banane':{kcal:89,prot:1.1,carbs:23,lip:0.3},
+    'Pomme':{kcal:52,prot:0.3,carbs:14,lip:0.2},
+    'Fraises':{kcal:32,prot:0.7,carbs:8,lip:0.3},
+    'Myrtilles':{kcal:57,prot:0.7,carbs:14,lip:0.3},
+    'Orange':{kcal:47,prot:0.9,carbs:12,lip:0.1},
+    'Dattes':{kcal:282,prot:2.5,carbs:75,lip:0.4},
+    'Raisins secs':{kcal:299,prot:3,carbs:79,lip:0.5},
+    // Légumes
+    'Brocoli':{kcal:34,prot:2.8,carbs:7,lip:0.4},
+    'Épinards':{kcal:23,prot:2.9,carbs:3.6,lip:0.4},
+    'Courgette':{kcal:17,prot:1.2,carbs:3,lip:0.3},
+    'Tomate':{kcal:18,prot:0.9,carbs:3.9,lip:0.2},
+    'Carotte':{kcal:41,prot:0.9,carbs:10,lip:0.2},
+    // ===== PROTÉINES (muscu) =====
+    'Caséine':{kcal:360,prot:80,carbs:5,lip:1.5},
+    'Protéine de pois':{kcal:380,prot:80,carbs:5,lip:6},
+    'Tofu':{kcal:76,prot:8,carbs:1.9,lip:4.8},
+    'Tempeh':{kcal:192,prot:20,carbs:7.6,lip:11},
+    'Seitan':{kcal:370,prot:75,carbs:14,lip:1.9},
+    'Edamame':{kcal:121,prot:12,carbs:9,lip:5},
+    'Sardines':{kcal:208,prot:25,carbs:0,lip:11},
+    'Maquereau':{kcal:205,prot:19,carbs:0,lip:14},
+    'Truite':{kcal:119,prot:20,carbs:0,lip:3.5},
+    'Colin/Lieu':{kcal:80,prot:17,carbs:0,lip:1},
+    'Jambon de dinde':{kcal:105,prot:18,carbs:1,lip:3},
+    'Bresaola':{kcal:151,prot:32,carbs:0.5,lip:2},
+    'Filet de porc':{kcal:143,prot:21,carbs:0,lip:6},
+    'Moules':{kcal:86,prot:12,carbs:3.7,lip:2.2},
+    'Foie de bœuf':{kcal:135,prot:20,carbs:3.9,lip:3.6},
+    // ===== GLUCIDES (énergie) =====
+    'Riz basmati cru':{kcal:350,prot:8,carbs:78,lip:0.5},
+    'Galette de riz':{kcal:387,prot:8,carbs:81,lip:3},
+    'Wrap/Tortilla':{kcal:310,prot:8,carbs:50,lip:8},
+    'Pain de mie complet':{kcal:250,prot:9,carbs:42,lip:4},
+    'Müesli':{kcal:370,prot:10,carbs:66,lip:7},
+    'Boulgour cru':{kcal:342,prot:12,carbs:76,lip:1.3},
+    'Cornflakes':{kcal:378,prot:7,carbs:84,lip:0.9},
+    'Couscous cuit':{kcal:112,prot:3.8,carbs:23,lip:0.2},
+    'Maïs':{kcal:96,prot:3.4,carbs:19,lip:1.5},
+    'Pancake':{kcal:227,prot:6,carbs:28,lip:9},
+    'Miel':{kcal:304,prot:0.3,carbs:82,lip:0},
+    'Confiture':{kcal:250,prot:0.4,carbs:62,lip:0.1},
+    // ===== SUPPLÉMENTS / SPÉCIAL MUSCU =====
+    'Maltodextrine':{kcal:380,prot:0,carbs:95,lip:0},
+    'Gainer':{kcal:380,prot:25,carbs:60,lip:5},
+    'Barre protéinée':{kcal:350,prot:30,carbs:35,lip:10},
+    'Purée d\'amande':{kcal:614,prot:21,carbs:19,lip:56},
+    // ===== LAITIERS =====
+    'Cottage cheese':{kcal:98,prot:11,carbs:3.4,lip:4.3},
+    'Petit suisse 0%':{kcal:75,prot:8,carbs:4,lip:0.2},
+    'Lait écrémé':{kcal:35,prot:3.4,carbs:5,lip:0.1},
+    'Lait d\'amande':{kcal:24,prot:0.5,carbs:3,lip:1.1},
+    // ===== LIPIDES / GRAINES =====
+    'Noisettes':{kcal:628,prot:15,carbs:17,lip:61},
+    'Pistaches':{kcal:562,prot:20,carbs:28,lip:45},
+    'Graines de chia':{kcal:486,prot:17,carbs:42,lip:31},
+    'Graines de lin':{kcal:534,prot:18,carbs:29,lip:42},
+    'Graines de courge':{kcal:559,prot:30,carbs:11,lip:49},
+    'Graines de tournesol':{kcal:584,prot:21,carbs:20,lip:51},
+    'Beurre':{kcal:717,prot:0.9,carbs:0.1,lip:81},
+    'Huile de coco':{kcal:862,prot:0,carbs:0,lip:100},
+    // ===== FRUITS =====
+    'Ananas':{kcal:50,prot:0.5,carbs:13,lip:0.1},
+    'Kiwi':{kcal:61,prot:1.1,carbs:15,lip:0.5},
+    'Mangue':{kcal:60,prot:0.8,carbs:15,lip:0.4},
+    'Pastèque':{kcal:30,prot:0.6,carbs:8,lip:0.2},
+    'Melon':{kcal:34,prot:0.8,carbs:8,lip:0.2},
+    'Poire':{kcal:57,prot:0.4,carbs:15,lip:0.1},
+    'Pêche':{kcal:39,prot:0.9,carbs:10,lip:0.3},
+    'Abricots secs':{kcal:241,prot:3.4,carbs:63,lip:0.5},
+    'Pruneaux':{kcal:240,prot:2.2,carbs:64,lip:0.4},
+    // ===== LÉGUMES =====
+    'Haricots verts':{kcal:31,prot:1.8,carbs:7,lip:0.1},
+    'Chou-fleur':{kcal:25,prot:1.9,carbs:5,lip:0.3},
+    'Poivron':{kcal:31,prot:1,carbs:6,lip:0.3},
+    'Champignons':{kcal:22,prot:3.1,carbs:3.3,lip:0.3},
+    'Concombre':{kcal:15,prot:0.7,carbs:3.6,lip:0.1},
+    'Petits pois':{kcal:81,prot:5.4,carbs:14,lip:0.4},
+    'Asperges':{kcal:20,prot:2.2,carbs:3.9,lip:0.1},
+    'Betterave':{kcal:43,prot:1.6,carbs:10,lip:0.2},
+};
+
+// ===== ÉTAT =====
+let goal = { kcal:4000, weight:97, protRatio:2 };
+let recipes = [{
+    id:1, name:'Petit Déj', mult:1,
+    ings:[
+        {id:1, name:'Avoine', portion:70},
+        {id:2, name:'Whey Iso', portion:30},
+    ]
+}];
+let nextRid = 2;
+let history = [];
+
+// ===== STOCKAGE LOCAL =====
+function save(){
+    try {
+        localStorage.setItem('repz_goal', JSON.stringify(goal));
+        localStorage.setItem('repz_recipes', JSON.stringify(recipes));
+        localStorage.setItem('repz_history', JSON.stringify(history));
+        localStorage.setItem('repz_nextRid', String(nextRid));
+    } catch(e){}
+}
+function load(){
+    try {
+        const g = localStorage.getItem('repz_goal'); if(g) goal = JSON.parse(g);
+        const r = localStorage.getItem('repz_recipes'); if(r) recipes = JSON.parse(r);
+        const h = localStorage.getItem('repz_history'); if(h) history = JSON.parse(h);
+        const n = localStorage.getItem('repz_nextRid'); if(n) nextRid = parseInt(n);
+    } catch(e){}
+}
+
+// ===== CALCULS =====
+function macrosOf(ing){
+    const base = DB[ing.name] || {kcal:0,prot:0,carbs:0,lip:0};
+    const r = ing.portion/100;
+    return { kcal:base.kcal*r, prot:base.prot*r, carbs:base.carbs*r, lip:base.lip*r };
+}
+function recipeTotals(recipe){
+    let t={kcal:0,prot:0,carbs:0,lip:0};
+    recipe.ings.forEach(i=>{ const m=macrosOf(i); t.kcal+=m.kcal; t.prot+=m.prot; t.carbs+=m.carbs; t.lip+=m.lip; });
+    return t;
+}
+function dayTotals(){
+    let t={kcal:0,prot:0,carbs:0,lip:0};
+    recipes.forEach(rc=>{ const rt=recipeTotals(rc); const m=rc.mult||1;
+        t.kcal+=rt.kcal*m; t.prot+=rt.prot*m; t.carbs+=rt.carbs*m; t.lip+=rt.lip*m; });
+    return t;
+}
+
+// ===== DATE =====
+function renderDate(){
+    const d = new Date();
+    document.getElementById('dateBanner').textContent =
+        d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+
+// ===== RENDER RECETTES =====
+function renderRecipes(){
+    const c = document.getElementById('recipesContainer');
+    c.innerHTML='';
+    recipes.forEach(rc=>{
+        const nextIid = Math.max(0,...rc.ings.map(i=>i.id))+1;
+        const t = recipeTotals(rc);
+        const ft = { kcal:t.kcal*(rc.mult||1), prot:t.prot*(rc.mult||1), carbs:t.carbs*(rc.mult||1), lip:t.lip*(rc.mult||1) };
+        const card = document.createElement('div');
+        card.className='recipe-card';
+        let h = `<div class="recipe-header">
+            <input class="recipe-name" value="${rc.name}" onchange="renameRecipe(${rc.id},this.value)">
+            ${(rc.mult&&rc.mult>1)?`<span class="recipe-mult-badge">×${rc.mult}</span>`:''}
+        </div>`;
+        rc.ings.forEach(ing=>{
+            const m = macrosOf(ing);
+            h += `<div class="ing-row">
+                <div><div class="ing-name">${ing.name}</div><div class="ing-base">100g = ${(DB[ing.name]||{}).kcal||0} kcal</div></div>
+                <div class="ing-input"><input type="number" value="${ing.portion}" oninput="updatePortion(${rc.id},${ing.id},this.value)"><span class="ing-unit">g</span></div>
+                <div class="ing-macros" id="m-${rc.id}-${ing.id}">${m.kcal.toFixed(0)} kcal<br>${m.prot.toFixed(1)}P ${m.carbs.toFixed(1)}C ${m.lip.toFixed(1)}L</div>
+                <button class="del-btn" onclick="delIng(${rc.id},${ing.id})">🗑</button>
+            </div>`;
+        });
+        h += `<div class="add-ing">
+            <input type="text" id="search-${rc.id}" placeholder="🔍 Ajouter un ingrédient..." autocomplete="off"
+                oninput="filterIngredients(${rc.id},this.value)" onfocus="filterIngredients(${rc.id},this.value)">
+            <div class="search-results" id="results-${rc.id}"></div>
+        </div>`;
+        h += `<div class="recipe-total">💪 ${t.kcal.toFixed(0)} kcal | ${t.prot.toFixed(1)}P | ${t.carbs.toFixed(1)}C | ${t.lip.toFixed(1)}L`;
+        if(rc.mult&&rc.mult>1) h += `<div class="rt-mult">× ${rc.mult} = ${ft.kcal.toFixed(0)} kcal | ${ft.prot.toFixed(0)}P | ${ft.carbs.toFixed(0)}C | ${ft.lip.toFixed(1)}L</div>`;
+        h += `</div>`;
+        h += `<div class="recipe-actions">
+            <span style="font-size:13px;color:#64748b;">Répéter ×</span>
+            <input type="number" min="1" max="20" value="${rc.mult||1}" class="mult-input" onchange="updateMult(${rc.id},this.value)">
+            <button class="btn-del-recipe" onclick="delRecipe(${rc.id})">🗑 Supprimer recette</button>
+        </div>`;
+        card.innerHTML=h;
+        c.appendChild(card);
+    });
+    renderTotals();
+}
+
+function renderTotals(){
+    const t = dayTotals();
+    document.getElementById('dtKcal').textContent = t.kcal.toFixed(0);
+    document.getElementById('dtProt').textContent = t.prot.toFixed(0)+'g';
+    document.getElementById('dtCarbs').textContent = t.carbs.toFixed(0)+'g';
+    document.getElementById('dtLip').textContent = t.lip.toFixed(0)+'g';
+
+    // Objectif
+    const protTarget = Math.round(goal.weight*goal.protRatio);
+    const carbTarget = Math.round((goal.kcal*0.5)/4);
+    const lipTarget = Math.round((goal.kcal*0.2)/9);
+    document.getElementById('goalConsumed').textContent = t.kcal.toFixed(0);
+    document.getElementById('goalKcal').textContent = goal.kcal;
+    const pct = Math.min(100,(t.kcal/goal.kcal)*100);
+    document.getElementById('progressFill').style.width = pct+'%';
+    const reste = goal.kcal - t.kcal;
+    document.getElementById('progressLabel').textContent =
+        reste>=0 ? `Reste ${reste.toFixed(0)} kcal` : `Dépassé de ${Math.abs(reste).toFixed(0)} kcal`;
+    document.getElementById('gmProt').textContent = t.prot.toFixed(0)+'g';
+    document.getElementById('gmCarbs').textContent = t.carbs.toFixed(0)+'g';
+    document.getElementById('gmLip').textContent = t.lip.toFixed(0)+'g';
+    document.getElementById('gmProtTarget').textContent = '/ '+protTarget+'g';
+    document.getElementById('gmCarbsTarget').textContent = '/ '+carbTarget+'g';
+    document.getElementById('gmLipTarget').textContent = '/ '+lipTarget+'g';
+    save();
+}
+
+// ===== ACTIONS =====
+function updatePortion(rid,iid,val){
+    const rc=recipes.find(r=>r.id===rid); if(!rc) return;
+    const ing=rc.ings.find(i=>i.id===iid); if(!ing) return;
+    ing.portion=parseFloat(val)||0;
+    const m=macrosOf(ing);
+    const el=document.getElementById(`m-${rid}-${iid}`);
+    if(el) el.innerHTML=`${m.kcal.toFixed(0)} kcal<br>${m.prot.toFixed(1)}P ${m.carbs.toFixed(1)}C ${m.lip.toFixed(1)}L`;
+    renderTotals();
+}
+function filterIngredients(rid,query){
+    const box=document.getElementById(`results-${rid}`);
+    if(!box) return;
+    const q=query.trim().toLowerCase();
+    const matches=Object.keys(DB).filter(name=>name.toLowerCase().includes(q)).sort();
+    if(matches.length===0){
+        box.innerHTML='<div class="search-none">Aucun ingrédient trouvé</div>';
+        box.classList.add('show');
+        return;
+    }
+    box.innerHTML=matches.map(name=>
+        `<div class="search-item" onclick="addIngredient(${rid},'${name.replace(/'/g,"\\'")}')">
+            <span>${name}</span><span class="si-kcal">${DB[name].kcal} kcal/100g</span>
+        </div>`
+    ).join('');
+    box.classList.add('show');
+}
+function addIngredient(rid,name){
+    if(!DB[name]) return;
+    const rc=recipes.find(r=>r.id===rid); if(!rc) return;
+    const nid=Math.max(0,...rc.ings.map(i=>i.id))+1;
+    rc.ings.push({id:nid,name:name,portion:100});
+    renderRecipes();
+}
+function delIng(rid,iid){
+    const rc=recipes.find(r=>r.id===rid); if(!rc) return;
+    rc.ings=rc.ings.filter(i=>i.id!==iid);
+    renderRecipes();
+}
+function renameRecipe(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.name=val; save();} }
+function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes();} }
+function addRecipe(){
+    recipes.push({id:nextRid++,name:'Nouvelle recette',mult:1,ings:[]});
+    renderRecipes();
+}
+function delRecipe(rid){ recipes=recipes.filter(r=>r.id!==rid); renderRecipes(); }
+
+// ===== OBJECTIF MODAL =====
+function openGoalModal(){
+    document.getElementById('inputGoalKcal').value=goal.kcal;
+    document.getElementById('inputWeight').value=goal.weight;
+    document.getElementById('inputProtRatio').value=goal.protRatio;
+    document.getElementById('goalModal').classList.add('show');
+}
+function closeGoalModal(){ document.getElementById('goalModal').classList.remove('show'); }
+function saveGoal(){
+    goal.kcal=parseFloat(document.getElementById('inputGoalKcal').value)||4000;
+    goal.weight=parseFloat(document.getElementById('inputWeight').value)||97;
+    goal.protRatio=parseFloat(document.getElementById('inputProtRatio').value)||2;
+    closeGoalModal();
+    renderTotals();
+}
+
+// ===== HISTORIQUE =====
+function saveDay(){
+    const t=dayTotals();
+    const today=new Date().toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
+    const iso=new Date().toISOString().slice(0,10);
+    const existing=history.findIndex(h=>h.iso===iso);
+    const entry={iso,date:today,kcal:t.kcal.toFixed(0),prot:t.prot.toFixed(0),carbs:t.carbs.toFixed(0),lip:t.lip.toFixed(0)};
+    if(existing>=0) history[existing]=entry; else history.unshift(entry);
+    renderHistory();
+    save();
+    alert('✅ Journée enregistrée !');
+}
+function delHistory(iso){ history=history.filter(h=>h.iso!==iso); renderHistory(); save(); }
+function renderHistory(){
+    const c=document.getElementById('historyList');
+    if(history.length===0){ c.innerHTML='<div class="history-empty">Aucune journée enregistrée. Clique sur "Enregistrer cette journée" pour commencer ton suivi.</div>'; return; }
+    c.innerHTML='';
+    history.forEach(h=>{
+        const row=document.createElement('div');
+        row.className='history-row';
+        row.innerHTML=`<div><div class="history-date">${h.date}</div><div class="history-detail">${h.prot}P · ${h.carbs}C · ${h.lip}L</div></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="font-weight:700;color:#FF8C00;">${h.kcal} kcal</div>
+            <button class="history-del" onclick="delHistory('${h.iso}')">🗑</button></div>`;
+        c.appendChild(row);
+    });
+}
+
+// ===== FERMER DROPDOWN AU CLIC EXTÉRIEUR =====
+document.addEventListener('click',function(e){
+    if(!e.target.closest('.add-ing')){
+        document.querySelectorAll('.search-results').forEach(b=>b.classList.remove('show'));
+    }
+});
+
+// ===== INIT =====
+load();
+renderDate();
+renderRecipes();
+renderHistory();
+</script>
+</body>
+</html>
