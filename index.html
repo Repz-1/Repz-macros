@@ -181,6 +181,35 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .progress-macros-left .pml-done { color:#22c55e; }
 .progress-macros-left .pml-over { color:#fb923c; }
 
+/* ===== QUOI MANGER ? ===== */
+.eat-card { background:white; border-radius:14px; box-shadow:0 1px 3px rgba(0,0,0,.08); margin-bottom:14px; overflow:hidden; }
+.eat-toggle {
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:#0a0a0a; color:#FF8C00; border:none; padding:16px 18px;
+    font-size:15px; font-weight:700; cursor:pointer;
+}
+.eat-toggle:active { background:#1a1a1a; }
+.eat-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 16px; }
+.eat-body.open { max-height:1500px; padding:14px 16px 18px; }
+.eat-intro { font-size:14px; color:#475569; margin-bottom:14px; }
+.eat-intro b { color:#FF8C00; font-size:16px; }
+.eat-cats { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px; }
+.eat-cat {
+    background:#f7f8fa; border:1.5px solid #e2e8f0; color:#1a1a1a;
+    padding:12px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer;
+}
+.eat-cat:active { background:#fff1e0; border-color:#FF8C00; color:#c2410c; }
+.eat-ideas:empty { display:none; }
+.eat-idea {
+    background:#f7f8fa; border-left:3px solid #FF8C00; border-radius:8px;
+    padding:12px 14px; margin-bottom:8px;
+}
+.eat-idea-name { font-size:14px; font-weight:700; color:#1a1a1a; }
+.eat-idea-ex { font-size:12px; color:#64748b; margin-top:3px; }
+.eat-idea-kcal { font-size:12px; color:#c2410c; font-weight:600; margin-top:6px; }
+.eat-portion { color:#94a3b8; font-weight:500; margin-left:6px; }
+.eat-note { font-size:13px; color:#16a34a; font-weight:600; text-align:center; padding:10px; }
+
 /* HISTORIQUE */
 .history-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); }
 .history-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
@@ -317,6 +346,24 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
             <div class="goal-macro"><div class="gm-label">Protéine</div><div class="gm-val" id="gmProt">0g</div><div class="gm-target" id="gmProtTarget">/ 194g</div></div>
             <div class="goal-macro"><div class="gm-label">Glucides</div><div class="gm-val" id="gmCarbs">0g</div><div class="gm-target" id="gmCarbsTarget">/ 500g</div></div>
             <div class="goal-macro"><div class="gm-label">Lipides</div><div class="gm-val" id="gmLip">0g</div><div class="gm-target" id="gmLipTarget">/ 90g</div></div>
+        </div>
+    </div>
+
+    <!-- QUOI MANGER ? -->
+    <div class="eat-card">
+        <button class="eat-toggle" onclick="toggleEat()">
+            <span>💡 Quoi manger ?</span>
+            <span id="eatArrow">▾</span>
+        </button>
+        <div id="eatBody" class="eat-body">
+            <div class="eat-intro" id="eatIntro"></div>
+            <div class="eat-cats">
+                <button class="eat-cat" onclick="showEatIdeas('sain')">🥗 Sain & léger</button>
+                <button class="eat-cat" onclick="showEatIdeas('rapide')">⚡ Rapide</button>
+                <button class="eat-cat" onclick="showEatIdeas('plaisir')">🍕 Plaisir</button>
+                <button class="eat-cat" onclick="showEatIdeas('vege')">🌱 Végé</button>
+            </div>
+            <div id="eatIdeas" class="eat-ideas"></div>
         </div>
     </div>
 
@@ -1245,6 +1292,85 @@ function importData(input){
         input.value='';
     };
     reader.readAsText(file);
+}
+
+// ===== QUOI MANGER ? =====
+// Chaque idée : nom + kcal de référence pour une portion "standard"
+const EAT_IDEAS = {
+    sain: [
+        { nom:'Blanc de poulet + riz + légumes', kcal:450, ex:'150g poulet · 150g riz cuit · brocoli' },
+        { nom:'Saumon + patate douce', kcal:500, ex:'150g saumon · 200g patate douce' },
+        { nom:'Omelette + salade + pain complet', kcal:400, ex:'3 œufs · salade · 50g pain' },
+        { nom:'Bowl thon + quinoa', kcal:420, ex:'1 boîte thon · 150g quinoa · crudités' },
+        { nom:'Fromage blanc + fruits + amandes', kcal:350, ex:'300g fromage blanc · banane · 20g amandes' }
+    ],
+    rapide: [
+        { nom:'Shaker protéiné + banane', kcal:280, ex:'1 dose whey · 1 banane' },
+        { nom:'Yaourt grec + miel + granola', kcal:350, ex:'400g yaourt grec · miel · 40g granola' },
+        { nom:'Barre protéinée + fruit', kcal:300, ex:'1 barre · 1 pomme' },
+        { nom:'Tartines beurre de cacahuète', kcal:400, ex:'2 tranches pain · 30g beurre cacahuète' },
+        { nom:'Lait + flocons + fruits secs', kcal:380, ex:'300ml lait · 60g avoine · raisins secs' }
+    ],
+    plaisir: [
+        { nom:'Pâtes bolognaise', kcal:600, ex:'120g pâtes · sauce viande' },
+        { nom:'Burger maison', kcal:650, ex:'pain · steak haché · fromage · sauce' },
+        { nom:'Pizza (parts)', kcal:550, ex:'2-3 parts selon le reste' },
+        { nom:'Wrap poulet fromage', kcal:500, ex:'tortilla · poulet · cheddar · sauce' },
+        { nom:'Riz cantonais + œuf', kcal:550, ex:'200g riz · œuf · jambon · petits pois' }
+    ],
+    vege: [
+        { nom:'Buddha bowl pois chiches', kcal:450, ex:'150g pois chiches · quinoa · légumes' },
+        { nom:'Tofu sauté + riz', kcal:480, ex:'150g tofu · 150g riz · légumes wok' },
+        { nom:'Lentilles + œuf + légumes', kcal:420, ex:'150g lentilles · 2 œufs · légumes' },
+        { nom:'Pâtes + ricotta + épinards', kcal:520, ex:'120g pâtes · ricotta · épinards' },
+        { nom:'Houmous + pain pita + crudités', kcal:400, ex:'100g houmous · 1 pita · crudités' }
+    ]
+};
+
+function toggleEat(){
+    const body=document.getElementById('eatBody');
+    const arrow=document.getElementById('eatArrow');
+    body.classList.toggle('open');
+    arrow.textContent = body.classList.contains('open') ? '▴' : '▾';
+    if(body.classList.contains('open')){
+        // Afficher combien il reste à l'ouverture
+        const t = dayTotals();
+        const reste = goal.kcal - t.kcal;
+        const intro = document.getElementById('eatIntro');
+        if(reste > 50){
+            intro.innerHTML = `Il te reste <b>${reste.toFixed(0)} kcal</b>. Choisis une envie :`;
+        } else if(reste < -50){
+            intro.innerHTML = `Tu as déjà atteint ton objectif (dépassé de ${Math.abs(reste).toFixed(0)} kcal).`;
+        } else {
+            intro.innerHTML = `Objectif quasiment atteint ! 👍`;
+        }
+        document.getElementById('eatIdeas').innerHTML='';
+    }
+}
+
+function showEatIdeas(cat){
+    const t = dayTotals();
+    const reste = Math.max(0, goal.kcal - t.kcal);
+    const ideas = EAT_IDEAS[cat] || [];
+    const box = document.getElementById('eatIdeas');
+    if(reste <= 50){
+        box.innerHTML = '<div class="eat-note">Tu as déjà atteint ton objectif du jour.</div>';
+        return;
+    }
+    // Trier les idées par proximité avec le reste, prendre les 3 meilleures
+    const sorted = [...ideas].sort((a,b)=>Math.abs(a.kcal-reste)-Math.abs(b.kcal-reste)).slice(0,3);
+    box.innerHTML = sorted.map(idea=>{
+        // Estimer une portion adaptée
+        const ratio = reste / idea.kcal;
+        let portionHint = '';
+        if(ratio >= 1.6) portionHint = `<span class="eat-portion">≈ ${Math.round(ratio)} portions pour tout combler</span>`;
+        else if(ratio <= 0.6) portionHint = `<span class="eat-portion">une demi-portion suffit</span>`;
+        return `<div class="eat-idea">
+            <div class="eat-idea-name">${idea.nom}</div>
+            <div class="eat-idea-ex">${idea.ex}</div>
+            <div class="eat-idea-kcal">~${idea.kcal} kcal ${portionHint}</div>
+        </div>`;
+    }).join('');
 }
 
 // ===== INIT =====
