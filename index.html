@@ -214,14 +214,6 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .history-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); }
 .history-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
 
-/* ===== BOUTON NOUVELLE JOURNÉE ===== */
-.newday-btn {
-    width:100%; background:#fef2f2; color:#dc2626; border:1.5px solid #fecaca;
-    padding:11px; border-radius:8px; font-size:14px; font-weight:600;
-    cursor:pointer; margin-top:8px;
-}
-.newday-btn:active { background:#fee2e2; }
-
 /* ===== SUIVI DU POIDS ===== */
 .weight-card { background:white; border-radius:12px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.1); margin-bottom:14px; }
 .weight-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
@@ -445,8 +437,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
             <div class="dt-macro"><div class="label">Carbs</div><div class="val" id="dtCarbs">0g</div></div>
             <div class="dt-macro"><div class="label">Lipides</div><div class="val" id="dtLip">0g</div></div>
         </div>
-        <button class="save-day-btn" onclick="saveDay()">💾 Enregistrer cette journée</button>
-        <button class="newday-btn" onclick="newDay()">🔄 Nouvelle journée (archiver + vider)</button>
+        <button class="save-day-btn" onclick="saveDay()">💾 Enregistrer et recommencer</button>
     </div>
 
     <!-- HISTORIQUE -->
@@ -1064,36 +1055,24 @@ function applyTdee(){
 // ===== HISTORIQUE =====
 function saveDay(){
     const t=dayTotals();
+    if(t.kcal<=0){ alert('Ajoute des aliments avant d\'enregistrer la journée.'); return; }
+    if(!confirm('Enregistrer cette journée et recommencer ?\n\nLe total du jour sera gardé dans ton suivi, et l\'écran sera vidé pour repartir à zéro.')) return;
+    // Archiver la journée
     const today=new Date().toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
     const iso=new Date().toISOString().slice(0,10);
     const existing=history.findIndex(h=>h.iso===iso);
     const entry={iso,date:today,kcal:t.kcal.toFixed(0),prot:t.prot.toFixed(0),carbs:t.carbs.toFixed(0),lip:t.lip.toFixed(0)};
     if(existing>=0) history[existing]=entry; else history.unshift(entry);
-    renderHistory();
-    save();
-    alert('✅ Journée enregistrée !');
-}
-function delHistory(iso){ history=history.filter(h=>h.iso!==iso); renderHistory(); save(); }
-
-function newDay(){
-    const t=dayTotals();
-    if(t.kcal>0){
-        // Archiver d'abord la journée en cours
-        const today=new Date().toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
-        const iso=new Date().toISOString().slice(0,10);
-        const existing=history.findIndex(h=>h.iso===iso);
-        const entry={iso,date:today,kcal:t.kcal.toFixed(0),prot:t.prot.toFixed(0),carbs:t.carbs.toFixed(0),lip:t.lip.toFixed(0)};
-        if(existing>=0) history[existing]=entry; else history.unshift(entry);
-    }
-    if(!confirm('Archiver la journée et repartir à zéro ?\n\nTes recettes du jour seront effacées (la journée reste dans l\'historique).')) return;
-    // Vider les recettes
+    // Vider l'écran
     recipes=[{id:0,name:'Nouvelle recette',mult:1,ings:[]}];
     nextRid=1;
     renderRecipes();
     renderHistory();
+    renderTotals();
     save();
     window.scrollTo({top:0,behavior:'smooth'});
 }
+function delHistory(iso){ history=history.filter(h=>h.iso!==iso); renderHistory(); save(); }
 
 // ===== SUIVI DU POIDS =====
 function addWeight(){
