@@ -13,36 +13,12 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
-/* ===== SPLASH / ANIMATION D'ENTRÉE ===== */
-#splash {
-    position:fixed; inset:0; z-index:9999;
-    display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(135deg, #FF8C00 0%, #1a1a1a 55%, #000000 100%);
-    transition:opacity .5s ease, visibility .5s ease;
+/* Fondu discret de la page à l'ouverture */
+@keyframes pageFadeIn {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
 }
-#splash.hide { opacity:0; visibility:hidden; }
-.splash-inner { display:flex; flex-direction:column; align-items:center; gap:26px; }
-.splash-logo {
-    width:150px; height:150px; border-radius:28px;
-    box-shadow:0 10px 40px rgba(0,0,0,.5);
-    animation:splashPop .9s cubic-bezier(.2,.9,.3,1.2) both;
-}
-@keyframes splashPop {
-    0% { transform:scale(.5) translateY(20px); opacity:0; }
-    60% { opacity:1; }
-    100% { transform:scale(1) translateY(0); opacity:1; }
-}
-.splash-bar {
-    width:160px; height:5px; background:rgba(255,255,255,.25);
-    border-radius:10px; overflow:hidden;
-    animation:fadeIn .4s .3s both;
-}
-.splash-bar-fill {
-    height:100%; width:0%; background:#fff; border-radius:10px;
-    animation:loadBar 1s .35s ease-out forwards;
-}
-@keyframes loadBar { from { width:0%; } to { width:100%; } }
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.container { animation:pageFadeIn .45s ease-out both; }
 
 
 body {
@@ -221,13 +197,6 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 </style>
 </head>
 <body>
-<!-- SPLASH / ANIMATION D'ENTRÉE -->
-<div id="splash">
-    <div class="splash-inner">
-        <img src="icon-512.png" alt="REPZ" class="splash-logo">
-        <div class="splash-bar"><div class="splash-bar-fill"></div></div>
-    </div>
-</div>
 <div class="container">
     <div class="logo-container">
         <svg width="240" height="100" viewBox="0 0 280 120" style="max-width:100%;height:auto;">
@@ -916,19 +885,6 @@ if(recipes.length===0){
 renderDate();
 renderRecipes();
 renderHistory();
-
-// Masquer le splash après l'animation
-window.addEventListener('load',()=>{
-    setTimeout(()=>{
-        const s=document.getElementById('splash');
-        if(s) s.classList.add('hide');
-    }, 1400);
-});
-// Sécurité : si 'load' a déjà eu lieu
-setTimeout(()=>{
-    const s=document.getElementById('splash');
-    if(s) s.classList.add('hide');
-}, 1600);
 </script>
 </body>
 </html>
