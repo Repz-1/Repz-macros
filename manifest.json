@@ -3,7 +3,7 @@
   "short_name": "REPZ Macros",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#0f172a",
+  "background_color": "#0a0a0a",
   "theme_color": "#FF8C00",
   "icons": [
     {
