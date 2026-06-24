@@ -1,7 +1,7 @@
 {
   "name": "REPZ",
   "short_name": "REPZ",
-  "start_url": ".",
+  "start_url": "app.html",
   "display": "standalone",
   "background_color": "#f3f4f6",
   "theme_color": "#FF6B35",
