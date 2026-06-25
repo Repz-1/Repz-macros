@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REPZ — Entraînements</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+    --orange:#FF6B35;
+    --bg:#f3f4f6;
+    --card:#ffffff;
+    --dark:#1f2937;
+    --line:#e5e7eb;
+    --text:#1a1a1a;
+    --text-dim:#6b7280;
+    --radius:22px;
+}
+body {
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh;
+    padding:16px;
+}
+
+/* Header avec retour */
+.top {
+    display:flex; align-items:center; gap:14px; padding:10px 4px 22px;
+}
+.back-btn {
+    width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+    background:var(--card); display:flex; align-items:center; justify-content:center;
+    font-size:20px; color:var(--text); text-decoration:none;
+}
+.top h1 { font-size:22px; font-weight:800; letter-spacing:-.02em; }
+
+/* Hero court */
+.intro {
+    text-align:center; padding:8px 12px 26px;
+}
+.intro h2 {
+    font-size:24px; font-weight:800; line-height:1.25; letter-spacing:-.02em; margin-bottom:10px;
+}
+.intro h2 .accent { color:var(--orange); }
+.intro p { font-size:14.5px; color:var(--text-dim); line-height:1.6; max-width:330px; margin:0 auto; }
+
+/* Cartes de choix */
+.choices { display:flex; flex-direction:column; gap:16px; max-width:480px; margin:0 auto; }
+
+.choice {
+    position:relative; border-radius:var(--radius); padding:24px 22px;
+    text-decoration:none; color:inherit; overflow:hidden;
+    transition:transform .15s;
+}
+.choice:active { transform:scale(.98); }
+
+/* Carte 1 : questionnaire (mise en avant, fond sombre) */
+.choice.featured { background:var(--dark); color:#fff; }
+.choice.featured .badge {
+    display:inline-block; background:rgba(255,107,53,.18); color:var(--orange);
+    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+    padding:5px 11px; border-radius:20px; margin-bottom:14px;
+}
+.choice.featured h3 { font-size:20px; font-weight:800; margin-bottom:8px; }
+.choice.featured p { font-size:14px; color:#cbd5e1; line-height:1.55; margin-bottom:18px; }
+.choice .cta-inline {
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--orange); color:#fff; font-size:14px; font-weight:700;
+    padding:11px 20px; border-radius:30px;
+}
+
+/* Carte 2 : bibliothèque (claire) */
+.choice.lib { background:var(--card); border:1px solid var(--line); box-shadow:0 4px 16px rgba(15,23,42,.05); }
+.choice.lib h3 { font-size:19px; font-weight:800; margin-bottom:8px; }
+.choice.lib p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:16px; }
+.choice.lib .arrow { color:var(--orange); font-size:15px; font-weight:700; }
+
+/* Petits aperçus de catégories dans la biblio */
+.lib-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+.lib-tag {
+    font-size:12px; font-weight:600; color:var(--text-dim);
+    background:var(--bg); border:1px solid var(--line);
+    padding:7px 12px; border-radius:20px;
+}
+
+/* Bandeau bas */
+.note {
+    text-align:center; font-size:12.5px; color:#9ca3af; margin-top:28px; line-height:1.5;
+    max-width:340px; margin-left:auto; margin-right:auto;
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+    <a href="index.html" class="back-btn">←</a>
+    <h1>Entraînements</h1>
+</div>
+
+<div class="intro">
+    <h2>Trouve <span class="accent">ta façon</span> de t'entraîner</h2>
+    <p>Que tu débutes ou que tu saches déjà ce que tu veux, on t'oriente vers le bon programme.</p>
+</div>
+
+<div class="choices">
+
+    <!-- Choix 1 : Questionnaire (recommandé) -->
+    <a href="test.html" class="choice featured">
+        <span class="badge">Recommandé</span>
+        <h3>Je ne sais pas par où commencer</h3>
+        <p>Réponds à quelques questions (ton objectif, ton niveau, ton matériel) et on te propose le programme fait pour toi.</p>
+        <span class="cta-inline">Faire le test →</span>
+    </a>
+
+    <!-- Choix 2 : Bibliothèque -->
+    <a href="programmes.html" class="choice lib">
+        <h3>Je choisis mon programme</h3>
+        <p>Parcours notre bibliothèque de programmes prêts à l'emploi.</p>
+        <div class="lib-tags">
+            <span class="lib-tag">Débutant</span>
+            <span class="lib-tag">Prise de masse</span>
+            <span class="lib-tag">Maison</span>
+            <span class="lib-tag">Salle</span>
+            <span class="lib-tag">Perte de poids</span>
+        </div>
+        <p style="margin:16px 0 0;"><span class="arrow">Voir les programmes →</span></p>
+    </a>
+
+</div>
+
+<p class="note">
+    Tous les programmes incluent les exercices détaillés, le nombre de séries et de répétitions.
+</p>
+
+</body>
+</html>
