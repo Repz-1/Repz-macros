@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REPZ — Le test</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root { --orange:#FF6B35; --bg:#f3f4f6; --card:#ffffff; --dark:#1f2937;
+    --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); height:100vh; height:100dvh; overflow:hidden;
+    display:flex; flex-direction:column; padding:16px; }
+
+/* Header progression */
+.q-top { display:flex; align-items:center; gap:14px; padding:8px 4px 20px; }
+.back-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+    background:var(--card); display:flex; align-items:center; justify-content:center;
+    font-size:20px; color:var(--text); text-decoration:none; cursor:pointer; flex-shrink:0; }
+.progress-wrap { flex:1; }
+.progress-bar { height:8px; background:var(--line); border-radius:10px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--orange); border-radius:10px; transition:width .3s; width:20%; }
+.progress-txt { font-size:12px; color:var(--text-dim); margin-top:6px; font-weight:600; }
+
+/* Question */
+.q-content { flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; justify-content:center; padding:0 4px; max-width:480px; margin:0 auto; width:100%; }
+.q-content::-webkit-scrollbar { display:none; }
+.q-step { display:none; }
+.q-step.active { display:block; animation:fadeIn .35s ease; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
+
+.q-title { font-size:23px; font-weight:800; line-height:1.25; letter-spacing:-.02em; margin-bottom:8px; }
+.q-sub { font-size:14px; color:var(--text-dim); margin-bottom:20px; line-height:1.5; }
+
+.options { display:flex; flex-direction:column; gap:10px; }
+.option { display:flex; align-items:center; gap:16px; background:var(--card);
+    border:2px solid var(--line); border-radius:16px; padding:15px 18px;
+    cursor:pointer; transition:all .15s; }
+.option:active { transform:scale(.98); }
+.option.selected { border-color:var(--orange); background:#fff8f5; }
+.option-emoji { font-size:26px; flex-shrink:0; }
+.option-label { font-size:16.5px; font-weight:700; flex:1; }
+.option-check { width:24px; height:24px; border-radius:50%; border:2px solid var(--line);
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+.option.selected .option-check { background:var(--orange); border-color:var(--orange); }
+
+/* Bouton suivant */
+.q-footer { padding:20px 4px 8px; max-width:480px; margin:0 auto; width:100%; }
+.next-btn { width:100%; background:var(--orange); color:#fff; border:none;
+    padding:16px; border-radius:16px; font-size:16px; font-weight:700; cursor:pointer;
+    box-shadow:0 6px 18px rgba(255,107,53,.3); transition:opacity .2s; }
+.next-btn:disabled { opacity:.4; box-shadow:none; cursor:not-allowed; }
+
+/* Résultat */
+.result { text-align:center; padding:0 4px; }
+.result-badge { display:inline-block; background:rgba(255,107,53,.14); color:var(--orange);
+    font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+    padding:7px 16px; border-radius:20px; margin-bottom:22px; }
+.result h2 { font-size:28px; font-weight:800; margin-bottom:14px; line-height:1.2; }
+.result-recap { font-size:15px; color:var(--text-dim); line-height:1.6; margin-bottom:28px; max-width:330px; margin-left:auto; margin-right:auto; }
+.result-prog { background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; margin:0 0 28px; box-shadow:0 4px 16px rgba(15,23,42,.06); text-align:left; }
+.result-prog .desc { font-size:15px; color:var(--text); line-height:1.6; margin-bottom:22px; }
+.result-prog .stats { display:flex; flex-direction:column; gap:14px; }
+.result-prog .stats span { display:flex; flex-direction:column; gap:2px;
+    padding-bottom:14px; border-bottom:1px solid var(--line); }
+.result-prog .stats span:last-child { border-bottom:none; padding-bottom:0; }
+.result-prog .stats b { font-size:17px; font-weight:800; color:var(--text); }
+.result-prog .stats small { font-size:12px; color:var(--text-dim); font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+.seances { margin-top:20px; padding-top:18px; border-top:1px solid var(--line); }
+.seances-title { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--text-dim); margin-bottom:12px; }
+.seance-line { display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--text); padding:6px 0; }
+.sl-num { display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:30px; border-radius:9px; background:var(--dark); color:#fff; font-size:12px; font-weight:800; flex-shrink:0; }
+.result-btns { display:flex; flex-direction:column; gap:10px; }
+.btn-primary { width:100%; background:var(--orange); color:#fff; border:none; padding:16px;
+    border-radius:16px; font-size:16px; font-weight:700; cursor:pointer; text-decoration:none; text-align:center;
+    box-shadow:0 6px 18px rgba(255,107,53,.3); }
+.btn-secondary { width:100%; background:var(--card); color:var(--text); border:1.5px solid var(--line);
+    padding:15px; border-radius:16px; font-size:15px; font-weight:600; cursor:pointer; text-align:center; text-decoration:none; }
+</style>
+</head>
+<body>
+
+<div class="q-top">
+    <a href="entrainements.html" class="back-btn" id="backBtn" onclick="return goBack()">←</a>
+    <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-txt" id="progressTxt">Question 1 / 5</div>
+    </div>
+</div>
+
+<div class="q-content" id="qContent">
+    <!-- Q1 SEXE -->
+    <div class="q-step active" data-q="sexe">
+        <div class="q-title">Tu es...</div>
+        <div class="q-sub">Pour adapter les démonstrations d'exercices.</div>
+        <div class="options">
+            <div class="option" onclick="pick(this,'sexe','homme')"><span class="option-emoji">🧑</span><span class="option-label">Un homme</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'sexe','femme')"><span class="option-emoji">👩</span><span class="option-label">Une femme</span><span class="option-check">✓</span></div>
+        </div>
+    </div>
+    <!-- Q2 OBJECTIF -->
+    <div class="q-step" data-q="objectif">
+        <div class="q-title">Ton objectif ?</div>
+        <div class="q-sub">Ce que tu veux atteindre en priorité.</div>
+        <div class="options">
+            <div class="option" onclick="pick(this,'objectif','masse')"><span class="option-emoji">💪</span><span class="option-label">Prendre du muscle</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'objectif','seche')"><span class="option-emoji">🔥</span><span class="option-label">Perdre du poids</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'objectif','forme')"><span class="option-emoji">⚡</span><span class="option-label">Me remettre en forme</span><span class="option-check">✓</span></div>
+        </div>
+    </div>
+    <!-- Q3 NIVEAU -->
+    <div class="q-step" data-q="niveau">
+        <div class="q-title">Ton niveau ?</div>
+        <div class="q-sub">Sois honnête, on adapte en conséquence.</div>
+        <div class="options">
+            <div class="option" onclick="pick(this,'niveau','debutant')"><span class="option-emoji">🌱</span><span class="option-label">Débutant</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'niveau','intermediaire')"><span class="option-emoji">📈</span><span class="option-label">Intermédiaire</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'niveau','confirme')"><span class="option-emoji">🏆</span><span class="option-label">Confirmé</span><span class="option-check">✓</span></div>
+        </div>
+    </div>
+    <!-- Q4 LIEU -->
+    <div class="q-step" data-q="lieu">
+        <div class="q-title">Où t'entraînes-tu ?</div>
+        <div class="q-sub">Pour te proposer les bons exercices.</div>
+        <div class="options">
+            <div class="option" onclick="pick(this,'lieu','salle')"><span class="option-emoji">🏋️</span><span class="option-label">En salle de sport</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'lieu','maison')"><span class="option-emoji">🏠</span><span class="option-label">À la maison</span><span class="option-check">✓</span></div>
+        </div>
+    </div>
+    <!-- Q4b MATÉRIEL (conditionnel : maison) -->
+    <div class="q-step" data-q="materiel">
+        <div class="q-title">Quel matériel<br>as-tu ?</div>
+        <div class="q-sub">Coche tout ce que tu possèdes. On adapte les exercices.</div>
+        <div class="options">
+            <div class="option" onclick="pickMulti(this,'rien')"><span class="option-emoji">🤸</span><span class="option-label">Rien (poids du corps)</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pickMulti(this,'halteres')"><span class="option-emoji">🏋️</span><span class="option-label">Haltères</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pickMulti(this,'elastiques')"><span class="option-emoji">➰</span><span class="option-label">Élastiques / bandes</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pickMulti(this,'barre')"><span class="option-emoji">🔝</span><span class="option-label">Barre de traction</span><span class="option-check">✓</span></div>
+        </div>
+    </div>
+    <!-- Q5 FRÉQUENCE -->
+    <div class="q-step" data-q="frequence">
+        <div class="q-title">Combien de jours<br>par semaine ?</div>
+        <div class="q-sub">Le nombre de séances que tu peux faire.</div>
+        <div class="options">
+            <div class="option" onclick="pick(this,'frequence','2')"><span class="option-emoji">2️⃣</span><span class="option-label">2 jours</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'frequence','3')"><span class="option-emoji">3️⃣</span><span class="option-label">3 jours</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'frequence','4')"><span class="option-emoji">4️⃣</span><span class="option-label">4 jours</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'frequence','5')"><span class="option-emoji">5️⃣</span><span class="option-label">5 jours</span><span class="option-check">✓</span></div>
+            <div class="option" onclick="pick(this,'frequence','6')"><span class="option-emoji">6️⃣</span><span class="option-label">6 jours</span><span class="option-check">✓</span></div>
+        </div>
+    </div>
+
+    <!-- RÉSULTAT -->
+    <div class="q-step" data-q="result">
+        <div class="result">
+            <div class="result-badge">Ton programme idéal</div>
+            <h2 id="resultName">—</h2>
+            <div class="result-recap" id="resultRecap"></div>
+
+            <div class="result-prog">
+                <div class="desc" id="rpDesc">—</div>
+                <div class="stats" id="rpStats"></div>
+                <div class="seances" id="rpSeances"></div>
+            </div>
+
+            <div class="result-btns">
+                <a href="programmes.html" id="btnVoirProg" class="btn-primary">Voir ce programme</a>
+                <a href="#" class="btn-secondary" onclick="restart();return false;">Refaire le test</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="q-footer" id="qFooter">
+    <button class="next-btn" id="nextBtn" onclick="nextStep()" disabled>Suivant</button>
+</div>
+
+<script>
+// Données réelles des programmes (synchro avec programmes.html)
+const PROGRAMMES_INFO = {
+    'masse-3j':   {name:'Prise de masse — 3 jours', cat:'masse', duree:'8 semaines', niveau:'Intermédiaire', seances:['Pecs / Triceps','Dos / Biceps','Jambes / Épaules']},
+    'masse-4j':   {name:'Prise de masse — 4 jours', cat:'masse', duree:'10 semaines', niveau:'Confirmé', seances:['Pecs','Dos','Jambes','Épaules / Bras']},
+    'masse-5j':   {name:'Prise de masse — 5 jours', cat:'masse', duree:'12 semaines', niveau:'Confirmé', seances:['Pecs','Dos','Jambes','Épaules','Bras']},
+    'deb-full-3j':{name:'Débutant — Full body', cat:'debutant', duree:'6 semaines', niveau:'Débutant', seances:['Corps complet A','Corps complet B','Corps complet C']},
+    'deb-2j':     {name:'Débutant — Remise en route', cat:'debutant', duree:'4 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps + gainage']},
+    'seche-full-3j':{name:'Perte de poids — Full body', cat:'seche', duree:'8 semaines', niveau:'Intermédiaire', seances:['Full body + cardio A','Full body + cardio B','Full body + cardio C']},
+    'seche-circuit-4j':{name:'Perte de poids — Circuits', cat:'seche', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut du corps','Bas du corps','Full body','Cardio + abdos']},
+    'maison-pdc-3j':{name:'Maison — Poids du corps', cat:'maison', duree:'6 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps','Full body + gainage']},
+    'maison-halteres-3j':{name:'Maison — Avec haltères', cat:'maison', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut du corps','Bas du corps','Full body']},
+    'salle-ppl-3j':{name:'Salle — Push / Pull / Legs', cat:'salle', duree:'10 semaines', niveau:'Intermédiaire', seances:['Push','Pull','Legs']},
+    'salle-half-4j':{name:'Salle — Half body', cat:'salle', duree:'10 semaines', niveau:'Intermédiaire', seances:['Haut','Bas','Haut','Bas']},
+    'salle-ppl-6j':{name:'Salle — PPL x2', cat:'salle', duree:'12 semaines', niveau:'Confirmé', seances:['Push','Pull','Legs','Push','Pull','Legs']},
+};
+
+// Étapes de base ; "materiel" est inséré dynamiquement si lieu = maison
+const BASE_STEPS = ['sexe','objectif','niveau','lieu','frequence','result'];
+let steps = [...BASE_STEPS];
+let current = 0;
+const answers = {};
+answers.materiel = []; // choix multiple
+
+function getSteps(){
+    // Reconstruit la liste selon le lieu choisi
+    if(answers.lieu === 'maison'){
+        return ['sexe','objectif','niveau','lieu','materiel','frequence','result'];
+    }
+    return ['sexe','objectif','niveau','lieu','frequence','result'];
+}
+
+function pick(el, q, val){
+    answers[q] = val;
+    el.parentNode.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function pickMulti(el, val){
+    // Choix multiple pour le matériel
+    el.classList.toggle('selected');
+    const idx = answers.materiel.indexOf(val);
+    if(idx >= 0) answers.materiel.splice(idx,1);
+    else answers.materiel.push(val);
+    // "Rien" est exclusif : si on le coche, on décoche les autres
+    if(val === 'rien' && el.classList.contains('selected')){
+        el.parentNode.querySelectorAll('.option').forEach(o => { if(o!==el) o.classList.remove('selected'); });
+        answers.materiel = ['rien'];
+    } else if(val !== 'rien' && el.classList.contains('selected')){
+        // décocher "Rien" si on choisit un vrai matériel
+        const rienEl = el.parentNode.querySelector('.option');
+        if(answers.materiel.includes('rien')){
+            answers.materiel = answers.materiel.filter(m => m!=='rien');
+            // retrouver et décocher l'option "rien" (la première)
+            const opts = el.parentNode.querySelectorAll('.option');
+            opts[0].classList.remove('selected');
+        }
+    }
+    document.getElementById('nextBtn').disabled = answers.materiel.length === 0;
+}
+
+function showStep(i){
+    steps = getSteps();
+    document.querySelectorAll('.q-step').forEach(s => s.classList.remove('active'));
+    const stepName = steps[i];
+    document.querySelector(`.q-step[data-q="${stepName}"]`).classList.add('active');
+    current = i;
+
+    const total = steps.length - 1; // sans le result
+    const isResult = stepName === 'result';
+    const pct = isResult ? 100 : ((i+1)/total*100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressTxt').textContent = isResult ? 'Terminé !' : `Question ${i+1} / ${total}`;
+    document.getElementById('qFooter').style.display = isResult ? 'none' : 'block';
+
+    if(!isResult){
+        const nextBtn = document.getElementById('nextBtn');
+        if(stepName === 'materiel'){
+            nextBtn.disabled = answers.materiel.length === 0;
+        } else {
+            nextBtn.disabled = !answers[stepName];
+        }
+        nextBtn.textContent = (i === total-1) ? 'Voir mon résultat' : 'Suivant';
+    }
+    window.scrollTo(0,0);
+}
+
+function nextStep(){
+    steps = getSteps();
+    if(current < steps.length - 1){
+        if(steps[current+1] === 'result') computeResult();
+        showStep(current + 1);
+    }
+}
+
+function goBack(){
+    if(current > 0){ showStep(current - 1); return false; }
+    return true;
+}
+
+function restart(){
+    Object.keys(answers).forEach(k => { if(k!=='materiel') delete answers[k]; });
+    answers.materiel = [];
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    steps = [...BASE_STEPS];
+    showStep(0);
+}
+
+function computeResult(){
+    const obj = answers.objectif, niv = answers.niveau, freq = answers.frequence, lieu = answers.lieu;
+    const jours = parseInt(freq); // 2 à 6
+
+    // Déterminer le programme recommandé
+    let progId;
+    if(lieu === 'maison'){
+        const aHalteres = answers.materiel.includes('halteres');
+        progId = aHalteres ? 'maison-halteres-3j' : 'maison-pdc-3j';
+    } else if(obj === 'masse'){
+        if(jours >= 5) progId = 'masse-5j';
+        else if(jours === 4) progId = 'masse-4j';
+        else progId = 'masse-3j';
+    } else if(obj === 'seche'){
+        progId = jours >= 4 ? 'seche-circuit-4j' : 'seche-full-3j';
+    } else { // forme
+        if(niv === 'debutant') progId = jours >= 3 ? 'deb-full-3j' : 'deb-2j';
+        else progId = jours >= 4 ? 'salle-half-4j' : 'salle-ppl-3j';
+    }
+
+    const prog = PROGRAMMES_INFO[progId];
+
+    // Descriptions courtes par objectif
+    let desc;
+    if(obj === 'masse') desc = 'Construis du muscle avec un programme structuré et une progression régulière sur les charges.';
+    else if(obj === 'seche') desc = 'Brûle des calories avec des séances dynamiques qui combinent musculation et cardio.';
+    else desc = 'Reprends en douceur avec des séances complètes et progressives pour tout le corps.';
+
+    let lieuLine = '';
+    if(lieu === 'maison'){
+        const matNoms = {halteres:'haltères', elastiques:'élastiques', barre:'barre de traction', rien:'poids du corps'};
+        const liste = answers.materiel.map(m => matNoms[m]).join(', ');
+        lieuLine = ` Adapté à ton matériel : ${liste}.`;
+    }
+
+    // Mettre à jour le bouton vers le bon programme
+    const btn = document.getElementById('btnVoirProg');
+    if(btn) btn.href = `programmes.html?cat=${prog.cat}&prog=${progId}`;
+
+    // Titre = nom exact du programme (pas de recalcul)
+    document.getElementById('resultName').textContent = prog.name;
+
+    // Récap personnalisé
+    const objTxt = obj === 'masse' ? 'prendre du muscle' : (obj === 'seche' ? 'perdre du poids' : 'te remettre en forme');
+    const lieuTxt = lieu === 'maison' ? 'à la maison' : 'en salle';
+    document.getElementById('resultRecap').textContent =
+        `Tu veux ${objTxt}, ${jours} jours par semaine, ${lieuTxt}.`;
+
+    // Description + infos réelles du programme
+    document.getElementById('rpDesc').textContent = desc + lieuLine;
+    document.getElementById('rpStats').innerHTML =
+        `<span><b>${prog.duree}</b><small>durée</small></span>
+         <span><b>${prog.niveau}</b><small>niveau</small></span>
+         <span><b>${prog.seances.length} séances</b><small>par semaine</small></span>`;
+
+    // Aperçu des séances (info utile en plus, pas de répétition)
+    const seancesEl = document.getElementById('rpSeances');
+    if(seancesEl){
+        seancesEl.innerHTML = '<div class="seances-title">Tes séances</div>' +
+            prog.seances.map((s,i) => `<div class="seance-line"><span class="sl-num">J${i+1}</span> ${s}</div>`).join('');
+    }
+}
+
+showStep(0);
+</script>
+</body>
+</html>
