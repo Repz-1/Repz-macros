@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REPZ — Connexion</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+    --orange:#FF6B35; --green:#047857; --bg:#f3f4f6; --card:#ffffff;
+    --dark:#1f2937; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px;
+}
+body {
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh; padding:16px;
+    display:flex; align-items:center; justify-content:center;
+}
+
+.auth-container {
+    background:var(--card); border-radius:var(--radius); padding:32px 24px;
+    max-width:400px; width:100%; box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
+
+.auth-header {
+    text-align:center; margin-bottom:32px;
+}
+
+.auth-logo {
+    width:120px; height:auto; margin:0 auto 16px; display:block;
+    filter:drop-shadow(0 4px 16px rgba(255,107,53,.18));
+}
+
+.auth-title {
+    font-size:24px; font-weight:800; margin-bottom:6px;
+}
+
+.auth-subtitle {
+    font-size:13px; color:var(--text-dim);
+}
+
+.auth-form {
+    display:none;
+}
+
+.auth-form.active {
+    display:block;
+}
+
+.form-group {
+    margin-bottom:16px;
+}
+
+.label {
+    display:block; font-size:13px; font-weight:700; margin-bottom:6px;
+}
+
+.input {
+    width:100%; padding:12px; border:1.5px solid var(--line); border-radius:12px;
+    font-size:15px; font-family:inherit;
+}
+
+.input:focus {
+    outline:none; border-color:var(--orange); background:#fff8f5;
+}
+
+.btn {
+    width:100%; padding:14px; border:none; border-radius:14px; font-size:15px;
+    font-weight:700; cursor:pointer; transition:all .15s;
+}
+
+.btn-primary {
+    background:var(--orange); color:#fff;
+}
+
+.btn-primary:active {
+    transform:scale(.98); opacity:.9;
+}
+
+.btn-secondary {
+    background:var(--green); color:#fff; margin-top:8px;
+}
+
+.btn-secondary:active {
+    transform:scale(.98); opacity:.9;
+}
+
+.btn-text {
+    background:none; color:var(--orange); font-weight:700; padding:0; text-align:center;
+}
+
+.btn-text:active {
+    opacity:.7;
+}
+
+.toggle-form {
+    text-align:center; margin-top:16px; font-size:13px; color:var(--text-dim);
+}
+
+.toggle-form a {
+    color:var(--orange); font-weight:700; text-decoration:none; cursor:pointer;
+}
+
+.error {
+    background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:16px;
+    font-size:13px; display:none;
+}
+
+.error.show {
+    display:block;
+}
+
+.success {
+    background:#f0fdf4; color:#166534; padding:12px; border-radius:8px; margin-bottom:16px;
+    font-size:13px; display:none;
+}
+
+.success.show {
+    display:block;
+}
+
+.security-questions {
+    font-size:13px;
+    margin-top:4px;
+    color:var(--text-dim);
+}
+</style>
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-header">
+        <img src="logo-repz-transparent.png" alt="REPZ" class="auth-logo">
+        <h1 class="auth-title">REPZ</h1>
+        <p class="auth-subtitle">Ton suivi nutrition & fitness</p>
+    </div>
+
+    <!-- FORM LOGIN -->
+    <form class="auth-form active" id="loginForm">
+        <div class="error" id="loginError"></div>
+        
+        <div class="form-group">
+            <label class="label">Email</label>
+            <input type="email" class="input" id="loginEmail" placeholder="ton@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Mot de passe</label>
+            <input type="password" class="input" id="loginPassword" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Se connecter</button>
+
+        <div class="toggle-form">
+            Pas de compte ? <a onclick="toggleForm('register')">Créer un compte</a>
+        </div>
+
+        <div class="toggle-form">
+            <a onclick="toggleForm('recovery')">Mot de passe oublié ?</a>
+        </div>
+    </form>
+
+    <!-- FORM REGISTER -->
+    <form class="auth-form" id="registerForm">
+        <div class="error" id="registerError"></div>
+
+        <div class="form-group">
+            <label class="label">Email</label>
+            <input type="email" class="input" id="registerEmail" placeholder="ton@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Mot de passe</label>
+            <input type="password" class="input" id="registerPassword" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Confirmer mot de passe</label>
+            <input type="password" class="input" id="registerPasswordConfirm" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Question secrète (pour récupération)</label>
+            <select class="input" id="securityQuestion" required>
+                <option value="">-- Choisis une question --</option>
+                <option value="fav_food">Quel est ton aliment favori ?</option>
+                <option value="fav_number">Ton nombre préféré ?</option>
+                <option value="first_pet">Nom de ton premier animal ?</option>
+                <option value="birth_city">Ville de naissance ?</option>
+                <option value="fav_sport">Ton sport préféré ?</option>
+            </select>
+            <div class="security-questions">
+                Questions communes pour ta sécurité
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Réponse</label>
+            <input type="text" class="input" id="securityAnswer" placeholder="Ta réponse" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer un compte</button>
+
+        <div class="toggle-form">
+            Déjà un compte ? <a onclick="toggleForm('login')">Se connecter</a>
+        </div>
+    </form>
+
+    <!-- FORM RECOVERY -->
+    <form class="auth-form" id="recoveryForm">
+        <div class="error" id="recoveryError"></div>
+        <div class="success" id="recoverySuccess"></div>
+
+        <div class="form-group">
+            <label class="label">Email</label>
+            <input type="email" class="input" id="recoveryEmail" placeholder="ton@email.com" required>
+        </div>
+
+        <div id="recoveryQuestionContainer" style="display:none;">
+            <div class="form-group">
+                <label class="label" id="recoveryQuestionLabel"></label>
+                <input type="text" class="input" id="recoveryAnswer" placeholder="Ta réponse">
+            </div>
+
+            <div class="form-group">
+                <label class="label">Nouveau mot de passe</label>
+                <input type="password" class="input" id="newPassword" placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Réinitialiser</button>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="verifyEmailBtn" onclick="verifyRecoveryEmail()">Vérifier email</button>
+
+        <div class="toggle-form">
+            <a onclick="toggleForm('login')">Retour à la connexion</a>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.0/crypto-js.min.js"></script>
+
+<script>
+// Vérifier si l'utilisateur est déjà connecté
+window.addEventListener('DOMContentLoaded', () => {
+    const currentUser = localStorage.getItem('currentUser');
+    if(currentUser) {
+        window.location.href = 'app.html';
+    }
+});
+
+function toggleForm(formName) {
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.getElementById(formName + 'Form').classList.add('active');
+    // Réinitialiser les erreurs
+    document.querySelectorAll('.error, .success').forEach(e => e.classList.remove('show'));
+}
+
+// SIMPLE HASH (pas bcrypt, mais suffisant pour localStorage)
+function hashPassword(password) {
+    return CryptoJS.SHA256(password + 'REPZ_SALT').toString();
+}
+
+// LOGIN
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const errorDiv = document.getElementById('loginError');
+    
+    const users = JSON.parse(localStorage.getItem('repz_users') || '{}');
+    const user = users[email];
+    
+    if(!user || user.password !== hashPassword(password)) {
+        errorDiv.textContent = 'Email ou mot de passe incorrect';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    localStorage.setItem('currentUser', email);
+    window.location.href = 'app.html';
+});
+
+// REGISTER
+document.getElementById('registerForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+    const question = document.getElementById('securityQuestion').value;
+    const answer = document.getElementById('securityAnswer').value;
+    const errorDiv = document.getElementById('registerError');
+    
+    if(password !== passwordConfirm) {
+        errorDiv.textContent = 'Les mots de passe ne correspondent pas';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    if(password.length < 6) {
+        errorDiv.textContent = 'Le mot de passe doit avoir au moins 6 caractères';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    const users = JSON.parse(localStorage.getItem('repz_users') || '{}');
+    
+    if(users[email]) {
+        errorDiv.textContent = 'Cet email est déjà utilisé';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    users[email] = {
+        password: hashPassword(password),
+        question: question,
+        answer: answer.toLowerCase()
+    };
+    
+    localStorage.setItem('repz_users', JSON.stringify(users));
+    localStorage.setItem('currentUser', email);
+    window.location.href = 'app.html';
+});
+
+// RECOVERY - Vérifier email
+function verifyRecoveryEmail() {
+    const email = document.getElementById('recoveryEmail').value;
+    const users = JSON.parse(localStorage.getItem('repz_users') || '{}');
+    const user = users[email];
+    const errorDiv = document.getElementById('recoveryError');
+    
+    if(!user) {
+        errorDiv.textContent = 'Email non trouvé';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    // Afficher la question secrète
+    const questionMap = {
+        'fav_food': 'Quel est ton aliment favori ?',
+        'fav_number': 'Ton nombre préféré ?',
+        'first_pet': 'Nom de ton premier animal ?',
+        'birth_city': 'Ville de naissance ?',
+        'fav_sport': 'Ton sport préféré ?'
+    };
+    
+    document.getElementById('recoveryQuestionLabel').textContent = questionMap[user.question] || 'Question secrète';
+    document.getElementById('recoveryQuestionContainer').style.display = 'block';
+    document.getElementById('verifyEmailBtn').style.display = 'none';
+    document.getElementById('recoveryEmail').disabled = true;
+}
+
+// RECOVERY - Réinitialiser password
+document.getElementById('recoveryForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('recoveryEmail').value;
+    const answer = document.getElementById('recoveryAnswer').value.toLowerCase();
+    const newPassword = document.getElementById('newPassword').value;
+    const errorDiv = document.getElementById('recoveryError');
+    const successDiv = document.getElementById('recoverySuccess');
+    
+    const users = JSON.parse(localStorage.getItem('repz_users') || '{}');
+    const user = users[email];
+    
+    if(!user || user.answer !== answer) {
+        errorDiv.textContent = 'Réponse incorrecte';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    if(newPassword.length < 6) {
+        errorDiv.textContent = 'Le mot de passe doit avoir au moins 6 caractères';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    user.password = hashPassword(newPassword);
+    localStorage.setItem('repz_users', JSON.stringify(users));
+    
+    successDiv.textContent = 'Mot de passe réinitialisé ! Redirection...';
+    successDiv.classList.add('show');
+    
+    setTimeout(() => {
+        localStorage.setItem('currentUser', email);
+        window.location.href = 'app.html';
+    }, 1500);
+});
+</script>
+
+</body>
+</html>
