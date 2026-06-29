@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REPZ — Training · Body Prep · Nutrition</title>
+<meta name="theme-color" content="#FF6B35">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="REPZ">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+    --orange:#FF6B35;
+    --orange-soft:#ff8556;
+    --bg:#f3f4f6;
+    --card:#ffffff;
+    --card-line:#e5e7eb;
+    --text:#1a1a1a;
+    --text-dim:#6b7280;
+    --radius:22px;
+}
+body {
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text);
+    min-height:100vh; overflow-x:hidden;
+}
+
+/* ===== TOP BAR ===== */
+.topbar {
+    display:flex; justify-content:flex-end; align-items:center;
+    padding:12px 20px;
+    background:#000000;
+}
+.login-link {
+    color:#ffffff; text-decoration:none; font-size:14px; font-weight:600;
+    padding:8px 16px; border-radius:30px; border:1px solid rgba(255,255,255,.3);
+    transition:all .2s;
+}
+.login-link:active { background:rgba(255,255,255,.1); color:#ffffff; }
+
+/* ===== HERO ===== */
+.hero {
+    text-align:center; padding:20px 24px 20px;
+    animation:fadeUp .5s ease-out both;
+}
+.hero-logo {
+    width:100%; max-width:170px; height:auto; margin:0 auto 16px;
+    display:block;
+    filter:drop-shadow(0 4px 16px rgba(255,107,53,.18));
+}
+.hero-tagline {
+    font-size:23px; font-weight:800; line-height:1.22; letter-spacing:-.02em;
+    margin-bottom:10px; max-width:330px; margin-left:auto; margin-right:auto;
+}
+.hero-tagline .accent { color:var(--orange); }
+.hero-desc {
+    font-size:14px; color:var(--text-dim); line-height:1.5;
+    max-width:300px; margin:0 auto;
+}
+.section-label {
+    max-width:480px; margin:8px auto 0; padding:0 24px;
+    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--text-dim);
+}
+
+/* ===== PORTAILS (signature) ===== */
+.portals {
+    display:flex; flex-direction:column; gap:14px;
+    padding:10px 20px 28px; max-width:480px; margin:0 auto;
+}
+.portal {
+    position:relative; display:flex; align-items:center; gap:16px;
+    background:linear-gradient(145deg,#ffffff,#fff4ee); border:1.5px solid #ffe0d0;
+    border-radius:var(--radius); padding:22px 20px;
+    text-decoration:none; color:var(--text);
+    box-shadow:0 8px 24px rgba(255,107,53,.10);
+    transition:transform .15s, border-color .2s;
+    animation:fadeUp .6s ease-out both;
+    overflow:hidden;
+}
+.portal::before {
+    content:''; position:absolute; left:0; top:20px; bottom:20px; width:4px;
+    background:var(--orange); border-radius:0 4px 4px 0;
+}
+.portal:nth-child(1){ animation-delay:.1s; }
+.portal:nth-child(2){ animation-delay:.2s; }
+.portal.active:active { transform:scale(.98); border-color:var(--orange); }
+.portal-icon {
+    width:54px; height:54px; flex-shrink:0; border-radius:16px;
+    display:flex; align-items:center; justify-content:center; font-size:28px;
+}
+.portal.active .portal-icon { background:rgba(255,107,53,.14); }
+.portal.soon .portal-icon { background:#f3f4f6; }
+.portal-text { flex:1; }
+.portal-title { font-size:18px; font-weight:700; }
+.portal-sub { font-size:13px; color:var(--text-dim); margin-top:3px; }
+.portal-arrow { color:var(--orange); font-size:22px; }
+.portal.soon { opacity:.65; }
+.portal.soon .portal-arrow { display:none; }
+.badge-soon {
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    background:#f3f4f6; color:var(--text-dim); padding:5px 10px; border-radius:20px;
+}
+
+/* ===== CTA principal ===== */
+.cta-wrap { padding:0 20px 40px; max-width:480px; margin:0 auto; }
+.cta-btn {
+    display:block; width:100%; text-align:center; text-decoration:none;
+    background:var(--orange); color:#fff; font-size:17px; font-weight:700;
+    padding:17px; border-radius:var(--radius);
+    box-shadow:0 8px 24px rgba(255,107,53,.3);
+    transition:transform .15s, background .2s;
+}
+.cta-btn:active { transform:scale(.98); background:#e85d2a; }
+.cta-green { background:#047857; box-shadow:0 8px 24px rgba(4,120,87,.3); }
+.cta-green:active { background:#065f46; }
+
+/* ===== SECTION FONCTIONNALITÉS ===== */
+.features {
+    background:#ffffff; border-radius:32px 32px 0 0;
+    padding:40px 24px 60px; margin-top:20px;
+    box-shadow:0 -4px 24px rgba(15,23,42,.04);
+}
+.features-title {
+    font-size:21px; font-weight:800; line-height:1.3; letter-spacing:-.02em;
+    text-align:center; margin-bottom:8px;
+}
+.features-title .accent { color:var(--orange); }
+.features-desc {
+    font-size:14px; color:var(--text-dim); text-align:center; line-height:1.6;
+    max-width:330px; margin:0 auto 32px;
+}
+.feature {
+    display:flex; gap:16px; align-items:flex-start;
+    padding:18px 0; border-bottom:1px solid var(--card-line);
+}
+.feature:last-child { border-bottom:none; }
+.feature-icon {
+    width:44px; height:44px; flex-shrink:0; border-radius:13px;
+    background:rgba(255,107,53,.12); color:var(--orange);
+    display:flex; align-items:center; justify-content:center; font-size:22px;
+}
+.feature-body h3 { font-size:16px; font-weight:700; margin-bottom:4px; }
+.feature-body p { font-size:13.5px; color:var(--text-dim); line-height:1.55; }
+
+/* ===== FOOTER ===== */
+.footer {
+    background:#ffffff; text-align:center; padding:10px 24px 36px;
+    color:var(--text-dim); font-size:12px;
+}
+.footer-logo { font-size:15px; font-weight:800; color:var(--orange); letter-spacing:.1em; margin-bottom:6px; }
+
+.splash-logo-only { animation:logoFadeOut .4s ease-out 1s forwards; }
+.splash-tips-only { animation:tipsFadeIn .4s ease-in 1s forwards; }
+.splash-tip { display:flex; align-items:center; justify-content:center; flex-direction:column; padding:24px; margin:0 auto; }
+.splash-line { width:60px; height:2px; background:var(--orange); margin:20px 0; border-radius:1px; }
+.splash-text { font-size:24px; font-weight:500; color:var(--text); line-height:1.5; letter-spacing:-0.02em; max-width:340px; text-align:center; }
+.splash-text .accent { color:var(--orange); font-weight:700; }
+
+@keyframes logoFadeOut {
+    from { opacity:1; }
+    to { opacity:0; }
+}
+@keyframes tipsFadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+@keyframes bodyFadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+@keyframes logoShow {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+@keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to { opacity:1; transform:translateY(0); }
+}
+@media (prefers-reduced-motion:reduce){
+    * { animation:none !important; }
+}
+/* Bouton astuce flottant (ampoule) */
+.tip-fab {
+    position:fixed; bottom:22px; right:22px; z-index:60;
+    width:58px; height:58px; border-radius:50%; border:none; cursor:pointer;
+    background:var(--orange); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 24px rgba(255,107,53,.4);
+    animation:tipPulse 2.5s ease-in-out infinite;
+    opacity:0.65;
+}
+.tip-fab:active { transform:scale(.92); }
+@keyframes tipPulse {
+    0%,100% { box-shadow:0 8px 24px rgba(255,107,53,.4); }
+    50% { box-shadow:0 8px 32px rgba(255,107,53,.65); }
+}
+
+/* Modale astuce (bulle transparente) */
+.tip-overlay {
+    position:fixed; inset:0; z-index:70; display:none;
+    align-items:center; justify-content:center; padding:24px;
+    background:rgba(15,23,42,.45); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.tip-overlay.show { display:flex; animation:fadeIn .25s ease; }
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+.tip-card {
+    background:rgba(255,255,255,.92); border-radius:24px; padding:28px 24px;
+    max-width:380px; width:100%; text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.3);
+    animation:tipPop .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes tipPop { from{opacity:0; transform:scale(.85) translateY(20px);} to{opacity:1; transform:scale(1) translateY(0);} }
+.tip-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.tip-badge {
+    background:rgba(255,107,53,.14); color:var(--orange);
+    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+    padding:6px 14px; border-radius:20px;
+}
+.tip-close {
+    width:30px; height:30px; border-radius:50%; border:none; cursor:pointer;
+    background:#f3f4f6; color:#6b7280; font-size:14px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+}
+.tip-icon { font-size:44px; margin:8px 0 16px; }
+.tip-text { font-size:16.5px; line-height:1.6; color:#1a1a1a; font-weight:500; }
+.tip-cat {
+    margin-top:18px; display:inline-block; font-size:12px; font-weight:700;
+    color:#6b7280; background:#f3f4f6; padding:6px 14px; border-radius:20px;
+}
+
+/* ===== SPLASH PAGE ===== */
+.splash-overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;
+}
+.splash-content {
+    text-align:center;
+    max-width:90%;
+}
+.splash-tip {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    padding:24px;
+    margin:0 auto;
+}
+.splash-line {
+    width:60px;
+    height:2px;
+    background:var(--orange);
+    margin:20px 0;
+    border-radius:1px;
+}
+.splash-text {
+    font-size:24px;
+    font-weight:500;
+    color:var(--text);
+    line-height:1.5;
+    letter-spacing:-0.02em;
+    max-width:340px;
+    text-align:center;
+}
+.splash-text .accent {
+    color:var(--orange);
+    font-weight:700;
+}
+@keyframes splashFadeOut {
+    from { opacity:1; }
+    to { opacity:0; pointer-events:none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- AUTH CHECK + FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+auth.onAuthStateChanged((user) => {
+    // Accès autorisé si connecté OU en mode invité
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(user) {
+        localStorage.removeItem('repz_invite');
+    } else if(!estInvite) {
+        window.location.href = 'index.html';
+    }
+});
+
+function logout() {
+    localStorage.removeItem('repz_invite');
+    auth.signOut().then(() => {
+        window.location.href = 'index.html';
+    });
+}
+</script>
+
+<!-- SPLASH : logo en fondu, une fois à l'ouverture -->
+<div id="splashOverlay" style="position:fixed; inset:0; background:#f3f4f6; display:flex; align-items:center; justify-content:center; z-index:99999; opacity:1;">
+    <img src="logo-repz-transparent.png" alt="REPZ" id="splashLogo" style="width:230px; height:auto; opacity:0; transition:opacity 0.8s ease;">
+</div>
+
+<script>
+(function(){
+    var overlay = document.getElementById('splashOverlay');
+    var logo = document.getElementById('splashLogo');
+
+    // Ne jouer qu'une fois par session (pas à chaque retour sur l'accueil)
+    if (sessionStorage.getItem('splashDone')) {
+        overlay.style.display = 'none';
+        return;
+    }
+    sessionStorage.setItem('splashDone', '1');
+
+    // Fondu d'apparition du logo
+    requestAnimationFrame(function(){
+        logo.style.opacity = '1';
+    });
+
+    // Après 2,2s : fondu de disparition de tout l'overlay
+    setTimeout(function(){
+        overlay.style.transition = 'opacity 0.6s ease';
+        overlay.style.opacity = '0';
+        setTimeout(function(){ overlay.style.display = 'none'; }, 600);
+    }, 2200);
+})();
+</script>
+
+<div class="topbar">
+    <a href="#" class="login-link" onclick="logout(); return false;">Déconnexion</a>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+    <img src="logo-repz-transparent.png" alt="REPZ" class="hero-logo">
+    <h1 class="hero-tagline">Une bonne santé, c'est d'abord une <span class="accent">bonne alimentation.</span></h1>
+    <p class="hero-desc">Tes repas, tes entraînements, tes objectifs — au même endroit.</p>
+</header>
+
+<!-- ACCÈS RAPIDE -->
+<div class="section-label">Accès rapide</div>
+
+<!-- PORTAILS -->
+<div class="portals">
+    <a href="app.html" class="portal active">
+        <div class="portal-icon">🍽️</div>
+        <div class="portal-text">
+            <div class="portal-title">Nutrition</div>
+            <div class="portal-sub">Calculateur de macros & suivi des repas</div>
+        </div>
+        <div class="portal-arrow">→</div>
+    </a>
+    <a href="entrainements.html" class="portal active">
+        <div class="portal-icon">🏋️</div>
+        <div class="portal-text">
+            <div class="portal-title">Entraînements</div>
+            <div class="portal-sub">Exercices & programmes</div>
+        </div>
+        <div class="portal-arrow">→</div>
+    </a>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+    <a href="plans.html" class="cta-btn cta-green">Explorer REPZ</a>
+</div>
+
+<!-- FONCTIONNALITÉS -->
+<section class="features">
+    <h2 class="features-title">Consignez ce que vous mangez, <span class="accent">simplement.</span></h2>
+    <p class="features-desc">Analysez vos calories et vos macros, comparez les portions et voyez comment chaque repas sert vos objectifs.</p>
+
+    <div class="feature">
+        <div class="feature-icon">📊</div>
+        <div class="feature-body">
+            <h3>Analyse des macros</h3>
+            <p>Calories, protéines, glucides et lipides calculés automatiquement pour chaque repas.</p>
+        </div>
+    </div>
+    <div class="feature">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-body">
+            <h3>Objectifs sur mesure</h3>
+            <p>Définissez votre cible calorique et suivez votre progression jour après jour.</p>
+        </div>
+    </div>
+    <div class="feature">
+        <div class="feature-icon">📈</div>
+        <div class="feature-body">
+            <h3>Suivi du poids</h3>
+            <p>Visualisez votre évolution et ajustez votre alimentation en conséquence.</p>
+        </div>
+    </div>
+    <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-body">
+            <h3>Idées de repas</h3>
+            <p>Des suggestions adaptées à ce qu'il vous reste à manger dans la journée.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Bouton astuce du jour (ampoule) -->
+<button class="tip-fab" onclick="openTip()" aria-label="Astuce du jour">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18h6"/><path d="M10 22h4"/>
+        <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+    </svg>
+</button>
+
+<!-- Modale astuce -->
+<div class="tip-overlay" id="tipOverlay" onclick="if(event.target===this)closeTip()">
+    <div class="tip-card">
+        <div class="tip-head">
+            <span class="tip-badge" id="tipBadge">Astuce du jour</span>
+            <button class="tip-close" onclick="closeTip()" aria-label="Fermer">✕</button>
+        </div>
+        <div class="tip-icon">💡</div>
+        <div class="tip-text" id="tipText"></div>
+        <div class="tip-cat" id="tipCat"></div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-logo">REPZ</div>
+    Training · Body Prep · Nutrition
+</footer>
+
+<script>
+const TIPS = [
+    {t:"Bois 500 ml d'eau dès le réveil (avec un peu de citron ou sel). Après 7-8 h sans boire, tu relances ton métabolisme et combats la déshydratation.", c:"Nutrition"},
+    {t:"Protéines : vise 1,6 à 2,2 g par kg de poids corporel selon ton objectif. Au-delà, le surplus apporte peu.", c:"Nutrition"},
+    {t:"Répartis tes protéines sur 3 à 5 repas par jour pour mieux stimuler la synthèse musculaire toute la journée.", c:"Nutrition"},
+    {t:"Un déficit calorique de 300-500 kcal/jour suffit pour perdre du gras sans perdre trop de muscle.", c:"Nutrition"},
+    {t:"Vise 25-38 g de fibres par jour (légumes, avoine, légumineuses, graines) pour la satiété et une bonne digestion.", c:"Nutrition"},
+    {t:"Les glucides ne font pas grossir : c'est l'excès de calories total. Consomme-les autour de l'entraînement pour l'énergie.", c:"Nutrition"},
+    {t:"Fromage blanc 0-20 % ou skyr avant de dormir : caséine lente idéale pour la récupération nocturne.", c:"Nutrition"},
+    {t:"Les œufs entiers sont excellents : le jaune contient la plupart des vitamines et nutriments.", c:"Nutrition"},
+    {t:"Prépare tes repas à l'avance (meal prep) le dimanche pour mieux manger toute la semaine.", c:"Nutrition"},
+    {t:"Garde toujours une collation protéinée (skyr, œufs durs, shake, amandes + yaourt grec) pour éviter les mauvais choix.", c:"Nutrition"},
+    {t:"Mange lentement et en pleine conscience (20-30 min par repas) pour mieux digérer et moins manger.", c:"Nutrition"},
+    {t:"Priorise les aliments peu transformés (règle 80/20) pour plus de nutriments et de satiété.", c:"Nutrition"},
+    {t:"Hydratation totale : 3-4 litres par jour minimum + 500 ml par heure d'entraînement.", c:"Nutrition"},
+    {t:"Ne crains pas le sel et les électrolytes si tu transpires beaucoup : ils sont essentiels à la performance.", c:"Nutrition"},
+    {t:"Fais vérifier ta vitamine D (dosage sanguin). La carence est très courante et nuit à la testostérone et à la récupération.", c:"Santé"},
+    {t:"Consomme des oméga-3 (poissons gras ou complément) pour leurs effets anti-inflammatoires et sur la santé articulaire.", c:"Santé"},
+    {t:"Prends un repas protéiné + glucides dans les 1-2 h après l'entraînement pour optimiser la récupération.", c:"Nutrition"},
+    {t:"Échauffe-toi toujours 5-10 min (cardio léger + mobilité + séries légères) avant de soulever lourd.", c:"Entraînement"},
+    {t:"Surcharge progressive : augmente régulièrement poids, reps, séries ou diminue le repos pour progresser.", c:"Entraînement"},
+    {t:"Ne saute pas les jambes : squats, soulevés de terre et variantes libèrent le plus d'hormones de croissance.", c:"Entraînement"},
+    {t:"Filme-toi ou utilise un miroir pour vérifier ta technique (la bonne forme = plus de gains et moins de blessures).", c:"Entraînement"},
+    {t:"Travaille en amplitude complète du mouvement : une rep complète est généralement plus efficace.", c:"Entraînement"},
+    {t:"Respire correctement : expire sur l'effort, inspire sur le retour. Sur gros lifts, une Valsalva contrôlée peut aider.", c:"Entraînement"},
+    {t:"Temps de repos : 60-90 s pour l'hypertrophie, 2-3 min pour la force, 3-5 min pour les gros lifts.", c:"Entraînement"},
+    {t:"Bois pendant ta séance : même une légère déshydratation réduit force et concentration.", c:"Entraînement"},
+    {t:"Entraîne chaque groupe musculaire 2-3 fois par semaine (meilleur que une seule fois pour la plupart).", c:"Entraînement"},
+    {t:"Change d'exercices tous les 6-12 semaines pour éviter les plateaux et les blessures.", c:"Entraînement"},
+    {t:"Inclus du travail unilatéral (fentes, row unilatéral…) pour corriger les déséquilibres.", c:"Entraînement"},
+    {t:"Fais 2-3 séances de cardio zone 2 par semaine pour la santé cardiaque et la récupération.", c:"Entraînement"},
+    {t:"Travaille ta mobilité 10 min par jour (épaules, hanches, chevilles).", c:"Entraînement"},
+    {t:"Prévois un deload (semaine allégée) toutes les 6-10 semaines.", c:"Récup"},
+    {t:"Dors 7-9 h par nuit : le sommeil est le meilleur outil de récupération et de croissance musculaire.", c:"Récup"},
+    {t:"Les jours de repos font partie de l'entraînement. Prends-en 1 à 2 par semaine.", c:"Récup"},
+    {t:"Récupération active : marche, étirements légers ou yoga les jours off.", c:"Récup"},
+    {t:"Gère ton stress (méditation, respiration, promenades) : le cortisol élevé bloque les progrès.", c:"Récup"},
+    {t:"Utilise foam roller, massage ou percuteur pour réduire les courbatures.", c:"Récup"},
+    {t:"Essaie les bains froids ou contrastés après les grosses séances (modérément).", c:"Récup"},
+    {t:"Suis ta récupération (sommeil, HRV, énergie, fréquence cardiaque au repos).", c:"Récup"},
+    {t:"Prends protéines + glucides post-entraînement si tes séances sont longues ou à jeun.", c:"Nutrition"},
+    {t:"La régularité bat l'intensité : mieux vaut 3-4 séances correctes par semaine pendant des années.", c:"Mindset"},
+    {t:"Fixe des objectifs SMART (spécifiques, mesurables, atteignables, pertinents, temporels).", c:"Mindset"},
+    {t:"Ne compare pas ta progression à celle des autres. Seul adversaire : toi d'hier.", c:"Mindset"},
+    {t:"Prends des photos et mesures tous les 4-6 semaines. La balance ment souvent.", c:"Mindset"},
+    {t:"Célèbre les petites victoires pour garder la motivation.", c:"Mindset"},
+    {t:"Routine matinale : lumière naturelle, mouvement et hydratation.", c:"Mindset"},
+    {t:"Limite l'alcool : il perturbe le sommeil et la récupération.", c:"Santé"},
+    {t:"Marche 8 000 à 12 000 pas par jour : un des meilleurs hacks santé.", c:"Santé"},
+    {t:"Apprends à différencier douleur articulaire et courbatures musculaires.", c:"Santé"},
+    {t:"Sois patient : les vrais résultats arrivent après 6-24 mois de constance.", c:"Mindset"},
+    {t:"Éduque-toi continuellement avec des sources fiables.", c:"Mindset"},
+    {t:"Entraîne-toi avec des amis ou rejoins une communauté pour plus de régularité.", c:"Mindset"},
+    {t:"Sois flexible : aie un plan B quand la vie s'en mêle.", c:"Mindset"},
+    {t:"Priorise ta santé globale (thyroïde, intestin, sommeil) avant la performance.", c:"Santé"},
+    {t:"Choisis des activités que tu aimes pour durer dans le temps.", c:"Mindset"},
+    {t:"Tiens un journal d'entraînement (séances, poids, sensations).", c:"Mindset"},
+    {t:"Bulking : phase de surplus calorique pour prendre du muscle (et un peu de gras).", c:"Lexique"},
+    {t:"Cutting : phase de déficit pour perdre du gras tout en gardant le muscle.", c:"Lexique"},
+    {t:"Lean Bulk : bulking propre avec surplus modéré (200-400 kcal).", c:"Lexique"},
+    {t:"Dirty Bulk : surplus important avec beaucoup de junk food.", c:"Lexique"},
+    {t:"Recomp : recomposition corporelle (perdre du gras et gagner du muscle simultanément).", c:"Lexique"},
+    {t:"Hypertrophy : augmentation de la taille des muscles.", c:"Lexique"},
+    {t:"Progressive Overload : surcharge progressive (clé des gains).", c:"Lexique"},
+    {t:"PR : record personnel.", c:"Lexique"},
+    {t:"1RM : charge maximale pour une répétition.", c:"Lexique"},
+    {t:"Reps : répétitions.", c:"Lexique"},
+    {t:"Sets : séries.", c:"Lexique"},
+    {t:"Compound movements : exercices multi-articulaires (squat, deadlift, bench…).", c:"Lexique"},
+    {t:"Isolation exercises : exercices qui isolent un muscle.", c:"Lexique"},
+    {t:"Bro Split : programme par groupe musculaire (une fois par semaine).", c:"Lexique"},
+    {t:"PPL (Push/Pull/Legs) : programme très populaire sur 3-6 jours.", c:"Lexique"},
+    {t:"DOMS : courbatures retardées (24-48 h après).", c:"Lexique"},
+    {t:"Pump : gonflement musculaire pendant l'entraînement.", c:"Lexique"},
+    {t:"Mind-Muscle Connection : concentration maximale sur le muscle travaillé.", c:"Lexique"},
+    {t:"Failure : aller jusqu'à l'échec musculaire.", c:"Lexique"},
+    {t:"RIR : reps en réserve.", c:"Lexique"},
+    {t:"AMRAP : maximum de reps possibles.", c:"Lexique"},
+    {t:"Drop Set : baisser le poids immédiatement et continuer.", c:"Lexique"},
+    {t:"Superset : enchaîner deux exercices sans repos.", c:"Lexique"},
+    {t:"Giant Set : superset de 3 exercices ou plus.", c:"Lexique"},
+    {t:"Deload : semaine de récupération allégée.", c:"Lexique"},
+    {t:"Volume : quantité totale de travail (séries × reps × charge).", c:"Lexique"},
+    {t:"Intensity : intensité de l'effort.", c:"Lexique"},
+    {t:"RPE : échelle d'effort perçu (1-10).", c:"Lexique"},
+    {t:"Form : technique d'exécution.", c:"Lexique"},
+    {t:"Cheat Reps : reps avec technique un peu relâchée.", c:"Lexique"},
+    {t:"Spotter : personne qui t'assure sur les exercices lourds.", c:"Lexique"},
+    {t:"Plateau : stagnation des progrès.", c:"Lexique"},
+    {t:"Newbie Gains : gains rapides des débutants.", c:"Lexique"},
+    {t:"Natty : naturel (sans dopage).", c:"Lexique"},
+    {t:"Juice / PEDs : produits dopants.", c:"Lexique"},
+    {t:"Shredded / Ripped : très sec et défini.", c:"Lexique"},
+    {t:"Refeed : journée ou repas riche en glucides pour recharger.", c:"Lexique"},
+    {t:"Track tes macros avec une application au début.", c:"Mindset"},
+    {t:"Calorie cycling : alterner jours hauts et bas en calories.", c:"Lexique"},
+    {t:"Reverse Diet : réaugmenter progressivement les calories après une sèche.", c:"Lexique"},
+    {t:"Intra-workout : boisson pendant l'entraînement pour les longues séances.", c:"Lexique"},
+    {t:"Amuse-toi et reste constant : le plus important reste la régularité sur le long terme.", c:"Mindset"},
+];
+
+function getTodayTip(){
+    // Une astuce par jour, basée sur le numéro du jour dans l'année
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now - start) / 86400000);
+    return TIPS[dayOfYear % TIPS.length];
+}
+
+function openTip(){
+    const tip = getTodayTip();
+    document.getElementById('tipText').textContent = tip.t;
+    document.getElementById('tipCat').textContent = tip.c;
+    document.getElementById('tipOverlay').classList.add('show');
+}
+function closeTip(){
+    document.getElementById('tipOverlay').classList.remove('show');
+}
+
+// ===== SPLASH TIPS =====
+const SPLASH_TIPS = [
+    'Une bonne santé, c\'est d\'abord une <span class="accent">bonne alimentation.</span>',
+    'Savais-tu que ? <span class="accent">1g de protéine</span> = 4 kcal, contre 9 kcal pour les lipides.',
+    'Les <span class="accent">protéines</span> reconstituent tes muscles après l\'entraînement.',
+    '<span class="accent">L\'hydratation</span> améliore la force et la performance de 10-15%.',
+    'Un <span class="accent">déficit calorique</span> de 500 kcal = 0.5kg perdu par semaine.',
+    'Savais-tu que ? Tes muscles se <span class="accent">reconstruisent pendant le repos,</span> pas à la salle.',
+    'Un <span class="accent">sommeil</span> de 7-9h augmente ta prise de masse de 30%.',
+    'Les <span class="accent">glucides</span> ne te rendent pas gras, c\'est l\'excédent calorique.',
+    'Savais-tu que ? <span class="accent">La testostérone</span> est régulée par le sommeil et l\'alimentation.',
+    'Une <span class="accent">progressivité</span> de +5% chaque semaine = 50% plus fort en 1 an.',
+    'Les <span class="accent">acides aminés</span> BCAA sont essentiels pour la synthèse musculaire.',
+    '<span class="accent">L\'isolation</span> musculaire, c\'est 20% du travail, la force c\'est 80%.',
+    'Savais-tu que ? <span class="accent">La créatine</span> augmente les performances de 5-15%.',
+    'Un <span class="accent">apport de 1.6-2.2g</span> de protéine par kg = optimal pour la muscu.',
+    'Les <span class="accent">lipides</span> sont essentiels pour la testostérone et l\'énergie.',
+    'Savais-tu que ? <span class="accent">Manger plus</span> c\'est aussi une compétence à développer.',
+    'Une <span class="accent">séance courte</span> (45 min) peut être plus efficace qu\'une longue.',
+    'Les <span class="accent">exercices composés</span> (squat, bench) = 80% de ta progression.',
+    'Savais-tu que ? Tu peux prendre <span class="accent">5kg de muscle</span> en 12 semaines avec un bon programme.',
+    'La <span class="accent">forme</span> compte plus que le poids soulevé.',
+    'Un <span class="accent">excédent calorique</span> de 300-500 kcal = prise de masse optimale.',
+    'Savais-tu que ? <span class="accent">40% de ta force</span> vient du système nerveux, pas du muscle.',
+    'Les <span class="accent">carbs post-workout</span> refont ton glycogène musculaire.',
+    'Un <span class="accent">repos</span> de 48h par groupe musculaire = hypertrophie maximale.',
+    'Savais-tu que ? Les <span class="accent">fruits secs</span> sont 5x plus caloriques que frais.',
+    'La <span class="accent">génétique</span> c\'est 30%, le travail c\'est 70%.',
+    '<span class="accent">La discipline</span> c\'est choisir ce que tu veux par rapport à ce que tu veux maintenant.',
+    'Savais-tu que ? <span class="accent">1 verre d\'alcool</span> réduit ta synthèse protéique de 37%.',
+    'Les <span class="accent">étirements</span> réduisent le risque de blessure de 50%.',
+    'Un <span class="accent">échauffement</span> de 5 min augmente ta performance de 10%.',
+    'Savais-tu que ? <span class="accent">Le cortisol</span> (stress) détruit le muscle.',
+    'La <span class="accent">patience</span> est l\'allié du bodybuilder. Zéro raccourcis.',
+    '<span class="accent">Progresser</span> c\'est être constant, pas parfait.',
+    'Savais-tu que ? <span class="accent">Les oeufs</span> contiennent la protéine la plus complète.',
+    'Un <span class="accent">whey shake</span> après l\'entraînement ≠ nécessaire si tu manges bien.',
+    'Les <span class="accent">fibres</span> améliorent ta digestion et tes hormones.',
+    'Savais-tu que ? <span class="accent">Le café</span> améliore la force de 5-7%.',
+    '<span class="accent">Ton mental</span> est aussi important que ton programme.',
+    'Un <span class="accent">journal</span> de nutrition = visibilité sur tes progrès.',
+    'Savais-tu que ? <span class="accent">L\'insuline</span> est anabolisante, pas ennemie.',
+    'Les <span class="accent">fruits rouges</span> sont anti-inflammatoires.',
+    'Un <span class="accent">déficit calorique</span> trop agressif = perte musculaire.',
+    'Savais-tu que ? <span class="accent">40-50% de ta dépense</span> c\'est le repos, pas le sport.',
+    'La <span class="accent">flexibilité</span> réduit le risque d\'asymétrie.',
+    '<span class="accent">Les petites actions</span> quotidiennes font les grands résultats.',
+    'Savais-tu que ? <span class="accent">La banane</span> contient du potassium = anti-crampes.',
+    'Un <span class="accent">objectif</span> sans plan c\'est juste un vœu.',
+    'Les <span class="accent">vitamines</span> optimisent ta récupération.',
+    'Savais-tu que ? <span class="accent">L\'oxyde nitrique</span> améliore le pump et la circulation.',
+    '<span class="accent">Pas de raccourci,</span> juste du travail et de la consistance.',
+    'Un <span class="accent">plat équilibré</span> = protéine + carbs + graisse + légume.',
+    'Savais-tu que ? <span class="accent">Le riz</span> est moins dense que les pâtes (moins de kcal).',
+    'La <span class="accent">régularité</span> > l\'intensité occasionnelle.',
+    'Les <span class="accent">féculents</span> ne sont pas tes ennemis, l\'excédent l\'est.',
+    'Savais-tu que ? <span class="accent">Le poulet</span> est la protéine la plus lean (3.6g lipides).',
+    'Un <span class="accent">corps symétrique</span> demande 2x plus d\'attention au bras faible.',
+    'Les <span class="accent">micro-nutriments</span> sont aussi importants que les macro.',
+    'Savais-tu que ? <span class="accent">L\'eau</span> = transporteur des nutriments.',
+    '<span class="accent">Manges</span> plus, soulèves plus, dors plus, deviens plus grand.',
+    'Un <span class="accent">split PPL</span> = 6 jours, permet une récupération optimale.',
+    'Savais-tu que ? <span class="accent">Le jeûne intermittent</span> peut aider si tu manges assez.',
+    'Les <span class="accent">oméga-3</span> réduisent l\'inflammation de 30%.',
+    'Un <span class="accent">surplus</span> intelligent > surplus random.',
+    'Savais-tu que ? <span class="accent">Le stress</span> augmente le cortisol = catabolisme.',
+    'La <span class="accent">méditation</span> améliore ta concentration à la salle.',
+    'Les <span class="accent">étirements</span> dysfonctionnels réduisent la force.',
+    'Savais-tu que ? <span class="accent">Le VO2 max</span> s\'améliore en 3-4 semaines.',
+    'Un <span class="accent">échauffement</span> articulaire > échauffement cardio.',
+    'Les <span class="accent">supersets</span> réduisent ton temps de séance de 30%.',
+    'Savais-tu que ? <span class="accent">La pump</span> n\'est pas un bon indicateur de croissance.',
+    '<span class="accent">Ton miroir</span> est plus fiable que la balance.',
+    'Un <span class="accent">compteur</span> de calories = tool utile, pas dogme.',
+    'Savais-tu que ? <span class="accent">Les légumes</span> = zéro impact calorique + santé.',
+    'Les <span class="accent">poids libres</span> recrutent plus de stabilisateurs.',
+    'Un <span class="accent">repos active</span> (marche) améliore la récupération.',
+    'Savais-tu que ? <span class="accent">La température</span> affecte tes hormones.',
+    '<span class="accent">La comparaison</span> est le vol de ta joie.',
+    'Les <span class="accent">drops</span> et <span class="accent">rest-pause</span> augmentent l\'intensité.',
+    'Savais-tu que ? <span class="accent">Le miel</span> = carbs rapides post-workout.',
+    'Un <span class="accent">déséquilibre</span> calorique de 100 kcal = 5kg/an.',
+    'Les <span class="accent">photos</span> tous les mois montrent ta vraie progression.',
+    'Savais-tu que ? <span class="accent">L\'amidonnerie</span> (riz blanc) refait vite le glycogène.',
+    '<span class="accent">L\'adaptabilité</span> c\'est apprendre de ses erreurs.',
+    'Un <span class="accent">surplus</span> de 300 kcal = 0.25kg gagné par semaine.',
+    'Savais-tu que ? <span class="accent">La force</span> s\'améliore avant le muscle (semaines 1-4).',
+    'Les <span class="accent">pulsations</span> (tempo slow) = plus de tension mécanique.',
+    'Un <span class="accent">plan</span> imparfait > pas de plan.',
+    'Savais-tu que ? <span class="accent">Le lactate</span> n\'est pas responsable des courbatures.',
+    '<span class="accent">Ton objectif</span> doit être spécifique, mesurable, réaliste.',
+    'Les <span class="accent">calories liquides</span> ne te rassasient pas = trop facile à dépasser.',
+    'Savais-tu que ? <span class="accent">Le repos</span> augmente ta testostérone libre.',
+    'Un <span class="accent">coach</span> = investment, pas dépense.',
+];
+
+</script>
+
+</body>
+</html>
