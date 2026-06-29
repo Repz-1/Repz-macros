@@ -1,0 +1,2330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculatrice Macros - REPZ</title>
+<meta name="theme-color" content="#FF6B35">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="REPZ Macros">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+/* Fondu discret de la page à l'ouverture */
+@keyframes pageFadeIn {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+.container { animation:pageFadeIn .45s ease-out both; }
+
+
+body {
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:#f7f8fa;
+    padding:16px; min-height:100vh; color:#1a1a1a;
+}
+.container { max-width:900px; margin:0 auto; padding-bottom:90px; }
+.logo-container {
+    text-align:center; margin-bottom:10px; margin-top:2px;
+    padding:2px 16px;
+}
+.app-logo { width:100%; max-width:230px; height:auto; display:block; margin:0 auto;
+    filter:drop-shadow(0 4px 16px rgba(255,107,53,.15)); }
+.app-back-btn {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:42px; height:42px;
+    background:#ffffff; border:1.5px solid #e5e7eb; border-radius:50%;
+    color:#1a1a1a; text-decoration:none; cursor:pointer; margin-bottom:14px;
+}
+.app-back-btn svg { width:22px; height:22px; }
+.app-back-btn:active { background:#f3f4f6; transform:scale(.94); }
+h1 { font-size:26px; font-weight:700; text-align:center; }
+.date-banner {
+    text-align:left; color:#1a1a1a; font-size:13px; font-weight:600;
+    margin-bottom:18px; margin-left:2px; text-transform:capitalize;
+}
+
+/* OBJECTIF */
+.goal-card {
+    background:#1f2937; color:white; border-radius:20px;
+    padding:20px; margin-bottom:16px;
+}
+.goal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.goal-top h2 { font-size:15px; font-weight:600; color:#FF6B35; }
+.goal-edit { font-size:12px; color:#cbd5e1; background:#374151; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
+.goal-current { font-size:32px; font-weight:800; }
+.goal-current span { font-size:16px; color:#94a3b8; font-weight:500; }
+.progress-track { background:#374151; border-radius:10px; height:14px; margin:12px 0 6px; overflow:hidden; }
+.progress-fill { background:linear-gradient(90deg,#FF6B35,#ff9068); height:100%; border-radius:10px; transition:width .3s; }
+.progress-label { font-size:18px; color:#FF6B35; font-weight:700; margin-top:2px; }
+.goal-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
+.goal-macro { background:#374151; border-radius:8px; padding:10px; text-align:center; }
+.goal-macro .gm-label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
+.goal-macro .gm-val { font-size:16px; font-weight:700; margin-top:2px; }
+.goal-macro .gm-target { font-size:11px; color:#64748b; }
+
+/* RECIPES */
+.recipe-card {
+    position:relative; background:linear-gradient(145deg,#ffffff,#fff4ee); border:1.5px solid #ffe0d0; border-radius:20px; padding:18px; margin-bottom:16px; overflow:hidden;
+    box-shadow:0 4px 20px rgba(15,23,42,.06); border-left:4px solid #FF6B35;
+}
+.recipe-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:8px; }
+.recipe-header input.recipe-name {
+    font-size:16px; font-weight:600; border:none; background:transparent;
+    color:#1a1a1a; flex:1; padding:4px;
+}
+.recipe-header input.recipe-name:focus { outline:none; background:#f1f5f9; border-radius:4px; }
+.recipe-mult-badge { font-size:12px; background:#fff1e0; color:#c2410c; padding:4px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
+
+.ing-row {
+    background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:8px;
+    display:grid; grid-template-columns:1fr 78px 110px 34px; gap:8px; align-items:center;
+}
+@media (max-width:768px){
+    .ing-row { grid-template-columns:1fr 64px 1fr 30px; gap:6px; }
+}
+.ing-name { font-weight:600; font-size:14px; }
+.ing-base { font-size:11px; color:#64748b; margin-top:2px; }
+.ing-input { display:flex; align-items:center; gap:4px; }
+.ing-input input {
+    width:100%; padding:8px 4px; border:2px solid #3b82f6; border-radius:6px;
+    font-size:15px; font-weight:700; text-align:center;
+}
+.ing-input input:focus { outline:none; border-color:#2563eb; }
+.ing-unit { font-weight:600; font-size:12px; }
+.ing-macros {
+    text-align:center; line-height:1.3;
+}
+.ing-kcal { font-size:14px; font-weight:800; color:#1a1a1a; }
+.ing-sub {
+    font-size:10px; font-weight:600; color:#16a34a;
+    background:#f0fdf4; border-radius:5px; padding:2px 4px; margin-top:3px;
+    display:inline-block;
+}
+.del-btn { background:none; color:#fca5a5; border:none; border-radius:6px; padding:4px 8px; cursor:pointer; font-size:15px; font-weight:600; line-height:1; }
+.del-btn:active { color:#ef4444; background:#fef2f2; }
+
+.add-ing {
+    position:relative; margin-top:10px;
+}
+.add-ing input {
+    width:100%; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px;
+    font-size:14px; background:#f7f8fa; transition:border-color .15s, background .15s;
+}
+.add-ing input:focus { outline:none; border-color:#FF6B35; background:#fff; }
+.search-results {
+    position:absolute; top:100%; left:0; right:0; z-index:50;
+    background:white; border:1px solid #cbd5e1; border-radius:8px;
+    margin-top:4px; max-height:240px; overflow-y:auto;
+    box-shadow:0 4px 12px rgba(0,0,0,.15); display:none;
+}
+.search-results.show { display:block; }
+.search-item {
+    padding:11px 14px; cursor:pointer; font-size:14px;
+    border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;
+}
+.search-item:last-child { border-bottom:none; }
+.search-item:active, .search-item:hover { background:#eff6ff; }
+.search-item .si-kcal { font-size:12px; color:#64748b; }
+.search-none { padding:14px; text-align:center; color:#94a3b8; font-size:13px; }
+
+.recipe-total {
+    background:#fff8f0; border:1px solid #ffe0bd;
+    border-radius:10px; padding:12px; margin-top:12px; font-size:14px; font-weight:700; color:#c2410c;
+}
+.recipe-total .rt-mult { color:#9a3412; background:#ffedd5; padding:6px 8px; border-radius:6px; margin-top:6px; font-size:13px; }
+
+.recipe-actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+.recipe-actions button { padding:9px 12px; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:13px; }
+.btn-mult { background:#fff1e0; color:#c2410c; }
+.btn-del-recipe { background:#f8fafc; color:#94a3b8; border:1px solid #e2e8f0; flex:1; }
+.btn-del-recipe:active { background:#fee2e2; color:#b91c1c; }
+.mult-input { width:54px; padding:9px; border:1px solid #e2e8f0; border-radius:8px; text-align:center; font-weight:600; }
+
+.add-recipe-btn {
+    width:100%; background:#FF6B35; color:white; padding:14px; border:none;
+    border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(255,140,0,.25);
+}
+.add-recipe-btn:active { background:#E85D2A; }
+
+/* BOUTON FLOTTANT (FAB) */
+.fab {
+    position:fixed; bottom:24px; right:16px; z-index:80;
+    display:flex; align-items:center; gap:5px;
+    background:#FF6B35; color:white; border:none;
+    padding:12px 16px; border-radius:30px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(255,140,0,.4);
+    font-size:14px; font-weight:700;
+    opacity:.72;
+    transition:transform .15s, opacity .15s, box-shadow .15s;
+}
+.fab:hover { opacity:1; }
+.fab:active { transform:scale(.94); opacity:1; background:#E85D2A; box-shadow:0 4px 16px rgba(255,140,0,.5); }
+.fab-plus { font-size:18px; line-height:1; }
+.fab-label { font-size:13px; }
+@media (max-width:480px){
+    .fab { padding:12px 15px; bottom:20px; right:14px; }
+}
+
+/* ===== COMPTEUR D'EAU ===== */
+.water-fab {
+    position:fixed; bottom:24px; left:16px; z-index:80;
+    display:flex; align-items:center; gap:6px;
+    background:#0ea5e9; color:#fff; border:none;
+    padding:12px 16px; border-radius:30px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(14,165,233,.4);
+    font-size:14px; font-weight:700; opacity:.72;
+    transition:transform .15s, opacity .15s;
+}
+.water-fab:active { transform:scale(.94); opacity:1; background:#0284c7; }
+.water-fab .wf-count { font-size:13px; font-weight:600; opacity:.9; }
+@media (max-width:480px){ .water-fab { padding:12px 15px; bottom:20px; left:14px; } }
+
+.water-modal {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+    z-index:100001; align-items:center; justify-content:center; padding:20px;
+}
+.water-modal.show { display:flex; }
+.water-box {
+    background:#fff; border-radius:22px; padding:24px; max-width:340px; width:100%;
+    text-align:center; box-shadow:0 12px 40px rgba(0,0,0,.25);
+}
+.water-box h3 { font-size:19px; font-weight:800; margin-bottom:4px; }
+.water-box .wb-sub { font-size:13px; color:#6b7280; margin-bottom:18px; }
+
+/* La bouteille */
+.bottle {
+    width:120px; height:230px; margin:0 auto 18px; position:relative; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+}
+.bottle-cap {
+    width:34px; height:18px; background:#0284c7; border-radius:5px 5px 2px 2px;
+    margin:0 auto;
+}
+.bottle-neck {
+    width:30px; height:16px; background:#bae6fd; margin:0 auto;
+}
+.bottle-body {
+    width:110px; height:185px; margin:0 auto; position:relative;
+    border:3px solid #bae6fd; border-radius:14px 14px 22px 22px; overflow:hidden;
+    background:#f0f9ff;
+}
+.bottle-fill {
+    position:absolute; bottom:0; left:0; right:0;
+    background:linear-gradient(180deg,#38bdf8,#0ea5e9);
+    transition:height .35s cubic-bezier(.34,1.3,.64,1);
+}
+.bottle-pct {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:800; color:#0369a1; z-index:2;
+}
+.water-tap-hint { font-size:13px; color:#0ea5e9; font-weight:600; margin-bottom:16px; }
+
+.water-total {
+    background:#f0f9ff; border-radius:12px; padding:14px; margin-bottom:16px;
+}
+.water-total .wt-v { font-size:26px; font-weight:800; color:#0ea5e9; }
+.water-total .wt-l { font-size:12px; color:#6b7280; margin-top:2px; }
+
+.water-actions { display:flex; gap:8px; }
+.water-actions button {
+    flex:1; padding:12px; border:none; border-radius:11px; font-weight:700; font-size:14px; cursor:pointer;
+}
+.wa-reset { background:#f1f5f9; color:#475569; }
+.wa-close { background:#0ea5e9; color:#fff; }
+
+/* DAILY TOTAL */
+.day-total-card {
+    background:#1f2937; color:white; border-radius:20px; padding:20px; margin-bottom:16px;
+}
+.day-total-card h2 { font-size:14px; color:#FF6B35; margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
+.dt-kcal { font-size:34px; font-weight:800; }
+.dt-kcal span { font-size:15px; color:#94a3b8; }
+.dt-remaining { font-size:14px; color:#FF6B35; font-weight:600; margin-top:4px; }
+.dt-remaining b { font-size:16px; font-weight:800; }
+.dt-remaining.over { color:#f87171; }
+.dt-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
+.dt-macro { background:#374151; border-radius:8px; padding:10px; text-align:center; }
+.dt-macro .label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
+.dt-macro .val { font-size:17px; font-weight:700; margin-top:2px; }
+.save-day-btn {
+    width:100%; background:#16a34a; color:white; padding:13px; border:none;
+    border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px;
+}
+.save-day-btn:active { background:#15803d; }
+
+/* ===== MACROS RESTANTES (carte objectif) ===== */
+.progress-macros-left {
+    font-size:12px; color:#94a3b8; font-weight:600; margin-top:4px;
+}
+.progress-macros-left .pml-done { color:#22c55e; }
+.progress-macros-left .pml-over { color:#fb923c; }
+
+/* ===== QUOI MANGER ? ===== */
+.eat-card { position:relative; background:#1f2937; border-radius:20px; box-shadow:0 4px 20px rgba(15,23,42,.06); margin-bottom:14px; overflow:hidden; }
+.eat-toggle {
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:#1f2937; color:#FF6B35; border:none; padding:16px 18px;
+    font-size:15px; font-weight:700; cursor:pointer;
+}
+.eat-toggle:active { background:#374151; }
+.eat-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 16px; }
+.eat-body.open { max-height:1500px; padding:14px 16px 18px; }
+.eat-intro { font-size:14px; color:#475569; margin-bottom:14px; }
+.eat-intro b { color:#FF6B35; font-size:16px; }
+.eat-cats { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px; }
+.eat-cat {
+    background:#f7f8fa; border:1.5px solid #e2e8f0; color:#1a1a1a;
+    padding:12px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer;
+}
+.eat-cat:active { background:#fff1e0; border-color:#FF6B35; color:#c2410c; }
+.eat-ideas:empty { display:none; }
+.eat-idea {
+    background:#f7f8fa; border-left:3px solid #FF6B35; border-radius:8px;
+    padding:12px 14px; margin-bottom:8px;
+}
+.eat-idea-name { font-size:14px; font-weight:700; color:#1a1a1a; }
+.eat-idea-ex { font-size:12px; color:#64748b; margin-top:3px; }
+.eat-idea-kcal { font-size:12px; color:#c2410c; font-weight:600; margin-top:6px; }
+.eat-portion { color:#94a3b8; font-weight:500; margin-left:6px; }
+.eat-note { font-size:13px; color:#16a34a; font-weight:600; text-align:center; padding:10px; }
+
+/* HISTORIQUE */
+.history-card { position:relative; background:linear-gradient(145deg,#ffffff,#fff4ee); border:1.5px solid #ffe0d0; border-radius:20px; padding:18px; box-shadow:0 8px 24px rgba(255,107,53,.10); overflow:hidden; }
+.history-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
+
+/* ===== MON ÉVOLUTION (fusion) ===== */
+.evolution-card { position:relative; background:linear-gradient(145deg,#ffffff,#fff4ee); border:1.5px solid #ffe0d0; border-radius:20px; padding:20px; box-shadow:0 8px 24px rgba(255,107,53,.10); margin-bottom:14px; overflow:hidden; }
+.evolution-card h2 { font-size:17px; font-weight:700; margin-bottom:18px; }
+
+.recipe-card::before, .history-card::before, .evolution-card::before, .weight-card::before {
+    content:''; position:absolute; left:0; top:20px; bottom:20px; width:4px; background:#FF6B35; border-radius:0 4px 4px 0;
+}
+
+.evo-section { margin-bottom:24px; }
+.evo-section:last-child { margin-bottom:0; }
+.evo-label { font-size:13px; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.04em; margin-bottom:12px; }
+
+/* ===== SUIVI DU POIDS ===== */
+.weight-card { position:relative; background:linear-gradient(145deg,#ffffff,#fff4ee); border:1.5px solid #ffe0d0; border-radius:20px; padding:18px; box-shadow:0 8px 24px rgba(255,107,53,.10); margin-bottom:14px; overflow:hidden; }
+.weight-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
+.weight-input-row { display:flex; gap:8px; margin-bottom:14px; }
+.weight-input-row input {
+    flex:1; padding:11px; border:1px solid #e2e8f0; border-radius:8px; font-size:15px;
+}
+.weight-add-btn {
+    background:#16a34a; color:white; border:none; width:48px; padding:11px 0;
+    border-radius:10px; font-size:18px; font-weight:700; cursor:pointer;
+}
+.weight-add-btn:active { background:#15803d; }
+.weight-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 0; border-bottom:1px solid #f1f5f9; font-size:14px;
+}
+.weight-row:last-child { border-bottom:none; }
+.weight-date { color:#64748b; }
+.weight-val { font-weight:700; color:#FF6B35; }
+.weight-del { background:none; border:none; color:#fca5a5; cursor:pointer; font-size:15px; font-weight:600; padding:2px 8px; line-height:1; }
+.weight-del:active { color:#ef4444; }
+.weight-empty { color:#94a3b8; font-size:13px; text-align:center; padding:14px; }
+
+/* ===== SAUVEGARDE ===== */
+.backup-card { background:white; border-radius:20px; padding:18px; box-shadow:0 4px 20px rgba(15,23,42,.06); margin-bottom:14px; }
+.backup-card h2 { font-size:15px; font-weight:600; margin-bottom:6px; }
+.backup-note { font-size:12px; color:#94a3b8; margin-bottom:14px; line-height:1.4; }
+.backup-btns { display:flex; gap:10px; }
+.backup-export, .backup-import {
+    flex:1; text-align:center; padding:12px; border-radius:8px; font-size:14px;
+    font-weight:600; cursor:pointer; border:none;
+}
+.backup-export { background:#eff6ff; color:#2563eb; border:1.5px solid #bfdbfe; }
+.backup-export:active { background:#dbeafe; }
+.backup-import { background:#f0fdf4; color:#16a34a; border:1.5px solid #bbf7d0; }
+.backup-import:active { background:#dcfce7; }
+
+/* ===== CALCULATEUR DE MAINTIEN (TDEE) ===== */
+.tdee-card { background:white; border-radius:20px; box-shadow:0 4px 20px rgba(15,23,42,.06); margin-bottom:14px; overflow:hidden; }
+.tdee-toggle {
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:#1f2937; color:#FF6B35; border:none; padding:16px 18px;
+    font-size:15px; font-weight:700; cursor:pointer;
+}
+.tdee-toggle:active { background:#374151; }
+.tdee-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 18px; }
+.tdee-body.open { max-height:1200px; padding:8px 18px 18px; }
+.tdee-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.tdee-field { margin-bottom:10px; }
+.tdee-field label { display:block; font-size:12px; color:#64748b; font-weight:500; margin-bottom:4px; }
+.tdee-field input, .tdee-field select {
+    width:100%; padding:9px 10px; border:1px solid #e2e8f0; border-radius:8px;
+    font-size:14px; background:white; color:#0f172a;
+}
+.tdee-calc-btn {
+    width:100%; background:#FF6B35; color:white; border:none; padding:12px;
+    border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; margin-top:4px;
+}
+.tdee-calc-btn:active { background:#E85D2A; }
+.tdee-result { margin-top:16px; }
+.tdee-res-main { background:#f8fafc; border-radius:10px; padding:12px; margin-bottom:12px; }
+.tdee-res-line { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:14px; color:#475569; }
+.tdee-res-line span:last-child { font-weight:600; color:#0f172a; }
+.tdee-res-target { border-top:1px solid #e2e8f0; margin-top:4px; padding-top:10px; }
+.tdee-res-target span { font-size:16px; }
+.tdee-res-target span:last-child { color:#FF6B35; font-weight:800; }
+.tdee-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.tdee-macro { background:#fff7ed; border-radius:8px; padding:10px; text-align:center; }
+.tm-label { font-size:11px; color:#64748b; }
+.tm-val { font-size:16px; font-weight:700; color:#c2410c; margin-top:2px; }
+.tdee-apply-btn {
+    width:100%; background:#10b981; color:white; border:none; padding:12px;
+    border-radius:8px; font-size:15px; font-weight:700; cursor:pointer;
+}
+.tdee-apply-btn:active { background:#059669; }
+.history-empty { color:#94a3b8; font-size:13px; text-align:center; padding:16px; }
+.history-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px; border-radius:8px; background:#f8fafc; margin-bottom:8px;
+}
+.history-date { font-weight:600; font-size:14px; }
+.history-detail { font-size:12px; color:#64748b; margin-top:2px; }
+.history-del { background:none; border:none; color:#fca5a5; cursor:pointer; font-size:15px; font-weight:600; padding:2px 8px; line-height:1; }
+.history-del:active { color:#ef4444; }
+
+.modal-overlay {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.5);
+    align-items:center; justify-content:center; padding:20px; z-index:100;
+}
+.modal-overlay.show { display:flex; }
+.modal {
+    background:white; border-radius:20px; padding:20px; max-width:360px; width:100%;
+}
+.modal h3 { margin-bottom:16px; font-size:17px; }
+.modal label { display:block; font-size:13px; font-weight:600; margin:10px 0 4px; color:#475569; }
+.modal input { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:15px; }
+.modal-btns { display:flex; gap:8px; margin-top:18px; }
+.modal-btns button { flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; }
+.modal-save { background:#10b981; color:white; }
+.modal-cancel { background:#e2e8f0; color:#475569; }
+/* TDEE / sections claires */
+/* Graphiques */
+/* Modals */
+/* Bouton toggle thème */
+
+
+.add-ing { position:relative; display:flex; gap:8px; align-items:flex-start; }
+.add-ing input { flex:1; }
+.scan-btn {
+    flex-shrink:0; width:46px; height:46px; border:1.5px solid #e5e7eb; border-radius:10px;
+    background:#fff; color:#FF6B35; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+}
+.scan-btn svg { width:24px; height:24px; }
+.scan-btn:active { background:#fff7ed; transform:scale(.96); }
+
+.scan-modal {
+    position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:100000;
+    display:none; flex-direction:column; align-items:center; justify-content:center; padding:20px;
+}
+.scan-modal.show { display:flex; }
+.scan-box { background:#fff; border-radius:18px; padding:20px; max-width:420px; width:100%; }
+.scan-box h3 { font-size:18px; font-weight:800; margin-bottom:12px; text-align:center; }
+#scanReader { border-radius:12px; overflow:hidden; margin-bottom:12px; }
+.scan-status { font-size:14px; text-align:center; padding:10px; border-radius:8px; margin-bottom:12px; display:none; }
+.scan-status.show { display:block; }
+.scan-status.info { background:#dbeafe; color:#1e40af; }
+.scan-status.error { background:#fee2e2; color:#991b1b; }
+.scan-status.success { background:#dcfce7; color:#166534; }
+.scan-manual { display:flex; gap:8px; margin-bottom:12px; }
+.scan-manual input { flex:1; padding:11px; border:1.5px solid #e5e7eb; border-radius:9px; font-size:15px; }
+.scan-manual button { padding:11px 16px; border:none; border-radius:9px; background:#047857; color:#fff; font-weight:700; cursor:pointer; }
+.scan-close { width:100%; padding:13px; border:none; border-radius:11px; background:#374151; color:#fff; font-weight:700; font-size:15px; cursor:pointer; }
+</style>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+
+<!-- MESSAGE INVITÉ (affiché si pas connecté) -->
+<div id="messageInvite" style="display:none; position:fixed; inset:0; z-index:90000; background:#f3f4f6; align-items:center; justify-content:center; padding:24px;">
+    <div style="max-width:360px; text-align:center; background:#fff; border-radius:22px; padding:32px 24px; box-shadow:0 12px 40px rgba(0,0,0,.12);">
+        <div style="font-size:42px; margin-bottom:12px;">😊</div>
+        <h2 style="font-size:21px; font-weight:800; margin-bottom:10px; color:#1a1a1a;">Bienvenue sur REPZ !</h2>
+        <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:24px;">
+            Crée ton compte pour suivre tes repas, calculer tes macros et atteindre tes objectifs.<br><b style="color:#FF6B35;">Ça ne te prend que 10 secondes !</b>
+        </p>
+        <a href="index.html" style="display:block; background:#FF6B35; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:10px;">
+            Créer mon compte
+        </a>
+        <a href="accueil.html" style="display:block; color:#9ca3af; text-decoration:none; font-size:14px; padding:8px;">
+            Retour à l'accueil
+        </a>
+    </div>
+</div>
+
+<!-- MODALE SCANNER CODE-BARRES -->
+<div class="scan-modal" id="scanModal">
+    <div class="scan-box">
+        <h3>📷 Scanner un produit</h3>
+        <div id="scanReader"></div>
+        <div class="scan-status" id="scanStatus"></div>
+        <div class="scan-manual">
+            <input type="text" id="scanManualCode" placeholder="Ou tape le code-barres" inputmode="numeric">
+            <button onclick="scanLookupManual()">Chercher</button>
+        </div>
+        <button class="scan-close" onclick="closeScanner()">Fermer</button>
+    </div>
+</div>
+
+<!-- AUTH CHECK + FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(!user && !estInvite) {
+        window.location.href = 'index.html';
+    } else if(!user && estInvite) {
+        // Invité : on affiche le message d'inscription au lieu du contenu nutrition
+        document.body.classList.add('mode-invite');
+        afficherMessageInvite();
+    }
+});
+
+function logout() {
+    localStorage.removeItem('repz_invite');
+    auth.signOut().then(() => {
+        window.location.href = 'index.html';
+    });
+}
+
+function afficherMessageInvite() {
+    const msg = document.getElementById('messageInvite');
+    if(msg) msg.style.display = 'flex';
+}
+</script>
+<div class="container">
+    <a href="accueil.html" class="app-back-btn" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
+
+    <div class="date-banner" id="dateBanner"></div>
+
+    <!-- OBJECTIF -->
+    <div class="goal-card">
+        <div class="goal-top">
+            <h2>Objectif du jour</h2>
+            <button class="goal-edit" onclick="openGoalModal()">Modifier</button>
+        </div>
+        <div class="goal-current"><span id="goalConsumed">0</span> / <span id="goalKcal">4000</span> <span>kcal</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="progress-label" id="progressLabel">Reste 4000 kcal</div>
+        <div class="progress-macros-left" id="progressMacrosLeft"></div>
+        <div class="goal-macros">
+            <div class="goal-macro"><div class="gm-label">Protéine</div><div class="gm-val" id="gmProt">0g</div><div class="gm-target" id="gmProtTarget">/ 194g</div></div>
+            <div class="goal-macro"><div class="gm-label">Glucides</div><div class="gm-val" id="gmCarbs">0g</div><div class="gm-target" id="gmCarbsTarget">/ 500g</div></div>
+            <div class="goal-macro"><div class="gm-label">Lipides</div><div class="gm-val" id="gmLip">0g</div><div class="gm-target" id="gmLipTarget">/ 90g</div></div>
+        </div>
+    </div>
+
+    <!-- CALCULATEUR DE MAINTIEN (TDEE) -->
+    <div class="tdee-card">
+        <button class="tdee-toggle" onclick="toggleTdee()">
+            <span>Calculer mes calories de maintien</span>
+            <span id="tdeeArrow">▾</span>
+        </button>
+        <div id="tdeeBody" class="tdee-body">
+            <div class="tdee-grid">
+                <div class="tdee-field">
+                    <label>Sexe</label>
+                    <select id="tdeeSex">
+                        <option value="h">Homme</option>
+                        <option value="f">Femme</option>
+                    </select>
+                </div>
+                <div class="tdee-field">
+                    <label>Âge</label>
+                    <input type="number" id="tdeeAge" placeholder="ans" value="25">
+                </div>
+                <div class="tdee-field">
+                    <label>Poids (kg)</label>
+                    <input type="number" id="tdeeWeight" placeholder="kg" value="75">
+                </div>
+                <div class="tdee-field">
+                    <label>Taille (cm)</label>
+                    <input type="number" id="tdeeHeight" placeholder="cm" value="175">
+                </div>
+            </div>
+            <div class="tdee-field">
+                <label>Niveau d'activité</label>
+                <select id="tdeeActivity">
+                    <option value="1.2">Sédentaire (peu/pas de sport)</option>
+                    <option value="1.375">Léger (1-3 séances/sem)</option>
+                    <option value="1.55" selected>Modéré (3-5 séances/sem)</option>
+                    <option value="1.725">Intense (6-7 séances/sem)</option>
+                    <option value="1.9">Très intense (2x/jour, travail physique)</option>
+                </select>
+            </div>
+            <div class="tdee-field">
+                <label>Objectif</label>
+                <select id="tdeeGoal">
+                    <option value="-500">Sèche agressive (-500 kcal)</option>
+                    <option value="-300">Sèche modérée (-300 kcal)</option>
+                    <option value="0" selected>Maintien (0 kcal)</option>
+                    <option value="300">Prise de masse propre (+300 kcal)</option>
+                    <option value="500">Prise de masse (+500 kcal)</option>
+                </select>
+            </div>
+            <button class="tdee-calc-btn" onclick="calcTdee()">Calculer</button>
+
+            <div id="tdeeResult" class="tdee-result" style="display:none;">
+                <div class="tdee-res-main">
+                    <div class="tdee-res-line"><span>Métabolisme de base (BMR)</span><span id="resBmr">–</span></div>
+                    <div class="tdee-res-line"><span>Maintien (TDEE)</span><span id="resTdee">–</span></div>
+                    <div class="tdee-res-line tdee-res-target"><span>Objectif calorique</span><span id="resTarget">–</span></div>
+                </div>
+                <div class="tdee-macros">
+                    <div class="tdee-macro"><div class="tm-label">Protéines</div><div class="tm-val" id="resProt">–</div></div>
+                    <div class="tdee-macro"><div class="tm-label">Glucides</div><div class="tm-val" id="resCarbs">–</div></div>
+                    <div class="tdee-macro"><div class="tm-label">Lipides</div><div class="tm-val" id="resLip">–</div></div>
+                </div>
+                <button class="tdee-apply-btn" onclick="applyTdee()">Appliquer comme objectif</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUOI MANGER ? -->
+    <div class="eat-card">
+        <button class="eat-toggle" onclick="toggleEat()">
+            <span>Quoi manger ?</span>
+            <span id="eatArrow">▾</span>
+        </button>
+        <div id="eatBody" class="eat-body">
+            <div class="eat-intro" id="eatIntro"></div>
+            <div class="eat-cats">
+                <button class="eat-cat" onclick="showEatIdeas('sain')">Sain & léger</button>
+                <button class="eat-cat" onclick="showEatIdeas('rapide')">Rapide</button>
+                <button class="eat-cat" onclick="showEatIdeas('plaisir')">Plaisir</button>
+                <button class="eat-cat" onclick="showEatIdeas('vege')">Végé</button>
+            </div>
+            <div id="eatIdeas" class="eat-ideas"></div>
+        </div>
+    </div>
+
+    <div id="recipesContainer"></div>
+
+    <!-- TOTAL JOUR -->
+    <div class="day-total-card">
+        <h2>Total de la journée</h2>
+        <div class="dt-kcal"><span id="dtKcal">0</span> <span>kcal</span></div>
+        <div class="dt-remaining" id="dtRemaining"></div>
+        <div class="dt-macros">
+            <div class="dt-macro"><div class="label">Prot</div><div class="val" id="dtProt">0g</div></div>
+            <div class="dt-macro"><div class="label">Carbs</div><div class="val" id="dtCarbs">0g</div></div>
+            <div class="dt-macro"><div class="label">Lipides</div><div class="val" id="dtLip">0g</div></div>
+        </div>
+        <button class="save-day-btn" onclick="saveDay()">Enregistrer et recommencer</button>
+    </div>
+
+    <!-- BULLE POIDS -->
+    <div class="evolution-card">
+        <h2>Mon poids</h2>
+        <div class="evo-section">
+            <div class="evo-label">Poids du jour</div>
+            <div class="weight-input-row">
+                <input type="number" id="weightInput" placeholder="Poids (kg)" step="0.1">
+                <button class="weight-add-btn" onclick="addWeight()">✓</button>
+            </div>
+            <div id="weightChart"></div>
+            <div id="weightList"></div>
+        </div>
+    </div>
+
+    <!-- BULLE CALORIES (journées enregistrées) -->
+    <div class="evolution-card">
+        <h2>Mes journées</h2>
+        <div class="evo-section">
+            <div class="evo-label">Calories enregistrées</div>
+            <div id="historyChart"></div>
+            <div id="historyList"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DÉTAIL JOUR -->
+<div class="modal-overlay" id="dayModal">
+    <div class="modal">
+        <h3 id="dayModalTitle">Détail</h3>
+        <div id="dayModalBody"></div>
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeDayModal()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- BOUTON FLOTTANT AJOUTER RECETTE -->
+<button class="fab" onclick="addRecipe()" aria-label="Ajouter une recette">
+    <span class="fab-plus">＋</span>
+    <span class="fab-label">Recette</span>
+</button>
+
+<!-- BOUTON FLOTTANT EAU -->
+<button class="water-fab" onclick="openWater()" aria-label="Compteur d'eau">
+    <span style="font-size:18px;">💧</span>
+    <span class="wf-count" id="waterFabCount">0 L</span>
+</button>
+
+<!-- MODALE COMPTEUR D'EAU -->
+<div class="water-modal" id="waterModal">
+    <div class="water-box">
+        <h3>💧 Hydratation</h3>
+        <div class="wb-sub">Bouteille de 1,5 L · appuie pour remplir</div>
+
+        <div class="bottle" id="bottleTap" onclick="addWater()">
+            <div class="bottle-cap"></div>
+            <div class="bottle-neck"></div>
+            <div class="bottle-body">
+                <div class="bottle-fill" id="bottleFill" style="height:0%;"></div>
+                <div class="bottle-pct" id="bottlePct">0%</div>
+            </div>
+        </div>
+        <div class="water-tap-hint">👆 1 appui = 75 ml (20 appuis = 1,5 L)</div>
+
+        <div class="water-total">
+            <div class="wt-v" id="waterTotalVal">0 L</div>
+            <div class="wt-l">bu aujourd'hui</div>
+        </div>
+
+        <div class="water-actions">
+            <button class="wa-reset" onclick="resetWaterToday()">Réinitialiser</button>
+            <button class="wa-close" onclick="closeWater()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL OBJECTIF -->
+<div class="modal-overlay" id="goalModal">
+    <div class="modal">
+        <h3>Mon objectif</h3>
+        <label>Calories cibles (kcal)</label>
+        <input type="number" id="inputGoalKcal" value="4000">
+        <label>Poids corporel (kg)</label>
+        <input type="number" id="inputWeight" value="97">
+        <label>Protéine cible (g/kg, min. 2,2)</label>
+        <input type="number" id="inputProtRatio" value="2.2" step="0.1" min="2.2">
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeGoalModal()">Annuler</button>
+            <button class="modal-save" onclick="saveGoal()">Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== BASE INGRÉDIENTS (pour 100g / 100ml) =====
+const DB = {
+    // Céréales & féculents
+    'Avoine':{kcal:380,prot:13,carbs:66,lip:8},
+    'Flocons avoine':{kcal:380,prot:13,carbs:66,lip:8},
+    'Riz cru':{kcal:347,prot:7,carbs:77,lip:0.7},
+    'Riz cuit':{kcal:130,prot:2.7,carbs:28,lip:0.3},
+    'Pâtes blanches crues':{kcal:371,prot:13,carbs:75,lip:1.1},
+    'Pâtes blanches cuites':{kcal:158,prot:5.8,carbs:31,lip:0.9},
+    'Pain complet':{kcal:247,prot:9,carbs:43,lip:3.4},
+    'Pain blanc':{kcal:265,prot:9,carbs:49,lip:3.2},
+    'Pomme de terre':{kcal:77,prot:2,carbs:17,lip:0.1},
+    'Patate douce':{kcal:86,prot:1.6,carbs:20,lip:0.1},
+    'Quinoa cru':{kcal:368,prot:14,carbs:64,lip:6},
+    'Semoule':{kcal:360,prot:12,carbs:73,lip:1.8},
+    // Protéines
+    'Poulet cuit':{kcal:165,prot:31,carbs:0,lip:3.6},
+    'Poulet cru':{kcal:120,prot:23,carbs:0,lip:2.6},
+    'Dinde escalope crue':{kcal:104,prot:24,carbs:0,lip:1},
+    'Dinde escalope cuite':{kcal:135,prot:29,carbs:0,lip:1.7},
+    'Poulet haché cru':{kcal:143,prot:17,carbs:0,lip:8},
+    'Cuisse de poulet cuite':{kcal:209,prot:26,carbs:0,lip:11},
+    'Boeuf hache 5% cru':{kcal:137,prot:20,carbs:0,lip:5},
+    'Boeuf hache 5% cuit':{kcal:170,prot:26,carbs:0,lip:7},
+    'Boeuf hache 15% cru':{kcal:215,prot:19,carbs:0,lip:15},
+    'Boeuf hache 15% cuit':{kcal:250,prot:24,carbs:0,lip:17},
+    'Boeuf hache 20% cru':{kcal:254,prot:18,carbs:0,lip:20},
+    'Steak cru':{kcal:158,prot:26,carbs:0,lip:6},
+    'Steak cuit':{kcal:217,prot:30,carbs:0,lip:11},
+    'Bavette cuite':{kcal:195,prot:28,carbs:0,lip:9},
+    'Saumon cru':{kcal:208,prot:20,carbs:0,lip:13},
+    'Saumon cuit':{kcal:232,prot:25,carbs:0,lip:14},
+    'Saumon fume':{kcal:182,prot:25,carbs:0,lip:9},
+    'Thon naturel boite':{kcal:116,prot:26,carbs:0,lip:1},
+    'Thon frais cru':{kcal:144,prot:23,carbs:0,lip:5},
+    'Cabillaud cru':{kcal:82,prot:18,carbs:0,lip:0.7},
+    'Cabillaud cuit':{kcal:105,prot:23,carbs:0,lip:0.9},
+    // ===== OEUFS =====
+    'Oeuf entier S (44g)':{kcal:155,prot:13,carbs:1.1,lip:11,unit:44,unitLabel:'oeuf'},
+    'Oeuf entier M (50g)':{kcal:155,prot:13,carbs:1.1,lip:11,unit:50,unitLabel:'oeuf'},
+    'Oeuf entier L (58g)':{kcal:155,prot:13,carbs:1.1,lip:11,unit:58,unitLabel:'oeuf'},
+    'Oeuf entier (au gramme)':{kcal:155,prot:13,carbs:1.1,lip:11},
+    'Crevettes':{kcal:99,prot:24,carbs:0.2,lip:0.3},
+    'Jambon blanc':{kcal:110,prot:18,carbs:1,lip:3.5},
+    // Produits laitiers
+    'Whey Iso':{kcal:360,prot:90,carbs:2,lip:1},
+    'Whey':{kcal:400,prot:80,carbs:8,lip:6},
+    'Fromage blanc 0%':{kcal:47,prot:8,carbs:4,lip:0.2},
+    'Skyr':{kcal:63,prot:11,carbs:4,lip:0.2},
+    'Yaourt grec':{kcal:120,prot:3.5,carbs:4.2,lip:6.5},
+    'Lait 1/2 écrémé':{kcal:46,prot:3.2,carbs:4.8,lip:1.5},
+    'Mozzarella':{kcal:280,prot:28,carbs:3,lip:17},
+    'Parmesan':{kcal:392,prot:36,carbs:3,lip:26},
+    'Comté':{kcal:410,prot:27,carbs:0,lip:34},
+    // Légumineuses
+    'Lentilles cuites':{kcal:116,prot:9,carbs:20,lip:0.4},
+    'Pois chiches cuits':{kcal:164,prot:9,carbs:27,lip:2.6},
+    'Haricots rouges':{kcal:127,prot:9,carbs:23,lip:0.5},
+    // Lipides & oléagineux
+    'Huile olive':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile colza':{kcal:900,prot:0,carbs:0,lip:100},
+    'Beurre cacahuète':{kcal:588,prot:25,carbs:20,lip:50},
+    'Amandes':{kcal:579,prot:21,carbs:22,lip:50},
+    'Noix':{kcal:654,prot:15,carbs:14,lip:65},
+    'Noix de cajou':{kcal:553,prot:18,carbs:30,lip:44},
+    'Avocat':{kcal:160,prot:2,carbs:9,lip:15},
+    // Fruits
+    'Banane':{kcal:89,prot:1.1,carbs:23,lip:0.3},
+    'Pomme':{kcal:52,prot:0.3,carbs:14,lip:0.2},
+    'Fraises':{kcal:32,prot:0.7,carbs:8,lip:0.3},
+    'Myrtilles':{kcal:57,prot:0.7,carbs:14,lip:0.3},
+    'Orange':{kcal:47,prot:0.9,carbs:12,lip:0.1},
+    'Dattes':{kcal:282,prot:2.5,carbs:75,lip:0.4},
+    'Raisins secs':{kcal:299,prot:3,carbs:79,lip:0.5},
+    // Légumes
+    'Brocoli':{kcal:34,prot:2.8,carbs:7,lip:0.4},
+    'Épinards':{kcal:23,prot:2.9,carbs:3.6,lip:0.4},
+    'Courgette':{kcal:17,prot:1.2,carbs:3,lip:0.3},
+    'Tomate':{kcal:18,prot:0.9,carbs:3.9,lip:0.2},
+    'Carotte':{kcal:41,prot:0.9,carbs:10,lip:0.2},
+    // ===== PROTÉINES (muscu) =====
+    'Caséine':{kcal:360,prot:80,carbs:5,lip:1.5},
+    'Protéine de pois':{kcal:380,prot:80,carbs:5,lip:6},
+    'Tofu':{kcal:76,prot:8,carbs:1.9,lip:4.8},
+    'Tempeh':{kcal:192,prot:20,carbs:7.6,lip:11},
+    'Seitan':{kcal:370,prot:75,carbs:14,lip:1.9},
+    'Edamame':{kcal:121,prot:12,carbs:9,lip:5},
+    'Sardines':{kcal:208,prot:25,carbs:0,lip:11},
+    'Maquereau':{kcal:205,prot:19,carbs:0,lip:14},
+    'Truite':{kcal:119,prot:20,carbs:0,lip:3.5},
+    'Colin/Lieu':{kcal:80,prot:17,carbs:0,lip:1},
+    'Jambon de dinde':{kcal:105,prot:18,carbs:1,lip:3},
+    'Bresaola':{kcal:151,prot:32,carbs:0.5,lip:2},
+    'Filet de porc':{kcal:143,prot:21,carbs:0,lip:6},
+    'Moules':{kcal:86,prot:12,carbs:3.7,lip:2.2},
+    'Foie de bœuf':{kcal:135,prot:20,carbs:3.9,lip:3.6},
+    // ===== GLUCIDES (énergie) =====
+    'Riz basmati cru':{kcal:350,prot:8,carbs:78,lip:0.5},
+    'Galette de riz':{kcal:387,prot:8,carbs:81,lip:3},
+    'Wrap/Tortilla':{kcal:310,prot:8,carbs:50,lip:8},
+    'Pain de mie complet':{kcal:250,prot:9,carbs:42,lip:4},
+    'Müesli':{kcal:370,prot:10,carbs:66,lip:7},
+    'Boulgour cru':{kcal:342,prot:12,carbs:76,lip:1.3},
+    'Cornflakes':{kcal:378,prot:7,carbs:84,lip:0.9},
+    'Couscous cuit':{kcal:112,prot:3.8,carbs:23,lip:0.2},
+    'Maïs':{kcal:96,prot:3.4,carbs:19,lip:1.5},
+    'Pancake':{kcal:227,prot:6,carbs:28,lip:9},
+    'Miel':{kcal:304,prot:0.3,carbs:82,lip:0},
+    'Confiture':{kcal:250,prot:0.4,carbs:62,lip:0.1},
+    // ===== SUPPLÉMENTS / SPÉCIAL MUSCU =====
+    'Maltodextrine':{kcal:380,prot:0,carbs:95,lip:0},
+    'Gainer':{kcal:380,prot:25,carbs:60,lip:5},
+    'Barre protéinée':{kcal:350,prot:30,carbs:35,lip:10},
+    'Purée amande':{kcal:614,prot:21,carbs:19,lip:56},
+    // ===== LAITIERS =====
+    'Cottage cheese':{kcal:98,prot:11,carbs:3.4,lip:4.3},
+    'Petit suisse 0%':{kcal:75,prot:8,carbs:4,lip:0.2},
+    'Lait écrémé':{kcal:35,prot:3.4,carbs:5,lip:0.1},
+    'Lait amande':{kcal:24,prot:0.5,carbs:3,lip:1.1},
+    // ===== LIPIDES / GRAINES =====
+    'Noisettes':{kcal:628,prot:15,carbs:17,lip:61},
+    'Pistaches':{kcal:562,prot:20,carbs:28,lip:45},
+    'Graines de chia':{kcal:486,prot:17,carbs:42,lip:31},
+    'Graines de lin':{kcal:534,prot:18,carbs:29,lip:42},
+    'Graines de courge':{kcal:559,prot:30,carbs:11,lip:49},
+    'Graines de tournesol':{kcal:584,prot:21,carbs:20,lip:51},
+    'Beurre':{kcal:717,prot:0.9,carbs:0.1,lip:81},
+    'Huile de coco':{kcal:862,prot:0,carbs:0,lip:100},
+    // ===== FRUITS =====
+    'Ananas':{kcal:50,prot:0.5,carbs:13,lip:0.1},
+    'Kiwi':{kcal:61,prot:1.1,carbs:15,lip:0.5},
+    'Mangue':{kcal:60,prot:0.8,carbs:15,lip:0.4},
+    'Pastèque':{kcal:30,prot:0.6,carbs:8,lip:0.2},
+    'Melon':{kcal:34,prot:0.8,carbs:8,lip:0.2},
+    'Poire':{kcal:57,prot:0.4,carbs:15,lip:0.1},
+    'Pêche':{kcal:39,prot:0.9,carbs:10,lip:0.3},
+    'Abricots secs':{kcal:241,prot:3.4,carbs:63,lip:0.5},
+    'Pruneaux':{kcal:240,prot:2.2,carbs:64,lip:0.4},
+    // ===== LÉGUMES =====
+    'Haricots verts':{kcal:31,prot:1.8,carbs:7,lip:0.1},
+    'Chou-fleur':{kcal:25,prot:1.9,carbs:5,lip:0.3},
+    'Poivron':{kcal:31,prot:1,carbs:6,lip:0.3},
+    'Champignons':{kcal:22,prot:3.1,carbs:3.3,lip:0.3},
+    'Concombre':{kcal:15,prot:0.7,carbs:3.6,lip:0.1},
+    'Petits pois':{kcal:81,prot:5.4,carbs:14,lip:0.4},
+    'Asperges':{kcal:20,prot:2.2,carbs:3.9,lip:0.1},
+    'Betterave':{kcal:43,prot:1.6,carbs:10,lip:0.2},
+    // ===== AJOUTS VIANDES & POISSONS =====
+    'Agneau cuit':{kcal:294,prot:25,carbs:0,lip:21},
+    'Veau escalope cuite':{kcal:172,prot:31,carbs:0,lip:5},
+    'Canard magret cuit':{kcal:230,prot:28,carbs:0,lip:13},
+    'Lardons':{kcal:330,prot:15,carbs:1,lip:30},
+    'Chorizo':{kcal:455,prot:24,carbs:2,lip:38},
+    'Merguez':{kcal:280,prot:15,carbs:1,lip:24},
+    'Saucisse de poulet':{kcal:172,prot:17,carbs:2,lip:11},
+    'Rillettes':{kcal:400,prot:16,carbs:0,lip:38},
+    'Dorade cuite':{kcal:127,prot:23,carbs:0,lip:4},
+    'Bar/Loup cuit':{kcal:124,prot:23,carbs:0,lip:3},
+    'Sole cuite':{kcal:91,prot:18,carbs:0,lip:1.5},
+    'Hareng':{kcal:158,prot:18,carbs:0,lip:9},
+    'Anchois':{kcal:131,prot:20,carbs:0,lip:5},
+    'Calamar':{kcal:92,prot:16,carbs:3,lip:1.4},
+    'Surimi':{kcal:95,prot:8,carbs:14,lip:1},
+    'Crabe':{kcal:97,prot:19,carbs:0,lip:1.5},
+    'Saint-Jacques':{kcal:88,prot:17,carbs:2.4,lip:0.8},
+    // ===== AJOUTS FÉCULENTS & CÉRÉALES =====
+    'Riz complet cru':{kcal:360,prot:8,carbs:74,lip:2.8},
+    'Riz complet cuit':{kcal:111,prot:2.6,carbs:23,lip:0.9},
+    'Riz thai cru':{kcal:352,prot:7,carbs:78,lip:0.6},
+    'Pâtes complètes crues':{kcal:348,prot:14,carbs:67,lip:2.5},
+    'Pâtes complètes cuites':{kcal:124,prot:5,carbs:25,lip:1},
+    'Gnocchi':{kcal:160,prot:4,carbs:33,lip:1.5},
+    'Polenta cuite':{kcal:85,prot:2,carbs:18,lip:0.4},
+    'Quinoa cuit':{kcal:120,prot:4.4,carbs:21,lip:1.9},
+    'Boulgour cuit':{kcal:112,prot:4,carbs:24,lip:0.3},
+    'Épeautre cru':{kcal:338,prot:15,carbs:70,lip:2.4},
+    'Sarrasin cru':{kcal:343,prot:13,carbs:72,lip:3.4},
+    'Pain pita':{kcal:275,prot:9,carbs:55,lip:1.2},
+    'Pain aux céréales':{kcal:258,prot:10,carbs:43,lip:4.5},
+    'Baguette':{kcal:270,prot:9,carbs:55,lip:1.5},
+    'Biscotte':{kcal:390,prot:12,carbs:75,lip:5},
+    'Pomme de terre cuite':{kcal:87,prot:2,carbs:20,lip:0.1},
+    'Frites four':{kcal:180,prot:3,carbs:28,lip:6},
+    'Patate douce cuite':{kcal:90,prot:2,carbs:21,lip:0.1},
+    // ===== AJOUTS LAITIERS =====
+    'Yaourt nature':{kcal:61,prot:3.5,carbs:4.7,lip:3.3},
+    'Yaourt 0%':{kcal:38,prot:6.2,carbs:3.6,lip:0.1},
+    'Yaourt grec 0%':{kcal:57,prot:10,carbs:4,lip:0.4},
+    'Fromage blanc 3%':{kcal:73,prot:7.5,carbs:4,lip:3},
+    'Ricotta':{kcal:174,prot:11,carbs:3,lip:13},
+    'Feta':{kcal:264,prot:14,carbs:4,lip:21},
+    'Chèvre frais':{kcal:206,prot:18,carbs:2,lip:14},
+    'Emmental':{kcal:382,prot:28,carbs:0,lip:30},
+    'Cheddar':{kcal:403,prot:25,carbs:1.3,lip:33},
+    'Gruyère':{kcal:413,prot:30,carbs:0,lip:32},
+    'Babybel':{kcal:300,prot:23,carbs:0,lip:23},
+    'Kéfir':{kcal:41,prot:3.3,carbs:4.5,lip:1},
+    // ===== AJOUTS PROTÉINES VÉGÉTALES =====
+    'Protéine végétale (TVP)':{kcal:330,prot:52,carbs:30,lip:1},
+    'Steak de soja':{kcal:150,prot:16,carbs:6,lip:7},
+    'Falafel':{kcal:333,prot:13,carbs:32,lip:18},
+    'Houmous':{kcal:166,prot:8,carbs:14,lip:10},
+    'Haricots blancs':{kcal:139,prot:9,carbs:25,lip:0.5},
+    'Flageolets':{kcal:128,prot:8,carbs:22,lip:0.5},
+    'Fèves':{kcal:110,prot:8,carbs:18,lip:0.6},
+    'Pois cassés':{kcal:118,prot:8,carbs:21,lip:0.4},
+    // ===== AJOUTS OLÉAGINEUX & LIPIDES =====
+    'Cacahuètes':{kcal:567,prot:26,carbs:16,lip:49},
+    'Noix de pécan':{kcal:691,prot:9,carbs:14,lip:72},
+    'Noix du Brésil':{kcal:659,prot:14,carbs:12,lip:67},
+    'Noix de macadamia':{kcal:718,prot:8,carbs:14,lip:76},
+    'Purée de cacahuète':{kcal:588,prot:25,carbs:20,lip:50},
+    'Purée de noisette':{kcal:628,prot:15,carbs:17,lip:61},
+    'Tahini':{kcal:595,prot:17,carbs:21,lip:54},
+    'Huile de tournesol':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile de lin':{kcal:900,prot:0,carbs:0,lip:100},
+    'Margarine':{kcal:720,prot:0.2,carbs:0.7,lip:80},
+    'Crème fraîche 30%':{kcal:292,prot:2.4,carbs:3,lip:30},
+    'Crème fraîche 15%':{kcal:160,prot:2.8,carbs:3.5,lip:15},
+    'Olives':{kcal:145,prot:1,carbs:4,lip:14},
+    // ===== AJOUTS FRUITS =====
+    'Clémentine':{kcal:46,prot:0.9,carbs:11,lip:0.2},
+    'Pamplemousse':{kcal:42,prot:0.8,carbs:11,lip:0.1},
+    'Cerises':{kcal:63,prot:1,carbs:16,lip:0.2},
+    'Framboises':{kcal:52,prot:1.2,carbs:12,lip:0.7},
+    'Cassis':{kcal:63,prot:1.4,carbs:15,lip:0.4},
+    'Grenade':{kcal:83,prot:1.7,carbs:19,lip:1.2},
+    'Figue fraîche':{kcal:74,prot:0.8,carbs:19,lip:0.3},
+    'Figue séchée':{kcal:249,prot:3.3,carbs:64,lip:0.9},
+    'Banane séchée':{kcal:346,prot:3.9,carbs:88,lip:1.8},
+    'Compote sans sucre':{kcal:50,prot:0.4,carbs:12,lip:0.1},
+    // ===== AJOUTS LÉGUMES =====
+    'Aubergine':{kcal:25,prot:1,carbs:6,lip:0.2},
+    'Salade verte':{kcal:15,prot:1.4,carbs:2.9,lip:0.2},
+    'Roquette':{kcal:25,prot:2.6,carbs:3.7,lip:0.7},
+    'Chou':{kcal:25,prot:1.3,carbs:6,lip:0.1},
+    'Chou de Bruxelles':{kcal:43,prot:3.4,carbs:9,lip:0.3},
+    'Navet':{kcal:28,prot:0.9,carbs:6,lip:0.1},
+    'Céleri':{kcal:16,prot:0.7,carbs:3,lip:0.2},
+    'Fenouil':{kcal:31,prot:1.2,carbs:7,lip:0.2},
+    'Endive':{kcal:17,prot:1,carbs:3.4,lip:0.1},
+    'Radis':{kcal:16,prot:0.7,carbs:3.4,lip:0.1},
+    'Échalote':{kcal:72,prot:2.5,carbs:17,lip:0.1},
+    'Oignon':{kcal:40,prot:1.1,carbs:9,lip:0.1},
+    'Ail':{kcal:149,prot:6.4,carbs:33,lip:0.5},
+    'Potiron':{kcal:26,prot:1,carbs:6,lip:0.1},
+    'Poireau':{kcal:61,prot:1.5,carbs:14,lip:0.3},
+    // ===== AJOUTS DIVERS / SUCRES =====
+    'Sucre blanc':{kcal:400,prot:0,carbs:100,lip:0},
+    'Sirop d\'agave':{kcal:310,prot:0,carbs:76,lip:0},
+    'Sirop d\'érable':{kcal:260,prot:0,carbs:67,lip:0},
+    'Chocolat noir 70%':{kcal:550,prot:8,carbs:46,lip:38},
+    'Chocolat au lait':{kcal:535,prot:7,carbs:59,lip:30},
+    'Cacao en poudre':{kcal:228,prot:20,carbs:58,lip:14},
+    'Pâte à tartiner':{kcal:539,prot:6,carbs:57,lip:31},
+    'Ketchup':{kcal:112,prot:1.2,carbs:26,lip:0.1},
+    'Moutarde':{kcal:66,prot:4,carbs:5,lip:3.4},
+    'Sauce soja':{kcal:53,prot:8,carbs:5,lip:0.1},
+    'Blanc de poulet (cru)':{kcal:120,prot:23,carbs:0,lip:2.6},
+    'Blanc de poulet (cuit)':{kcal:165,prot:31,carbs:0,lip:3.6},
+    'Escalope de poulet (crue)':{kcal:120,prot:23,carbs:0,lip:2.6},
+    'Escalope de poulet (cuite)':{kcal:165,prot:31,carbs:0,lip:3.6},
+    'Filet de poulet (cru)':{kcal:120,prot:23,carbs:0,lip:2.6},
+    'Filet de poulet (cuit)':{kcal:165,prot:31,carbs:0,lip:3.6},
+    'Blanc de dinde (cru)':{kcal:104,prot:24,carbs:0,lip:1},
+    'Blanc de dinde (cuit)':{kcal:135,prot:30,carbs:0,lip:1.5},
+    'Escalope de dinde (crue)':{kcal:104,prot:24,carbs:0,lip:1},
+    'Escalope de dinde (cuite)':{kcal:135,prot:30,carbs:0,lip:1.5},
+    'Steak hache 5 pourcent':{kcal:137,prot:21,carbs:0,lip:5},
+    'Steak hache 15 pourcent':{kcal:220,prot:19,carbs:0,lip:15},
+    'Blanc oeuf':{kcal:52,prot:11,carbs:0.7,lip:0.2},
+    'Jaune oeuf':{kcal:322,prot:16,carbs:3.6,lip:27},
+    'Burger classique':{kcal:250,prot:13,carbs:21,lip:12},
+    'Cheeseburger':{kcal:280,prot:15,carbs:22,lip:14},
+    'Burger double':{kcal:295,prot:17,carbs:18,lip:17},
+    'Frites':{kcal:312,prot:3.4,carbs:41,lip:15},
+    'Pizza margherita':{kcal:266,prot:11,carbs:33,lip:10},
+    'Pizza pepperoni':{kcal:298,prot:13,carbs:34,lip:12},
+    'Kebab':{kcal:215,prot:13,carbs:18,lip:10},
+    'Tacos francais':{kcal:280,prot:12,carbs:28,lip:14},
+    'Nuggets de poulet':{kcal:296,prot:15,carbs:16,lip:19},
+    'Tenders poulet':{kcal:263,prot:19,carbs:14,lip:14},
+    'Hot-dog':{kcal:247,prot:10,carbs:20,lip:15},
+    'Wrap poulet':{kcal:218,prot:13,carbs:22,lip:9},
+    'Panini':{kcal:280,prot:12,carbs:30,lip:12},
+    'Sandwich jambon-beurre':{kcal:250,prot:11,carbs:30,lip:9},
+    'Croque-monsieur':{kcal:280,prot:14,carbs:23,lip:15},
+    'Fish and chips':{kcal:290,prot:14,carbs:28,lip:14},
+    'Onion rings':{kcal:332,prot:4.6,carbs:38,lip:18},
+    'Chicken wings':{kcal:290,prot:27,carbs:0,lip:20},
+    'Nems':{kcal:230,prot:8,carbs:25,lip:11},
+    'Samoussa':{kcal:262,prot:6,carbs:28,lip:14},
+    'Quiche lorraine':{kcal:300,prot:11,carbs:22,lip:19},
+    'Sushi 6 pieces':{kcal:200,prot:9,carbs:35,lip:2},
+    'Maki 6 pieces':{kcal:150,prot:5,carbs:28,lip:2},
+    'Pates carbonara':{kcal:200,prot:8,carbs:25,lip:8},
+    'Lasagnes':{kcal:175,prot:9,carbs:15,lip:9},
+    'Burrito':{kcal:215,prot:9,carbs:27,lip:8},
+    'Nachos fromage':{kcal:330,prot:8,carbs:36,lip:17},
+    'Donut':{kcal:435,prot:5,carbs:51,lip:23},
+    'Cookie':{kcal:480,prot:5,carbs:64,lip:23},
+    'Muffin':{kcal:385,prot:6,carbs:54,lip:16},
+    'Pain au chocolat':{kcal:414,prot:7,carbs:45,lip:23},
+    'Croissant':{kcal:406,prot:8,carbs:42,lip:23},
+    'Glace 2 boules':{kcal:207,prot:3.5,carbs:24,lip:11},
+    'Milkshake':{kcal:112,prot:3.5,carbs:18,lip:3},
+    'Soda canette':{kcal:42,prot:0,carbs:11,lip:0},
+    // ===== SAUCES & CONDIMENTS =====
+    'Sauce tomate':{kcal:18,prot:0.9,carbs:3.9,lip:0.2},
+    'Sauce bolognaise':{kcal:60,prot:3,carbs:8,lip:1.5},
+    'Sauce béchamel':{kcal:95,prot:2.5,carbs:5,lip:7},
+    'Sauce carbonara':{kcal:120,prot:3,carbs:2,lip:10},
+    'Sauce alfredo':{kcal:140,prot:2,carbs:3,lip:13},
+    'Sauce pesto':{kcal:275,prot:8,carbs:5,lip:27},
+    'Sauce barbecue':{kcal:110,prot:0.5,carbs:26,lip:0.2},
+    'Sauce sriracha':{kcal:80,prot:2,carbs:16,lip:0.2},
+    'Sauce wasabi':{kcal:140,prot:8,carbs:20,lip:3},
+    'Sauce teriyaki':{kcal:72,prot:4.5,carbs:14,lip:0},
+    'Sauce curry':{kcal:120,prot:3,carbs:15,lip:4},
+    'Sauce tamari':{kcal:61,prot:10,carbs:3,lip:0.5},
+    'Sauce poisson':{kcal:35,prot:5.5,carbs:1,lip:0},
+    'Sauce oyster':{kcal:80,prot:2,carbs:17,lip:0.1},
+    'Sauce worcestershire':{kcal:70,prot:2,carbs:16,lip:0},
+    'Sauce ranch':{kcal:150,prot:1,carbs:2,lip:15},
+    'Sauce vinaigrette':{kcal:120,prot:0.2,carbs:2,lip:13},
+    'Sauce caesar':{kcal:160,prot:1.5,carbs:2,lip:17},
+    'Sauce miel-moutarde':{kcal:140,prot:2,carbs:30,lip:1},
+    'Sauce gribiche':{kcal:180,prot:2,carbs:3,lip:18},
+    'Sauce béarnaise':{kcal:200,prot:1,carbs:2,lip:21},
+    'Sauce hollandaise':{kcal:180,prot:1,carbs:1,lip:19},
+    'Sauce tartare':{kcal:180,prot:1,carbs:2,lip:18},
+    'Sauce cocktail':{kcal:150,prot:0.5,carbs:10,lip:12},
+    'Sauce chili':{kcal:50,prot:1,carbs:11,lip:0.2},
+    'Sauce harissa':{kcal:60,prot:1,carbs:10,lip:2},
+    'Sauce aïoli':{kcal:200,prot:0.5,carbs:2,lip:21},
+    'Sauce tzatziki':{kcal:60,prot:4,carbs:3,lip:4},
+    'Sauce samouraï':{kcal:120,prot:1,carbs:20,lip:4},
+    'Sauce tomate cherry':{kcal:20,prot:1,carbs:4,lip:0.2},
+    'Sauce armoricaine':{kcal:100,prot:2,carbs:8,lip:6},
+    'Sauce normande':{kcal:110,prot:2,carbs:4,lip:10},
+    'Sauce lyonnaise':{kcal:80,prot:1.5,carbs:12,lip:2},
+    'Sauce mornay':{kcal:120,prot:3.5,carbs:6,lip:9},
+    'Sauce suprême':{kcal:130,prot:3,carbs:5,lip:11},
+    'Sauce espagnole':{kcal:70,prot:2,carbs:8,lip:3},
+    'Sauce demi-glace':{kcal:90,prot:3.5,carbs:10,lip:3},
+    'Sauce robert':{kcal:75,prot:1,carbs:12,lip:2},
+    'Sauce poivrade':{kcal:85,prot:1,carbs:10,lip:4},
+    'Sauce zingara':{kcal:95,prot:1.5,carbs:12,lip:4},
+    'Sauce financière':{kcal:110,prot:3,carbs:8,lip:7},
+    'Sauce velouté':{kcal:100,prot:2.5,carbs:6,lip:7},
+    'Sauce grand veneur':{kcal:120,prot:2,carbs:10,lip:8},
+    'Sauce poivron':{kcal:65,prot:1,carbs:10,lip:2},
+    // ===== CONDIMENTS DIVERS =====
+    'Vinaigre blanc':{kcal:18,prot:0,carbs:0.4,lip:0},
+    'Vinaigre balsamique':{kcal:88,prot:0.5,carbs:17,lip:0},
+    'Vinaigre de riz':{kcal:18,prot:0,carbs:0,lip:0},
+    'Mayonnaise':{kcal:680,prot:1,carbs:1,lip:75},
+    'Mayonnaise light':{kcal:360,prot:1,carbs:2,lip:38},
+    'Miel':{kcal:304,prot:0.3,carbs:82,lip:0},
+    'Miel de manuka':{kcal:304,prot:0.4,carbs:81,lip:0},
+    'Sirop d\'érable':{kcal:260,prot:0,carbs:67,lip:0},
+    'Sirop d\'agave':{kcal:310,prot:0,carbs:76,lip:0},
+    'Sirop de maïs':{kcal:280,prot:0,carbs:76,lip:0},
+    'Mélasse':{kcal:290,prot:0,carbs:75,lip:0},
+    'Relish':{kcal:100,prot:0.5,carbs:24,lip:0.2},
+    'Cornichons':{kcal:12,prot:0.7,carbs:2.2,lip:0.1},
+    'Câpres':{kcal:23,prot:2.4,carbs:2.2,lip:0.3},
+    'Anchois en boîte':{kcal:210,prot:30,carbs:0,lip:11},
+    'Sauce worcester':{kcal:70,prot:2,carbs:16,lip:0},
+    'Tabasco':{kcal:24,prot:0.4,carbs:5,lip:0},
+    'Sauce sriracha épicée':{kcal:80,prot:2,carbs:16,lip:0.2},
+    // ===== POISSONS & FRUITS DE MER SUPPLÉMENTAIRES =====
+    'Huître':{kcal:68,prot:7,carbs:4,lip:2},
+    'Écrevisse':{kcal:91,prot:20,carbs:0,lip:0.5},
+    'Poulpe':{kcal:82,prot:15,carbs:3,lip:1},
+    'Seiche':{kcal:84,prot:16,carbs:1.2,lip:1.1},
+    'Lieu jaune':{kcal:82,prot:18,carbs:0,lip:0.9},
+    'Turbot':{kcal:110,prot:21,carbs:0,lip:2},
+    'Rouget':{kcal:124,prot:21,carbs:0,lip:4},
+    'Daurade royale':{kcal:127,prot:23,carbs:0,lip:4},
+    'Turlutte':{kcal:85,prot:15,carbs:3,lip:1.2},
+    'Espadon':{kcal:144,prot:22,carbs:0,lip:6},
+    'Thon rouge':{kcal:180,prot:25,carbs:0,lip:8},
+    'Requin':{kcal:130,prot:21,carbs:0,lip:4.5},
+    'Eperlan':{kcal:95,prot:17,carbs:0,lip:2.7},
+    'Carpe':{kcal:127,prot:19,carbs:0,lip:5.5},
+    'Perche':{kcal:82,prot:18,carbs:0,lip:0.5},
+    'Truite arc-en-ciel':{kcal:120,prot:20,carbs:0,lip:4},
+    'Truite fumée':{kcal:135,prot:22,carbs:0,lip:5},
+    // ===== VIANDES SUPPLÉMENTAIRES =====
+    'Bacon':{kcal:541,prot:37,carbs:0,lip:43},
+    'Pancetta':{kcal:380,prot:15,carbs:0,lip:35},
+    'Speck':{kcal:328,prot:28,carbs:0,lip:24},
+    'Prosciutto':{kcal:340,prot:26,carbs:0,lip:27},
+    'Jambon de Parme':{kcal:254,prot:30,carbs:0,lip:14},
+    'Jambon de Bayonne':{kcal:308,prot:35,carbs:0,lip:18},
+    'Salami':{kcal:465,prot:26,carbs:0,lip:39},
+    'Saucisson':{kcal:580,prot:20,carbs:0,lip:55},
+    'Pâté foie gras':{kcal:461,prot:6,carbs:1,lip:47},
+    'Pâté maison':{kcal:420,prot:12,carbs:0,lip:40},
+    'Terrine':{kcal:280,prot:18,carbs:0,lip:24},
+    'Rôti de bœuf':{kcal:210,prot:28,carbs:0,lip:10},
+    'Côte de boeuf':{kcal:280,prot:26,carbs:0,lip:19},
+    'Entrecôte':{kcal:250,prot:27,carbs:0,lip:15},
+    'Côtes levées':{kcal:293,prot:25,carbs:0,lip:22},
+    'Boeuf bourguignon':{kcal:180,prot:20,carbs:5,lip:8},
+    'Boulettes viande':{kcal:220,prot:18,carbs:6,lip:14},
+    'Escalope veau':{kcal:172,prot:31,carbs:0,lip:5},
+    'Côte veau':{kcal:182,prot:29,carbs:0,lip:7},
+    'Pied de veau':{kcal:180,prot:27,carbs:0,lip:8},
+    'Foie veau':{kcal:130,prot:18,carbs:3.2,lip:4},
+    'Rognons':{kcal:100,prot:16,carbs:0,lip:3.6},
+    'Tripes':{kcal:110,prot:18,carbs:0,lip:3.5},
+    'Andouille':{kcal:280,prot:18,carbs:1,lip:22},
+    'Andouillette':{kcal:320,prot:20,carbs:2,lip:26},
+    'Boudin noir':{kcal:405,prot:13,carbs:16,lip:32},
+    'Boudin blanc':{kcal:280,prot:15,carbs:3,lip:23},
+    'Confit de canard':{kcal:412,prot:14,carbs:0,lip:40},
+    'Magret de canard':{kcal:230,prot:28,carbs:0,lip:13},
+    'Cuisse de canard':{kcal:260,prot:25,carbs:0,lip:17},
+    'Oie':{kcal:238,prot:27,carbs:0,lip:14},
+    'Foie gras mi-cuit':{kcal:461,prot:6,carbs:1,lip:47},
+    'Poularde':{kcal:180,prot:28,carbs:0,lip:8},
+    'Chapon':{kcal:200,prot:27,carbs:0,lip:11},
+    'Pintade':{kcal:170,prot:29,carbs:0,lip:6},
+    'Caille':{kcal:190,prot:27,carbs:0,lip:10},
+    'Faisan':{kcal:220,prot:29,carbs:0,lip:11},
+    'Chevreuil':{kcal:120,prot:23,carbs:0,lip:2.5},
+    'Sanglier':{kcal:130,prot:22,carbs:0,lip:4.5},
+    'Lapin':{kcal:135,prot:22,carbs:0,lip:5},
+    'Lièvre':{kcal:150,prot:24,carbs:0,lip:5.5},
+    'Escargot':{kcal:90,prot:16,carbs:2,lip:1.5},
+    'Tripe à la mode':{kcal:140,prot:16,carbs:4,lip:6},
+    'Langue de boeuf':{kcal:280,prot:25,carbs:0,lip:20},
+    'Queue de boeuf':{kcal:250,prot:26,carbs:0,lip:16},
+    // ===== FROMAGES SUPPLÉMENTAIRES =====
+    'Camembert':{kcal:300,prot:20,carbs:0,lip:24},
+    'Brie':{kcal:290,prot:18,carbs:0.5,lip:24},
+    'Roquefort':{kcal:370,prot:22,carbs:2,lip:30},
+    'Gorgonzola':{kcal:360,prot:19,carbs:3,lip:29},
+    'Bleu d\'Auvergne':{kcal:370,prot:23,carbs:1,lip:29},
+    'Comté 24 mois':{kcal:420,prot:29,carbs:0,lip:34},
+    'Beaufort':{kcal:410,prot:28,carbs:0,lip:33},
+    'Reblochon':{kcal:370,prot:18,carbs:0,lip:32},
+    'Époisses':{kcal:350,prot:22,carbs:1,lip:28},
+    'Livarot':{kcal:360,prot:21,carbs:0,lip:29},
+    'Munster':{kcal:370,prot:20,carbs:0,lip:30},
+    'Taleggio':{kcal:290,prot:19,carbs:0.5,lip:24},
+    'Teleme':{kcal:280,prot:18,carbs:1,lip:23},
+    'Boursin nature':{kcal:380,prot:8,carbs:1,lip:38},
+    'Vache qui rit':{kcal:320,prot:19,carbs:2,lip:26},
+    'Kiri':{kcal:290,prot:17,carbs:2,lip:24},
+    'Laughing cow':{kcal:280,prot:14,carbs:4,lip:23},
+    'Caprice des dieux':{kcal:320,prot:15,carbs:1,lip:28},
+    'Saint Agur':{kcal:380,prot:19,carbs:0,lip:31},
+    'Pont l\'évêque':{kcal:340,prot:19,carbs:0.5,lip:28},
+    'Chaource':{kcal:280,prot:18,carbs:2,lip:23},
+    'Valençay':{kcal:300,prot:19,carbs:0.5,lip:25},
+    'Pouligny saint-pierre':{kcal:310,prot:21,carbs:0.5,lip:25},
+    'Banon':{kcal:330,prot:22,carbs:0.5,lip:27},
+    'Picodon':{kcal:320,prot:23,carbs:0,lip:26},
+    'Maroilles':{kcal:360,prot:20,carbs:0,lip:29},
+    // ===== LAITIERS SUPPLÉMENTAIRES =====
+    'Lait entier':{kcal:61,prot:3.2,carbs:4.8,lip:3.3},
+    'Lait de brebis':{kcal:95,prot:5.4,carbs:4.8,lip:6},
+    'Lait de chèvre':{kcal:72,prot:3.6,carbs:4.3,lip:4.5},
+    'Lait concentré sucré':{kcal:330,prot:8,carbs:55,lip:8.5},
+    'Lait concentré non sucré':{kcal:100,prot:7,carbs:4,lip:8},
+    'Poudre lait entier':{kcal:496,prot:26,carbs:38,lip:26},
+    'Crème fraîche 40%':{kcal:408,prot:2,carbs:3,lip:40},
+    'Mascarpone':{kcal:450,prot:4,carbs:6,lip:47},
+    'Crème aigre':{kcal:340,prot:3,carbs:3,lip:34},
+    'Crème pâtissière':{kcal:140,prot:2.5,carbs:16,lip:6},
+    'Fromage blanc 20%':{kcal:150,prot:8,carbs:5,lip:11},
+    'Fromage blanc 40%':{kcal:200,prot:6,carbs:3,lip:18},
+    'Yaourt à boire':{kcal:70,prot:3,carbs:11,lip:1},
+    'Yaourt nature sucré':{kcal:85,prot:3,carbs:15,lip:1.5},
+    'Yaourt saveur fruit':{kcal:100,prot:3,carbs:17,lip:2},
+    'Yaourt bifidobactéries':{kcal:75,prot:3,carbs:12,lip:1},
+    'Kéfir nature':{kcal:41,prot:3.3,carbs:4.5,lip:1},
+    'Bifidus':{kcal:60,prot:4,carbs:9,lip:0.5},
+    'Fromage blanc vanille':{kcal:100,prot:6,carbs:14,lip:1.5},
+    // ===== LÉGUMES FEUILLES & SALADES =====
+    'Laitue':{kcal:15,prot:1.2,carbs:2.9,lip:0.2},
+    'Laitue iceberg':{kcal:14,prot:0.9,carbs:2.6,lip:0.1},
+    'Laitue frisée':{kcal:17,prot:1.3,carbs:3.4,lip:0.2},
+    'Laitue romaine':{kcal:17,prot:1.2,carbs:3.2,lip:0.3},
+    'Mâche':{kcal:20,prot:1.8,carbs:3.3,lip:0.4},
+    'Roquette':{kcal:25,prot:2.6,carbs:3.7,lip:0.7},
+    'Épinards frais':{kcal:23,prot:2.9,carbs:3.6,lip:0.4},
+    'Épinards cuits':{kcal:21,prot:2.7,carbs:3.4,lip:0.3},
+    'Endives crues':{kcal:17,prot:1,carbs:3.4,lip:0.1},
+    'Cresson':{kcal:22,prot:2.3,carbs:3.7,lip:0.1},
+    'Pourpier':{kcal:20,prot:1.3,carbs:3.4,lip:0.2},
+    'Pissenlit':{kcal:45,prot:2.7,carbs:9.2,lip:0.7},
+    'Bette':{kcal:19,prot:1.8,carbs:3.7,lip:0.2},
+    'Chou kale':{kcal:49,prot:4.3,carbs:9,lip:0.9},
+    'Feuille de chou':{kcal:25,prot:1.3,carbs:6,lip:0.1},
+    // ===== LÉGUMES RACINES & TUBERCULES =====
+    'Navet blanc':{kcal:28,prot:0.9,carbs:6,lip:0.1},
+    'Navet jaune':{kcal:30,prot:1,carbs:6.5,lip:0.1},
+    'Rutabaga':{kcal:36,prot:1.2,carbs:8,lip:0.1},
+    'Salsifis':{kcal:82,prot:3.5,carbs:18,lip:0.3},
+    'Scorsonère':{kcal:82,prot:3.5,carbs:18,lip:0.3},
+    'Topinambour':{kcal:76,prot:2,carbs:17,lip:0.1},
+    'Radis blanc':{kcal:16,prot:0.6,carbs:3.4,lip:0.1},
+    'Radis noir':{kcal:18,prot:0.8,carbs:3.6,lip:0.2},
+    'Rave':{kcal:24,prot:1.1,carbs:5.3,lip:0.1},
+    'Celeriac':{kcal:42,prot:1.5,carbs:9,lip:0.3},
+    'Rondelle':{kcal:35,prot:1.2,carbs:7.5,lip:0.2},
+    // ===== FRUITS SECS & NOIX SUPPLÉMENTAIRES =====
+    'Amandes grillées':{kcal:650,prot:23,carbs:18,lip:57},
+    'Cacahuètes grillées':{kcal:600,prot:27,carbs:14,lip:51},
+    'Noix grillées':{kcal:700,prot:16,carbs:12,lip:69},
+    'Noix de cajou grillées':{kcal:570,prot:19,carbs:28,lip:46},
+    'Noix de macadamia grillées':{kcal:740,prot:9,carbs:12,lip:77},
+    'Noix de pécan grillées':{kcal:710,prot:10,carbs:12,lip:72},
+    'Pistaches grillées salées':{kcal:590,prot:21,carbs:26,lip:48},
+    'Noix du Brésil grillées':{kcal:680,prot:15,carbs:11,lip:68},
+    'Graine de sésame':{kcal:563,prot:17,carbs:24,lip:49},
+    'Graine de pavot':{kcal:534,prot:18,carbs:28,lip:42},
+    'Graine de moutarde':{kcal:508,prot:26,carbs:28,lip:36},
+    'Graine de nigelle':{kcal:375,prot:19,carbs:35,lip:20},
+    'Amande blanchie':{kcal:579,prot:21,carbs:19,lip:50},
+    'Amande effilée':{kcal:595,prot:21,carbs:19,lip:52},
+    'Noisette grillée':{kcal:650,prot:15,carbs:14,lip:63},
+    'Pignon de pin':{kcal:673,prot:14,carbs:13,lip:69},
+    // ===== FRUITS EXOTIQUES & RARES =====
+    'Goyave':{kcal:68,prot:2.6,carbs:14,lip:0.6},
+    'Papaye':{kcal:43,prot:0.6,carbs:11,lip:0.3},
+    'Kaki':{kcal:71,prot:0.6,carbs:19,lip:0.2},
+    'Litchi':{kcal:66,prot:0.8,carbs:17,lip:0.3},
+    'Fruit de la passion':{kcal:97,prot:2.2,carbs:24,lip:0.4},
+    'Noix de coco fraîche':{kcal:354,prot:3.3,carbs:9,lip:35},
+    'Coco sec':{kcal:660,prot:6,carbs:24,lip:64},
+    'Lait de coco':{kcal:230,prot:2,carbs:6,lip:24},
+    'Crème de coco':{kcal:330,prot:1.5,carbs:5,lip:35},
+    'Figue de Barbarie':{kcal:44,prot:0.7,carbs:10,lip:0.5},
+    'Fruit de dragon rouge':{kcal:60,prot:1.2,carbs:13,lip:0.4},
+    'Fruit de dragon blanc':{kcal:60,prot:1.2,carbs:13,lip:0.4},
+    'Cherimoya':{kcal:75,prot:1.6,carbs:17,lip:0.7},
+    'Sapotille':{kcal:83,prot:0.4,carbs:20,lip:0.3},
+    'Longane':{kcal:60,prot:1.3,carbs:15,lip:0.1},
+    'Ramboustan':{kcal:82,prot:0.9,carbs:21,lip:0.2},
+    'Durian':{kcal:147,prot:1.5,carbs:27,lip:5.3},
+    'Mangoustan':{kcal:73,prot:0.4,carbs:17,lip:0.6},
+    // ===== OLÉAGINEUX & HUILES SUPPLÉMENTAIRES =====
+    'Huile d\'arachide':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile de sésame':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile de noix':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile de noisette':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile d\'avocat':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile d\'onagre':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile de bourrache':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile de poisson':{kcal:900,prot:0,carbs:0,lip:100},
+    'Ghee':{kcal:900,prot:0,carbs:0,lip:100},
+    'Saindoux':{kcal:900,prot:0,carbs:0,lip:100},
+    'Graisse de canard':{kcal:900,prot:0,carbs:0,lip:100},
+    'Graisse d\'oie':{kcal:900,prot:0,carbs:0,lip:100},
+    'Shortening':{kcal:900,prot:0,carbs:0,lip:100},
+    'Spray de cuisine':{kcal:900,prot:0,carbs:0,lip:100},
+    // ===== FÉCULENTS & LÉGUMINEUSES SUPPLÉMENTAIRES =====
+    'Pois cassés jaunes':{kcal:118,prot:8,carbs:21,lip:0.4},
+    'Pois cassés verts':{kcal:115,prot:9,carbs:20,lip:0.3},
+    'Lentilles corail':{kcal:118,prot:9,carbs:20,lip:0.4},
+    'Lentilles vertes':{kcal:123,prot:9,carbs:20,lip:0.5},
+    'Lentilles beluga':{kcal:120,prot:9,carbs:21,lip:0.4},
+    'Lentilles roses':{kcal:118,prot:9,carbs:20,lip:0.4},
+    'Haricots blancs':{kcal:139,prot:9,carbs:25,lip:0.5},
+    'Haricots noirs':{kcal:132,prot:8,carbs:24,lip:0.5},
+    'Haricots pinto':{kcal:143,prot:9,carbs:27,lip:0.6},
+    'Haricots rouges cuits':{kcal:127,prot:9,carbs:23,lip:0.5},
+    'Pois chiches secs':{kcal:364,prot:19,carbs:61,lip:6},
+    'Pois chiches cuits':{kcal:164,prot:9,carbs:27,lip:2.6},
+    'Fèves sèches':{kcal:341,prot:26,carbs:58,lip:1.5},
+    'Fèves cuites':{kcal:110,prot:8,carbs:18,lip:0.6},
+    'Albizia':{kcal:150,prot:12,carbs:25,lip:0.5},
+    'Mung':{kcal:105,prot:7,carbs:19,lip:0.3},
+    'Azuki':{kcal:130,prot:8,carbs:25,lip:0.2},
+    'Pois fourrager':{kcal:118,prot:8,carbs:21,lip:0.4},
+    // ===== HERBES & ÉPICES =====
+    'Basilic frais':{kcal:22,prot:2.7,carbs:2.7,lip:0.6},
+    'Persil plat':{kcal:36,prot:2.7,carbs:6,lip:0.8},
+    'Persil frisé':{kcal:36,prot:2.7,carbs:6,lip:0.8},
+    'Coriandre fraîche':{kcal:23,prot:2.1,carbs:3.7,lip:0.5},
+    'Menthe fraîche':{kcal:31,prot:3.8,carbs:6.5,lip:0.7},
+    'Thym frais':{kcal:101,prot:5.6,carbs:24,lip:1.7},
+    'Romarin frais':{kcal:131,prot:3.3,carbs:21,lip:3.3},
+    'Sauge fraîche':{kcal:315,prot:10,carbs:61,lip:12},
+    'Origan frais':{kcal:69,prot:3,carbs:14,lip:1},
+    'Aneth frais':{kcal:43,prot:3.5,carbs:7,lip:0.8},
+    'Estragon frais':{kcal:295,prot:22,carbs:51,lip:7},
+    'Cerfeuil':{kcal:237,prot:8,carbs:49,lip:3},
+    'Poivre blanc':{kcal:296,prot:10,carbs:64,lip:3},
+    'Poivre noir':{kcal:251,prot:10,carbs:64,lip:3},
+    'Poivre rouge':{kcal:319,prot:10,carbs:64,lip:3},
+    'Paprika':{kcal:282,prot:14,carbs:54,lip:13},
+    'Paprika fumée':{kcal:282,prot:14,carbs:54,lip:13},
+    'Cumin':{kcal:375,prot:18,carbs:44,lip:22},
+    'Coriandre graine':{kcal:298,prot:12,carbs:52,lip:12},
+    'Cannelle':{kcal:247,prot:4,carbs:81,lip:3},
+    'Muscade':{kcal:525,prot:6,carbs:49,lip:36},
+    'Clou de girofle':{kcal:274,prot:6,carbs:41,lip:13},
+    'Gingembre frais':{kcal:80,prot:1.8,carbs:18,lip:0.8},
+    'Gingembre poudre':{kcal:335,prot:8.6,carbs:71,lip:4.2},
+    'Curcuma':{kcal:312,prot:7.8,carbs:67,lip:3.3},
+    'Fenouil graine':{kcal:345,prot:15.8,carbs:52,lip:15},
+    'Cardamome':{kcal:311,prot:11,carbs:68,lip:7},
+    'Safran':{kcal:310,prot:11,carbs:65,lip:5},
+    'Vanille':{kcal:288,prot:5.5,carbs:77,lip:0.1},
+    'Anis':{kcal:337,prot:17.6,carbs:50,lip:15.9},
+    'Piment':{kcal:40,prot:2,carbs:9,lip:0.4},
+    'Ail semoule':{kcal:331,prot:13,carbs:72,lip:1.7},
+    'Oignon semoule':{kcal:341,prot:10,carbs:82,lip:0.5},
+    'Poudre ail':{kcal:325,prot:17,carbs:71,lip:0.5},
+    'Poudre oignon':{kcal:340,prot:11,carbs:83,lip:0.4},
+    'Herbes provençales':{kcal:270,prot:9,carbs:54,lip:7},
+    'Bouquet garni':{kcal:200,prot:8,carbs:40,lip:3},
+    'Sel de table':{kcal:0,prot:0,carbs:0,lip:0},
+    'Sel de mer':{kcal:0,prot:0,carbs:0,lip:0},
+    'Sel himalayan':{kcal:0,prot:0,carbs:0,lip:0},
+    // ===== BOISSONS CHAUDES & FROIDES =====
+    'Café noir':{kcal:0,prot:0,carbs:0,lip:0},
+    'Expresso':{kcal:1,prot:0.1,carbs:0,lip:0},
+    'Café crème':{kcal:30,prot:0.5,carbs:1,lip:2},
+    'Thé noir':{kcal:1,prot:0,carbs:0.3,lip:0},
+    'Thé vert':{kcal:1,prot:0,carbs:0.3,lip:0},
+    'Thé blanc':{kcal:1,prot:0,carbs:0.3,lip:0},
+    'Thé rooibos':{kcal:1,prot:0,carbs:0,lip:0},
+    'Chocolat chaud maison':{kcal:150,prot:3,carbs:28,lip:4},
+    'Chocolat chaud poudre':{kcal:140,prot:2,carbs:32,lip:1},
+    'Cacao chaud':{kcal:120,prot:2.5,carbs:26,lip:0.5},
+    'Café cappuccino':{kcal:40,prot:1.5,carbs:3,lip:2},
+    'Café latte':{kcal:60,prot:2.5,carbs:4,lip:3},
+    'Café macchiato':{kcal:20,prot:1,carbs:1,lip:1},
+    'Smoothie banane':{kcal:120,prot:1.5,carbs:26,lip:1},
+    'Smoothie berries':{kcal:100,prot:1,carbs:22,lip:0.5},
+    'Jus orange frais':{kcal:47,prot:0.7,carbs:11,lip:0.3},
+    'Jus pomme':{kcal:48,prot:0.1,carbs:12,lip:0.1},
+    'Jus carotte':{kcal:41,prot:0.9,carbs:10,lip:0.2},
+    'Nectar de pêche':{kcal:56,prot:0.3,carbs:14,lip:0},
+    'Nectar d\'abricot':{kcal:60,prot:0.4,carbs:15,lip:0},
+    'Sirop menthe':{kcal:235,prot:0,carbs:59,lip:0},
+    'Sirop grenadine':{kcal:250,prot:0,carbs:62,lip:0},
+    'Coca-cola':{kcal:42,prot:0,carbs:10.6,lip:0},
+    'Fanta orange':{kcal:48,prot:0,carbs:12,lip:0},
+    'Sprite':{kcal:42,prot:0,carbs:10.5,lip:0},
+    'Eau gazeuse':{kcal:0,prot:0,carbs:0,lip:0},
+    'Eau minérale':{kcal:0,prot:0,carbs:0,lip:0},
+    'Eau de source':{kcal:0,prot:0,carbs:0,lip:0},
+    'Eau pétillante':{kcal:0,prot:0,carbs:0,lip:0},
+    'Vin blanc sec':{kcal:68,prot:0.1,carbs:0.6,lip:0},
+    'Vin rouge léger':{kcal:70,prot:0.2,carbs:1,lip:0},
+    'Vin rosé':{kcal:65,prot:0.2,carbs:2,lip:0},
+    'Champagne':{kcal:77,prot:0.3,carbs:2,lip:0},
+    'Bière blonde':{kcal:40,prot:0.4,carbs:3,lip:0},
+    'Bière brune':{kcal:45,prot:0.5,carbs:4,lip:0},
+    'Cidre doux':{kcal:35,prot:0.1,carbs:4,lip:0},
+    'Rhum blanc':{kcal:231,prot:0,carbs:0,lip:0},
+    'Rhum brun':{kcal:231,prot:0,carbs:0,lip:0},
+    'Vodka':{kcal:231,prot:0,carbs:0,lip:0},
+    'Whisky':{kcal:237,prot:0,carbs:0,lip:0},
+    'Cognac':{kcal:230,prot:0,carbs:0,lip:0},
+    'Pastis':{kcal:180,prot:0,carbs:2,lip:0},
+    'Liqueur':{kcal:250,prot:0,carbs:20,lip:0},
+    // ===== AJOUTS - VIANDES (cru/cuit) =====
+    'Aiguillette de poulet (crue)':{kcal:120,prot:23,carbs:0,lip:2.6},
+    'Aiguillette de poulet (cuite)':{kcal:165,prot:31,carbs:0,lip:3.6},
+    'Cuisse de poulet (crue)':{kcal:160,prot:19,carbs:0,lip:9},
+    'Pilon de poulet (cru)':{kcal:160,prot:19,carbs:0,lip:9},
+    'Pilon de poulet (cuit)':{kcal:209,prot:26,carbs:0,lip:11},
+    'Magret de canard (cru)':{kcal:200,prot:19,carbs:0,lip:13},
+    'Magret de canard (cuit)':{kcal:230,prot:27,carbs:0,lip:13},
+    'Porc filet (cru)':{kcal:143,prot:21,carbs:0,lip:6},
+    'Porc filet (cuit)':{kcal:175,prot:28,carbs:0,lip:7},
+    'Côte de porc (crue)':{kcal:172,prot:20,carbs:0,lip:10},
+    'Côte de porc (cuite)':{kcal:230,prot:27,carbs:0,lip:13},
+    'Agneau (cru)':{kcal:230,prot:18,carbs:0,lip:17},
+    'Agneau (cuit)':{kcal:290,prot:25,carbs:0,lip:21},
+    'Veau escalope (crue)':{kcal:110,prot:21,carbs:0,lip:3},
+    'Veau escalope (cuite)':{kcal:150,prot:28,carbs:0,lip:4},
+    'Rôti de boeuf (cru)':{kcal:140,prot:22,carbs:0,lip:5},
+    'Rôti de boeuf (cuit)':{kcal:190,prot:30,carbs:0,lip:7},
+    'Entrecôte (crue)':{kcal:190,prot:20,carbs:0,lip:12},
+    'Entrecôte (cuite)':{kcal:250,prot:27,carbs:0,lip:16},
+    // ===== AJOUTS - POISSONS (cru/cuit) =====
+    'Cabillaud (cuit)':{kcal:105,prot:23,carbs:0,lip:1},
+    'Colin/Lieu (cru)':{kcal:78,prot:17,carbs:0,lip:1},
+    'Colin/Lieu (cuit)':{kcal:100,prot:22,carbs:0,lip:1},
+    'Dorade (crue)':{kcal:96,prot:20,carbs:0,lip:2},
+    'Dorade (cuite)':{kcal:125,prot:26,carbs:0,lip:2.5},
+    'Truite (crue)':{kcal:120,prot:20,carbs:0,lip:4},
+    'Truite (cuite)':{kcal:150,prot:25,carbs:0,lip:5},
+    'Maquereau (cru)':{kcal:205,prot:19,carbs:0,lip:14},
+    'Sardine (crue)':{kcal:165,prot:21,carbs:0,lip:9},
+    'Sardine à l\'huile':{kcal:220,prot:24,carbs:0,lip:14},
+    'Crevettes (cuites)':{kcal:99,prot:24,carbs:0,lip:0.3},
+    'Moules (cuites)':{kcal:86,prot:12,carbs:4,lip:2},
+    'Tilapia (cru)':{kcal:96,prot:20,carbs:0,lip:2},
+    'Tilapia (cuit)':{kcal:128,prot:26,carbs:0,lip:3},
+    // ===== AJOUTS - FÉCULENTS & LÉGUMINEUSES (cru/cuit) =====
+    'Riz basmati (cuit)':{kcal:121,prot:3,carbs:25,lip:0.4},
+    'Riz complet (cuit)':{kcal:111,prot:2.6,carbs:23,lip:0.9},
+    'Quinoa (cuit)':{kcal:120,prot:4.4,carbs:21,lip:1.9},
+    'Lentilles (cuites)':{kcal:116,prot:9,carbs:20,lip:0.4},
+    'Pois chiches (cuits)':{kcal:164,prot:9,carbs:27,lip:2.6},
+    'Haricots rouges (cuits)':{kcal:127,prot:9,carbs:23,lip:0.5},
+    'Haricots blancs (cuits)':{kcal:139,prot:9,carbs:25,lip:0.6},
+    'Boulgour (cuit)':{kcal:83,prot:3,carbs:19,lip:0.2},
+    'Patate douce (crue)':{kcal:86,prot:1.6,carbs:20,lip:0.1},
+    'Patate douce (cuite)':{kcal:90,prot:2,carbs:21,lip:0.1},
+    'Pomme de terre (crue)':{kcal:77,prot:2,carbs:17,lip:0.1},
+    'Pomme de terre (cuite)':{kcal:87,prot:2,carbs:20,lip:0.1},
+    'Polenta (cuite)':{kcal:85,prot:2,carbs:18,lip:0.3},
+    // ===== AJOUTS - PRODUITS LAITIERS & ŒUFS =====
+    'Skyr nature':{kcal:63,prot:11,carbs:4,lip:0.2},
+    'Fromage blanc 0%':{kcal:47,prot:8,carbs:4,lip:0.2},
+    'Fromage blanc 3%':{kcal:74,prot:7,carbs:4,lip:3},
+    'Yaourt grec':{kcal:97,prot:9,carbs:4,lip:5},
+    'Cottage cheese':{kcal:98,prot:11,carbs:3,lip:4},
+    'Mozzarella':{kcal:280,prot:22,carbs:2,lip:21},
+    'Feta':{kcal:264,prot:14,carbs:4,lip:21},
+    'Oeuf entier (cru)':{kcal:143,prot:13,carbs:0.7,lip:10},
+    'Oeuf dur':{kcal:155,prot:13,carbs:1.1,lip:11},
+    'Lait demi-écrémé':{kcal:46,prot:3.2,carbs:5,lip:1.6},
+    'Lait d\'amande':{kcal:24,prot:0.5,carbs:3,lip:1.1},
+    // ===== AJOUTS - FRUITS & LÉGUMES =====
+    'Avocat':{kcal:160,prot:2,carbs:9,lip:15},
+    'Myrtilles':{kcal:57,prot:0.7,carbs:14,lip:0.3},
+    'Framboises':{kcal:52,prot:1.2,carbs:12,lip:0.7},
+    'Mangue':{kcal:60,prot:0.8,carbs:15,lip:0.4},
+    'Ananas':{kcal:50,prot:0.5,carbs:13,lip:0.1},
+    'Kiwi':{kcal:61,prot:1.1,carbs:15,lip:0.5},
+    'Épinards (crus)':{kcal:23,prot:2.9,carbs:3.6,lip:0.4},
+    'Brocoli (cuit)':{kcal:35,prot:2.4,carbs:7,lip:0.4},
+    'Courgette (crue)':{kcal:17,prot:1.2,carbs:3,lip:0.3},
+    'Poivron':{kcal:31,prot:1,carbs:6,lip:0.3},
+    'Champignons':{kcal:22,prot:3,carbs:3,lip:0.3},
+    // ===== AJOUTS - SNACKS & DIVERS =====
+    'Beurre de cacahuète':{kcal:588,prot:25,carbs:20,lip:50},
+    'Amandes':{kcal:579,prot:21,carbs:22,lip:50},
+    'Noix':{kcal:654,prot:15,carbs:14,lip:65},
+    'Noix de cajou':{kcal:553,prot:18,carbs:30,lip:44},
+    'Flocons d\'avoine':{kcal:389,prot:17,carbs:66,lip:7},
+    'Galette de riz':{kcal:387,prot:8,carbs:82,lip:3},
+    'Miel':{kcal:304,prot:0.3,carbs:82,lip:0},
+    'Chocolat noir 70%':{kcal:598,prot:7.8,carbs:46,lip:43},
+    'Whey (1 dose 30g)':{kcal:120,prot:24,carbs:3,lip:1.5},
+    'Cookie de Véronique':{kcal:573.5,prot:7.48,carbs:52.86,lip:36.94,unit:147,unitLabel:'cookie'},
+};
+
+// ===== ÉTAT =====
+let goal = { kcal:4000, weight:97, protRatio:2.2 };
+let recipes = [];
+let nextRid = 1;
+let history = [];
+let weightLog = []; // suivi du poids corporel : [{iso, date, weight}]
+
+// ===== STOCKAGE LOCAL =====
+function save(){
+    try {
+        localStorage.setItem('repz_goal', JSON.stringify(goal));
+        localStorage.setItem('repz_recipes', JSON.stringify(recipes));
+        localStorage.setItem('repz_history', JSON.stringify(history));
+        localStorage.setItem('repz_nextRid', String(nextRid));
+        localStorage.setItem('repz_weightLog', JSON.stringify(weightLog));
+    } catch(e){}
+}
+function load(){
+    try {
+        const g = localStorage.getItem('repz_goal'); if(g) goal = JSON.parse(g);
+        const r = localStorage.getItem('repz_recipes'); if(r) recipes = JSON.parse(r);
+        const h = localStorage.getItem('repz_history'); if(h) history = JSON.parse(h);
+        const n = localStorage.getItem('repz_nextRid'); if(n) nextRid = parseInt(n);
+        const w = localStorage.getItem('repz_weightLog'); if(w) weightLog = JSON.parse(w);
+    } catch(e){}
+}
+
+// ===== COMPTEUR D'EAU =====
+const WATER_PER_TAP = 75;      // ml par appui
+const WATER_BOTTLE = 1500;     // ml par bouteille
+let waterToday = 0;            // ml bus aujourd'hui (total)
+
+function waterTodayKey(){
+    const d = new Date();
+    return 'repz_water_' + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+function loadWater(){
+    try {
+        const v = localStorage.getItem(waterTodayKey());
+        waterToday = v ? parseInt(v) : 0;
+    } catch(e){ waterToday = 0; }
+    updateWaterUI();
+}
+function saveWater(){
+    try { localStorage.setItem(waterTodayKey(), String(waterToday)); } catch(e){}
+}
+function addWater(){
+    waterToday += WATER_PER_TAP;
+    saveWater();
+    updateWaterUI(true);
+}
+function resetWaterToday(){
+    waterToday = 0;
+    saveWater();
+    updateWaterUI();
+}
+function litres(ml){
+    return (ml/1000).toFixed(ml % 1000 === 0 ? 0 : 3).replace('.', ',') + ' L';
+}
+function updateWaterUI(animate){
+    // Remplissage de la bouteille EN COURS (reste après les bouteilles pleines)
+    const dansBouteille = waterToday % WATER_BOTTLE;
+    // Si pile sur un multiple et qu'on vient d'ajouter, montrer pleine avant de repartir
+    let pct = (dansBouteille / WATER_BOTTLE) * 100;
+    if(animate && dansBouteille === 0 && waterToday > 0){
+        // Bouteille terminée : montrer 100% puis revenir à 0
+        const fill = document.getElementById('bottleFill');
+        const pctEl = document.getElementById('bottlePct');
+        if(fill){ fill.style.height = '100%'; pctEl.textContent = '100%'; }
+        setTimeout(()=>{ if(fill){ fill.style.height = '0%'; pctEl.textContent = '0%'; } }, 450);
+    } else {
+        const fill = document.getElementById('bottleFill');
+        const pctEl = document.getElementById('bottlePct');
+        if(fill){ fill.style.height = pct + '%'; pctEl.textContent = Math.round(pct) + '%'; }
+    }
+    // Total du jour
+    const totalEl = document.getElementById('waterTotalVal');
+    if(totalEl) totalEl.textContent = litres(waterToday);
+    // Petit compteur sur le bouton flottant
+    const fabEl = document.getElementById('waterFabCount');
+    if(fabEl) fabEl.textContent = litres(waterToday);
+}
+function openWater(){
+    document.getElementById('waterModal').classList.add('show');
+    updateWaterUI();
+}
+function closeWater(){
+    document.getElementById('waterModal').classList.remove('show');
+}
+
+// ===== CALCULS =====
+function macrosOf(ing){
+    // Priorité aux macros stockées dans l'ingrédient (produits scannés), sinon DB
+    const base = ing.macros || DB[ing.name] || {kcal:0,prot:0,carbs:0,lip:0};
+    // Si ingrédient à l'unité (oeuf), portion = nombre d'unités, on convertit en grammes
+    const grams = base.unit ? ing.portion * base.unit : ing.portion;
+    const r = grams/100;
+    return { kcal:base.kcal*r, prot:base.prot*r, carbs:base.carbs*r, lip:base.lip*r };
+}
+function recipeTotals(recipe){
+    let t={kcal:0,prot:0,carbs:0,lip:0};
+    recipe.ings.forEach(i=>{ const m=macrosOf(i); t.kcal+=m.kcal; t.prot+=m.prot; t.carbs+=m.carbs; t.lip+=m.lip; });
+    return t;
+}
+function dayTotals(){
+    let t={kcal:0,prot:0,carbs:0,lip:0};
+    recipes.forEach(rc=>{ const rt=recipeTotals(rc); const m=rc.mult||1;
+        t.kcal+=rt.kcal*m; t.prot+=rt.prot*m; t.carbs+=rt.carbs*m; t.lip+=rt.lip*m; });
+    return t;
+}
+
+// ===== DATE =====
+function renderDate(){
+    const d = new Date();
+    document.getElementById('dateBanner').textContent =
+        d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+
+// ===== RENDER RECETTES =====
+function renderRecipes(){
+    const c = document.getElementById('recipesContainer');
+    c.innerHTML='';
+    recipes.forEach(rc=>{
+        const nextIid = Math.max(0,...rc.ings.map(i=>i.id))+1;
+        const t = recipeTotals(rc);
+        const ft = { kcal:t.kcal*(rc.mult||1), prot:t.prot*(rc.mult||1), carbs:t.carbs*(rc.mult||1), lip:t.lip*(rc.mult||1) };
+        const card = document.createElement('div');
+        card.className='recipe-card';
+        let h = `<div class="recipe-header">
+            <input class="recipe-name" value="${rc.name}" onchange="renameRecipe(${rc.id},this.value)">
+            ${(rc.mult&&rc.mult>1)?`<span class="recipe-mult-badge">×${rc.mult}</span>`:''}
+        </div>`;
+        rc.ings.forEach(ing=>{
+            const m = macrosOf(ing);
+            const base = DB[ing.name] || {};
+            const unitLabel = base.unitLabel || 'g';
+            const baseInfo = base.unit
+                ? `1 ${base.unitLabel} = ${(base.kcal*base.unit/100).toFixed(0)} kcal`
+                : `100g = ${base.kcal||0} kcal`;
+            h += `<div class="ing-row">
+                <div class="ing-info"><div class="ing-name">${ing.name}</div><div class="ing-base">${baseInfo}</div></div>
+                <div class="ing-input"><input type="number" value="${ing.portion}" oninput="updatePortion(${rc.id},${ing.id},this.value)"><span class="ing-unit">${unitLabel}</span></div>
+                <div class="ing-macros" id="m-${rc.id}-${ing.id}">
+                    <div class="ing-kcal">${m.kcal.toFixed(0)} kcal</div>
+                    <div class="ing-sub">${m.prot.toFixed(0)}P · ${m.carbs.toFixed(0)}C · ${m.lip.toFixed(0)}L</div>
+                </div>
+                <button class="del-btn" onclick="delIng(${rc.id},${ing.id})">✕</button>
+            </div>`;
+        });
+        h += `<div class="add-ing">
+            <input type="text" id="search-${rc.id}" placeholder=" Ajouter un ingrédient..." autocomplete="off"
+                oninput="filterIngredients(${rc.id},this.value)" onfocus="filterIngredients(${rc.id},this.value)">
+            <button class="scan-btn" onclick="openScanner(${rc.id})" title="Scanner un code-barres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5v14M6 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg></button>
+            <div class="search-results" id="results-${rc.id}"></div>
+        </div>`;
+        h += `<div class="recipe-total"> ${t.kcal.toFixed(0)} kcal | ${t.prot.toFixed(1)}P | ${t.carbs.toFixed(1)}C | ${t.lip.toFixed(1)}L`;
+        if(rc.mult&&rc.mult>1) h += `<div class="rt-mult">× ${rc.mult} = ${ft.kcal.toFixed(0)} kcal | ${ft.prot.toFixed(0)}P | ${ft.carbs.toFixed(0)}C | ${ft.lip.toFixed(1)}L</div>`;
+        h += `</div>`;
+        h += `<div class="recipe-actions">
+            <button class="btn-del-recipe" onclick="delRecipe(${rc.id})">✕ Supprimer recette</button>
+        </div>`;
+        card.innerHTML=h;
+        c.appendChild(card);
+    });
+    renderTotals();
+}
+
+function renderTotals(){
+    const t = dayTotals();
+    document.getElementById('dtKcal').textContent = t.kcal.toFixed(0);
+    document.getElementById('dtProt').textContent = t.prot.toFixed(0)+'g';
+    document.getElementById('dtCarbs').textContent = t.carbs.toFixed(0)+'g';
+    document.getElementById('dtLip').textContent = t.lip.toFixed(0)+'g';
+
+    // Restant dans la carte total
+    const resteTotal = goal.kcal - t.kcal;
+    const dtRem = document.getElementById('dtRemaining');
+    if(dtRem){
+        if(resteTotal >= 0){
+            dtRem.innerHTML = `Reste <b>${resteTotal.toFixed(0)} kcal</b> à consommer`;
+            dtRem.className = 'dt-remaining';
+        } else {
+            dtRem.innerHTML = `Dépassé de <b>${Math.abs(resteTotal).toFixed(0)} kcal</b>`;
+            dtRem.className = 'dt-remaining over';
+        }
+    }
+
+    // Objectif
+    const protTarget = Math.round(goal.weight*goal.protRatio);
+    const carbTarget = Math.round((goal.kcal*0.5)/4);
+    const lipTarget = Math.round((goal.kcal*0.2)/9);
+    document.getElementById('goalConsumed').textContent = t.kcal.toFixed(0);
+    document.getElementById('goalKcal').textContent = goal.kcal;
+    const pct = Math.min(100,(t.kcal/goal.kcal)*100);
+    document.getElementById('progressFill').style.width = pct+'%';
+    const reste = goal.kcal - t.kcal;
+    document.getElementById('progressLabel').textContent =
+        reste>=0 ? `Reste ${reste.toFixed(0)} kcal` : `Dépassé de ${Math.abs(reste).toFixed(0)} kcal`;
+    document.getElementById('gmProt').textContent = t.prot.toFixed(0)+'g';
+    document.getElementById('gmCarbs').textContent = t.carbs.toFixed(0)+'g';
+    document.getElementById('gmLip').textContent = t.lip.toFixed(0)+'g';
+    document.getElementById('gmProtTarget').textContent = '/ '+protTarget+'g';
+    document.getElementById('gmCarbsTarget').textContent = '/ '+carbTarget+'g';
+    document.getElementById('gmLipTarget').textContent = '/ '+lipTarget+'g';
+
+    // Code couleur protéines : vert si cible atteinte (>=95%), orange sinon
+    const protEl = document.getElementById('gmProt');
+    if(t.prot >= protTarget*0.95){
+        protEl.style.color = '#22c55e'; // vert : cible protéines atteinte
+    } else {
+        protEl.style.color = '#fb923c'; // orange : protéines insuffisantes
+    }
+
+    // Suggestion : combler les calories restantes avec une recette existante
+    renderSuggestion(reste, t);
+
+    save();
+}
+
+// ===== MACROS RESTANTES (dans la carte objectif) =====
+function renderSuggestion(reste, totals){
+    const el = document.getElementById('progressMacrosLeft');
+    if(!el) return;
+    el.innerHTML = '';
+}
+
+// ===== ACTIONS =====
+function updatePortion(rid,iid,val){
+    const rc=recipes.find(r=>r.id===rid); if(!rc) return;
+    const ing=rc.ings.find(i=>i.id===iid); if(!ing) return;
+    ing.portion=parseFloat(val)||0;
+    const m=macrosOf(ing);
+    const el=document.getElementById(`m-${rid}-${iid}`);
+    if(el) el.innerHTML=`<div class="ing-kcal">${m.kcal.toFixed(0)} kcal</div><div class="ing-sub">${m.prot.toFixed(0)}P · ${m.carbs.toFixed(0)}C · ${m.lip.toFixed(0)}L</div>`;
+    renderTotals();
+}
+function normalize(str){
+    return str.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // enlève accents
+        .replace(/œ/g,'oe').replace(/æ/g,'ae')           // œ ->oe
+        .replace(/['']/g,' ')                            // apostrophes ->espace
+        .replace(/\u00A0/g,' ')                          // espace insécable ->espace normal
+        .replace(/\s+/g,' ')                             // espaces multiples ->un seul
+        .trim();
+}
+function filterIngredients(rid,query){
+    const box=document.getElementById(`results-${rid}`);
+    if(!box) return;
+    const q=normalize(query.trim());
+    // Recherche multi-mots : chaque mot tapé doit être présent dans le nom
+    const mots = q.split(/\s+/).filter(m=>m.length>0);
+    const matches=Object.keys(DB).filter(name=>{
+        const n=normalize(name);
+        return mots.every(mot=>n.includes(mot));
+    }).sort();
+    if(matches.length===0){
+        box.innerHTML='<div class="search-none">Aucun ingrédient trouvé</div>';
+        box.classList.add('show');
+        return;
+    }
+    box.innerHTML=matches.map(name=>
+        `<div class="search-item" onclick="addIngredient(${rid},'${name.replace(/'/g,"\\'")}')">
+            <span>${name}</span><span class="si-kcal">${DB[name].kcal} kcal/100g</span>
+        </div>`
+    ).join('');
+    box.classList.add('show');
+}
+function addIngredient(rid,name){
+    if(!DB[name]) return;
+    const rc=recipes.find(r=>r.id===rid); if(!rc) return;
+    const nid=Math.max(0,...rc.ings.map(i=>i.id))+1;
+    const defaultPortion = DB[name].unit ? 1 : 100; // 1 oeuf, ou 100g
+    rc.ings.push({id:nid,name:name,portion:defaultPortion});
+    renderRecipes();
+}
+
+// ===== SCANNER CODE-BARRES =====
+let scanQr = null;
+let scanCurrentRid = null;
+
+function scanShowStatus(msg, type){
+    const s = document.getElementById('scanStatus');
+    s.textContent = msg;
+    s.className = 'scan-status show ' + type;
+}
+
+function openScanner(rid){
+    scanCurrentRid = rid;
+    document.getElementById('scanModal').classList.add('show');
+    document.getElementById('scanStatus').className = 'scan-status';
+    document.getElementById('scanManualCode').value = '';
+    scanShowStatus('Démarrage de la caméra...', 'info');
+
+    scanQr = new Html5Qrcode("scanReader");
+    scanQr.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 150 } },
+        (decodedText) => {
+            scanStopCamera();
+            scanShowStatus('Code détecté, recherche...', 'info');
+            scanLookupProduct(decodedText);
+        },
+        () => {}
+    ).catch((err) => {
+        scanShowStatus('Caméra indisponible. Tape le code à la main ci-dessous.', 'error');
+    });
+}
+
+function scanStopCamera(){
+    if(scanQr){
+        scanQr.stop().then(()=>{ scanQr.clear(); }).catch(()=>{});
+        scanQr = null;
+    }
+}
+
+function closeScanner(){
+    scanStopCamera();
+    document.getElementById('scanModal').classList.remove('show');
+}
+
+function scanLookupManual(){
+    const code = document.getElementById('scanManualCode').value.trim();
+    if(code) scanLookupProduct(code);
+}
+
+async function scanLookupProduct(barcode){
+    scanShowStatus('Recherche du produit...', 'info');
+    try {
+        const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`);
+        const data = await res.json();
+
+        if(data.status !== 1 || !data.product){
+            scanShowStatus('Produit non trouvé. Essaie un autre code ou ajoute-le manuellement.', 'error');
+            return;
+        }
+
+        const p = data.product;
+        const n = p.nutriments || {};
+        const nom = (p.product_name || 'Produit scanné').trim();
+        const marque = (p.brands || '').split(',')[0].trim();
+        const nomComplet = marque ? `${nom} (${marque})` : nom;
+
+        const kcal = Math.round(n['energy-kcal_100g'] || 0);
+        const prot = Math.round((n.proteins_100g || 0) * 10) / 10;
+        const carbs = Math.round((n.carbohydrates_100g || 0) * 10) / 10;
+        const lip = Math.round((n.fat_100g || 0) * 10) / 10;
+
+        if(kcal === 0 && prot === 0 && carbs === 0 && lip === 0){
+            scanShowStatus('Produit trouvé mais sans infos nutritionnelles dans la base.', 'error');
+            return;
+        }
+
+        // Ajouter le produit à la base en mémoire (valeurs pour 100g)
+        DB[nomComplet] = { kcal:kcal, prot:prot, carbs:carbs, lip:lip };
+
+        // L'ajouter à la recette en cours, avec macros intégrées (pour persister après refresh)
+        if(scanCurrentRid !== null){
+            const rc = recipes.find(r=>r.id===scanCurrentRid);
+            if(rc){
+                const nid = Math.max(0,...rc.ings.map(i=>i.id))+1;
+                rc.ings.push({
+                    id: nid,
+                    name: nomComplet,
+                    portion: 100,
+                    macros: { kcal:kcal, prot:prot, carbs:carbs, lip:lip }
+                });
+                renderRecipes();
+                save();
+            }
+        }
+
+        scanShowStatus(`✅ ${nomComplet} ajouté !`, 'success');
+        setTimeout(closeScanner, 900);
+    } catch(err){
+        scanShowStatus('Erreur réseau. Vérifie ta connexion.', 'error');
+    }
+}
+function delIng(rid,iid){
+    const rc=recipes.find(r=>r.id===rid); if(!rc) return;
+    rc.ings=rc.ings.filter(i=>i.id!==iid);
+    renderRecipes();
+}
+function renameRecipe(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.name=val; save();} }
+function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes();} }
+function addRecipe(){
+    const newId = nextRid++;
+    recipes.push({id:newId,name:'Nouvelle recette',mult:1,ings:[]});
+    renderRecipes();
+    // Auto-scroll vers la nouvelle recette
+    setTimeout(()=>{
+        const cards=document.querySelectorAll('.recipe-card');
+        const last=cards[cards.length-1];
+        if(last) last.scrollIntoView({behavior:'smooth',block:'center'});
+    },100);
+}
+function delRecipe(rid){ recipes=recipes.filter(r=>r.id!==rid); renderRecipes(); }
+
+// ===== OBJECTIF MODAL =====
+function openGoalModal(){
+    document.getElementById('inputGoalKcal').value=goal.kcal;
+    document.getElementById('inputWeight').value=goal.weight;
+    document.getElementById('inputProtRatio').value=goal.protRatio;
+    document.getElementById('goalModal').classList.add('show');
+}
+function closeGoalModal(){ document.getElementById('goalModal').classList.remove('show'); }
+function saveGoal(){
+    goal.kcal=parseFloat(document.getElementById('inputGoalKcal').value)||4000;
+    goal.weight=parseFloat(document.getElementById('inputWeight').value)||97;
+    let pr=parseFloat(document.getElementById('inputProtRatio').value)||2.2;
+    if(pr < 2.2) pr = 2.2; // minimum 2,2g/kg
+    goal.protRatio=pr;
+    closeGoalModal();
+    renderTotals();
+}
+
+// ===== CALCULATEUR DE MAINTIEN (TDEE) =====
+let lastTdee = null; // stocke le dernier résultat pour l'appliquer
+
+function toggleTdee(){
+    const body=document.getElementById('tdeeBody');
+    const arrow=document.getElementById('tdeeArrow');
+    body.classList.toggle('open');
+    arrow.textContent = body.classList.contains('open') ? '▴' : '▾';
+    // Pré-remplir le poids depuis l'objectif (évite de le retaper)
+    if(body.classList.contains('open') && goal.weight){
+        document.getElementById('tdeeWeight').value = goal.weight;
+    }
+}
+
+function calcTdee(){
+    const sex=document.getElementById('tdeeSex').value;
+    const age=parseFloat(document.getElementById('tdeeAge').value)||25;
+    const weight=parseFloat(document.getElementById('tdeeWeight').value)||75;
+    const height=parseFloat(document.getElementById('tdeeHeight').value)||175;
+    const activity=parseFloat(document.getElementById('tdeeActivity').value)||1.55;
+    const adjust=parseFloat(document.getElementById('tdeeGoal').value)||0;
+
+    // Formule Mifflin-St Jeor
+    let bmr = 10*weight + 6.25*height - 5*age + (sex==='h' ? 5 : -161);
+    const tdee = bmr * activity;
+    const target = Math.round(tdee + adjust);
+
+    // Répartition macros : protéines 2,2g/kg, lipides 25% des kcal, reste en glucides
+    const prot = Math.round(weight * 2.2);
+    const lip = Math.round((target * 0.25) / 9);
+    const carbs = Math.round((target - (prot*4) - (lip*9)) / 4);
+
+    // Affichage
+    document.getElementById('resBmr').textContent = Math.round(bmr)+' kcal';
+    document.getElementById('resTdee').textContent = Math.round(tdee)+' kcal';
+    document.getElementById('resTarget').textContent = target+' kcal';
+    document.getElementById('resProt').textContent = prot+'g';
+    document.getElementById('resCarbs').textContent = carbs+'g';
+    document.getElementById('resLip').textContent = lip+'g';
+    document.getElementById('tdeeResult').style.display='block';
+
+    // Stocke pour application
+    lastTdee = { kcal:target, weight:weight, protRatio:2.2 };
+}
+
+function applyTdee(){
+    if(!lastTdee) return;
+    goal.kcal = lastTdee.kcal;
+    goal.weight = lastTdee.weight;
+    goal.protRatio = lastTdee.protRatio;
+    save();
+    renderTotals();
+    // Petit feedback visuel
+    const btn=document.querySelector('.tdee-apply-btn');
+    const orig=btn.textContent;
+    btn.textContent=' Objectif appliqué !';
+    btn.style.background='#059669';
+    setTimeout(()=>{ btn.textContent=orig; btn.style.background=''; }, 1800);
+}
+
+// ===== HISTORIQUE =====
+function saveDay(){
+    const t=dayTotals();
+    if(t.kcal<=0){ alert('Ajoute des aliments avant d\'enregistrer la journée.'); return; }
+    if(!confirm('Enregistrer cette journée et recommencer ?\n\nLe total du jour sera gardé dans ton suivi, et l\'écran sera vidé pour repartir à zéro.')) return;
+    // Archiver la journée
+    const today=new Date().toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
+    const iso=new Date().toISOString().slice(0,10);
+    const existing=history.findIndex(h=>h.iso===iso);
+    const entry={iso,date:today,kcal:t.kcal.toFixed(0),prot:t.prot.toFixed(0),carbs:t.carbs.toFixed(0),lip:t.lip.toFixed(0)};
+    if(existing>=0) history[existing]=entry; else history.unshift(entry);
+    // Vider l'écran
+    recipes=[{id:0,name:'Nouvelle recette',mult:1,ings:[]}];
+    nextRid=1;
+    renderRecipes();
+    renderHistory();
+    renderTotals();
+    save();
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+function delHistory(iso){ history=history.filter(h=>h.iso!==iso); renderHistory(); save(); }
+
+// ===== SUIVI DU POIDS =====
+function addWeight(){
+    const val=parseFloat(document.getElementById('weightInput').value);
+    if(!val||val<=0){ alert('Entre un poids valide'); return; }
+    const iso=new Date().toISOString().slice(0,10);
+    const date=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+    const existing=weightLog.findIndex(w=>w.iso===iso);
+    const entry={iso,date,weight:val};
+    if(existing>=0) weightLog[existing]=entry; else weightLog.push(entry);
+    weightLog.sort((a,b)=>a.iso.localeCompare(b.iso));
+    document.getElementById('weightInput').value='';
+    renderWeight();
+    save();
+}
+function delWeight(iso){ weightLog=weightLog.filter(w=>w.iso!==iso); renderWeight(); save(); }
+
+function renderWeight(){
+    const chart=document.getElementById('weightChart');
+    const list=document.getElementById('weightList');
+    if(weightLog.length===0){
+        chart.innerHTML='';
+        list.innerHTML='<div class="weight-empty">Aucune pesée. Ajoute ton poids pour suivre ton évolution.</div>';
+        return;
+    }
+    // Graphique (14 dernières pesées)
+    const data=weightLog.slice(-14);
+    if(data.length>=2){
+        const W=320,H=130,padL=34,padB=20,padT=12,padR=12;
+        const vals=data.map(w=>w.weight);
+        let maxV=Math.max(...vals), minV=Math.min(...vals);
+        const margin=(maxV-minV)*0.15||1; maxV+=margin; minV-=margin;
+        const range=maxV-minV||1;
+        const plotW=W-padL-padR, plotH=H-padT-padB;
+        const x=i=>padL+(plotW*i/(data.length-1));
+        const y=v=>padT+plotH-(plotH*(v-minV)/range);
+        let path='',pts='';
+        data.forEach((w,i)=>{
+            const px=x(i),py=y(w.weight);
+            path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
+            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#FF6B35"/>`;
+        });
+        const labels=data.map((w,i)=>`<text x="${x(i).toFixed(1)}" y="${H-5}" font-size="8" fill="#94a3b8" text-anchor="middle">${w.date.split(' ')[0]}</text>`).join('');
+        chart.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;margin-bottom:14px;background:#f8fafc;border-radius:8px;">
+            <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(1)}</text>
+            <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(1)}</text>
+            <path d="${path}" fill="none" stroke="#FF6B35" stroke-width="2"/>${pts}${labels}
+        </svg>`;
+    } else {
+        chart.innerHTML='<div style="font-size:12px;color:#94a3b8;text-align:center;padding:8px;">Ajoute au moins 2 pesées pour voir la courbe </div>';
+    }
+    // Liste (plus récent en premier) avec variation
+    list.innerHTML='';
+    const rev=[...weightLog].reverse();
+    rev.forEach((w,i)=>{
+        let diff='';
+        if(i<rev.length-1){
+            const d=(w.weight-rev[i+1].weight);
+            const sign=d>0?'+':'';
+            const color=d>0?'#10b981':(d<0?'#ef4444':'#94a3b8');
+            diff=`<span style="font-size:12px;color:${color};margin-left:8px;">${sign}${d.toFixed(1)}</span>`;
+        }
+        const row=document.createElement('div');
+        row.className='weight-row';
+        row.innerHTML=`<span class="weight-date">${w.date}</span>
+            <span style="display:flex;align-items:center;"><span class="weight-val">${w.weight} kg</span>${diff}
+            <button class="weight-del" onclick="delWeight('${w.iso}')">✕</button></span>`;
+        list.appendChild(row);
+    });
+}
+function renderHistory(){
+    const c=document.getElementById('historyList');
+    const chart=document.getElementById('historyChart');
+    if(!c || !chart) return; // section calories retirée de l'affichage
+    if(history.length===0){
+        chart.innerHTML='';
+        c.innerHTML='<div class="history-empty">Aucune journée enregistrée. Clique sur "Enregistrer cette journée" pour commencer ton suivi.</div>';
+        return;
+    }
+
+    // ===== GRAPHIQUE D'ÉVOLUTION (calories) =====
+    // On trie par date croissante et on prend les 14 derniers jours
+    const sorted=[...history].sort((a,b)=>a.iso.localeCompare(b.iso)).slice(-14);
+    if(sorted.length>=2){
+        const W=320, H=140, padL=38, padB=22, padT=10, padR=10;
+        const vals=sorted.map(h=>parseFloat(h.kcal));
+        const maxV=Math.max(...vals, goal.kcal);
+        const minV=Math.min(...vals, 0);
+        const range=maxV-minV || 1;
+        const plotW=W-padL-padR, plotH=H-padT-padB;
+        const x=i=>padL + (plotW*i/(sorted.length-1));
+        const y=v=>padT + plotH - (plotH*(v-minV)/range);
+        // Ligne objectif
+        const goalY=y(goal.kcal);
+        // Points et path
+        let path='', pts='';
+        sorted.forEach((h,i)=>{
+            const px=x(i), py=y(parseFloat(h.kcal));
+            path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
+            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#FF6B35"/>`;
+        });
+        const labels=sorted.map((h,i)=>{
+            const d=h.iso.slice(8,10)+'/'+h.iso.slice(5,7);
+            return `<text x="${x(i).toFixed(1)}" y="${H-6}" font-size="8" fill="#94a3b8" text-anchor="middle">${d}</text>`;
+        }).join('');
+        chart.innerHTML=`
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;margin-bottom:14px;background:#f8fafc;border-radius:8px;">
+            <line x1="${padL}" y1="${goalY.toFixed(1)}" x2="${W-padR}" y2="${goalY.toFixed(1)}" stroke="#10b981" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="${W-padR}" y="${(goalY-3).toFixed(1)}" font-size="8" fill="#10b981" text-anchor="end">objectif ${goal.kcal}</text>
+            <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(0)}</text>
+            <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(0)}</text>
+            <path d="${path}" fill="none" stroke="#FF6B35" stroke-width="2"/>
+            ${pts}
+            ${labels}
+        </svg>`;
+    } else {
+        chart.innerHTML='<div style="font-size:12px;color:#94a3b8;text-align:center;padding:8px;">Enregistre au moins 2 jours pour voir le graphique d\'évolution </div>';
+    }
+
+    // ===== LISTE DES JOURS (cliquables) =====
+    c.innerHTML='';
+    history.forEach(h=>{
+        const row=document.createElement('div');
+        row.className='history-row';
+        row.style.cursor='pointer';
+        row.innerHTML=`<div onclick="openDayModal('${h.iso}')" style="flex:1;"><div class="history-date">${h.date}</div><div class="history-detail">${h.prot}P · ${h.carbs}C · ${h.lip}L</div></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="font-weight:700;color:#FF6B35;">${h.kcal} kcal</div>
+            <button class="history-del" onclick="delHistory('${h.iso}')">✕</button></div>`;
+        c.appendChild(row);
+    });
+}
+
+// ===== MODAL DÉTAIL JOUR =====
+function openDayModal(iso){
+    const h=history.find(x=>x.iso===iso); if(!h) return;
+    document.getElementById('dayModalTitle').textContent=' '+h.date;
+    const protTarget=Math.round(goal.weight*goal.protRatio);
+    document.getElementById('dayModalBody').innerHTML=`
+        <div style="text-align:center;margin:10px 0;">
+            <div style="font-size:30px;font-weight:800;color:#FF6B35;">${h.kcal}<span style="font-size:14px;color:#94a3b8;">kcal</span></div>
+            <div style="font-size:12px;color:#64748b;">objectif ${goal.kcal} kcal</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
+            <div style="background:#f1f5f9;border-radius:8px;padding:10px;text-align:center;">
+                <div style="font-size:11px;color:#64748b;">PROTÉINE</div>
+                <div style="font-size:17px;font-weight:700;">${h.prot}g</div>
+                <div style="font-size:10px;color:#94a3b8;">/ ${protTarget}g</div>
+            </div>
+            <div style="background:#f1f5f9;border-radius:8px;padding:10px;text-align:center;">
+                <div style="font-size:11px;color:#64748b;">GLUCIDES</div>
+                <div style="font-size:17px;font-weight:700;">${h.carbs}g</div>
+            </div>
+            <div style="background:#f1f5f9;border-radius:8px;padding:10px;text-align:center;">
+                <div style="font-size:11px;color:#64748b;">LIPIDES</div>
+                <div style="font-size:17px;font-weight:700;">${h.lip}g</div>
+            </div>
+        </div>`;
+    document.getElementById('dayModal').classList.add('show');
+}
+function closeDayModal(){ document.getElementById('dayModal').classList.remove('show'); }
+
+// ===== FERMER DROPDOWN AU CLIC EXTÉRIEUR =====
+document.addEventListener('click',function(e){
+    if(!e.target.closest('.add-ing')){
+        document.querySelectorAll('.search-results').forEach(b=>b.classList.remove('show'));
+    }
+});
+
+// ===== EXPORT / IMPORT DES DONNÉES =====
+function exportData(){
+    const data={ goal, recipes, history, weightLog, nextRid, version:1, exported:new Date().toISOString() };
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const dateStr=new Date().toISOString().slice(0,10);
+    a.href=url; a.download=`repz-sauvegarde-${dateStr}.json`;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function importData(input){
+    const file=input.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=e=>{
+        try {
+            const data=JSON.parse(e.target.result);
+            if(!confirm('Remplacer toutes tes données actuelles par cette sauvegarde ?\n\n Tes données actuelles seront écrasées.')) return;
+            if(data.goal) goal=data.goal;
+            if(data.recipes) recipes=data.recipes;
+            if(data.history) history=data.history;
+            if(data.weightLog) weightLog=data.weightLog;
+            if(data.nextRid) nextRid=data.nextRid;
+            save();
+            renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
+            alert(' Données restaurées !');
+        } catch(err){ alert(' Fichier invalide. Vérifie que c\'est bien une sauvegarde REPZ.'); }
+        input.value='';
+    };
+    reader.readAsText(file);
+}
+
+// ===== QUOI MANGER ? =====
+// Chaque idée : nom + kcal de référence pour une portion "standard"
+const EAT_IDEAS = {
+    sain: [
+        { nom:'Blanc de poulet + riz + légumes', kcal:450, ex:'150g poulet · 150g riz cuit · brocoli' },
+        { nom:'Saumon + patate douce', kcal:500, ex:'150g saumon · 200g patate douce' },
+        { nom:'Omelette 3 œufs + salade + pain complet', kcal:400, ex:'3 œufs · salade · 50g pain' },
+        { nom:'Bowl thon + quinoa', kcal:420, ex:'1 boîte thon · 150g quinoa · crudités' },
+        { nom:'Steak haché 5% + pommes de terre + légumes', kcal:480, ex:'150g steak · 200g pdt · haricots verts' }
+    ],
+    rapide: [
+        { nom:'Thon + riz pré-cuit + maïs + légumes', kcal:500, ex:'1 boîte thon · 1 sachet riz micro-ondes · maïs · légumes en conserve' },
+        { nom:'Bol fromage blanc + whey + avoine + amandes', kcal:450, ex:'300g fromage blanc · 20g whey · 30g avoine · 15g amandes' },
+        { nom:'Œufs brouillés + pain complet + fromage', kcal:450, ex:'4 œufs · 50g pain complet · 30g fromage' },
+        { nom:'Skyr + flocons + beurre cacahuète + banane', kcal:480, ex:'400g skyr · 40g avoine · 15g beurre cacahuète · 1 banane' },
+        { nom:'Wrap thon ou poulet + crudités', kcal:400, ex:'tortilla · 1 boîte thon (ou reste poulet) · crudités · fromage frais' }
+    ],
+    plaisir: [
+        { nom:'Pâtes bolognaise (riche en viande)', kcal:600, ex:'120g pâtes · 150g viande hachée · sauce tomate' },
+        { nom:'Burger maison double steak', kcal:650, ex:'pain · 2 steaks hachés · fromage · crudités' },
+        { nom:'Wrap poulet fromage', kcal:500, ex:'tortilla · 120g poulet · cheddar · sauce light' },
+        { nom:'Riz cantonais poulet + œuf', kcal:550, ex:'200g riz · 120g poulet · œuf · petits pois' },
+        { nom:'Chili con carne', kcal:520, ex:'150g bœuf haché · haricots rouges · riz' }
+    ],
+    vege: [
+        { nom:'Buddha bowl pois chiches', kcal:450, ex:'200g pois chiches · quinoa · légumes' },
+        { nom:'Tofu sauté + riz', kcal:480, ex:'200g tofu · 150g riz · légumes wok' },
+        { nom:'Lentilles + 2 œufs + légumes', kcal:420, ex:'200g lentilles · 2 œufs · légumes' },
+        { nom:'Dahl lentilles corail + riz', kcal:480, ex:'200g lentilles corail · 150g riz · épices' },
+        { nom:'Omelette feta + épinards + pain', kcal:430, ex:'3 œufs · 40g feta · épinards · 50g pain' }
+    ]
+};
+
+function toggleEat(){
+    const body=document.getElementById('eatBody');
+    const arrow=document.getElementById('eatArrow');
+    body.classList.toggle('open');
+    arrow.textContent = body.classList.contains('open') ? '▴' : '▾';
+    if(body.classList.contains('open')){
+        // Afficher combien il reste à l'ouverture
+        const t = dayTotals();
+        const reste = goal.kcal - t.kcal;
+        const intro = document.getElementById('eatIntro');
+        if(reste > 50){
+            intro.innerHTML = `Il te reste <b>${reste.toFixed(0)} kcal</b>. Choisis une envie :`;
+        } else if(reste < -50){
+            intro.innerHTML = `Tu as déjà atteint ton objectif (dépassé de ${Math.abs(reste).toFixed(0)} kcal).`;
+        } else {
+            intro.innerHTML = `Objectif quasiment atteint ! `;
+        }
+        document.getElementById('eatIdeas').innerHTML='';
+    }
+}
+
+function adjustPortion(exText, ratio){
+    const parts = exText.split('·').map(s => s.trim());
+    const adjusted = parts.map(part => {
+        // Cas 1 : "150g poulet" → multiplier les grammes (arrondi à 5g)
+        let m = part.match(/^(\d+)\s*g\b(.*)$/i);
+        if(m){
+            const grams = Math.max(5, Math.round(parseInt(m[1]) * ratio / 5) * 5);
+            return `${grams}g${m[2]}`;
+        }
+        // Cas 2 : "3 œufs", "2 steaks", "1 banane" → multiplier l'unité (pas les boîtes/sachets)
+        m = part.match(/^(\d+)\s+(.*)$/);
+        if(m){
+            const reste = m[2].toLowerCase();
+            if(/bo[iî]te|sachet|tranche|portion/.test(reste)) return part;
+            let n = Math.max(1, Math.round(parseInt(m[1]) * ratio));
+            // Singulier si 1 : enlève un "s" final éventuel du premier mot
+            let label = m[2];
+            if(n === 1){
+                label = label.replace(/^(\S+?)s\b/, '$1'); // oeufs->oeuf, steaks->steak
+            }
+            return `${n} ${label}`;
+        }
+        // Cas 3 : pas de quantité → inchangé
+        return part;
+    });
+    return adjusted.join(' · ');
+}
+
+function showEatIdeas(cat){
+    const t = dayTotals();
+    const reste = Math.max(0, goal.kcal - t.kcal);
+    const ideas = EAT_IDEAS[cat] || [];
+    const box = document.getElementById('eatIdeas');
+    if(reste <= 50){
+        box.innerHTML = '<div class="eat-note">Tu as déjà atteint ton objectif du jour.</div>';
+        return;
+    }
+    // Proposer toutes les idées de la catégorie, chacune ajustée à tes calories restantes
+    box.innerHTML = ideas.map(idea=>{
+        const ratio = reste / idea.kcal;
+        const portionAjustee = adjustPortion(idea.ex, ratio);
+        return `<div class="eat-idea">
+            <div class="eat-idea-name">${idea.nom}</div>
+            <div class="eat-idea-ex">${portionAjustee}</div>
+            <div class="eat-idea-kcal">≈ ${reste.toFixed(0)} kcal (ajusté à ce qu'il te reste)</div>
+        </div>`;
+    }).join('');
+}
+
+
+// ===== DÉMARRAGE DE L'APP =====
+// Charge les données sauvegardées AVANT tout rendu, puis affiche tout
+load();
+loadWater();
+renderDate();
+renderRecipes();
+renderTotals();
+renderHistory();
+renderWeight();
+
+// ===== SWIPE depuis le bord gauche pour revenir à l'accueil =====
+(function(){
+    let startX = 0, startY = 0, tracking = false;
+    const EDGE = 30;      // zone de départ depuis le bord gauche (px)
+    const DIST = 80;      // distance horizontale minimale pour déclencher
+    const MAX_VERT = 60;  // tolérance verticale (au-delà = c'est un scroll)
+
+    document.addEventListener('touchstart', function(e){
+        const t = e.touches[0];
+        if(t.clientX <= EDGE){
+            startX = t.clientX;
+            startY = t.clientY;
+            tracking = true;
+        } else {
+            tracking = false;
+        }
+    }, {passive:true});
+
+    document.addEventListener('touchend', function(e){
+        if(!tracking) return;
+        tracking = false;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - startX;
+        const dy = Math.abs(t.clientY - startY);
+        if(dx >= DIST && dy <= MAX_VERT){
+            window.location.href = 'accueil.html';
+        }
+    }, {passive:true});
+})();
+
+</script>
+</body>
+</html>
