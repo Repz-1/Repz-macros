@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f3f4f6">
+<title>REPZ — Connexion</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+    --orange:#FF6B35; --green:#047857; --bg:#f3f4f6; --card:#ffffff;
+    --dark:#1f2937; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px;
+}
+body {
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh; padding:16px;
+    display:flex; align-items:center; justify-content:center;
+}
+
+.auth-container {
+    background:var(--card); border-radius:24px; padding:36px 26px;
+    max-width:400px; width:100%; box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
+
+.auth-header {
+    text-align:center; margin-bottom:32px;
+}
+
+.auth-logo {
+    width:120px; height:auto; margin:0 auto 16px; display:block;
+    filter:drop-shadow(0 4px 16px rgba(255,107,53,.18));
+}
+
+.auth-title {
+    font-size:24px; font-weight:800; margin-bottom:6px;
+}
+
+.auth-subtitle {
+    font-size:13px; color:var(--text-dim);
+}
+
+.auth-form {
+    display:none;
+}
+
+.auth-form.active {
+    display:block;
+}
+
+.form-group {
+    margin-bottom:16px;
+}
+
+.label {
+    display:block; font-size:13px; font-weight:700; margin-bottom:6px;
+}
+
+.input {
+    width:100%; padding:12px; border:1.5px solid var(--line); border-radius:12px;
+    font-size:15px; font-family:inherit;
+}
+
+.input:focus {
+    outline:none; border-color:var(--orange); background:#fff8f5;
+}
+
+.field-hint {
+    font-size:12px; color:var(--text-dim); margin-top:6px;
+}
+
+.btn {
+    width:100%; padding:14px; border:none; border-radius:14px; font-size:15px;
+    font-weight:700; cursor:pointer; transition:all .15s;
+}
+
+.btn-primary {
+    background:var(--orange); color:#fff;
+}
+
+.btn-primary:active {
+    transform:scale(.98); opacity:.9;
+}
+
+.btn-primary:disabled {
+    opacity:.5; cursor:not-allowed;
+}
+
+.toggle-form {
+    text-align:center; margin-top:16px; font-size:13px; color:var(--text-dim);
+}
+
+.toggle-form a {
+    color:var(--orange); font-weight:700; text-decoration:none; cursor:pointer;
+}
+
+.error {
+    background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:16px;
+    font-size:13px; display:none;
+}
+
+.error.show {
+    display:block;
+}
+
+.success {
+    background:#f0fdf4; color:#166534; padding:12px; border-radius:8px; margin-bottom:16px;
+    font-size:13px; display:none;
+}
+
+.success.show {
+    display:block;
+}
+
+.loading {
+    display:none; text-align:center; color:var(--orange); font-size:13px;
+}
+
+.loading.show {
+    display:block;
+}
+</style>
+</head>
+<body>
+
+<div class="auth-container" id="authContainer" style="visibility:hidden;">
+    <div class="auth-header">
+        <img src="logo-repz-transparent.png" alt="REPZ" class="auth-logo">
+        <h1 class="auth-title">REPZ</h1>
+        <p class="auth-subtitle">Ton suivi nutrition & fitness</p>
+    </div>
+
+    <!-- FORM LOGIN -->
+    <form class="auth-form active" id="loginForm">
+        <div class="error" id="loginError"></div>
+        <div class="loading" id="loginLoading">Connexion en cours...</div>
+        
+        <div class="form-group">
+            <label class="label">Email</label>
+            <input type="email" class="input" id="loginEmail" placeholder="ton@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Mot de passe</label>
+            <input type="password" class="input" id="loginPassword" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Se connecter</button>
+
+        <div class="toggle-form">
+            Pas de compte ? <a onclick="toggleForm('register')">Créer un compte</a>
+        </div>
+
+        <div class="toggle-form">
+            <a onclick="toggleForm('recovery')">Mot de passe oublié ?</a>
+        </div>
+    </form>
+
+    <!-- FORM REGISTER -->
+    <form class="auth-form" id="registerForm">
+        <div class="error" id="registerError"></div>
+        <div class="loading" id="registerLoading">Création du compte...</div>
+
+        <div class="form-group">
+            <label class="label">Prénom</label>
+            <input type="text" class="input" id="registerFirstName" placeholder="Ton prénom" required>
+            <div class="field-hint">Pour personnaliser ton expérience sur REPZ 😊</div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Email</label>
+            <input type="email" class="input" id="registerEmail" placeholder="ton@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Mot de passe (min 6 caractères)</label>
+            <input type="password" class="input" id="registerPassword" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Confirmer mot de passe</label>
+            <input type="password" class="input" id="registerPasswordConfirm" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer un compte</button>
+
+        <div class="toggle-form">
+            Déjà un compte ? <a onclick="toggleForm('login')">Se connecter</a>
+        </div>
+    </form>
+
+    <!-- FORM RECOVERY -->
+    <form class="auth-form" id="recoveryForm">
+        <div class="error" id="recoveryError"></div>
+        <div class="success" id="recoverySuccess"></div>
+        <div class="loading" id="recoveryLoading">Envoi du lien...</div>
+
+        <div class="form-group">
+            <label class="label">Email</label>
+            <input type="email" class="input" id="recoveryEmail" placeholder="ton@email.com" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Envoyer un lien de réinitialisation</button>
+
+        <div class="toggle-form">
+            <a onclick="toggleForm('login')">Retour à la connexion</a>
+        </div>
+    </form>
+
+    <!-- SÉPARATEUR + INVITÉ -->
+    <div style="margin-top:20px; padding-top:18px; border-top:1px solid #e5e7eb; text-align:center;">
+        <a onclick="continuerInvite()" style="display:inline-block; color:#6b7280; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">
+            Continuer en tant qu'invité →
+        </a>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+
+<script>
+// Vérifier que Firebase s'est bien chargé
+if (typeof firebase === 'undefined') {
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:sans-serif;"><h2>Connexion impossible</h2><p>Le service de connexion n\'a pas pu se charger. Vérifie ta connexion internet ou désactive ton bloqueur de publicités, puis recharge la page.</p></div>';
+    throw new Error('Firebase non chargé');
+}
+
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Vérifier si l'utilisateur est déjà connecté
+auth.onAuthStateChanged((user) => {
+    if(user) {
+        // Déjà connecté : on nettoie le mode invité et on file à l'accueil
+        localStorage.removeItem('repz_invite');
+        window.location.href = 'accueil.html';
+    } else {
+        // Pas connecté : on affiche le formulaire de connexion
+        document.getElementById('authContainer').style.visibility = 'visible';
+    }
+});
+
+// Continuer en tant qu'invité : on mémorise le choix et on entre
+function continuerInvite() {
+    localStorage.setItem('repz_invite', '1');
+    window.location.href = 'accueil.html';
+}
+
+function toggleForm(formName) {
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.getElementById(formName + 'Form').classList.add('active');
+    document.querySelectorAll('.error, .success, .loading').forEach(e => e.classList.remove('show'));
+}
+
+// LOGIN
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const errorDiv = document.getElementById('loginError');
+    const loadingDiv = document.getElementById('loginLoading');
+    
+    errorDiv.classList.remove('show');
+    loadingDiv.classList.add('show');
+    
+    try {
+        const cred = await auth.signInWithEmailAndPassword(email, password);
+        // Récupérer le prénom du profil pour l'afficher
+        if(cred && cred.user && cred.user.displayName){
+            localStorage.setItem('repz_firstName', cred.user.displayName);
+        }
+        window.location.href = 'accueil.html';
+    } catch(error) {
+        loadingDiv.classList.remove('show');
+        let message = 'Email ou mot de passe incorrect';
+        if(error.code === 'auth/user-not-found') message = 'Compte non trouvé';
+        if(error.code === 'auth/wrong-password') message = 'Mot de passe incorrect';
+        errorDiv.textContent = message;
+        errorDiv.classList.add('show');
+    }
+});
+
+// REGISTER
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const firstName = document.getElementById('registerFirstName').value.trim();
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+    const errorDiv = document.getElementById('registerError');
+    const loadingDiv = document.getElementById('registerLoading');
+    
+    errorDiv.classList.remove('show');
+    loadingDiv.classList.add('show');
+
+    if(!firstName) {
+        loadingDiv.classList.remove('show');
+        errorDiv.textContent = 'Merci d\'indiquer ton prénom';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    if(password !== passwordConfirm) {
+        loadingDiv.classList.remove('show');
+        errorDiv.textContent = 'Les mots de passe ne correspondent pas';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    if(password.length < 6) {
+        loadingDiv.classList.remove('show');
+        errorDiv.textContent = 'Le mot de passe doit avoir au moins 6 caractères';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    try {
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        // Enregistrer le prénom dans le profil Firebase + en local
+        if(cred && cred.user){
+            await cred.user.updateProfile({ displayName: firstName });
+        }
+        localStorage.setItem('repz_firstName', firstName);
+        window.location.href = 'accueil.html';
+    } catch(error) {
+        loadingDiv.classList.remove('show');
+        let message = 'Erreur : ' + error.code;
+        if(error.code === 'auth/email-already-in-use') message = 'Cet email est déjà utilisé';
+        if(error.code === 'auth/invalid-email') message = 'Email invalide';
+        if(error.code === 'auth/weak-password') message = 'Mot de passe trop faible';
+        errorDiv.textContent = message;
+        errorDiv.classList.add('show');
+    }
+});
+
+// RECOVERY
+document.getElementById('recoveryForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('recoveryEmail').value;
+    const errorDiv = document.getElementById('recoveryError');
+    const successDiv = document.getElementById('recoverySuccess');
+    const loadingDiv = document.getElementById('recoveryLoading');
+    
+    errorDiv.classList.remove('show');
+    successDiv.classList.remove('show');
+    loadingDiv.classList.add('show');
+    
+    try {
+        await auth.sendPasswordResetEmail(email);
+        loadingDiv.classList.remove('show');
+        successDiv.textContent = 'Lien de réinitialisation envoyé à ton email ! Vérifie ta boîte de réception.';
+        successDiv.classList.add('show');
+        setTimeout(() => toggleForm('login'), 3000);
+    } catch(error) {
+        loadingDiv.classList.remove('show');
+        errorDiv.textContent = 'Email non trouvé ou erreur lors de l\'envoi';
+        errorDiv.classList.add('show');
+    }
+});
+</script>
+
+</body>
+</html>
