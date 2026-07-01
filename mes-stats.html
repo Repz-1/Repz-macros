@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>REPZ — Mes stats</title>
+<style>
+:root{
+    --orange:#FF6B35; --green:#047857; --gold:#d4af37;
+    --text:#1a1a1a; --text-dim:#6b7280; --line:#e5e7eb;
+    --card:#ffffff; --bg:#f3f4f6;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+}
+
+/* TOP BAR */
+.topbar {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 20px;
+    background:linear-gradient(180deg,#FF6B35 0%,#1a0f08 75%,#000000 100%);
+}
+.topbar-home {
+    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.15); color:#fff; text-decoration:none;
+}
+.topbar-home svg { width:20px; height:20px; }
+.premium-pill {
+    background:#047857; border:1.5px solid var(--gold); color:#fff;
+    padding:7px 15px; border-radius:20px; font-size:13px; font-weight:700;
+    text-decoration:none; display:inline-block;
+}
+.premium-pill.is-premium { background:var(--gold); border-color:#fff; color:#1a1a1a; }
+
+.container { max-width:900px; margin:0 auto; padding:16px 16px 40px; }
+
+.page-title { font-size:24px; font-weight:800; margin:8px 2px 4px; }
+.page-sub { font-size:14px; color:var(--text-dim); margin:0 2px 20px; }
+
+/* CARTES STATS */
+.stat-card {
+    position:relative; background:linear-gradient(145deg,#ffffff,#fff4ee);
+    border:1.5px solid #ffe0d0; border-radius:20px; padding:20px;
+    box-shadow:0 8px 24px rgba(255,107,53,.10); margin-bottom:16px; overflow:hidden;
+}
+.stat-card::before {
+    content:''; position:absolute; top:0; left:0; width:4px; height:100%;
+    background:var(--orange); border-radius:4px 0 0 4px;
+}
+.stat-card h2 { font-size:17px; font-weight:700; margin-bottom:4px; }
+.stat-card .card-sub { font-size:13px; color:var(--text-dim); margin-bottom:16px; }
+
+/* MINI RÉSUMÉ (chiffres clés) */
+.stat-summary { display:flex; gap:10px; margin-bottom:16px; }
+.stat-box { flex:1; background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center; }
+.stat-box .sb-val { font-size:20px; font-weight:800; color:var(--orange); }
+.stat-box .sb-lbl { font-size:11px; color:var(--text-dim); margin-top:2px; }
+
+/* GRAPHIQUE (barres simples) */
+.chart { display:flex; align-items:flex-end; gap:6px; height:130px; padding-top:10px; }
+.chart-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%; justify-content:flex-end; }
+.chart-bar {
+    width:100%; max-width:34px; background:linear-gradient(180deg,#FF6B35,#ff8c5f);
+    border-radius:6px 6px 0 0; min-height:4px; transition:height .4s ease;
+}
+.chart-bar.weight { background:linear-gradient(180deg,#047857,#10b981); }
+.chart-val { font-size:10px; font-weight:700; color:var(--text); }
+.chart-day { font-size:10px; color:var(--text-dim); }
+.chart-empty { text-align:center; color:var(--text-dim); font-size:14px; padding:30px 0; }
+
+/* BLOC PREMIUM BIENVEILLANT */
+.premium-invite {
+    position:relative; background:linear-gradient(145deg,#fffdf5,#fff8e6);
+    border:1.5px solid var(--gold); border-radius:20px; padding:24px 20px;
+    text-align:center; margin-bottom:16px;
+}
+.premium-invite .pi-icon { font-size:38px; margin-bottom:10px; }
+.premium-invite h3 { font-size:18px; font-weight:800; margin-bottom:8px; }
+.premium-invite p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:18px; }
+.premium-invite .pi-btn {
+    display:inline-block; background:var(--green); color:#fff; text-decoration:none;
+    padding:13px 28px; border-radius:14px; font-size:15px; font-weight:700;
+}
+.premium-invite .pi-btn:active { transform:scale(.98); opacity:.92; }
+.locked-note { font-size:12px; color:var(--text-dim); margin-top:10px; }
+
+.back-btn {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:40px; height:40px; border-radius:50%; background:#fff; border:1px solid var(--line);
+    text-decoration:none; color:var(--text); font-size:20px; margin-bottom:8px;
+}
+</style>
+</head>
+<body>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// On attend que Firebase ait VRAIMENT fini de vérifier avant de rediriger.
+// (onAuthStateChanged peut renvoyer null au début, avant d'avoir restauré la session)
+let authVerifie = false;
+auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(user){
+        authVerifie = true;
+        if(estInvite) localStorage.removeItem('repz_invite');
+    } else if(estInvite){
+        authVerifie = true;
+    } else if(!authVerifie){
+        // Première réponse null : peut-être que Firebase n'a pas fini.
+        // On attend un court instant, et on ne redirige que si toujours pas connecté.
+        setTimeout(() => {
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+                window.location.href = 'index.html';
+            }
+        }, 1200);
+    }
+});
+function logout(){ auth.signOut().then(()=>{ window.location.href='index.html'; }); }
+</script>
+
+<div class="topbar">
+    <a href="accueil.html" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
+    <a href="plans.html" class="premium-pill" id="premiumPill">✨ Premium</a>
+</div>
+
+<div class="container">
+    <a href="accueil.html" class="back-btn">←</a>
+    <div class="page-title">Mes stats</div>
+    <div class="page-sub">Suis ta progression : poids, calories et régularité.</div>
+
+    <!-- POIDS -->
+    <div class="stat-card">
+        <h2>⚖️ Évolution du poids</h2>
+        <div class="card-sub" id="weightSub">Tes dernières pesées</div>
+        <div id="weightSummary"></div>
+        <div id="weightChart"></div>
+    </div>
+
+    <!-- CALORIES -->
+    <div class="stat-card">
+        <h2>🔥 Calories enregistrées</h2>
+        <div class="card-sub" id="kcalSub">Tes journées récentes</div>
+        <div id="kcalSummary"></div>
+        <div id="kcalChart"></div>
+    </div>
+
+    <!-- INVITATION PREMIUM (bienveillante) -->
+    <div class="premium-invite" id="premiumInvite">
+        <div class="pi-icon">💪</div>
+        <h3>Débloque tout ton historique</h3>
+        <p>Tu vois ici tes 7 derniers jours. Passe à REPZ Premium pour suivre toute ta progression sur des semaines et des mois, avec tes moyennes et tes tendances.<br><br>Ton soutien nous aide à faire grandir REPZ 🙏</p>
+        <a href="plans.html" class="pi-btn">Soutenir REPZ & débloquer</a>
+        <div class="locked-note">Historique complet · Moyennes · Tendances</div>
+    </div>
+</div>
+
+<script>
+// ===== DONNÉES (mêmes clés que app.html) =====
+let weightLog = [];
+let history = [];
+try { const w = localStorage.getItem('repz_weightLog'); if(w) weightLog = JSON.parse(w); } catch(e){}
+try { const h = localStorage.getItem('repz_history'); if(h) history = JSON.parse(h); } catch(e){}
+
+const estPremium = localStorage.getItem('repz_premium') === '1';
+const LIMITE_GRATUIT = 7; // jours visibles en gratuit
+
+// Bulle premium dorée si déjà premium
+if(estPremium){
+    const pill = document.getElementById('premiumPill');
+    if(pill){ pill.innerHTML = '✨ Membre Premium'; pill.classList.add('is-premium'); pill.removeAttribute('href'); pill.style.cursor='default'; }
+    // Cacher l'invitation premium
+    const inv = document.getElementById('premiumInvite');
+    if(inv) inv.style.display = 'none';
+}
+
+// ===== POIDS =====
+function renderWeight(){
+    const chart = document.getElementById('weightChart');
+    const summary = document.getElementById('weightSummary');
+    const sub = document.getElementById('weightSub');
+    if(!weightLog.length){
+        chart.innerHTML = '<div class="chart-empty">Aucune pesée pour l\'instant. Ajoute ton poids dans la page Nutrition pour suivre ton évolution.</div>';
+        summary.innerHTML = '';
+        return;
+    }
+    // Trier par date croissante
+    let data = [...weightLog].sort((a,b)=> a.iso.localeCompare(b.iso));
+    // Limiter en gratuit
+    let total = data.length;
+    if(!estPremium && data.length > LIMITE_GRATUIT){
+        data = data.slice(-LIMITE_GRATUIT);
+        sub.textContent = `${LIMITE_GRATUIT} dernières pesées (sur ${total})`;
+    } else {
+        sub.textContent = `${data.length} pesée${data.length>1?'s':''}`;
+    }
+    // Résumé : poids actuel + variation
+    const actuel = parseFloat(data[data.length-1].weight);
+    const debut = parseFloat(data[0].weight);
+    const diff = (actuel - debut).toFixed(1);
+    const diffTxt = diff > 0 ? `+${diff}` : diff;
+    summary.innerHTML = `<div class="stat-summary">
+        <div class="stat-box"><div class="sb-val">${actuel} kg</div><div class="sb-lbl">Poids actuel</div></div>
+        <div class="stat-box"><div class="sb-val">${diffTxt} kg</div><div class="sb-lbl">Variation</div></div>
+    </div>`;
+    // Graphique
+    const poids = data.map(d=>parseFloat(d.weight));
+    const min = Math.min(...poids) - 1, max = Math.max(...poids) + 1;
+    chart.className = 'chart';
+    chart.innerHTML = data.map(d=>{
+        const p = parseFloat(d.weight);
+        const h = max>min ? ((p-min)/(max-min))*100 : 50;
+        const jour = d.date ? d.date.split(' ').slice(0,2).join(' ') : '';
+        return `<div class="chart-bar-wrap">
+            <div class="chart-val">${p}</div>
+            <div class="chart-bar weight" style="height:${Math.max(6,h)}%"></div>
+            <div class="chart-day">${jour}</div>
+        </div>`;
+    }).join('');
+}
+
+// ===== CALORIES =====
+function renderKcal(){
+    const chart = document.getElementById('kcalChart');
+    const summary = document.getElementById('kcalSummary');
+    const sub = document.getElementById('kcalSub');
+    if(!history.length){
+        chart.innerHTML = '<div class="chart-empty">Aucune journée enregistrée. Enregistre une journée dans la page Nutrition pour suivre tes calories.</div>';
+        summary.innerHTML = '';
+        return;
+    }
+    let data = [...history].sort((a,b)=> a.iso.localeCompare(b.iso));
+    let total = data.length;
+    if(!estPremium && data.length > LIMITE_GRATUIT){
+        data = data.slice(-LIMITE_GRATUIT);
+        sub.textContent = `${LIMITE_GRATUIT} dernières journées (sur ${total})`;
+    } else {
+        sub.textContent = `${data.length} journée${data.length>1?'s':''}`;
+    }
+    // Moyenne
+    const moy = Math.round(data.reduce((s,d)=>s+parseInt(d.kcal||0),0)/data.length);
+    const derniere = parseInt(data[data.length-1].kcal||0);
+    summary.innerHTML = `<div class="stat-summary">
+        <div class="stat-box"><div class="sb-val">${moy}</div><div class="sb-lbl">Moyenne kcal</div></div>
+        <div class="stat-box"><div class="sb-val">${derniere}</div><div class="sb-lbl">Dernière journée</div></div>
+    </div>`;
+    const kcals = data.map(d=>parseInt(d.kcal||0));
+    const max = Math.max(...kcals) * 1.1;
+    chart.className = 'chart';
+    chart.innerHTML = data.map(d=>{
+        const k = parseInt(d.kcal||0);
+        const h = max>0 ? (k/max)*100 : 0;
+        const jour = d.date ? d.date.split(' ').slice(0,2).join(' ') : '';
+        return `<div class="chart-bar-wrap">
+            <div class="chart-val">${k}</div>
+            <div class="chart-bar" style="height:${Math.max(6,h)}%"></div>
+            <div class="chart-day">${jour}</div>
+        </div>`;
+    }).join('');
+}
+
+renderWeight();
+renderKcal();
+</script>
+
+</body>
+</html>
