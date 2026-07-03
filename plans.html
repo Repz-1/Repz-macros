@@ -168,9 +168,11 @@ auth.onAuthStateChanged((user) => {
 });
 
 function logout() {
-    auth.signOut().then(() => {
-        window.location.href = 'index.html';
-    });
+    // Déconnexion : on nettoie aussi le statut local (premium, invité)
+    localStorage.removeItem('repz_premium');
+    localStorage.removeItem('repz_invite');
+    localStorage.removeItem('repz_inviteDebut');
+    auth.signOut().then(() => { window.location.href = 'index.html'; });
 }
 </script>
 

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REPZ — Programmes</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root { --orange:#FF6B35; --bg:#f3f4f6; --card:#ffffff; --dark:#1f2937;
+    --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh; padding:16px 16px 40px; }
+.topbar-app {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 20px; margin:-16px -16px 8px;
+    background:linear-gradient(180deg,#FF6B35 0%,#1a0f08 75%,#000000 100%);
+}
+.topbar-home {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:40px; height:40px; border-radius:50%;
+    background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.3);
+    color:#fff; text-decoration:none;
+}
+.topbar-home svg { width:21px; height:21px; }
+.topbar-home:active { background:rgba(255,255,255,.25); transform:scale(.94); }
+.premium-pill {
+    display:inline-flex; align-items:center; gap:4px;
+    color:#ffffff; text-decoration:none; font-size:13px; font-weight:700;
+    padding:7px 14px; border-radius:30px;
+    background:#047857; border:1.5px solid #d4af37;
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+.premium-pill:active { transform:scale(.95); }
+.top { display:flex; align-items:center; gap:14px; padding:8px 4px 18px; }
+.back-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+    background:var(--card); display:flex; align-items:center; justify-content:center;
+    font-size:20px; color:var(--text); text-decoration:none; cursor:pointer; flex-shrink:0; }
+.top h1 { font-size:20px; font-weight:800; letter-spacing:-.02em; }
+
+.screen { display:none; }
+.screen.active { display:block; }
+
+.intro-txt { font-size:14px; color:var(--text-dim); margin:0 4px 18px; line-height:1.5; }
+
+/* Catégories */
+.cat-list { display:flex; flex-direction:column; gap:12px; }
+.cat-card { display:flex; align-items:center; gap:16px; background:var(--card);
+    border:1px solid var(--line); border-radius:var(--radius); padding:20px;
+    cursor:pointer; box-shadow:0 4px 16px rgba(15,23,42,.05); transition:transform .15s; }
+.cat-card:active { transform:scale(.98); }
+.cat-emoji { width:50px; height:50px; flex-shrink:0; border-radius:14px;
+    background:rgba(255,107,53,.12); display:flex; align-items:center; justify-content:center; font-size:26px; }
+.cat-info { flex:1; }
+.cat-name { font-size:17px; font-weight:700; }
+.cat-sub { font-size:13px; color:var(--text-dim); margin-top:2px; }
+.cat-arrow { color:var(--orange); font-size:20px; }
+
+/* Programmes */
+.prog-list { display:flex; flex-direction:column; gap:12px; }
+.prog-card { background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 20px; cursor:pointer; box-shadow:0 4px 16px rgba(15,23,42,.05); transition:transform .15s; }
+.prog-card:active { transform:scale(.98); }
+.prog-badge { display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.04em; background:#fff1e0; color:#c2410c; padding:4px 10px; border-radius:20px; margin-bottom:10px; }
+.prog-name { font-size:18px; font-weight:800; margin-bottom:6px; }
+.prog-desc { font-size:13.5px; color:var(--text-dim); line-height:1.5; margin-bottom:12px; }
+.prog-stats { display:flex; gap:14px; font-size:12.5px; color:var(--text-dim); }
+.prog-stats span { display:flex; align-items:center; gap:5px; }
+.prog-stats b { color:var(--text); }
+
+/* Séances */
+.seance-list { display:flex; flex-direction:column; gap:12px; }
+.seance-card { display:flex; align-items:center; gap:14px; background:var(--card);
+    border:1px solid var(--line); border-radius:16px; padding:16px 18px; cursor:pointer;
+    box-shadow:0 4px 16px rgba(15,23,42,.05); transition:transform .15s; }
+.seance-card:active { transform:scale(.98); }
+.seance-num { width:42px; height:42px; flex-shrink:0; border-radius:12px; background:var(--dark);
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; }
+.seance-info { flex:1; }
+.seance-title { font-size:16px; font-weight:700; }
+.seance-sub { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
+.seance-arrow { color:var(--orange); font-size:18px; }
+
+.soon-note { text-align:center; color:var(--text-dim); font-size:13px; padding:30px 20px; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<!-- AUTH CHECK + FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+let authVerifie = false;
+auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(user) { authVerifie = true; localStorage.removeItem('repz_invite'); }
+    else if(estInvite) { authVerifie = true; }
+    else if(!authVerifie) {
+        // Firebase peut renvoyer null avant d'avoir fini : on attend avant de rediriger
+        setTimeout(() => {
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+                window.location.href = "index.html";
+            }
+        }, 1200);
+    }
+});
+// Protection Premium : la bibliothèque de programmes est réservée aux membres Premium
+if(localStorage.getItem('repz_premium') !== '1'){
+    window.location.href = 'entrainements.html?premium=1';
+}
+function logout(){
+    // Déconnexion : on nettoie aussi le statut local (premium, invité)
+    localStorage.removeItem('repz_premium');
+    localStorage.removeItem('repz_invite');
+    localStorage.removeItem('repz_inviteDebut');
+    auth.signOut().then(()=>{ window.location.href='index.html'; });
+}
+</script>
+
+<div class="topbar-app">
+    <a href="accueil.html" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
+    <a href="plans.html" class="premium-pill">✨ Premium</a>
+</div>
+
+<!-- ÉCRAN 1 : CATÉGORIES -->
+<div class="screen active" id="screenCats">
+    <div class="top">
+        <a href="entrainements.html" class="back-btn">←</a>
+        <h1>Choisir un programme</h1>
+    </div>
+    <p class="intro-txt">Choisis ton objectif, on te propose des programmes prêts à suivre.</p>
+    <div class="cat-list" id="catList"></div>
+</div>
+
+<!-- ÉCRAN 2 : PROGRAMMES -->
+<div class="screen" id="screenProgs">
+    <div class="top">
+        <a href="#" class="back-btn" onclick="showCats();return false;">←</a>
+        <h1 id="progTitle">Programmes</h1>
+    </div>
+    <div class="prog-list" id="progList"></div>
+</div>
+
+<!-- ÉCRAN 3 : SÉANCES -->
+<div class="screen" id="screenSeances">
+    <div class="top">
+        <a href="#" class="back-btn" onclick="showProgs(currentCat);return false;">←</a>
+        <h1 id="seanceTitle">Séances</h1>
+    </div>
+    <p class="intro-txt" id="seanceIntro"></p>
+    <div class="seance-list" id="seanceList"></div>
+</div>
+
+<script>
+// ===== DONNÉES =====
+const CATEGORIES = [
+    {key:'masse', emoji:'💪', name:'Prise de masse', sub:'Prendre du muscle et du volume'},
+    {key:'debutant', emoji:'🌱', name:'Débutant', sub:'Commencer en douceur'},
+    {key:'seche', emoji:'🔥', name:'Perte de poids', sub:'Brûler et se définir'},
+    {key:'maison', emoji:'🏠', name:'Maison', sub:'Sans matériel'},
+    {key:'salle', emoji:'🏋️', name:'Salle', sub:'Machines et charges libres'},
+];
+
+// Programmes par catégorie (Prise de masse complète, autres à venir)
+const PROGRAMMES = {
+    masse: [
+        {
+            id:'masse-3j', badge:'3 jours/semaine', name:'Prise de masse — 3 jours',
+            desc:'Le classique pour construire du muscle. Idéal si tu débutes la prise de masse.',
+            duree:'8 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Jour 1 — Pecs / Triceps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 2 — Dos / Biceps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 3 — Jambes / Épaules', sub:'6 exercices · ~65 min'},
+            ]
+        },
+        {
+            id:'masse-4j', badge:'4 jours/semaine', name:'Prise de masse — 4 jours',
+            desc:'Plus de volume par muscle pour progresser plus vite. Pour pratiquants réguliers.',
+            duree:'10 semaines', niveau:'Confirmé',
+            seances:[
+                {titre:'Jour 1 — Pecs', sub:'5 exercices · ~55 min'},
+                {titre:'Jour 2 — Dos', sub:'5 exercices · ~55 min'},
+                {titre:'Jour 3 — Jambes', sub:'5 exercices · ~60 min'},
+                {titre:'Jour 4 — Épaules / Bras', sub:'6 exercices · ~55 min'},
+            ]
+        },
+        {
+            id:'masse-5j', badge:'5 jours/semaine', name:'Prise de masse — 5 jours (split)',
+            desc:'Un muscle par jour pour un volume maximal. Pour les confirmés qui veulent pousser fort.',
+            duree:'12 semaines', niveau:'Confirmé',
+            seances:[
+                {titre:'Jour 1 — Pecs', sub:'5 exercices · ~55 min'},
+                {titre:'Jour 2 — Dos', sub:'5 exercices · ~60 min'},
+                {titre:'Jour 3 — Jambes', sub:'6 exercices · ~65 min'},
+                {titre:'Jour 4 — Épaules', sub:'5 exercices · ~50 min'},
+                {titre:'Jour 5 — Bras (biceps/triceps)', sub:'6 exercices · ~50 min'},
+            ]
+        },
+        {
+            id:'masse-deb-3j', badge:'3 jours/semaine', name:'Prise de masse débutant — Full body',
+            desc:'Construis tes premiers muscles avec un programme corps complet. La meilleure base quand on débute la prise de masse.',
+            duree:'6 semaines', niveau:'Débutant',
+            seances:[
+                {titre:'Séance A — Corps complet', sub:'5 exercices · ~50 min'},
+                {titre:'Séance B — Corps complet', sub:'5 exercices · ~50 min'},
+                {titre:'Séance C — Corps complet', sub:'5 exercices · ~50 min'},
+            ]
+        },
+        {
+            id:'masse-2j', badge:'2 jours/semaine', name:'Prise de masse — 2 jours',
+            desc:'Deux séances haut/bas par semaine. Un rythme tenable pour progresser même avec peu de temps.',
+            duree:'8 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Jour 1 — Haut du corps', sub:'7 exercices · ~60 min'},
+                {titre:'Jour 2 — Bas du corps', sub:'6 exercices · ~55 min'},
+            ]
+        },
+    ],
+    debutant: [
+        {
+            id:'deb-full-3j', badge:'3 jours/semaine', name:'Débutant — Full body',
+            desc:'Tout le corps à chaque séance. La meilleure façon de démarrer la musculation en douceur.',
+            duree:'6 semaines', niveau:'Débutant',
+            seances:[
+                {titre:'Séance A — Corps complet', sub:'6 exercices · ~50 min'},
+                {titre:'Séance B — Corps complet', sub:'6 exercices · ~50 min'},
+                {titre:'Séance C — Corps complet', sub:'6 exercices · ~50 min'},
+            ]
+        },
+        {
+            id:'deb-2j', badge:'2 jours/semaine', name:'Débutant — Remise en route',
+            desc:'Deux séances par semaine pour reprendre le sport sans se blesser. Parfait pour bien commencer.',
+            duree:'4 semaines', niveau:'Débutant',
+            seances:[
+                {titre:'Séance A — Haut du corps', sub:'5 exercices · ~40 min'},
+                {titre:'Séance B — Bas du corps + gainage', sub:'5 exercices · ~40 min'},
+            ]
+        },
+    ],
+    seche: [
+        {
+            id:'seche-full-3j', badge:'3 jours/semaine', name:'Perte de poids — Full body',
+            desc:'Des séances complètes et dynamiques qui brûlent un maximum de calories.',
+            duree:'8 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Séance A — Full body + cardio', sub:'7 exercices · ~50 min'},
+                {titre:'Séance B — Full body + cardio', sub:'7 exercices · ~50 min'},
+                {titre:'Séance C — Full body + cardio', sub:'7 exercices · ~50 min'},
+            ]
+        },
+        {
+            id:'seche-circuit-4j', badge:'4 jours/semaine', name:'Perte de poids — Circuits',
+            desc:'Enchaînements en circuit pour garder le cardio élevé et fondre plus vite.',
+            duree:'8 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Jour 1 — Haut du corps', sub:'6 exercices · ~45 min'},
+                {titre:'Jour 2 — Bas du corps', sub:'6 exercices · ~45 min'},
+                {titre:'Jour 3 — Full body', sub:'7 exercices · ~50 min'},
+                {titre:'Jour 4 — Cardio + abdos', sub:'5 exercices · ~40 min'},
+            ]
+        },
+        {
+            id:'seche-2j', badge:'2 jours/semaine', name:'Perte de poids — 2 jours',
+            desc:'Deux séances full body par semaine pour relancer la machine. Idéal pour reprendre en douceur.',
+            duree:'8 semaines', niveau:'Débutant',
+            seances:[
+                {titre:'Séance A — Full body + cardio', sub:'6 exercices · ~45 min'},
+                {titre:'Séance B — Full body + cardio', sub:'6 exercices · ~45 min'},
+            ]
+        },
+        {
+            id:'seche-5j', badge:'5 jours/semaine', name:'Perte de poids — 5 jours',
+            desc:'Un rythme soutenu qui combine musculation et cardio pour maximiser la dépense.',
+            duree:'10 semaines', niveau:'Confirmé',
+            seances:[
+                {titre:'Jour 1 — Haut du corps', sub:'5 exercices · ~45 min'},
+                {titre:'Jour 2 — Bas du corps', sub:'5 exercices · ~45 min'},
+                {titre:'Jour 3 — Full body', sub:'6 exercices · ~50 min'},
+                {titre:'Jour 4 — Cardio + abdos', sub:'6 exercices · ~45 min'},
+                {titre:'Jour 5 — HIIT + gainage', sub:'5 exercices · ~40 min'},
+            ]
+        },
+        {
+            id:'seche-6j', badge:'6 jours/semaine', name:'Perte de poids — 6 jours',
+            desc:'Programme intense pour les confirmés qui veulent pousser fort. Récupération et nutrition essentielles.',
+            duree:'12 semaines', niveau:'Confirmé',
+            seances:[
+                {titre:'Jour 1 — Haut du corps', sub:'5 exercices · ~45 min'},
+                {titre:'Jour 2 — Bas du corps', sub:'5 exercices · ~45 min'},
+                {titre:'Jour 3 — Full body', sub:'6 exercices · ~50 min'},
+                {titre:'Jour 4 — Cardio + abdos', sub:'6 exercices · ~45 min'},
+                {titre:'Jour 5 — HIIT', sub:'5 exercices · ~40 min'},
+                {titre:'Jour 6 — Gainage + mobilité', sub:'5 exercices · ~35 min'},
+            ]
+        },
+    ],
+    maison: [
+        {
+            id:'maison-pdc-2j', badge:'2 jours/semaine', name:'Maison — Poids du corps 2 jours',
+            desc:'Deux séances par semaine sans aucun matériel. Parfait pour débuter à la maison.',
+            duree:'4 semaines', niveau:'Débutant',
+            seances:[
+                {titre:'Haut du corps', sub:'5 exercices · ~40 min'},
+                {titre:'Bas du corps', sub:'5 exercices · ~40 min'},
+            ]
+        },
+        {
+            id:'maison-pdc-3j', badge:'3 jours/semaine', name:'Maison — Poids du corps 3 jours',
+            desc:'Aucun matériel nécessaire. Juste toi, ton tapis et ta motivation.',
+            duree:'6 semaines', niveau:'Débutant',
+            seances:[
+                {titre:'Haut du corps', sub:'4 exercices · ~40 min'},
+                {titre:'Bas du corps', sub:'3 exercices · ~35 min'},
+                {titre:'Full body + gainage', sub:'6 exercices · ~45 min'},
+            ]
+        },
+        {
+            id:'maison-pdc-4j', badge:'4 jours/semaine', name:'Maison — Poids du corps 4 jours',
+            desc:'Quatre séances pour progresser plus vite, toujours sans matériel.',
+            duree:'8 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Haut A', sub:'3 exercices · ~35 min'},
+                {titre:'Bas A', sub:'3 exercices · ~35 min'},
+                {titre:'Haut B', sub:'3 exercices · ~35 min'},
+                {titre:'Bas B + abdos', sub:'4 exercices · ~40 min'},
+            ]
+        },
+        {
+            id:'maison-pdc-5j', badge:'5 jours/semaine', name:'Maison — Poids du corps 5 jours',
+            desc:'Un découpage par zone pour les assidus, sans aucun équipement.',
+            duree:'10 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Pecs / Triceps', sub:'2 exercices · ~30 min'},
+                {titre:'Dos / Épaules', sub:'2 exercices · ~30 min'},
+                {titre:'Jambes', sub:'3 exercices · ~35 min'},
+                {titre:'Abdos / Gainage', sub:'4 exercices · ~30 min'},
+                {titre:'Full body', sub:'3 exercices · ~40 min'},
+            ]
+        },
+        {
+            id:'maison-pdc-6j', badge:'6 jours/semaine', name:'Maison — Poids du corps 6 jours',
+            desc:'Pour les plus motivés : six séances courtes réparties sur la semaine.',
+            duree:'12 semaines', niveau:'Confirmé',
+            seances:[
+                {titre:'Pecs / Triceps', sub:'2 exercices · ~30 min'},
+                {titre:'Dos', sub:'2 exercices · ~30 min'},
+                {titre:'Jambes', sub:'3 exercices · ~35 min'},
+                {titre:'Épaules / Abdos', sub:'3 exercices · ~30 min'},
+                {titre:'Haut complet', sub:'3 exercices · ~35 min'},
+                {titre:'Bas + gainage', sub:'3 exercices · ~35 min'},
+            ]
+        },
+        {
+            id:'maison-halteres-2j', badge:'2 jours/semaine', name:'Maison — Haltères 2 jours',
+            desc:'Deux séances haut/bas avec une paire d\'haltères. Parfait pour débuter à domicile.',
+            duree:'6 semaines', niveau:'Débutant',
+            seances:[
+                {titre:'Jour 1 — Haut du corps', sub:'5 exercices · ~45 min'},
+                {titre:'Jour 2 — Bas du corps', sub:'5 exercices · ~45 min'},
+            ]
+        },
+        {
+            id:'maison-halteres-3j', badge:'3 jours/semaine', name:'Maison — Haltères 3 jours',
+            desc:'Une paire d\'haltères suffit pour un programme complet à domicile.',
+            duree:'8 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Jour 1 — Haut du corps', sub:'5 exercices · ~45 min'},
+                {titre:'Jour 2 — Bas du corps', sub:'5 exercices · ~45 min'},
+                {titre:'Jour 3 — Full body', sub:'6 exercices · ~50 min'},
+            ]
+        },
+        {
+            id:'maison-halteres-4j', badge:'4 jours/semaine', name:'Maison — Haltères 4 jours',
+            desc:'Quatre séances haut/bas pour progresser avec des haltères à domicile.',
+            duree:'10 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Jour 1 — Haut A', sub:'4 exercices · ~45 min'},
+                {titre:'Jour 2 — Bas A', sub:'4 exercices · ~45 min'},
+                {titre:'Jour 3 — Haut B', sub:'4 exercices · ~45 min'},
+                {titre:'Jour 4 — Bas B', sub:'4 exercices · ~45 min'},
+            ]
+        },
+        {
+            id:'maison-halteres-5j', badge:'5 jours/semaine', name:'Maison — Haltères 5 jours',
+            desc:'Un découpage par muscle avec haltères, pour les confirmés qui s\'entraînent chez eux.',
+            duree:'10 semaines', niveau:'Confirmé',
+            seances:[
+                {titre:'Jour 1 — Pecs / Triceps', sub:'3 exercices · ~40 min'},
+                {titre:'Jour 2 — Dos / Biceps', sub:'3 exercices · ~40 min'},
+                {titre:'Jour 3 — Jambes', sub:'3 exercices · ~45 min'},
+                {titre:'Jour 4 — Épaules', sub:'4 exercices · ~40 min'},
+                {titre:'Jour 5 — Full body', sub:'4 exercices · ~45 min'},
+            ]
+        },
+    ],
+    salle: [
+        {
+            id:'salle-ppl-3j', badge:'3 jours/semaine', name:'Salle — Push / Pull / Legs',
+            desc:'Le grand classique en salle : pousser, tirer, jambes. Efficace et structuré.',
+            duree:'10 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Push — Pecs / Épaules / Triceps', sub:'6 exercices · ~60 min'},
+                {titre:'Pull — Dos / Biceps', sub:'6 exercices · ~60 min'},
+                {titre:'Legs — Jambes complètes', sub:'6 exercices · ~65 min'},
+            ]
+        },
+        {
+            id:'salle-half-4j', badge:'4 jours/semaine', name:'Salle — Half body',
+            desc:'Le corps en deux moitiés, travaillées deux fois par semaine. Bon compromis volume/récup.',
+            duree:'10 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Jour 1 — Haut du corps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 2 — Bas du corps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 3 — Haut du corps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 4 — Bas du corps', sub:'6 exercices · ~60 min'},
+            ]
+        },
+        {
+            id:'salle-ppl-6j', badge:'6 jours/semaine', name:'Salle — PPL x2',
+            desc:'Push/Pull/Legs répété deux fois par semaine. Pour les confirmés très assidus.',
+            duree:'12 semaines', niveau:'Confirmé',
+            seances:[
+                {titre:'Jour 1 — Push', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 2 — Pull', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 3 — Legs', sub:'6 exercices · ~65 min'},
+                {titre:'Jour 4 — Push', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 5 — Pull', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 6 — Legs', sub:'6 exercices · ~65 min'},
+            ]
+        },
+    ],
+};
+
+const SESSION_EXOS = {"masse-3j-0": ["pecs:0", "pecs:1", "pecs:2", "triceps:0", "triceps:1", "triceps:2"], "masse-3j-1": ["dos:1", "dos:0", "dos:2", "dos:3", "biceps:0", "biceps:2"], "masse-3j-2": ["jambes:0", "jambes:1", "jambes:3", "jambes:5", "epaules:0", "epaules:1"], "masse-4j-0": ["pecs:0", "pecs:1", "pecs:5", "pecs:2", "pecs:4"], "masse-4j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "dos:4"], "masse-4j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4"], "masse-4j-3": ["epaules:0", "epaules:1", "epaules:3", "biceps:0", "triceps:0", "triceps:1"], "masse-5j-0": ["pecs:0", "pecs:1", "pecs:5", "pecs:2", "pecs:4"], "masse-5j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "dos:6"], "masse-5j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "masse-5j-3": ["epaules:0", "epaules:1", "epaules:4", "epaules:3", "epaules:5"], "masse-5j-4": ["biceps:0", "biceps:1", "biceps:2", "triceps:0", "triceps:1", "triceps:3"], "deb-full-3j-0": ["pecs:0", "dos:1", "jambes:0", "epaules:0", "abdos:1"], "deb-full-3j-1": ["pecs:3", "dos:2", "jambes:1", "biceps:0", "abdos:0"], "deb-full-3j-2": ["pecs:1", "dos:0", "jambes:2", "triceps:1", "abdos:3"], "deb-2j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "deb-2j-1": ["jambes:0", "jambes:1", "jambes:3", "abdos:1", "abdos:0"], "seche-full-3j-0": ["jambes:0", "pecs:3", "dos:2", "epaules:1", "abdos:2", "jambes:2", "abdos:1"], "seche-full-3j-1": ["jambes:1", "pecs:0", "dos:1", "triceps:1", "abdos:3", "jambes:5", "abdos:0"], "seche-full-3j-2": ["jambes:2", "pecs:1", "dos:0", "biceps:0", "abdos:3", "jambes:3", "abdos:2"], "seche-circuit-4j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1", "pecs:3"], "seche-circuit-4j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5", "abdos:1"], "seche-circuit-4j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-circuit-4j-3": ["abdos:0", "abdos:1", "abdos:2", "abdos:3", "abdos:0"], "maison-halteres-3j-0": ["pecs:5", "epaules:2", "biceps:1", "triceps:3", "abdos:1"], "maison-halteres-3j-1": ["jambes:2", "jambes:0", "jambes:5", "abdos:3", "abdos:0"], "maison-halteres-3j-2": ["pecs:5", "dos:3", "epaules:2", "biceps:1", "jambes:2", "abdos:1"], "salle-ppl-3j-0": ["pecs:0", "pecs:1", "epaules:0", "epaules:1", "triceps:1", "triceps:0"], "salle-ppl-3j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "biceps:0", "biceps:2"], "salle-ppl-3j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "salle-half-4j-0": ["pecs:0", "dos:1", "epaules:0", "biceps:0", "triceps:0", "abdos:1"], "salle-half-4j-1": ["jambes:0", "jambes:1", "jambes:3", "jambes:4", "jambes:5", "abdos:0"], "salle-half-4j-2": ["pecs:1", "dos:0", "epaules:1", "biceps:2", "triceps:1", "abdos:3"], "salle-half-4j-3": ["jambes:2", "jambes:1", "jambes:6", "jambes:4", "jambes:5", "abdos:2"], "salle-ppl-6j-0": ["pecs:0", "pecs:1", "epaules:0", "epaules:1", "triceps:0", "triceps:1"], "salle-ppl-6j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "biceps:0", "biceps:2"], "salle-ppl-6j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "salle-ppl-6j-3": ["pecs:5", "pecs:2", "epaules:2", "epaules:4", "triceps:3", "triceps:4"], "salle-ppl-6j-4": ["dos:6", "dos:4", "dos:0", "dos:3", "biceps:1", "biceps:3"], "salle-ppl-6j-5": ["jambes:0", "jambes:6", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "maison-pdc-2j-0": ["pecs:3", "dos:0", "epaules:7", "triceps:2", "abdos:1"], "maison-pdc-2j-1": ["jambes:0", "jambes:2", "jambes:5", "abdos:0", "abdos:2"], "maison-pdc-3j-0": ["pecs:3", "dos:0", "epaules:7", "triceps:2"], "maison-pdc-3j-1": ["jambes:0", "jambes:2", "jambes:5"], "maison-pdc-3j-2": ["pecs:3", "jambes:0", "dos:0", "abdos:1", "abdos:0", "abdos:3"], "maison-pdc-4j-0": ["pecs:3", "triceps:2", "epaules:7"], "maison-pdc-4j-1": ["jambes:0", "jambes:2", "jambes:5"], "maison-pdc-4j-2": ["dos:0", "pecs:3", "abdos:1"], "maison-pdc-4j-3": ["jambes:0", "jambes:2", "abdos:0", "abdos:2"], "maison-pdc-5j-0": ["pecs:3", "triceps:2"], "maison-pdc-5j-1": ["dos:0", "epaules:7"], "maison-pdc-5j-2": ["jambes:0", "jambes:2", "jambes:5"], "maison-pdc-5j-3": ["abdos:0", "abdos:1", "abdos:2", "abdos:3"], "maison-pdc-5j-4": ["pecs:3", "jambes:0", "dos:0"], "maison-pdc-6j-0": ["pecs:3", "triceps:2"], "maison-pdc-6j-1": ["dos:0", "abdos:1"], "maison-pdc-6j-2": ["jambes:0", "jambes:2", "jambes:5"], "maison-pdc-6j-3": ["epaules:7", "abdos:0", "abdos:3"], "maison-pdc-6j-4": ["pecs:3", "dos:0", "triceps:2"], "maison-pdc-6j-5": ["jambes:0", "jambes:2", "abdos:1"], "masse-deb-3j-0": ["pecs:0", "dos:1", "jambes:0", "epaules:0", "abdos:1"], "masse-deb-3j-1": ["pecs:3", "dos:2", "jambes:1", "biceps:0", "abdos:0"], "masse-deb-3j-2": ["pecs:1", "dos:0", "jambes:2", "triceps:1", "abdos:3"], "masse-2j-0": ["pecs:0", "pecs:1", "dos:0", "dos:1", "epaules:0", "biceps:0", "triceps:0"], "masse-2j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5", "abdos:1"], "seche-2j-0": ["jambes:0", "pecs:3", "dos:2", "epaules:1", "abdos:2", "abdos:1"], "seche-2j-1": ["jambes:1", "pecs:0", "dos:1", "triceps:1", "abdos:3", "abdos:0"], "seche-5j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "seche-5j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5"], "seche-5j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-5j-3": ["pecs:1", "dos:1", "jambes:1", "epaules:1", "abdos:1", "abdos:2"], "seche-5j-4": ["abdos:0", "abdos:1", "abdos:2", "abdos:3", "jambes:2"], "seche-6j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "seche-6j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5"], "seche-6j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-6j-3": ["pecs:1", "dos:1", "epaules:1", "triceps:0", "abdos:1", "abdos:2"], "seche-6j-4": ["jambes:1", "jambes:3", "pecs:0", "dos:2", "abdos:3"], "seche-6j-5": ["abdos:0", "abdos:1", "abdos:2", "abdos:3", "jambes:2"], "maison-halteres-2j-0": ["pecs:5", "epaules:2", "biceps:1", "triceps:3", "abdos:1"], "maison-halteres-2j-1": ["jambes:2", "jambes:0", "jambes:5", "abdos:3", "abdos:0"], "maison-halteres-4j-0": ["pecs:5", "epaules:2", "triceps:3", "abdos:1"], "maison-halteres-4j-1": ["jambes:2", "jambes:0", "jambes:5", "abdos:0"], "maison-halteres-4j-2": ["dos:3", "biceps:1", "epaules:2", "abdos:3"], "maison-halteres-4j-3": ["jambes:0", "jambes:2", "jambes:5", "abdos:2"], "maison-halteres-5j-0": ["pecs:5", "triceps:3", "abdos:1"], "maison-halteres-5j-1": ["dos:3", "biceps:1", "abdos:0"], "maison-halteres-5j-2": ["jambes:2", "jambes:0", "jambes:5"], "maison-halteres-5j-3": ["epaules:2", "epaules:4", "abdos:3", "abdos:2"], "maison-halteres-5j-4": ["pecs:5", "dos:3", "jambes:0", "abdos:1"]};
+
+let currentCat = null;
+
+function renderCats(){
+    document.getElementById('catList').innerHTML = CATEGORIES.map(c =>
+        `<div class="cat-card" onclick="showProgs('${c.key}')">
+            <div class="cat-emoji">${c.emoji}</div>
+            <div class="cat-info"><div class="cat-name">${c.name}</div><div class="cat-sub">${c.sub}</div></div>
+            <div class="cat-arrow">→</div>
+        </div>`
+    ).join('');
+}
+
+function showCats(){
+    document.getElementById('screenProgs').classList.remove('active');
+    document.getElementById('screenSeances').classList.remove('active');
+    document.getElementById('screenCats').classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function showProgs(catKey){
+    currentCat = catKey;
+    const cat = CATEGORIES.find(c => c.key === catKey);
+    document.getElementById('progTitle').textContent = cat.name;
+    const progs = PROGRAMMES[catKey] || [];
+    const c = document.getElementById('progList');
+    if(progs.length === 0){
+        c.innerHTML = `<div class="soon-note">Les programmes "${cat.name}" arrivent bientôt.<br>La catégorie Prise de masse est déjà disponible en exemple.</div>`;
+    } else {
+        c.innerHTML = progs.map(p =>
+            `<div class="prog-card" onclick="showSeances('${catKey}','${p.id}')">
+                <span class="prog-badge">${p.badge}</span>
+                <div class="prog-name">${p.name}</div>
+                <div class="prog-desc">${p.desc}</div>
+                <div class="prog-stats">
+                    <span>📅 <b>${p.duree}</b></span>
+                    <span>📊 <b>${p.niveau}</b></span>
+                    <span>🗓️ <b>${p.seances.length} séances</b></span>
+                </div>
+            </div>`
+        ).join('');
+    }
+    document.getElementById('screenCats').classList.remove('active');
+    document.getElementById('screenSeances').classList.remove('active');
+    document.getElementById('screenProgs').classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function showSeances(catKey, progId){
+    const prog = (PROGRAMMES[catKey] || []).find(p => p.id === progId);
+    if(!prog) return;
+    // Déterminer le filtre matériel selon le programme
+    let filtre = 'tout';
+    if(progId.startsWith('maison-pdc')) filtre = 'rien';           // poids du corps
+    else if(progId.startsWith('maison-halteres')) filtre = 'halteres'; // haltères
+    document.getElementById('seanceTitle').textContent = prog.name;
+    document.getElementById('seanceIntro').textContent = `${prog.duree} · niveau ${prog.niveau}. Choisis une séance pour voir les exercices.`;
+    document.getElementById('seanceList').innerHTML = prog.seances.map((s,i) => {
+        const seanceId = progId + '-' + i;
+        return `<div class="seance-card" onclick="window.location.href='ma-seance.html?s=${encodeURIComponent(seanceId)}&t=${encodeURIComponent(s.titre)}&f=${filtre}'">
+            <div class="seance-num">J${i+1}</div>
+            <div class="seance-info"><div class="seance-title">${s.titre}</div><div class="seance-sub">${s.sub}</div></div>
+            <div class="seance-arrow">→</div>
+        </div>`;
+    }).join('');
+    document.getElementById('screenProgs').classList.remove('active');
+    document.getElementById('screenCats').classList.remove('active');
+    document.getElementById('screenSeances').classList.add('active');
+    window.scrollTo(0,0);
+}
+
+renderCats();
+
+// Si on arrive depuis le test avec un programme recommandé, l'ouvrir directement
+(function openFromTest(){
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('cat');
+    const prog = params.get('prog');
+    if(cat && prog && PROGRAMMES[cat] && PROGRAMMES[cat].find(p => p.id === prog)){
+        showSeances(cat, prog);
+    }
+})();
+</script>
+</body>
+</html>
