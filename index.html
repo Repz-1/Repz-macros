@@ -256,7 +256,8 @@ function continuerInvite() {
     if(!localStorage.getItem('repz_inviteDebut')){
         localStorage.setItem('repz_inviteDebut', new Date().toISOString().slice(0,10));
     }
-    window.location.href = 'accueil.html';
+    // Une session Firebase encore active écraserait le mode invité : on la coupe d'abord
+    auth.signOut().finally(()=>{ window.location.href = 'accueil.html'; });
 }
 
 function toggleForm(formName) {

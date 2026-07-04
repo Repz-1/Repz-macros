@@ -687,7 +687,7 @@ function logout() {
     localStorage.removeItem('repz_premium');
     localStorage.removeItem('repz_invite');
     localStorage.removeItem('repz_inviteDebut');
-    auth.signOut().then(() => { window.location.href = 'index.html'; });
+    auth.signOut().finally(() => { window.location.href = 'index.html'; });
 }
 
 function afficherMessageInvite() {
