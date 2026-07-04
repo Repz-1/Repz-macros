@@ -255,13 +255,35 @@ body {
 .bn-item.active { color:#FF6B35; }
 .bn-item:active { transform:scale(.94); }
 
-.chrono-fab{position:fixed;bottom:84px;right:16px;z-index:60;min-width:60px;height:60px;padding:0 6px;border-radius:30px;background:#1f2937;color:#fff;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(31,41,55,.4);opacity:.82;transition:opacity .15s,transform .15s,background .2s;-webkit-tap-highlight-color:transparent;}
-.chrono-fab:active{transform:scale(.94);}
-.chrono-fab.running{background:var(--orange);opacity:1;box-shadow:0 6px 20px rgba(255,107,53,.45);}
-.chrono-fab svg{width:22px;height:22px;}
-.chrono-fab-time{font-size:13px;font-weight:800;line-height:1;margin-top:2px;font-variant-numeric:tabular-nums;letter-spacing:.5px;}
-.chrono-reset{position:fixed;bottom:150px;right:16px;z-index:60;width:40px;height:40px;border-radius:50%;background:#fff;color:var(--orange);border:1.5px solid #ffe0d0;box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:16px;-webkit-tap-highlight-color:transparent;}
-.chrono-reset.visible{display:flex;}
+/* ===== CHRONO (identique ma-seance) ===== */
+.timer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:64;}
+.timer-overlay.show{display:block;}
+.timer-container{position:fixed;bottom:80px;left:16px;right:16px;max-width:448px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:65;display:none;}
+.timer-container.show{display:block;animation:slideUpT .3s ease-out;}
+@keyframes slideUpT{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.timer-display{text-align:center;margin-bottom:20px;}
+.timer-big{font-size:56px;font-weight:800;color:var(--orange);font-family:'Monaco','Courier';letter-spacing:2px;}
+.timer-label{font-size:13px;color:#9ca3af;margin-top:8px;}
+.timer-controls{display:flex;gap:10px;justify-content:center;}
+.timer-btn{flex:1;max-width:100px;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+.timer-btn.start{background:var(--orange);color:#fff;}
+.timer-btn.start:active{transform:scale(.95);}
+.timer-btn.reset{background:#f3f4f6;color:#1a1a1a;border:1px solid #e5e7eb;}
+.timer-btn.reset:active{background:#e5e7eb;}
+.timer-wheels{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;height:150px;}
+.wheel-col{display:flex;flex-direction:column;align-items:center;}
+.wheel{height:150px;width:74px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;text-align:center;-ms-overflow-style:none;}
+.wheel::-webkit-scrollbar{display:none;}
+.wheel-item{height:50px;line-height:50px;scroll-snap-align:center;font-size:26px;font-weight:700;color:#cbd5e1;transition:color .15s,transform .15s;}
+.wheel-item.sel{color:#1a1a1a;font-size:30px;}
+.wheel-unit{font-size:12px;color:#9ca3af;font-weight:600;margin-top:-6px;}
+.wheel-sep{font-size:28px;font-weight:800;color:#1a1a1a;align-self:flex-start;margin-top:54px;}
+.wheel-highlight{position:absolute;top:50px;left:0;right:0;height:50px;border-top:1.5px solid var(--orange);border-bottom:1.5px solid var(--orange);pointer-events:none;opacity:.5;}
+.chrono-fab{position:fixed;bottom:84px;right:16px;z-index:66;width:52px;height:52px;border-radius:50%;background:#1f2937;color:#fff;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(31,41,55,.4);opacity:.82;transition:opacity .15s,transform .15s,background .2s;-webkit-tap-highlight-color:transparent;}
+.chrono-fab svg{width:24px;height:24px;}
+.chrono-fab:active{opacity:1;transform:scale(.94);}
+.chrono-fab-time{font-size:10px;font-weight:800;line-height:1;margin-top:1px;font-variant-numeric:tabular-nums;}
+.chrono-fab.running{opacity:1;background:var(--orange);box-shadow:0 6px 20px rgba(255,107,53,.45);}
 </style>
 </head>
 <body>
@@ -599,18 +621,120 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 
-<button class="chrono-reset" id="chronoReset" onclick="chronoReset(event)" aria-label="Réinitialiser">↺</button>
-<button class="chrono-fab" id="chronoFab" onclick="chronoToggle()" aria-label="Chronomètre">
-    <svg id="chronoIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg>
-    <span class="chrono-fab-time" id="chronoTime" style="display:none;">00:00</span>
+<!-- CHRONO -->
+<div class="timer-overlay" id="timerOverlay" onclick="closeTimer()"></div>
+<div class="timer-container" id="timerContainer">
+    <div class="timer-display">
+        <div class="timer-big" id="timerDisplay">01:30</div>
+        <div class="timer-label">Chronomètre</div>
+    </div>
+    <div class="timer-wheels">
+        <div class="wheel-col">
+            <div class="wheel" id="wheelMin"></div>
+            <div class="wheel-unit">min</div>
+        </div>
+        <div class="wheel-sep">:</div>
+        <div class="wheel-col">
+            <div class="wheel" id="wheelSec"></div>
+            <div class="wheel-unit">sec</div>
+        </div>
+        <div class="wheel-highlight"></div>
+    </div>
+    <div class="timer-controls">
+        <button class="timer-btn start" id="timerStartBtn" onclick="startTimer()">Démarrer</button>
+        <button class="timer-btn reset" onclick="resetTimer()">Reset</button>
+        <button class="timer-btn reset" onclick="closeTimer()">Fermer</button>
+    </div>
+</div>
+<button class="chrono-fab" id="chronoFab" onclick="toggleTimer()" aria-label="Chronomètre">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 2h6"/></svg>
+    <span class="chrono-fab-time" id="chronoFabTime"></span>
 </button>
 <script>
-let chronoInt=null,chronoMs=0,chronoStart=0;
-function chronoFmt(ms){const t=Math.floor(ms/1000),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60,p=n=>String(n).padStart(2,'0');return h>0?h+':'+p(m)+':'+p(s):p(m)+':'+p(s);}
-function chronoRender(){document.getElementById('chronoTime').textContent=chronoFmt(chronoMs+(chronoInt?Date.now()-chronoStart:0));}
-function chronoShowTime(on){document.getElementById('chronoIcon').style.display=on?'none':'';document.getElementById('chronoTime').style.display=on?'':'none';document.getElementById('chronoReset').classList.toggle('visible',on);}
-function chronoToggle(){const f=document.getElementById('chronoFab');if(chronoInt){chronoMs+=Date.now()-chronoStart;clearInterval(chronoInt);chronoInt=null;f.classList.remove('running');}else{chronoStart=Date.now();chronoInt=setInterval(chronoRender,100);f.classList.add('running');chronoShowTime(true);chronoRender();}}
-function chronoReset(e){if(e)e.stopPropagation();clearInterval(chronoInt);chronoInt=null;chronoMs=0;document.getElementById('chronoFab').classList.remove('running');chronoShowTime(false);}
+let timerInterval=null, timerRunning=false, totalSeconds=90, lastPreset=90;
+let wheelMinVal=1, wheelSecVal=30;
+function updateTimerDisplay(){
+    const min=Math.floor(totalSeconds/60), sec=totalSeconds%60;
+    document.getElementById('timerDisplay').textContent=(min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
+    updateChronoFab();
+}
+function startTimer(){
+    const btn=document.getElementById('timerStartBtn');
+    if(timerRunning){
+        clearInterval(timerInterval); timerRunning=false;
+        btn.textContent='Reprendre'; updateChronoFab(); return;
+    }
+    timerRunning=true; btn.textContent='Pause';
+    timerInterval=setInterval(()=>{
+        if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); }
+        else{
+            clearInterval(timerInterval); timerRunning=false;
+            btn.textContent='Démarrer'; updateChronoFab();
+            if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
+        }
+    },1000);
+    updateChronoFab();
+}
+function buildWheel(el, values, selected, onChange){
+    el.innerHTML='<div style="height:50px"></div>'+
+        values.map(v=>`<div class="wheel-item" data-val="${v}">${(v<10?'0':'')+v}</div>`).join('')+
+        '<div style="height:50px"></div>';
+    const idx=values.indexOf(selected);
+    setTimeout(()=>{ el.scrollTop=(idx<0?0:idx)*50; updateWheelSel(el); },50);
+    let scrollTimer=null;
+    el.addEventListener('scroll',()=>{
+        updateWheelSel(el);
+        clearTimeout(scrollTimer);
+        scrollTimer=setTimeout(()=>{
+            const i=Math.round(el.scrollTop/50);
+            onChange(values[Math.max(0,Math.min(values.length-1,i))]);
+        },120);
+    });
+}
+function updateWheelSel(el){
+    const i=Math.round(el.scrollTop/50);
+    el.querySelectorAll('.wheel-item').forEach((it,idx)=>it.classList.toggle('sel',idx===i));
+}
+function appliquerMolettes(){
+    totalSeconds=wheelMinVal*60+wheelSecVal; lastPreset=totalSeconds;
+    clearInterval(timerInterval); timerRunning=false;
+    updateTimerDisplay();
+    document.getElementById('timerStartBtn').textContent='Démarrer';
+}
+function initWheels(){
+    const minutes=Array.from({length:61},(_,i)=>i);
+    const secondes=Array.from({length:12},(_,i)=>i*5);
+    buildWheel(document.getElementById('wheelMin'),minutes,wheelMinVal,v=>{wheelMinVal=v;appliquerMolettes();});
+    buildWheel(document.getElementById('wheelSec'),secondes,wheelSecVal,v=>{wheelSecVal=v;appliquerMolettes();});
+}
+function resetTimer(){
+    clearInterval(timerInterval); timerRunning=false;
+    totalSeconds=lastPreset; updateTimerDisplay();
+    document.getElementById('timerStartBtn').textContent='Démarrer';
+}
+function toggleTimer(){
+    const c=document.getElementById('timerContainer'), o=document.getElementById('timerOverlay');
+    const isOpen=c.classList.toggle('show');
+    o.classList.toggle('show',isOpen);
+    if(isOpen){
+        const wMin=document.getElementById('wheelMin'), wSec=document.getElementById('wheelSec');
+        setTimeout(()=>{ wMin.scrollTop=wheelMinVal*50; updateWheelSel(wMin); },60);
+        setTimeout(()=>{ wSec.scrollTop=(wheelSecVal/5)*50; updateWheelSel(wSec); },60);
+    }
+}
+function closeTimer(){
+    document.getElementById('timerContainer').classList.remove('show');
+    document.getElementById('timerOverlay').classList.remove('show');
+}
+function updateChronoFab(){
+    const t=document.getElementById('chronoFabTime'), fab=document.getElementById('chronoFab');
+    if(timerRunning){
+        const min=Math.floor(totalSeconds/60), sec=totalSeconds%60;
+        t.textContent=(min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
+        fab.classList.add('running');
+    } else { t.textContent=''; fab.classList.remove('running'); }
+}
+initWheels(); updateTimerDisplay();
 </script>
 </body>
 </html>
