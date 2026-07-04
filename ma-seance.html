@@ -7,7 +7,7 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-    --orange:#FF6B35; --bg:#f3f4f6; --card:#ffffff; --dark:#1f2937;
+    --orange:#10B981; --bg:#f3f4f6; --card:#ffffff; --dark:#1f2937;
     --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --green:#16a34a; --radius:20px;
 }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
@@ -15,7 +15,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .topbar-app {
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px; margin:-16px -16px 8px;
-    background:linear-gradient(180deg,#FF6B35 0%,#1a0f08 75%,#000000 100%);
+    background:linear-gradient(180deg,#10B981 0%,#1a0f08 75%,#000000 100%);
 }
 .topbar-home {
     display:inline-flex; align-items:center; justify-content:center;
@@ -50,7 +50,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .filter-tab { flex-shrink:0; padding:7px 14px; border-radius:30px; border:1.5px solid var(--line);
     background:var(--card); font-size:12.5px; font-weight:600; color:var(--text-dim);
     cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:5px; }
-.filter-tab.active { background:rgba(255,107,53,.12); color:var(--orange); border-color:var(--orange); }
+.filter-tab.active { background:rgba(16,185,129,.12); color:var(--orange); border-color:var(--orange); }
 
 .section-hint { font-size:13px; color:var(--text-dim); margin:6px 4px 14px; display:flex; align-items:center; gap:6px; }
 .swipe-hint { font-size:11px; color:#9ca3af; }
@@ -58,7 +58,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .ex-list { display:flex; flex-direction:column; gap:10px; }
 .ex-item { display:flex; align-items:center; gap:14px; background:var(--card);
     border:1.5px solid var(--line); border-radius:16px; padding:12px 14px; transition:border-color .15s; }
-.ex-item.selected { border-color:var(--orange); background:#fff8f5; }
+.ex-item.selected { border-color:var(--orange); background:#ecfdf5; }
 .ex-photo { width:56px; height:56px; flex-shrink:0; border-radius:12px;
     background:#e5e7eb center/cover no-repeat; display:flex; align-items:center; justify-content:center;
     font-size:10px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; cursor:pointer; position:relative; }
@@ -74,7 +74,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .session-bar { position:fixed; bottom:16px; left:16px; right:16px; max-width:448px; margin:0 auto;
     background:var(--orange); color:#fff; border-radius:18px; padding:15px 20px;
     display:flex; align-items:center; justify-content:space-between;
-    box-shadow:0 8px 24px rgba(255,107,53,.35); cursor:pointer; z-index:50; }
+    box-shadow:0 8px 24px rgba(16,185,129,.35); cursor:pointer; z-index:50; }
 .session-bar.hidden { display:none; }
 .session-bar .count { font-size:14px; font-weight:700; }
 .session-bar .go { font-size:14px; font-weight:800; }
@@ -117,7 +117,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     flex:1; background:#fff; border:1.5px solid var(--line); border-radius:14px;
     padding:13px; font-size:14.5px; font-weight:700; color:var(--text); cursor:pointer;
 }
-.sc-pause.paused { background:#fff7ed; border-color:var(--orange); color:var(--orange); }
+.sc-pause.paused { background:#ecfdf5; border-color:var(--orange); color:var(--orange); }
 .sc-pause:active { transform:scale(.98); }
 .sc-stop {
     flex:1; background:#fff; border:1.5px solid #fecaca; border-radius:14px;
@@ -224,7 +224,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 }
 .chrono-hint.show { display:flex; animation:slideUp .3s ease-out; }
 .chrono-hint button {
-    background:#FF6B35; color:#fff; border:none; border-radius:8px;
+    background:#10B981; color:#fff; border:none; border-radius:8px;
     padding:5px 10px; font-weight:700; font-size:12px; cursor:pointer; flex-shrink:0;
 }
 @keyframes slideUp {
@@ -1143,7 +1143,7 @@ updateTimerDisplay();
         const b = document.createElement('a');
         b.href = 'index.html';
         b.id = 'inviteBandeau';
-        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#fff7ed;border-bottom:1px solid #ffd9c0;color:#c2410c;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
         b.innerHTML = '🎁 Mode découverte · jour ' + jour + '/3 — <span style="text-decoration:underline;">crée ton compte pour garder tes données</span>';
         const topbar = document.querySelector('.topbar-app, .topbar');
         if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
@@ -1152,9 +1152,9 @@ updateTimerDisplay();
         // Fin d'essai : mur d'inscription (les données locales sont conservées)
         const o = document.createElement('div');
         o.id = 'inviteMur';
-        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#FF6B35 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
+        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#10B981 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
         o.innerHTML = '<div style="max-width:360px;width:100%;text-align:center;background:#ffffff;border-radius:26px;padding:34px 26px 26px;box-shadow:0 24px 70px rgba(0,0,0,.45);">'
-            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#FF6B35;">Z</span></div>'
+            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#10B981;">Z</span></div>'
             + '<div style="font-size:12px;color:#9ca3af;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;">Fin de l\'essai découverte</div>'
             + '<div style="font-size:44px;margin-bottom:10px;">🎉</div>'
             + '<h2 style="font-size:21px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.25;">3 jours avec REPZ, bien joué !</h2>'
@@ -1164,7 +1164,7 @@ updateTimerDisplay();
             +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;margin-bottom:9px;"><span style="color:#047857;font-weight:800;">✓</span> 100% gratuit, sans engagement</div>'
             +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;"><span style="color:#047857;font-weight:800;">✓</span> Tracker, séances libres et stats inclus</div>'
             + '</div>'
-            + '<a href="index.html" style="display:block;background:#FF6B35;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(255,107,53,.35);">Créer mon compte gratuit</a>'
+            + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(16,185,129,.35);">Créer mon compte gratuit</a>'
             + '<a href="index.html" style="display:block;color:#6b7280;font-size:13.5px;font-weight:600;text-decoration:none;padding:9px;">J\'ai déjà un compte — me connecter</a>'
             + '</div>';
         document.body.appendChild(o);

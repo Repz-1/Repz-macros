@@ -7,7 +7,7 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-    --orange:#FF6B35;
+    --orange:#10B981;
     --bg:#eeece7;
     --card:#ffffff;
     --dark:#1f2937;
@@ -29,7 +29,7 @@ body {
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px;
     margin:-16px -16px 8px;
-    background:linear-gradient(180deg,#FF6B35 0%,#1a0f08 75%,#000000 100%);
+    background:linear-gradient(180deg,#10B981 0%,#1a0f08 75%,#000000 100%);
 }
 .topbar-home {
     display:inline-flex; align-items:center; justify-content:center;
@@ -50,7 +50,7 @@ body {
 .premium-pill.is-premium { background:var(--gold); border-color:#fff; color:#1a1a1a; }
 .bottom-gradient {
     height:80px; margin:32px -16px -16px;
-    background:linear-gradient(180deg,#000000 0%,#1a0f08 25%,#FF6B35 100%);
+    background:linear-gradient(180deg,#000000 0%,#1a0f08 25%,#10B981 100%);
 }
 
 /* Header avec titre */
@@ -86,9 +86,9 @@ body {
 
 /* Carte 1 : questionnaire (mise en avant, bordure orange affirmée) */
 .choice.featured {
-    background:linear-gradient(145deg,#fff8f4,#ffe9dc);
+    background:linear-gradient(145deg,#ecfdf5,#a7f3d0);
     border:2px solid var(--orange);
-    box-shadow:0 12px 32px rgba(255,107,53,.20);
+    box-shadow:0 12px 32px rgba(16,185,129,.20);
 }
 .choice.featured .badge {
     display:inline-block; background:var(--orange); color:#fff;
@@ -109,7 +109,7 @@ body {
 .choice.lib h3 { font-size:19px; font-weight:800; margin-bottom:8px; }
 .choice.lib p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:16px; }
 .choice.lib .cta-inline-light {
-    display:inline-block; background:rgba(255,107,53,.12); color:var(--orange);
+    display:inline-block; background:rgba(16,185,129,.12); color:var(--orange);
     font-size:14px; font-weight:700; padding:11px 20px; border-radius:30px; }
 
 /* Petits aperçus de catégories dans la biblio */
@@ -135,7 +135,7 @@ body {
 .choice.libre h3 { font-size:19px; font-weight:800; margin-bottom:8px; }
 .choice.libre p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:16px; }
 .choice.libre .cta-inline-light {
-    display:inline-block; background:rgba(255,107,53,.12); color:var(--orange);
+    display:inline-block; background:rgba(16,185,129,.12); color:var(--orange);
     font-size:14px; font-weight:700; padding:11px 20px; border-radius:30px; }
 
 /* Cadenas Premium sur les choix verrouillés */
@@ -252,7 +252,7 @@ body {
 }
 .bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .bn-item span { font-size:10.5px; font-weight:700; }
-.bn-item.active { color:#FF6B35; }
+.bn-item.active { color:#10B981; }
 .bn-item:active { transform:scale(.94); }
 
 /* ===== CHRONO (identique ma-seance) ===== */
@@ -283,7 +283,7 @@ body {
 .chrono-fab svg{width:24px;height:24px;}
 .chrono-fab:active{opacity:1;transform:scale(.94);}
 .chrono-fab-time{font-size:10px;font-weight:800;line-height:1;margin-top:1px;font-variant-numeric:tabular-nums;}
-.chrono-fab.running{opacity:1;background:var(--orange);box-shadow:0 6px 20px rgba(255,107,53,.45);}
+.chrono-fab.running{opacity:1;background:var(--orange);box-shadow:0 6px 20px rgba(16,185,129,.45);}
 </style>
 </head>
 <body>
@@ -297,7 +297,7 @@ body {
         <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:26px;">
             Accède à tous tes programmes.<br>Ça prend 10 secondes.
         </p>
-        <a href="index.html" style="display:block; background:#FF6B35; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
+        <a href="index.html" style="display:block; background:#10B981; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
             Créer mon compte
         </a>
         <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;">
@@ -603,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const b = document.createElement('a');
         b.href = 'index.html';
         b.id = 'inviteBandeau';
-        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#fff7ed;border-bottom:1px solid #ffd9c0;color:#c2410c;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
         b.innerHTML = '🎁 Mode découverte · jour ' + jour + '/3 — <span style="text-decoration:underline;">crée ton compte pour garder tes données</span>';
         const topbar = document.querySelector('.topbar-app, .topbar');
         if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
@@ -612,9 +612,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fin d'essai : mur d'inscription (les données locales sont conservées)
         const o = document.createElement('div');
         o.id = 'inviteMur';
-        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#FF6B35 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
+        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#10B981 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
         o.innerHTML = '<div style="max-width:360px;width:100%;text-align:center;background:#ffffff;border-radius:26px;padding:34px 26px 26px;box-shadow:0 24px 70px rgba(0,0,0,.45);">'
-            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#FF6B35;">Z</span></div>'
+            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#10B981;">Z</span></div>'
             + '<div style="font-size:12px;color:#9ca3af;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;">Fin de l\'essai découverte</div>'
             + '<div style="font-size:44px;margin-bottom:10px;">🎉</div>'
             + '<h2 style="font-size:21px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.25;">3 jours avec REPZ, bien joué !</h2>'
@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
             +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;margin-bottom:9px;"><span style="color:#047857;font-weight:800;">✓</span> 100% gratuit, sans engagement</div>'
             +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;"><span style="color:#047857;font-weight:800;">✓</span> Tracker, séances libres et stats inclus</div>'
             + '</div>'
-            + '<a href="index.html" style="display:block;background:#FF6B35;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(255,107,53,.35);">Créer mon compte gratuit</a>'
+            + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(16,185,129,.35);">Créer mon compte gratuit</a>'
             + '<a href="index.html" style="display:block;color:#6b7280;font-size:13.5px;font-weight:600;text-decoration:none;padding:9px;">J\'ai déjà un compte — me connecter</a>'
             + '</div>';
         document.body.appendChild(o);

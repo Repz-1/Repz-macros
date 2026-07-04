@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculatrice Macros - REPZ</title>
-<meta name="theme-color" content="#FF6B35">
+<meta name="theme-color" content="#10B981">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="REPZ Macros">
@@ -32,7 +32,7 @@ body {
     padding:2px 16px;
 }
 .app-logo { width:100%; max-width:230px; height:auto; display:block; margin:0 auto;
-    filter:drop-shadow(0 4px 16px rgba(255,107,53,.15)); }
+    filter:drop-shadow(0 4px 16px rgba(16,185,129,.15)); }
 .app-back-btn {
     display:inline-flex; align-items:center; justify-content:center;
     width:42px; height:42px;
@@ -46,7 +46,7 @@ body {
 .topbar-app {
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px;
-    background:linear-gradient(180deg,#FF6B35 0%,#1a0f08 75%,#000000 100%);
+    background:linear-gradient(180deg,#10B981 0%,#1a0f08 75%,#000000 100%);
 }
 .topbar-home {
     display:inline-flex; align-items:center; justify-content:center;
@@ -81,18 +81,18 @@ body {
     transform:translateY(0); opacity:1; pointer-events:auto;
 }
 .sr-text { display:flex; align-items:baseline; gap:6px; white-space:nowrap; }
-.sr-num { font-size:22px; font-weight:800; color:#FF6B35; letter-spacing:-.5px; }
+.sr-num { font-size:22px; font-weight:800; color:#10B981; letter-spacing:-.5px; }
 .sr-label { font-size:12px; font-weight:600; color:#94a3b8; }
 .sticky-remaining.over .sr-num { color:#ef4444; }
 .sr-bar { flex:1; height:7px; background:#f1f5f9; border-radius:10px; overflow:hidden; }
-.sr-bar-fill { height:100%; background:linear-gradient(90deg,#FF6B35,#ff8c5f); border-radius:10px; width:0%; transition:width .4s ease; }
+.sr-bar-fill { height:100%; background:linear-gradient(90deg,#10B981,#34D399); border-radius:10px; width:0%; transition:width .4s ease; }
 .sr-bar-fill.over { background:linear-gradient(90deg,#f87171,#ef4444); }
 
 /* Bande dégradée décorative en bas (miroir du haut) */
 .bottom-gradient {
     height:70px;
     margin:24px -16px -170px;
-    background:linear-gradient(180deg,#000000 0%,#1a0f08 25%,#FF6B35 100%);
+    background:linear-gradient(180deg,#000000 0%,#1a0f08 25%,#10B981 100%);
 }
 h1 { font-size:26px; font-weight:700; text-align:center; }
 .date-banner {
@@ -111,8 +111,8 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .goal-current { font-size:32px; font-weight:800; }
 .goal-current span { font-size:16px; color:#94a3b8; font-weight:500; }
 .progress-track { background:#374151; border-radius:10px; height:14px; margin:12px 0 6px; overflow:hidden; }
-.progress-fill { background:linear-gradient(90deg,#FF6B35,#ff9068); height:100%; border-radius:10px; transition:width .3s; }
-.progress-label { font-size:18px; color:#FF6B35; font-weight:700; margin-top:2px; }
+.progress-fill { background:linear-gradient(90deg,#10B981,#34D399); height:100%; border-radius:10px; transition:width .3s; }
+.progress-label { font-size:18px; color:#10B981; font-weight:700; margin-top:2px; }
 .goal-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
 .goal-macro { background:#374151; border-radius:8px; padding:10px; text-align:center; }
 .goal-macro .gm-label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
@@ -122,7 +122,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 /* RECIPES */
 .recipe-card {
     position:relative; background:#fcfbf8; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; margin-bottom:16px; overflow:hidden;
-    box-shadow:0 4px 20px rgba(15,23,42,.06); border-left:4px solid #FF6B35;
+    box-shadow:0 4px 20px rgba(15,23,42,.06); border-left:4px solid #10B981;
 }
 .recipe-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:8px; }
 .recipe-header input.recipe-name {
@@ -130,7 +130,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     color:#1a1a1a; flex:1; padding:4px;
 }
 .recipe-header input.recipe-name:focus { outline:none; background:#f1f5f9; border-radius:4px; }
-.recipe-mult-badge { font-size:12px; background:#fff1e0; color:#c2410c; padding:4px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
+.recipe-mult-badge { font-size:12px; background:#ecfdf5; color:#047857; padding:4px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
 
 .ing-row {
     background:#fff; padding:10px 12px; border-radius:10px; margin-bottom:6px;
@@ -147,7 +147,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     width:100%; padding:6px 2px; border:1.5px solid #e2e8f0; border-radius:8px;
     font-size:15px; font-weight:700; text-align:center; color:#1a1a1a; background:#f8fafc;
 }
-.ing-input input:focus { outline:none; border-color:#FF6B35; background:#fff; }
+.ing-input input:focus { outline:none; border-color:#10B981; background:#fff; }
 .ing-unit { font-weight:500; font-size:12px; color:#94a3b8; }
 .ing-macros {
     text-align:right; line-height:1.2;
@@ -166,7 +166,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     width:100%; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px;
     font-size:14px; background:#eeece7; transition:border-color .15s, background .15s;
 }
-.add-ing input:focus { outline:none; border-color:#FF6B35; background:#fff; }
+.add-ing input:focus { outline:none; border-color:#10B981; background:#fff; }
 .search-results {
     position:absolute; top:100%; left:0; right:0; z-index:50;
     background:white; border:1px solid #cbd5e1; border-radius:8px;
@@ -184,20 +184,20 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .search-none { padding:14px; text-align:center; color:#94a3b8; font-size:13px; }
 
 .recipe-total {
-    background:#fff8f0; border:1px solid #ffe0bd;
-    border-radius:10px; padding:12px; margin-top:12px; font-size:14px; font-weight:700; color:#c2410c;
+    background:#ecfdf5; border:1px solid #a7f3d0;
+    border-radius:10px; padding:12px; margin-top:12px; font-size:14px; font-weight:700; color:#047857;
 }
-.recipe-total .rt-mult { color:#9a3412; background:#ffedd5; padding:6px 8px; border-radius:6px; margin-top:6px; font-size:13px; }
+.recipe-total .rt-mult { color:#9a3412; background:#d1fae5; padding:6px 8px; border-radius:6px; margin-top:6px; font-size:13px; }
 
 .recipe-actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
 .recipe-actions button { padding:9px 12px; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:13px; }
-.btn-mult { background:#fff1e0; color:#c2410c; }
+.btn-mult { background:#ecfdf5; color:#047857; }
 .btn-del-recipe { background:#f8fafc; color:#94a3b8; border:1px solid #e2e8f0; flex:1; }
 .btn-del-recipe:active { background:#fee2e2; color:#b91c1c; }
 .mult-input { width:54px; padding:9px; border:1px solid #e2e8f0; border-radius:8px; text-align:center; font-weight:600; }
 
 .add-recipe-btn {
-    width:100%; background:#FF6B35; color:white; padding:14px; border:none;
+    width:100%; background:#10B981; color:white; padding:14px; border:none;
     border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; margin-bottom:20px;
     box-shadow:0 2px 8px rgba(255,140,0,.25);
 }
@@ -207,7 +207,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .fab {
     position:fixed; bottom:88px; right:16px; z-index:80;
     display:flex; align-items:center; gap:5px;
-    background:#FF6B35; color:white; border:none;
+    background:#10B981; color:white; border:none;
     padding:12px 16px; border-radius:30px; cursor:pointer;
     box-shadow:0 4px 14px rgba(255,140,0,.4);
     font-size:14px; font-weight:700;
@@ -297,14 +297,14 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .dt-main { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:14px; }
 .dt-remaining-big { line-height:1; }
 .dt-rem-num { font-size:44px; font-weight:800; color:#fff; letter-spacing:-1px; }
-.dt-rem-label { font-size:13px; color:#FF6B35; font-weight:700; margin-top:4px; }
+.dt-rem-label { font-size:13px; color:#10B981; font-weight:700; margin-top:4px; }
 .dt-remaining-big.over .dt-rem-num { color:#f87171; }
 .dt-remaining-big.over .dt-rem-label { color:#f87171; }
 .dt-consumed { text-align:right; }
 .dt-cons-num { font-size:18px; font-weight:700; color:#e5e7eb; }
 .dt-cons-sub { font-size:12px; color:#94a3b8; margin-top:2px; }
 .dt-progress { height:8px; background:#374151; border-radius:10px; overflow:hidden; margin-bottom:16px; }
-.dt-progress-fill { height:100%; background:linear-gradient(90deg,#FF6B35,#ff8c5f); border-radius:10px; width:0%; transition:width .4s ease; }
+.dt-progress-fill { height:100%; background:linear-gradient(90deg,#10B981,#34D399); border-radius:10px; width:0%; transition:width .4s ease; }
 .dt-progress-fill.over { background:linear-gradient(90deg,#f87171,#ef4444); }
 .dt-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .dt-macro { background:#374151; border-radius:10px; padding:10px; text-align:center; }
@@ -334,21 +334,21 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .eat-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 16px; }
 .eat-body.open { max-height:1500px; padding:14px 16px 18px; }
 .eat-intro { font-size:14px; color:#475569; margin-bottom:14px; }
-.eat-intro b { color:#FF6B35; font-size:16px; }
+.eat-intro b { color:#10B981; font-size:16px; }
 .eat-cats { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px; }
 .eat-cat {
     background:#eeece7; border:1.5px solid #e2e8f0; color:#1a1a1a;
     padding:12px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer;
 }
-.eat-cat:active { background:#fff1e0; border-color:#FF6B35; color:#c2410c; }
+.eat-cat:active { background:#ecfdf5; border-color:#10B981; color:#047857; }
 .eat-ideas:empty { display:none; }
 .eat-idea {
-    background:#eeece7; border-left:3px solid #FF6B35; border-radius:8px;
+    background:#eeece7; border-left:3px solid #10B981; border-radius:8px;
     padding:12px 14px; margin-bottom:8px;
 }
 .eat-idea-name { font-size:14px; font-weight:700; color:#1a1a1a; }
 .eat-idea-ex { font-size:12px; color:#64748b; margin-top:3px; }
-.eat-idea-kcal { font-size:12px; color:#c2410c; font-weight:600; margin-top:6px; }
+.eat-idea-kcal { font-size:12px; color:#047857; font-weight:600; margin-top:6px; }
 .eat-portion { color:#94a3b8; font-weight:500; margin-left:6px; }
 .eat-note { font-size:13px; color:#16a34a; font-weight:600; text-align:center; padding:10px; }
 
@@ -361,7 +361,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .evolution-card h2 { font-size:17px; font-weight:700; margin-bottom:18px; }
 
 .recipe-card::before, .history-card::before, .evolution-card::before, .weight-card::before {
-    content:''; position:absolute; left:0; top:20px; bottom:20px; width:4px; background:#FF6B35; border-radius:0 4px 4px 0;
+    content:''; position:absolute; left:0; top:20px; bottom:20px; width:4px; background:#10B981; border-radius:0 4px 4px 0;
 }
 
 .evo-section { margin-bottom:24px; }
@@ -386,7 +386,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 }
 .weight-row:last-child { border-bottom:none; }
 .weight-date { color:#64748b; }
-.weight-val { font-weight:700; color:#FF6B35; }
+.weight-val { font-weight:700; color:#10B981; }
 .weight-del { background:none; border:none; color:#fca5a5; cursor:pointer; font-size:15px; font-weight:600; padding:2px 8px; line-height:1; }
 .weight-del:active { color:#ef4444; }
 .weight-empty { color:#94a3b8; font-size:13px; text-align:center; padding:14px; }
@@ -423,7 +423,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     font-size:14px; background:white; color:#0f172a;
 }
 .tdee-calc-btn {
-    width:100%; background:#FF6B35; color:white; border:none; padding:12px;
+    width:100%; background:#10B981; color:white; border:none; padding:12px;
     border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; margin-top:4px;
 }
 .tdee-calc-btn:active { background:#E85D2A; }
@@ -433,11 +433,11 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .tdee-res-line span:last-child { font-weight:600; color:#0f172a; }
 .tdee-res-target { border-top:1px solid #e2e8f0; margin-top:4px; padding-top:10px; }
 .tdee-res-target span { font-size:16px; }
-.tdee-res-target span:last-child { color:#FF6B35; font-weight:800; }
+.tdee-res-target span:last-child { color:#10B981; font-weight:800; }
 .tdee-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
-.tdee-macro { background:#fff7ed; border-radius:8px; padding:10px; text-align:center; }
+.tdee-macro { background:#ecfdf5; border-radius:8px; padding:10px; text-align:center; }
 .tm-label { font-size:11px; color:#64748b; }
-.tm-val { font-size:16px; font-weight:700; color:#c2410c; margin-top:2px; }
+.tm-val { font-size:16px; font-weight:700; color:#047857; margin-top:2px; }
 .tdee-apply-btn {
     width:100%; background:#10b981; color:white; border:none; padding:12px;
     border-radius:8px; font-size:15px; font-weight:700; cursor:pointer;
@@ -447,7 +447,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 /* Bouton "Calcul personnalisé" (Premium) */
 .tdee-premium-link {
     width:100%; margin-top:12px; display:flex; align-items:center; gap:12px;
-    background:linear-gradient(135deg,#fffdf5,#fff8e6); border:1.5px solid #d4af37;
+    background:linear-gradient(135deg,#ecfdf5,#ecfdf5); border:1.5px solid #d4af37;
     border-radius:14px; padding:14px; cursor:pointer; text-align:left;
 }
 .tdee-premium-link:active { transform:scale(.99); }
@@ -465,7 +465,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .cp-overlay.show { display:flex; }
 .cp-header {
     padding:16px 20px 10px; display:flex; align-items:center; gap:12px;
-    background:linear-gradient(180deg,#FF6B35,#ff8c5f);
+    background:linear-gradient(180deg,#10B981,#34D399);
 }
 .cp-close { background:rgba(255,255,255,.2); border:none; color:#fff; width:34px; height:34px;
     border-radius:50%; font-size:18px; cursor:pointer; flex-shrink:0; }
@@ -483,7 +483,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     background:#fff; border:2px solid #e5e7eb; cursor:pointer; text-align:left; width:100%;
 }
 .cp-opt:active { transform:scale(.99); }
-.cp-opt.sel { border-color:#FF6B35; background:#fff8f5; }
+.cp-opt.sel { border-color:#10B981; background:#ecfdf5; }
 .cp-opt-emoji { font-size:26px; }
 .cp-opt-txt { flex:1; }
 .cp-opt-title { font-size:16px; font-weight:700; color:#1a1a1a; }
@@ -494,10 +494,10 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .cp-input-row input, .cp-input-row select {
     padding:14px; border:1.5px solid #e5e7eb; border-radius:12px; font-size:16px; font-family:inherit;
 }
-.cp-input-row input:focus, .cp-input-row select:focus { outline:none; border-color:#FF6B35; }
+.cp-input-row input:focus, .cp-input-row select:focus { outline:none; border-color:#10B981; }
 .cp-footer { padding:16px 22px calc(16px + env(safe-area-inset-bottom)); border-top:1px solid #e5e7eb; background:#fff; }
 .cp-next {
-    width:100%; background:#FF6B35; color:#fff; border:none; padding:16px; border-radius:14px;
+    width:100%; background:#10B981; color:#fff; border:none; padding:16px; border-radius:14px;
     font-size:16px; font-weight:700; cursor:pointer;
 }
 .cp-next:active { transform:scale(.99); background:#e85d2a; }
@@ -506,7 +506,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 
 /* Résultat */
 .cp-result-big { text-align:center; margin-bottom:22px; }
-.cp-result-num { font-size:52px; font-weight:800; color:#FF6B35; letter-spacing:-1px; }
+.cp-result-num { font-size:52px; font-weight:800; color:#10B981; letter-spacing:-1px; }
 .cp-result-lbl { font-size:15px; color:#6b7280; }
 .cp-result-lines { background:#fff; border-radius:14px; padding:16px; margin-bottom:16px; }
 .cp-result-line { display:flex; justify-content:space-between; padding:8px 0; font-size:14px; }
@@ -559,13 +559,13 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .add-ing { position:relative; display:flex; gap:8px; align-items:flex-start; }
 .add-ing input { flex:1; }
 .scan-btn {
-    flex-shrink:0; height:46px; padding:0 12px; border:1.5px solid #FF6B35; border-radius:10px;
-    background:#fff7ed; color:#FF6B35; cursor:pointer;
+    flex-shrink:0; height:46px; padding:0 12px; border:1.5px solid #10B981; border-radius:10px;
+    background:#ecfdf5; color:#10B981; cursor:pointer;
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
 }
 .scan-btn svg { width:20px; height:20px; }
 .scan-btn-label { font-size:10px; font-weight:700; line-height:1; }
-.scan-btn:active { background:#ffedd5; transform:scale(.96); }
+.scan-btn:active { background:#d1fae5; transform:scale(.96); }
 
 .scan-modal {
     position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:100000;
@@ -600,7 +600,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 }
 .bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .bn-item span { font-size:10.5px; font-weight:700; }
-.bn-item.active { color:#FF6B35; }
+.bn-item.active { color:#10B981; }
 .bn-item:active { transform:scale(.94); }
 
 </style>
@@ -616,7 +616,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
         <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:26px;">
             Suis tes repas et tes macros.<br>Ça prend 10 secondes.
         </p>
-        <a href="index.html" style="display:block; background:#FF6B35; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
+        <a href="index.html" style="display:block; background:#10B981; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
             Créer mon compte
         </a>
         <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;">
@@ -2565,13 +2565,13 @@ function renderWeight(){
         data.forEach((w,i)=>{
             const px=x(i),py=y(w.weight);
             path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
-            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#FF6B35"/>`;
+            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#10B981"/>`;
         });
         const labels=data.map((w,i)=>`<text x="${x(i).toFixed(1)}" y="${H-5}" font-size="8" fill="#94a3b8" text-anchor="middle">${w.date.split(' ')[0]}</text>`).join('');
         chart.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;margin-bottom:14px;background:#f8fafc;border-radius:8px;">
             <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(1)}</text>
             <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(1)}</text>
-            <path d="${path}" fill="none" stroke="#FF6B35" stroke-width="2"/>${pts}${labels}
+            <path d="${path}" fill="none" stroke="#10B981" stroke-width="2"/>${pts}${labels}
         </svg>`;
     } else {
         chart.innerHTML='<div style="font-size:12px;color:#94a3b8;text-align:center;padding:8px;">Ajoute au moins 2 pesées pour voir la courbe </div>';
@@ -2624,7 +2624,7 @@ function renderHistory(){
         sorted.forEach((h,i)=>{
             const px=x(i), py=y(parseFloat(h.kcal));
             path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
-            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#FF6B35"/>`;
+            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#10B981"/>`;
         });
         const labels=sorted.map((h,i)=>{
             const d=h.iso.slice(8,10)+'/'+h.iso.slice(5,7);
@@ -2636,7 +2636,7 @@ function renderHistory(){
             <text x="${W-padR}" y="${(goalY-3).toFixed(1)}" font-size="8" fill="#10b981" text-anchor="end">objectif ${goal.kcal}</text>
             <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(0)}</text>
             <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(0)}</text>
-            <path d="${path}" fill="none" stroke="#FF6B35" stroke-width="2"/>
+            <path d="${path}" fill="none" stroke="#10B981" stroke-width="2"/>
             ${pts}
             ${labels}
         </svg>`;
@@ -2651,7 +2651,7 @@ function renderHistory(){
         row.className='history-row';
         row.style.cursor='pointer';
         row.innerHTML=`<div onclick="openDayModal('${h.iso}')" style="flex:1;"><div class="history-date">${h.date}</div><div class="history-detail">${h.prot}P · ${h.carbs}C · ${h.lip}L</div></div>
-            <div style="display:flex;align-items:center;gap:10px;"><div style="font-weight:700;color:#FF6B35;">${h.kcal} kcal</div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="font-weight:700;color:#10B981;">${h.kcal} kcal</div>
             <span style="color:#cbd5e1;font-size:16px;" onclick="openDayModal('${h.iso}')">›</span>
             <button class="history-del" onclick="delHistory('${h.iso}')">✕</button></div>`;
         c.appendChild(row);
@@ -2665,7 +2665,7 @@ function openDayModal(iso){
     const protTarget=Math.round(goal.weight*goal.protRatio);
     document.getElementById('dayModalBody').innerHTML=`
         <div style="text-align:center;margin:10px 0;">
-            <div style="font-size:30px;font-weight:800;color:#FF6B35;">${h.kcal}<span style="font-size:14px;color:#94a3b8;">kcal</span></div>
+            <div style="font-size:30px;font-weight:800;color:#10B981;">${h.kcal}<span style="font-size:14px;color:#94a3b8;">kcal</span></div>
             <div style="font-size:12px;color:#64748b;">objectif ${goal.kcal} kcal</div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
@@ -3193,7 +3193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const b = document.createElement('a');
         b.href = 'index.html';
         b.id = 'inviteBandeau';
-        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#fff7ed;border-bottom:1px solid #ffd9c0;color:#c2410c;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
         b.innerHTML = '🎁 Mode découverte · jour ' + jour + '/3 — <span style="text-decoration:underline;">crée ton compte pour garder tes données</span>';
         const topbar = document.querySelector('.topbar-app, .topbar');
         if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
@@ -3202,9 +3202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fin d'essai : mur d'inscription (les données locales sont conservées)
         const o = document.createElement('div');
         o.id = 'inviteMur';
-        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#FF6B35 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
+        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#10B981 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
         o.innerHTML = '<div style="max-width:360px;width:100%;text-align:center;background:#ffffff;border-radius:26px;padding:34px 26px 26px;box-shadow:0 24px 70px rgba(0,0,0,.45);">'
-            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#FF6B35;">Z</span></div>'
+            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#10B981;">Z</span></div>'
             + '<div style="font-size:12px;color:#9ca3af;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;">Fin de l\'essai découverte</div>'
             + '<div style="font-size:44px;margin-bottom:10px;">🎉</div>'
             + '<h2 style="font-size:21px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.25;">3 jours avec REPZ, bien joué !</h2>'
@@ -3214,7 +3214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;margin-bottom:9px;"><span style="color:#047857;font-weight:800;">✓</span> 100% gratuit, sans engagement</div>'
             +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;"><span style="color:#047857;font-weight:800;">✓</span> Tracker, séances libres et stats inclus</div>'
             + '</div>'
-            + '<a href="index.html" style="display:block;background:#FF6B35;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(255,107,53,.35);">Créer mon compte gratuit</a>'
+            + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(16,185,129,.35);">Créer mon compte gratuit</a>'
             + '<a href="index.html" style="display:block;color:#6b7280;font-size:13.5px;font-weight:600;text-decoration:none;padding:9px;">J\'ai déjà un compte — me connecter</a>'
             + '</div>';
         document.body.appendChild(o);

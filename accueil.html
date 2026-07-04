@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>REPZ — Training · Body Prep · Nutrition</title>
-<meta name="theme-color" content="#FF6B35">
+<meta name="theme-color" content="#10B981">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -13,8 +13,8 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-    --orange:#FF6B35;
-    --orange-soft:#ff8556;
+    --orange:#10B981;
+    --orange-soft:#34D399;
     --bg:#eeece7;
     --card:#ffffff;
     --card-line:#e5e7eb;
@@ -32,7 +32,7 @@ body {
 .topbar {
     display:flex; justify-content:space-between; align-items:flex-start;
     padding:12px 20px;
-    background:linear-gradient(180deg,#FF6B35 0%,#1a0f08 75%,#000000 100%);
+    background:linear-gradient(180deg,#10B981 0%,#1a0f08 75%,#000000 100%);
 }
 .topbar-left { display:flex; flex-direction:column; align-items:flex-start; gap:5px; }
 .topbar-name { font-size:13px; font-weight:600; color:#ffffff; padding-left:4px; }
@@ -61,7 +61,7 @@ body {
 .hero-logo {
     width:100%; max-width:150px; height:auto; margin:-14px auto 6px;
     display:block;
-    filter:drop-shadow(0 4px 16px rgba(255,107,53,.18));
+    filter:drop-shadow(0 4px 16px rgba(16,185,129,.18));
 }
 .hero-tagline {
     font-size:23px; font-weight:800; line-height:1.22; letter-spacing:-.02em;
@@ -125,7 +125,7 @@ body {
     width:54px; height:54px; flex-shrink:0; border-radius:16px;
     display:flex; align-items:center; justify-content:center; font-size:28px;
 }
-.portal.active .portal-icon { background:rgba(255,107,53,.14); }
+.portal.active .portal-icon { background:rgba(16,185,129,.14); }
 .portal.soon .portal-icon { background:#f3f4f6; }
 .portal-text { flex:1; }
 .portal-title { font-size:18px; font-weight:700; }
@@ -160,7 +160,7 @@ body {
 .feature:last-child { border-bottom:none; }
 .feature-icon {
     width:44px; height:44px; flex-shrink:0; border-radius:13px;
-    background:rgba(255,107,53,.12); color:var(--orange);
+    background:rgba(16,185,129,.12); color:var(--orange);
     display:flex; align-items:center; justify-content:center;
 }
 .feature-icon svg { width:23px; height:23px; }
@@ -169,7 +169,7 @@ body {
 
 /* ===== FOOTER ===== */
 .footer {
-    background:linear-gradient(180deg,#000000 0%,#1a0f08 30%,#FF6B35 100%);
+    background:linear-gradient(180deg,#000000 0%,#1a0f08 30%,#10B981 100%);
     text-align:center; padding:32px 24px 100px;
     color:rgba(255,255,255,.9); font-size:12px;
 }
@@ -188,14 +188,14 @@ body {
     width:58px; height:58px; border-radius:50%; border:none; cursor:pointer;
     background:var(--orange); color:#fff;
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 8px 24px rgba(255,107,53,.4);
+    box-shadow:0 8px 24px rgba(16,185,129,.4);
     animation:tipPulse 2.5s ease-in-out infinite;
     opacity:0.65;
 }
 .tip-fab:active { transform:scale(.92); }
 @keyframes tipPulse {
-    0%,100% { box-shadow:0 8px 24px rgba(255,107,53,.4); }
-    50% { box-shadow:0 8px 32px rgba(255,107,53,.65); }
+    0%,100% { box-shadow:0 8px 24px rgba(16,185,129,.4); }
+    50% { box-shadow:0 8px 32px rgba(16,185,129,.65); }
 }
 
 /* Modale astuce (bulle transparente) */
@@ -215,7 +215,7 @@ body {
 @keyframes tipPop { from{opacity:0; transform:scale(.85) translateY(20px);} to{opacity:1; transform:scale(1) translateY(0);} }
 .tip-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
 .tip-badge {
-    background:rgba(255,107,53,.14); color:var(--orange);
+    background:rgba(16,185,129,.14); color:var(--orange);
     font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
     padding:6px 14px; border-radius:20px;
 }
@@ -247,7 +247,7 @@ body {
 }
 .bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .bn-item span { font-size:10.5px; font-weight:700; }
-.bn-item.active { color:#FF6B35; }
+.bn-item.active { color:#10B981; }
 .bn-item:active { transform:scale(.94); }
 
 </style>
@@ -766,7 +766,7 @@ const SPLASH_TIPS = [
         const b = document.createElement('a');
         b.href = 'index.html';
         b.id = 'inviteBandeau';
-        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#fff7ed;border-bottom:1px solid #ffd9c0;color:#c2410c;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
         b.innerHTML = '🎁 Mode découverte · jour ' + jour + '/3 — <span style="text-decoration:underline;">crée ton compte pour garder tes données</span>';
         const topbar = document.querySelector('.topbar-app, .topbar');
         if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
@@ -775,9 +775,9 @@ const SPLASH_TIPS = [
         // Fin d'essai : mur d'inscription (les données locales sont conservées)
         const o = document.createElement('div');
         o.id = 'inviteMur';
-        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#FF6B35 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
+        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#10B981 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
         o.innerHTML = '<div style="max-width:360px;width:100%;text-align:center;background:#ffffff;border-radius:26px;padding:34px 26px 26px;box-shadow:0 24px 70px rgba(0,0,0,.45);">'
-            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#FF6B35;">Z</span></div>'
+            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#10B981;">Z</span></div>'
             + '<div style="font-size:12px;color:#9ca3af;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;">Fin de l\'essai découverte</div>'
             + '<div style="font-size:44px;margin-bottom:10px;">🎉</div>'
             + '<h2 style="font-size:21px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.25;">3 jours avec REPZ, bien joué !</h2>'
@@ -787,7 +787,7 @@ const SPLASH_TIPS = [
             +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;margin-bottom:9px;"><span style="color:#047857;font-weight:800;">✓</span> 100% gratuit, sans engagement</div>'
             +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;"><span style="color:#047857;font-weight:800;">✓</span> Tracker, séances libres et stats inclus</div>'
             + '</div>'
-            + '<a href="index.html" style="display:block;background:#FF6B35;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(255,107,53,.35);">Créer mon compte gratuit</a>'
+            + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(16,185,129,.35);">Créer mon compte gratuit</a>'
             + '<a href="index.html" style="display:block;color:#6b7280;font-size:13.5px;font-weight:600;text-decoration:none;padding:9px;">J\'ai déjà un compte — me connecter</a>'
             + '</div>';
         document.body.appendChild(o);
