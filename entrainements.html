@@ -255,6 +255,13 @@ body {
 .bn-item.active { color:#FF6B35; }
 .bn-item:active { transform:scale(.94); }
 
+.chrono-fab{position:fixed;bottom:84px;right:16px;z-index:60;min-width:60px;height:60px;padding:0 6px;border-radius:30px;background:#1f2937;color:#fff;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(31,41,55,.4);opacity:.82;transition:opacity .15s,transform .15s,background .2s;-webkit-tap-highlight-color:transparent;}
+.chrono-fab:active{transform:scale(.94);}
+.chrono-fab.running{background:var(--orange);opacity:1;box-shadow:0 6px 20px rgba(255,107,53,.45);}
+.chrono-fab svg{width:22px;height:22px;}
+.chrono-fab-time{font-size:13px;font-weight:800;line-height:1;margin-top:2px;font-variant-numeric:tabular-nums;letter-spacing:.5px;}
+.chrono-reset{position:fixed;bottom:150px;right:16px;z-index:60;width:40px;height:40px;border-radius:50%;background:#fff;color:var(--orange);border:1.5px solid #ffe0d0;box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:16px;-webkit-tap-highlight-color:transparent;}
+.chrono-reset.visible{display:flex;}
 </style>
 </head>
 <body>
@@ -592,5 +599,18 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 
+<button class="chrono-reset" id="chronoReset" onclick="chronoReset(event)" aria-label="Réinitialiser">↺</button>
+<button class="chrono-fab" id="chronoFab" onclick="chronoToggle()" aria-label="Chronomètre">
+    <svg id="chronoIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg>
+    <span class="chrono-fab-time" id="chronoTime" style="display:none;">00:00</span>
+</button>
+<script>
+let chronoInt=null,chronoMs=0,chronoStart=0;
+function chronoFmt(ms){const t=Math.floor(ms/1000),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60,p=n=>String(n).padStart(2,'0');return h>0?h+':'+p(m)+':'+p(s):p(m)+':'+p(s);}
+function chronoRender(){document.getElementById('chronoTime').textContent=chronoFmt(chronoMs+(chronoInt?Date.now()-chronoStart:0));}
+function chronoShowTime(on){document.getElementById('chronoIcon').style.display=on?'none':'';document.getElementById('chronoTime').style.display=on?'':'none';document.getElementById('chronoReset').classList.toggle('visible',on);}
+function chronoToggle(){const f=document.getElementById('chronoFab');if(chronoInt){chronoMs+=Date.now()-chronoStart;clearInterval(chronoInt);chronoInt=null;f.classList.remove('running');}else{chronoStart=Date.now();chronoInt=setInterval(chronoRender,100);f.classList.add('running');chronoShowTime(true);chronoRender();}}
+function chronoReset(e){if(e)e.stopPropagation();clearInterval(chronoInt);chronoInt=null;chronoMs=0;document.getElementById('chronoFab').classList.remove('running');chronoShowTime(false);}
+</script>
 </body>
 </html>
