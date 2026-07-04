@@ -128,6 +128,15 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .nutri-macros .m-tg { color:#9ca3af; }
 .nutri-macros .mbar { height:6px; border-radius:6px; background:#eee; overflow:hidden; }
 .nutri-macros .mbar span { display:block; height:100%; width:0%; border-radius:6px; transition:width .4s ease; }
+.journal-title { font-size:15px; font-weight:800; letter-spacing:.06em; color:#6b6660; text-transform:uppercase; margin:24px 2px 12px; }
+.jmeals { display:flex; flex-direction:column; gap:12px; margin-bottom:18px; }
+.jmeal { display:flex; align-items:center; gap:14px; background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:18px; padding:14px 16px; cursor:pointer; box-shadow:0 4px 14px rgba(60,50,40,.05); transition:transform .1s; }
+.jmeal:active { transform:scale(.99); }
+.jm-emo { width:46px; height:46px; border-radius:13px; background:#f2efe9; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.jm-info { flex:1; min-width:0; }
+.jm-t { font-size:18px; font-weight:800; }
+.jm-s { font-size:13px; color:#8a8580; margin-top:2px; }
+.jm-add { width:40px; height:40px; border-radius:50%; background:rgba(16,185,129,.12); color:#10B981; font-size:22px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .goal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
 .goal-top h2 { font-size:15px; font-weight:600; color:#e8e4dc; }
 .goal-edit { font-size:12px; color:#cbd5e1; background:#374151; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
@@ -884,6 +893,30 @@ function afficherMessageInvite() {
                 <button class="eat-cat" onclick="showEatIdeas('vege')">Végé</button>
             </div>
             <div id="eatIdeas" class="eat-ideas"></div>
+        </div>
+    </div>
+
+    <div class="journal-title">Journal alimentaire</div>
+    <div class="jmeals">
+        <div class="jmeal" onclick="addRecipe('Petit déjeuner')">
+            <div class="jm-emo">🥣</div>
+            <div class="jm-info"><div class="jm-t">Petit déjeuner</div><div class="jm-s">Recommandé <span id="jrPdej">–</span></div></div>
+            <div class="jm-add">＋</div>
+        </div>
+        <div class="jmeal" onclick="addRecipe('Déjeuner')">
+            <div class="jm-emo">🥗</div>
+            <div class="jm-info"><div class="jm-t">Déjeuner</div><div class="jm-s">Recommandé <span id="jrDej">–</span></div></div>
+            <div class="jm-add">＋</div>
+        </div>
+        <div class="jmeal" onclick="addRecipe('Dîner')">
+            <div class="jm-emo">🍝</div>
+            <div class="jm-info"><div class="jm-t">Dîner</div><div class="jm-s">Recommandé <span id="jrDin">–</span></div></div>
+            <div class="jm-add">＋</div>
+        </div>
+        <div class="jmeal" onclick="addRecipe('Snacks')">
+            <div class="jm-emo">🍎</div>
+            <div class="jm-info"><div class="jm-t">Snacks</div><div class="jm-s">Recommandé <span id="jrSnack">–</span></div></div>
+            <div class="jm-add">＋</div>
         </div>
     </div>
 
@@ -2286,6 +2319,15 @@ function renderTotals(){
     setBar('gmCarbsBar', t.carbs, carbTarget);
     setBar('gmLipBar', t.lip, lipTarget);
 
+    // Plages kcal recommandées par repas (basées sur l'objectif)
+    const g = goal.kcal;
+    const rng = (a,b)=> Math.round(g*a)+' – '+Math.round(g*b)+' kcal';
+    const setTxt = (id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
+    setTxt('jrPdej', rng(0.20,0.30));
+    setTxt('jrDej',  rng(0.30,0.40));
+    setTxt('jrDin',  rng(0.30,0.40));
+    setTxt('jrSnack',rng(0.05,0.10));
+
     // Code couleur protéines : vert si cible atteinte (>=95%), orange sinon
     const protEl = document.getElementById('gmProt');
     if(t.prot >= protTarget*0.95){
@@ -2465,10 +2507,10 @@ function delIng(rid,iid){
 }
 function renameRecipe(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.name=val; save();} }
 function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes();} }
-function addRecipe(){
+function addRecipe(name){
     const newId = nextRid++;
     const numero = recipes.length + 1;
-    recipes.push({id:newId,name:'Repas '+numero,mult:1,ings:[]});
+    recipes.push({id:newId,name: name || ('Repas '+numero),mult:1,ings:[]});
     renderRecipes();
     // Auto-scroll vers la nouvelle recette
     setTimeout(()=>{
