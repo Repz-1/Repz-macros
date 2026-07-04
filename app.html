@@ -934,18 +934,6 @@ function afficherMessageInvite() {
     <div id="recipesContainer"></div>
 
     <!-- BULLE POIDS -->
-    <div class="evolution-card">
-        <h2>Mon poids</h2>
-        <div class="evo-section">
-            <div class="evo-label">Poids du jour</div>
-            <div class="weight-input-row">
-                <input type="number" id="weightInput" placeholder="Poids (kg)" step="0.1">
-                <button class="weight-add-btn" onclick="addWeight()">✓</button>
-            </div>
-            <div id="weightChart"></div>
-            <div id="weightList"></div>
-        </div>
-    </div>
 
     <!-- BULLE CALORIES (journées enregistrées) -->
     <div class="evolution-card">
@@ -2702,6 +2690,7 @@ function delWeight(iso){ weightLog=weightLog.filter(w=>w.iso!==iso); renderWeigh
 function renderWeight(){
     const chart=document.getElementById('weightChart');
     const list=document.getElementById('weightList');
+    if(!chart || !list) return; // bulle poids déplacée vers la page Stats
     if(weightLog.length===0){
         chart.innerHTML='';
         list.innerHTML='<div class="weight-empty">Aucune pesée. Ajoute ton poids pour suivre ton évolution.</div>';

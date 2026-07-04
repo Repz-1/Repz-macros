@@ -45,6 +45,11 @@ body{
     border:1.5px solid #e7e2d9; border-radius:20px; padding:20px;
     box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:16px; overflow:hidden;
 }
+.weight-input-row { display:flex; gap:10px; margin:10px 0 16px; }
+.weight-input-row input { flex:1; padding:13px 15px; border:1.5px solid #e5e7eb; border-radius:12px; font-size:15px; background:#fff; }
+.weight-input-row input:focus { outline:none; border-color:#10B981; }
+.weight-save { width:52px; border:none; border-radius:12px; background:#10B981; color:#fff; font-size:20px; font-weight:800; cursor:pointer; }
+.weight-save:active { transform:scale(.96); }
 .stat-card::before {
     content:''; position:absolute; top:0; left:0; width:4px; height:100%;
     background:var(--orange); border-radius:4px 0 0 4px;
@@ -193,6 +198,10 @@ function logout(){
     <div class="stat-card">
         <h2>⚖️ Évolution du poids</h2>
         <div class="card-sub" id="weightSub">Tes dernières pesées</div>
+        <div class="weight-input-row">
+            <input type="number" id="weightInput" placeholder="Poids du jour (kg)" step="0.1" inputmode="decimal">
+            <button class="weight-save" onclick="addWeightStat()">✓</button>
+        </div>
         <div id="weightSummary"></div>
         <div id="weightChart"></div>
     </div>
@@ -235,12 +244,26 @@ if(estPremium){
 }
 
 // ===== POIDS =====
+function addWeightStat(){
+    const el = document.getElementById('weightInput');
+    const val = parseFloat(el.value);
+    if(!val || val<=0){ alert('Entre un poids valide'); return; }
+    const iso = new Date().toISOString().slice(0,10);
+    const date = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+    const existing = weightLog.findIndex(w=>w.iso===iso);
+    const entry = {iso, date, weight:val};
+    if(existing>=0) weightLog[existing]=entry; else weightLog.push(entry);
+    weightLog.sort((a,b)=>a.iso.localeCompare(b.iso));
+    try { localStorage.setItem('repz_weightLog', JSON.stringify(weightLog)); } catch(e){}
+    el.value='';
+    renderWeight();
+}
 function renderWeight(){
     const chart = document.getElementById('weightChart');
     const summary = document.getElementById('weightSummary');
     const sub = document.getElementById('weightSub');
     if(!weightLog.length){
-        chart.innerHTML = '<div class="chart-empty">Aucune pesée pour l\'instant. Ajoute ton poids dans la page Nutrition pour suivre ton évolution.</div>';
+        chart.innerHTML = '<div class="chart-empty">Aucune pesée pour l\'instant. Ajoute ton poids ci-dessus pour suivre ton évolution.</div>';
         summary.innerHTML = '';
         return;
     }
