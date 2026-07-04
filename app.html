@@ -947,9 +947,9 @@ function afficherMessageInvite() {
 </div>
 
 <!-- BOUTON FLOTTANT AJOUTER RECETTE -->
-<button class="fab" onclick="addRecipe()" aria-label="Ajouter une recette">
+<button class="fab" onclick="addRecipe()" aria-label="Ajouter un repas">
     <span class="fab-plus">＋</span>
-    <span class="fab-label">Recette</span>
+    <span class="fab-label">Repas</span>
 </button>
 
 <!-- BOUTON FLOTTANT EAU -->
@@ -2266,15 +2266,6 @@ function renderRecipes(){
         card.innerHTML = h;
         c.appendChild(card);
     });
-
-    // Carte "Ajouter un repas / en-cas"
-    const add = document.createElement('div');
-    add.className = 'meal-card add-meal-card';
-    add.innerHTML = `<div class="meal-head" onclick="addRecipe()">
-        <div class="mh-emo plus">＋</div>
-        <div class="mh-info"><div class="mh-name">Ajouter un repas</div><div class="mh-sub">En-cas, extra, repas libre…</div></div>
-    </div>`;
-    c.appendChild(add);
 
     renderTotals();
 }
