@@ -129,14 +129,22 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .nutri-macros .mbar { height:6px; border-radius:6px; background:#eee; overflow:hidden; }
 .nutri-macros .mbar span { display:block; height:100%; width:0%; border-radius:6px; transition:width .4s ease; }
 .journal-title { font-size:15px; font-weight:800; letter-spacing:.06em; color:#6b6660; text-transform:uppercase; margin:24px 2px 12px; }
-.jmeals { display:flex; flex-direction:column; gap:12px; margin-bottom:18px; }
-.jmeal { display:flex; align-items:center; gap:14px; background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:18px; padding:14px 16px; cursor:pointer; box-shadow:0 4px 14px rgba(60,50,40,.05); transition:transform .1s; }
-.jmeal:active { transform:scale(.99); }
-.jm-emo { width:46px; height:46px; border-radius:13px; background:#f2efe9; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
-.jm-info { flex:1; min-width:0; }
-.jm-t { font-size:18px; font-weight:800; }
-.jm-s { font-size:13px; color:#8a8580; margin-top:2px; }
-.jm-add { width:40px; height:40px; border-radius:50%; background:rgba(16,185,129,.12); color:#10B981; font-size:22px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.meal-card { background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(60,50,40,.05); overflow:hidden; }
+.meal-head { display:flex; align-items:center; gap:14px; padding:14px 16px; cursor:pointer; }
+.mh-emo { width:46px; height:46px; border-radius:13px; background:#f2efe9; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.mh-emo.plus { background:rgba(16,185,129,.12); color:#10B981; font-size:24px; font-weight:800; }
+.mh-info { flex:1; min-width:0; }
+.mh-name { font-size:18px; font-weight:800; }
+.mh-name-input { font-size:18px; font-weight:800; border:none; background:transparent; color:#1a1a1a; width:100%; padding:0; }
+.mh-name-input:focus { outline:none; background:#f1efe9; border-radius:6px; }
+.mh-sub { font-size:13px; color:#8a8580; margin-top:2px; }
+.mh-kcal { color:#10B981; font-weight:800; }
+.mh-chev { color:#b7b1a8; font-size:18px; transition:transform .2s; flex-shrink:0; }
+.meal-card.open .mh-chev { transform:rotate(180deg); }
+.meal-body { display:none; padding:0 16px 16px; }
+.meal-card.open .meal-body { display:block; }
+.add-meal-card { border:1.5px dashed #d8d3ca; background:transparent; box-shadow:none; }
+.add-meal-card .mh-name { color:#10B981; }
 .goal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
 .goal-top h2 { font-size:15px; font-weight:600; color:#e8e4dc; }
 .goal-edit { font-size:12px; color:#cbd5e1; background:#374151; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
@@ -897,29 +905,6 @@ function afficherMessageInvite() {
     </div>
 
     <div class="journal-title">Journal alimentaire</div>
-    <div class="jmeals">
-        <div class="jmeal" onclick="addRecipe('Petit déjeuner')">
-            <div class="jm-emo">🥣</div>
-            <div class="jm-info"><div class="jm-t">Petit déjeuner</div><div class="jm-s">Recommandé <span id="jrPdej">–</span></div></div>
-            <div class="jm-add">＋</div>
-        </div>
-        <div class="jmeal" onclick="addRecipe('Déjeuner')">
-            <div class="jm-emo">🥗</div>
-            <div class="jm-info"><div class="jm-t">Déjeuner</div><div class="jm-s">Recommandé <span id="jrDej">–</span></div></div>
-            <div class="jm-add">＋</div>
-        </div>
-        <div class="jmeal" onclick="addRecipe('Dîner')">
-            <div class="jm-emo">🍝</div>
-            <div class="jm-info"><div class="jm-t">Dîner</div><div class="jm-s">Recommandé <span id="jrDin">–</span></div></div>
-            <div class="jm-add">＋</div>
-        </div>
-        <div class="jmeal" onclick="addRecipe('Snacks')">
-            <div class="jm-emo">🍎</div>
-            <div class="jm-info"><div class="jm-t">Snacks</div><div class="jm-s">Recommandé <span id="jrSnack">–</span></div></div>
-            <div class="jm-add">＋</div>
-        </div>
-    </div>
-
     <div id="recipesContainer"></div>
 
     <!-- BULLE POIDS -->
@@ -2092,10 +2077,30 @@ function load(){
         const w = localStorage.getItem('repz_weightLog'); if(w) weightLog = JSON.parse(w);
         // S'il n'y a aucune recette, en créer une par défaut nommée "1"
         if(!recipes || recipes.length === 0){
-            recipes = [{id:0,name:'1',mult:1,ings:[]}];
+            recipes = [];
             nextRid = 1;
         }
+        ensureFixedMeals();
     } catch(e){}
+}
+
+// Repas fixes toujours présents, dans l'ordre
+const FIXED_MEALS = ['Petit déjeuner','Déjeuner','Dîner','Snacks'];
+const MEAL_EMOJI = {'Petit déjeuner':'🥣','Déjeuner':'🥗','Dîner':'🍝','Snacks':'🍎'};
+function ensureFixedMeals(){
+    // Ajoute les repas fixes manquants et les place en tête, dans l'ordre
+    FIXED_MEALS.forEach(name=>{
+        if(!recipes.some(r=>r.name===name)){
+            recipes.push({id:nextRid++, name:name, mult:1, ings:[], fixed:true});
+        } else {
+            const r = recipes.find(x=>x.name===name); r.fixed = true;
+        }
+    });
+    recipes.sort((a,b)=>{
+        const ia = FIXED_MEALS.indexOf(a.name), ib = FIXED_MEALS.indexOf(b.name);
+        const ka = ia===-1?99:ia, kb = ib===-1?99:ib;
+        return ka-kb;
+    });
 }
 
 // ===== COMPTEUR D'EAU =====
@@ -2190,19 +2195,44 @@ function renderDate(){
 }
 
 // ===== RENDER RECETTES =====
+let openMeals = new Set();
+function toggleMeal(id){
+    const card = document.querySelector('.meal-card[data-id="'+id+'"]');
+    if(!card) return;
+    if(openMeals.has(id)){ openMeals.delete(id); card.classList.remove('open'); }
+    else { openMeals.add(id); card.classList.add('open'); }
+}
+function mealRange(name){
+    const g = goal.kcal || 0;
+    const map = {'Petit déjeuner':[0.20,0.30],'Déjeuner':[0.30,0.40],'Dîner':[0.30,0.40],'Snacks':[0.05,0.10]};
+    const r = map[name]; if(!r) return '';
+    return 'Recommandé '+Math.round(g*r[0])+' – '+Math.round(g*r[1])+' kcal';
+}
 function renderRecipes(){
     const c = document.getElementById('recipesContainer');
     c.innerHTML='';
     recipes.forEach(rc=>{
-        const nextIid = Math.max(0,...rc.ings.map(i=>i.id))+1;
         const t = recipeTotals(rc);
         const ft = { kcal:t.kcal*(rc.mult||1), prot:t.prot*(rc.mult||1), carbs:t.carbs*(rc.mult||1), lip:t.lip*(rc.mult||1) };
         const card = document.createElement('div');
-        card.className='recipe-card';
-        let h = `<div class="recipe-header">
-            <input class="recipe-name" value="${rc.name}" onchange="renameRecipe(${rc.id},this.value)">
-            ${(rc.mult&&rc.mult>1)?`<span class="recipe-mult-badge">×${rc.mult}</span>`:''}
+        card.className = 'meal-card' + (openMeals.has(rc.id)?' open':'');
+        card.setAttribute('data-id', rc.id);
+        const emoji = MEAL_EMOJI[rc.name] || '🍽️';
+        const hasFood = rc.ings.length > 0;
+        const rightTxt = hasFood
+            ? `<span class="mh-kcal">${ft.kcal.toFixed(0)} kcal</span>`
+            : (rc.fixed ? `<span class="mh-range">${mealRange(rc.name)}</span>` : `<span class="mh-range">Vide</span>`);
+        const nameHtml = rc.fixed
+            ? `<div class="mh-name">${rc.name}</div>`
+            : `<input class="mh-name-input" value="${rc.name}" onclick="event.stopPropagation()" onchange="renameRecipe(${rc.id},this.value)">`;
+
+        let h = `<div class="meal-head" onclick="toggleMeal(${rc.id})">
+            <div class="mh-emo">${emoji}</div>
+            <div class="mh-info">${nameHtml}<div class="mh-sub">${rightTxt}</div></div>
+            <div class="mh-chev">▾</div>
         </div>`;
+
+        h += `<div class="meal-body">`;
         rc.ings.forEach(ing=>{
             const m = macrosOf(ing);
             const base = DB[ing.name] || {};
@@ -2221,20 +2251,31 @@ function renderRecipes(){
             </div>`;
         });
         h += `<div class="add-ing">
-            <input type="text" id="search-${rc.id}" placeholder=" Ajouter un ingrédient..." autocomplete="off"
+            <input type="text" id="search-${rc.id}" placeholder=" Ajouter un aliment..." autocomplete="off"
                 oninput="filterIngredients(${rc.id},this.value)" onfocus="filterIngredients(${rc.id},this.value)">
             <button class="scan-btn" onclick="openScanner(${rc.id})" title="Scanner un code-barres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5v14M6 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg><span class="scan-btn-label">Scan</span></button>
             <div class="search-results" id="results-${rc.id}"></div>
         </div>`;
-        h += `<div class="recipe-total"> ${t.kcal.toFixed(0)} kcal | ${t.prot.toFixed(1)}P | ${t.carbs.toFixed(1)}C | ${t.lip.toFixed(1)}L`;
-        if(rc.mult&&rc.mult>1) h += `<div class="rt-mult">× ${rc.mult} = ${ft.kcal.toFixed(0)} kcal | ${ft.prot.toFixed(0)}P | ${ft.carbs.toFixed(0)}C | ${ft.lip.toFixed(1)}L</div>`;
-        h += `</div>`;
-        h += `<div class="recipe-actions">
-            <button class="btn-del-recipe" onclick="delRecipe(${rc.id})">✕ Supprimer recette</button>
-        </div>`;
-        card.innerHTML=h;
+        if(hasFood){
+            h += `<div class="recipe-total"> ${t.kcal.toFixed(0)} kcal | ${t.prot.toFixed(1)}P | ${t.carbs.toFixed(1)}C | ${t.lip.toFixed(1)}L</div>`;
+        }
+        if(!rc.fixed){
+            h += `<div class="recipe-actions"><button class="btn-del-recipe" onclick="delRecipe(${rc.id})">✕ Supprimer ce repas</button></div>`;
+        }
+        h += `</div>`; // meal-body
+        card.innerHTML = h;
         c.appendChild(card);
     });
+
+    // Carte "Ajouter un repas / en-cas"
+    const add = document.createElement('div');
+    add.className = 'meal-card add-meal-card';
+    add.innerHTML = `<div class="meal-head" onclick="addRecipe()">
+        <div class="mh-emo plus">＋</div>
+        <div class="mh-info"><div class="mh-name">Ajouter un repas</div><div class="mh-sub">En-cas, extra, repas libre…</div></div>
+    </div>`;
+    c.appendChild(add);
+
     renderTotals();
 }
 
@@ -2318,15 +2359,6 @@ function renderTotals(){
     setBar('gmProtBar', t.prot, protTarget);
     setBar('gmCarbsBar', t.carbs, carbTarget);
     setBar('gmLipBar', t.lip, lipTarget);
-
-    // Plages kcal recommandées par repas (basées sur l'objectif)
-    const g = goal.kcal;
-    const rng = (a,b)=> Math.round(g*a)+' – '+Math.round(g*b)+' kcal';
-    const setTxt = (id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
-    setTxt('jrPdej', rng(0.20,0.30));
-    setTxt('jrDej',  rng(0.30,0.40));
-    setTxt('jrDin',  rng(0.30,0.40));
-    setTxt('jrSnack',rng(0.05,0.10));
 
     // Code couleur protéines : vert si cible atteinte (>=95%), orange sinon
     const protEl = document.getElementById('gmProt');
@@ -2509,8 +2541,9 @@ function renameRecipe(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.
 function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes();} }
 function addRecipe(name){
     const newId = nextRid++;
-    const numero = recipes.length + 1;
+    const numero = recipes.filter(r=>!r.fixed).length + 1;
     recipes.push({id:newId,name: name || ('Repas '+numero),mult:1,ings:[]});
+    openMeals.add(newId);
     renderRecipes();
     // Auto-scroll vers la nouvelle recette
     setTimeout(()=>{
@@ -2519,7 +2552,7 @@ function addRecipe(name){
         if(last) last.scrollIntoView({behavior:'smooth',block:'center'});
     },100);
 }
-function delRecipe(rid){ recipes=recipes.filter(r=>r.id!==rid); renderRecipes(); }
+function delRecipe(rid){ const rc=recipes.find(r=>r.id===rid); if(rc&&rc.fixed) return; recipes=recipes.filter(r=>r.id!==rid); openMeals.delete(rid); renderRecipes(); }
 
 // ===== OBJECTIF MODAL =====
 function openGoalModal(){
