@@ -92,6 +92,28 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 </style>
 </head>
 <body>
+<!-- SPLASH REPZ -->
+<style>
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash.hide{opacity:0;pointer-events:none;}
+#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
+#repzSplash .sp-txt{position:absolute;bottom:11%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
+@keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+</style>
+<div id="repzSplash">
+  <img class="sp-sym" src="logo-symbol.png" alt="REPZ">
+  <img class="sp-txt" src="logo-text.png" alt="REP Z">
+</div>
+<script>
+(function(){
+  var s=document.getElementById('repzSplash');
+  if(!s) return;
+  if(sessionStorage.getItem('repz_splash')){ s.remove(); return; }
+  sessionStorage.setItem('repz_splash','1');
+  setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
+})();
+</script>
+
 
 <!-- MESSAGE INVITÉ -->
 <div id="messageInvite" style="display:none; position:fixed; inset:0; z-index:90000; background:#f3f4f6; align-items:center; justify-content:center; padding:24px;">
