@@ -41,6 +41,23 @@ body {
 .plan-price-sub { font-size:12px; color:var(--text-dim); margin-bottom:20px; }
 
 .plan-features { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.price-cards { display:flex; flex-direction:column; gap:12px; margin:6px 0 20px; }
+.pc { position:relative; background:#fff; border:2px solid var(--line); border-radius:16px; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:border-color .15s, background .15s, transform .1s; }
+.pc:active { transform:scale(.99); }
+.pc.pop { border-color:var(--orange); background:linear-gradient(180deg,#fff7f3,#ffffff); }
+.pc.selected { border-color:var(--orange); box-shadow:0 6px 18px rgba(255,107,53,.14); }
+.pc:not(.selected):not(.pop) .pc-dur, .pc:not(.selected):not(.pop) .pc-mo { color:#9ca3af; }
+.pc-badge { position:absolute; top:-11px; left:18px; background:var(--orange); color:#fff; font-size:10.5px; font-weight:800; padding:4px 11px; border-radius:20px; letter-spacing:.03em; }
+.pc-dur { font-size:19px; font-weight:800; }
+.pc-promo { margin-top:3px; }
+.pc-old { font-size:12.5px; color:var(--text-dim); text-decoration:line-through; margin-right:6px; }
+.pc-new { font-size:12.5px; color:var(--green); font-weight:800; }
+.pc-note { font-size:12.5px; color:var(--text-dim); font-weight:600; }
+.pc-right { text-align:right; white-space:nowrap; }
+.pc-mo { font-size:22px; font-weight:900; }
+.pc-u { font-size:13px; color:var(--text-dim); font-weight:600; margin-left:2px; }
+.rassur { text-align:center; font-size:13px; color:var(--text-dim); margin-bottom:12px; }
+.rassur strong { color:var(--text); }
 .feature { display:flex; align-items:center; gap:10px; font-size:14px; }
 .feature-check { color:var(--green); font-size:18px; flex-shrink:0; }
 .feature-x { color:#d1d5db; font-size:18px; flex-shrink:0; }
@@ -226,21 +243,33 @@ function logout() {
         <button class="plan-btn free" onclick="window.location.href='app.html'">Commencer maintenant</button>
     </div>
 
-    <!-- PREMIUM (carte unique avec choix de facturation) -->
+    <!-- PREMIUM (2 cartes empilées, sélectionnables) -->
     <div class="plan premium">
         <div class="plan-name">Premium</div>
-        <div class="plan-desc">Suivi avec nutritionniste</div>
+        <div class="plan-desc">Programmes et suivi personnalisés</div>
 
-        <div class="billing-toggle">
-            <button class="bt-opt active" id="btAnnuel" onclick="basculerFormule('annuel')">Annuel <span class="bt-save">−47%</span></button>
-            <button class="bt-opt" id="btMensuel" onclick="basculerFormule('mensuel')">Mensuel</button>
+        <div class="price-cards">
+            <div class="pc pop selected" id="pcAnnuel" onclick="choisirFormule('annuel')">
+                <span class="pc-badge">LE PLUS POPULAIRE</span>
+                <div class="pc-left">
+                    <div class="pc-dur">12 mois</div>
+                    <div class="pc-promo"><span class="pc-old">59,99&nbsp;€</span><span class="pc-new">−40% lancement</span></div>
+                </div>
+                <div class="pc-right"><span class="pc-mo">3,99&nbsp;€</span><span class="pc-u">/mois</span></div>
+            </div>
+
+            <div class="pc" id="pcMensuel" onclick="choisirFormule('mensuel')">
+                <div class="pc-left">
+                    <div class="pc-dur">Mensuel</div>
+                    <div class="pc-promo"><span class="pc-note">sans engagement</span></div>
+                </div>
+                <div class="pc-right"><span class="pc-mo">7,99&nbsp;€</span><span class="pc-u">/mois</span></div>
+            </div>
         </div>
-
-        <div class="plan-price" id="planPrice">49.90€</div>
-        <div class="plan-price-sub" id="planPriceSub">par an — soit 4.16€/mois</div>
 
         <div class="plan-features" id="planFeatures"></div>
 
+        <div class="rassur">✓ <strong>Sans engagement</strong>, résiliable à tout moment</div>
         <button class="plan-btn premium" id="planPayBtn" onclick="payerFormule()">Débloquer Premium</button>
     </div>
 </div>
@@ -393,44 +422,39 @@ function validerCode(){
 // ===== FORMULE ANNUEL / MENSUEL =====
 const FORMULES = {
     annuel: {
-        prix:'49.90€', sub:'par an — soit 4.16€/mois',
         lien:'https://rep-z.lemonsqueezy.com/checkout/buy/b66fe18e-6b2a-4953-ab29-d5b4ab99e04a',
         features:[
-            ['<strong>3 programmes nutrition</strong>'],
-            ['<strong>4 ajustements par mois</strong>'],
-            ['Suivi personnalisé'],
-            ['Nutritionniste dédié'],
-            ['<strong>Meilleur rapport prix</strong>']
+            ['Programmes nutrition sur mesure'],
+            ['Biblioth\u00e8que de programmes'],
+            ['Calculateur de calories guid\u00e9'],
+            ['Suggestions \u00ab Quoi manger \u00bb'],
+            ['<strong>Meilleur prix \u2014 3,99 \u20ac/mois</strong>']
         ]
     },
     mensuel: {
-        prix:'7.90€', sub:'par mois',
         lien:'https://rep-z.lemonsqueezy.com/checkout/buy/390c6785-f085-4452-b43a-6206fbc3c106',
         features:[
-            ['<strong>2 programmes nutrition</strong>'],
-            ['<strong>1 ajustement par mois</strong>'],
-            ['Suivi personnalisé'],
-            ['Nutritionniste dédié'],
-            ['<strong>Pas d\'engagement</strong>']
+            ['Programmes nutrition sur mesure'],
+            ['Biblioth\u00e8que de programmes'],
+            ['Calculateur de calories guid\u00e9'],
+            ['Suggestions \u00ab Quoi manger \u00bb'],
+            ['<strong>Sans engagement</strong>']
         ]
     }
 };
 let formuleActive = 'annuel';
 
-function basculerFormule(f){
+function choisirFormule(f){
     formuleActive = f;
-    const d = FORMULES[f];
-    document.getElementById('btAnnuel').classList.toggle('active', f==='annuel');
-    document.getElementById('btMensuel').classList.toggle('active', f==='mensuel');
-    document.getElementById('planPrice').textContent = d.prix;
-    document.getElementById('planPriceSub').textContent = d.sub;
-    document.getElementById('planFeatures').innerHTML = d.features.map(x=>
-        `<div class="feature"><span class="feature-check">✓</span><span>${x[0]}</span></div>`
+    document.getElementById('pcAnnuel').classList.toggle('selected', f==='annuel');
+    document.getElementById('pcMensuel').classList.toggle('selected', f==='mensuel');
+    document.getElementById('planFeatures').innerHTML = FORMULES[f].features.map(x=>
+        `<div class="feature"><span class="feature-check">\u2713</span><span>${x[0]}</span></div>`
     ).join('');
 }
 function payerFormule(){ ouvrirPaiement(FORMULES[formuleActive].lien); }
 // Init
-basculerFormule('annuel');
+choisirFormule('annuel');
 
 </script>
 
