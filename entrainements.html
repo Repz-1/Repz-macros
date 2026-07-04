@@ -286,7 +286,7 @@ body {
 .chrono-fab.running{opacity:1;background:var(--orange);box-shadow:0 6px 20px rgba(16,185,129,.45);}
 </style>
 </head>
-<body>
+<body style="padding-top:max(12px,env(safe-area-inset-top));">
 <!-- SPLASH REPZ -->
 <style>
 #repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
@@ -377,11 +377,6 @@ function logout() {
     auth.signOut().finally(() => { window.location.href = 'index.html'; });
 }
 </script>
-
-<div class="topbar-app">
-    <a href="accueil.html" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
-    <a href="plans.html" class="premium-pill">✨ Premium</a>
-</div>
 
 <div class="intro">
     <h2>Trouve <span class="accent">ta façon</span> de t'entraîner</h2>
