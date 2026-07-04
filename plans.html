@@ -58,17 +58,21 @@ body {
 .pc-u { font-size:13px; color:var(--text-dim); font-weight:600; margin-left:2px; }
 .rassur { text-align:center; font-size:13px; color:var(--text-dim); margin-bottom:12px; }
 .rassur strong { color:var(--text); }
-.compare { margin:4px 0 18px; border:1.5px solid var(--line); border-radius:14px; overflow:hidden; }
-.cmp-head, .cmp-row { display:grid; grid-template-columns:1fr 60px 68px; align-items:center; }
-.cmp-row { border-top:1px solid var(--line); }
-.cmp-feat { padding:11px 12px; font-size:13px; font-weight:600; line-height:1.25; }
-.cmp-col { text-align:center; padding:11px 0; font-size:11.5px; font-weight:800; }
-.cmp-head .cmp-col { color:var(--text-dim); letter-spacing:.04em; }
-.cmp-col.prem { background:rgba(255,107,53,.08); }
-.cmp-head .cmp-col.prem { color:var(--orange); }
-.compare i { font-style:normal; font-size:15px; }
-.compare i.ok { color:var(--green); }
-.compare i.no { color:#d1d5db; }
+.compare { position:relative; margin:4px 0 18px; }
+.cmp-head, .cmp-row { display:grid; grid-template-columns:1fr 58px 66px; align-items:stretch; }
+.cmp-head { align-items:end; }
+.cmp-h { text-align:center; font-size:11px; font-weight:800; letter-spacing:.05em; padding:7px 0; }
+.cmp-h.free { color:var(--text-dim); }
+.cmp-h.prem { background:var(--orange); color:#fff; border-radius:10px 10px 0 0; }
+.cmp-row { border-bottom:1px solid var(--line); }
+.cmp-row:first-of-type { border-top:1px solid var(--line); }
+.cmp-feat { display:flex; align-items:center; padding:12px 12px 12px 2px; font-size:13px; font-weight:600; line-height:1.25; }
+.cmp-col { display:flex; align-items:center; justify-content:center; padding:10px 0; }
+.cmp-col.prem { background:rgba(255,107,53,.07); }
+.cmp-row:last-child .cmp-col.prem { border-radius:0 0 10px 10px; }
+.ck { width:22px; height:22px; border-radius:50%; background:var(--green); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.cmp-col.prem .ck { background:var(--orange); }
+.ck-empty { width:22px; height:22px; }
 .free-plan { margin-top:2px; }
 .free-plan .plan-desc { margin-bottom:16px; }
 .feature { display:flex; align-items:center; gap:10px; font-size:14px; }
@@ -251,17 +255,18 @@ function logout() {
         <div class="compare">
             <div class="cmp-head">
                 <span class="cmp-feat"></span>
-                <span class="cmp-col free">Gratuit</span>
-                <span class="cmp-col prem">Premium</span>
+                <span class="cmp-h free">GRATUIT</span>
+                <span class="cmp-h prem">PREMIUM</span>
             </div>
-            <div class="cmp-row"><span class="cmp-feat">Suivi macros &amp; aliments</span><span class="cmp-col free"><i class="ok">\u2713</i></span><span class="cmp-col prem"><i class="ok">\u2713</i></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Plus de 900 aliments</span><span class="cmp-col free"><i class="ok">\u2713</i></span><span class="cmp-col prem"><i class="ok">\u2713</i></span></div>
-            <div class="cmp-row"><span class="cmp-feat">S\u00e9ances libres &amp; stats</span><span class="cmp-col free"><i class="ok">\u2713</i></span><span class="cmp-col prem"><i class="ok">\u2713</i></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Programmes sur mesure</span><span class="cmp-col free"><i class="no">\u2715</i></span><span class="cmp-col prem"><i class="ok">\u2713</i></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Biblioth\u00e8que de programmes</span><span class="cmp-col free"><i class="no">\u2715</i></span><span class="cmp-col prem"><i class="ok">\u2713</i></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Calculateur de calories guid\u00e9</span><span class="cmp-col free"><i class="no">\u2715</i></span><span class="cmp-col prem"><i class="ok">\u2713</i></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Suggestions \u00ab Quoi manger \u00bb</span><span class="cmp-col free"><i class="no">\u2715</i></span><span class="cmp-col prem"><i class="ok">\u2713</i></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Un vrai coach derri\u00e8re ton suivi</span><span class="cmp-col free"><i class="no">\u2715</i></span><span class="cmp-col prem"><i class="ok">\u2713</i></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Suivi macros &amp; aliments</span><span class="cmp-col free"><span class="ck">\u2713</span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Aliments v\u00e9rifi\u00e9s (belges &amp; internationaux)</span><span class="cmp-col free"><span class="ck">\u2713</span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">S\u00e9ances libres &amp; stats</span><span class="cmp-col free"><span class="ck">\u2713</span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Graphiques de progression</span><span class="cmp-col free"><span class="ck">\u2713</span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Programmes sur mesure</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Biblioth\u00e8que de programmes</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Calculateur de calories guid\u00e9</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Suggestions \u00ab Quoi manger \u00bb</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Un vrai coach derri\u00e8re ton suivi</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">\u2713</span></span></div>
         </div>
 
         <div class="rassur">\u2713 <strong>Sans engagement</strong>, r\u00e9siliable \u00e0 tout moment</div>
