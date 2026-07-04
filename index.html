@@ -238,6 +238,7 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+sessionStorage.removeItem('repz_premSynced');
 
 // Vérifier si l'utilisateur est déjà connecté
 auth.onAuthStateChanged((user) => {

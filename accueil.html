@@ -328,8 +328,23 @@ function logout() {
     localStorage.removeItem('repz_premium');
     localStorage.removeItem('repz_invite');
     localStorage.removeItem('repz_inviteDebut');
+    sessionStorage.removeItem('repz_premSynced');
     auth.signOut().finally(() => { window.location.href = 'index.html'; });
 }
+
+// Le lien topbar : "Déconnexion" si connecté, "Connexion" si invité/déconnecté
+function majAuthLink(){
+    const el = document.getElementById('authLink');
+    if(!el) return;
+    const connecte = !!auth.currentUser;
+    el.textContent = connecte ? 'Déconnexion' : 'Connexion';
+}
+function authLinkClick(){
+    if(auth.currentUser){ logout(); }
+    else { window.location.href = 'index.html'; }
+}
+auth.onAuthStateChanged(() => majAuthLink());
+document.addEventListener('DOMContentLoaded', majAuthLink);
 </script>
 
 <div class="topbar">
@@ -337,7 +352,7 @@ function logout() {
         <a href="plans.html" class="premium-pill" id="premiumPill">✨ Premium</a>
         <span class="topbar-name" id="topbarName"></span>
     </div>
-    <a href="#" class="login-link" onclick="logout(); return false;">Déconnexion</a>
+    <a href="#" class="login-link" id="authLink" onclick="authLinkClick(); return false;">Déconnexion</a>
 </div>
 
 <!-- HERO -->
