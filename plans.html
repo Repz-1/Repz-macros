@@ -177,10 +177,12 @@ const auth = firebase.auth();
 
 let authVerifie = false;
 auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
     if(user){ authVerifie = true; }
+    else if(estInvite){ authVerifie = true; }
     else if(!authVerifie){
         setTimeout(() => {
-            if(!auth.currentUser){ window.location.href = 'index.html'; }
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){ window.location.href = 'index.html'; }
         }, 1200);
     }
 });
