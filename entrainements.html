@@ -309,6 +309,7 @@ body {
 <!-- AUTH CHECK + FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
@@ -744,6 +745,29 @@ function updateChronoFab(){
     } else { t.textContent=''; fab.classList.remove('running'); }
 }
 initWheels(); updateTimerDisplay();
+</script>
+<script>
+/* ===== SYNC PREMIUM depuis Firestore (source de vérité = le compte) ===== */
+(function(){
+  function syncPremium(u){
+    if(!u || !window.firebase || !firebase.firestore) return;
+    firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
+      var prem = doc.exists && doc.data().premium === true;
+      var had = localStorage.getItem('repz_premium') === '1';
+      if(prem){ localStorage.setItem('repz_premium','1'); }
+      else { localStorage.removeItem('repz_premium'); }
+      if(prem !== had && !sessionStorage.getItem('repz_premSynced')){
+        sessionStorage.setItem('repz_premSynced','1');
+        location.reload();
+      }
+    }).catch(function(e){ console.warn('premium sync', e); });
+  }
+  try{
+    if(window.firebase && firebase.auth){
+      firebase.auth().onAuthStateChanged(function(u){ if(u) syncPremium(u); });
+    }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
