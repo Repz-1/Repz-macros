@@ -2781,9 +2781,15 @@ const EAT_IDEAS = {
     ]
 };
 
+function repzAcces(){
+    if(localStorage.getItem('repz_premium') === '1') return true;
+    if(localStorage.getItem('repz_invite') !== '1') return false;
+    const deb = localStorage.getItem('repz_inviteDebut');
+    if(!deb) return true;
+    return Math.floor((Date.now() - new Date(deb+'T00:00:00').getTime())/86400000) + 1 <= 3;
+}
 function toggleEat(){
-    // "Quoi manger" (suggestions de repas) est une fonction Premium
-    if(localStorage.getItem('repz_premium') !== '1'){
+    if(!repzAcces()){
         montrerModalePremiumRepas();
         return;
     }
@@ -3018,8 +3024,7 @@ let cpStep = 1;
 const CP_TOTAL = 6;
 
 function ouvrirCalculPro(){
-    // Vérifier le premium
-    if(localStorage.getItem('repz_premium') !== '1'){
+    if(!repzAcces()){
         montrerModalePremiumCalc();
         return;
     }
@@ -3139,7 +3144,7 @@ function montrerModalePremiumCalc(){
 
 // Si premium : enlever le cadenas du bouton
 document.addEventListener('DOMContentLoaded', () => {
-    if(localStorage.getItem('repz_premium') === '1'){
+    if(repzAcces()){
         const lock = document.getElementById('tplLock');
         if(lock) lock.textContent = '';
         const eatLock = document.getElementById('eatLock');

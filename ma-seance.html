@@ -878,7 +878,15 @@ updateCount();
 
   // Un programme structuré (?s=) est réservé aux membres Premium.
   // Le mode libre (sans ?s=) reste gratuit.
-  if(seanceId && localStorage.getItem('repz_premium') !== '1'){
+  function repzAcces(){
+      if(localStorage.getItem('repz_premium') === '1') return true;
+      if(localStorage.getItem('repz_invite') !== '1') return false;
+      const deb = localStorage.getItem('repz_inviteDebut');
+      if(!deb) return true; // 1er jour, pas encore posé
+      return Math.floor((Date.now() - new Date(deb+'T00:00:00').getTime())/86400000) + 1 <= 3;
+  }
+  
+  if(seanceId && !repzAcces()){
     window.location.href = 'entrainements.html?premium=1';
     return;
   }
