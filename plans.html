@@ -308,7 +308,7 @@ function logout() {
     <div class="plan free-plan">
         <div class="plan-name">Standard</div>
         <div class="plan-desc">L'appli complète en autonomie, sans carte bancaire</div>
-        <button class="plan-btn free" onclick="window.location.href='app.html'">Continuer en standard</button>
+        <button class="plan-btn free" onclick="continuerStandard()">Continuer en standard</button>
     </div>
 </div>
 
@@ -492,6 +492,22 @@ function choisirFormule(f){
 function payerFormule(){ ouvrirPaiement(FORMULES[formuleActive].lien); }
 // Init
 choisirFormule('annuel');
+
+// « Continuer en standard » : route selon l'état du compte
+function continuerStandard(){
+    // Déjà un compte (connecté) → accès Standard direct
+    if(window.firebase && firebase.auth && firebase.auth().currentUser){
+        window.location.href = 'app.html'; return;
+    }
+    // Invité encore dans l'essai (≤ 3 jours) → il continue son essai
+    if(localStorage.getItem('repz_invite') === '1'){
+        const deb = localStorage.getItem('repz_inviteDebut');
+        const jour = deb ? Math.floor((Date.now() - new Date(deb + 'T00:00:00').getTime()) / 86400000) + 1 : 1;
+        if(jour <= 3){ window.location.href = 'app.html'; return; }
+    }
+    // Invité expiré ou sans compte → créer un compte gratuit (le Standard vit avec un compte)
+    window.location.href = 'index.html';
+}
 
 // Si l'utilisateur est déjà Premium : masquer l'achat, afficher un message
 (function(){
