@@ -55,7 +55,10 @@ body {
 .pc-u { font-size:13px; color:var(--text-dim); font-weight:600; margin-left:2px; }
 .pc-year { display:block; font-size:11px; color:var(--text-dim); font-weight:600; margin-top:3px; }
 .rassur { text-align:center; font-size:13.5px; color:var(--text-dim); margin-bottom:16px; }
-.deja-prem { background:#d4af37; color:#1a1a1a; font-weight:800; font-size:14px; text-align:center; padding:12px 14px; border-radius:12px; margin-bottom:16px; }
+.deja-prem { background:linear-gradient(135deg,#ecfdf5,#fcfbf8); border:1.5px solid #a7f3d0; color:#065f46; text-align:center; padding:16px 16px 14px; border-radius:16px; margin-bottom:16px; }
+.deja-prem .dp-title { font-size:14.5px; font-weight:800; margin-bottom:3px; }
+.deja-prem .dp-sub { font-size:12.5px; color:#047857; font-weight:600; margin-bottom:12px; }
+.deja-prem .dp-btn { display:block; background:#10B981; color:#fff; text-decoration:none; padding:12px; border-radius:12px; font-size:14px; font-weight:800; }
 .rassur strong { color:var(--text); }
 .compare { position:relative; margin:8px 0 24px; }
 .cmp-head, .cmp-row { display:grid; grid-template-columns:1fr 66px 76px; align-items:stretch; column-gap:10px; }
@@ -261,7 +264,11 @@ function logout() {
     <div class="plan premium">
         <div class="plan-name">Premium</div>
         <div class="plan-desc">Ton plan nutrition personnalisé + tous les programmes d’entraînement</div>
-        <div class="deja-prem" id="dejaPrem" style="display:none;">✨ Tu es déjà Premium — merci pour ton soutien !<br><a href="questionnaire.html" style="color:#1a1a1a;text-decoration:underline;font-weight:800;">Créer / refaire mon programme sur mesure →</a></div>
+        <div class="deja-prem" id="dejaPrem" style="display:none;">
+            <div class="dp-title">Membre Premium ✨</div>
+            <div class="dp-sub">Tout est débloqué — merci de faire grandir REPZ</div>
+            <a href="questionnaire.html" class="dp-btn">Créer mon programme sur mesure</a>
+        </div>
 
         <div class="price-cards">
             <div class="pc pop selected" id="pcAnnuel" onclick="choisirFormule('annuel')">
@@ -510,6 +517,7 @@ function continuerStandard(){
         const pc = document.querySelector('.price-cards'); if(pc) pc.style.display = 'none';
         const rs = document.querySelector('.rassur'); if(rs) rs.style.display = 'none';
         const btn = document.getElementById('planPayBtn'); if(btn) btn.style.display = 'none';
+        const fp = document.querySelector('.free-plan'); if(fp) fp.style.display = 'none';
     }
 })();
 
