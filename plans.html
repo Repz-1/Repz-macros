@@ -31,9 +31,6 @@ body {
 .plan { background:var(--card); border:1.5px solid var(--line); border-radius:var(--radius);
     padding:28px 24px; position:relative; transition:all .2s; margin-bottom:16px; }
 .plan.premium { border-color:var(--green); background:linear-gradient(135deg,#f0fdf4,#ffffff); }
-.plan.premium::before { content:'POPULAIRE'; position:absolute; top:-12px; left:50%;
-    transform:translateX(-50%); background:var(--green); color:#fff; font-size:11px;
-    font-weight:700; padding:4px 14px; border-radius:20px; }
 
 .plan-name { font-size:18px; font-weight:800; margin-bottom:4px; }
 .plan-desc { font-size:13px; color:var(--text-dim); margin-bottom:16px; line-height:1.5; }
@@ -57,6 +54,7 @@ body {
 .pc-right { text-align:right; white-space:nowrap; }
 .pc-mo { font-size:25px; font-weight:900; }
 .pc-u { font-size:13px; color:var(--text-dim); font-weight:600; margin-left:2px; }
+.pc-year { display:block; font-size:11px; color:var(--text-dim); font-weight:600; margin-top:3px; }
 .rassur { text-align:center; font-size:13.5px; color:var(--text-dim); margin-bottom:16px; }
 .rassur strong { color:var(--text); }
 .compare { position:relative; margin:8px 0 24px; }
@@ -256,16 +254,16 @@ function logout() {
     <!-- PREMIUM d'abord -->
     <div class="plan premium">
         <div class="plan-name">Premium</div>
-        <div class="plan-desc">Programmes et suivi personnalis\u00e9s</div>
+        <div class="plan-desc">Programmes et suivi personnalisés</div>
 
         <div class="price-cards">
             <div class="pc pop selected" id="pcAnnuel" onclick="choisirFormule('annuel')">
                 <span class="pc-badge">LE PLUS POPULAIRE</span>
                 <div class="pc-left">
                     <div class="pc-dur">12 mois</div>
-                    <div class="pc-promo"><span class="pc-old">59,99&nbsp;\u20ac</span><span class="pc-new">\u221240% lancement</span></div>
+                    <div class="pc-promo"><span class="pc-old">7,99&nbsp;€</span><span class="pc-new">−50% lancement</span></div>
                 </div>
-                <div class="pc-right"><span class="pc-mo">3,99&nbsp;\u20ac</span><span class="pc-u">/mois</span></div>
+                <div class="pc-right"><span class="pc-mo">3,99&nbsp;€</span><span class="pc-u">/mois</span><span class="pc-year">soit 47,88&nbsp;€/an</span></div>
             </div>
 
             <div class="pc" id="pcMensuel" onclick="choisirFormule('mensuel')">
@@ -273,7 +271,7 @@ function logout() {
                     <div class="pc-dur">Mensuel</div>
                     <div class="pc-promo"><span class="pc-note">sans engagement</span></div>
                 </div>
-                <div class="pc-right"><span class="pc-mo">7,99&nbsp;\u20ac</span><span class="pc-u">/mois</span></div>
+                <div class="pc-right"><span class="pc-mo">7,99&nbsp;€</span><span class="pc-u">/mois</span></div>
             </div>
         </div>
 
@@ -296,14 +294,14 @@ function logout() {
         
         </div>
 
-        <div class="rassur">\u2713 <strong>Sans engagement</strong>, r\u00e9siliable \u00e0 tout moment</div>
-        <button class="plan-btn premium" id="planPayBtn" onclick="payerFormule()">D\u00e9bloquer Premium</button>
+        <div class="rassur">✓ <strong>Sans engagement</strong>, résiliable à tout moment</div>
+        <button class="plan-btn premium" id="planPayBtn" onclick="payerFormule()">Débloquer Premium</button>
     </div>
 
     <!-- GRATUIT en dessous -->
     <div class="plan free-plan">
         <div class="plan-name">Standard</div>
-        <div class="plan-desc">L\'appli compl\u00e8te en autonomie, sans carte bancaire</div>
+        <div class="plan-desc">L'appli complète en autonomie, sans carte bancaire</div>
         <button class="plan-btn free" onclick="window.location.href='app.html'">Continuer en standard</button>
     </div>
 </div>
@@ -459,21 +457,21 @@ const FORMULES = {
         lien:'https://rep-z.lemonsqueezy.com/checkout/buy/b66fe18e-6b2a-4953-ab29-d5b4ab99e04a',
         features:[
             ['Programmes nutrition sur mesure'],
-            ['Biblioth\u00e8que de programmes'],
-            ['Calculateur de calories guid\u00e9'],
-            ['Suggestions \u00ab Quoi manger \u00bb'],
-            ['<strong>Un vrai coach derri\u00e8re ton suivi</strong>'],
-            ['<strong>Meilleur prix \u2014 3,99 \u20ac/mois</strong>']
+            ['Bibliothèque de programmes'],
+            ['Calculateur de calories guidé'],
+            ['Suggestions « Quoi manger »'],
+            ['<strong>Un vrai coach derrière ton suivi</strong>'],
+            ['<strong>Meilleur prix — 3,99 €/mois</strong>']
         ]
     },
     mensuel: {
         lien:'https://rep-z.lemonsqueezy.com/checkout/buy/390c6785-f085-4452-b43a-6206fbc3c106',
         features:[
             ['Programmes nutrition sur mesure'],
-            ['Biblioth\u00e8que de programmes'],
-            ['Calculateur de calories guid\u00e9'],
-            ['Suggestions \u00ab Quoi manger \u00bb'],
-            ['<strong>Un vrai coach derri\u00e8re ton suivi</strong>'],
+            ['Bibliothèque de programmes'],
+            ['Calculateur de calories guidé'],
+            ['Suggestions « Quoi manger »'],
+            ['<strong>Un vrai coach derrière ton suivi</strong>'],
             ['<strong>Sans engagement</strong>']
         ]
     }
