@@ -40,15 +40,6 @@ body {
 }
 .topbar-home svg { width:21px; height:21px; }
 .topbar-home:active { background:rgba(255,255,255,.25); transform:scale(.94); }
-.premium-pill {
-    display:inline-flex; align-items:center; gap:4px;
-    color:#ffffff; text-decoration:none; font-size:13px; font-weight:700;
-    padding:7px 14px; border-radius:30px;
-    background:#047857; border:1.5px solid #d4af37;
-    box-shadow:0 2px 8px rgba(0,0,0,.25);
-}
-.premium-pill:active { transform:scale(.95); }
-.premium-pill.is-premium { background:var(--gold); border-color:#fff; color:#1a1a1a; }
 .bottom-gradient {
     height:80px; margin:32px -16px -16px;
     background:linear-gradient(180deg,#000000 0%,#1a0f08 25%,#10B981 100%);
@@ -239,6 +230,8 @@ body {
 .wa-close { background:#0ea5e9; color:#fff; }
 
 /* ===== BOTTOM NAVIGATION ===== */
+.bn-premium { color:#d4af37; }
+.bn-premium.is-premium svg { fill:#d4af37; }
 .bottom-nav {
     position:fixed; bottom:0; left:0; right:0; z-index:80;
     background:#ffffff; border-top:1px solid #e9edf2;
@@ -557,8 +550,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.lock-badge').forEach(b => b.style.display = 'none');
         document.querySelectorAll('.choice.locked').forEach(c => c.classList.remove('locked'));
         if(localStorage.getItem('repz_premium') === '1'){
-            const pill = document.querySelector('.premium-pill');
-            if(pill){ pill.innerHTML = '✨ Membre Premium'; pill.classList.add('is-premium'); pill.removeAttribute('href'); pill.style.cursor='default'; }
+            const bp = document.getElementById('bnPremium');
+            if(bp){ bp.classList.add('is-premium'); bp.removeAttribute('href'); }
         }
     }
     // Si on a été redirigé depuis un programme verrouillé, montrer la modale
@@ -598,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </a>
     <a href="app.html" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
-        <span>Nutrition</span>
+        <span>Journal</span>
     </a>
     <a href="entrainements.html" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
@@ -607,6 +600,10 @@ document.addEventListener('DOMContentLoaded', () => {
     <a href="mes-stats.html" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
+    </a>
+    <a href="plans.html" class="bn-item bn-premium" id="bnPremium">
+        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
+        <span>Premium</span>
     </a>
 </nav>
 

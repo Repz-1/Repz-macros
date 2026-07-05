@@ -28,12 +28,6 @@ body{
     background:rgba(255,255,255,.15); color:#fff; text-decoration:none;
 }
 .topbar-home svg { width:20px; height:20px; }
-.premium-pill {
-    background:#047857; border:1.5px solid var(--gold); color:#fff;
-    padding:7px 15px; border-radius:20px; font-size:13px; font-weight:700;
-    text-decoration:none; display:inline-block;
-}
-.premium-pill.is-premium { background:var(--gold); border-color:#fff; color:#1a1a1a; }
 
 .container { max-width:900px; margin:0 auto; padding:16px 16px 100px; }
 
@@ -55,7 +49,8 @@ body{
     content:''; position:absolute; top:0; left:0; width:4px; height:100%;
     background:var(--orange); border-radius:4px 0 0 4px;
 }
-.stat-card h2 { font-size:17px; font-weight:700; margin-bottom:4px; }
+.stat-card h2 { font-size:17px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+.stat-card h2 .h2ic { width:20px; height:20px; stroke:#10B981; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
 .stat-card .card-sub { font-size:13px; color:var(--text-dim); margin-bottom:16px; }
 
 /* MINI RÉSUMÉ (chiffres clés) */
@@ -82,7 +77,8 @@ body{
     border:1.5px solid var(--gold); border-radius:20px; padding:24px 20px;
     text-align:center; margin-bottom:16px;
 }
-.premium-invite .pi-icon { font-size:38px; margin-bottom:10px; }
+.premium-invite .pi-icon { margin-bottom:10px; }
+.premium-invite .pi-icon svg { width:40px; height:40px; stroke:#10B981; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .premium-invite h3 { font-size:18px; font-weight:800; margin-bottom:8px; }
 .premium-invite p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:18px; }
 .premium-invite .pi-btn {
@@ -99,6 +95,8 @@ body{
 }
 
 /* ===== BOTTOM NAVIGATION ===== */
+.bn-premium { color:#d4af37; }
+.bn-premium.is-premium svg { fill:#d4af37; }
 .bottom-nav {
     position:fixed; bottom:0; left:0; right:0; z-index:80;
     background:#ffffff; border-top:1px solid #e9edf2;
@@ -197,7 +195,7 @@ function logout(){
 
     <!-- POIDS -->
     <div class="stat-card">
-        <h2>⚖️ Évolution du poids</h2>
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7 14l3-3 2.5 2L20 7"/></svg>Évolution du poids</h2>
         <div class="card-sub" id="weightSub">Tes dernières pesées</div>
         <div id="weightSummary"></div>
         <div id="weightChart"></div>
@@ -205,7 +203,7 @@ function logout(){
 
     <!-- CALORIES -->
     <div class="stat-card">
-        <h2>🔥 Calories enregistrées</h2>
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M12 3C9 7 7 9 7 13a5 5 0 0010 0c0-2-1-3.6-2.5-5-.3 1.2-1 2-2 2.4C13 8 13 5.5 12 3z"/></svg>Calories enregistrées</h2>
         <div class="card-sub" id="kcalSub">Tes journées récentes</div>
         <div id="kcalSummary"></div>
         <div id="kcalChart"></div>
@@ -213,7 +211,7 @@ function logout(){
 
     <!-- INVITATION PREMIUM (bienveillante) -->
     <div class="premium-invite" id="premiumInvite">
-        <div class="pi-icon">💪</div>
+        <div class="pi-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg></div>
         <h3>Débloque tout ton historique</h3>
         <p>Tu vois ici tes 7 derniers jours. Passe à REPZ Premium pour suivre toute ta progression sur des semaines et des mois, avec tes moyennes et tes tendances.<br><br>Ton soutien nous aide à faire grandir REPZ 🙏</p>
         <a href="plans.html" class="pi-btn">Soutenir REPZ & débloquer</a>
@@ -233,8 +231,8 @@ const LIMITE_GRATUIT = 7; // jours visibles en gratuit
 
 // Bulle premium dorée si déjà premium
 if(estPremium){
-    const pill = document.getElementById('premiumPill');
-    if(pill){ pill.innerHTML = '✨ Membre Premium'; pill.classList.add('is-premium'); pill.removeAttribute('href'); pill.style.cursor='default'; }
+    const bp = document.getElementById('bnPremium');
+    if(bp){ bp.classList.add('is-premium'); bp.removeAttribute('href'); }
     // Cacher l'invitation premium
     const inv = document.getElementById('premiumInvite');
     if(inv) inv.style.display = 'none';
@@ -352,7 +350,7 @@ renderKcal();
     </a>
     <a href="app.html" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
-        <span>Nutrition</span>
+        <span>Journal</span>
     </a>
     <a href="entrainements.html" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
@@ -361,6 +359,10 @@ renderKcal();
     <a href="mes-stats.html" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
+    </a>
+    <a href="plans.html" class="bn-item bn-premium" id="bnPremium">
+        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
+        <span>Premium</span>
     </a>
 </nav>
 

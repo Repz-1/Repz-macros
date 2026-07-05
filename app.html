@@ -58,15 +58,6 @@ body {
 }
 .topbar-home svg { width:21px; height:21px; }
 .topbar-home:active { background:rgba(255,255,255,.25); transform:scale(.94); }
-.premium-pill {
-    display:inline-flex; align-items:center; gap:4px;
-    color:#ffffff; text-decoration:none; font-size:13px; font-weight:700;
-    padding:7px 14px; border-radius:30px;
-    background:#047857; border:1.5px solid #d4af37;
-    box-shadow:0 2px 8px rgba(0,0,0,.25);
-}
-.premium-pill:active { transform:scale(.95); }
-.premium-pill.is-premium { background:#d4af37; border-color:#fff; color:#1a1a1a; cursor:default; }
 
 /* Barre fixe : kcal restantes toujours visible */
 .sticky-remaining {
@@ -160,6 +151,8 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .mh-name-input:focus { outline:none; background:#f1efe9; border-radius:6px; }
 .mh-sub { font-size:13px; color:#8a8580; margin-top:2px; }
 .mh-kcal { color:#10B981; font-weight:800; }
+.mh-del { background:none; border:none; color:#cbd5e1; font-size:16px; line-height:1; padding:6px; cursor:pointer; flex-shrink:0; }
+.mh-del:active { color:#ef4444; }
 .mh-chev { color:#b7b1a8; font-size:18px; transition:transform .2s; flex-shrink:0; }
 .meal-card.open .mh-chev { transform:rotate(180deg); }
 .meal-body { display:none; padding:0 16px 16px; }
@@ -243,6 +236,9 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .search-item:active, .search-item:hover { background:#eff6ff; }
 .search-item .si-kcal { font-size:12px; color:#64748b; }
 .search-none { padding:14px; text-align:center; color:#94a3b8; font-size:13px; }
+.search-create { padding:12px; color:#10B981; font-weight:700; font-size:13.5px; cursor:pointer; border-top:1px solid #eef0f2; display:flex; align-items:center; justify-content:center; gap:6px; }
+.search-create:active { background:#ecfdf5; }
+.search-create svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; }
 
 .recipe-total {
     background:#ecfdf5; border:1px solid #a7f3d0;
@@ -250,11 +246,9 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 }
 .recipe-total .rt-mult { color:#9a3412; background:#d1fae5; padding:6px 8px; border-radius:6px; margin-top:6px; font-size:13px; }
 
-.recipe-actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
-.recipe-actions button { padding:9px 12px; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:13px; }
+
 .btn-mult { background:#ecfdf5; color:#047857; }
-.btn-del-recipe { background:#f8fafc; color:#94a3b8; border:1px solid #e2e8f0; flex:1; }
-.btn-del-recipe:active { background:#fee2e2; color:#b91c1c; }
+
 .mult-input { width:54px; padding:9px; border:1px solid #e2e8f0; border-radius:8px; text-align:center; font-weight:600; }
 
 .add-recipe-btn {
@@ -653,6 +647,8 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .scan-close { width:100%; padding:13px; border:none; border-radius:11px; background:#374151; color:#fff; font-weight:700; font-size:15px; cursor:pointer; }
 
 /* ===== BOTTOM NAVIGATION ===== */
+.bn-premium { color:#d4af37; }
+.bn-premium.is-premium svg { fill:#d4af37; }
 .bottom-nav {
     position:fixed; bottom:0; left:0; right:0; z-index:80;
     background:#ffffff; border-top:1px solid #e9edf2;
@@ -791,7 +787,6 @@ function afficherMessageInvite() {
 </script>
 <div class="topbar-app">
     <a href="accueil.html" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
-    <a href="plans.html" class="premium-pill">✨ Premium</a>
 </div>
 
 <!-- BARRE FIXE : kcal restantes toujours visible -->
@@ -974,6 +969,28 @@ function afficherMessageInvite() {
         <div class="modal-btns">
             <button class="modal-cancel" onclick="closeWeightModal()">Annuler</button>
             <button class="modal-save" onclick="saveWeightNutri()">Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CRÉER UN ALIMENT -->
+<div class="modal-overlay" id="foodModal">
+    <div class="modal">
+        <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Créer un aliment</h3>
+        <label>Nom de l'aliment</label>
+        <input type="text" id="fmNom" placeholder="Ex : Pain protéiné maison">
+        <label>Calories (pour 100 g)</label>
+        <input type="number" id="fmKcal" inputmode="decimal" placeholder="kcal / 100 g">
+        <label>Protéines (g / 100 g)</label>
+        <input type="number" id="fmProt" inputmode="decimal" placeholder="g">
+        <label>Glucides (g / 100 g)</label>
+        <input type="number" id="fmCarbs" inputmode="decimal" placeholder="g">
+        <label>Lipides (g / 100 g)</label>
+        <input type="number" id="fmLip" inputmode="decimal" placeholder="g">
+        <div id="fmErr" style="display:none;color:#dc2626;font-size:12.5px;margin-top:8px;"></div>
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeFoodModal()">Annuler</button>
+            <button class="modal-save" onclick="saveNewFood()">Enregistrer</button>
         </div>
     </div>
 </div>
@@ -2272,6 +2289,7 @@ function renderRecipes(){
         let h = `<div class="meal-head" onclick="toggleMeal(${rc.id})">
             <div class="mh-emo">${emoji}</div>
             <div class="mh-info">${nameHtml}<div class="mh-sub">${rightTxt}</div></div>
+            ${!rc.fixed ? `<button class="mh-del" onclick="event.stopPropagation();delRecipe(${rc.id})" title="Supprimer ce repas">✕</button>` : ''}
             <div class="mh-chev">▾</div>
         </div>`;
 
@@ -2301,9 +2319,6 @@ function renderRecipes(){
         </div>`;
         if(hasFood){
             h += `<div class="recipe-total"> ${t.kcal.toFixed(0)} kcal | ${t.prot.toFixed(1)}P | ${t.carbs.toFixed(1)}C | ${t.lip.toFixed(1)}L</div>`;
-        }
-        if(!rc.fixed){
-            h += `<div class="recipe-actions"><button class="btn-del-recipe" onclick="delRecipe(${rc.id})">✕ Supprimer ce repas</button></div>`;
         }
         h += `</div>`; // meal-body
         card.innerHTML = h;
@@ -2454,8 +2469,9 @@ function filterIngredients(rid,query){
         const n=normalize(name);
         return mots.every(mot=>n.includes(mot));
     }).sort();
+    const createBtn = `<div class="search-create" onclick="openFoodCreator(${rid})"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Créer un aliment</div>`;
     if(matches.length===0){
-        box.innerHTML='<div class="search-none">Aucun ingrédient trouvé</div>';
+        box.innerHTML='<div class="search-none">Aucun ingrédient trouvé</div>' + createBtn;
         box.classList.add('show');
         return;
     }
@@ -2463,7 +2479,7 @@ function filterIngredients(rid,query){
         `<div class="search-item" onclick="addIngredient(${rid},'${name.replace(/'/g,"\\'")}')">
             <span>${name}</span><span class="si-kcal">${DB[name].kcal} kcal/100g</span>
         </div>`
-    ).join('');
+    ).join('') + createBtn;
     box.classList.add('show');
 }
 function addIngredient(rid,name){
@@ -2476,6 +2492,45 @@ function addIngredient(rid,name){
     // Garder la main dans le champ de recherche (clavier ouvert, pas de saut)
     const inp = document.getElementById('search-'+rid);
     if(inp){ inp.value=''; inp.focus({preventScroll:true}); }
+}
+
+// ===== CRÉER UN ALIMENT PERSO =====
+let foodCreatorRid = null;
+function openFoodCreator(rid){
+    foodCreatorRid = rid;
+    const pref = (document.getElementById('search-'+rid)||{}).value || '';
+    document.getElementById('fmNom').value = pref;
+    ['fmKcal','fmProt','fmCarbs','fmLip'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fmErr').style.display='none';
+    document.querySelectorAll('.search-results').forEach(b=>b.classList.remove('show'));
+    document.getElementById('foodModal').classList.add('show');
+}
+function closeFoodModal(){ document.getElementById('foodModal').classList.remove('show'); }
+function saveNewFood(){
+    const nom  = document.getElementById('fmNom').value.trim();
+    const kcal = parseFloat(document.getElementById('fmKcal').value);
+    const prot = parseFloat(document.getElementById('fmProt').value)||0;
+    const carbs= parseFloat(document.getElementById('fmCarbs').value)||0;
+    const lip  = parseFloat(document.getElementById('fmLip').value)||0;
+    const err  = document.getElementById('fmErr');
+    if(!nom){ err.textContent='Donne un nom à ton aliment.'; err.style.display='block'; return; }
+    if(isNaN(kcal)||kcal<0){ err.textContent='Indique les calories pour 100 g.'; err.style.display='block'; return; }
+    const food = { kcal:Math.round(kcal), prot:Math.round(prot*10)/10, carbs:Math.round(carbs*10)/10, lip:Math.round(lip*10)/10 };
+    DB[nom] = food;
+    try{
+        const cf = JSON.parse(localStorage.getItem('repz_customFoods')||'{}');
+        cf[nom] = food;
+        localStorage.setItem('repz_customFoods', JSON.stringify(cf));
+    }catch(e){}
+    if(foodCreatorRid!==null){
+        const rc = recipes.find(r=>r.id===foodCreatorRid);
+        if(rc){
+            const nid = Math.max(0,...rc.ings.map(i=>i.id))+1;
+            rc.ings.push({ id:nid, name:nom, portion:100, macros:food });
+            renderRecipes(); save();
+        }
+    }
+    closeFoodModal();
 }
 
 // ===== SCANNER CODE-BARRES =====
@@ -3116,7 +3171,19 @@ function adjustPortion(exText, ratio){
 }
 
 function showEatIdeas(cat){
-    document.querySelectorAll('.eat-cat').forEach(b=>{
+    const cats = document.querySelectorAll('.eat-cat');
+    // Si la catégorie cliquée est déjà ouverte → refermer
+    let dejaActive = false;
+    cats.forEach(b=>{
+        const oc=b.getAttribute('onclick')||'';
+        if(oc.indexOf("'"+cat+"'")>=0 && b.classList.contains('active')) dejaActive = true;
+    });
+    if(dejaActive){
+        cats.forEach(b=>b.classList.remove('active'));
+        document.getElementById('eatIdeas').innerHTML='';
+        return;
+    }
+    cats.forEach(b=>{
         const oc=b.getAttribute('onclick')||'';
         b.classList.toggle('active', oc.indexOf("'"+cat+"'")>=0);
     });
@@ -3143,6 +3210,8 @@ function showEatIdeas(cat){
 
 
 // ===== DÉMARRAGE DE L'APP =====
+// Aliments persos créés par l'utilisateur (fusionnés dans la base de recherche)
+try{ Object.assign(DB, JSON.parse(localStorage.getItem('repz_customFoods')||'{}')); }catch(e){}
 // Charge les données sauvegardées AVANT tout rendu, puis affiche tout
 load();
 loadWater();
@@ -3428,9 +3497,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if(lock) lock.textContent = '';
         const eatLock = document.getElementById('eatLock');
         if(eatLock) eatLock.style.display = 'none';
-        // Bulle dorée "Membre Premium" (cohérent avec les autres pages)
-        const pill = document.querySelector('.premium-pill');
-        if(pill){ pill.innerHTML = '✨ Membre Premium'; pill.classList.add('is-premium'); pill.removeAttribute('href'); }
+        // Statut premium : dorer le bouton de la barre
+        const bp = document.getElementById('bnPremium');
+        if(bp){ bp.classList.add('is-premium'); bp.removeAttribute('href'); }
     }
 });
 </script>
@@ -3444,7 +3513,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </a>
     <a href="app.html" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
-        <span>Nutrition</span>
+        <span>Journal</span>
     </a>
     <a href="entrainements.html" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
@@ -3453,6 +3522,10 @@ document.addEventListener('DOMContentLoaded', () => {
     <a href="mes-stats.html" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
+    </a>
+    <a href="plans.html" class="bn-item bn-premium" id="bnPremium">
+        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
+        <span>Premium</span>
     </a>
 </nav>
 
