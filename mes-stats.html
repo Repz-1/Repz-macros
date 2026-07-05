@@ -199,10 +199,6 @@ function logout(){
     <div class="stat-card">
         <h2>⚖️ Évolution du poids</h2>
         <div class="card-sub" id="weightSub">Tes dernières pesées</div>
-        <div class="weight-input-row">
-            <input type="number" id="weightInput" placeholder="Poids du jour (kg)" step="0.1" inputmode="decimal">
-            <button class="weight-save" onclick="addWeightStat()">✓</button>
-        </div>
         <div id="weightSummary"></div>
         <div id="weightChart"></div>
     </div>
@@ -264,7 +260,7 @@ function renderWeight(){
     const summary = document.getElementById('weightSummary');
     const sub = document.getElementById('weightSub');
     if(!weightLog.length){
-        chart.innerHTML = '<div class="chart-empty">Aucune pesée pour l\'instant. Ajoute ton poids ci-dessus pour suivre ton évolution.</div>';
+        chart.innerHTML = '<div class="chart-empty">Aucune pesée pour l\'instant. Encode ton poids via le bouton « Mon poids » de la page Nutrition.</div>';
         summary.innerHTML = '';
         return;
     }
