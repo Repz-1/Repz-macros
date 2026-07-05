@@ -374,10 +374,10 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .eat-card { position:relative; background:#1f2937; border-radius:20px; box-shadow:0 4px 20px rgba(15,23,42,.06); margin-bottom:14px; overflow:hidden; }
 .eat-toggle {
     width:100%; display:flex; align-items:center; justify-content:space-between;
-    background:#1f2937; color:#f0ede6; border:none; padding:16px 18px;
+    background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff; border:none; padding:16px 18px;
     font-size:15px; font-weight:700; cursor:pointer;
 }
-.eat-toggle:active { background:#374151; }
+.eat-toggle:active { filter:brightness(.94); }
 .eat-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 16px; }
 .eat-body.open { max-height:1500px; padding:14px 16px 18px; }
 .eat-intro { font-size:14px; color:#475569; margin-bottom:14px; }
@@ -838,7 +838,7 @@ function afficherMessageInvite() {
         </div>
 
         <div class="progress-track" style="display:none"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        <button class="save-day-btn" onclick="saveDay()">Enregistrer et recommencer</button>
+        <button class="save-day-btn" onclick="saveDay()">Commencer une nouvelle journée</button>
     </div>
 
     <!-- Actions rapides -->
@@ -850,7 +850,7 @@ function afficherMessageInvite() {
     <!-- QUOI MANGER ? -->
     <div class="eat-card">
         <button class="eat-toggle" onclick="toggleEat()">
-            <span>Quoi manger ?</span>
+            <span>💡 Idées recettes</span>
             <span style="display:flex;align-items:center;gap:8px;">
                 <span id="eatLock" style="font-size:13px;">🔒</span>
                 <span id="eatArrow">▾</span>
