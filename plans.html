@@ -42,9 +42,8 @@ body {
 .price-cards { display:flex; flex-direction:column; gap:14px; margin:10px 0 26px; }
 .pc { position:relative; background:#fff; border:2px solid var(--line); border-radius:16px; padding:22px 22px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:border-color .15s, background .15s, transform .1s; }
 .pc:active { transform:scale(.99); }
-.pc.pop { border-color:var(--orange); background:linear-gradient(180deg,#ecfdf5,#ffffff); }
-.pc.selected { border-color:var(--orange); box-shadow:0 6px 18px rgba(16,185,129,.14); }
-.pc:not(.selected):not(.pop) .pc-dur, .pc:not(.selected):not(.pop) .pc-mo { color:#9ca3af; }
+.pc.selected { border-color:var(--orange); background:linear-gradient(180deg,#ecfdf5,#ffffff); box-shadow:0 6px 18px rgba(16,185,129,.14); }
+.pc:not(.selected) .pc-dur, .pc:not(.selected) .pc-mo { color:#9ca3af; }
 .pc-badge { position:absolute; top:-11px; left:18px; background:var(--orange); color:#fff; font-size:10.5px; font-weight:800; padding:4px 11px; border-radius:20px; letter-spacing:.03em; }
 .pc-dur { font-size:21px; font-weight:800; }
 .pc-promo { margin-top:3px; }
