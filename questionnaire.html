@@ -141,16 +141,11 @@ function logout() {
     });
 }
 
-// Le programme sur mesure est une fonctionnalité Premium (essai 3 jours inclus)
+// Le programme sur mesure est strictement Premium
 (function(){
-    if(localStorage.getItem('repz_premium') === '1') return;
-    if(localStorage.getItem('repz_invite') === '1'){
-        const deb = localStorage.getItem('repz_inviteDebut');
-        if(!deb) return;
-        const jour = Math.floor((Date.now() - new Date(deb + 'T00:00:00').getTime()) / 86400000) + 1;
-        if(jour <= 3) return;
+    if(localStorage.getItem('repz_premium') !== '1'){
+        window.location.href = 'plans.html';
     }
-    window.location.href = 'plans.html';
 })();
 </script>
 

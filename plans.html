@@ -495,18 +495,12 @@ choisirFormule('annuel');
 
 // « Continuer en standard » : route selon l'état du compte
 function continuerStandard(){
-    // Déjà un compte (connecté) → accès Standard direct
+    // Un compte → accès Standard direct ; sinon → création de compte gratuit
     if(window.firebase && firebase.auth && firebase.auth().currentUser){
-        window.location.href = 'app.html'; return;
+        window.location.href = 'app.html';
+    } else {
+        window.location.href = 'index.html';
     }
-    // Invité encore dans l'essai (≤ 3 jours) → il continue son essai
-    if(localStorage.getItem('repz_invite') === '1'){
-        const deb = localStorage.getItem('repz_inviteDebut');
-        const jour = deb ? Math.floor((Date.now() - new Date(deb + 'T00:00:00').getTime()) / 86400000) + 1 : 1;
-        if(jour <= 3){ window.location.href = 'app.html'; return; }
-    }
-    // Invité expiré ou sans compte → créer un compte gratuit (le Standard vit avec un compte)
-    window.location.href = 'index.html';
 }
 
 // Si l'utilisateur est déjà Premium : masquer l'achat, afficher un message

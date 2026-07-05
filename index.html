@@ -233,7 +233,7 @@ body {
     <!-- SÉPARATEUR + INVITÉ -->
     <div style="margin-top:20px; padding-top:18px; border-top:1px solid #e5e7eb; text-align:center;">
         <a onclick="continuerInvite()" style="display:inline-block; color:#6b7280; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">
-            Continuer en tant qu'invité →
+            Découvrir l'appli sans compte →
         </a>
     </div>
 </div>
@@ -277,12 +277,9 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
-// Continuer en tant qu'invité : on mémorise le choix et la date de début d'essai
+// Mode découverte : navigation libre, actions bloquées jusqu'à la création du compte
 function continuerInvite() {
     localStorage.setItem('repz_invite', '1');
-    if(!localStorage.getItem('repz_inviteDebut')){
-        localStorage.setItem('repz_inviteDebut', new Date().toISOString().slice(0,10));
-    }
     // Une session Firebase encore active écraserait le mode invité : on la coupe d'abord
     auth.signOut().finally(()=>{ window.location.href = 'accueil.html'; });
 }

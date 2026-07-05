@@ -368,44 +368,36 @@ renderKcal();
 
 
 <script>
-// ===== REPZ_INVITE : essai découverte 3 jours =====
-(function(){
-    if(localStorage.getItem('repz_invite') !== '1') return; // pas en mode invité
-    let deb = localStorage.getItem('repz_inviteDebut');
-    if(!deb){ deb = new Date().toISOString().slice(0,10); localStorage.setItem('repz_inviteDebut', deb); }
-    const jour = Math.floor((Date.now() - new Date(deb + 'T00:00:00').getTime()) / 86400000) + 1;
-
-    if(jour <= 3){
-        // Bandeau discret : accès complet pendant l'essai
-        const b = document.createElement('a');
-        b.href = 'index.html';
-        b.id = 'inviteBandeau';
-        b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
-        b.innerHTML = '🎁 Mode découverte · jour ' + jour + '/3 — <span style="text-decoration:underline;">crée ton compte pour garder tes données</span>';
-        const topbar = document.querySelector('.topbar-app, .topbar');
-        if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
-        else { document.body.insertBefore(b, document.body.firstChild); }
-    } else {
-        // Fin d'essai : mur d'inscription (les données locales sont conservées)
-        const o = document.createElement('div');
-        o.id = 'inviteMur';
-        o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:linear-gradient(180deg,#10B981 0%,#2a1810 45%,#000000 100%);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto;';
-        o.innerHTML = '<div style="max-width:360px;width:100%;text-align:center;background:#ffffff;border-radius:26px;padding:34px 26px 26px;box-shadow:0 24px 70px rgba(0,0,0,.45);">'
-            + '<div style="font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#1a1a1a;">REP<span style="color:#10B981;">Z</span></div>'
-            + '<div style="font-size:12px;color:#9ca3af;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;">Fin de l\'essai découverte</div>'
-            + '<div style="font-size:44px;margin-bottom:10px;">🎉</div>'
-            + '<h2 style="font-size:21px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.25;">3 jours avec REPZ, bien joué !</h2>'
-            + '<p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Pour continuer, crée ton compte gratuit — ça prend une minute.</p>'
-            + '<div style="text-align:left;background:#faf9f6;border:1px solid #eee9e0;border-radius:14px;padding:14px 16px;margin-bottom:20px;">'
-            +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;margin-bottom:9px;"><span style="color:#047857;font-weight:800;">✓</span> Ton historique est conservé (repas, poids, séances)</div>'
-            +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;margin-bottom:9px;"><span style="color:#047857;font-weight:800;">✓</span> 100% gratuit, sans engagement</div>'
-            +   '<div style="display:flex;gap:9px;align-items:center;font-size:13.5px;color:#1a1a1a;font-weight:600;"><span style="color:#047857;font-weight:800;">✓</span> Tracker, séances libres et stats inclus</div>'
-            + '</div>'
-            + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;margin-bottom:8px;box-shadow:0 8px 20px rgba(16,185,129,.35);">Créer mon compte gratuit</a>'
-            + '<a href="index.html" style="display:block;color:#6b7280;font-size:13.5px;font-weight:600;text-decoration:none;padding:9px;">J\'ai déjà un compte — me connecter</a>'
-            + '</div>';
-        document.body.appendChild(o);
+// ===== REPZ_INVITE : mode découverte (navigation seule) =====
+function estInviteRepz(){ return localStorage.getItem('repz_invite') === '1'; }
+function murCompte(){
+    if(document.getElementById('inviteMurAction')) {
+        document.getElementById('inviteMurAction').style.display = 'flex';
+        return;
     }
+    const o = document.createElement('div');
+    o.id = 'inviteMurAction';
+    o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
+    o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
+        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">REP<span style="color:#10B981;">Z</span></div>'
+        + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
+        + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
+        + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
+        + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">Continuer à explorer</button>'
+        + '</div>';
+    document.body.appendChild(o);
+}
+function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return true; }
+(function(){
+    if(!estInviteRepz()) return;
+    const b = document.createElement('a');
+    b.href = 'index.html';
+    b.id = 'inviteBandeau';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser REPZ</span>';
+    const topbar = document.querySelector('.topbar-app, .topbar');
+    if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
+    else { document.body.insertBefore(b, document.body.firstChild); }
 })();
 </script>
 
