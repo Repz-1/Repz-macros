@@ -41,6 +41,10 @@ body {
 .wlog-tag { font-size:12px; font-weight:700; background:#ecfdf5; color:#047857; padding:4px 10px; border-radius:8px; }
 .wlog-tag.repos { background:#f1f5f9; color:#64748b; }
 .wlog-empty { font-size:12.5px; color:#b7b1a8; }
+.wlog-advice { font-size:13px; line-height:1.5; border-radius:12px; padding:11px 13px; margin-bottom:14px; }
+.wlog-advice.rattrap { background:#fef6e7; color:#92610a; border:1px solid #f6e2b8; }
+.wlog-advice.ok { background:#ecfdf5; color:#047857; border:1px solid #c9f0df; }
+.wlog-advice b { font-weight:800; }
 
 /* Modale journal */
 .ml-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
@@ -446,6 +450,7 @@ function logout() {
         </div>
         <button class="wlog-today" onclick="openMuscleLog(todayISO())">+ Aujourd'hui</button>
     </div>
+    <div class="wlog-advice" id="wlogAdvice"></div>
     <div class="wlog-list" id="wlogList"></div>
 </div>
 
@@ -892,6 +897,37 @@ function renderWlog(){
         </div>`;
     }
     list.innerHTML = html;
+    renderWlogAdvice(log);
+}
+
+// Muscles majeurs à surveiller (hors cardio/repos)
+const WL_MAJEURS = ['pecs','dos','jambes','epaules','biceps','triceps','abdos'];
+function renderWlogAdvice(log){
+    const el = document.getElementById('wlogAdvice');
+    if(!el) return;
+    const aDesDonnees = Object.keys(log).some(k => (log[k]||[]).some(v => v !== 'repos'));
+    if(!aDesDonnees){ el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    // Pour chaque muscle majeur : depuis combien de jours (0..13) il n'a pas été travaillé
+    const retard = [];
+    WL_MAJEURS.forEach(m => {
+        let dernier = -1; // index du jour (0 = aujourd'hui)
+        for(let i = 0; i < 14; i++){
+            const vals = log[wlIso(wlDateDaysAgo(i))] || [];
+            if(vals.includes(m)){ dernier = i; break; }
+        }
+        if(dernier === -1) retard.push({ n: wlMuscleName(m), j: 99 });       // jamais sur 14 j
+        else if(dernier >= 7) retard.push({ n: wlMuscleName(m), j: dernier });
+    });
+    if(retard.length === 0){
+        el.className = 'wlog-advice ok';
+        el.innerHTML = '💪 Bel équilibre — tous les groupes ont été travaillés récemment.';
+    } else {
+        retard.sort((a,b) => b.j - a.j);
+        const liste = retard.map(r => `<b>${r.n}</b>${r.j === 99 ? '' : ` (${r.j} j)`}`).join(' · ');
+        el.className = 'wlog-advice rattrap';
+        el.innerHTML = `💡 À rattraper : ${liste}`;
+    }
 }
 
 let mlCurrentIso = null, mlSel = [];
@@ -922,6 +958,7 @@ function saveMuscleDay(){
     if(mlSel.length === 0) delete log[mlCurrentIso];
     else log[mlCurrentIso] = mlSel;
     saveMuscleLog(log);
+    pushMuscleLogToCloud(log);
     closeMuscleLog();
     renderWlog();
 }
@@ -929,10 +966,41 @@ function clearMuscleDay(){
     const log = loadMuscleLog();
     delete log[mlCurrentIso];
     saveMuscleLog(log);
+    pushMuscleLogToCloud(log);
     closeMuscleLog();
     renderWlog();
 }
 function closeMuscleLog(){ document.getElementById('mlOverlay').classList.remove('show'); }
+
+/* ===== Synchro Firestore (le journal suit ton compte) ===== */
+function pushMuscleLogToCloud(obj){
+    try{
+        if(!window.firebase || !firebase.auth || !firebase.firestore) return;
+        const u = firebase.auth().currentUser;
+        if(!u) return;
+        const ref = firebase.firestore().collection('users').doc(u.uid);
+        ref.update({ muscleLog: obj }).catch(function(){ ref.set({ muscleLog: obj }, { merge:true }).catch(function(){}); });
+    }catch(e){}
+}
+function syncMuscleLogFromCloud(u){
+    try{
+        if(!u || !window.firebase || !firebase.firestore) return;
+        firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
+            const cloud = (doc.exists && doc.data().muscleLog) ? doc.data().muscleLog : {};
+            const merged = Object.assign({}, loadMuscleLog(), cloud); // cloud prioritaire en cas de conflit
+            const limite = wlIso(wlDateDaysAgo(13));
+            Object.keys(merged).forEach(function(k){ if(k < limite) delete merged[k]; });
+            saveMuscleLog(merged);
+            pushMuscleLogToCloud(merged); // consolide et nettoie les jours effacés
+            renderWlog();
+        }).catch(function(){});
+    }catch(e){}
+}
+try{
+    if(window.firebase && firebase.auth){
+        firebase.auth().onAuthStateChanged(function(u){ if(u) syncMuscleLogFromCloud(u); });
+    }
+}catch(e){}
 
 renderWlog();
 </script>
