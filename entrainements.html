@@ -25,6 +25,38 @@ body {
     padding:16px;
 }
 
+/* Journal d'entraînement */
+.wlog { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:22px; box-shadow:0 4px 16px rgba(15,23,42,.05); }
+.wlog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.wlog-title { font-size:17px; font-weight:800; }
+.wlog-sub { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
+.wlog-today { flex-shrink:0; background:#10B981; color:#fff; border:none; border-radius:20px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
+.wlog-today:active { transform:scale(.96); }
+.wlog-list { display:flex; flex-direction:column; }
+.wlog-day { display:flex; align-items:center; gap:12px; padding:11px 2px; border-top:1px solid var(--line); cursor:pointer; }
+.wlog-day:first-child { border-top:none; }
+.wlog-date { width:96px; flex-shrink:0; font-size:13px; font-weight:700; color:var(--text); }
+.wlog-day.is-today .wlog-date { color:#10B981; }
+.wlog-tags { display:flex; flex-wrap:wrap; gap:6px; flex:1; }
+.wlog-tag { font-size:12px; font-weight:700; background:#ecfdf5; color:#047857; padding:4px 10px; border-radius:8px; }
+.wlog-tag.repos { background:#f1f5f9; color:#64748b; }
+.wlog-empty { font-size:12.5px; color:#b7b1a8; }
+
+/* Modale journal */
+.ml-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
+.ml-overlay.show { display:flex; }
+.ml-modal { background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(22px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
+.ml-date { font-size:17px; font-weight:800; margin-bottom:16px; text-transform:capitalize; }
+.ml-groups { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
+.ml-chip { padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid var(--line); background:#fff; color:var(--text-dim); cursor:pointer; }
+.ml-chip.on { background:#10B981; border-color:#10B981; color:#fff; }
+.ml-chip.repos.on { background:#64748b; border-color:#64748b; }
+.ml-chip:active { transform:scale(.96); }
+.ml-btns { display:flex; gap:10px; }
+.ml-btns button { flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; }
+.ml-clear { background:#f1f5f9; color:#64748b; }
+.ml-save { background:#10B981; color:#fff; }
+
 /* Header avec retour */
 .topbar-app {
     display:flex; justify-content:space-between; align-items:center;
@@ -403,6 +435,30 @@ function logout() {
         <span class="cta-inline-light">Voir les programmes →</span>
     </a>
 
+</div>
+
+<!-- JOURNAL D'ENTRAÎNEMENT -->
+<div class="wlog">
+    <div class="wlog-head">
+        <div>
+            <h3 class="wlog-title">Journal d'entraînement</h3>
+            <p class="wlog-sub">Tes 14 derniers jours · note les muscles travaillés</p>
+        </div>
+        <button class="wlog-today" onclick="openMuscleLog(todayISO())">+ Aujourd'hui</button>
+    </div>
+    <div class="wlog-list" id="wlogList"></div>
+</div>
+
+<!-- MODALE JOURNAL (sélection muscles) -->
+<div class="ml-overlay" id="mlOverlay" onclick="if(event.target.id==='mlOverlay')closeMuscleLog()">
+    <div class="ml-modal">
+        <h3 class="ml-date" id="mlDate">—</h3>
+        <div class="ml-groups" id="mlGroups"></div>
+        <div class="ml-btns">
+            <button class="ml-clear" onclick="clearMuscleDay()">Effacer</button>
+            <button class="ml-save" onclick="saveMuscleDay()">Enregistrer</button>
+        </div>
+    </div>
 </div>
 
 <!-- MODALE PREMIUM BIENVEILLANTE -->
@@ -787,6 +843,98 @@ initWheels(); updateTimerDisplay();
     }
   }catch(e){}
 })();
+</script>
+<script>
+/* ===== JOURNAL D'ENTRAÎNEMENT (14 jours glissants) ===== */
+const MUSCLE_GROUPS = [
+    {k:'pecs', n:'Pecs'}, {k:'dos', n:'Dos'}, {k:'epaules', n:'Épaules'},
+    {k:'biceps', n:'Biceps'}, {k:'triceps', n:'Triceps'}, {k:'jambes', n:'Jambes'},
+    {k:'abdos', n:'Abdos'}, {k:'cardio', n:'Cardio'}, {k:'repos', n:'Repos'}
+];
+const WL_JOURS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+const WL_JOURS_L = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const WL_MOIS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const WL_MOIS_L = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
+function wlDateDaysAgo(n){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - n); return d; }
+function wlIso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function todayISO(){ return wlIso(new Date()); }
+function wlIsoToDate(iso){ const p = iso.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
+function wlLabel(d){ return `${WL_JOURS[d.getDay()]} ${d.getDate()} ${WL_MOIS[d.getMonth()]}`; }
+function wlLabelLong(d){ return `${WL_JOURS_L[d.getDay()]} ${d.getDate()} ${WL_MOIS_L[d.getMonth()]}`; }
+function wlMuscleName(k){ const g = MUSCLE_GROUPS.find(x => x.k === k); return g ? g.n : k; }
+
+function loadMuscleLog(){ try { return JSON.parse(localStorage.getItem('repz_muscleLog') || '{}'); } catch(e){ return {}; } }
+function saveMuscleLog(o){ localStorage.setItem('repz_muscleLog', JSON.stringify(o)); }
+
+function renderWlog(){
+    const list = document.getElementById('wlogList');
+    if(!list) return;
+    const log = loadMuscleLog();
+    // Purge des jours de plus de 14 jours (le 15e efface le 1er)
+    const limite = wlIso(wlDateDaysAgo(13));
+    let changed = false;
+    Object.keys(log).forEach(k => { if(k < limite){ delete log[k]; changed = true; } });
+    if(changed) saveMuscleLog(log);
+    // 14 jours, du plus récent au plus ancien
+    let html = '';
+    for(let i = 0; i < 14; i++){
+        const d = wlDateDaysAgo(i);
+        const iso = wlIso(d);
+        const vals = log[iso] || [];
+        let tags;
+        if(vals.length === 0) tags = '<span class="wlog-empty">À remplir</span>';
+        else if(vals.includes('repos')) tags = '<span class="wlog-tag repos">Repos</span>';
+        else tags = vals.map(v => `<span class="wlog-tag">${wlMuscleName(v)}</span>`).join('');
+        html += `<div class="wlog-day${i === 0 ? ' is-today' : ''}" onclick="openMuscleLog('${iso}')">
+            <div class="wlog-date">${wlLabel(d)}</div>
+            <div class="wlog-tags">${tags}</div>
+        </div>`;
+    }
+    list.innerHTML = html;
+}
+
+let mlCurrentIso = null, mlSel = [];
+function openMuscleLog(iso){
+    mlCurrentIso = iso;
+    mlSel = (loadMuscleLog()[iso] || []).slice();
+    document.getElementById('mlDate').textContent = wlLabelLong(wlIsoToDate(iso));
+    renderMlGroups();
+    document.getElementById('mlOverlay').classList.add('show');
+}
+function renderMlGroups(){
+    document.getElementById('mlGroups').innerHTML = MUSCLE_GROUPS.map(g => {
+        const on = mlSel.includes(g.k);
+        return `<button class="ml-chip${on ? ' on' : ''}${g.k === 'repos' ? ' repos' : ''}" onclick="toggleMuscle('${g.k}')">${g.n}</button>`;
+    }).join('');
+}
+function toggleMuscle(k){
+    if(k === 'repos'){
+        mlSel = mlSel.includes('repos') ? [] : ['repos'];
+    } else {
+        mlSel = mlSel.filter(x => x !== 'repos');
+        mlSel = mlSel.includes(k) ? mlSel.filter(x => x !== k) : mlSel.concat(k);
+    }
+    renderMlGroups();
+}
+function saveMuscleDay(){
+    const log = loadMuscleLog();
+    if(mlSel.length === 0) delete log[mlCurrentIso];
+    else log[mlCurrentIso] = mlSel;
+    saveMuscleLog(log);
+    closeMuscleLog();
+    renderWlog();
+}
+function clearMuscleDay(){
+    const log = loadMuscleLog();
+    delete log[mlCurrentIso];
+    saveMuscleLog(log);
+    closeMuscleLog();
+    renderWlog();
+}
+function closeMuscleLog(){ document.getElementById('mlOverlay').classList.remove('show'); }
+
+renderWlog();
 </script>
 </body>
 </html>
