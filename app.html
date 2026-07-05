@@ -108,19 +108,20 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     padding:20px; margin-bottom:16px;
 }
 /* Carte nutrition claire (style anneau) */
-.nutri-card { background:var(--card,#fcfbf8); color:#1a1a1a; border:1.5px solid #e7e2d9;
-    box-shadow:0 6px 18px rgba(60,50,40,.06); padding:20px 18px; }
+.nutri-card { position:relative; background:linear-gradient(160deg,#ecfdf5 0%, #fcfbf8 42%, #fcfbf8 100%); color:#1a1a1a; border:1.5px solid #c9efe1;
+    box-shadow:0 8px 22px rgba(16,185,129,.10); padding:20px 18px; border-radius:22px; overflow:hidden; }
+.nutri-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#10B981,#34d399); }
 .nutri-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-.nutri-title { font-size:16px; font-weight:800; }
-.nutri-card .goal-edit { background:#f1efe9; color:#3a3a3a; }
+.nutri-title { font-size:16px; font-weight:800; color:#047857; }
+.nutri-card .goal-edit { background:#d1fae5; color:#047857; font-weight:700; }
 .ring-wrap { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:8px 0 18px; }
 .ring-side { text-align:center; flex:1; min-width:0; }
 .ring-side .rs-lab { font-size:13px; color:#8a8580; }
-.ring-side .rs-val { font-size:23px; font-weight:800; margin-top:2px; }
+.ring-side .rs-val { font-size:23px; font-weight:800; margin-top:2px; color:#047857; }
 .ring-center { position:relative; width:184px; height:184px; flex-shrink:0; }
 .ring-txt { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .ring-txt .rt-lab { font-size:14px; color:#8a8580; }
-.ring-txt .rt-num { font-size:46px; font-weight:800; line-height:1; letter-spacing:-1px; }
+.ring-txt .rt-num { font-size:46px; font-weight:800; line-height:1; letter-spacing:-1px; color:#065f46; }
 .ring-txt .rt-sub { font-size:12px; color:#8a8580; margin-top:4px; }
 .dt-remaining-big.over .rt-num { color:#f87171; }
 .nutri-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
