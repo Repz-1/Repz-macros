@@ -113,7 +113,14 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .nutri-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#10B981,#34d399); }
 .nutri-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
 .nutri-datebar { position:relative; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px; padding-top:2px; }
-.nutri-datebar .ndb-cal { font-size:15px; }
+.nutri-datebar .ndb-cal { font-size:15px; display:inline-flex; color:#047857; }
+.ic { width:17px; height:17px; display:block; }
+.qa-ic { display:inline-flex; color:#10B981; }
+.qa-ic .ic { width:19px; height:19px; }
+.eat-lbl { display:inline-flex; align-items:center; gap:8px; }
+.eat-lbl .ic { width:17px; height:17px; color:#fff; }
+.modal-h3-ic { display:flex; align-items:center; gap:8px; }
+.modal-h3-ic .ic { width:20px; height:20px; color:#10B981; }
 .nutri-datebar .ndb-date { font-size:15px; font-weight:800; letter-spacing:.06em; color:#047857; text-transform:uppercase; }
 .nutri-datebar .ndb-edit { position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:12px; padding:5px 12px; border-radius:14px; }
 .nutri-title { font-size:16px; font-weight:800; color:#047857; }
@@ -143,7 +150,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .calc-intro { font-size:13px; color:#8a8580; margin-bottom:14px; }
 .meal-card { background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(60,50,40,.05); overflow:hidden; }
 .meal-head { display:flex; align-items:center; gap:14px; padding:14px 16px; cursor:pointer; }
-.mh-emo { width:46px; height:46px; border-radius:13px; background:#f2efe9; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.mh-emo { width:50px; height:50px; border-radius:14px; background:#f2efe9; display:flex; align-items:center; justify-content:center; font-size:30px; flex-shrink:0; }
 .mh-emo.plus { background:rgba(16,185,129,.12); color:#10B981; font-size:24px; font-weight:800; }
 .mh-info { flex:1; min-width:0; }
 .mh-name { font-size:18px; font-weight:800; }
@@ -799,7 +806,7 @@ function afficherMessageInvite() {
     <!-- OBJECTIF (style anneau) -->
     <div class="goal-card nutri-card">
         <div class="nutri-datebar">
-            <span class="ndb-cal">📅</span>
+            <span class="ndb-cal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg></span>
             <span class="ndb-date" id="dateBanner"></span>
             <button class="goal-edit ndb-edit" onclick="openGoalModal()">Modifier</button>
         </div>
@@ -853,14 +860,14 @@ function afficherMessageInvite() {
 
     <!-- Actions rapides -->
     <div class="quick-actions">
-        <button class="qa-btn" onclick="openWeightModal()"><span>⚖️</span> Mon poids</button>
-        <button class="qa-btn" onclick="openCalcModal()"><span>🔥</span> Calculer mes calories</button>
+        <button class="qa-btn" onclick="openWeightModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span> Mon poids</button>
+        <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg></span> Calculer mes calories</button>
     </div>
 
     <!-- QUOI MANGER ? -->
     <div class="eat-card">
         <button class="eat-toggle" onclick="toggleEat()">
-            <span>💡 Idées recettes</span>
+            <span class="eat-lbl"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> Idées recettes</span>
             <span style="display:flex;align-items:center;gap:8px;">
                 <span id="eatLock" style="font-size:13px;">🔒</span>
                 <span id="eatArrow">▾</span>
@@ -959,7 +966,7 @@ function afficherMessageInvite() {
 <!-- MODAL POIDS -->
 <div class="modal-overlay" id="weightModal">
     <div class="modal">
-        <h3>⚖️ Mon poids du jour</h3>
+        <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg> Mon poids du jour</h3>
         <label>Poids (kg)</label>
         <input type="number" id="wmInput" step="0.1" placeholder="kg" inputmode="decimal">
         <div class="modal-btns">
@@ -972,7 +979,7 @@ function afficherMessageInvite() {
 <!-- MODAL CALCULATEUR -->
 <div class="modal-overlay" id="calcModal">
     <div class="modal">
-        <h3>🔥 Calculer mes calories</h3>
+        <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg> Calculer mes calories</h3>
         <p class="calc-intro">Réponds à ces questions pour une estimation personnalisée.</p>
         <div class="tdee-grid">
             <div class="tdee-field"><label>Sexe</label><select id="cSex"><option value="h">Homme</option><option value="f">Femme</option></select></div>
