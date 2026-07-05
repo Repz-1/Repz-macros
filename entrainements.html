@@ -290,6 +290,7 @@ body {
 .timer-overlay.show{display:block;}
 .timer-container{position:fixed;bottom:80px;left:16px;right:16px;max-width:448px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:65;display:none;}
 .timer-container.show{display:block;animation:slideUpT .3s ease-out;}
+body.timer-open .water-fab{display:none;}
 @keyframes slideUpT{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
 .timer-display{text-align:center;margin-bottom:20px;}
 .timer-big{font-size:56px;font-weight:800;color:var(--orange);font-family:'Monaco','Courier';letter-spacing:2px;}
@@ -793,6 +794,7 @@ function toggleTimer(){
     const c=document.getElementById('timerContainer'), o=document.getElementById('timerOverlay');
     const isOpen=c.classList.toggle('show');
     o.classList.toggle('show',isOpen);
+    document.body.classList.toggle('timer-open',isOpen);
     if(isOpen){
         const wMin=document.getElementById('wheelMin'), wSec=document.getElementById('wheelSec');
         setTimeout(()=>{ wMin.scrollTop=wheelMinVal*50; updateWheelSel(wMin); },60);
@@ -802,6 +804,7 @@ function toggleTimer(){
 function closeTimer(){
     document.getElementById('timerContainer').classList.remove('show');
     document.getElementById('timerOverlay').classList.remove('show');
+    document.body.classList.remove('timer-open');
 }
 function updateChronoFab(){
     const t=document.getElementById('chronoFabTime'), fab=document.getElementById('chronoFab');
