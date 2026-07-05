@@ -16,7 +16,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .topbar-app {
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px; margin:-16px -16px 8px;
-    background:linear-gradient(180deg,#10B981 0%,#1a0f08 75%,#000000 100%);
+    background:linear-gradient(160deg,#10B981 0%,#059669 100%);
 }
 .topbar-home {
     display:inline-flex; align-items:center; justify-content:center;
@@ -26,6 +26,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 }
 .topbar-home svg { width:21px; height:21px; }
 .topbar-home:active { background:rgba(255,255,255,.25); transform:scale(.94); }
+.premium-pill { display:inline-flex; align-items:center; gap:5px; color:#1a1a1a; text-decoration:none; font-size:13px; font-weight:800; padding:8px 15px; border-radius:30px; background:#f5d76e; border:1.5px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+.premium-pill:active { transform:scale(.95); }
 .top { display:flex; align-items:center; gap:14px; padding:8px 4px 18px; }
 .back-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
     background:var(--card); display:flex; align-items:center; justify-content:center;
@@ -332,6 +334,7 @@ function logout(){
 <!-- ÉCRAN 1 : SÉLECTION -->
 <div class="topbar-app">
     <a href="accueil.html" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
+    <a href="plans.html" class="premium-pill">✨ Premium</a>
 </div>
 <div class="screen active" id="screenSelect">
     <div class="top">

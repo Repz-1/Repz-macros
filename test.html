@@ -466,18 +466,20 @@ function computeResult(){
             progId = 'maison-pdc-' + j + 'j';
         }
     } else if(obj === 'masse'){
-        if(niv === 'debutant'){
+        const debConseilMasse = "Pour débuter la prise de masse, un corps complet 3 jours donne souvent les meilleurs résultats : plus de récupération, une meilleure technique. On te conseille de commencer là — mais c'est toi qui choisis, voici le programme que tu as demandé.";
+        if(niv === 'debutant' && jours === 3){
             progId = 'masse-deb-3j';
-            if(jours !== 3){
-                coachAdvice = "Pour construire du muscle quand on débute, un programme corps complet 3 jours donne les meilleurs résultats. Les programmes découpés (split) viendront quand tu auras des bases solides.";
-            }
         } else if(jours <= 2){
             progId = 'masse-2j';
-            coachAdvice = "2 jours par semaine, c'est un rythme tenable sur le long terme. Avec un programme bien construit, tu peux quand même progresser — la régularité prime.";
+            coachAdvice = (niv === 'debutant')
+                ? "2 jours par semaine, c'est un rythme parfait pour débuter sans se blesser. Mieux vaut 2 séances tenues que 5 abandonnées — la régularité prime."
+                : "2 jours par semaine, c'est un rythme tenable sur le long terme. Avec un programme bien construit, tu peux quand même progresser — la régularité prime.";
         } else if(jours >= 5){
             progId = 'masse-5j';
+            if(niv === 'debutant') coachAdvice = debConseilMasse;
         } else if(jours === 4){
             progId = 'masse-4j';
+            if(niv === 'debutant') coachAdvice = debConseilMasse;
         } else {
             progId = 'masse-3j';
         }
@@ -500,12 +502,17 @@ function computeResult(){
             }
         }
     } else { // forme / salle
-        if(niv === 'debutant'){
-            progId = jours >= 3 ? 'deb-full-3j' : 'deb-2j';
+        const debConseilSalle = "Pour débuter, 3 séances corps complet par semaine suffisent largement à progresser vite, avec assez de repos. On te conseille de commencer là — mais tu choisis, voici ton programme.";
+        if(niv === 'debutant' && jours <= 2){
+            progId = 'deb-2j';
+        } else if(niv === 'debutant' && jours === 3){
+            progId = 'deb-full-3j';
         } else if(jours >= 6){
             progId = 'salle-ppl-6j';
+            if(niv === 'debutant') coachAdvice = debConseilSalle;
         } else if(jours >= 4){
             progId = 'salle-half-4j';
+            if(niv === 'debutant') coachAdvice = debConseilSalle;
         } else {
             progId = 'salle-ppl-3j';
         }
