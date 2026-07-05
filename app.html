@@ -372,15 +372,16 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .progress-macros-left .pml-over { color:#fb923c; }
 
 /* ===== IDÉES RECETTES ===== */
-.eat-card { position:relative; background:#fdf4f8; border:1.5px solid #f3d9e7; border-radius:20px; box-shadow:0 6px 18px rgba(160,60,110,.08); margin-bottom:14px; overflow:hidden; }
+.eat-card { position:relative; background:transparent; border:none; box-shadow:none; margin-bottom:14px; overflow:visible; }
 .eat-toggle {
-    width:100%; display:flex; align-items:center; justify-content:space-between;
-    background:linear-gradient(135deg,#a855f7,#db2777); color:#fff; border:none; padding:13px 16px;
-    font-size:14px; font-weight:800; cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:10px; width:fit-content; max-width:52%;
+    background:linear-gradient(135deg,#a855f7,#db2777); color:#fff; border:none; padding:11px 18px;
+    font-size:13.5px; font-weight:800; cursor:pointer; border-radius:22px;
+    box-shadow:0 4px 14px rgba(190,24,93,.28);
 }
-.eat-toggle:active { filter:brightness(.95); }
-.eat-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 14px; }
-.eat-body.open { max-height:1600px; padding:14px 14px 18px; }
+.eat-toggle:active { filter:brightness(.95); transform:scale(.98); }
+.eat-body { max-height:0; overflow:hidden; transition:max-height .35s ease, margin .35s ease; padding:0 14px; }
+.eat-body.open { max-height:1600px; padding:16px 14px 18px; margin-top:12px; background:#fdf4f8; border:1.5px solid #f3d9e7; border-radius:18px; box-shadow:0 6px 18px rgba(160,60,110,.08); }
 .eat-intro { font-size:13.5px; color:#7a5c6b; margin-bottom:14px; }
 .eat-intro b { color:#db2777; font-size:15px; }
 .eat-cats { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
