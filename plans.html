@@ -55,6 +55,7 @@ body {
 .pc-u { font-size:13px; color:var(--text-dim); font-weight:600; margin-left:2px; }
 .pc-year { display:block; font-size:11px; color:var(--text-dim); font-weight:600; margin-top:3px; }
 .rassur { text-align:center; font-size:13.5px; color:var(--text-dim); margin-bottom:16px; }
+.deja-prem { background:#d4af37; color:#1a1a1a; font-weight:800; font-size:14px; text-align:center; padding:12px 14px; border-radius:12px; margin-bottom:16px; }
 .rassur strong { color:var(--text); }
 .compare { position:relative; margin:8px 0 24px; }
 .cmp-head, .cmp-row { display:grid; grid-template-columns:1fr 66px 76px; align-items:stretch; }
@@ -254,6 +255,7 @@ function logout() {
     <div class="plan premium">
         <div class="plan-name">Premium</div>
         <div class="plan-desc">Programmes et suivi personnalisés</div>
+        <div class="deja-prem" id="dejaPrem" style="display:none;">✨ Tu es déjà Premium — merci pour ton soutien !</div>
 
         <div class="price-cards">
             <div class="pc pop selected" id="pcAnnuel" onclick="choisirFormule('annuel')">
@@ -485,6 +487,16 @@ function choisirFormule(f){
 function payerFormule(){ ouvrirPaiement(FORMULES[formuleActive].lien); }
 // Init
 choisirFormule('annuel');
+
+// Si l'utilisateur est déjà Premium : masquer l'achat, afficher un message
+(function(){
+    if(localStorage.getItem('repz_premium') === '1'){
+        const b = document.getElementById('dejaPrem'); if(b) b.style.display = 'block';
+        const pc = document.querySelector('.price-cards'); if(pc) pc.style.display = 'none';
+        const rs = document.querySelector('.rassur'); if(rs) rs.style.display = 'none';
+        const btn = document.getElementById('planPayBtn'); if(btn) btn.style.display = 'none';
+    }
+})();
 
 </script>
 

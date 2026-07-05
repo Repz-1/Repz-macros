@@ -611,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.choice.locked').forEach(c => c.classList.remove('locked'));
         if(localStorage.getItem('repz_premium') === '1'){
             const bp = document.getElementById('bnPremium');
-            if(bp){ bp.classList.add('is-premium'); bp.removeAttribute('href'); }
+            if(bp){ bp.classList.add('is-premium'); }
         }
     }
     // Si on a été redirigé depuis un programme verrouillé, montrer la modale
