@@ -148,7 +148,8 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .qa-btn span { font-size:17px; }
 .qa-btn:active { transform:scale(.98); }
 .calc-intro { font-size:13px; color:#8a8580; margin-bottom:14px; }
-.meal-card { background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(60,50,40,.05); overflow:hidden; }
+.meal-card { position:relative; background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(60,50,40,.05); }
+.meal-card.open { overflow:visible; z-index:20; }
 .meal-head { display:flex; align-items:center; gap:14px; padding:14px 16px; cursor:pointer; }
 .mh-emo { width:50px; height:50px; border-radius:14px; background:#f2efe9; display:flex; align-items:center; justify-content:center; font-size:30px; flex-shrink:0; }
 .mh-emo.plus { background:rgba(16,185,129,.12); color:#10B981; font-size:24px; font-weight:800; }
