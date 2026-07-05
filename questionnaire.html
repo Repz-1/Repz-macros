@@ -8,65 +8,72 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-    --orange:#10B981; --green:#047857; --bg:#f3f4f6; --card:#ffffff;
-    --dark:#1f2937; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px;
+    --orange:#10B981; --green:#047857; --bg:#eeece7; --card:#fcfbf8;
+    --dark:#1f2937; --line:#e7e3da; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px;
 }
 body {
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:var(--bg); color:var(--text); min-height:100vh; padding:16px 16px 40px;
 }
 
-.top { display:flex; align-items:center; gap:14px; padding:8px 4px 28px; }
+
+.top { display:flex; align-items:center; gap:14px; padding:8px 4px 18px; }
 .back-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
     background:var(--card); display:flex; align-items:center; justify-content:center;
-    font-size:20px; color:var(--text); text-decoration:none; cursor:pointer; }
-.top h1 { font-size:21px; font-weight:800; letter-spacing:-.02em; }
+    font-size:20px; color:var(--text); text-decoration:none; cursor:pointer; flex-shrink:0; }
+.progress-wrap { flex:1; }
+.progress-bar { height:8px; background:var(--line); border-radius:10px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--orange); border-radius:10px; transition:width .3s; width:11%; }
+.progress-txt { font-size:12px; color:var(--text-dim); margin-top:6px; font-weight:600; }
 
-.hero { text-align:center; margin-bottom:28px; background:linear-gradient(135deg,#f0fdf4,#ffffff);
-    border-radius:var(--radius); padding:24px; border:1.5px solid var(--green); }
-.hero h2 { font-size:22px; font-weight:800; margin-bottom:6px; color:var(--green); }
-.hero p { font-size:13px; color:var(--text-dim); }
+.q-step { display:none; max-width:480px; margin:0 auto; padding-top:8vh; }
+.q-step.active { display:block; }
+.q-title { font-size:25px; font-weight:800; line-height:1.25; margin-bottom:24px; text-align:center; letter-spacing:-.01em; }
+.q-sub { font-size:13.5px; color:var(--text-dim); text-align:center; margin:-14px 0 22px; line-height:1.5; }
 
-.progress-bar { width:100%; height:6px; background:var(--line); border-radius:10px;
-    margin-bottom:24px; overflow:hidden; }
-.progress-fill { height:100%; background:var(--green); border-radius:10px; width:0%; transition:width .3s; }
+.options { display:flex; flex-direction:column; gap:11px; }
+.option { display:flex; align-items:center; gap:13px; background:var(--card); border:2px solid var(--line);
+    border-radius:16px; padding:17px 18px; cursor:pointer; transition:border-color .12s, background .12s, transform .1s; }
+.option:active { transform:scale(.985); }
+.option.sel { border-color:var(--orange); background:#ecfdf5; }
+.option-label { font-size:15.5px; font-weight:700; flex:1; }
+.option-hint { font-size:12px; color:var(--text-dim); font-weight:600; }
 
-.form { max-width:480px; margin:0 auto; }
-.form-section { margin-bottom:28px; }
-.form-section h3 { font-size:15px; font-weight:800; margin-bottom:12px; color:var(--dark); }
+.num-wrap { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:8px; }
+.num-input { width:150px; text-align:center; font-size:34px; font-weight:800; padding:14px 8px;
+    border:2px solid var(--line); border-radius:16px; background:var(--card); }
+.num-input:focus { outline:none; border-color:var(--orange); }
+.num-unit { font-size:17px; font-weight:700; color:var(--text-dim); }
 
-.form-group { margin-bottom:14px; }
-.label { display:block; font-size:13px; font-weight:700; margin-bottom:6px; }
-.input, .textarea, .select { width:100%; padding:12px; border:1.5px solid var(--line);
-    border-radius:12px; font-size:15px; font-family:inherit; }
-.input:focus, .textarea:focus, .select:focus { outline:none; border-color:var(--green); background:#f0fdf4; }
-.textarea { resize:vertical; min-height:80px; }
+.q-btns { max-width:480px; margin:26px auto 0; }
+.btn-next { display:block; width:100%; padding:15px; border:none; border-radius:14px; background:var(--orange);
+    color:#fff; font-size:15.5px; font-weight:800; cursor:pointer; }
+.btn-next:active { transform:scale(.98); }
+.btn-next:disabled { background:#cbd5e1; cursor:default; }
 
-.checkbox-group { display:flex; flex-direction:column; gap:8px; }
-.checkbox-item { display:flex; align-items:center; gap:10px; }
-.checkbox-item input { width:18px; height:18px; cursor:pointer; }
-.checkbox-item label { cursor:pointer; font-size:14px; margin:0; }
-
-.radio-group { display:flex; flex-direction:column; gap:8px; }
-.radio-item { display:flex; align-items:center; gap:10px; }
-.radio-item input { width:18px; height:18px; cursor:pointer; }
-.radio-item label { cursor:pointer; font-size:14px; margin:0; }
-
-.form-actions { display:flex; gap:10px; margin-top:28px; }
-.btn { flex:1; padding:14px; border:none; border-radius:14px; font-size:15px; font-weight:700;
-    cursor:pointer; transition:all .15s; }
-.btn-submit { background:var(--green); color:#fff; }
-.btn-submit:active { transform:scale(.98); opacity:.9; }
-.btn-cancel { background:var(--line); color:var(--text); }
-.btn-cancel:active { background:#d1d5db; }
-
-.success { display:none; text-align:center; padding:40px 24px; }
-.success.show { display:block; }
-.success-icon { font-size:56px; margin-bottom:16px; }
-.success h2 { font-size:22px; font-weight:800; margin-bottom:8px; color:var(--green); }
-.success p { font-size:14px; color:var(--text-dim); line-height:1.6; margin-bottom:24px; }
-.success-btn { display:inline-block; background:var(--green); color:#fff; padding:12px 28px;
-    border-radius:12px; text-decoration:none; font-weight:700; }
+/* Résultat */
+.result { text-align:center; max-width:480px; margin:0 auto; padding-top:4vh; }
+.result-badge { display:inline-block; background:rgba(16,185,129,.14); color:var(--orange);
+    font-size:12px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+    padding:6px 14px; border-radius:20px; margin-bottom:14px; }
+.result h2 { font-size:26px; font-weight:800; margin-bottom:10px; line-height:1.2; }
+.result-recap { font-size:14px; color:var(--text-dim); line-height:1.6; margin-bottom:22px; }
+.res-kcal-card { background:var(--card); border:2px solid var(--orange); border-radius:20px; padding:22px; margin-bottom:14px; }
+.res-kcal { font-size:42px; font-weight:900; color:var(--orange); }
+.res-kcal small { font-size:16px; font-weight:700; color:var(--text-dim); }
+.res-kcal-sub { font-size:13px; color:var(--text-dim); margin-top:4px; font-weight:600; }
+.res-macros { display:flex; gap:10px; margin-bottom:14px; }
+.res-macro { flex:1; background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:14px 8px; }
+.res-macro b { display:block; font-size:19px; font-weight:800; }
+.res-macro span { font-size:11.5px; color:var(--text-dim); font-weight:700; text-transform:uppercase; letter-spacing:.03em; }
+.res-macro .bar { height:5px; border-radius:4px; margin-top:8px; }
+.res-note { background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:15px 16px;
+    font-size:13.5px; color:var(--text); line-height:1.6; text-align:left; margin-bottom:20px; }
+.res-btns { display:flex; flex-direction:column; gap:10px; }
+.btn-apply { display:block; padding:15px; border:none; border-radius:14px; background:var(--orange);
+    color:#fff; font-size:15.5px; font-weight:800; cursor:pointer; text-decoration:none; text-align:center; }
+.btn-secondary { display:block; padding:14px; border-radius:14px; background:var(--card); border:1.5px solid var(--line);
+    color:var(--text); font-size:14.5px; font-weight:700; cursor:pointer; text-decoration:none; text-align:center; }
 
 </style>
 </head>
@@ -133,254 +140,235 @@ function logout() {
         window.location.href = 'index.html';
     });
 }
+
+// Le programme sur mesure est une fonctionnalité Premium (essai 3 jours inclus)
+(function(){
+    if(localStorage.getItem('repz_premium') === '1') return;
+    if(localStorage.getItem('repz_invite') === '1'){
+        const deb = localStorage.getItem('repz_inviteDebut');
+        if(!deb) return;
+        const jour = Math.floor((Date.now() - new Date(deb + 'T00:00:00').getTime()) / 86400000) + 1;
+        if(jour <= 3) return;
+    }
+    window.location.href = 'plans.html';
+})();
 </script>
 
 <div class="top">
-    <a href="plans.html" class="back-btn">←</a>
-    <h1>Programme Personnalisé</h1>
+    <a href="#" class="back-btn" onclick="qBack();return false;">←</a>
+    <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-txt" id="progressTxt">Question 1 / 8</div>
+    </div>
 </div>
 
-<div class="progress-bar">
-    <div class="progress-fill" id="progressFill"></div>
+<!-- 1. SEXE -->
+<div class="q-step active" data-q="sexe">
+    <div class="q-title">Tu es… ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'sexe','homme')"><span class="option-label">Homme</span></div>
+        <div class="option" onclick="pick(this,'sexe','femme')"><span class="option-label">Femme</span></div>
+        <div class="option" onclick="pick(this,'sexe','autre')"><span class="option-label">Autre</span></div>
+        <div class="option" onclick="pick(this,'sexe','np')"><span class="option-label">Je préfère ne pas répondre</span></div>
+    </div>
 </div>
 
-<div class="hero">
-    <h2>Merci ! 🎉</h2>
-    <p>Complète ce questionnaire pour que ton nutritionniste crée un programme adapté</p>
+<!-- 2. ÂGE -->
+<div class="q-step" data-q="age">
+    <div class="q-title">Ton âge ?</div>
+    <div class="num-wrap"><input type="number" class="num-input" id="inAge" inputmode="numeric" min="14" max="99" placeholder="25"><span class="num-unit">ans</span></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('age','inAge',14,99)">Continuer</button></div>
 </div>
 
-<form class="form" id="questForm">
-    <!-- OBJECTIFS -->
-    <div class="form-section">
-        <h3>1. Tes objectifs</h3>
-        
-        <div class="form-group">
-            <label class="label">Quel est ton principal objectif ?</label>
-            <div class="radio-group">
-                <div class="radio-item">
-                    <input type="radio" name="objectif" value="prise_masse" id="obj1">
-                    <label for="obj1">Prise de masse (musculaire)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="objectif" value="seche" id="obj2">
-                    <label for="obj2">Sèche (perte de poids)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="objectif" value="recomposition" id="obj3">
-                    <label for="obj3">Recomposition (muscle + sèche)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="objectif" value="sante" id="obj4">
-                    <label for="obj4">Santé générale</label>
-                </div>
-            </div>
-        </div>
+<!-- 3. TAILLE -->
+<div class="q-step" data-q="taille">
+    <div class="q-title">Ta taille ?</div>
+    <div class="num-wrap"><input type="number" class="num-input" id="inTaille" inputmode="numeric" min="120" max="230" placeholder="180"><span class="num-unit">cm</span></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('taille','inTaille',120,230)">Continuer</button></div>
+</div>
 
-        <div class="form-group">
-            <label class="label">Poids actuel (kg)</label>
-            <input type="number" name="poids" step="0.1" placeholder="ex: 80" required>
-        </div>
+<!-- 4. POIDS -->
+<div class="q-step" data-q="poids">
+    <div class="q-title">Ton poids actuel ?</div>
+    <div class="num-wrap"><input type="number" class="num-input" id="inPoids" inputmode="decimal" step="0.1" min="35" max="250" placeholder="80"><span class="num-unit">kg</span></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('poids','inPoids',35,250)">Continuer</button></div>
+</div>
 
-        <div class="form-group">
-            <label class="label">Taille (cm)</label>
-            <input type="number" name="taille" placeholder="ex: 180" required>
-        </div>
+<!-- 5. TRAVAIL -->
+<div class="q-step" data-q="travail">
+    <div class="q-title">Ton type de travail ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'travail','bureau')"><span class="option-label">Travail de bureau<br><span class="option-hint">assis la plupart du temps · activité réduite</span></span></div>
+        <div class="option" onclick="pick(this,'travail','moyen')"><span class="option-label">Activité moyenne<br><span class="option-hint">debout, déplacements réguliers (vente, enseignement…)</span></span></div>
+        <div class="option" onclick="pick(this,'travail','eleve')"><span class="option-label">Activité élevée<br><span class="option-hint">physique (chantier, livraison, horeca…)</span></span></div>
+    </div>
+</div>
 
-        <div class="form-group">
-            <label class="label">Niveau d'activité</label>
-            <div class="radio-group">
-                <div class="radio-item">
-                    <input type="radio" name="activite" value="sedentaire" id="act1">
-                    <label for="act1">Sédentaire (peu/pas d'exercice)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="activite" value="leger" id="act2">
-                    <label for="act2">Léger (1-3 fois/semaine)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="activite" value="modere" id="act3">
-                    <label for="act3">Modéré (3-5 fois/semaine)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="activite" value="intensif" id="act4">
-                    <label for="act4">Intensif (5-7 fois/semaine)</label>
-                </div>
-            </div>
+<!-- 6. HEURES DE TRAVAIL -->
+<div class="q-step" data-q="heures">
+    <div class="q-title">Combien d'heures<br>par jour ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'heures','6')"><span class="option-label">Moins de 6 h</span></div>
+        <div class="option" onclick="pick(this,'heures','8')"><span class="option-label">6 à 8 h</span></div>
+        <div class="option" onclick="pick(this,'heures','10')"><span class="option-label">9 à 10 h</span></div>
+        <div class="option" onclick="pick(this,'heures','12')"><span class="option-label">Plus de 10 h</span></div>
+    </div>
+</div>
+
+<!-- 7. TEMPS LIBRE -->
+<div class="q-step" data-q="libre">
+    <div class="q-title">Ton activité pendant<br>ton temps libre ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'libre','calme')"><span class="option-label">Plutôt calme<br><span class="option-hint">canapé, écrans, lecture</span></span></div>
+        <div class="option" onclick="pick(this,'libre','modere')"><span class="option-label">Modérée<br><span class="option-hint">marche, sorties, tâches ménagères</span></span></div>
+        <div class="option" onclick="pick(this,'libre','actif')"><span class="option-label">Active<br><span class="option-hint">sport 2-4 fois / semaine</span></span></div>
+        <div class="option" onclick="pick(this,'libre','tres')"><span class="option-label">Très active<br><span class="option-hint">sport 5+ fois / semaine ou intensif</span></span></div>
+    </div>
+</div>
+
+<!-- 8. POIDS CIBLE -->
+<div class="q-step" data-q="cible">
+    <div class="q-title">Ton poids cible ?</div>
+    <div class="q-sub">Le poids que tu aimerais atteindre. Il peut être au-dessus (prise de masse) ou en dessous (perte) de ton poids actuel.</div>
+    <div class="num-wrap"><input type="number" class="num-input" id="inCible" inputmode="decimal" step="0.1" min="35" max="250" placeholder="85"><span class="num-unit">kg</span></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('cible','inCible',35,250)">Voir mon programme</button></div>
+</div>
+
+<!-- RÉSULTAT -->
+<div class="q-step" data-q="result">
+    <div class="result">
+        <div class="result-badge">Ton programme sur mesure</div>
+        <h2 id="resTitle">—</h2>
+        <div class="result-recap" id="resRecap"></div>
+        <div class="res-kcal-card">
+            <div class="res-kcal"><span id="resKcal">0</span> <small>kcal / jour</small></div>
+            <div class="res-kcal-sub" id="resKcalSub"></div>
+        </div>
+        <div class="res-macros">
+            <div class="res-macro"><b id="resProt">0 g</b><span>Protéines</span><div class="bar" style="background:#ec4899;"></div></div>
+            <div class="res-macro"><b id="resCarbs">0 g</b><span>Glucides</span><div class="bar" style="background:#3b82f6;"></div></div>
+            <div class="res-macro"><b id="resLip">0 g</b><span>Lipides</span><div class="bar" style="background:#eab308;"></div></div>
+        </div>
+        <div class="res-note" id="resNote"></div>
+        <div class="res-btns">
+            <button class="btn-apply" onclick="appliquerProgramme()">Appliquer à mon journal</button>
+            <a href="accueil.html" class="btn-secondary">Plus tard</a>
         </div>
     </div>
-
-    <!-- ALLERGIES & INTOLÉRANCES -->
-    <div class="form-section">
-        <h3>2. Allergies & Intolérances</h3>
-        
-        <div class="form-group">
-            <label class="label">As-tu des allergies ou intolérances ?</label>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" name="allergies" value="gluten" id="allg1">
-                    <label for="allg1">Gluten</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" name="allergies" value="lactose" id="allg2">
-                    <label for="allg2">Lactose</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" name="allergies" value="arachide" id="allg3">
-                    <label for="allg3">Arachides</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" name="allergies" value="noix" id="allg4">
-                    <label for="allg4">Noix</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" name="allergies" value="oeuf" id="allg5">
-                    <label for="allg5">Œufs</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" name="allergies" value="poisson" id="allg6">
-                    <label for="allg6">Poisson/Fruits de mer</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="label">Autres allergies/intolérances ?</label>
-            <textarea name="autres_allergies" placeholder="ex: soja, caséine, etc..."></textarea>
-        </div>
-    </div>
-
-    <!-- RÉGIME ALIMENTAIRE -->
-    <div class="form-section">
-        <h3>3. Régime alimentaire</h3>
-        
-        <div class="form-group">
-            <label class="label">Quel régime suis-tu ?</label>
-            <div class="radio-group">
-                <div class="radio-item">
-                    <input type="radio" name="regime" value="omnivore" id="reg1">
-                    <label for="reg1">Omnivore (tout)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="regime" value="vegetarien" id="reg2">
-                    <label for="reg2">Végétarien</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="regime" value="vegan" id="reg3">
-                    <label for="reg3">Vegan</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="regime" value="flexitarien" id="reg4">
-                    <label for="reg4">Flexitarien</label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PRÉFÉRENCES -->
-    <div class="form-section">
-        <h3>4. Tes préférences</h3>
-        
-        <div class="form-group">
-            <label class="label">Aliments que tu aimes</label>
-            <textarea name="aliments_aimes" placeholder="ex: riz, poulet, œufs, banane..." required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="label">Aliments que tu n'aimes pas</label>
-            <textarea name="aliments_non_aimes" placeholder="ex: brocoli, fromage, etc..."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="label">Nombre de repas par jour</label>
-            <select name="nb_repas" required>
-                <option value="">-- Choisis --</option>
-                <option value="2">2 repas</option>
-                <option value="3">3 repas</option>
-                <option value="4">4 repas</option>
-                <option value="5">5 repas</option>
-                <option value="6">6 repas</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- AUTRES INFOS -->
-    <div class="form-section">
-        <h3>5. Infos complémentaires</h3>
-        
-        <div class="form-group">
-            <label class="label">Combien de temps tu peux consacrer à la cuisine ?</label>
-            <div class="radio-group">
-                <div class="radio-item">
-                    <input type="radio" name="temps_cuisine" value="minimal" id="time1">
-                    <label for="time1">Minimal (meal prep simple)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="temps_cuisine" value="modere" id="time2">
-                    <label for="time2">Modéré (1h/semaine)</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" name="temps_cuisine" value="beaucoup" id="time3">
-                    <label for="time3">Beaucoup (j'aime cuisiner)</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="label">Infos supplémentaires</label>
-            <textarea name="infos_supp" placeholder="Problèmes digestifs, besoin spécifique, contexte médical..."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="label">Email (pour contact)</label>
-            <input type="email" name="email" placeholder="ton@email.com" required>
-        </div>
-    </div>
-
-    <div class="form-actions">
-        <button type="button" class="btn btn-cancel" onclick="window.location.href='plans.html'">Annuler</button>
-        <button type="submit" class="btn btn-submit">Envoyer</button>
-    </div>
-</form>
-
-<div class="success" id="successMsg">
-    <div class="success-icon">✅</div>
-    <h2>C'est fait !</h2>
-    <p>Ton questionnaire a été reçu. Le nutritionniste te contactera sous 48h pour affiner les détails et créer ton programme personnalisé.</p>
-    <a href="app.html" class="success-btn">Retour à l'app</a>
 </div>
 
 <script>
-const form = document.getElementById('questForm');
+/* ===== FLUX GUIDÉ ===== */
+const STEPS = ['sexe','age','taille','poids','travail','heures','libre','cible','result'];
+const answers = {};
+let stepIdx = 0;
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Récupérer les données du form
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
-    
-    // Récupérer les allergies (checkbox)
-    data.allergies = Array.from(document.querySelectorAll('input[name="allergies"]:checked')).map(el => el.value);
-    
-    // Stocker en localStorage pour maintenant
-    localStorage.setItem('questionnaire', JSON.stringify(data));
-    
-    // Afficher le succès
-    form.style.display = 'none';
-    document.getElementById('successMsg').classList.add('show');
-    
-    // Log pour vérifier
-    console.log('Questionnaire complété:', data);
-    
-    // TODO: Envoyer à Lemonqueezy ou email quand on aura le backend
-});
+function showStep(i){
+    stepIdx = i;
+    document.querySelectorAll('.q-step').forEach(el => el.classList.remove('active'));
+    document.querySelector(`.q-step[data-q="${STEPS[i]}"]`).classList.add('active');
+    const qNum = Math.min(i + 1, 8);
+    document.getElementById('progressFill').style.width = ((qNum) / 8 * 100) + '%';
+    document.getElementById('progressTxt').textContent = STEPS[i] === 'result' ? 'Terminé !' : `Question ${qNum} / 8`;
+    window.scrollTo(0,0);
+    const inp = document.querySelector(`.q-step[data-q="${STEPS[i]}"] .num-input`);
+    if(inp) setTimeout(() => inp.focus({preventScroll:true}), 250);
+}
+function qBack(){
+    if(stepIdx === 0){ window.location.href = 'accueil.html'; return; }
+    showStep(stepIdx - 1);
+}
+let lastTap = 0;
+function pick(el, q, val){
+    const now = Date.now(); if(now - lastTap < 350) return; lastTap = now; // anti double-tap
+    answers[q] = val;
+    el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+    setTimeout(() => showStep(stepIdx + 1), 220);
+}
+function nextNum(q, inputId, min, max){
+    const v = parseFloat(document.getElementById(inputId).value);
+    if(isNaN(v) || v < min || v > max){
+        const inp = document.getElementById(inputId);
+        inp.style.borderColor = '#dc2626';
+        setTimeout(() => inp.style.borderColor = '', 900);
+        return;
+    }
+    answers[q] = v;
+    if(STEPS[stepIdx + 1] === 'result') computeResult();
+    showStep(stepIdx + 1);
+}
 
-// Mettre à jour la barre de progression au scroll
-window.addEventListener('scroll', () => {
-    const form = document.querySelector('.form');
-    const progress = (window.scrollY / (form.offsetHeight - window.innerHeight)) * 100;
-    document.getElementById('progressFill').style.width = Math.min(progress, 100) + '%';
-});
+/* ===== CALCUL (méthode diététicien) ===== */
+function computeResult(){
+    const { sexe, age, taille, poids, travail, heures, libre, cible } = answers;
+
+    // 1. Métabolisme de base — Mifflin-St Jeor
+    let bmr;
+    const base = 10 * poids + 6.25 * taille - 5 * age;
+    if(sexe === 'homme') bmr = base + 5;
+    else if(sexe === 'femme') bmr = base - 161;
+    else bmr = base - 78; // moyenne des deux formules
+
+    // 2. Facteur d'activité = travail (pondéré par les heures) + temps libre
+    const facTravail = { bureau:0.10, moyen:0.25, eleve:0.45 }[travail];
+    const facHeures  = { '6':0.8, '8':1.0, '10':1.15, '12':1.3 }[heures];
+    const facLibre   = { calme:0.05, modere:0.12, actif:0.25, tres:0.40 }[libre];
+    const tdee = bmr * (1.2 + facTravail * facHeures + facLibre);
+
+    // 3. Objectif selon le poids cible
+    const delta = cible - poids;
+    let kcal, objectif, note;
+    if(delta > 1){
+        kcal = tdee + 350;
+        objectif = 'Prise de masse';
+        note = `Pour passer de ${poids} kg à ${cible} kg, on vise un léger surplus (+350 kcal au-dessus de tes besoins). Assez pour construire du muscle, pas trop pour limiter le gras. Compte environ 1 à 2 kg par mois — la patience paie.`;
+    } else if(delta < -1){
+        kcal = tdee - 400;
+        objectif = 'Perte de poids';
+        note = `Pour passer de ${poids} kg à ${cible} kg, on installe un déficit raisonnable (−400 kcal). Tu perdras environ 0,4 kg par semaine en gardant ton muscle et ton énergie. Les protéines élevées protègent ta masse musculaire.`;
+    } else {
+        kcal = tdee;
+        objectif = 'Maintien & recomposition';
+        note = `Ton poids cible est proche de ton poids actuel : on vise le maintien avec des protéines élevées. Combiné à l'entraînement, c'est idéal pour remplacer du gras par du muscle sans changer de poids.`;
+    }
+    kcal = Math.round(kcal / 10) * 10;
+    // garde-fou : jamais sous le métabolisme de base
+    if(kcal < Math.round(bmr)) kcal = Math.round(bmr / 10) * 10;
+
+    // 4. Macros : prot 1,8 g/kg · lipides 1 g/kg · le reste en glucides
+    const prot = Math.round(poids * 1.8);
+    const lip  = Math.round(poids * 1.0);
+    const carbs = Math.max(0, Math.round((kcal - prot * 4 - lip * 9) / 4));
+
+    answers._resultat = { kcal, prot, lip, carbs, objectif };
+
+    document.getElementById('resTitle').textContent = objectif;
+    const sexeTxt = { homme:'homme', femme:'femme', autre:'', np:'' }[sexe];
+    document.getElementById('resRecap').textContent =
+        `${sexeTxt ? sexeTxt + ', ' : ''}${age} ans, ${taille} cm, ${poids} kg → objectif ${cible} kg.`;
+    document.getElementById('resKcal').textContent = kcal;
+    document.getElementById('resKcalSub').textContent = `Besoins d'entretien estimés : ${Math.round(tdee/10)*10} kcal`;
+    document.getElementById('resProt').textContent = prot + ' g';
+    document.getElementById('resCarbs').textContent = carbs + ' g';
+    document.getElementById('resLip').textContent = lip + ' g';
+    document.getElementById('resNote').textContent = note;
+}
+
+function appliquerProgramme(){
+    const r = answers._resultat;
+    if(!r) return;
+    let goal = { kcal:2500, weight:80, protRatio:1.8 };
+    try{ const g = localStorage.getItem('repz_goal'); if(g) goal = JSON.parse(g); }catch(e){}
+    goal.kcal = r.kcal;
+    goal.weight = answers.poids;
+    goal.protRatio = 1.8;
+    localStorage.setItem('repz_goal', JSON.stringify(goal));
+    localStorage.setItem('repz_programme', JSON.stringify({ ...answers, _resultat:r, date:new Date().toISOString().slice(0,10) }));
+    window.location.href = 'app.html?v=' + Date.now();
+}
+
+showStep(0);
 </script>
 
 </body>

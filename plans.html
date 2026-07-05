@@ -72,6 +72,12 @@ body {
 .ck { width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .cmp-col.prem .ck { background:var(--orange); }
 .ck-empty { width:26px; height:26px; }
+.ck-lite { width:22px; height:22px; border-radius:50%; background:#e7e3da; color:#8a857c; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.ck-no { color:#c9c4ba; font-size:15px; font-weight:700; }
+.ck-txt { font-size:11px; font-weight:800; color:#8a857c; }
+.ck-txt.prem-txt { color:var(--green); }
+.cmp-row.star { background:linear-gradient(90deg,rgba(16,185,129,.07),transparent); }
+.cmp-row.star .cmp-feat b { font-weight:800; }
 .free-plan { margin-top:2px; }
 .free-plan .plan-desc { margin-bottom:16px; }
 .feature { display:flex; align-items:center; gap:10px; font-size:14px; }
@@ -246,16 +252,16 @@ function logout() {
 
 
 <div class="hero">
-    <h2>Choisis ton plan</h2>
-    <p>Commence gratuitement ou accède au suivi personnalisé avec un nutritionniste</p>
+    <h2>Ton programme alimentaire<br>sur mesure</h2>
+    <p>Calories, macros et plan adaptés à ton corps, ton travail et ton objectif — comme chez un diététicien.</p>
 </div>
 
 <div class="plans">
     <!-- PREMIUM d'abord -->
     <div class="plan premium">
         <div class="plan-name">Premium</div>
-        <div class="plan-desc">Programmes et suivi personnalisés</div>
-        <div class="deja-prem" id="dejaPrem" style="display:none;">✨ Tu es déjà Premium — merci pour ton soutien !</div>
+        <div class="plan-desc">Ton plan nutrition personnalisé + tous les programmes d’entraînement</div>
+        <div class="deja-prem" id="dejaPrem" style="display:none;">✨ Tu es déjà Premium — merci pour ton soutien !<br><a href="questionnaire.html" style="color:#1a1a1a;text-decoration:underline;font-weight:800;">Créer / refaire mon programme sur mesure →</a></div>
 
         <div class="price-cards">
             <div class="pc pop selected" id="pcAnnuel" onclick="choisirFormule('annuel')">
@@ -283,15 +289,14 @@ function logout() {
                 <span class="cmp-h free">STANDARD</span>
                 <span class="cmp-h prem">PREMIUM</span>
             </div>
-            <div class="cmp-row"><span class="cmp-feat">Suivre ses calories & macros</span><span class="cmp-col free"><span class="ck">✓</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Recherche d’aliments simplifiée</span><span class="cmp-col free"><span class="ck">✓</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Composer ses séances librement</span><span class="cmp-col free"><span class="ck">✓</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Suivi du poids & graphiques</span><span class="cmp-col free"><span class="ck">✓</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Programmes d’entraînement prêts</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Séance auto « Je sais pas quoi faire »</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Calculateur de calories personnalisé</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Suggestions de repas « Quoi manger »</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
-            <div class="cmp-row"><span class="cmp-feat">Un vrai coach derrière ton suivi</span><span class="cmp-col free"><span class="ck-empty"></span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
+            <div class="cmp-row star"><span class="cmp-feat"><b>Programme alimentaire sur mesure</b></span><span class="cmp-col free"><span class="ck-no">—</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Journal calories & macros</span><span class="cmp-col free"><span class="ck-lite">✓</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Composer ses séances librement</span><span class="cmp-col free"><span class="ck-lite">✓</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Historique poids & stats</span><span class="cmp-col free"><span class="ck-txt">7 jours</span></span><span class="cmp-col prem"><span class="ck-txt prem-txt">Illimité</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Programmes d’entraînement prêts</span><span class="cmp-col free"><span class="ck-no">—</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Test « par où commencer ? »</span><span class="cmp-col free"><span class="ck-no">—</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Calculateur de calories avancé</span><span class="cmp-col free"><span class="ck-no">—</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
+            <div class="cmp-row"><span class="cmp-feat">Suggestions « Idées recettes »</span><span class="cmp-col free"><span class="ck-no">—</span></span><span class="cmp-col prem"><span class="ck">✓</span></span></div>
         
         </div>
 
@@ -327,7 +332,7 @@ function logout() {
             <span class="faq-toggle">▼</span>
         </div>
         <div class="faq-a">
-            Après paiement, tu remplis un questionnaire détaillé. Le nutritionniste te contacte sous 48h pour affiner les détails.
+            C'est immédiat : tu réponds à un questionnaire de 2 minutes et ton programme (calories + macros sur mesure) est calculé et appliqué directement à ton journal.
         </div>
     </div>
 
@@ -347,7 +352,7 @@ function logout() {
             <span class="faq-toggle">▼</span>
         </div>
         <div class="faq-a">
-            1. Paiement Premium<br>2. Questionnaire détaillé<br>3. Nutritionniste te contacte<br>4. Programme personnalisé reçu
+            1. Paiement Premium<br>2. Questionnaire rapide (2 min)<br>3. Ton programme calculé instantanément<br>4. Appliqué directement à ton journal
         </div>
     </div>
 </div>
@@ -457,22 +462,22 @@ const FORMULES = {
     annuel: {
         lien:'https://rep-z.lemonsqueezy.com/checkout/buy/b66fe18e-6b2a-4953-ab29-d5b4ab99e04a',
         features:[
-            ['Programmes nutrition sur mesure'],
-            ['Bibliothèque de programmes'],
-            ['Calculateur de calories guidé'],
-            ['Suggestions « Quoi manger »'],
-            ['<strong>Un vrai coach derrière ton suivi</strong>'],
+            ['<strong>Programme alimentaire sur mesure</strong>'],
+            ['Bibliothèque de programmes d\'entraînement'],
+            ['Calculateur de calories avancé'],
+            ['Suggestions « Idées recettes »'],
+            ['Historique illimité'],
             ['<strong>Meilleur prix — 3,99 €/mois</strong>']
         ]
     },
     mensuel: {
         lien:'https://rep-z.lemonsqueezy.com/checkout/buy/390c6785-f085-4452-b43a-6206fbc3c106',
         features:[
-            ['Programmes nutrition sur mesure'],
-            ['Bibliothèque de programmes'],
-            ['Calculateur de calories guidé'],
-            ['Suggestions « Quoi manger »'],
-            ['<strong>Un vrai coach derrière ton suivi</strong>'],
+            ['<strong>Programme alimentaire sur mesure</strong>'],
+            ['Bibliothèque de programmes d\'entraînement'],
+            ['Calculateur de calories avancé'],
+            ['Suggestions « Idées recettes »'],
+            ['Historique illimité'],
             ['<strong>Sans engagement</strong>']
         ]
     }
