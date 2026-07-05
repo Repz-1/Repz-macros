@@ -205,7 +205,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .ing-base { font-size:11px; color:#94a3b8; margin-top:2px; }
 .ing-input { display:flex; align-items:center; gap:3px; justify-content:center; }
 .ing-input input {
-    width:100%; padding:6px 2px; border:1.5px solid #e2e8f0; border-radius:8px;
+    scroll-margin:140px; width:100%; padding:6px 2px; border:1.5px solid #e2e8f0; border-radius:8px;
     font-size:15px; font-weight:700; text-align:center; color:#1a1a1a; background:#f8fafc;
 }
 .ing-input input:focus { outline:none; border-color:#10B981; background:#fff; }
@@ -224,7 +224,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     position:relative; margin-top:10px;
 }
 .add-ing input {
-    width:100%; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px;
+    scroll-margin:140px; width:100%; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px;
     font-size:14px; background:#eeece7; transition:border-color .15s, background .15s;
 }
 .add-ing input:focus { outline:none; border-color:#10B981; background:#fff; }
@@ -2254,6 +2254,7 @@ function mealRange(key){
 }
 function renderRecipes(){
     const c = document.getElementById('recipesContainer');
+    const sy = window.scrollY; // préserver la position de défilement
     c.innerHTML='';
     recipes.forEach(rc=>{
         const t = recipeTotals(rc);
@@ -2310,6 +2311,7 @@ function renderRecipes(){
     });
 
     renderTotals();
+    window.scrollTo(0, sy); // restaurer la position (évite le saut en haut)
 }
 
 function renderTotals(){
@@ -2415,6 +2417,15 @@ function renderSuggestion(reste, totals){
 }
 
 // ===== ACTIONS =====
+
+// Confort clavier : recadrage doux du champ actif (au lieu du saut brutal)
+document.addEventListener('focusin', (e)=>{
+    const el = e.target;
+    if(el.matches('.ing-input input, .add-ing input, .mh-name-input')){
+        setTimeout(()=>{ try{ el.scrollIntoView({behavior:'smooth', block:'center'}); }catch(_){} }, 260);
+    }
+});
+
 function updatePortion(rid,iid,val){
     const rc=recipes.find(r=>r.id===rid); if(!rc) return;
     const ing=rc.ings.find(i=>i.id===iid); if(!ing) return;
@@ -2462,6 +2473,9 @@ function addIngredient(rid,name){
     const defaultPortion = DB[name].unit ? 1 : 100; // 1 oeuf, ou 100g
     rc.ings.push({id:nid,name:name,portion:defaultPortion});
     renderRecipes();
+    // Garder la main dans le champ de recherche (clavier ouvert, pas de saut)
+    const inp = document.getElementById('search-'+rid);
+    if(inp){ inp.value=''; inp.focus({preventScroll:true}); }
 }
 
 // ===== SCANNER CODE-BARRES =====
