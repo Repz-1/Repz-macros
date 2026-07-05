@@ -40,6 +40,10 @@ body {
 .wlog-tags { display:flex; flex-wrap:wrap; gap:6px; flex:1; }
 .wlog-tag { font-size:12px; font-weight:700; background:#ecfdf5; color:#047857; padding:4px 10px; border-radius:8px; }
 .wlog-tag.repos { background:#f1f5f9; color:#64748b; }
+.wlog-day.is-repos { background:#10B981; border-radius:12px; border-top:none; padding-left:12px; padding-right:12px; margin:3px 0; }
+.wlog-day.is-repos + .wlog-day { border-top:none; }
+.wlog-day.is-repos .wlog-date { color:#fff; }
+.wlog-day.is-repos .wlog-tag.repos { background:rgba(255,255,255,.22); color:#fff; }
 .wlog-empty { font-size:12.5px; color:#b7b1a8; }
 
 /* Modale journal */
@@ -886,7 +890,8 @@ function renderWlog(){
         if(vals.length === 0) tags = '<span class="wlog-empty">À remplir</span>';
         else if(vals.includes('repos')) tags = '<span class="wlog-tag repos">Repos</span>';
         else tags = vals.map(v => `<span class="wlog-tag">${wlMuscleName(v)}</span>`).join('');
-        html += `<div class="wlog-day${i === 0 ? ' is-today' : ''}" onclick="openMuscleLog('${iso}')">
+        const estRepos = vals.includes('repos');
+        html += `<div class="wlog-day${i === 0 ? ' is-today' : ''}${estRepos ? ' is-repos' : ''}" onclick="openMuscleLog('${iso}')">
             <div class="wlog-date">${wlLabel(d)}</div>
             <div class="wlog-tags">${tags}</div>
         </div>`;
