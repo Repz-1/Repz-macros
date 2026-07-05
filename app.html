@@ -582,9 +582,10 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 }
 .modal-overlay.show { display:flex; }
 .modal {
-    background:white; border-radius:20px; padding:20px; max-width:360px; width:100%;
+    background:white; border-radius:20px; padding:20px; max-width:360px; width:100%; max-height:88vh; overflow-y:auto;
 }
 .modal h3 { margin-bottom:16px; font-size:17px; }
+.modal-tdee-sep { text-align:center; font-size:12px; color:#9ca3af; margin:20px 0 8px; }
 .modal label { display:block; font-size:13px; font-weight:600; margin:10px 0 4px; color:#475569; }
 .modal input { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:15px; }
 .modal-btns { display:flex; gap:8px; margin-top:18px; }
@@ -834,81 +835,6 @@ function afficherMessageInvite() {
         <button class="save-day-btn" onclick="saveDay()">Enregistrer et recommencer</button>
     </div>
 
-    <!-- CALCULATEUR DE MAINTIEN (TDEE) -->
-    <div class="tdee-card">
-        <button class="tdee-toggle" onclick="toggleTdee()">
-            <span>Calculer mes calories de maintien</span>
-            <span id="tdeeArrow">▾</span>
-        </button>
-        <div id="tdeeBody" class="tdee-body">
-            <div class="tdee-grid">
-                <div class="tdee-field">
-                    <label>Sexe</label>
-                    <select id="tdeeSex">
-                        <option value="h">Homme</option>
-                        <option value="f">Femme</option>
-                    </select>
-                </div>
-                <div class="tdee-field">
-                    <label>Âge</label>
-                    <input type="number" id="tdeeAge" placeholder="ans" value="25">
-                </div>
-                <div class="tdee-field">
-                    <label>Poids (kg)</label>
-                    <input type="number" id="tdeeWeight" placeholder="kg" value="75">
-                </div>
-                <div class="tdee-field">
-                    <label>Taille (cm)</label>
-                    <input type="number" id="tdeeHeight" placeholder="cm" value="175">
-                </div>
-            </div>
-            <div class="tdee-field">
-                <label>Niveau d'activité</label>
-                <select id="tdeeActivity">
-                    <option value="1.2">Sédentaire (peu/pas de sport)</option>
-                    <option value="1.375">Léger (1-3 séances/sem)</option>
-                    <option value="1.55" selected>Modéré (3-5 séances/sem)</option>
-                    <option value="1.725">Intense (6-7 séances/sem)</option>
-                    <option value="1.9">Très intense (2x/jour, travail physique)</option>
-                </select>
-            </div>
-            <div class="tdee-field">
-                <label>Objectif</label>
-                <select id="tdeeGoal">
-                    <option value="-500">Sèche agressive (-500 kcal)</option>
-                    <option value="-300">Sèche modérée (-300 kcal)</option>
-                    <option value="0" selected>Maintien (0 kcal)</option>
-                    <option value="300">Prise de masse propre (+300 kcal)</option>
-                    <option value="500">Prise de masse (+500 kcal)</option>
-                </select>
-            </div>
-            <button class="tdee-calc-btn" onclick="calcTdee()">Calculer</button>
-
-            <div id="tdeeResult" class="tdee-result" style="display:none;">
-                <div class="tdee-res-main">
-                    <div class="tdee-res-line"><span>Métabolisme de base (BMR)</span><span id="resBmr">–</span></div>
-                    <div class="tdee-res-line"><span>Maintien (TDEE)</span><span id="resTdee">–</span></div>
-                    <div class="tdee-res-line tdee-res-target"><span>Objectif calorique</span><span id="resTarget">–</span></div>
-                </div>
-                <div class="tdee-macros">
-                    <div class="tdee-macro"><div class="tm-label">Protéines</div><div class="tm-val" id="resProt">–</div></div>
-                    <div class="tdee-macro"><div class="tm-label">Glucides</div><div class="tm-val" id="resCarbs">–</div></div>
-                    <div class="tdee-macro"><div class="tm-label">Lipides</div><div class="tm-val" id="resLip">–</div></div>
-                </div>
-                <button class="tdee-apply-btn" onclick="applyTdee()">Appliquer comme objectif</button>
-            </div>
-
-            <button class="tdee-premium-link" onclick="ouvrirCalculPro()">
-                <span class="tpl-star">✨</span>
-                <span class="tpl-text">
-                    <span class="tpl-title">Calcul personnalisé</span>
-                    <span class="tpl-sub">Plus précis selon ton travail et ton sport</span>
-                </span>
-                <span class="tpl-lock" id="tplLock">🔒</span>
-            </button>
-        </div>
-    </div>
-
     <!-- QUOI MANGER ? -->
     <div class="eat-card">
         <button class="eat-toggle" onclick="toggleEat()">
@@ -1010,6 +936,81 @@ function afficherMessageInvite() {
         <input type="number" id="inputWeight" value="97">
         <label>Protéine cible (g/kg, min. 2,2)</label>
         <input type="number" id="inputProtRatio" value="2.2" step="0.1" min="2.2">
+        <div class="modal-tdee-sep">— ou calcule-les automatiquement —</div>
+    <div class="tdee-card">
+            <button class="tdee-toggle" onclick="toggleTdee()">
+                <span>Calculer mes calories de maintien</span>
+                <span id="tdeeArrow">▾</span>
+            </button>
+            <div id="tdeeBody" class="tdee-body">
+                <div class="tdee-grid">
+                    <div class="tdee-field">
+                        <label>Sexe</label>
+                        <select id="tdeeSex">
+                            <option value="h">Homme</option>
+                            <option value="f">Femme</option>
+                        </select>
+                    </div>
+                    <div class="tdee-field">
+                        <label>Âge</label>
+                        <input type="number" id="tdeeAge" placeholder="ans" value="25">
+                    </div>
+                    <div class="tdee-field">
+                        <label>Poids (kg)</label>
+                        <input type="number" id="tdeeWeight" placeholder="kg" value="75">
+                    </div>
+                    <div class="tdee-field">
+                        <label>Taille (cm)</label>
+                        <input type="number" id="tdeeHeight" placeholder="cm" value="175">
+                    </div>
+                </div>
+                <div class="tdee-field">
+                    <label>Niveau d'activité</label>
+                    <select id="tdeeActivity">
+                        <option value="1.2">Sédentaire (peu/pas de sport)</option>
+                        <option value="1.375">Léger (1-3 séances/sem)</option>
+                        <option value="1.55" selected>Modéré (3-5 séances/sem)</option>
+                        <option value="1.725">Intense (6-7 séances/sem)</option>
+                        <option value="1.9">Très intense (2x/jour, travail physique)</option>
+                    </select>
+                </div>
+                <div class="tdee-field">
+                    <label>Objectif</label>
+                    <select id="tdeeGoal">
+                        <option value="-500">Sèche agressive (-500 kcal)</option>
+                        <option value="-300">Sèche modérée (-300 kcal)</option>
+                        <option value="0" selected>Maintien (0 kcal)</option>
+                        <option value="300">Prise de masse propre (+300 kcal)</option>
+                        <option value="500">Prise de masse (+500 kcal)</option>
+                    </select>
+                </div>
+                <button class="tdee-calc-btn" onclick="calcTdee()">Calculer</button>
+
+                <div id="tdeeResult" class="tdee-result" style="display:none;">
+                    <div class="tdee-res-main">
+                        <div class="tdee-res-line"><span>Métabolisme de base (BMR)</span><span id="resBmr">–</span></div>
+                        <div class="tdee-res-line"><span>Maintien (TDEE)</span><span id="resTdee">–</span></div>
+                        <div class="tdee-res-line tdee-res-target"><span>Objectif calorique</span><span id="resTarget">–</span></div>
+                    </div>
+                    <div class="tdee-macros">
+                        <div class="tdee-macro"><div class="tm-label">Protéines</div><div class="tm-val" id="resProt">–</div></div>
+                        <div class="tdee-macro"><div class="tm-label">Glucides</div><div class="tm-val" id="resCarbs">–</div></div>
+                        <div class="tdee-macro"><div class="tm-label">Lipides</div><div class="tm-val" id="resLip">–</div></div>
+                    </div>
+                    <button class="tdee-apply-btn" onclick="applyTdee()">Appliquer comme objectif</button>
+                </div>
+
+                <button class="tdee-premium-link" onclick="ouvrirCalculPro()">
+                    <span class="tpl-star">✨</span>
+                    <span class="tpl-text">
+                        <span class="tpl-title">Calcul personnalisé</span>
+                        <span class="tpl-sub">Plus précis selon ton travail et ton sport</span>
+                    </span>
+                    <span class="tpl-lock" id="tplLock">🔒</span>
+                </button>
+            </div>
+        </div>
+
         <div class="modal-btns">
             <button class="modal-cancel" onclick="closeGoalModal()">Annuler</button>
             <button class="modal-save" onclick="saveGoal()">Enregistrer</button>
@@ -2629,6 +2630,10 @@ function applyTdee(){
     goal.protRatio = lastTdee.protRatio;
     save();
     renderTotals();
+    // Refléter dans les champs du modal objectif
+    const gi=document.getElementById('inputGoalKcal'); if(gi) gi.value=goal.kcal;
+    const wi=document.getElementById('inputWeight'); if(wi) wi.value=goal.weight;
+    const pi=document.getElementById('inputProtRatio'); if(pi) pi.value=goal.protRatio;
     // Petit feedback visuel
     const btn=document.querySelector('.tdee-apply-btn');
     const orig=btn.textContent;
