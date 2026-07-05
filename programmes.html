@@ -53,6 +53,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .cat-arrow { color:var(--orange); font-size:20px; }
 
 /* Programmes */
+.niv-filter { display:flex; gap:8px; margin:0 2px 18px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
+.niv-filter::-webkit-scrollbar { display:none; }
+.niv-pill { flex-shrink:0; padding:8px 17px; border-radius:30px; font-size:13px; font-weight:700;
+    border:1.5px solid var(--line); background:var(--card); color:var(--text-dim); cursor:pointer; white-space:nowrap; transition:transform .12s; }
+.niv-pill.active { background:#10B981; border-color:#10B981; color:#fff; }
+.niv-pill:active { transform:scale(.95); }
 .prog-list { display:flex; flex-direction:column; gap:14px; }
 .niveau-sep { font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#059669; margin:22px 2px 12px; }
 .niveau-sep:first-child { margin-top:4px; }
@@ -184,6 +190,7 @@ function logout(){
         <a href="#" class="back-btn" onclick="showCats();return false;">←</a>
         <h1 id="progTitle">Programmes</h1>
     </div>
+    <div class="niv-filter" id="nivFilter"></div>
     <div class="prog-list" id="progList"></div>
 </div>
 
@@ -499,22 +506,10 @@ function showCats(){
     window.scrollTo(0,0);
 }
 
-function showProgs(catKey){
-    currentCat = catKey;
-    const cat = CATEGORIES.find(c => c.key === catKey);
-    document.getElementById('progTitle').textContent = cat.name;
-    const progs = PROGRAMMES[catKey] || [];
-    const c = document.getElementById('progList');
-    if(progs.length === 0){
-        c.innerHTML = `<div class="soon-note">Les programmes "${cat.name}" arrivent bientôt.<br>La catégorie Prise de masse est déjà disponible en exemple.</div>`;
-    } else {
-        const ordre = ['Débutant','Intermédiaire','Confirmé'];
-        const parNiveau = {};
-        progs.forEach(p => { (parNiveau[p.niveau] = parNiveau[p.niveau] || []).push(p); });
-        const niveauxPresents = ordre.filter(n => parNiveau[n] && parNiveau[n].length);
-        const showHeaders = niveauxPresents.length > 1; // pas de sous-titre si un seul niveau
-        const carte = p =>
-            `<div class="prog-card" onclick="showSeances('${catKey}','${p.id}')">
+let progState = null;
+
+function carteProg(p){
+    return `<div class="prog-card" onclick="showSeances('${progState.catKey}','${p.id}')">
                 <span class="prog-badge">${p.badge}</span>
                 <div class="prog-name">${p.name}</div>
                 <div class="prog-desc">${p.desc}</div>
@@ -524,10 +519,50 @@ function showProgs(catKey){
                     <span><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg><b>${p.seances.length} séances</b></span>
                 </div>
             </div>`;
-        c.innerHTML = niveauxPresents.map(niv =>
-            (showHeaders ? `<div class="niveau-sep">${niv}</div>` : '') +
-            parNiveau[niv].map(carte).join('')
-        ).join('');
+}
+
+function renderProgList(){
+    const c = document.getElementById('progList');
+    const { parNiveau, niveauxPresents, sel } = progState;
+    const niveauxAff = (sel === 'Tous') ? niveauxPresents : [sel];
+    const showHeaders = niveauxAff.length > 1;
+    c.innerHTML = niveauxAff.map(niv =>
+        (showHeaders ? `<div class="niveau-sep">${niv}</div>` : '') +
+        parNiveau[niv].map(carteProg).join('')
+    ).join('');
+    document.querySelectorAll('.niv-pill').forEach(b => b.classList.toggle('active', b.dataset.niv === sel));
+}
+
+function selectNiveau(niv){
+    progState.sel = niv;
+    renderProgList();
+    window.scrollTo(0,0);
+}
+
+function showProgs(catKey){
+    currentCat = catKey;
+    const cat = CATEGORIES.find(c => c.key === catKey);
+    document.getElementById('progTitle').textContent = cat.name;
+    const progs = PROGRAMMES[catKey] || [];
+    const filterEl = document.getElementById('nivFilter');
+    const c = document.getElementById('progList');
+    if(progs.length === 0){
+        filterEl.innerHTML = ''; filterEl.style.display = 'none';
+        c.innerHTML = `<div class="soon-note">Les programmes "${cat.name}" arrivent bientôt.<br>La catégorie Prise de masse est déjà disponible en exemple.</div>`;
+    } else {
+        const ordre = ['Débutant','Intermédiaire','Confirmé'];
+        const parNiveau = {};
+        progs.forEach(p => { (parNiveau[p.niveau] = parNiveau[p.niveau] || []).push(p); });
+        const niveauxPresents = ordre.filter(n => parNiveau[n] && parNiveau[n].length);
+        progState = { catKey, parNiveau, niveauxPresents, sel: niveauxPresents[0] };
+        if(niveauxPresents.length > 1){
+            const opts = ['Tous', ...niveauxPresents];
+            filterEl.innerHTML = opts.map(o => `<button class="niv-pill" data-niv="${o}" onclick="selectNiveau('${o}')">${o}</button>`).join('');
+            filterEl.style.display = 'flex';
+        } else {
+            filterEl.innerHTML = ''; filterEl.style.display = 'none';
+        }
+        renderProgList();
     }
     document.getElementById('screenCats').classList.remove('active');
     document.getElementById('screenSeances').classList.remove('active');
