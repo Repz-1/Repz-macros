@@ -446,7 +446,7 @@ function logout() {
     <div class="wlog-head">
         <div>
             <h3 class="wlog-title">Journal d'entraînement</h3>
-            <p class="wlog-sub">Tes 14 derniers jours · note les muscles travaillés</p>
+            <p class="wlog-sub">Tes 9 derniers jours · note les muscles travaillés</p>
         </div>
         <button class="wlog-today" onclick="openMuscleLog(todayISO())">+ Aujourd'hui</button>
     </div>
@@ -849,7 +849,7 @@ initWheels(); updateTimerDisplay();
 })();
 </script>
 <script>
-/* ===== JOURNAL D'ENTRAÎNEMENT (14 jours glissants) ===== */
+/* ===== JOURNAL D'ENTRAÎNEMENT (9 jours glissants) ===== */
 const MUSCLE_GROUPS = [
     {k:'pecs', n:'Pecs'}, {k:'dos', n:'Dos'}, {k:'epaules', n:'Épaules'},
     {k:'biceps', n:'Biceps'}, {k:'triceps', n:'Triceps'}, {k:'jambes', n:'Jambes'},
@@ -875,14 +875,14 @@ function renderWlog(){
     const list = document.getElementById('wlogList');
     if(!list) return;
     const log = loadMuscleLog();
-    // Purge des jours de plus de 14 jours (le 15e efface le 1er)
-    const limite = wlIso(wlDateDaysAgo(13));
+    // Purge des jours de plus de 9 jours (le 10e efface le 1er)
+    const limite = wlIso(wlDateDaysAgo(8));
     let changed = false;
     Object.keys(log).forEach(k => { if(k < limite){ delete log[k]; changed = true; } });
     if(changed) saveMuscleLog(log);
-    // 14 jours, du plus récent au plus ancien
+    // 9 jours, du plus récent au plus ancien
     let html = '';
-    for(let i = 0; i < 14; i++){
+    for(let i = 0; i < 9; i++){
         const d = wlDateDaysAgo(i);
         const iso = wlIso(d);
         const vals = log[iso] || [];
@@ -958,7 +958,7 @@ function syncMuscleLogFromCloud(u){
         firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
             const cloud = (doc.exists && doc.data().muscleLog) ? doc.data().muscleLog : {};
             const merged = Object.assign({}, loadMuscleLog(), cloud); // cloud prioritaire en cas de conflit
-            const limite = wlIso(wlDateDaysAgo(13));
+            const limite = wlIso(wlDateDaysAgo(8));
             Object.keys(merged).forEach(function(k){ if(k < limite) delete merged[k]; });
             saveMuscleLog(merged);
             pushMuscleLogToCloud(merged); // consolide et nettoie les jours effacés
