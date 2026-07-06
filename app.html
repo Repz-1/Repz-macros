@@ -297,6 +297,10 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .dn-arrow:disabled { opacity:.3; }
 .dn-arrow:active:not(:disabled) { background:#ecfdf5; border-color:#10B981; }
 .dn-label { font-size:14px; font-weight:800; min-width:120px; text-align:center; }
+@keyframes daySlideL { from { transform:translateX(70px); opacity:.25; } to { transform:none; opacity:1; } }
+@keyframes daySlideR { from { transform:translateX(-70px); opacity:.25; } to { transform:none; opacity:1; } }
+#dayModal .modal.slide-l { animation:daySlideL .28s ease; }
+#dayModal .modal.slide-r { animation:daySlideR .28s ease; }
 .water-fab .wf-count { font-size:13px; font-weight:600; opacity:.9; }
 @media (max-width:480px){ .water-fab { padding:12px 15px; bottom:84px; left:14px; } }
 
@@ -3047,7 +3051,39 @@ function navJour(dir){
         document.getElementById('dayModalBody').innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:26px 10px;">Aucune journée enregistrée à cette date.<br><span style="font-size:12px;">Pense à « Commencer une nouvelle journée » pour archiver tes repas.</span></div>';
         document.getElementById('dayModal').classList.add('show');
     }
+    animerJour(dir);
 }
+function animerJour(dir){
+    const m = document.querySelector('#dayModal .modal');
+    if(!m) return;
+    m.classList.remove('slide-l','slide-r');
+    void m.offsetWidth; // relance l'animation
+    m.classList.add(dir < 0 ? 'slide-r' : 'slide-l');
+}
+
+/* Swipe gauche/droite pour changer de jour (fluide, façon Lifesum) */
+(function(){
+    let sx = 0, sy = 0, actif = false;
+    document.addEventListener('touchstart', function(e){
+        if(e.touches.length !== 1){ actif = false; return; }
+        const t = e.target;
+        // pas de swipe depuis un champ, une liste de recherche, une roue ou une autre modale
+        if(t.closest('input, textarea, select, .search-results, .num-input')){ actif = false; return; }
+        const autreModale = document.querySelector('.modal-overlay.show, .water-modal.show');
+        if(autreModale && autreModale.id !== 'dayModal'){ actif = false; return; }
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY; actif = true;
+    }, {passive:true});
+    document.addEventListener('touchend', function(e){
+        if(!actif) return; actif = false;
+        const dx = e.changedTouches[0].clientX - sx;
+        const dy = e.changedTouches[0].clientY - sy;
+        if(Math.abs(dx) > 70 && Math.abs(dy) < 55){
+            if(dx < 0) navJour(1);   // glisse vers la gauche → jour suivant
+            else navJour(-1);        // glisse vers la droite → jour précédent
+        }
+    }, {passive:true});
+})();
+
 function fermerNavJour(){ dayOffset = 0; document.getElementById('dnLabel').textContent = "Aujourd'hui"; document.getElementById('dnNext').disabled = true; }
 
 function openDayModal(iso){
