@@ -151,15 +151,15 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .mh-name-input:focus { outline:none; background:#f1efe9; border-radius:6px; }
 .mh-sub { font-size:13px; color:#8a8580; margin-top:2px; }
 .mh-kcal { color:#10B981; font-weight:800; }
-.mh-move { display:flex; flex-direction:column; flex-shrink:0; margin-right:2px; }
-.mh-move button { background:none; border:none; color:#cbd5e1; font-size:12px; line-height:1; padding:3px 6px; cursor:pointer; }
-.mh-move button:active { color:#10B981; }
 .mh-del { background:none; border:none; color:#cbd5e1; font-size:16px; line-height:1; padding:6px; cursor:pointer; flex-shrink:0; }
 .mh-del:active { color:#ef4444; }
 .mh-chev { color:#b7b1a8; font-size:18px; transition:transform .2s; flex-shrink:0; }
 .meal-card.open .mh-chev { transform:rotate(180deg); }
 .meal-body { display:none; padding:0 16px 16px; }
 .meal-card.open .meal-body { display:block; }
+.meal-card.drag-placeholder { opacity:.25; }
+.drag-ghost { position:fixed; z-index:90000; pointer-events:none; margin:0;
+    box-shadow:0 16px 40px rgba(0,0,0,.28); transform:scale(1.02); opacity:.97; }
 .add-meal-card { border:1.5px dashed #d8d3ca; background:transparent; box-shadow:none; }
 .add-meal-card .mh-name { color:#10B981; }
 .goal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
@@ -2278,6 +2278,81 @@ function renderDate(){
 
 // ===== RENDER RECETTES =====
 let openMeals = new Set();
+
+/* ===== DÉPLACER UN REPAS : appui long puis glisser ===== */
+window.__dragRepas = false;
+(function(){
+    let pressTimer = null, ghost = null, carte = null;
+    let startX = 0, startY = 0, offsetY = 0, moved = false;
+
+    function conteneur(){ return document.getElementById('recipesContainer'); }
+
+    document.addEventListener('touchstart', function(e){
+        const head = e.target.closest('#recipesContainer .meal-head');
+        if(!head || e.touches.length !== 1) return;
+        if(e.target.closest('input, .mh-del')) return; // pas depuis le nom ou la croix
+        carte = head.closest('.meal-card');
+        if(!carte) return;
+        const t = e.touches[0];
+        startX = t.clientX; startY = t.clientY; moved = false;
+        pressTimer = setTimeout(() => demarrerDrag(t), 380);
+    }, {passive:true});
+
+    function demarrerDrag(t){
+        if(!carte) return;
+        window.__dragRepas = true;
+        if(navigator.vibrate) navigator.vibrate(25);
+        const r = carte.getBoundingClientRect();
+        offsetY = startY - r.top;
+        ghost = carte.cloneNode(true);
+        ghost.classList.add('drag-ghost');
+        ghost.style.width = r.width + 'px';
+        ghost.style.left = r.left + 'px';
+        ghost.style.top = r.top + 'px';
+        document.body.appendChild(ghost);
+        carte.classList.add('drag-placeholder');
+    }
+
+    document.addEventListener('touchmove', function(e){
+        const t = e.touches[0];
+        if(pressTimer && Math.hypot(t.clientX - startX, t.clientY - startY) > 12){
+            clearTimeout(pressTimer); pressTimer = null; // c'était un scroll
+        }
+        if(!window.__dragRepas || !ghost) return;
+        e.preventDefault(); // bloque le scroll pendant le drag
+        ghost.style.top = (t.clientY - offsetY) + 'px';
+        // auto-scroll près des bords
+        if(t.clientY < 110) window.scrollBy(0, -9);
+        else if(t.clientY > window.innerHeight - 110) window.scrollBy(0, 9);
+        // réordonner le placeholder en direct
+        const cartes = Array.from(conteneur().querySelectorAll('.meal-card')).filter(c => c !== carte);
+        for(const c of cartes){
+            const cr = c.getBoundingClientRect();
+            if(t.clientY < cr.top + cr.height / 2){
+                if(c.previousElementSibling !== carte) conteneur().insertBefore(carte, c);
+                return;
+            }
+        }
+        const last = cartes[cartes.length - 1];
+        if(last && last.nextElementSibling !== carte) conteneur().insertBefore(carte, last.nextElementSibling);
+    }, {passive:false});
+
+    function finir(){
+        if(pressTimer){ clearTimeout(pressTimer); pressTimer = null; }
+        if(!window.__dragRepas){ carte = null; return; }
+        // Nouvel ordre = ordre du DOM
+        const ordre = Array.from(conteneur().querySelectorAll('.meal-card')).map(c => parseInt(c.getAttribute('data-id')));
+        recipes.sort((a, b) => ordre.indexOf(a.id) - ordre.indexOf(b.id));
+        if(ghost) ghost.remove(); ghost = null;
+        if(carte) carte.classList.remove('drag-placeholder');
+        carte = null;
+        window.__dragRepas = false;
+        renderRecipes(); save();
+    }
+    document.addEventListener('touchend', finir);
+    document.addEventListener('touchcancel', finir);
+})();
+
 function toggleMeal(id){
     const card = document.querySelector('.meal-card[data-id="'+id+'"]');
     if(!card) return;
@@ -2289,13 +2364,6 @@ function mealRange(key){
     const map = {pdej:[0.20,0.30], dej:[0.30,0.40], diner:[0.30,0.40], snack:[0.05,0.10]};
     const r = map[key]; if(!r) return '';
     return 'Recommandé '+Math.round(g*r[0])+' – '+Math.round(g*r[1])+' kcal';
-}
-function moveRecipe(id, dir){
-    const i = recipes.findIndex(r => r.id === id);
-    const j = i + dir;
-    if(i < 0 || j < 0 || j >= recipes.length) return;
-    const tmp = recipes[i]; recipes[i] = recipes[j]; recipes[j] = tmp;
-    renderRecipes(); save();
 }
 
 function renderRecipes(){
@@ -2318,7 +2386,6 @@ function renderRecipes(){
         let h = `<div class="meal-head" onclick="toggleMeal(${rc.id})">
             <div class="mh-emo">${emoji}</div>
             <div class="mh-info">${nameHtml}<div class="mh-sub">${rightTxt}</div></div>
-            <span class="mh-move"><button onclick="event.stopPropagation();moveRecipe(${rc.id},-1)" aria-label="Monter">▴</button><button onclick="event.stopPropagation();moveRecipe(${rc.id},1)" aria-label="Descendre">▾</button></span>
             ${!rc.fixed ? `<button class="mh-del" onclick="event.stopPropagation();delRecipe(${rc.id})" title="Supprimer ce repas">✕</button>` : ''}
             <div class="mh-chev">▾</div>
         </div>`;
@@ -3075,6 +3142,7 @@ function animerJour(dir){
     }, {passive:true});
     document.addEventListener('touchend', function(e){
         if(!actif) return; actif = false;
+        if(window.__dragRepas) return;
         const dx = e.changedTouches[0].clientX - sx;
         const dy = e.changedTouches[0].clientY - sy;
         if(Math.abs(dx) > 70 && Math.abs(dy) < 55){
