@@ -4,11 +4,11 @@
 <style>html,body{background:#eeece7 !important;margin:0}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculatrice Macros - REPZ</title>
+<title>Calculatrice Macros - BELFIT</title>
 <meta name="theme-color" content="#10B981">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="REPZ Macros">
+<meta name="apple-mobile-web-app-title" content="BELFIT Macros">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon-v4.png">
 <link rel="icon" type="image/png" href="favicon-32.png">
@@ -670,7 +670,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
-<!-- SPLASH REPZ -->
+<!-- SPLASH BELFIT -->
 <style>
 #repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
@@ -681,7 +681,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 @keyframes spSpin{to{transform:translateX(-50%) rotate(360deg)}}
 </style>
 <div id="repzSplash">
-  <img class="sp-sym" src="logo-symbol.png" alt="REPZ">
+  <img class="sp-sym" src="logo-symbol.png" alt="BELFIT">
   <img class="sp-txt" src="logo-text.png" alt="REP Z">
   <div class="sp-loader"></div>
 </div>
@@ -3079,7 +3079,7 @@ function importData(input){
             save();
             renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
             alert(' Données restaurées !');
-        } catch(err){ alert(' Fichier invalide. Vérifie que c\'est bien une sauvegarde REPZ.'); }
+        } catch(err){ alert(' Fichier invalide. Vérifie que c\'est bien une sauvegarde BELFIT.'); }
         input.value='';
     };
     reader.readAsText(file);
@@ -3472,8 +3472,8 @@ function montrerModalePremiumRepas(){
         <div class="cp-premium-modal">
             <div style="font-size:42px;margin-bottom:10px">🍽️</div>
             <h3 style="font-size:19px;font-weight:800;margin-bottom:10px">Les idées repas sont Premium</h3>
-            <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Laisse REPZ te suggérer quoi manger selon tes envies et tes calories restantes. Tu peux toujours composer tes repas toi-même gratuitement 😊<br><br>Ton soutien fait grandir REPZ 🙏</p>
-            <a href="plans.html" style="display:block;background:#047857;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir REPZ & débloquer</a>
+            <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Laisse BELFIT te suggérer quoi manger selon tes envies et tes calories restantes. Tu peux toujours composer tes repas toi-même gratuitement 😊<br><br>Ton soutien fait grandir BELFIT 🙏</p>
+            <a href="plans.html" style="display:block;background:#047857;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
             <button onclick="document.getElementById('cpPremOverlayRepas').remove()" style="background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px">Plus tard</button>
         </div>
     </div>`;
@@ -3486,8 +3486,8 @@ function montrerModalePremiumCalc(){
         <div class="cp-premium-modal">
             <div style="font-size:42px;margin-bottom:10px">✨</div>
             <h3 style="font-size:19px;font-weight:800;margin-bottom:10px">Calcul personnalisé Premium</h3>
-            <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Ce calcul affine tes besoins selon ton travail ET ton sport, pour un résultat vraiment sur mesure. Le calcul simple reste gratuit juste au-dessus 😊<br><br>Ton soutien fait grandir REPZ 🙏</p>
-            <a href="plans.html" style="display:block;background:#047857;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir REPZ & débloquer</a>
+            <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Ce calcul affine tes besoins selon ton travail ET ton sport, pour un résultat vraiment sur mesure. Le calcul simple reste gratuit juste au-dessus 😊<br><br>Ton soutien fait grandir BELFIT 🙏</p>
+            <a href="plans.html" style="display:block;background:#047857;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
             <button onclick="document.getElementById('cpPremOverlay').remove()" style="background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px">Plus tard</button>
         </div>
     </div>`;
@@ -3546,7 +3546,7 @@ function murCompte(){
     o.id = 'inviteMurAction';
     o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
     o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
-        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">REP<span style="color:#10B981;">Z</span></div>'
+        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#10B981;">FIT</span></div>'
         + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
         + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
         + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
@@ -3561,7 +3561,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     b.href = 'index.html';
     b.id = 'inviteBandeau';
     b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
-    b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser REPZ</span>';
+    b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
     else { document.body.insertBefore(b, document.body.firstChild); }
