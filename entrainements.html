@@ -755,6 +755,7 @@ function startTimer(){
         if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); saveTimerState(); }
         else{
             clearInterval(timerInterval); timerRunning=false;
+            totalSeconds=lastPreset; updateTimerDisplay();
             btn.textContent='Démarrer'; updateChronoFab(); saveTimerState();
             if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
         }
@@ -884,6 +885,7 @@ function closeTimer(){
                     if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); saveTimerState(); }
                     else{
                         clearInterval(timerInterval); timerRunning=false;
+                        totalSeconds=lastPreset; updateTimerDisplay();
                         if(btn) btn.textContent='Démarrer'; updateChronoFab(); saveTimerState();
                         if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
                     }

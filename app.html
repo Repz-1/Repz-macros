@@ -151,6 +151,9 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .mh-name-input:focus { outline:none; background:#f1efe9; border-radius:6px; }
 .mh-sub { font-size:13px; color:#8a8580; margin-top:2px; }
 .mh-kcal { color:#10B981; font-weight:800; }
+.mh-move { display:flex; flex-direction:column; flex-shrink:0; margin-right:2px; }
+.mh-move button { background:none; border:none; color:#cbd5e1; font-size:12px; line-height:1; padding:3px 6px; cursor:pointer; }
+.mh-move button:active { color:#10B981; }
 .mh-del { background:none; border:none; color:#cbd5e1; font-size:16px; line-height:1; padding:6px; cursor:pointer; flex-shrink:0; }
 .mh-del:active { color:#ef4444; }
 .mh-chev { color:#b7b1a8; font-size:18px; transition:transform .2s; flex-shrink:0; }
@@ -288,6 +291,12 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     transition:transform .15s, opacity .15s;
 }
 .water-fab:active { transform:scale(.94); opacity:1; background:#0284c7; }
+body.search-open .fab, body.search-open .water-fab { display:none; }
+.day-nav { display:flex; align-items:center; justify-content:center; gap:14px; padding:10px 0 2px; }
+.dn-arrow { width:34px; height:34px; border-radius:50%; border:1px solid #e7e3da; background:#fcfbf8; color:#1a1a1a; font-size:19px; line-height:1; cursor:pointer; }
+.dn-arrow:disabled { opacity:.3; }
+.dn-arrow:active:not(:disabled) { background:#ecfdf5; border-color:#10B981; }
+.dn-label { font-size:14px; font-weight:800; min-width:120px; text-align:center; }
 .water-fab .wf-count { font-size:13px; font-weight:600; opacity:.9; }
 @media (max-width:480px){ .water-fab { padding:12px 15px; bottom:84px; left:14px; } }
 
@@ -789,6 +798,13 @@ function afficherMessageInvite() {
     <a href="accueil.html" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
 </div>
 
+<!-- NAVIGATION PAR JOUR (comme Lifesum) -->
+<div class="day-nav">
+    <button class="dn-arrow" onclick="navJour(-1)" aria-label="Jour précédent">‹</button>
+    <span class="dn-label" id="dnLabel">Aujourd'hui</span>
+    <button class="dn-arrow" id="dnNext" onclick="navJour(1)" aria-label="Jour suivant" disabled>›</button>
+</div>
+
 <!-- BARRE FIXE : kcal restantes toujours visible -->
 <div class="sticky-remaining" id="stickyRemaining">
     <div class="sr-text">
@@ -893,7 +909,7 @@ function afficherMessageInvite() {
 </div>
 
 <!-- MODAL DÉTAIL JOUR -->
-<div class="modal-overlay" id="dayModal">
+<div class="modal-overlay" id="dayModal" onclick="if(event.target===this){this.classList.remove('show');fermerNavJour();}">
     <div class="modal">
         <h3 id="dayModalTitle">Détail</h3>
         <div id="dayModalBody"></div>
@@ -2270,6 +2286,14 @@ function mealRange(key){
     const r = map[key]; if(!r) return '';
     return 'Recommandé '+Math.round(g*r[0])+' – '+Math.round(g*r[1])+' kcal';
 }
+function moveRecipe(id, dir){
+    const i = recipes.findIndex(r => r.id === id);
+    const j = i + dir;
+    if(i < 0 || j < 0 || j >= recipes.length) return;
+    const tmp = recipes[i]; recipes[i] = recipes[j]; recipes[j] = tmp;
+    renderRecipes(); save();
+}
+
 function renderRecipes(){
     const c = document.getElementById('recipesContainer');
     const sy = window.scrollY; // préserver la position de défilement
@@ -2290,6 +2314,7 @@ function renderRecipes(){
         let h = `<div class="meal-head" onclick="toggleMeal(${rc.id})">
             <div class="mh-emo">${emoji}</div>
             <div class="mh-info">${nameHtml}<div class="mh-sub">${rightTxt}</div></div>
+            <span class="mh-move"><button onclick="event.stopPropagation();moveRecipe(${rc.id},-1)" aria-label="Monter">▴</button><button onclick="event.stopPropagation();moveRecipe(${rc.id},1)" aria-label="Descendre">▾</button></span>
             ${!rc.fixed ? `<button class="mh-del" onclick="event.stopPropagation();delRecipe(${rc.id})" title="Supprimer ce repas">✕</button>` : ''}
             <div class="mh-chev">▾</div>
         </div>`;
@@ -2473,7 +2498,7 @@ function filterIngredients(rid,query){
     const createBtn = `<div class="search-create" onclick="openFoodCreator(${rid})"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Créer un aliment</div>`;
     if(matches.length===0){
         box.innerHTML='<div class="search-none">Aucun ingrédient trouvé</div>' + createBtn;
-        box.classList.add('show');
+        box.classList.add('show'); document.body.classList.add('search-open');
         return;
     }
     box.innerHTML=matches.map(name=>
@@ -2481,7 +2506,7 @@ function filterIngredients(rid,query){
             <span>${name}</span><span class="si-kcal">${DB[name].kcal} kcal/100g</span>
         </div>`
     ).join('') + createBtn;
-    box.classList.add('show');
+    box.classList.add('show'); document.body.classList.add('search-open');
 }
 function addIngredient(rid,name){
     if(inviteBloque()) return;
@@ -2505,7 +2530,7 @@ function openFoodCreator(rid){
     document.getElementById('fmNom').value = pref;
     ['fmKcal','fmProt','fmCarbs','fmLip'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('fmErr').style.display='none';
-    document.querySelectorAll('.search-results').forEach(b=>b.classList.remove('show'));
+    document.querySelectorAll('.search-results').forEach(b=>b.classList.remove('show')); document.body.classList.remove('search-open');
     document.getElementById('foodModal').classList.add('show');
 }
 function closeFoodModal(){ document.getElementById('foodModal').classList.remove('show'); }
@@ -2994,6 +3019,37 @@ function renderHistory(){
 }
 
 // ===== MODAL DÉTAIL JOUR =====
+/* ===== Navigation par jour ===== */
+let dayOffset = 0;
+function navIso(off){ const d = new Date(); d.setDate(d.getDate() + off); return d.toISOString().slice(0,10); }
+function navLabel(off){
+    if(off === 0) return "Aujourd'hui";
+    if(off === -1) return 'Hier';
+    const d = new Date(); d.setDate(d.getDate() + off);
+    return d.toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'short' });
+}
+function navJour(dir){
+    const next = dayOffset + dir;
+    if(next > 0) return;
+    if(next < -30) return; // limite raisonnable
+    dayOffset = next;
+    document.getElementById('dnLabel').textContent = navLabel(dayOffset);
+    document.getElementById('dnNext').disabled = (dayOffset === 0);
+    if(dayOffset === 0){
+        document.getElementById('dayModal').classList.remove('show');
+        return;
+    }
+    const iso = navIso(dayOffset);
+    const h = history.find(x => x.iso === iso);
+    if(h){ openDayModal(iso); }
+    else {
+        document.getElementById('dayModalTitle').textContent = ' ' + navLabel(dayOffset);
+        document.getElementById('dayModalBody').innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:26px 10px;">Aucune journée enregistrée à cette date.<br><span style="font-size:12px;">Pense à « Commencer une nouvelle journée » pour archiver tes repas.</span></div>';
+        document.getElementById('dayModal').classList.add('show');
+    }
+}
+function fermerNavJour(){ dayOffset = 0; document.getElementById('dnLabel').textContent = "Aujourd'hui"; document.getElementById('dnNext').disabled = true; }
+
 function openDayModal(iso){
     const h=history.find(x=>x.iso===iso); if(!h) return;
     document.getElementById('dayModalTitle').textContent=' '+h.date;
@@ -3043,12 +3099,12 @@ function detailRepasHtml(h){
     });
     return html + `</div>`;
 }
-function closeDayModal(){ document.getElementById('dayModal').classList.remove('show'); }
+function closeDayModal(){ document.getElementById('dayModal').classList.remove('show'); fermerNavJour(); }
 
 // ===== FERMER DROPDOWN AU CLIC EXTÉRIEUR =====
 document.addEventListener('click',function(e){
     if(!e.target.closest('.add-ing')){
-        document.querySelectorAll('.search-results').forEach(b=>b.classList.remove('show'));
+        document.querySelectorAll('.search-results').forEach(b=>b.classList.remove('show')); document.body.classList.remove('search-open');
     }
 });
 
