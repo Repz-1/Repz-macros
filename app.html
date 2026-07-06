@@ -2718,6 +2718,12 @@ async function scanLookupProduct(barcode){
 
         // Ajouter le produit à la base en mémoire (valeurs pour 100g)
         DB[nomComplet] = { kcal:kcal, prot:prot, carbs:carbs, lip:lip };
+        // …et le mémoriser pour toujours dans la base perso (retrouvable dans la recherche)
+        try{
+            const cf = JSON.parse(localStorage.getItem('repz_customFoods')||'{}');
+            cf[nomComplet] = DB[nomComplet];
+            localStorage.setItem('repz_customFoods', JSON.stringify(cf));
+        }catch(e){}
 
         // L'ajouter à la recette en cours, avec macros intégrées (pour persister après refresh)
         if(scanCurrentRid !== null){
