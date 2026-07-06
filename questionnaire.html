@@ -1,7 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html,body{background:#eeece7 !important;margin:0}</style>
+<style>html,body{background:#eeece7 !important;margin:0}
+.chips { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.chip { padding:11px 16px; border-radius:14px; font-size:14px; font-weight:700;
+    border:2px solid var(--line); background:var(--card); color:var(--text-dim); cursor:pointer; }
+.chip.on { background:#ecfdf5; border-color:var(--orange); color:#047857; }
+.txt-input { width:100%; max-width:480px; display:block; margin:0 auto; padding:14px 16px; font-size:15px;
+    border:2px solid var(--line); border-radius:14px; background:var(--card); }
+.txt-input:focus { outline:none; border-color:var(--orange); }
+.email-input { text-align:center; font-weight:700; }
+.q-note { font-size:12px; color:var(--text-dim); text-align:center; margin-top:12px; line-height:1.5; }
+.merci { text-align:center; max-width:460px; margin:0 auto; padding-top:6vh; }
+.merci-ic { width:74px; height:74px; border-radius:50%; background:#ecfdf5; display:flex; align-items:center;
+    justify-content:center; margin:0 auto 18px; font-size:34px; }
+.merci h2 { font-size:25px; font-weight:800; margin-bottom:12px; line-height:1.25; }
+.merci p { font-size:14.5px; color:var(--text-dim); line-height:1.65; margin-bottom:14px; }
+.merci .m-mail { font-weight:800; color:var(--orange); }
+.merci-steps { text-align:left; background:var(--card); border:1.5px solid var(--line); border-radius:16px;
+    padding:16px 18px; margin:18px 0; }
+.merci-steps div { display:flex; gap:10px; font-size:13.5px; padding:6px 0; align-items:flex-start; }
+.merci-steps b { color:var(--orange); flex-shrink:0; }
+.disclaimer { font-size:11.5px; color:#9a938a; line-height:1.55; margin-top:16px; }
+</style>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BELFIT — Questionnaire Nutrition</title>
@@ -153,7 +175,7 @@ function logout() {
     <a href="#" class="back-btn" onclick="qBack();return false;">←</a>
     <div class="progress-wrap">
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-        <div class="progress-txt" id="progressTxt">Question 1 / 8</div>
+        <div class="progress-txt" id="progressTxt">Question 1</div>
     </div>
 </div>
 
@@ -161,18 +183,29 @@ function logout() {
 <div class="q-step active" data-q="sexe">
     <div class="q-title">Tu es… ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'sexe','homme')"><span class="option-label">Homme</span></div>
-        <div class="option" onclick="pick(this,'sexe','femme')"><span class="option-label">Femme</span></div>
-        <div class="option" onclick="pick(this,'sexe','autre')"><span class="option-label">Autre</span></div>
-        <div class="option" onclick="pick(this,'sexe','np')"><span class="option-label">Je préfère ne pas répondre</span></div>
+        <div class="option" onclick="pick(this,'sexe','Homme')"><span class="option-label">Homme</span></div>
+        <div class="option" onclick="pick(this,'sexe','Femme')"><span class="option-label">Femme</span></div>
+        <div class="option" onclick="pick(this,'sexe','Autre')"><span class="option-label">Autre</span></div>
+        <div class="option" onclick="pick(this,'sexe','Je préfère ne pas répondre')"><span class="option-label">Je préfère ne pas répondre</span></div>
     </div>
+</div>
+
+<!-- 1b. GROSSESSE (si Femme) -->
+<div class="q-step" data-q="grossesse">
+    <div class="q-title">Es-tu enceinte<br>ou allaites-tu ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'grossesse','Non')"><span class="option-label">Non</span></div>
+        <div class="option" onclick="pick(this,'grossesse','Enceinte')"><span class="option-label">Je suis enceinte</span></div>
+        <div class="option" onclick="pick(this,'grossesse','Allaitement')"><span class="option-label">J'allaite</span></div>
+    </div>
+    <div class="q-note">Ton coach adaptera les recommandations. En cas de grossesse, l'avis de ton médecin reste prioritaire.</div>
 </div>
 
 <!-- 2. ÂGE -->
 <div class="q-step" data-q="age">
     <div class="q-title">Ton âge ?</div>
-    <div class="num-wrap"><input type="number" class="num-input" id="inAge" inputmode="numeric" min="14" max="99" placeholder="25"><span class="num-unit">ans</span></div>
-    <div class="q-btns"><button class="btn-next" onclick="nextNum('age','inAge',14,99)">Continuer</button></div>
+    <div class="num-wrap"><input type="number" class="num-input" id="inAge" inputmode="numeric" min="16" max="99" placeholder="25"><span class="num-unit">ans</span></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('age','inAge',16,99)">Continuer</button></div>
 </div>
 
 <!-- 3. TAILLE -->
@@ -193,20 +226,20 @@ function logout() {
 <div class="q-step" data-q="travail">
     <div class="q-title">Ton type de travail ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'travail','bureau')"><span class="option-label">Travail de bureau<br><span class="option-hint">assis la plupart du temps · activité réduite</span></span></div>
-        <div class="option" onclick="pick(this,'travail','moyen')"><span class="option-label">Activité moyenne<br><span class="option-hint">debout, déplacements réguliers (vente, enseignement…)</span></span></div>
-        <div class="option" onclick="pick(this,'travail','eleve')"><span class="option-label">Activité élevée<br><span class="option-hint">physique (chantier, livraison, horeca…)</span></span></div>
+        <div class="option" onclick="pick(this,'travail','Bureau (activité réduite)')"><span class="option-label">Travail de bureau<br><span class="option-hint">assis la plupart du temps · activité réduite</span></span></div>
+        <div class="option" onclick="pick(this,'travail','Activité moyenne')"><span class="option-label">Activité moyenne<br><span class="option-hint">debout, déplacements réguliers</span></span></div>
+        <div class="option" onclick="pick(this,'travail','Activité élevée')"><span class="option-label">Activité élevée<br><span class="option-hint">physique (chantier, livraison, horeca…)</span></span></div>
     </div>
 </div>
 
-<!-- 6. HEURES DE TRAVAIL -->
+<!-- 6. HEURES -->
 <div class="q-step" data-q="heures">
     <div class="q-title">Combien d'heures<br>par jour ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'heures','6')"><span class="option-label">Moins de 6 h</span></div>
-        <div class="option" onclick="pick(this,'heures','8')"><span class="option-label">6 à 8 h</span></div>
-        <div class="option" onclick="pick(this,'heures','10')"><span class="option-label">9 à 10 h</span></div>
-        <div class="option" onclick="pick(this,'heures','12')"><span class="option-label">Plus de 10 h</span></div>
+        <div class="option" onclick="pick(this,'heures','Moins de 6 h')"><span class="option-label">Moins de 6 h</span></div>
+        <div class="option" onclick="pick(this,'heures','6 à 8 h')"><span class="option-label">6 à 8 h</span></div>
+        <div class="option" onclick="pick(this,'heures','9 à 10 h')"><span class="option-label">9 à 10 h</span></div>
+        <div class="option" onclick="pick(this,'heures','Plus de 10 h')"><span class="option-label">Plus de 10 h</span></div>
     </div>
 </div>
 
@@ -214,68 +247,158 @@ function logout() {
 <div class="q-step" data-q="libre">
     <div class="q-title">Ton activité pendant<br>ton temps libre ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'libre','calme')"><span class="option-label">Plutôt calme<br><span class="option-hint">canapé, écrans, lecture</span></span></div>
-        <div class="option" onclick="pick(this,'libre','modere')"><span class="option-label">Modérée<br><span class="option-hint">marche, sorties, tâches ménagères</span></span></div>
-        <div class="option" onclick="pick(this,'libre','actif')"><span class="option-label">Active<br><span class="option-hint">sport 2-4 fois / semaine</span></span></div>
-        <div class="option" onclick="pick(this,'libre','tres')"><span class="option-label">Très active<br><span class="option-hint">sport 5+ fois / semaine ou intensif</span></span></div>
+        <div class="option" onclick="pick(this,'libre','Plutôt calme')"><span class="option-label">Plutôt calme<br><span class="option-hint">canapé, écrans, lecture</span></span></div>
+        <div class="option" onclick="pick(this,'libre','Modérée')"><span class="option-label">Modérée<br><span class="option-hint">marche, sorties, tâches ménagères</span></span></div>
+        <div class="option" onclick="pick(this,'libre','Active (sport 2-4x/sem)')"><span class="option-label">Active<br><span class="option-hint">sport 2-4 fois / semaine</span></span></div>
+        <div class="option" onclick="pick(this,'libre','Très active (5x+/sem)')"><span class="option-label">Très active<br><span class="option-hint">sport 5+ fois / semaine ou intensif</span></span></div>
     </div>
 </div>
 
 <!-- 8. POIDS CIBLE -->
 <div class="q-step" data-q="cible">
     <div class="q-title">Ton poids cible ?</div>
-    <div class="q-sub">Le poids que tu aimerais atteindre. Il peut être au-dessus (prise de masse) ou en dessous (perte) de ton poids actuel.</div>
+    <div class="q-sub">Au-dessus de ton poids actuel = prise de masse, en dessous = perte.</div>
     <div class="num-wrap"><input type="number" class="num-input" id="inCible" inputmode="decimal" step="0.1" min="35" max="250" placeholder="85"><span class="num-unit">kg</span></div>
-    <div class="q-btns"><button class="btn-next" onclick="nextNum('cible','inCible',35,250)">Voir mon programme</button></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('cible','inCible',35,250)">Continuer</button></div>
 </div>
 
-<!-- RÉSULTAT -->
-<div class="q-step" data-q="result">
-    <div class="result">
-        <div class="result-badge">Ton programme sur mesure</div>
-        <h2 id="resTitle">—</h2>
-        <div class="result-recap" id="resRecap"></div>
-        <div class="res-kcal-card">
-            <div class="res-kcal"><span id="resKcal">0</span> <small>kcal / jour</small></div>
-            <div class="res-kcal-sub" id="resKcalSub"></div>
-        </div>
-        <div class="res-macros">
-            <div class="res-macro"><b id="resProt">0 g</b><span>Protéines</span><div class="bar" style="background:#ec4899;"></div></div>
-            <div class="res-macro"><b id="resCarbs">0 g</b><span>Glucides</span><div class="bar" style="background:#3b82f6;"></div></div>
-            <div class="res-macro"><b id="resLip">0 g</b><span>Lipides</span><div class="bar" style="background:#eab308;"></div></div>
-        </div>
-        <div class="res-note" id="resNote"></div>
-        <div class="res-btns">
-            <button class="btn-apply" onclick="appliquerProgramme()">Appliquer à mon journal</button>
-            <a href="accueil.html" class="btn-secondary">Plus tard</a>
-        </div>
+<!-- 9. RÉGIME -->
+<div class="q-step" data-q="regime">
+    <div class="q-title">Ton régime alimentaire ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'regime','Omnivore')"><span class="option-label">Omnivore<br><span class="option-hint">je mange de tout</span></span></div>
+        <div class="option" onclick="pick(this,'regime','Végétarien')"><span class="option-label">Végétarien</span></div>
+        <div class="option" onclick="pick(this,'regime','Végan')"><span class="option-label">Végan</span></div>
+        <div class="option" onclick="pick(this,'regime','Halal')"><span class="option-label">Halal</span></div>
     </div>
 </div>
 
+<!-- 10. ALLERGIES (multi) -->
+<div class="q-step" data-q="allergies">
+    <div class="q-title">Allergies ou<br>intolérances ?</div>
+    <div class="q-sub">Tu peux en sélectionner plusieurs.</div>
+    <div class="chips" id="allergChips"></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextAllergies()">Continuer</button></div>
+</div>
+
+<!-- 11. PATHOLOGIE -->
+<div class="q-step" data-q="patho">
+    <div class="q-title">Un suivi médical<br>ou une pathologie ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'patho','Aucune')"><span class="option-label">Non, aucune</span></div>
+        <div class="option" onclick="pick(this,'patho','Diabète')"><span class="option-label">Diabète</span></div>
+        <div class="option" onclick="pick(this,'patho','Thyroïde')"><span class="option-label">Thyroïde</span></div>
+        <div class="option" onclick="pick(this,'patho','Autre')"><span class="option-label">Autre</span></div>
+    </div>
+    <div class="q-note">Cette info aide ton coach à adapter le programme. Elle ne remplace pas un avis médical.</div>
+</div>
+
+<!-- 12. ALIMENTS DÉTESTÉS -->
+<div class="q-step" data-q="degoute">
+    <div class="q-title">Des aliments que tu<br>détestes ou évites ?</div>
+    <div class="q-sub">Optionnel — ton coach ne les mettra pas dans ton programme.</div>
+    <input type="text" class="txt-input" id="inDegoute" placeholder="Ex : brocoli, poisson, fromage…">
+    <div class="q-btns"><button class="btn-next" onclick="nextText('degoute','inDegoute')">Continuer</button></div>
+</div>
+
+<!-- 13. REPAS / JOUR -->
+<div class="q-step" data-q="repas">
+    <div class="q-title">Combien de repas<br>par jour ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'repas','2 repas')"><span class="option-label">2 repas</span></div>
+        <div class="option" onclick="pick(this,'repas','3 repas')"><span class="option-label">3 repas</span></div>
+        <div class="option" onclick="pick(this,'repas','4 repas')"><span class="option-label">4 repas</span></div>
+        <div class="option" onclick="pick(this,'repas','5 repas ou plus')"><span class="option-label">5 repas ou plus</span></div>
+    </div>
+</div>
+
+<!-- 14. TEMPS CUISINE -->
+<div class="q-step" data-q="cuisine">
+    <div class="q-title">Ton temps en cuisine ?</div>
+    <div class="options">
+        <div class="option" onclick="pick(this,'cuisine','Rapide (moins de 15 min)')"><span class="option-label">Le moins possible<br><span class="option-hint">repas simples et rapides (≤ 15 min)</span></span></div>
+        <div class="option" onclick="pick(this,'cuisine','Normal (15-30 min)')"><span class="option-label">Normal<br><span class="option-hint">15-30 min par repas</span></span></div>
+        <div class="option" onclick="pick(this,'cuisine','J\'aime cuisiner')"><span class="option-label">J'aime cuisiner<br><span class="option-hint">le temps n'est pas un souci</span></span></div>
+    </div>
+</div>
+
+<!-- 15. EMAIL -->
+<div class="q-step" data-q="email">
+    <div class="q-title">Où envoyer<br>ton programme ?</div>
+    <div class="q-sub">Ton coach t'enverra ton programme personnalisé à cette adresse.</div>
+    <input type="email" class="txt-input email-input" id="inEmail" inputmode="email" placeholder="ton@email.com">
+    <div class="q-btns"><button class="btn-next" onclick="nextEmail()">Envoyer à mon coach</button></div>
+</div>
+
+<!-- MERCI -->
+<div class="q-step" data-q="merci">
+    <div class="merci">
+        <div class="merci-ic">✅</div>
+        <h2>C'est envoyé !</h2>
+        <p>Ton coach BELFIT prépare ton programme alimentaire sur mesure. Tu le recevras à <span class="m-mail" id="merciMail">ton adresse</span> sous <b>24 à 48 h</b>.</p>
+        <div class="merci-steps">
+            <div><b>1.</b><span>Ton coach analyse ton profil (corps, travail, objectif, préférences)</span></div>
+            <div><b>2.</b><span>Il construit ton plan : calories, macros et repas adaptés</span></div>
+            <div><b>3.</b><span>Tu le reçois par email et tu l'appliques à ton journal</span></div>
+        </div>
+        <div class="res-btns">
+            <a href="accueil.html" class="btn-apply">Retour à l'accueil</a>
+        </div>
+        <p class="disclaimer">BELFIT ne remplace pas un avis médical. En cas de grossesse, d'allaitement ou de pathologie, consulte un professionnel de santé avant de modifier ton alimentation.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
+/* ===== CONFIG EMAILJS (à compléter sur PC) ===== */
+const EMAILJS_PUBLIC_KEY  = 'A_REMPLACER';           // Account > General > Public Key
+const EMAILJS_SERVICE_ID  = 'service_kpiz7rc';       // déjà créé
+const EMAILJS_TEMPLATE_ID = 'A_REMPLACER';           // Email Templates > Settings
+const COACH_EMAIL = 'coach@belfit.be';
+
 /* ===== FLUX GUIDÉ ===== */
-const STEPS = ['sexe','age','taille','poids','travail','heures','libre','cible','result'];
+const STEPS = ['sexe','grossesse','age','taille','poids','travail','heures','libre','cible','regime','allergies','patho','degoute','repas','cuisine','email','merci'];
 const answers = {};
 let stepIdx = 0;
 
+function stepVisible(name){
+    if(name === 'grossesse') return answers.sexe === 'Femme';
+    return true;
+}
+function nbQuestions(){ return STEPS.filter(s => s !== 'merci' && stepVisible(s)).length; }
+function numOf(i){
+    let n = 0;
+    for(let k = 0; k <= i && k < STEPS.length; k++){ if(STEPS[k] !== 'merci' && stepVisible(STEPS[k])) n++; }
+    return n;
+}
 function showStep(i){
+    // sauter les étapes non visibles
+    while(i < STEPS.length - 1 && !stepVisible(STEPS[i])) i++;
     stepIdx = i;
     document.querySelectorAll('.q-step').forEach(el => el.classList.remove('active'));
     document.querySelector(`.q-step[data-q="${STEPS[i]}"]`).classList.add('active');
-    const qNum = Math.min(i + 1, 8);
-    document.getElementById('progressFill').style.width = ((qNum) / 8 * 100) + '%';
-    document.getElementById('progressTxt').textContent = STEPS[i] === 'result' ? 'Terminé !' : `Question ${qNum} / 8`;
+    const total = nbQuestions();
+    if(STEPS[i] === 'merci'){
+        document.getElementById('progressFill').style.width = '100%';
+        document.getElementById('progressTxt').textContent = 'Terminé !';
+    } else {
+        const n = numOf(i);
+        document.getElementById('progressFill').style.width = (n / total * 100) + '%';
+        document.getElementById('progressTxt').textContent = `Question ${n} / ${total}`;
+    }
     window.scrollTo(0,0);
-    const inp = document.querySelector(`.q-step[data-q="${STEPS[i]}"] .num-input`);
+    const inp = document.querySelector(`.q-step[data-q="${STEPS[i]}"] .num-input, .q-step[data-q="${STEPS[i]}"] .txt-input`);
     if(inp) setTimeout(() => inp.focus({preventScroll:true}), 250);
 }
 function qBack(){
-    if(stepIdx === 0){ window.location.href = 'accueil.html'; return; }
-    showStep(stepIdx - 1);
+    if(stepIdx === 0 || STEPS[stepIdx] === 'merci'){ window.location.href = 'accueil.html'; return; }
+    let i = stepIdx - 1;
+    while(i > 0 && !stepVisible(STEPS[i])) i--;
+    showStep(i);
 }
 let lastTap = 0;
 function pick(el, q, val){
-    const now = Date.now(); if(now - lastTap < 350) return; lastTap = now; // anti double-tap
+    const now = Date.now(); if(now - lastTap < 350) return; lastTap = now;
     answers[q] = val;
     el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('sel'));
     el.classList.add('sel');
@@ -290,79 +413,138 @@ function nextNum(q, inputId, min, max){
         return;
     }
     answers[q] = v;
-    if(STEPS[stepIdx + 1] === 'result') computeResult();
+    showStep(stepIdx + 1);
+}
+function nextText(q, inputId){
+    answers[q] = (document.getElementById(inputId).value || '').trim() || 'Aucun';
     showStep(stepIdx + 1);
 }
 
-/* ===== CALCUL (méthode diététicien) ===== */
-function computeResult(){
-    const { sexe, age, taille, poids, travail, heures, libre, cible } = answers;
-
-    // 1. Métabolisme de base — Mifflin-St Jeor
-    let bmr;
-    const base = 10 * poids + 6.25 * taille - 5 * age;
-    if(sexe === 'homme') bmr = base + 5;
-    else if(sexe === 'femme') bmr = base - 161;
-    else bmr = base - 78; // moyenne des deux formules
-
-    // 2. Facteur d'activité = travail (pondéré par les heures) + temps libre
-    const facTravail = { bureau:0.10, moyen:0.25, eleve:0.45 }[travail];
-    const facHeures  = { '6':0.8, '8':1.0, '10':1.15, '12':1.3 }[heures];
-    const facLibre   = { calme:0.05, modere:0.12, actif:0.25, tres:0.40 }[libre];
-    const tdee = bmr * (1.2 + facTravail * facHeures + facLibre);
-
-    // 3. Objectif selon le poids cible
-    const delta = cible - poids;
-    let kcal, objectif, note;
-    if(delta > 1){
-        kcal = tdee + 350;
-        objectif = 'Prise de masse';
-        note = `Pour passer de ${poids} kg à ${cible} kg, on vise un léger surplus (+350 kcal au-dessus de tes besoins). Assez pour construire du muscle, pas trop pour limiter le gras. Compte environ 1 à 2 kg par mois — la patience paie.`;
-    } else if(delta < -1){
-        kcal = tdee - 400;
-        objectif = 'Perte de poids';
-        note = `Pour passer de ${poids} kg à ${cible} kg, on installe un déficit raisonnable (−400 kcal). Tu perdras environ 0,4 kg par semaine en gardant ton muscle et ton énergie. Les protéines élevées protègent ta masse musculaire.`;
-    } else {
-        kcal = tdee;
-        objectif = 'Maintien & recomposition';
-        note = `Ton poids cible est proche de ton poids actuel : on vise le maintien avec des protéines élevées. Combiné à l'entraînement, c'est idéal pour remplacer du gras par du muscle sans changer de poids.`;
+/* Allergies multi-select */
+const ALLERG = ['Aucune','Gluten','Lactose','Œufs','Fruits à coque','Arachide','Poisson / fruits de mer','Soja'];
+let allergSel = new Set(['Aucune']);
+function renderAllerg(){
+    document.getElementById('allergChips').innerHTML = ALLERG.map(a =>
+        `<div class="chip${allergSel.has(a) ? ' on' : ''}" onclick="toggleAllerg('${a.replace(/'/g,"\\'")}')">${a}</div>`
+    ).join('');
+}
+function toggleAllerg(a){
+    if(a === 'Aucune'){ allergSel = new Set(['Aucune']); }
+    else {
+        allergSel.delete('Aucune');
+        if(allergSel.has(a)) allergSel.delete(a); else allergSel.add(a);
+        if(allergSel.size === 0) allergSel.add('Aucune');
     }
-    kcal = Math.round(kcal / 10) * 10;
-    // garde-fou : jamais sous le métabolisme de base
-    if(kcal < Math.round(bmr)) kcal = Math.round(bmr / 10) * 10;
+    renderAllerg();
+}
+function nextAllergies(){
+    answers.allergies = Array.from(allergSel).join(', ');
+    showStep(stepIdx + 1);
+}
 
-    // 4. Macros : prot 1,8 g/kg · lipides 1 g/kg · le reste en glucides
+/* ===== CALCUL INTERNE (transmis au coach, pas montré au client) ===== */
+function computeInterne(){
+    const { sexe, age, taille, poids, travail, heures, libre, cible } = answers;
+    const base = 10 * poids + 6.25 * taille - 5 * age;
+    let bmr;
+    if(sexe === 'Homme') bmr = base + 5;
+    else if(sexe === 'Femme') bmr = base - 161;
+    else bmr = base - 78;
+    const facTravail = { 'Bureau (activité réduite)':0.10, 'Activité moyenne':0.25, 'Activité élevée':0.45 }[travail] || 0.2;
+    const facHeures  = { 'Moins de 6 h':0.8, '6 à 8 h':1.0, '9 à 10 h':1.15, 'Plus de 10 h':1.3 }[heures] || 1.0;
+    const facLibre   = { 'Plutôt calme':0.05, 'Modérée':0.12, 'Active (sport 2-4x/sem)':0.25, 'Très active (5x+/sem)':0.40 }[libre] || 0.12;
+    const tdee = bmr * (1.2 + facTravail * facHeures + facLibre);
+    const delta = cible - poids;
+    let kcal, objectif;
+    if(delta > 1){ kcal = tdee + 350; objectif = 'Prise de masse'; }
+    else if(delta < -1){ kcal = tdee - 400; objectif = 'Perte de poids'; }
+    else { kcal = tdee; objectif = 'Maintien / recomposition'; }
+    kcal = Math.round(kcal / 10) * 10;
+    if(kcal < Math.round(bmr)) kcal = Math.round(bmr / 10) * 10;
     const prot = Math.round(poids * 1.8);
     const lip  = Math.round(poids * 1.0);
     const carbs = Math.max(0, Math.round((kcal - prot * 4 - lip * 9) / 4));
-
-    answers._resultat = { kcal, prot, lip, carbs, objectif };
-
-    document.getElementById('resTitle').textContent = objectif;
-    const sexeTxt = { homme:'homme', femme:'femme', autre:'', np:'' }[sexe];
-    document.getElementById('resRecap').textContent =
-        `${sexeTxt ? sexeTxt + ', ' : ''}${age} ans, ${taille} cm, ${poids} kg → objectif ${cible} kg.`;
-    document.getElementById('resKcal').textContent = kcal;
-    document.getElementById('resKcalSub').textContent = `Besoins d'entretien estimés : ${Math.round(tdee/10)*10} kcal`;
-    document.getElementById('resProt').textContent = prot + ' g';
-    document.getElementById('resCarbs').textContent = carbs + ' g';
-    document.getElementById('resLip').textContent = lip + ' g';
-    document.getElementById('resNote').textContent = note;
+    return { bmr: Math.round(bmr), tdee: Math.round(tdee/10)*10, kcal, prot, lip, carbs, objectif };
 }
 
-function appliquerProgramme(){
-    const r = answers._resultat;
-    if(!r) return;
-    let goal = { kcal:2500, weight:80, protRatio:1.8 };
-    try{ const g = localStorage.getItem('repz_goal'); if(g) goal = JSON.parse(g); }catch(e){}
-    goal.kcal = r.kcal;
-    goal.weight = answers.poids;
-    goal.protRatio = 1.8;
-    localStorage.setItem('repz_goal', JSON.stringify(goal));
-    localStorage.setItem('repz_programme', JSON.stringify({ ...answers, _resultat:r, date:new Date().toISOString().slice(0,10) }));
-    window.location.href = 'app.html?v=' + Date.now();
+/* ===== ENVOI AU COACH ===== */
+function nextEmail(){
+    const inp = document.getElementById('inEmail');
+    const v = (inp.value || '').trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){
+        inp.style.borderColor = '#dc2626';
+        setTimeout(() => inp.style.borderColor = '', 900);
+        return;
+    }
+    answers.email = v;
+    envoyerAuCoach();
+}
+function buildParams(){
+    const r = computeInterne();
+    return {
+        nom: answers.email.split('@')[0],
+        name: answers.email.split('@')[0],
+        email: answers.email,
+        sexe: answers.sexe,
+        grossesse: answers.grossesse || 'N/A',
+        age: answers.age, taille: answers.taille, poids: answers.poids, cible: answers.cible,
+        travail: answers.travail, heures: answers.heures, libre: answers.libre,
+        regime: answers.regime, allergies: answers.allergies, patho: answers.patho,
+        degoute: answers.degoute, repas: answers.repas, cuisine: answers.cuisine,
+        objectif: r.objectif, kcal: r.kcal, prot: r.prot, carbs: r.carbs, lip: r.lip,
+        bmr: r.bmr, tdee: r.tdee
+    };
+}
+function envoyerAuCoach(){
+    const p = buildParams();
+    try{ localStorage.setItem('belfit_questionnaire', JSON.stringify({ ...p, date: new Date().toISOString() })); }catch(e){}
+    if(EMAILJS_PUBLIC_KEY !== 'A_REMPLACER' && EMAILJS_TEMPLATE_ID !== 'A_REMPLACER' && window.emailjs){
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, p)
+            .then(() => finirMerci())
+            .catch(() => envoyerMailto(p));
+    } else {
+        envoyerMailto(p);
+    }
+}
+function envoyerMailto(p){
+    // Fallback tant qu'EmailJS n'est pas finalisé : ouvre l'appli mail pré-remplie
+    const body =
+`Nouvelle demande de programme BELFIT
+
+PROFIL
+Sexe : ${p.sexe} (grossesse/allaitement : ${p.grossesse})
+Age : ${p.age} ans | Taille : ${p.taille} cm
+Poids : ${p.poids} kg -> Cible : ${p.cible} kg
+
+ACTIVITE
+Travail : ${p.travail} | ${p.heures}/jour
+Temps libre : ${p.libre}
+
+ALIMENTATION
+Regime : ${p.regime}
+Allergies : ${p.allergies}
+Pathologie : ${p.patho}
+Deteste : ${p.degoute}
+Repas/jour : ${p.repas} | Cuisine : ${p.cuisine}
+
+CALCUL BELFIT (base coach)
+Objectif : ${p.objectif}
+BMR ${p.bmr} kcal | TDEE ${p.tdee} kcal
+Plan : ${p.kcal} kcal | P ${p.prot} g | G ${p.carbs} g | L ${p.lip} g
+
+CONTACT CLIENT : ${p.email}`;
+    window.location.href = 'mailto:' + COACH_EMAIL
+        + '?subject=' + encodeURIComponent('Nouveau programme BELFIT - ' + p.email)
+        + '&body=' + encodeURIComponent(body);
+    setTimeout(finirMerci, 600);
+}
+function finirMerci(){
+    document.getElementById('merciMail').textContent = answers.email;
+    showStep(STEPS.indexOf('merci'));
 }
 
+renderAllerg();
 showStep(0);
 </script>
 
