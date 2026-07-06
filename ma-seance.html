@@ -103,7 +103,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     box-shadow:0 4px 16px rgba(22,163,74,.3);
 }
 .start-session-btn:active { transform:scale(.98); opacity:.92; }
-#sessionList.locked { opacity:.45; pointer-events:none; filter:grayscale(.3); }
+#sessionList.locked { opacity:.45; filter:grayscale(.3); }
+#sessionList.locked .done-item { pointer-events:none; }
+#sessionList.locked .done-photo { pointer-events:auto; cursor:pointer; }
 
 /* Contrôles de séance (pause / terminer) */
 .session-controls { display:none; gap:10px; margin-bottom:14px; }
@@ -641,6 +643,7 @@ function getSelectedExercises(){
 function goToSession(){
     if(typeof inviteBloque === "function" && inviteBloque()) return;
   const exs = getSelectedExercises();
+  sessionExs = exs;
   const c = document.getElementById('sessionList');
   if(exs.length===0){ c.innerHTML = '<div class="empty-session">Aucun exercice sélectionné.</div>'; }
   else {
@@ -648,7 +651,7 @@ function goToSession(){
       `<div class="done-item" onclick="toggleDone(this)">
         <div class="done-check">✓</div>
         <div class="done-info"><div class="done-name">${ex.nom}</div><div class="done-meta">${ex.meta}</div></div>
-        <div class="done-photo"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
+        <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
       </div>`
     ).join('');
   }
@@ -864,6 +867,27 @@ function openModal(mKey, i){
   document.getElementById('photoModal').classList.add('show');
 }
 function closeModal(){ document.getElementById('photoModal').classList.remove('show'); }
+
+// Zoom photo depuis la liste de séance (réutilise la modale du carrousel)
+let sessionExs = [];
+function openSessionPhoto(i){
+  const ex = sessionExs[i];
+  if(!ex) return;
+  document.getElementById('modalName').textContent = ex.nom;
+  document.getElementById('modalMeta').textContent = ex.meta || '';
+  document.getElementById('modalDesc').textContent = ex.desc || '';
+  if(ex.imgId){
+    document.getElementById('slide0').style.backgroundImage = `url('${IMG_BASE}${ex.imgId}/0.jpg')`;
+    document.getElementById('slide1').style.backgroundImage = `url('${IMG_BASE}${ex.imgId}/1.jpg')`;
+  } else {
+    document.getElementById('slide0').style.backgroundImage = 'none';
+    document.getElementById('slide1').style.backgroundImage = 'none';
+  }
+  carouselIndex = 0;
+  document.getElementById('carouselTrack').style.transform = 'translateX(0%)';
+  renderDots();
+  document.getElementById('photoModal').classList.add('show');
+}
 
 // SWIPE entre muscles
 let touchStartX = 0;
