@@ -40,20 +40,20 @@ body {
 
 .plan-features { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
 .price-cards { display:flex; flex-direction:column; gap:14px; margin:10px 0 26px; }
-.pc { position:relative; background:#fff; border:2px solid var(--line); border-radius:16px; padding:22px 22px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:border-color .15s, background .15s, transform .1s; }
-.pc:active { transform:scale(.99); }
+.price-cards { display:flex; gap:10px; align-items:stretch; }
+.pc { position:relative; flex:1; background:#fff; border:2px solid var(--line); border-radius:16px; padding:26px 8px 16px; text-align:center; cursor:pointer; transition:border-color .15s, background .15s, transform .1s; }
+.pc:active { transform:scale(.98); }
 .pc.selected { border-color:var(--orange); background:linear-gradient(180deg,#ecfdf5,#ffffff); box-shadow:0 6px 18px rgba(16,185,129,.14); }
-.pc:not(.selected) .pc-dur, .pc:not(.selected) .pc-mo { color:#9ca3af; }
-.pc-badge { position:absolute; top:-11px; left:18px; background:var(--orange); color:#fff; font-size:10.5px; font-weight:800; padding:4px 11px; border-radius:20px; letter-spacing:.03em; }
-.pc-dur { font-size:21px; font-weight:800; }
-.pc-promo { margin-top:3px; }
-.pc-old { font-size:12.5px; color:var(--text-dim); text-decoration:line-through; margin-right:6px; }
-.pc-new { font-size:12.5px; color:var(--green); font-weight:800; }
-.pc-note { font-size:12.5px; color:var(--text-dim); font-weight:600; }
-.pc-right { text-align:right; white-space:nowrap; }
-.pc-mo { font-size:25px; font-weight:900; }
-.pc-u { font-size:13px; color:var(--text-dim); font-weight:600; margin-left:2px; }
-.pc-year { display:block; font-size:11px; color:var(--text-dim); font-weight:600; margin-top:3px; }
+.pc:not(.selected) .pc-dur, .pc:not(.selected) .pc-price, .pc:not(.selected) .pc-permo { color:#9ca3af; }
+.pc-badge { position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:var(--orange); color:#fff; font-size:10px; font-weight:800; padding:4px 10px; border-radius:20px; letter-spacing:.04em; white-space:nowrap; }
+.pc-badge.gold { background:#d4af37; color:#1a1a1a; }
+.pc-dur { font-size:26px; font-weight:900; line-height:1; }
+.pc-dur small { display:block; font-size:12px; font-weight:700; color:var(--text-dim); margin-top:2px; }
+.pc-price { font-size:16px; font-weight:800; margin-top:10px; }
+.pc-permo { font-size:12px; font-weight:700; color:var(--green); margin-top:3px; }
+.pc-note { font-size:10.5px; color:var(--text-dim); margin-top:8px; font-weight:600; }
+.cafe-line { text-align:center; font-size:13px; color:var(--text-dim); font-weight:600; margin:14px 0 18px; }
+.badge-be { display:inline-block; background:#fff; border:1.5px solid var(--line); border-radius:30px; padding:7px 14px; font-size:12px; font-weight:700; color:var(--text); margin-top:12px; }
 .rassur { text-align:center; font-size:13.5px; color:var(--text-dim); margin-bottom:16px; }
 .deja-prem { background:linear-gradient(135deg,#ecfdf5,#fcfbf8); border:1.5px solid #a7f3d0; color:#065f46; text-align:center; padding:16px 16px 14px; border-radius:16px; margin-bottom:16px; }
 .deja-prem .dp-title { font-size:14.5px; font-weight:800; margin-bottom:3px; }
@@ -257,6 +257,7 @@ function logout() {
 <div class="hero">
     <h2>Ton programme alimentaire<br>sur mesure</h2>
     <p>Calories, macros et plan adaptés à ton corps, ton travail et ton objectif — comme chez un diététicien.</p>
+    <div class="badge-be">🇧🇪 App belge indépendante — soutiens BELFIT !</div>
 </div>
 
 <div class="plans">
@@ -271,23 +272,30 @@ function logout() {
         </div>
 
         <div class="price-cards">
-            <div class="pc pop selected" id="pcAnnuel" onclick="choisirFormule('annuel')">
-                <span class="pc-badge">LE PLUS POPULAIRE</span>
-                <div class="pc-left">
-                    <div class="pc-dur">12 mois</div>
-                    <div class="pc-promo"><span class="pc-old">7,99&nbsp;€</span><span class="pc-new">−50% lancement</span></div>
-                </div>
-                <div class="pc-right"><span class="pc-mo">3,99&nbsp;€</span><span class="pc-u">/mois</span><span class="pc-year">soit 47,88&nbsp;€/an</span></div>
+            <div class="pc" id="pcMensuel" onclick="choisirFormule('mensuel')">
+                <div class="pc-dur">1<small>mois</small></div>
+                <div class="pc-price">7,99 €</div>
+                <div class="pc-permo">7,99 € / mois</div>
+                <div class="pc-note">Sans engagement</div>
             </div>
 
-            <div class="pc" id="pcMensuel" onclick="choisirFormule('mensuel')">
-                <div class="pc-left">
-                    <div class="pc-dur">Mensuel</div>
-                    <div class="pc-promo"><span class="pc-note">sans engagement</span></div>
-                </div>
-                <div class="pc-right"><span class="pc-mo">7,99&nbsp;€</span><span class="pc-u">/mois</span></div>
+            <div class="pc selected" id="pcTrimestriel" onclick="choisirFormule('trimestriel')">
+                <span class="pc-badge">POPULAIRE</span>
+                <div class="pc-dur">3<small>mois</small></div>
+                <div class="pc-price">19,99 €</div>
+                <div class="pc-permo">6,66 € / mois</div>
+                <div class="pc-note">Facturé par trimestre</div>
+            </div>
+
+            <div class="pc" id="pcAnnuel" onclick="choisirFormule('annuel')">
+                <span class="pc-badge gold">−50%</span>
+                <div class="pc-dur">12<small>mois</small></div>
+                <div class="pc-price">47,88 €</div>
+                <div class="pc-permo">3,99 € / mois</div>
+                <div class="pc-note">Meilleur prix</div>
             </div>
         </div>
+        <div class="cafe-line">☕ À partir de 0,92 € par semaine — moins cher qu'un café.</div>
 
         <!-- Comparatif Gratuit vs Premium -->
         <div class="compare">
@@ -452,6 +460,18 @@ function validerCode(){
 
 // ===== FORMULE ANNUEL / MENSUEL =====
 const FORMULES = {
+    trimestriel: {
+        // ⚠️ lien provisoire (celui du mensuel) — remplacer par le lien LemonSqueezy 3 mois
+        lien:'https://rep-z.lemonsqueezy.com/checkout/buy/390c6785-f085-4452-b43a-6206fbc3c106',
+        features:[
+            ['<strong>Programme alimentaire sur mesure</strong>'],
+            ['Bibliothèque de programmes d\'entraînement'],
+            ['Calculateur de calories avancé'],
+            ['Suggestions « Idées recettes »'],
+            ['Historique illimité'],
+            ['<strong>Le bon équilibre — 6,66 €/mois</strong>']
+        ]
+    },
     annuel: {
         lien:'https://rep-z.lemonsqueezy.com/checkout/buy/b66fe18e-6b2a-4953-ab29-d5b4ab99e04a',
         features:[
@@ -479,12 +499,13 @@ let formuleActive = 'annuel';
 
 function choisirFormule(f){
     formuleActive = f;
-    document.getElementById('pcAnnuel').classList.toggle('selected', f==='annuel');
     document.getElementById('pcMensuel').classList.toggle('selected', f==='mensuel');
+    document.getElementById('pcTrimestriel').classList.toggle('selected', f==='trimestriel');
+    document.getElementById('pcAnnuel').classList.toggle('selected', f==='annuel');
 }
 function payerFormule(){ ouvrirPaiement(FORMULES[formuleActive].lien); }
 // Init
-choisirFormule('annuel');
+choisirFormule('trimestriel');
 
 // « Continuer en standard » : route selon l'état du compte
 function continuerStandard(){
