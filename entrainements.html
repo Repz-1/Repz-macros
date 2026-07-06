@@ -730,6 +730,14 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
 </button>
 <script>
 let timerInterval=null, timerRunning=false, totalSeconds=90, lastPreset=90;
+function saveTimerState(){
+    try{ localStorage.setItem('belfit_chrono', JSON.stringify({
+        running: timerRunning,
+        total: totalSeconds,
+        preset: lastPreset,
+        at: Date.now()
+    })); }catch(e){}
+}
 let wheelMinVal=1, wheelSecVal=30;
 function updateTimerDisplay(){
     const min=Math.floor(totalSeconds/60), sec=totalSeconds%60;
@@ -740,14 +748,14 @@ function startTimer(){
     const btn=document.getElementById('timerStartBtn');
     if(timerRunning){
         clearInterval(timerInterval); timerRunning=false;
-        btn.textContent='Reprendre'; updateChronoFab(); return;
+        btn.textContent='Reprendre'; updateChronoFab(); saveTimerState(); return;
     }
-    timerRunning=true; btn.textContent='Pause';
+    timerRunning=true; btn.textContent='Pause'; saveTimerState();
     timerInterval=setInterval(()=>{
-        if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); }
+        if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); saveTimerState(); }
         else{
             clearInterval(timerInterval); timerRunning=false;
-            btn.textContent='Démarrer'; updateChronoFab();
+            btn.textContent='Démarrer'; updateChronoFab(); saveTimerState();
             if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
         }
     },1000);
@@ -775,7 +783,7 @@ function updateWheelSel(el){
 }
 function appliquerMolettes(){
     totalSeconds=wheelMinVal*60+wheelSecVal; lastPreset=totalSeconds;
-    clearInterval(timerInterval); timerRunning=false;
+    clearInterval(timerInterval); timerRunning=false; saveTimerState();
     updateTimerDisplay();
     document.getElementById('timerStartBtn').textContent='Démarrer';
 }
@@ -787,7 +795,7 @@ function initWheels(){
 }
 function resetTimer(){
     clearInterval(timerInterval); timerRunning=false;
-    totalSeconds=lastPreset; updateTimerDisplay();
+    totalSeconds=lastPreset; updateTimerDisplay(); saveTimerState();
     document.getElementById('timerStartBtn').textContent='Démarrer';
 }
 function toggleTimer(){
@@ -854,6 +862,41 @@ function closeTimer(){
     });
     // clic souris (au cas où, desktop)
     fab.addEventListener('click', function(e){ if(e.detail && !('ontouchstart' in window)) toggleTimer(); });
+})();
+
+/* Restauration du chrono après avoir quitté la page */
+(function(){
+    try{
+        const st = JSON.parse(localStorage.getItem('belfit_chrono') || 'null');
+        if(!st) return;
+        lastPreset = st.preset || 90;
+        if(st.running){
+            const ecoule = Math.floor((Date.now() - st.at) / 1000);
+            const restant = (st.total || 0) - ecoule;
+            if(restant > 0){
+                totalSeconds = restant;
+                updateTimerDisplay();
+                // relancer automatiquement le décompte
+                timerRunning = true;
+                const btn = document.getElementById('timerStartBtn');
+                if(btn) btn.textContent = 'Pause';
+                timerInterval = setInterval(()=>{
+                    if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); saveTimerState(); }
+                    else{
+                        clearInterval(timerInterval); timerRunning=false;
+                        if(btn) btn.textContent='Démarrer'; updateChronoFab(); saveTimerState();
+                        if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
+                    }
+                },1000);
+            } else {
+                totalSeconds = lastPreset; updateTimerDisplay(); saveTimerState();
+            }
+        } else {
+            totalSeconds = st.total ?? lastPreset;
+            updateTimerDisplay();
+        }
+        updateChronoFab();
+    }catch(e){}
 })();
 
 function updateChronoFab(){
