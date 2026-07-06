@@ -724,7 +724,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
         <button class="timer-btn reset" onclick="closeTimer()">Fermer</button>
     </div>
 </div>
-<button class="chrono-fab" id="chronoFab" onclick="toggleTimer()" aria-label="Chronomètre">
+<button class="chrono-fab" id="chronoFab" aria-label="Chronomètre">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 2h6"/></svg>
     <span class="chrono-fab-time" id="chronoFabTime"></span>
 </button>
@@ -806,6 +806,56 @@ function closeTimer(){
     document.getElementById('timerOverlay').classList.remove('show');
     document.body.classList.remove('timer-open');
 }
+/* ===== Chrono déplaçable (glisse-le où tu veux, il s'en souvient) ===== */
+(function(){
+    const fab = document.getElementById('chronoFab');
+    if(!fab) return;
+    // Restaurer la position sauvegardée
+    try{
+        const p = JSON.parse(localStorage.getItem('belfit_chronoPos') || 'null');
+        if(p){ appliquerPos(p.x, p.y); }
+    }catch(e){}
+    function appliquerPos(x, y){
+        const maxX = window.innerWidth - fab.offsetWidth - 4;
+        const maxY = window.innerHeight - fab.offsetHeight - 4;
+        x = Math.min(Math.max(4, x), maxX);
+        y = Math.min(Math.max(4, y), maxY);
+        fab.style.left = x + 'px';
+        fab.style.top = y + 'px';
+        fab.style.right = 'auto';
+        fab.style.bottom = 'auto';
+        return {x, y};
+    }
+    let startX=0, startY=0, origX=0, origY=0, dragging=false;
+    fab.addEventListener('touchstart', function(e){
+        const t = e.touches[0];
+        startX = t.clientX; startY = t.clientY;
+        const r = fab.getBoundingClientRect();
+        origX = r.left; origY = r.top;
+        dragging = false;
+    }, {passive:true});
+    fab.addEventListener('touchmove', function(e){
+        const t = e.touches[0];
+        const dx = t.clientX - startX, dy = t.clientY - startY;
+        if(!dragging && Math.hypot(dx, dy) > 10) dragging = true;
+        if(dragging){
+            e.preventDefault();
+            appliquerPos(origX + dx, origY + dy);
+        }
+    }, {passive:false});
+    fab.addEventListener('touchend', function(e){
+        if(dragging){
+            const r = fab.getBoundingClientRect();
+            const p = appliquerPos(r.left, r.top);
+            try{ localStorage.setItem('belfit_chronoPos', JSON.stringify(p)); }catch(err){}
+        } else {
+            toggleTimer(); // simple tap = ouvrir/fermer le chrono
+        }
+    });
+    // clic souris (au cas où, desktop)
+    fab.addEventListener('click', function(e){ if(e.detail && !('ontouchstart' in window)) toggleTimer(); });
+})();
+
 function updateChronoFab(){
     const t=document.getElementById('chronoFabTime'), fab=document.getElementById('chronoFab');
     if(timerRunning){
