@@ -26,7 +26,7 @@
 body {
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:#eeece7;
-    padding:0; padding-top:calc(env(safe-area-inset-top) + 26px); min-height:100vh; color:#1a1a1a;
+    padding:0; min-height:100vh; color:#1a1a1a;
 }
 .container { max-width:900px; margin:0 auto; padding:16px 16px 210px; }
 .logo-container {
@@ -306,9 +306,13 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .water-fab:active { transform:scale(.94); opacity:1; background:#0284c7; }
 body.search-open .fab, body.search-open .water-fab { display:none; }
 .day-nav { display:flex; align-items:center; justify-content:center; gap:14px; padding:10px 0 2px; }
-.profile-fab { position:absolute; top:calc(env(safe-area-inset-top) + 30px); right:14px; z-index:40; width:40px; height:40px; border-radius:50%; background:#10B981; box-shadow:0 4px 12px rgba(16,185,129,.35); display:flex; align-items:center; justify-content:center; text-decoration:none; }
-.profile-fab svg { width:21px; height:21px; stroke:#fff; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
-.profile-fab:active { transform:scale(.93); }
+/* En-tête aéré : logo à gauche, actions à droite (inspiré Lifesum) */
+.app-header { display:flex; align-items:center; justify-content:space-between; padding:calc(env(safe-area-inset-top) + 16px) 18px 8px; }
+.ah-logo { height:30px; width:auto; display:block; }
+.ah-actions { display:flex; align-items:center; gap:8px; }
+.ah-btn { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
+.ah-btn svg { width:24px; height:24px; stroke:#047857; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.ah-btn:active { background:rgba(16,185,129,.14); transform:scale(.94); }
 .dn-arrow { width:34px; height:34px; border-radius:50%; border:1px solid #e7e3da; background:#fcfbf8; color:#1a1a1a; font-size:19px; line-height:1; cursor:pointer; }
 .dn-arrow:disabled { opacity:.3; }
 .dn-arrow:active:not(:disabled) { background:#ecfdf5; border-color:#10B981; }
@@ -840,8 +844,14 @@ function afficherMessageInvite() {
     if(msg) msg.style.display = 'flex';
 }
 </script>
-<!-- ACCÈS PROFIL -->
-<a href="profil.html" class="profile-fab" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></a>
+<!-- EN-TÊTE -->
+<header class="app-header">
+    <img src="logo-symbol.png" class="ah-logo" alt="BELFIT">
+    <div class="ah-actions">
+        <a href="profil.html" class="ah-btn" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></a>
+        <a href="parametres.html" class="ah-btn" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></a>
+    </div>
+</header>
 
 <!-- NAVIGATION PAR JOUR (comme Lifesum) -->
 <div class="day-nav">
