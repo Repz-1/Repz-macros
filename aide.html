@@ -153,8 +153,13 @@ function envoyerMessage(){
     };
     if(EMAILJS_PUBLIC_KEY !== 'A_REMPLACER' && EMAILJS_TEMPLATE_ID !== 'A_REMPLACER' && window.emailjs){
         emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params).then(ok).catch(()=>{ mailtoFallback(msg, email); });
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params).then(ok).catch((err)=>{
+            console.error('EmailJS erreur', err);
+            alert('EmailJS a échoué :\n' + (err && (err.text || err.message || JSON.stringify(err))) + '\n\n(diagnostic temporaire)');
+            mailtoFallback(msg, email);
+        });
     } else {
+        alert('EmailJS non chargé (SDK absent ou clés non prises en compte — souvent un cache). Ajoute ?v=99 à l\'URL.\n\n(diagnostic temporaire)');
         mailtoFallback(msg, email);
     }
 }
