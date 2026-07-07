@@ -468,6 +468,24 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .weight-del:active { color:#ef4444; }
 .weight-empty { color:#94a3b8; font-size:13px; text-align:center; padding:14px; }
 
+/* ===== NOTE POIDS DU JOUR ===== */
+.weight-note {
+    display:flex; align-items:center; gap:11px; cursor:pointer;
+    background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:1.5px solid #a7f3d0;
+    border-radius:16px; padding:13px 15px; margin:2px 0 4px;
+    box-shadow:0 4px 14px rgba(16,185,129,.10);
+}
+.weight-note:active { transform:scale(.99); }
+.weight-note .wn-ic {
+    flex:none; width:34px; height:34px; border-radius:10px; background:#10B981;
+    color:#fff; display:flex; align-items:center; justify-content:center;
+}
+.weight-note .wn-ic svg { width:19px; height:19px; }
+.weight-note .wn-txt { flex:1; }
+.weight-note .wn-title { font-size:13.5px; font-weight:800; color:#065f46; }
+.weight-note .wn-sub { font-size:11.5px; font-weight:600; color:#059669; margin-top:1px; }
+.weight-note .wn-cta { flex:none; font-size:13px; font-weight:800; color:#047857; }
+
 /* ===== SAUVEGARDE ===== */
 .backup-card { background:white; border-radius:20px; padding:18px; box-shadow:0 4px 20px rgba(15,23,42,.06); margin-bottom:14px; }
 .backup-card h2 { font-size:15px; font-weight:600; margin-bottom:6px; }
@@ -883,6 +901,16 @@ function afficherMessageInvite() {
     <div class="quick-actions">
         <button class="qa-btn" onclick="openWeightModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span> Mon poids</button>
         <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg></span> Calculer mes calories</button>
+    </div>
+
+    <!-- NOTE : POIDS DU JOUR -->
+    <div class="weight-note" id="weightNote" style="display:none" onclick="openWeightModal()">
+        <span class="wn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span>
+        <span class="wn-txt">
+            <span class="wn-title">Pense à te peser aujourd'hui</span>
+            <span class="wn-sub">Tu n'as pas encore encodé ton poids du jour</span>
+        </span>
+        <span class="wn-cta">Ajouter →</span>
     </div>
 
     <!-- QUOI MANGER ? -->
@@ -2803,6 +2831,7 @@ function saveWeightNutri(){
     if(i>=0) weightLog[i]=entry; else weightLog.push(entry);
     weightLog.sort((a,b)=>a.iso.localeCompare(b.iso));
     goal.weight = val;
+    renderWeightNote();
     save();
     renderWeight();
     closeWeightModal();
@@ -2985,9 +3014,19 @@ function addWeight(){
     weightLog.sort((a,b)=>a.iso.localeCompare(b.iso));
     document.getElementById('weightInput').value='';
     renderWeight();
+    renderWeightNote();
     save();
 }
-function delWeight(iso){ weightLog=weightLog.filter(w=>w.iso!==iso); renderWeight(); save(); }
+function delWeight(iso){ weightLog=weightLog.filter(w=>w.iso!==iso); renderWeight(); renderWeightNote(); save(); }
+
+// Note qui invite à encoder le poids si pas encore fait aujourd'hui
+function renderWeightNote(){
+    const note = document.getElementById('weightNote');
+    if(!note) return;
+    const iso = new Date().toISOString().slice(0,10);
+    const dejaPese = weightLog.some(w => w.iso === iso);
+    note.style.display = dejaPese ? 'none' : 'flex';
+}
 
 function renderWeight(){
     const chart=document.getElementById('weightChart');
@@ -3423,6 +3462,7 @@ renderRecipes();
 renderTotals();
 renderHistory();
 renderWeight();
+renderWeightNote();
 
 // ===== Barre fixe "kcal restantes" : apparaît quand le bloc Objectif sort de l'écran =====
 (function(){
