@@ -306,6 +306,9 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .water-fab:active { transform:scale(.94); opacity:1; background:#0284c7; }
 body.search-open .fab, body.search-open .water-fab { display:none; }
 .day-nav { display:flex; align-items:center; justify-content:center; gap:14px; padding:10px 0 2px; }
+.profile-fab { position:absolute; top:10px; right:14px; z-index:40; width:40px; height:40px; border-radius:50%; background:#10B981; box-shadow:0 4px 12px rgba(16,185,129,.35); display:flex; align-items:center; justify-content:center; text-decoration:none; }
+.profile-fab svg { width:21px; height:21px; stroke:#fff; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.profile-fab:active { transform:scale(.93); }
 .dn-arrow { width:34px; height:34px; border-radius:50%; border:1px solid #e7e3da; background:#fcfbf8; color:#1a1a1a; font-size:19px; line-height:1; cursor:pointer; }
 .dn-arrow:disabled { opacity:.3; }
 .dn-arrow:active:not(:disabled) { background:#ecfdf5; border-color:#10B981; }
@@ -837,6 +840,9 @@ function afficherMessageInvite() {
     if(msg) msg.style.display = 'flex';
 }
 </script>
+<!-- ACCÈS PROFIL -->
+<a href="profil.html" class="profile-fab" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></a>
+
 <!-- NAVIGATION PAR JOUR (comme Lifesum) -->
 <div class="day-nav">
     <button class="dn-arrow" onclick="navJour(-1)" aria-label="Jour précédent">‹</button>
