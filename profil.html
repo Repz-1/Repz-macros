@@ -122,6 +122,7 @@ body{
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
@@ -459,6 +460,11 @@ function tapAjustement(type){
     }
     document.getElementById('adjModal').classList.add('show');
 }
+/* ===== CONFIG EMAILJS (même config que le questionnaire, à compléter sur PC) ===== */
+const EMAILJS_PUBLIC_KEY  = 'A_REMPLACER';           // Account > General > Public Key
+const EMAILJS_SERVICE_ID  = 'service_kpiz7rc';       // déjà créé
+const EMAILJS_TEMPLATE_ID = 'A_REMPLACER';           // Email Templates > Settings
+
 function envoyerAjustement(){
     const q = lireQuota();
     if(adjType && q[adjType] > 0){ q[adjType]--; ecrireQuota(q); }
@@ -467,6 +473,31 @@ function envoyerAjustement(){
     const user = auth.currentUser;
     const email = user && user.email ? user.email : '';
     const nom = adjType === 'macros' ? 'macros' : 'calories';
+    const allergies = (profil.allergies||[]).filter(a=>a!=='Aucune').join(', ') || 'Aucune';
+    const params = {
+        type_demande: 'Ajustement ' + nom,
+        client_email: email,
+        prenom: profil.prenom || localStorage.getItem('repz_firstName') || '—',
+        objectif: profil.objectif || '—',
+        obj_poids: profil.objPoids ? profil.objPoids + ' kg' : '—',
+        poids: (weightLog.length ? weightLog[weightLog.length-1].weight : goal.weight) || '—',
+        taille: profil.taille ? profil.taille + ' cm' : '—',
+        activite: profil.activite || '—',
+        kcal_actuelles: goal.kcal || '—',
+        preference: profil.preference || '—',
+        allergies: allergies
+    };
+    if(EMAILJS_PUBLIC_KEY !== 'A_REMPLACER' && EMAILJS_TEMPLATE_ID !== 'A_REMPLACER' && window.emailjs){
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
+            .then(()=>{ alert('Demande envoyée à ton coach ✓ Réponse sous 24–48h.'); })
+            .catch(()=>{ ajustementMailto(nom, email); });
+    } else {
+        ajustementMailto(nom, email);
+    }
+}
+function ajustementMailto(nom, email){
+    // Fallback tant qu'EmailJS n'est pas finalisé : ouvre l'appli mail pré-remplie
     const sujet = encodeURIComponent('Demande d\'ajustement ' + nom + ' — BELFIT');
     const corps = encodeURIComponent('Bonjour Coach,\n\nJe souhaite un ajustement de mes ' + nom + '.\n\nMon compte : ' + email + '\nMon objectif actuel : ' + (profil.objectif||'—') + '\nMes calories cibles : ' + (goal.kcal||'—') + ' kcal\n\nDétails de ma demande :\n');
     window.location.href = 'mailto:coach@belfit.be?subject=' + sujet + '&body=' + corps;
