@@ -144,7 +144,6 @@ body {
   var s=document.getElementById('repzSplash');
   if(!s) return;
   if(sessionStorage.getItem('repz_splash')){ s.remove(); return; }
-  sessionStorage.setItem('repz_splash','1');
   setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 2600);
 })();
 </script>
@@ -275,6 +274,8 @@ auth.onAuthStateChanged((user) => {
         window.location.href = 'accueil.html';
     } else {
         // Pas connecté : on affiche le formulaire de connexion
+        // Le splash reste "consommé" ici pour ne pas le rejouer après login
+        sessionStorage.setItem('repz_splash','1');
         document.getElementById('authContainer').style.visibility = 'visible';
     }
 });
