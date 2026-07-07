@@ -8,21 +8,23 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-    --orange:#DFA004;
-    --bg:#eeece7;
+    --orange:#F7B500;   /* Jaune BelFit (couleur principale) */
+    --bg:#F8F8F8;
     --card:#ffffff;
     --dark:#1f2937;
     --line:#e5e7eb;
     --text:#1a1a1a;
     --text-dim:#6b7280;
-    --gold:#F5A800;      /* or du logo */
+    --gold:#F7B500;
+    --noir:#181818;
+    --ok:#16a34a;        /* vert : uniquement terminé/progression */
     --logo-red:#DE2F14;  /* rouge du logo */
     --green:#8F6200;
     --radius:22px;
 }
 body {
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:#f5f1e8; color:var(--text); min-height:100vh; padding-bottom:90px;
+    background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:90px;
     padding:16px;
 }
 
@@ -94,61 +96,48 @@ body {
 .top h1 { font-size:22px; font-weight:800; letter-spacing:-.02em; }
 
 /* Hero court */
-.intro { text-align:left; padding:20px 6px 20px; }
-.intro h2 { font-size:30px; font-weight:800; line-height:1.15; letter-spacing:-.025em; margin-bottom:8px; }
-.intro h2 .accent { color:#C98B00; }
-.intro h2 .accent { color:#C98B00; }
+.intro { text-align:left; padding:22px 6px 22px; }
+.intro h2 { font-size:30px; font-weight:800; line-height:1.15; letter-spacing:-.025em; margin-bottom:8px; color:var(--noir); }
 .intro p { font-size:15px; color:var(--text-dim); line-height:1.5; max-width:340px; margin:0; }
 
-/* Cartes de choix */
-.choices { display:flex; flex-direction:column; gap:15px; max-width:480px; margin:0 auto; }
+/* Cartes de choix - uniformes, une seule mise en avant */
+.choices { display:flex; flex-direction:column; gap:24px; max-width:480px; margin:0 auto; }
 
 .choice {
-    position:relative; border-radius:24px; padding:22px 20px 20px;
-    text-decoration:none; color:inherit; overflow:hidden;
+    position:relative; display:block; border-radius:24px; padding:24px 22px;
+    background:#ffffff; border:1px solid #efefef; box-shadow:0 8px 24px rgba(24,24,24,.07);
+    text-decoration:none; color:inherit;
     transition:transform .15s ease, box-shadow .15s ease;
 }
 .choice:active { transform:scale(.985); }
 
+/* Icônes : fond jaune très clair, trait noir (façon Apple Fitness) */
 .ch-icon {
-    width:50px; height:50px; border-radius:16px; display:flex; align-items:center; justify-content:center;
-    background:#1c1c1c; box-shadow:0 6px 14px rgba(20,18,14,.25); margin-bottom:14px;
+    width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+    background:#FEF3CD; margin-bottom:16px;
 }
-.ch-icon svg { width:27px; height:27px; stroke:#F5A800; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-.choice h3 { font-size:19px; font-weight:800; margin-bottom:7px; letter-spacing:-.01em; color:var(--text); }
-.choice > p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:16px; }
+.ch-icon svg { width:27px; height:27px; stroke:var(--noir); fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.choice h3 { font-size:19px; font-weight:800; margin-bottom:6px; letter-spacing:-.01em; color:var(--noir); }
+.choice > p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:18px; }
 
-/* Boutons d'action */
-.cta-inline, .cta-inline-light {
-    display:inline-flex; align-items:center; gap:7px; font-size:14px; font-weight:700;
-    padding:12px 22px; border-radius:30px;
-}
-.cta-inline { background:linear-gradient(120deg,#F7B500,#E08700); color:#1a1a1a; box-shadow:0 6px 16px rgba(217,142,4,.30); }
-.cta-inline-light { background:#FBF0D6; color:#8F6200; }
-
-/* Cartes claires (séance libre + bibliothèque) */
-.choice.libre, .choice.lib {
-    background:#ffffff; border:1px solid #eee4d2; box-shadow:0 10px 26px rgba(45,38,30,.12);
-}
-.choice.libre::before, .choice.lib::before {
-    content:''; position:absolute; left:0; top:20px; bottom:20px; width:4.5px; border-radius:0 4px 4px 0;
-    background:#1a1a1a;
+/* Bouton unique, identique partout : jaune, coins très arrondis, texte noir */
+.cta {
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--gold); color:var(--noir);
+    font-size:14.5px; font-weight:800; padding:13px 26px; border-radius:16px;
+    box-shadow:0 6px 16px rgba(247,181,0,.30);
 }
 
-/* Carte recommandée (mise en avant) */
+/* Carte vedette : bordure + halo jaune pour la faire ressortir (fond clair partout) */
 .choice.featured {
-    background:linear-gradient(150deg,#1b1b1b 0%,#2e2a24 100%);
-    border:none; box-shadow:0 18px 40px rgba(20,18,14,.38);
+    background:#ffffff; border:2px solid var(--gold);
+    box-shadow:0 14px 34px rgba(247,181,0,.22);
 }
-.choice.featured .ch-icon { background:linear-gradient(150deg,#F5A800,#DD8E00); box-shadow:0 6px 14px rgba(0,0,0,.35); }
-.choice.featured .ch-icon svg { stroke:#1a1a1a; }
-.choice.featured h3 { color:#fff; }
-.choice.featured > p { color:rgba(255,255,255,.82); }
-.choice.featured .badge { background:#DE2F14; color:#fff; }
-.choice.featured .cta-inline { background:linear-gradient(120deg,#F7B500,#E08700); color:#1a1a1a; box-shadow:0 8px 18px rgba(245,168,0,.35); }
+
+/* Badge Recommandé : jaune, texte noir (jamais rouge) */
 .badge {
-    display:inline-block; background:var(--orange); color:#fff;
-    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+    display:inline-block; background:var(--gold); color:var(--noir);
+    font-size:11.5px; font-weight:800; letter-spacing:.03em;
     padding:6px 12px; border-radius:20px; margin-bottom:13px;
 }
 
@@ -409,37 +398,45 @@ function logout() {
 </script>
 
 <div class="intro">
-    <h2>Ton <span class="accent">entraînement</span></h2>
-    <p>Choisis ta méthode et lance-toi.</p>
+    <h2>S'entraîner</h2>
+    <p>Choisis comment tu veux t'entraîner aujourd'hui.</p>
 </div>
 
 <div class="choices">
 
-    <!-- Choix PREMIUM 1 : Questionnaire (recommandé, mis en avant) -->
+    <!-- Carte VEDETTE : programme intelligent (Premium) -->
     <a href="test.html" class="choice featured locked" id="choiceTest" onclick="return checkPremium(event)">
         <span class="lock-badge">🔒 Premium</span>
-        <span class="ch-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 4.8-4.8 2.2 2.2-4.8z"/></svg></span>
-        <span class="badge">Recommandé</span>
-        <h3>Je ne sais pas par où commencer</h3>
-        <p>Réponds à quelques questions (objectif, niveau, matériel) et on te propose le programme fait pour toi.</p>
-        <span class="cta-inline">Faire le test →</span>
+        <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z"/></svg></span>
+        <span class="badge">✨ Recommandé</span>
+        <h3>Créer mon programme</h3>
+        <p>BelFit crée un programme personnalisé selon ton objectif, ton niveau et ton matériel.</p>
+        <span class="cta">Commencer</span>
     </a>
 
-    <!-- Choix GRATUIT : composer sa séance -->
-    <a href="ma-seance.html" class="choice libre">
+    <!-- Séance libre (gratuit) -->
+    <a href="ma-seance.html" class="choice">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
-        <h3>Je compose ma séance</h3>
-        <p>Choisis tes exercices toi-même, muscle par muscle, et lance ta séance. Accès libre à tous les exercices.</p>
-        <span class="cta-inline-light">Choisir mes exercices →</span>
+        <h3>Séance libre</h3>
+        <p>Compose toi-même ton entraînement, exercice par exercice.</p>
+        <span class="cta">Créer ma séance</span>
     </a>
 
-    <!-- Choix PREMIUM 2 : Bibliothèque -->
-    <a href="programmes.html" class="choice lib locked" id="choiceLib" onclick="return checkPremium(event)">
+    <!-- Mes programmes (Premium) -->
+    <a href="programmes.html" class="choice locked" id="choiceLib" onclick="return checkPremium(event)">
         <span class="lock-badge">🔒 Premium</span>
-        <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></svg></span>
-        <h3>Je choisis mon programme</h3>
-        <p>Parcours notre bibliothèque de programmes prêts à l'emploi, classés par objectif.</p>
-        <span class="cta-inline-light">Voir les programmes →</span>
+        <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg></span>
+        <h3>Mes programmes</h3>
+        <p>Retrouve tous tes programmes enregistrés.</p>
+        <span class="cta">Ouvrir</span>
+    </a>
+
+    <!-- Séance rapide -->
+    <a href="ma-seance.html" class="choice">
+        <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg></span>
+        <h3>Séance rapide</h3>
+        <p>Choisis un groupe musculaire et commence immédiatement.</p>
+        <span class="cta">Démarrer</span>
     </a>
 
 </div>
@@ -551,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </a>
     <a href="entrainements.html" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
-        <span>Training</span>
+        <span>S'entraîner</span>
     </a>
     <a href="mes-stats.html" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
