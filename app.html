@@ -3059,6 +3059,8 @@ function rayonDe(nom){
     if(has('oeuf','œuf')) return 'oeufs';
     if(has('poulet','dinde','boeuf','bœuf','steak','haché','hache','porc','veau','agneau','jambon','saucisse','lardon','viande','escalope','magret','canard')) return 'viandes';
     if(has('saumon','thon','poisson','cabillaud','colin','merlu','crevette','sardine','maquereau','truite','crustac','moule','fruits de mer')) return 'poissons';
+    if(has('cacahuète','cacahuete','arachide','purée d','puree d') ||
+       (has('beurre') && has('pécan','pecan','amande','noisette','cajou','graine','sésame','sesame','noix'))) return 'epicerie';
     if(has('lait','yaourt','yogourt','fromage','skyr','feta','mozzar','cheddar','crème','creme','beurre','ricotta','cottage','babeurre','kéfir')) return 'laitiers';
     if(has('riz','pâtes','pates','pain','avoine','flocon','quinoa','semoule','boulgour','blé','ble','farine','céréale','cereale','wrap','tortilla','gnocchi','couscous','polenta')) return 'feculents';
     if(has('brocoli','tomate','courgette','salade','épinard','epinard','haricot','carotte','poivron','oignon','ail','champignon','banane','pomme','poire','fraise','orange','kiwi','avocat','patate','concombre','chou','poireau','aubergine','maïs','mais','petit pois','pois chiche','lentille','légume','legume','fruit','citron','mangue','ananas','myrtille','framboise','raisin','courge','betterave','navet','céleri','celeri','asperge','radis','endive','fenouil','datte','abricot','pêche','peche','melon','pastèque','pasteque')) return 'legumes';
