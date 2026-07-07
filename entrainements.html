@@ -60,14 +60,14 @@ body {
 .ml-btns { display:flex; gap:10px; }
 .ml-btns button { flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; }
 .ml-clear { background:#f1f5f9; color:#64748b; }
-.ml-save { background:#DFA004; color:#fff; }
+.ml-save { background:#1a1a1a; color:#F5A800; }
 
 /* Header avec retour */
 .topbar-app {
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px;
     margin:-16px -16px 8px;
-    background:linear-gradient(160deg,#DFA004 0%,#B87F00 100%);
+    background:linear-gradient(160deg,#191919 0%,#2a2620 100%);
 }
 .topbar-home {
     display:inline-flex; align-items:center; justify-content:center;
@@ -79,7 +79,7 @@ body {
 .topbar-home:active { background:rgba(255,255,255,.25); transform:scale(.94); }
 .bottom-gradient {
     height:80px; margin:32px -16px -16px;
-    background:linear-gradient(160deg,#DFA004 0%,#B87F00 100%);
+    background:linear-gradient(160deg,#191919 0%,#2a2620 100%);
 }
 
 /* Header avec titre */
@@ -96,10 +96,7 @@ body {
 /* Hero court */
 .intro { text-align:center; padding:24px 14px 18px; }
 .intro h2 { font-size:26px; font-weight:800; line-height:1.22; letter-spacing:-.02em; margin-bottom:9px; }
-.intro h2 .accent {
-    background:linear-gradient(90deg,#DFA004 0%,#DE2F14 100%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-}
+.intro h2 .accent { color:#C98B00; }
 .intro::after {
     content:''; display:block; width:64px; height:5px; border-radius:3px; margin:16px auto 0;
     background:linear-gradient(90deg,#1a1a1a 0 33%,#F5A800 33% 66%,#DE2F14 66% 100%);
@@ -138,7 +135,7 @@ body {
 }
 .choice.libre::before, .choice.lib::before {
     content:''; position:absolute; left:0; top:20px; bottom:20px; width:4.5px; border-radius:0 4px 4px 0;
-    background:linear-gradient(180deg,#1a1a1a 0 33%,#F5A800 33% 66%,#DE2F14 66% 100%);
+    background:#1a1a1a;
 }
 
 /* Carte recommandée (mise en avant) */
@@ -150,7 +147,7 @@ body {
 .choice.featured .ch-icon svg { stroke:#1a1a1a; }
 .choice.featured h3 { color:#fff; }
 .choice.featured > p { color:rgba(255,255,255,.82); }
-.choice.featured .badge { background:linear-gradient(120deg,#E5391B,#C22508); color:#fff; }
+.choice.featured .badge { background:#DE2F14; color:#fff; }
 .choice.featured .cta-inline { background:linear-gradient(120deg,#F7B500,#E08700); color:#1a1a1a; box-shadow:0 8px 18px rgba(245,168,0,.35); }
 .badge {
     display:inline-block; background:var(--orange); color:#fff;
