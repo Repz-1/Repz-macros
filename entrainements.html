@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>html,body{background:#eeece7 !important;margin:0}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +26,7 @@
     --radius:22px;
 }
 body {
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:90px;
     padding:16px;
 }
@@ -97,8 +100,8 @@ body {
 
 /* Hero court */
 .intro { text-align:left; padding:22px 6px 22px; }
-.intro h2 { font-size:30px; font-weight:800; line-height:1.15; letter-spacing:-.025em; margin-bottom:8px; color:var(--noir); }
-.intro p { font-size:15px; color:var(--text-dim); line-height:1.5; max-width:340px; margin:0; }
+.intro h2 { font-size:40px; font-weight:800; line-height:1.1; letter-spacing:-.03em; margin-bottom:10px; color:var(--noir); }
+.intro p { font-size:17px; font-weight:500; color:#666; line-height:1.45; max-width:340px; margin:0; }
 
 /* Cartes de choix - uniformes, une seule mise en avant */
 .choices { display:flex; flex-direction:column; gap:24px; max-width:480px; margin:0 auto; }
@@ -118,12 +121,12 @@ body {
 }
 .ch-icon svg { width:27px; height:27px; stroke:var(--noir); fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .choice h3 { font-size:19px; font-weight:800; margin-bottom:6px; letter-spacing:-.01em; color:var(--noir); }
-.choice > p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:18px; }
+.choice > p { font-size:14px; font-weight:500; color:var(--text-dim); line-height:1.55; margin-bottom:18px; }
 
 /* Bouton unique, identique partout : jaune, coins très arrondis, texte noir */
 .cta {
     display:inline-flex; align-items:center; justify-content:center;
-    font-size:14.5px; font-weight:800; padding:13px 26px; border-radius:16px;
+    font-size:15px; font-weight:600; padding:13px 26px; border-radius:16px;
     /* Par défaut (cartes secondaires) : discret, ne capte pas le regard */
     background:#F4F4F2; color:var(--noir); box-shadow:none;
 }
