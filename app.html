@@ -923,6 +923,7 @@ function afficherMessageInvite() {
     <div class="quick-actions">
         <button class="qa-btn" onclick="openWeightModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span> Mon poids</button>
         <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg></span> Calculer mes calories</button>
+        <button class="qa-btn" onclick="allerCourses()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.5 11.5a1.5 1.5 0 001.5 1.2h7.5a1.5 1.5 0 001.5-1.2L21 8H6.2"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></span> Ma liste de courses</button>
     </div>
 
     <!-- NOTE : POIDS DU JOUR -->
@@ -3050,6 +3051,58 @@ function confirmerSaveDay(){
     window.scrollTo({top:0,behavior:'smooth'});
 }
 function delHistory(iso){ history=history.filter(h=>h.iso!==iso); renderHistory(); save(); }
+
+// ===== LISTE DE COURSES : catégorisation par rayon + génération depuis le journal =====
+function rayonDe(nom){
+    const n = nom.toLowerCase();
+    const has = (...mots) => mots.some(m => n.includes(m));
+    if(has('oeuf','œuf')) return 'oeufs';
+    if(has('poulet','dinde','boeuf','bœuf','steak','haché','hache','porc','veau','agneau','jambon','saucisse','lardon','viande','escalope','magret','canard')) return 'viandes';
+    if(has('saumon','thon','poisson','cabillaud','colin','merlu','crevette','sardine','maquereau','truite','crustac','moule','fruits de mer')) return 'poissons';
+    if(has('lait','yaourt','yogourt','fromage','skyr','feta','mozzar','cheddar','crème','creme','beurre','ricotta','cottage','babeurre','kéfir')) return 'laitiers';
+    if(has('riz','pâtes','pates','pain','avoine','flocon','quinoa','semoule','boulgour','blé','ble','farine','céréale','cereale','wrap','tortilla','gnocchi','couscous','polenta')) return 'feculents';
+    if(has('brocoli','tomate','courgette','salade','épinard','epinard','haricot','carotte','poivron','oignon','ail','champignon','banane','pomme','poire','fraise','orange','kiwi','avocat','patate','concombre','chou','poireau','aubergine','maïs','mais','petit pois','pois chiche','lentille','légume','legume','fruit','citron','mangue','ananas','myrtille','framboise','raisin','courge','betterave','navet','céleri','celeri','asperge','radis','endive','fenouil','datte','abricot','pêche','peche','melon','pastèque','pasteque')) return 'legumes';
+    if(has('eau','jus','soda','boisson','café','cafe','thé','the','sirop','cola','bière','biere','vin')) return 'boissons';
+    if(has('huile','sucre','sel','miel','cacahuète','cacahuete','amande','noix','pécan','pecan','graine','sauce','chocolat','cacao','whey','protéine','proteine','confiture','pâte à tartiner','pate a tartiner','épice','epice','vinaigre','moutarde','ketchup','mayonnaise','bouillon','levure','gâteau','gateau','biscuit','cookie','barre','céréales')) return 'epicerie';
+    return 'autres';
+}
+
+// Construit la base "1 jour" à partir des repas du journal, prête pour la page Courses
+function genererCoursesBase(){
+    const agg = {}; // name -> {qty, unit, unitLabel, cat}
+    recipes.forEach(rc => {
+        if(!rc.ings) return;
+        const mult = rc.mult || 1;
+        rc.ings.forEach(ing => {
+            const base = DB[ing.name] || (ing.macros ? {} : null);
+            const estUnite = base && base.unit ? true : false;
+            const qty = (parseFloat(ing.portion) || 0) * mult;
+            if(qty <= 0) return;
+            if(!agg[ing.name]){
+                agg[ing.name] = {
+                    name: ing.name,
+                    qty: 0,
+                    unit: estUnite ? 'u' : 'g',
+                    unitLabel: estUnite ? (base.unitLabel || 'u') : 'g',
+                    cat: rayonDe(ing.name)
+                };
+            }
+            agg[ing.name].qty += qty;
+        });
+    });
+    return Object.values(agg);
+}
+
+function allerCourses(){
+    if(inviteBloque()) return;
+    if(!repzAcces()){
+        window.location.href = 'plans.html';
+        return;
+    }
+    const base = genererCoursesBase();
+    localStorage.setItem('repz_coursesBase', JSON.stringify({ items: base, ts: Date.now() }));
+    window.location.href = 'courses.html';
+}
 
 // ===== SUIVI DU POIDS =====
 function addWeight(){

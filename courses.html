@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<style>html,body{background:#F8F8F8 !important;margin:0}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#F7B500">
+<title>BelFit — Ma liste de courses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
+<style>
+:root{ --gold:#F7B500; --noir:#181818; --bg:#F8F8F8; --card:#fff; --line:#efefef; --dim:#6b7280; --ok:#16a34a; }
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--noir); -webkit-font-smoothing:antialiased; }
+.container{ max-width:760px; margin:0 auto; padding:16px 16px 120px; }
+.top{ display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+.back-btn{ width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--noir); text-decoration:none; }
+.title{ font-size:26px; font-weight:800; letter-spacing:-.02em; }
+.subtitle{ font-size:14px; color:var(--dim); font-weight:500; margin:2px 2px 18px; }
+
+/* Panneau de préparation */
+.prep{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:18px; box-shadow:0 8px 24px rgba(24,24,24,.06); margin-bottom:18px; }
+.prep h3{ font-size:15px; font-weight:800; margin-bottom:14px; }
+.prep-row{ margin-bottom:14px; }
+.prep-lbl{ font-size:13px; font-weight:700; color:var(--dim); margin-bottom:8px; }
+.seg{ display:flex; gap:8px; flex-wrap:wrap; }
+.seg button{ flex:1; min-width:60px; padding:11px 8px; border:1.5px solid #E6E6E6; border-radius:12px; background:#fff; font-size:14px; font-weight:700; color:var(--noir); cursor:pointer; font-family:inherit; }
+.seg button.on{ background:#FFF4CC; border-color:var(--gold); color:#8a6400; }
+.gen-btn{ width:100%; background:var(--gold); color:var(--noir); border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 8px 20px rgba(247,181,0,.3); }
+.gen-btn:active{ transform:scale(.99); }
+
+/* Liste par rayon */
+.rayon{ margin-bottom:16px; }
+.rayon-head{ display:flex; align-items:center; gap:9px; font-size:15px; font-weight:800; margin:0 4px 9px; }
+.rayon-head .emo{ font-size:19px; }
+.rayon-card{ background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:0 6px 18px rgba(24,24,24,.05); }
+.c-item{ display:flex; align-items:center; gap:13px; padding:13px 15px; border-bottom:1px solid var(--line); }
+.c-item:last-child{ border-bottom:none; }
+.c-check{ width:26px; height:26px; flex:none; border-radius:8px; border:2px solid #dcdcdc; display:flex; align-items:center; justify-content:center; color:#fff; font-size:15px; font-weight:800; cursor:pointer; }
+.c-item.done .c-check{ background:var(--ok); border-color:var(--ok); }
+.c-item.done .c-name{ text-decoration:line-through; color:#b3b3b3; }
+.c-item.done .c-qty{ color:#c7c7c7; }
+.c-body{ flex:1; min-width:0; }
+.c-name{ font-size:14.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.c-qty{ font-size:13px; font-weight:700; color:#8a6400; margin-top:1px; }
+.c-del{ flex:none; background:none; border:none; color:#cfcfcf; font-size:20px; cursor:pointer; padding:2px 4px; font-family:inherit; }
+.c-del:active{ color:#ef4444; }
+
+/* Ajout manuel */
+.add-row{ display:flex; gap:8px; margin-top:8px; }
+.add-row input{ flex:1; padding:13px 14px; border:1.5px solid #E6E6E6; border-radius:12px; font-size:14px; font-family:inherit; background:#fff; }
+.add-row input:focus{ outline:none; border-color:var(--gold); }
+.add-row button{ background:var(--noir); color:#fff; border:none; border-radius:12px; padding:0 18px; font-size:22px; font-weight:700; cursor:pointer; font-family:inherit; }
+
+/* Barre d'actions bas */
+.actions{ display:flex; gap:10px; margin-top:22px; }
+.actions button{ flex:1; padding:14px; border-radius:14px; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; border:none; }
+.act-share{ background:var(--noir); color:#fff; }
+.act-reset{ background:#fff; color:var(--dim); border:1.5px solid #E6E6E6; }
+
+.empty{ text-align:center; color:var(--dim); font-size:14px; padding:30px 20px; line-height:1.6; }
+.count-pill{ font-size:12px; font-weight:700; color:var(--dim); margin-left:auto; }
+
+/* Bottom nav */
+.bottom-nav{ position:fixed; bottom:0; left:0; right:0; z-index:80; display:flex; justify-content:space-around; align-items:center; background:rgba(252,251,248,.94); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-top:1px solid #e7e2d9; padding:8px 4px calc(8px + env(safe-area-inset-bottom)); }
+.bn-item{ display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:#8a8375; flex:1; padding:2px 0; }
+.bn-item svg{ width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.bn-item span{ font-size:10.5px; font-weight:700; }
+.bn-item.active{ color:#10B981; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="top">
+        <a href="app.html" class="back-btn">←</a>
+        <div class="title">Mes courses</div>
+    </div>
+    <div class="subtitle">Générée depuis les repas de ton journal.</div>
+
+    <!-- PRÉPARATION -->
+    <div class="prep">
+        <h3>🛒 Préparer mes courses</h3>
+        <div class="prep-row">
+            <div class="prep-lbl">Pour combien de jours ?</div>
+            <div class="seg" id="segJours"></div>
+        </div>
+        <div class="prep-row">
+            <div class="prep-lbl">Pour combien de personnes ?</div>
+            <div class="seg" id="segPers"></div>
+        </div>
+        <button class="gen-btn" onclick="generer()">Générer ma liste</button>
+    </div>
+
+    <!-- LISTE -->
+    <div id="liste"></div>
+
+    <!-- AJOUT MANUEL -->
+    <div class="add-row">
+        <input type="text" id="addInput" placeholder="Ajouter un produit…" onkeydown="if(event.key==='Enter')ajouterManuel()">
+        <button onclick="ajouterManuel()">＋</button>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+        <button class="act-share" onclick="partager()">📤 Partager</button>
+        <button class="act-reset" onclick="toutDecocher()">Tout décocher</button>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="app.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg><span>Journal</span></a>
+    <a href="entrainements.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg><span>S'entraîner</span></a>
+    <a href="mes-stats.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg><span>Stats</span></a>
+    <a href="plans.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg><span>Premium</span></a>
+</nav>
+
+<script>
+// ===== Config rayons (ordre + emoji + libellé) =====
+const RAYONS = [
+    {k:'viandes',   emo:'🥩', nom:'Viandes'},
+    {k:'poissons',  emo:'🐟', nom:'Poissons'},
+    {k:'oeufs',     emo:'🥚', nom:'Œufs'},
+    {k:'legumes',   emo:'🥦', nom:'Fruits & légumes'},
+    {k:'feculents', emo:'🍚', nom:'Féculents'},
+    {k:'laitiers',  emo:'🥛', nom:'Produits laitiers'},
+    {k:'epicerie',  emo:'🥜', nom:'Épicerie'},
+    {k:'boissons',  emo:'🥤', nom:'Boissons'},
+    {k:'autres',    emo:'📦', nom:'Autres'}
+];
+
+let base = [];          // items "1 jour" venant du journal : {name, qty, unit, unitLabel, cat}
+let jours = 5, pers = 1;
+let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}]}
+
+// ---- Chargement ----
+(function init(){
+    try {
+        const b = JSON.parse(localStorage.getItem('repz_coursesBase') || 'null');
+        if(b && b.items) base = b.items;
+    } catch(e){ base = []; }
+    try {
+        const s = JSON.parse(localStorage.getItem('repz_courses') || 'null');
+        if(s && s.items){ state = s; jours = s.jours || 5; pers = s.pers || 1; }
+    } catch(e){ state = null; }
+    renderSegs();
+    if(state){ renderListe(); }
+    else if(base.length){ generer(); }
+    else { renderVide(); }
+})();
+
+function renderSegs(){
+    document.getElementById('segJours').innerHTML = [3,5,7].map(j =>
+        `<button class="${j===jours?'on':''}" onclick="setJours(${j})">${j} jours</button>`).join('');
+    document.getElementById('segPers').innerHTML = [1,2,3,4].map(p =>
+        `<button class="${p===pers?'on':''}" onclick="setPers(${p})">${p===4?'4+':p}</button>`).join('');
+}
+function setJours(j){ jours = j; renderSegs(); }
+function setPers(p){ pers = p; renderSegs(); }
+
+// ---- Génération depuis la base ----
+function generer(){
+    if(!base.length){ renderVide(); return; }
+    const items = base.map(it => ({
+        name: it.name,
+        qty: it.qty * jours * pers,
+        unit: it.unit,
+        unitLabel: it.unitLabel,
+        cat: it.cat,
+        done: false,
+        manuel: false
+    }));
+    // Conserver les produits ajoutés manuellement d'une génération précédente
+    if(state && state.items){
+        state.items.filter(i => i.manuel).forEach(i => items.push(i));
+    }
+    state = { jours, pers, items };
+    sauver();
+    renderListe();
+}
+
+function sauver(){ if(state) localStorage.setItem('repz_courses', JSON.stringify(state)); }
+
+// ---- Affichage quantité lisible ----
+function fmtQty(it){
+    if(it.unit === 'u'){
+        const n = Math.round(it.qty);
+        return n + ' ' + (it.unitLabel && it.unitLabel !== 'u' ? it.unitLabel + (n>1?'s':'') : (n>1?'unités':'unité'));
+    }
+    const g = Math.round(it.qty);
+    if(g >= 1000){ return (g/1000).toFixed(g%1000===0?0:2).replace('.',',') + ' kg'; }
+    return g + ' g';
+}
+
+function renderListe(){
+    const cont = document.getElementById('liste');
+    if(!state || !state.items.length){ renderVide(); return; }
+    let html = '';
+    RAYONS.forEach(r => {
+        const items = state.items.filter(i => i.cat === r.k);
+        if(!items.length) return;
+        const faits = items.filter(i => i.done).length;
+        html += `<div class="rayon">
+            <div class="rayon-head"><span class="emo">${r.emo}</span> ${r.nom} <span class="count-pill">${faits}/${items.length}</span></div>
+            <div class="rayon-card">`;
+        items.forEach(it => {
+            const idx = state.items.indexOf(it);
+            html += `<div class="c-item${it.done?' done':''}">
+                <div class="c-check" onclick="toggle(${idx})">✓</div>
+                <div class="c-body">
+                    <div class="c-name">${it.name}</div>
+                    <div class="c-qty">${it.manuel ? 'ajouté' : fmtQty(it)}</div>
+                </div>
+                <button class="c-del" onclick="supprimer(${idx})">×</button>
+            </div>`;
+        });
+        html += `</div></div>`;
+    });
+    cont.innerHTML = html;
+}
+
+function renderVide(){
+    document.getElementById('liste').innerHTML =
+        `<div class="empty">Ta liste est vide.<br>Ajoute des aliments dans ton journal, puis reviens ici et appuie sur « Générer ma liste ».</div>`;
+}
+
+function toggle(i){ if(state.items[i]){ state.items[i].done = !state.items[i].done; sauver(); renderListe(); } }
+function supprimer(i){ if(state.items[i]){ state.items.splice(i,1); sauver(); renderListe(); } }
+
+function ajouterManuel(){
+    const inp = document.getElementById('addInput');
+    const val = inp.value.trim();
+    if(!val) return;
+    if(!state) state = { jours, pers, items:[] };
+    state.items.push({ name: val, qty:0, unit:'u', unitLabel:'', cat:'autres', done:false, manuel:true });
+    inp.value = '';
+    sauver();
+    renderListe();
+}
+
+function toutDecocher(){ if(state){ state.items.forEach(i => i.done=false); sauver(); renderListe(); } }
+
+function partager(){
+    if(!state || !state.items.length){ alert('Ta liste est vide.'); return; }
+    let txt = '🛒 Ma liste de courses BelFit\n(' + jours + ' jours · ' + pers + (pers>1?' personnes':' personne') + ')\n';
+    RAYONS.forEach(r => {
+        const items = state.items.filter(i => i.cat === r.k);
+        if(!items.length) return;
+        txt += '\n' + r.emo + ' ' + r.nom + '\n';
+        items.forEach(it => { txt += '• ' + it.name + (it.manuel ? '' : ' — ' + fmtQty(it)) + '\n'; });
+    });
+    if(navigator.share){ navigator.share({ title:'Ma liste de courses', text:txt }).catch(()=>{}); }
+    else if(navigator.clipboard){ navigator.clipboard.writeText(txt); alert('Liste copiée !'); }
+}
+</script>
+</body>
+</html>
