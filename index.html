@@ -274,7 +274,7 @@ auth.onAuthStateChanged((user) => {
     if(user) {
         // Déjà connecté : on nettoie le mode invité et on file à l'accueil
         localStorage.removeItem('repz_invite');
-        window.location.href = 'accueil.html';
+        window.location.href = 'app.html';
     } else {
         // Pas connecté : on affiche le formulaire de connexion
         // Le splash reste "consommé" ici pour ne pas le rejouer après login
@@ -287,7 +287,7 @@ auth.onAuthStateChanged((user) => {
 function continuerInvite() {
     localStorage.setItem('repz_invite', '1');
     // Une session Firebase encore active écraserait le mode invité : on la coupe d'abord
-    auth.signOut().finally(()=>{ window.location.href = 'accueil.html'; });
+    auth.signOut().finally(()=>{ window.location.href = 'app.html'; });
 }
 
 function toggleForm(formName) {
@@ -313,7 +313,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         if(cred && cred.user && cred.user.displayName){
             localStorage.setItem('repz_firstName', cred.user.displayName);
         }
-        window.location.href = 'accueil.html';
+        window.location.href = 'app.html';
     } catch(error) {
         loadingDiv.classList.remove('show');
         let message = 'Email ou mot de passe incorrect';
@@ -368,7 +368,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             await cred.user.updateProfile({ displayName: firstName });
         }
         localStorage.setItem('repz_firstName', firstName);
-        window.location.href = 'accueil.html';
+        window.location.href = 'app.html';
     } catch(error) {
         loadingDiv.classList.remove('show');
         let message = 'Erreur : ' + error.code;

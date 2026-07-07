@@ -342,7 +342,7 @@ function logout() {
             <div><b>3.</b><span>Tu le reçois par email et tu l'appliques à ton journal</span></div>
         </div>
         <div class="res-btns">
-            <a href="accueil.html" class="btn-apply">Retour à l'accueil</a>
+            <a href="app.html" class="btn-apply">Retour au journal</a>
         </div>
         <p class="disclaimer">BELFIT ne remplace pas un avis médical. En cas de grossesse, d'allaitement ou de pathologie, consulte un professionnel de santé avant de modifier ton alimentation.</p>
     </div>
@@ -391,7 +391,7 @@ function showStep(i){
     if(inp) setTimeout(() => inp.focus({preventScroll:true}), 250);
 }
 function qBack(){
-    if(stepIdx === 0 || STEPS[stepIdx] === 'merci'){ window.location.href = 'accueil.html'; return; }
+    if(stepIdx === 0 || STEPS[stepIdx] === 'merci'){ window.location.href = 'app.html'; return; }
     let i = stepIdx - 1;
     while(i > 0 && !stepVisible(STEPS[i])) i--;
     showStep(i);
