@@ -276,6 +276,19 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .fab:active { transform:scale(.94); opacity:1; background:#E85D2A; box-shadow:0 4px 16px rgba(255,140,0,.5); }
 .fab-plus { font-size:18px; line-height:1; }
 .fab-label { font-size:13px; }
+
+/* ===== CHOIX TYPE DE REPAS ===== */
+.mtype-sheet { display:none; position:fixed; inset:0; z-index:1000; background:rgba(15,23,42,.45); align-items:flex-end; }
+.mtype-sheet.show { display:flex; }
+.mtype-box { width:100%; background:#fcfbf8; border-radius:22px 22px 0 0; padding:18px 16px calc(18px + env(safe-area-inset-bottom)); animation:mtUp .22s ease-out; }
+@keyframes mtUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
+.mtype-title { font-size:16px; font-weight:800; color:#1a1a1a; text-align:center; margin-bottom:14px; }
+.mtype-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.mtype-opt { display:flex; flex-direction:column; align-items:center; gap:8px; background:#fff; border:1.5px solid #e7e2d9; border-radius:16px; padding:16px 8px; cursor:pointer; font-weight:800; font-size:14px; color:#1a1a1a; }
+.mtype-opt:active { transform:scale(.97); border-color:#10B981; background:#ecfdf5; }
+.mtype-opt .mt-ic { width:44px; height:44px; display:flex; align-items:center; justify-content:center; }
+.mtype-opt .mt-ic svg { width:40px; height:40px; }
+.mtype-cancel { display:block; width:100%; background:none; border:none; color:#6b7280; font-size:14px; font-weight:700; padding:14px 0 4px; cursor:pointer; }
 @media (max-width:480px){
     .fab { padding:12px 15px; bottom:84px; right:14px; }
 }
@@ -959,11 +972,25 @@ function afficherMessageInvite() {
     </div>
 </div>
 
-<!-- BOUTON FLOTTANT AJOUTER RECETTE -->
-<button class="fab" onclick="addRecipe()" aria-label="Ajouter un repas">
+<!-- BOUTON FLOTTANT AJOUTER REPAS -->
+<button class="fab" onclick="openMealTypeSheet()" aria-label="Ajouter un repas">
     <span class="fab-plus">＋</span>
-    <span class="fab-label">Repas</span>
+    <span class="fab-label">Ajouter</span>
 </button>
+
+<!-- SHEET CHOIX TYPE -->
+<div class="mtype-sheet" id="mtypeSheet" onclick="if(event.target===this)closeMealTypeSheet()">
+    <div class="mtype-box">
+        <div class="mtype-title">Qu'est-ce que tu ajoutes ?</div>
+        <div class="mtype-grid">
+            <button class="mtype-opt" onclick="choisirTypeRepas('repas')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg></span>Repas</button>
+            <button class="mtype-opt" onclick="choisirTypeRepas('collation')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0012 3z"/><path d="M9 18h6M10 21h4"/></svg></span>Collation</button>
+            <button class="mtype-opt" onclick="choisirTypeRepas('boisson')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 17a1.8 1.8 0 01-1.8 1.6H9.3a1.8 1.8 0 01-1.8-1.6L6 3z"/><path d="M6.6 10h10.8"/><path d="M17.5 3.5L19 2"/></svg></span>Boisson</button>
+            <button class="mtype-opt" onclick="choisirTypeRepas('complement')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="10.5" width="10" height="10" rx="5" transform="rotate(-45 8.5 15.5)"/><path d="M5 12l7 7"/><circle cx="17" cy="7" r="4"/></svg></span>Compléments</button>
+        </div>
+        <button class="mtype-cancel" onclick="closeMealTypeSheet()">Annuler</button>
+    </div>
+</div>
 
 <!-- BOUTON FLOTTANT EAU -->
 <button class="water-fab" onclick="openWater()" aria-label="Compteur d'eau">
@@ -2205,6 +2232,14 @@ const MEAL_SVG = {
     snack: `<svg viewBox="0 0 36 36"><path fill="#FFE8B6" d="M28 2c2.684-1.342 5 4 3 13-1.106 4.977-5 9-9 12s-11-1-7-5 8-7 10-13c1.304-3.912 1-6 3-7z"/><path fill="#FFD983" d="M31 8c0 3-1 9-4 13s-7 5-4 1 5-7 6-11 2-7 2-3z"/><path fill="#FFCC4D" d="M22 20c-.296.592 1.167-3.833-3-6-1.984-1.032-10 1-4 1 3 0 4 2 2 4-.291.292-.489.603-.622.912-.417.346-.873.709-1.378 1.088-2.263 1.697-5.84 4.227-10 7-3 2-4 3-4 4 0 3 9 3 14 1s10-7 10-7l4-4c-3-4-7-2-7-2z"/><path fill="#FFE8B6" d="M22 20s1.792-4.729-3-7c-4.042-1.916-8-1-11 1s-2 4-3 5 1 2 3 0 8.316-4.895 11-4c3 1 2 2.999 3 5z"/><path fill="#A6D388" d="M26 35h-4c-2 0-3 1-4 1s-2-2 0-2 4 0 5-1 5 2 3 2z"/><circle fill="#3E721D" cx="18" cy="35" r="1"/><path fill="#FFCC4D" d="M32.208 28S28 35 26 35h-4c-2 0 0-1 1-2s5 0 5-6c0-3 4.208 1 4.208 1z"/><path fill="#FFE8B6" d="M26 19c3 0 8 3 7 9s-5 7-7 7h-2c-2 0-1-1 0-2s4 0 4-6c0-3-4-7-6-7 0 0 2-1 4-1z"/><path fill="#FFD983" d="M17 21c3 0 5 1 3 3-1.581 1.581-6 5-10 6s-8 1-5-1 9.764-8 12-8z"/><path fill="#C1694F" d="M2 31c1 0 1 0 1 .667C3 32.333 3 33 2 33s-1-1.333-1-1.333S1 31 2 31z"/></svg>`
 };
 const MEAL_NEUTRAL_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/></svg>`;
+// Icônes par type de repas ajouté (repas / collation / boisson / compléments)
+const TYPE_SVG = {
+    repas: `<svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>`,
+    collation: MEAL_SVG.snack,
+    boisson: `<svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 17a1.8 1.8 0 01-1.8 1.6H9.3a1.8 1.8 0 01-1.8-1.6L6 3z"/><path d="M6.6 10h10.8"/><path d="M17.5 3.5L19 2"/></svg>`,
+    complement: `<svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="10.5" width="10" height="10" rx="5" transform="rotate(-45 8.5 15.5)"/><path d="M5 12l7 7"/><circle cx="17" cy="7" r="4"/></svg>`
+};
+const TYPE_LABEL = { repas:'Repas', collation:'Collation', boisson:'Boisson', complement:'Compléments' };
 function ensureFixedMeals(){
     // Migration : anciens repas fixes reconnus par nom -> clé stable
     recipes.forEach(r=>{
@@ -2419,7 +2454,7 @@ function renderRecipes(){
         const card = document.createElement('div');
         card.className = 'meal-card' + (openMeals.has(rc.id)?' open':'');
         card.setAttribute('data-id', rc.id);
-        const emoji = rc.fixedKey ? (MEAL_SVG[rc.fixedKey]||MEAL_NEUTRAL_SVG) : MEAL_NEUTRAL_SVG;
+        const emoji = rc.fixedKey ? (MEAL_SVG[rc.fixedKey]||MEAL_NEUTRAL_SVG) : (TYPE_SVG[rc.typeKey]||MEAL_NEUTRAL_SVG);
         const hasFood = rc.ings.length > 0;
         const rightTxt = hasFood
             ? `<span class="mh-kcal">${ft.kcal.toFixed(0)} kcal</span>`
@@ -2790,11 +2825,12 @@ function delIng(rid,iid){
 }
 function renameRecipe(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.name=val; save();} }
 function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes();} }
-function addRecipe(name){
+function addRecipe(name, typeKey){
     if(inviteBloque()) return;
+    const t = typeKey || 'repas';
     const newId = nextRid++;
-    const numero = recipes.filter(r=>!r.fixed).length + 1;
-    recipes.push({id:newId,name: name || ('Repas '+numero),mult:1,ings:[]});
+    const numero = recipes.filter(r=>!r.fixed && (r.typeKey||'repas')===t).length + 1;
+    recipes.push({id:newId, name: name || (TYPE_LABEL[t]+' '+numero), mult:1, ings:[], typeKey:t});
     openMeals.add(newId);
     renderRecipes();
     // Auto-scroll vers la nouvelle recette
@@ -2804,6 +2840,12 @@ function addRecipe(name){
         if(last) last.scrollIntoView({behavior:'smooth',block:'center'});
     },100);
 }
+function openMealTypeSheet(){
+    if(inviteBloque()) return;
+    document.getElementById('mtypeSheet').classList.add('show');
+}
+function closeMealTypeSheet(){ document.getElementById('mtypeSheet').classList.remove('show'); }
+function choisirTypeRepas(t){ closeMealTypeSheet(); addRecipe(null, t); }
 function delRecipe(rid){ const rc=recipes.find(r=>r.id===rid); if(rc&&rc.fixed) return; recipes=recipes.filter(r=>r.id!==rid); openMeals.delete(rid); renderRecipes(); }
 
 // ===== OBJECTIF MODAL =====
