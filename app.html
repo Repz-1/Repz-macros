@@ -853,13 +853,6 @@ function afficherMessageInvite() {
     </div>
 </header>
 
-<!-- NAVIGATION PAR JOUR (comme Lifesum) -->
-<div class="day-nav">
-    <button class="dn-arrow" onclick="navJour(-1)" aria-label="Jour précédent">‹</button>
-    <span class="dn-label" id="dnLabel">Aujourd'hui</span>
-    <button class="dn-arrow" id="dnNext" onclick="navJour(1)" aria-label="Jour suivant" disabled>›</button>
-</div>
-
 <!-- BARRE FIXE : kcal restantes toujours visible -->
 <div class="sticky-remaining" id="stickyRemaining">
     <div class="sr-text">
@@ -3216,8 +3209,8 @@ function navJour(dir){
     if(next > 0) return;
     if(next < -30) return; // limite raisonnable
     dayOffset = next;
-    document.getElementById('dnLabel').textContent = navLabel(dayOffset);
-    document.getElementById('dnNext').disabled = (dayOffset === 0);
+    const dnl = document.getElementById('dnLabel'); if(dnl) dnl.textContent = navLabel(dayOffset);
+    const dnn = document.getElementById('dnNext'); if(dnn) dnn.disabled = (dayOffset === 0);
     if(dayOffset === 0){
         document.getElementById('dayModal').classList.remove('show');
         return;
@@ -3264,7 +3257,7 @@ function animerJour(dir){
     }, {passive:true});
 })();
 
-function fermerNavJour(){ dayOffset = 0; document.getElementById('dnLabel').textContent = "Aujourd'hui"; document.getElementById('dnNext').disabled = true; }
+function fermerNavJour(){ dayOffset = 0; const dnl = document.getElementById('dnLabel'); if(dnl) dnl.textContent = "Aujourd'hui"; const dnn = document.getElementById('dnNext'); if(dnn) dnn.disabled = true; }
 
 function openDayModal(iso){
     const h=history.find(x=>x.iso===iso); if(!h) return;
