@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<style>html,body{background:#eeece7 !important;margin:0}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#10B981">
+<title>BELFIT — Paramètres</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
+<style>
+:root{ --em:#10B981; --em-dark:#047857; --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0; --card:#fcfbf8; --bg:#eeece7; }
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+.container { max-width:900px; margin:0 auto; padding:16px 16px 60px; }
+.back-btn { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#fff; border:1.5px solid var(--line); color:var(--text); text-decoration:none; font-size:19px; cursor:pointer; }
+.page-title { font-size:24px; font-weight:800; margin:10px 2px 18px; }
+.sec-label { font-size:13px; font-weight:800; letter-spacing:.07em; color:#8a8375; text-transform:uppercase; margin:0 4px 10px; }
+.menu-card { background:var(--card); border:1.5px solid #e7e2d9; border-radius:20px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:22px; overflow:hidden; }
+.menu-row { display:flex; align-items:center; gap:13px; width:100%; background:none; border:none; text-align:left; padding:16px; font-size:15.5px; font-weight:700; color:var(--text); cursor:pointer; border-bottom:1px solid var(--line); font-family:inherit; text-decoration:none; }
+.menu-row:last-child { border-bottom:none; }
+.menu-row:active { background:#f5f2ec; }
+.mr-txt { flex:1; }
+.mr-sub { display:block; font-size:12.5px; font-weight:600; color:var(--dim); margin-top:2px; }
+.mr-chev { color:#c4bcae; font-size:18px; }
+.badge-soon { font-size:10.5px; font-weight:800; color:#9a3412; background:#ffedd5; border-radius:20px; padding:3px 9px; letter-spacing:.03em; }
+
+/* Toggle */
+.toggle { position:relative; width:46px; height:27px; flex:none; }
+.toggle input { display:none; }
+.toggle .tg { position:absolute; inset:0; border-radius:20px; background:#ddd6c9; transition:.18s; }
+.toggle .tg::after { content:''; position:absolute; top:3px; left:3px; width:21px; height:21px; border-radius:50%; background:#fff; transition:.18s; box-shadow:0 1px 4px rgba(0,0,0,.18); }
+.toggle input:checked + .tg { background:var(--em); }
+.toggle input:checked + .tg::after { transform:translateX(19px); }
+
+/* Sous-panneau */
+.panel { display:none; position:fixed; inset:0; z-index:900; background:var(--bg); overflow-y:auto; }
+.panel.show { display:block; }
+.panel-inner { max-width:900px; margin:0 auto; padding:16px 16px 60px; }
+.panel-top { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.panel-title { font-size:19px; font-weight:800; }
+.acc-row { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:15px 16px; border-bottom:1px solid var(--line); font-size:14.5px; }
+.acc-row:last-child { border-bottom:none; }
+.acc-row .ar-l { font-weight:700; }
+.acc-row .ar-v { color:var(--dim); font-weight:600; max-width:60%; text-align:right; word-break:break-all; }
+.acc-row input { width:160px; padding:10px 12px; border:1.5px solid #e5e0d6; border-radius:10px; font-size:14.5px; font-weight:700; text-align:right; background:#fff; font-family:inherit; }
+.acc-row input:focus { outline:none; border-color:var(--em); }
+.acc-action { width:100%; background:none; border:none; text-align:left; padding:15px 16px; font-size:14.5px; font-weight:700; color:var(--em-dark); cursor:pointer; border-bottom:1px solid var(--line); font-family:inherit; }
+.acc-action:last-child { border-bottom:none; }
+.acc-action.danger { color:#dc2626; }
+.acc-action:active { background:#f5f2ec; }
+.save-btn { display:block; width:100%; background:var(--em); color:#fff; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; margin-top:4px; font-family:inherit; }
+.saved-toast { display:none; text-align:center; font-size:13.5px; font-weight:800; color:#047857; padding:10px; }
+.note { font-size:12.5px; color:var(--dim); line-height:1.55; padding:12px 16px 14px; }
+
+/* Pied */
+.foot { text-align:center; margin-top:6px; }
+.foot .f-logo { font-size:22px; font-weight:900; letter-spacing:1px; }
+.foot .f-logo span { color:var(--em); }
+.foot .f-ver { font-size:12.5px; color:var(--dim); font-weight:600; margin:4px 0 18px; }
+.logout-btn { display:block; width:100%; background:#fee2e2; color:#dc2626; border:none; border-radius:14px; padding:15px; font-size:14.5px; font-weight:800; letter-spacing:.05em; cursor:pointer; font-family:inherit; }
+.logout-btn:active { background:#fecaca; }
+
+/* Modale confirmation */
+.modal-overlay { display:none; position:fixed; inset:0; z-index:950; background:rgba(15,23,42,.5); align-items:center; justify-content:center; padding:22px; }
+.modal-overlay.show { display:flex; }
+.modal { background:#fff; border-radius:20px; padding:24px 20px; width:100%; max-width:380px; text-align:center; }
+.modal h3 { font-size:18px; font-weight:800; margin-bottom:8px; }
+.modal p { font-size:13.5px; color:var(--dim); line-height:1.55; margin-bottom:16px; }
+.modal .m-danger { display:block; width:100%; background:#dc2626; color:#fff; border:none; border-radius:13px; padding:14px; font-size:14.5px; font-weight:800; cursor:pointer; margin-bottom:8px; font-family:inherit; }
+.modal .m-sec { background:none; border:none; color:var(--dim); font-size:13.5px; font-weight:700; cursor:pointer; padding:8px; font-family:inherit; }
+</style>
+</head>
+<body>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+let authVerifie = false;
+auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(user){
+        authVerifie = true;
+        if(estInvite) localStorage.removeItem('repz_invite');
+        remplirCompte(user);
+    } else if(estInvite){
+        authVerifie = true;
+    } else if(!authVerifie){
+        setTimeout(() => {
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+                window.location.href = 'index.html';
+            }
+        }, 1200);
+    }
+});
+</script>
+
+<div class="container">
+    <a href="profil.html" class="back-btn">←</a>
+    <div class="page-title">Paramètres</div>
+
+    <!-- COMPTE -->
+    <div class="sec-label">Compte</div>
+    <div class="menu-card">
+        <button class="menu-row" onclick="ouvrirPanel('panelCompte')">
+            <span class="mr-txt">Paramètres du compte<span class="mr-sub">E-mail, prénom, mot de passe</span></span>
+            <span class="mr-chev">›</span>
+        </button>
+        <a class="menu-row" href="plans.html">
+            <span class="mr-txt">Gérer l'abonnement<span class="mr-sub">Formules, avantages Premium</span></span>
+            <span class="mr-chev">›</span>
+        </a>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="sec-label">Notifications</div>
+    <div class="menu-card">
+        <div class="menu-row" style="cursor:default">
+            <span class="mr-txt">Rappel de pesée<span class="mr-sub">La note dans le journal si tu ne t'es pas pesé</span></span>
+            <label class="toggle"><input type="checkbox" id="notifPesee" onchange="sauverNotifs()"><span class="tg"></span></label>
+        </div>
+        <div class="menu-row" style="cursor:default">
+            <span class="mr-txt">E-mails du coach<span class="mr-sub">Programme, ajustements, suivi</span></span>
+            <label class="toggle"><input type="checkbox" id="notifCoach" onchange="sauverNotifs()"><span class="tg"></span></label>
+        </div>
+        <div class="note">Les notifications push (rappels sur ton écran même app fermée) arriveront avec l'application native.</div>
+    </div>
+
+    <!-- SUIVI AUTOMATIQUE -->
+    <div class="sec-label">Suivi automatique</div>
+    <div class="menu-card">
+        <div class="menu-row" style="cursor:default">
+            <span class="mr-txt">Santé Connect / Samsung Health<span class="mr-sub">Synchroniser pas, poids et séances automatiquement</span></span>
+            <span class="badge-soon">BIENTÔT</span>
+        </div>
+        <div class="note">Santé Connect est le hub santé d'Android : il permet aux applis (Samsung Health, Fitbit…) de partager leurs données entre elles. Cette synchronisation sera disponible avec l'application native BELFIT.</div>
+    </div>
+
+    <!-- SOCIAL -->
+    <div class="sec-label">Social</div>
+    <div class="menu-card">
+        <button class="menu-row" onclick="inviterAmis()">
+            <span class="mr-txt">Invite des amis<span class="mr-sub">1 mois offert quand ton filleul s'abonne</span></span>
+            <span class="mr-chev">›</span>
+        </button>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <div class="sec-label">Documents</div>
+    <div class="menu-card">
+        <a class="menu-row" href="confidentialite.html">
+            <span class="mr-txt">Politique de confidentialité & conditions d'utilisation</span>
+            <span class="mr-chev">›</span>
+        </a>
+    </div>
+
+    <!-- ASSISTANCE -->
+    <div class="sec-label">Assistance</div>
+    <div class="menu-card">
+        <a class="menu-row" href="aide.html" style="color:var(--em-dark)">
+            <span class="mr-txt">Obtenir de l'aide<span class="mr-sub">FAQ et contact</span></span>
+            <span class="mr-chev">›</span>
+        </a>
+    </div>
+
+    <!-- PIED -->
+    <div class="foot">
+        <div class="f-logo">BEL<span>FIT</span></div>
+        <div class="f-ver">v1.0 · Startup belge 🇧🇪</div>
+        <button class="logout-btn" onclick="logout()">SE DÉCONNECTER</button>
+    </div>
+</div>
+
+<!-- ===== PANEL : PARAMÈTRES DU COMPTE ===== -->
+<div class="panel" id="panelCompte">
+    <div class="panel-inner">
+        <div class="panel-top">
+            <button class="back-btn" onclick="fermerPanel('panelCompte')" style="border:none">←</button>
+            <div class="panel-title">Paramètres du compte</div>
+        </div>
+
+        <div class="menu-card">
+            <div class="acc-row"><span class="ar-l">E-mail</span><span class="ar-v" id="accEmail">—</span></div>
+            <div class="acc-row"><span class="ar-l">Prénom</span><input type="text" id="accPrenom"></div>
+            <div class="acc-row"><span class="ar-l">Mot de passe</span><span class="ar-v">••••••••</span></div>
+            <div class="acc-row"><span class="ar-l">Système d'unités</span><span class="ar-v">Européen (kg, cm)</span></div>
+        </div>
+        <button class="save-btn" onclick="sauverCompte()">Enregistrer</button>
+        <div class="saved-toast" id="toastCompte">Enregistré ✓</div>
+
+        <div class="menu-card" style="margin-top:18px">
+            <button class="acc-action" onclick="changerMdp()">Changer mon mot de passe</button>
+            <button class="acc-action danger" onclick="document.getElementById('delModal').classList.add('show')">Supprimer le compte</button>
+        </div>
+        <div class="note" id="mdpNote" style="display:none">Un e-mail de réinitialisation vient d'être envoyé à ton adresse. Ouvre-le pour choisir un nouveau mot de passe.</div>
+    </div>
+</div>
+
+<!-- ===== MODALE SUPPRESSION ===== -->
+<div class="modal-overlay" id="delModal" onclick="if(event.target===this)this.classList.remove('show')">
+    <div class="modal">
+        <h3>Supprimer ton compte ?</h3>
+        <p>Cette action est définitive : ton compte, ton accès Premium et tes données seront supprimés. Tes données locales (journal, pesées) resteront sur cet appareil tant que tu ne les effaces pas.</p>
+        <button class="m-danger" onclick="supprimerCompte()">Oui, supprimer définitivement</button>
+        <button class="m-sec" onclick="document.getElementById('delModal').classList.remove('show')">Annuler</button>
+    </div>
+</div>
+
+<script>
+// ===== NOTIFICATIONS (préférences locales) =====
+let notifs = { pesee:true, coach:true };
+try{ const n = JSON.parse(localStorage.getItem('repz_notifs')||'null'); if(n) notifs = n; }catch(e){}
+document.getElementById('notifPesee').checked = notifs.pesee !== false;
+document.getElementById('notifCoach').checked = notifs.coach !== false;
+function sauverNotifs(){
+    notifs.pesee = document.getElementById('notifPesee').checked;
+    notifs.coach = document.getElementById('notifCoach').checked;
+    localStorage.setItem('repz_notifs', JSON.stringify(notifs));
+}
+
+// ===== PANELS =====
+function ouvrirPanel(id){ document.getElementById(id).classList.add('show'); window.scrollTo(0,0); }
+function fermerPanel(id){ document.getElementById(id).classList.remove('show'); }
+
+// ===== COMPTE =====
+function remplirCompte(user){
+    document.getElementById('accEmail').textContent = user.email || '—';
+    document.getElementById('accPrenom').value = user.displayName || localStorage.getItem('repz_firstName') || '';
+}
+function sauverCompte(){
+    const user = auth.currentUser;
+    const prenom = document.getElementById('accPrenom').value.trim();
+    if(!prenom){ alert('Entre un prénom'); return; }
+    localStorage.setItem('repz_firstName', prenom);
+    // Synchroniser avec le profil local
+    try{
+        const p = JSON.parse(localStorage.getItem('repz_profile')||'{}');
+        p.prenom = prenom;
+        localStorage.setItem('repz_profile', JSON.stringify(p));
+    }catch(e){}
+    const fin = ()=>{
+        const t = document.getElementById('toastCompte'); t.style.display='block';
+        setTimeout(()=>{ t.style.display='none'; }, 900);
+    };
+    if(user){ user.updateProfile({ displayName: prenom }).then(fin).catch(fin); } else { fin(); }
+}
+function changerMdp(){
+    const user = auth.currentUser;
+    if(!user || !user.email){ alert('Connecte-toi pour changer ton mot de passe.'); return; }
+    auth.sendPasswordResetEmail(user.email)
+        .then(()=>{ document.getElementById('mdpNote').style.display='block'; })
+        .catch(()=>{ alert("Impossible d'envoyer l'e-mail pour le moment. Réessaie plus tard."); });
+}
+function supprimerCompte(){
+    const user = auth.currentUser;
+    if(!user){ alert('Connecte-toi pour supprimer ton compte.'); return; }
+    user.delete().then(()=>{
+        localStorage.removeItem('repz_premium');
+        sessionStorage.removeItem('repz_premSynced');
+        alert('Ton compte a été supprimé.');
+        window.location.href = 'index.html';
+    }).catch((e)=>{
+        document.getElementById('delModal').classList.remove('show');
+        if(e && e.code === 'auth/requires-recent-login'){
+            alert("Par sécurité, reconnecte-toi puis réessaie la suppression (ta session est trop ancienne).");
+        } else {
+            alert("Impossible de supprimer le compte pour le moment. Réessaie plus tard.");
+        }
+    });
+}
+
+// ===== INVITER DES AMIS =====
+function inviterAmis(){
+    const texte = "Je suis sur BELFIT 🇧🇪 — coaching nutrition & training avec un vrai coach. Rejoins-moi : https://repz-1.github.io/Repz-macros/ (mentionne mon prénom à l'inscription, on gagne tous les deux un avantage sur l'abonnement 💪)";
+    if(navigator.share){
+        navigator.share({ title:'BELFIT', text:texte }).catch(()=>{});
+    } else if(navigator.clipboard){
+        navigator.clipboard.writeText(texte);
+        alert("Message d'invitation copié ! Colle-le où tu veux.");
+    }
+}
+
+// ===== DÉCONNEXION =====
+function logout(){
+    localStorage.removeItem('repz_premium');
+    localStorage.removeItem('repz_invite');
+    localStorage.removeItem('repz_inviteDebut');
+    sessionStorage.removeItem('repz_premSynced');
+    auth.signOut().finally(()=>{ window.location.href='index.html'; });
+}
+</script>
+</body>
+</html>

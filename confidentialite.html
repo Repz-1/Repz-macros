@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<style>html,body{background:#eeece7 !important;margin:0}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10B981">
+<title>BELFIT — Confidentialité & conditions</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
+<style>
+:root{ --em:#10B981; --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0; --card:#fcfbf8; --bg:#eeece7; }
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+.container { max-width:760px; margin:0 auto; padding:16px 18px 60px; }
+.back-btn { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#fff; border:1.5px solid var(--line); color:var(--text); text-decoration:none; font-size:19px; }
+h1 { font-size:23px; font-weight:800; margin:12px 0 4px; }
+.maj { font-size:12.5px; color:var(--dim); margin-bottom:22px; }
+h2 { font-size:17px; font-weight:800; margin:26px 0 8px; }
+p, li { font-size:14px; color:#374151; line-height:1.65; }
+ul { padding-left:20px; margin:6px 0; }
+.card { background:var(--card); border:1.5px solid #e7e2d9; border-radius:18px; padding:18px; margin-top:14px; }
+a { color:#047857; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="container">
+    <a href="parametres.html" class="back-btn">←</a>
+    <h1>Politique de confidentialité & conditions d'utilisation</h1>
+    <div class="maj">Dernière mise à jour : juillet 2026 · BELFIT, Belgique · Contact : coach@belfit.be</div>
+
+    <div class="card">
+    <h2 style="margin-top:0">1. Qui sommes-nous</h2>
+    <p>BELFIT est une application belge de coaching en nutrition et en entraînement. Le responsable du traitement de tes données est BELFIT, joignable à l'adresse <a href="mailto:coach@belfit.be">coach@belfit.be</a>.</p>
+
+    <h2>2. Données que nous collectons</h2>
+    <ul>
+        <li><strong>Données de compte</strong> : adresse e-mail, prénom, mot de passe (chiffré par Firebase, jamais visible par nous).</li>
+        <li><strong>Données de santé et de forme</strong> : poids, taille, date de naissance, sexe, objectif, niveau d'activité, allergies, préférences alimentaires, éventuelles pathologies déclarées dans le questionnaire. Ces données sont sensibles : elles ne sont utilisées que pour construire ton programme personnalisé, avec ton consentement explicite au moment où tu remplis le questionnaire.</li>
+        <li><strong>Données d'utilisation locales</strong> : ton journal alimentaire, tes pesées, tes séances et tes aliments personnalisés sont stockés sur ton appareil (localStorage), pas sur nos serveurs.</li>
+        <li><strong>Données de paiement</strong> : les paiements sont traités par notre prestataire Lemon Squeezy. Nous ne voyons ni ne stockons jamais tes données bancaires.</li>
+    </ul>
+
+    <h2>3. Comment nous utilisons tes données</h2>
+    <ul>
+        <li>Créer et sécuriser ton compte (Firebase Authentication, Google Cloud — région Europe).</li>
+        <li>Vérifier ton statut Premium (Firestore, région europe-west1).</li>
+        <li>Transmettre ton questionnaire et tes demandes d'ajustement à ton coach (EmailJS → coach@belfit.be).</li>
+        <li>Te répondre et assurer le suivi de ton programme.</li>
+    </ul>
+    <p>Nous ne vendons jamais tes données. Aucune publicité, aucun partage à des fins marketing tierces.</p>
+
+    <h2>4. Sous-traitants</h2>
+    <ul>
+        <li><strong>Google Firebase</strong> (authentification, base de données) — hébergement UE.</li>
+        <li><strong>EmailJS</strong> (acheminement des e-mails vers le coach).</li>
+        <li><strong>Lemon Squeezy</strong> (paiement et gestion des abonnements, en tant que Merchant of Record).</li>
+        <li><strong>GitHub Pages</strong> (hébergement de l'application).</li>
+    </ul>
+
+    <h2>5. Durée de conservation</h2>
+    <p>Ton compte et les données associées sont conservés tant que ton compte est actif. Si tu supprimes ton compte (Paramètres → Paramètres du compte → Supprimer le compte), tes données d'authentification et ton statut Premium sont supprimés. Les données stockées localement sur ton appareil restent sous ton contrôle.</p>
+
+    <h2>6. Tes droits (RGPD)</h2>
+    <p>Tu disposes des droits d'accès, de rectification, d'effacement, de limitation, de portabilité et d'opposition sur tes données. Pour les exercer : <a href="mailto:coach@belfit.be">coach@belfit.be</a>. Tu peux aussi introduire une réclamation auprès de l'Autorité de protection des données belge (APD, <a href="https://www.autoriteprotectiondonnees.be">autoriteprotectiondonnees.be</a>).</p>
+
+    <h2>7. Conditions d'utilisation</h2>
+    <ul>
+        <li>BELFIT fournit des conseils de nutrition et d'entraînement à visée de bien-être et de forme physique. Ce n'est pas un service médical : en cas de pathologie, de grossesse ou de doute, consulte un professionnel de santé avant de suivre un programme.</li>
+        <li>L'abonnement Premium est facturé selon la formule choisie (1, 3 ou 12 mois) via Lemon Squeezy. La gestion et l'annulation se font via le lien reçu dans l'e-mail de confirmation d'achat.</li>
+        <li>Les programmes personnalisés sont livrés sous 24 à 48h ouvrées après réception du questionnaire complet.</li>
+        <li>Les contenus de l'application (programmes, base d'aliments, textes) sont la propriété de BELFIT et réservés à un usage personnel.</li>
+        <li>Tu es responsable de la confidentialité de tes identifiants de connexion.</li>
+    </ul>
+
+    <h2>8. Modifications</h2>
+    <p>Cette politique peut évoluer avec l'application. La date de dernière mise à jour figure en haut de page ; les changements importants te seront signalés dans l'app.</p>
+    </div>
+</div>
+</body>
+</html>
