@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<style>html,body{background:#eeece7 !important;margin:0}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#10B981">
+<title>BELFIT — Profil</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
+<style>
+:root{
+    --em:#10B981; --em-dark:#047857;
+    --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0;
+    --card:#fcfbf8; --bg:#eeece7;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+}
+.container { max-width:900px; margin:0 auto; padding:16px 16px 110px; }
+.back-btn { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#fff; border:1.5px solid var(--line); color:var(--text); text-decoration:none; font-size:19px; }
+.page-title { font-size:24px; font-weight:800; margin:10px 2px 18px; }
+
+/* ===== EN-TÊTE PROFIL ===== */
+.profile-card { position:relative; background:var(--card); border:1.5px solid #e7e2d9; border-radius:22px; padding:24px 18px 20px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:22px; text-align:center; }
+.avatar-badge { width:34px; height:34px; margin:0 auto 10px; border-radius:50%; background:#d1fae5; display:flex; align-items:center; justify-content:center; }
+.avatar-badge svg { width:19px; height:19px; stroke:#047857; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.avatar-wrap { position:relative; width:104px; height:104px; margin:0 auto 12px; }
+.avatar { width:104px; height:104px; border-radius:50%; background:#e7e2d9; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #fff; box-shadow:0 4px 14px rgba(60,50,40,.14); }
+.avatar img { width:100%; height:100%; object-fit:cover; }
+.avatar svg { width:52px; height:52px; stroke:#b6afa2; fill:none; stroke-width:1.6; }
+.avatar-edit { position:absolute; bottom:0; right:0; width:32px; height:32px; border-radius:50%; background:var(--em); color:#fff; border:2.5px solid var(--card); font-size:18px; font-weight:800; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.p-name { font-size:22px; font-weight:800; }
+.p-age { font-size:14px; color:var(--dim); font-weight:600; margin-top:2px; }
+.p-facts { margin-top:18px; border-top:1px solid var(--line); padding-top:6px; text-align:left; }
+.p-fact { display:flex; justify-content:space-between; align-items:center; padding:11px 2px; font-size:15px; border-bottom:1px solid var(--line); }
+.p-fact:last-child { border-bottom:none; }
+.p-fact .pf-l { color:var(--dim); font-weight:600; }
+.p-fact .pf-v { font-weight:800; }
+
+/* ===== LISTE PERSONNALISATION ===== */
+.sec-label { font-size:13px; font-weight:800; letter-spacing:.07em; color:#8a8375; text-transform:uppercase; margin:0 4px 10px; }
+.menu-card { background:var(--card); border:1.5px solid #e7e2d9; border-radius:20px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:22px; overflow:hidden; }
+.menu-row { display:flex; align-items:center; gap:13px; width:100%; background:none; border:none; text-align:left; padding:16px; font-size:15.5px; font-weight:700; color:var(--text); cursor:pointer; border-bottom:1px solid var(--line); font-family:inherit; }
+.menu-row:last-child { border-bottom:none; }
+.menu-row:active { background:#f5f2ec; }
+.mr-ic { flex:none; width:36px; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center; background:#ecfdf5; }
+.mr-ic svg { width:19px; height:19px; stroke:#047857; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.mr-ic.locked { background:#f3f0ea; }
+.mr-ic.locked svg { stroke:#a8a094; }
+.mr-txt { flex:1; }
+.mr-sub { display:block; font-size:12.5px; font-weight:600; color:var(--dim); margin-top:2px; }
+.mr-sub.quota { color:#047857; }
+.mr-chev { color:#c4bcae; font-size:18px; }
+
+/* ===== EMAIL ===== */
+.mail-card { display:none; background:linear-gradient(135deg,#fff7ed,#ffedd5); border:1.5px solid #fed7aa; border-radius:20px; padding:20px 18px; text-align:center; margin-bottom:22px; }
+.mail-card.show { display:block; }
+.mail-card h3 { font-size:18px; font-weight:800; color:#9a3412; }
+.mail-card p { font-size:13.5px; color:#b45309; margin:6px 0 14px; line-height:1.5; }
+.mail-btn { background:#ea580c; color:#fff; border:none; border-radius:12px; padding:12px 22px; font-size:14px; font-weight:800; cursor:pointer; }
+.mail-btn:disabled { opacity:.55; }
+.mail-ok { display:none; font-size:13px; font-weight:700; color:#047857; margin-top:10px; }
+
+/* ===== SOUS-PAGES (panneaux) ===== */
+.panel { display:none; position:fixed; inset:0; z-index:900; background:var(--bg); overflow-y:auto; }
+.panel.show { display:block; }
+.panel-inner { max-width:900px; margin:0 auto; padding:16px 16px 60px; }
+.panel-top { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.panel-title { font-size:19px; font-weight:800; }
+.edit-card { background:var(--card); border:1.5px solid #e7e2d9; border-radius:20px; box-shadow:0 6px 18px rgba(60,50,40,.07); overflow:hidden; margin-bottom:18px; }
+.edit-row { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--line); }
+.edit-row:last-child { border-bottom:none; }
+.edit-row label { font-size:14.5px; font-weight:700; color:var(--text); flex:1; }
+.edit-row input, .edit-row select {
+    width:150px; padding:10px 12px; border:1.5px solid #e5e0d6; border-radius:10px;
+    font-size:14.5px; font-weight:700; text-align:right; background:#fff; color:var(--text); font-family:inherit;
+}
+.edit-row input:focus, .edit-row select:focus { outline:none; border-color:var(--em); }
+.save-btn { display:block; width:100%; background:var(--em); color:#fff; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; margin-top:4px; }
+.save-btn:active { background:#0e9f6e; }
+.saved-toast { display:none; text-align:center; font-size:13.5px; font-weight:800; color:#047857; padding:10px; }
+
+/* Préférences & allergies */
+.pref-opts { display:flex; flex-direction:column; gap:8px; padding:14px 16px; }
+.pref-opt { display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border:1.5px solid #e5e0d6; border-radius:13px; background:#fff; font-size:14.5px; font-weight:700; cursor:pointer; }
+.pref-opt.on { border-color:var(--em); background:#ecfdf5; color:#047857; }
+.pref-opt .po-check { display:none; }
+.pref-opt.on .po-check { display:inline; }
+.chips { display:flex; flex-wrap:wrap; gap:8px; padding:14px 16px; }
+.chip { padding:9px 14px; border:1.5px solid #e5e0d6; border-radius:20px; background:#fff; font-size:13.5px; font-weight:700; cursor:pointer; }
+.chip.on { border-color:var(--em); background:#ecfdf5; color:#047857; }
+
+/* Modale quota / premium */
+.modal-overlay { display:none; position:fixed; inset:0; z-index:950; background:rgba(15,23,42,.5); align-items:center; justify-content:center; padding:22px; }
+.modal-overlay.show { display:flex; }
+.modal { background:#fff; border-radius:20px; padding:24px 20px; width:100%; max-width:380px; text-align:center; }
+.modal h3 { font-size:18px; font-weight:800; margin-bottom:8px; }
+.modal p { font-size:13.5px; color:var(--dim); line-height:1.55; margin-bottom:16px; }
+.modal .m-main { display:block; width:100%; background:var(--em-dark); color:#fff; text-decoration:none; border:none; border-radius:13px; padding:14px; font-size:14.5px; font-weight:800; cursor:pointer; margin-bottom:8px; font-family:inherit; }
+.modal .m-sec { background:none; border:none; color:var(--dim); font-size:13.5px; font-weight:700; cursor:pointer; padding:8px; font-family:inherit; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+    position:fixed; bottom:0; left:0; right:0; z-index:80;
+    display:flex; justify-content:space-around; align-items:center;
+    background:rgba(252,251,248,.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid #e7e2d9; padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+}
+.bn-item { display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:#8a8375; flex:1; padding:2px 0; }
+.bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.bn-item span { font-size:10.5px; font-weight:700; }
+.bn-item.active { color:#10B981; }
+.bn-item:active { transform:scale(.94); }
+</style>
+</head>
+<body>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+let authVerifie = false;
+auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(user){
+        authVerifie = true;
+        if(estInvite) localStorage.removeItem('repz_invite');
+        majEmailCard(user);
+        majNomFirebase(user);
+    } else if(estInvite){
+        authVerifie = true;
+    } else if(!authVerifie){
+        setTimeout(() => {
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+                window.location.href = 'index.html';
+            }
+        }, 1200);
+    }
+});
+</script>
+
+<div class="container">
+    <a href="app.html" class="back-btn">←</a>
+    <div class="page-title">Profil</div>
+
+    <!-- EN-TÊTE -->
+    <div class="profile-card">
+        <div class="avatar-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></div>
+        <div class="avatar-wrap">
+            <div class="avatar" id="avatarBox"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21c1-4 4-6 7.5-6s6.5 2 7.5 6"/></svg></div>
+            <button class="avatar-edit" onclick="document.getElementById('avatarInput').click()">＋</button>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="chargerAvatar(this)">
+        </div>
+        <div class="p-name" id="pName">—</div>
+        <div class="p-age" id="pAge"></div>
+        <div class="p-facts">
+            <div class="p-fact"><span class="pf-l">Poids actuel</span><span class="pf-v" id="fPoids">—</span></div>
+            <div class="p-fact"><span class="pf-l">Objectif</span><span class="pf-v" id="fObjectif">—</span></div>
+            <div class="p-fact"><span class="pf-l">Calories cibles</span><span class="pf-v" id="fKcal">—</span></div>
+        </div>
+    </div>
+
+    <!-- EMAIL NON VÉRIFIÉ -->
+    <div class="mail-card" id="mailCard">
+        <h3>Valide ton adresse e-mail</h3>
+        <p>Pour sécuriser ton compte BELFIT et recevoir ton programme, confirme ton adresse via le lien envoyé par e-mail.</p>
+        <button class="mail-btn" id="mailBtn" onclick="renvoyerMail()">Renvoyer l'e-mail</button>
+        <div class="mail-ok" id="mailOk">E-mail envoyé ✓ Vérifie ta boîte de réception (et tes spams).</div>
+    </div>
+
+    <!-- PERSONNALISATION -->
+    <div class="sec-label">Personnalisation</div>
+    <div class="menu-card">
+        <button class="menu-row" onclick="ouvrirPanel('panelInfos')">
+            <span class="mr-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></span>
+            <span class="mr-txt">Mes informations</span>
+            <span class="mr-chev">›</span>
+        </button>
+        <button class="menu-row" id="rowMacros" onclick="tapAjustement('macros')">
+            <span class="mr-ic" id="icMacros"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.5 4"/></svg></span>
+            <span class="mr-txt">Répartition des macros<span class="mr-sub" id="subMacros">Protéines, glucides, lipides</span></span>
+            <span class="mr-chev">›</span>
+        </button>
+        <button class="menu-row" id="rowKcal" onclick="tapAjustement('kcal')">
+            <span class="mr-ic" id="icKcal"><svg viewBox="0 0 24 24"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg></span>
+            <span class="mr-txt">Ajustement des calories<span class="mr-sub" id="subKcal"></span></span>
+            <span class="mr-chev">›</span>
+        </button>
+        <button class="menu-row" onclick="ouvrirPanel('panelPrefs')">
+            <span class="mr-ic"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg></span>
+            <span class="mr-txt">Besoins et préférences alimentaires<span class="mr-sub" id="subPrefs"></span></span>
+            <span class="mr-chev">›</span>
+        </button>
+    </div>
+</div>
+
+<!-- ===== PANEL : MES INFORMATIONS ===== -->
+<div class="panel" id="panelInfos">
+    <div class="panel-inner">
+        <div class="panel-top">
+            <button class="back-btn" onclick="fermerPanel('panelInfos')" style="border:none;cursor:pointer">←</button>
+            <div class="panel-title">Mes informations</div>
+        </div>
+
+        <div class="sec-label">Ton objectif</div>
+        <div class="edit-card">
+            <div class="edit-row"><label>Objectif</label>
+                <select id="inObjectif">
+                    <option>Prendre du poids</option>
+                    <option>Perdre du poids</option>
+                    <option>Maintien</option>
+                </select>
+            </div>
+            <div class="edit-row"><label>Objectif de poids (kg)</label><input type="number" id="inObjPoids" inputmode="decimal" step="0.5"></div>
+        </div>
+
+        <div class="sec-label">Détails</div>
+        <div class="edit-card">
+            <div class="edit-row"><label>Prénom</label><input type="text" id="inPrenom"></div>
+            <div class="edit-row"><label>Poids actuel (kg)</label><input type="number" id="inPoids" inputmode="decimal" step="0.1"></div>
+            <div class="edit-row"><label>Taille (cm)</label><input type="number" id="inTaille" inputmode="numeric"></div>
+            <div class="edit-row"><label>Date de naissance</label><input type="date" id="inNaissance"></div>
+            <div class="edit-row"><label>Sexe</label>
+                <select id="inSexe"><option>Homme</option><option>Femme</option></select>
+            </div>
+            <div class="edit-row"><label>Niveau d'activité</label>
+                <select id="inActivite">
+                    <option>Sédentaire</option><option>Léger</option><option>Modéré</option><option>Actif</option><option>Très actif</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="save-btn" onclick="sauverInfos()">Enregistrer</button>
+        <div class="saved-toast" id="toastInfos">Enregistré ✓</div>
+    </div>
+</div>
+
+<!-- ===== PANEL : BESOINS & PRÉFÉRENCES ===== -->
+<div class="panel" id="panelPrefs">
+    <div class="panel-inner">
+        <div class="panel-top">
+            <button class="back-btn" onclick="fermerPanel('panelPrefs')" style="border:none;cursor:pointer">←</button>
+            <div class="panel-title">Besoins et préférences</div>
+        </div>
+
+        <div class="sec-label">Préférence alimentaire</div>
+        <div class="edit-card"><div class="pref-opts" id="prefOpts"></div></div>
+
+        <div class="sec-label">Allergies & intolérances</div>
+        <div class="edit-card"><div class="chips" id="allergChips"></div></div>
+
+        <button class="save-btn" onclick="sauverPrefs()">Enregistrer</button>
+        <div class="saved-toast" id="toastPrefs">Enregistré ✓</div>
+    </div>
+</div>
+
+<!-- ===== MODALE PREMIUM (verrouillé) ===== -->
+<div class="modal-overlay" id="lockModal" onclick="if(event.target===this)this.classList.remove('show')">
+    <div class="modal">
+        <h3>Fonction Premium</h3>
+        <p>L'ajustement personnalisé des macros et des calories est réalisé avec ton coach BELFIT. Il est réservé aux membres Premium.</p>
+        <a href="plans.html" class="m-main">Découvrir Premium</a>
+        <button class="m-sec" onclick="document.getElementById('lockModal').classList.remove('show')">Plus tard</button>
+    </div>
+</div>
+
+<!-- ===== MODALE AJUSTEMENT (premium) ===== -->
+<div class="modal-overlay" id="adjModal" onclick="if(event.target===this)this.classList.remove('show')">
+    <div class="modal">
+        <h3 id="adjTitle">Demander un ajustement</h3>
+        <p id="adjText"></p>
+        <button class="m-main" id="adjSend" onclick="envoyerAjustement()">Envoyer ma demande au coach</button>
+        <button class="m-sec" onclick="document.getElementById('adjModal').classList.remove('show')">Annuler</button>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="app.html" class="bn-item">
+        <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
+        <span>Journal</span>
+    </a>
+    <a href="entrainements.html" class="bn-item">
+        <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
+        <span>Training</span>
+    </a>
+    <a href="mes-stats.html" class="bn-item">
+        <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
+        <span>Stats</span>
+    </a>
+    <a href="plans.html" class="bn-item bn-premium" id="bnPremium">
+        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
+        <span>Premium</span>
+    </a>
+</nav>
+
+<script>
+// ===== DONNÉES =====
+function estPremium(){ return localStorage.getItem('repz_premium') === '1'; }
+function estInviteRepz(){ return localStorage.getItem('repz_invite') === '1'; }
+
+let profil = {};
+try{ profil = JSON.parse(localStorage.getItem('repz_profile')||'{}'); }catch(e){ profil = {}; }
+let goal = {};
+try{ goal = JSON.parse(localStorage.getItem('repz_goal')||'{}'); }catch(e){ goal = {}; }
+let weightLog = [];
+try{ weightLog = JSON.parse(localStorage.getItem('repz_weightLog')||'[]'); }catch(e){ weightLog = []; }
+
+function sauverProfil(){ localStorage.setItem('repz_profile', JSON.stringify(profil)); }
+
+// ===== QUOTA D'AJUSTEMENTS (Premium) =====
+const QUOTA_MENSUEL = 2; // ajustements par mois et par type (macros / calories)
+function moisCourant(){ return new Date().toISOString().slice(0,7); }
+function lireQuota(){
+    let q = {};
+    try{ q = JSON.parse(localStorage.getItem('repz_adjust')||'{}'); }catch(e){ q = {}; }
+    if(q.mois !== moisCourant()){ q = { mois:moisCourant(), macros:QUOTA_MENSUEL, kcal:QUOTA_MENSUEL }; ecrireQuota(q); }
+    return q;
+}
+function ecrireQuota(q){ localStorage.setItem('repz_adjust', JSON.stringify(q)); }
+
+// ===== EN-TÊTE =====
+function calculerAge(iso){
+    if(!iso) return null;
+    const d = new Date(iso); if(isNaN(d)) return null;
+    const now = new Date();
+    let age = now.getFullYear() - d.getFullYear();
+    const m = now.getMonth() - d.getMonth();
+    if(m < 0 || (m === 0 && now.getDate() < d.getDate())) age--;
+    return (age > 0 && age < 120) ? age : null;
+}
+function majNomFirebase(user){
+    if(user && user.displayName && !profil.prenom){
+        document.getElementById('pName').textContent = user.displayName;
+    }
+}
+function rafraichirEnTete(){
+    const prenom = profil.prenom || localStorage.getItem('repz_firstName') || 'Mon profil';
+    document.getElementById('pName').textContent = prenom;
+    const age = calculerAge(profil.naissance);
+    document.getElementById('pAge').textContent = age ? (age + ' ans') : '';
+    const dernierPoids = (weightLog.length ? weightLog[weightLog.length-1].weight : null) || goal.weight || profil.poids;
+    document.getElementById('fPoids').textContent = dernierPoids ? (dernierPoids + ' kg') : '—';
+    document.getElementById('fObjectif').textContent = profil.objectif || '—';
+    document.getElementById('fKcal').textContent = goal.kcal ? (goal.kcal + ' kcal/jour') : '—';
+}
+
+// ===== AVATAR =====
+function chargerAvatar(input){
+    const file = input.files && input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+            // Redimensionner en 220px carré (centre) pour rester léger en localStorage
+            const S = 220;
+            const c = document.createElement('canvas'); c.width = S; c.height = S;
+            const ctx = c.getContext('2d');
+            const min = Math.min(img.width, img.height);
+            const sx = (img.width - min)/2, sy = (img.height - min)/2;
+            ctx.drawImage(img, sx, sy, min, min, 0, 0, S, S);
+            const data = c.toDataURL('image/jpeg', 0.82);
+            try{ localStorage.setItem('repz_avatar', data); }catch(err){ alert("Photo trop lourde, réessaie avec une image plus petite."); return; }
+            afficherAvatar();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+function afficherAvatar(){
+    const data = localStorage.getItem('repz_avatar');
+    if(data){ document.getElementById('avatarBox').innerHTML = '<img src="'+data+'" alt="Photo de profil">'; }
+}
+
+// ===== PANELS =====
+function ouvrirPanel(id){ document.getElementById(id).classList.add('show'); window.scrollTo(0,0); }
+function fermerPanel(id){ document.getElementById(id).classList.remove('show'); }
+
+// ===== MES INFORMATIONS =====
+function remplirInfos(){
+    document.getElementById('inObjectif').value = profil.objectif || 'Prendre du poids';
+    document.getElementById('inObjPoids').value = profil.objPoids || '';
+    document.getElementById('inPrenom').value = profil.prenom || localStorage.getItem('repz_firstName') || '';
+    const dernierPoids = (weightLog.length ? weightLog[weightLog.length-1].weight : null) || goal.weight || '';
+    document.getElementById('inPoids').value = profil.poids || dernierPoids;
+    document.getElementById('inTaille').value = profil.taille || '';
+    document.getElementById('inNaissance').value = profil.naissance || '';
+    document.getElementById('inSexe').value = profil.sexe || 'Homme';
+    document.getElementById('inActivite').value = profil.activite || 'Modéré';
+}
+function sauverInfos(){
+    profil.objectif = document.getElementById('inObjectif').value;
+    profil.objPoids = parseFloat(document.getElementById('inObjPoids').value) || null;
+    profil.prenom = document.getElementById('inPrenom').value.trim();
+    profil.poids = parseFloat(document.getElementById('inPoids').value) || null;
+    profil.taille = parseInt(document.getElementById('inTaille').value) || null;
+    profil.naissance = document.getElementById('inNaissance').value || null;
+    profil.sexe = document.getElementById('inSexe').value;
+    profil.activite = document.getElementById('inActivite').value;
+    sauverProfil();
+    if(profil.prenom) localStorage.setItem('repz_firstName', profil.prenom);
+    // Synchroniser le poids avec l'objectif du journal
+    if(profil.poids && goal && typeof goal === 'object'){ goal.weight = profil.poids; localStorage.setItem('repz_goal', JSON.stringify(goal)); }
+    rafraichirEnTete();
+    const t = document.getElementById('toastInfos'); t.style.display='block';
+    setTimeout(()=>{ t.style.display='none'; fermerPanel('panelInfos'); }, 700);
+}
+
+// ===== AJUSTEMENTS MACROS / CALORIES =====
+let adjType = null;
+function rafraichirAjustements(){
+    const prem = estPremium();
+    const q = lireQuota();
+    const lockSvg = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
+    if(!prem){
+        document.getElementById('icMacros').classList.add('locked');
+        document.getElementById('icKcal').classList.add('locked');
+        document.getElementById('icMacros').innerHTML = lockSvg;
+        document.getElementById('icKcal').innerHTML = lockSvg;
+        document.getElementById('subMacros').textContent = 'Réservé aux membres Premium';
+        document.getElementById('subKcal').textContent = 'Réservé aux membres Premium';
+    } else {
+        document.getElementById('subMacros').textContent = q.macros + ' ajustement' + (q.macros>1?'s':'') + ' restant' + (q.macros>1?'s':'') + ' ce mois-ci';
+        document.getElementById('subMacros').classList.add('quota');
+        document.getElementById('subKcal').textContent = q.kcal + ' ajustement' + (q.kcal>1?'s':'') + ' restant' + (q.kcal>1?'s':'') + ' ce mois-ci';
+        document.getElementById('subKcal').classList.add('quota');
+    }
+}
+function tapAjustement(type){
+    if(estInviteRepz()){ window.location.href = 'index.html'; return; }
+    if(!estPremium()){ document.getElementById('lockModal').classList.add('show'); return; }
+    const q = lireQuota();
+    adjType = type;
+    const reste = q[type];
+    const nom = type === 'macros' ? 'répartition des macros' : 'calories cibles';
+    document.getElementById('adjTitle').textContent = type === 'macros' ? 'Ajuster mes macros' : 'Ajuster mes calories';
+    if(reste <= 0){
+        document.getElementById('adjText').textContent = "Tu as utilisé tes " + QUOTA_MENSUEL + " ajustements du mois pour la " + nom + ". Ton quota se renouvelle le mois prochain.";
+        document.getElementById('adjSend').style.display = 'none';
+    } else {
+        document.getElementById('adjText').textContent = "Ta demande d'ajustement de " + nom + " sera envoyée à ton coach BELFIT, qui te répondra sous 24–48h. Il te reste " + reste + " ajustement" + (reste>1?'s':'') + " ce mois-ci.";
+        document.getElementById('adjSend').style.display = 'block';
+    }
+    document.getElementById('adjModal').classList.add('show');
+}
+function envoyerAjustement(){
+    const q = lireQuota();
+    if(adjType && q[adjType] > 0){ q[adjType]--; ecrireQuota(q); }
+    document.getElementById('adjModal').classList.remove('show');
+    rafraichirAjustements();
+    const user = auth.currentUser;
+    const email = user && user.email ? user.email : '';
+    const nom = adjType === 'macros' ? 'macros' : 'calories';
+    const sujet = encodeURIComponent('Demande d\'ajustement ' + nom + ' — BELFIT');
+    const corps = encodeURIComponent('Bonjour Coach,\n\nJe souhaite un ajustement de mes ' + nom + '.\n\nMon compte : ' + email + '\nMon objectif actuel : ' + (profil.objectif||'—') + '\nMes calories cibles : ' + (goal.kcal||'—') + ' kcal\n\nDétails de ma demande :\n');
+    window.location.href = 'mailto:coach@belfit.be?subject=' + sujet + '&body=' + corps;
+}
+
+// ===== BESOINS & PRÉFÉRENCES =====
+const PREFS = ['Je mange de tout','Végétarien','Végan','Pesco-végétarien','Sans porc'];
+const ALLERG = [
+    'Aucune',
+    // 14 allergènes majeurs (UE)
+    'Gluten','Crustacés','Œufs','Poisson','Arachides','Soja','Lait / lactose','Fruits à coque',
+    'Céleri','Moutarde','Sésame','Sulfites','Lupin','Mollusques',
+    // Intolérances & sensibilités courantes
+    'Fraise','Kiwi','Banane','Avocat','Pomme','Pêche','Tomate','Maïs','Chocolat / cacao','Miel','Levure','Ail','Oignon','FODMAP','Histamine'
+];
+let prefSel = profil.preference || 'Je mange de tout';
+let allergSel = new Set(profil.allergies && profil.allergies.length ? profil.allergies : ['Aucune']);
+
+function renderPrefs(){
+    document.getElementById('prefOpts').innerHTML = PREFS.map(p =>
+        `<div class="pref-opt${prefSel===p?' on':''}" onclick="choisirPref('${p.replace(/'/g,"\\'")}')"><span>${p}</span><span class="po-check">✓</span></div>`
+    ).join('');
+}
+function choisirPref(p){ prefSel = p; renderPrefs(); }
+function renderAllerg(){
+    document.getElementById('allergChips').innerHTML = ALLERG.map(a =>
+        `<div class="chip${allergSel.has(a)?' on':''}" onclick="toggleAllerg('${a.replace(/'/g,"\\'")}')">${a}</div>`
+    ).join('');
+}
+function toggleAllerg(a){
+    if(a === 'Aucune'){ allergSel = new Set(['Aucune']); }
+    else {
+        allergSel.delete('Aucune');
+        if(allergSel.has(a)) allergSel.delete(a); else allergSel.add(a);
+        if(allergSel.size === 0) allergSel.add('Aucune');
+    }
+    renderAllerg();
+}
+function sauverPrefs(){
+    profil.preference = prefSel;
+    profil.allergies = Array.from(allergSel);
+    sauverProfil();
+    rafraichirSubPrefs();
+    const t = document.getElementById('toastPrefs'); t.style.display='block';
+    setTimeout(()=>{ t.style.display='none'; fermerPanel('panelPrefs'); }, 700);
+}
+function rafraichirSubPrefs(){
+    const a = (profil.allergies||[]).filter(x=>x!=='Aucune');
+    const morceaux = [];
+    if(profil.preference && profil.preference !== 'Je mange de tout') morceaux.push(profil.preference);
+    if(a.length) morceaux.push(a.length + ' allergie' + (a.length>1?'s':''));
+    document.getElementById('subPrefs').textContent = morceaux.length ? morceaux.join(' · ') : 'Allergies, régime alimentaire';
+}
+
+// ===== EMAIL =====
+function majEmailCard(user){
+    if(!user || user.emailVerified) return;
+    document.getElementById('mailCard').classList.add('show');
+}
+function renvoyerMail(){
+    const user = auth.currentUser;
+    if(!user) return;
+    const btn = document.getElementById('mailBtn');
+    btn.disabled = true;
+    user.sendEmailVerification().then(()=>{
+        document.getElementById('mailOk').style.display = 'block';
+    }).catch((e)=>{
+        btn.disabled = false;
+        alert(e && e.code === 'auth/too-many-requests'
+            ? "Trop de demandes — attends quelques minutes avant de réessayer."
+            : "Impossible d'envoyer l'e-mail pour le moment. Réessaie plus tard.");
+    });
+}
+
+// ===== INIT =====
+afficherAvatar();
+rafraichirEnTete();
+remplirInfos();
+renderPrefs();
+renderAllerg();
+rafraichirSubPrefs();
+rafraichirAjustements();
+</script>
+</body>
+</html>
