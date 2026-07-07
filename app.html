@@ -3361,7 +3361,7 @@ const EAT_IDEAS = {
     sain: [
         { nom:'Blanc de poulet + riz + légumes', kcal:450, prot:42, ex:'150g poulet · 150g riz cuit · brocoli' },
         { nom:'Saumon + patate douce', kcal:500, prot:33, ex:'150g saumon · 200g patate douce' },
-        { nom:'Omelette 3 œufs + salade + pain complet', kcal:400, prot:24, ex:'3 œufs · salade · 50g pain' },
+        { nom:'Omelette + salade + pain complet', kcal:400, prot:24, ex:'3 œufs · salade · 50g pain' },
         { nom:'Bowl thon + quinoa', kcal:420, prot:35, ex:'1 boîte thon · 150g quinoa · crudités' },
         { nom:'Steak haché 5% + pommes de terre + légumes', kcal:480, prot:34, ex:'150g steak · 200g pdt · haricots verts' }
     ],
@@ -3374,7 +3374,7 @@ const EAT_IDEAS = {
     ],
     plaisir: [
         { nom:'Pâtes bolognaise (riche en viande)', kcal:600, prot:38, ex:'120g pâtes · 150g viande hachée · sauce tomate' },
-        { nom:'Burger maison double steak', kcal:650, prot:42, ex:'pain · 2 steaks hachés · fromage · crudités' },
+        { nom:'Burger maison au steak', kcal:650, prot:42, ex:'pain · 2 steaks hachés · fromage · crudités' },
         { nom:'Wrap poulet fromage', kcal:500, prot:35, ex:'tortilla · 120g poulet · cheddar · sauce light' },
         { nom:'Riz cantonais poulet + œuf', kcal:550, prot:35, ex:'200g riz · 120g poulet · œuf · petits pois' },
         { nom:'Chili con carne', kcal:520, prot:36, ex:'150g bœuf haché · haricots rouges · riz' }
@@ -3382,7 +3382,7 @@ const EAT_IDEAS = {
     vege: [
         { nom:'Buddha bowl pois chiches', kcal:450, prot:20, ex:'200g pois chiches · quinoa · légumes' },
         { nom:'Tofu sauté + riz', kcal:480, prot:26, ex:'200g tofu · 150g riz · légumes wok' },
-        { nom:'Lentilles + 2 œufs + légumes', kcal:420, prot:28, ex:'200g lentilles · 2 œufs · légumes' },
+        { nom:'Lentilles + œufs + légumes', kcal:420, prot:28, ex:'200g lentilles · 2 œufs · légumes' },
         { nom:'Dahl lentilles corail + riz', kcal:480, prot:22, ex:'200g lentilles corail · 150g riz · épices' },
         { nom:'Omelette feta + épinards + pain', kcal:430, prot:25, ex:'3 œufs · 40g feta · épinards · 50g pain' }
     ]
@@ -3474,10 +3474,12 @@ function showEatIdeas(cat){
     // Cible = un repas normal (plafonné), pas toutes les calories restantes
     const cible = Math.round(Math.max(200, Math.min(reste, 650)));
     // Chaque idée est évaluée aussi sur les protéines restantes
+    // Ratio borné pour garder des portions réalistes (max +40%, min -25%)
     const evaluees = ideas.map(idea=>{
-        const ratio = cible / idea.kcal;
+        const ratio = Math.max(0.75, Math.min(1.4, cible / idea.kcal));
+        const kcalA = Math.round(idea.kcal * ratio / 10) * 10;
         const protA = Math.round((idea.prot || 0) * ratio);
-        return { ...idea, ratio, protA, fit: protA <= resteProt + 8 };
+        return { ...idea, ratio, kcalA, protA, fit: protA <= resteProt + 8 };
     });
     // Les plats qui respectent tes protéines restantes d'abord
     evaluees.sort((a,b)=> (b.fit - a.fit) || (a.protA - b.protA));
@@ -3489,7 +3491,7 @@ function showEatIdeas(cat){
         return `<div class="eat-idea${idea.fit ? '' : ' eat-over'}">
             <div class="eat-idea-name">${idea.nom}</div>
             <div class="eat-idea-ex">${portionAjustee}</div>
-            <div class="eat-idea-kcal">≈ ${cible} kcal · ${protTag}</div>
+            <div class="eat-idea-kcal">≈ ${idea.kcalA} kcal · ${protTag}</div>
         </div>`;
     }).join('');
 }
