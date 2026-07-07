@@ -159,8 +159,8 @@ function renderSegs(){
     document.getElementById('segPers').innerHTML = [1,2,3,4].map(p =>
         `<button class="${p===pers?'on':''}" onclick="setPers(${p})">${p===4?'4+':p}</button>`).join('');
 }
-function setJours(j){ jours = j; renderSegs(); }
-function setPers(p){ pers = p; renderSegs(); }
+function setJours(j){ jours = j; renderSegs(); if(state && base.length) generer(); }
+function setPers(p){ pers = p; renderSegs(); if(state && base.length) generer(); }
 
 // ---- Génération depuis la base ----
 function generer(){
