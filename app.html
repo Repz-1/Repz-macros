@@ -707,18 +707,19 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 <body>
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
 #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
-#repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
+#repzSplash .sp-txt{position:absolute;bottom:7%;left:50%;transform:translateX(-50%);width:230px;max-width:66%;height:auto;}
 @keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-#repzSplash .sp-loader{position:absolute;top:calc(50% + 130px);left:50%;transform:translateX(-50%);width:40px;height:40px;border:4px solid #d1fae5;border-top-color:#10B981;border-radius:50%;animation:spSpin .8s linear infinite;}
-@keyframes spSpin{to{transform:translateX(-50%) rotate(360deg)}}
+#repzSplash .sp-bar{position:absolute;top:calc(50% + 130px);left:50%;transform:translateX(-50%);width:190px;max-width:56%;height:6px;background:rgba(255,255,255,.14);border-radius:6px;overflow:hidden;}
+#repzSplash .sp-fill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#FFC400,#F07818,#DE2F14);animation:spLoad 2.3s cubic-bezier(.25,.6,.35,1) forwards;}
+@keyframes spLoad{0%{width:0}18%{width:31%}42%{width:52%}60%{width:64%}78%{width:83%}100%{width:100%}}
 </style>
 <div id="repzSplash">
-  <img class="sp-sym" src="logo-symbol.png" alt="BELFIT">
-  <img class="sp-txt" src="logo-text.png" alt="REP Z">
-  <div class="sp-loader"></div>
+  <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
+  <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
+  <div class="sp-bar"><div class="sp-fill"></div></div>
 </div>
 <script>
 (function(){
@@ -729,7 +730,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
   if(sessionStorage.getItem('repz_splash')){ s.remove(); return; }
   sessionStorage.setItem('repz_splash','1');
   if(tc) tc.setAttribute('content','#0a0a0a');
-  setTimeout(function(){ s.classList.add('hide'); if(tc&&origColor) tc.setAttribute('content',origColor); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
+  setTimeout(function(){ s.classList.add('hide'); if(tc&&origColor) tc.setAttribute('content',origColor); setTimeout(function(){ if(s)s.remove(); },550); }, 2600);
 })();
 </script>
 
