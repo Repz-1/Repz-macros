@@ -113,7 +113,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .modal-h3-ic { display:flex; align-items:center; gap:8px; }
 .modal-h3-ic .ic { width:20px; height:20px; color:#10B981; }
 .nutri-datebar .ndb-date { font-size:15px; font-weight:800; letter-spacing:.06em; color:#047857; text-transform:uppercase; }
-.nutri-datebar .ndb-edit { position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:12px; padding:5px 12px; border-radius:14px; }
+.goal-edit-corner { position:absolute; right:14px; top:14px; font-size:12px; padding:5px 12px; border-radius:14px; z-index:2; }
 .nutri-title { font-size:16px; font-weight:800; color:#047857; }
 .nutri-card .goal-edit { background:#d1fae5; color:#047857; font-weight:700; }
 .ring-wrap { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:8px 0 18px; }
@@ -856,7 +856,7 @@ function afficherMessageInvite() {
 <!-- NAVIGATION PAR JOUR (comme Lifesum) -->
 <div class="day-nav">
     <button class="dn-arrow" onclick="navJour(-1)" aria-label="Jour précédent">‹</button>
-    <span class="dn-label" id="dnLabel">Aujourd'hui</span>
+    <span class="dn-label" id="dnLabel"><svg style="width:15px;height:15px;vertical-align:-2px;margin-right:5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg><span id="dnTxt"></span></span>
     <button class="dn-arrow" id="dnNext" onclick="navJour(1)" aria-label="Jour suivant" disabled>›</button>
 </div>
 
@@ -873,11 +873,7 @@ function afficherMessageInvite() {
 
     <!-- OBJECTIF (style anneau) -->
     <div class="goal-card nutri-card">
-        <div class="nutri-datebar">
-            <span class="ndb-cal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg></span>
-            <span class="ndb-date" id="dateBanner"></span>
-            <button class="goal-edit ndb-edit" onclick="openGoalModal()">Modifier</button>
-        </div>
+        <button class="goal-edit goal-edit-corner" onclick="openGoalModal()">Modifier</button>
 
         <div class="ring-wrap">
             <div class="ring-side">
@@ -2358,10 +2354,9 @@ function dayTotals(){
 
 // ===== DATE =====
 function renderDate(){
-    const d = new Date();
-    const mois = ['JANV.','FÉVR.','MARS','AVR.','MAI','JUIN','JUIL.','AOÛT','SEPT.','OCT.','NOV.','DÉC.'];
-    const el = document.getElementById('dateBanner');
-    if(el) el.textContent = "AUJOURD'HUI, " + d.getDate() + " " + mois[d.getMonth()];
+    // La date vit désormais dans la barre de navigation par jour (une seule occurrence)
+    const el = document.getElementById('dnTxt');
+    if(el) el.textContent = navLabel(0);
 }
 
 // ===== RENDER RECETTES =====
@@ -3206,7 +3201,11 @@ function renderHistory(){
 let dayOffset = 0;
 function navIso(off){ const d = new Date(); d.setDate(d.getDate() + off); return d.toISOString().slice(0,10); }
 function navLabel(off){
-    if(off === 0) return "Aujourd'hui";
+    if(off === 0){
+        const d = new Date();
+        const mois = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+        return "Aujourd'hui, " + d.getDate() + ' ' + mois[d.getMonth()];
+    }
     if(off === -1) return 'Hier';
     const d = new Date(); d.setDate(d.getDate() + off);
     return d.toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'short' });
@@ -3216,7 +3215,7 @@ function navJour(dir){
     if(next > 0) return;
     if(next < -30) return; // limite raisonnable
     dayOffset = next;
-    document.getElementById('dnLabel').textContent = navLabel(dayOffset);
+    document.getElementById('dnTxt').textContent = navLabel(dayOffset);
     document.getElementById('dnNext').disabled = (dayOffset === 0);
     if(dayOffset === 0){
         document.getElementById('dayModal').classList.remove('show');
@@ -3264,7 +3263,7 @@ function animerJour(dir){
     }, {passive:true});
 })();
 
-function fermerNavJour(){ dayOffset = 0; document.getElementById('dnLabel').textContent = "Aujourd'hui"; document.getElementById('dnNext').disabled = true; }
+function fermerNavJour(){ dayOffset = 0; document.getElementById('dnTxt').textContent = navLabel(0); document.getElementById('dnNext').disabled = true; }
 
 function openDayModal(iso){
     const h=history.find(x=>x.iso===iso); if(!h) return;
