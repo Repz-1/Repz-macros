@@ -724,9 +724,12 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 (function(){
   var s=document.getElementById('repzSplash');
   if(!s) return;
+  var tc=document.querySelector('meta[name="theme-color"]');
+  var origColor = tc ? tc.getAttribute('content') : null;
   if(sessionStorage.getItem('repz_splash')){ s.remove(); return; }
   sessionStorage.setItem('repz_splash','1');
-  setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
+  if(tc) tc.setAttribute('content','#0a0a0a');
+  setTimeout(function(){ s.classList.add('hide'); if(tc&&origColor) tc.setAttribute('content',origColor); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
 })();
 </script>
 
