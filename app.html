@@ -423,6 +423,10 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .eat-idea-ex { font-size:12.5px; color:#8a7480; margin-top:5px; line-height:1.45; }
 .eat-idea-kcal { display:inline-block; font-size:12px; color:#be185d; font-weight:800; margin-top:9px; background:#fce7f3; padding:3px 10px; border-radius:20px; }
 .eat-portion { color:#b79aa8; font-weight:500; margin-left:6px; }
+.eat-prot { font-weight:700; }
+.eat-prot.ok { color:#047857; }
+.eat-prot.over { color:#b45309; font-size:11px; }
+.eat-idea.eat-over { opacity:.55; }
 .eat-note { font-size:13px; color:#db2777; font-weight:700; text-align:center; padding:14px; }
 
 /* HISTORIQUE */
@@ -3169,49 +3173,59 @@ function fermerNavJour(){ dayOffset = 0; document.getElementById('dnLabel').text
 
 function openDayModal(iso){
     const h=history.find(x=>x.iso===iso); if(!h) return;
-    document.getElementById('dayModalTitle').textContent=' '+h.date;
+    document.getElementById('dayModalTitle').textContent=h.date;
     const protTarget=Math.round(goal.weight*goal.protRatio);
+    const delta = h.kcal - goal.kcal;
+    const deltaTxt = Math.abs(delta) <= Math.max(60, goal.kcal*0.03)
+        ? `<span style="color:#047857;font-weight:700;">Objectif atteint ✓</span>`
+        : (delta < 0
+            ? `<span style="color:#64748b;">${Math.abs(delta)} kcal sous l'objectif</span>`
+            : `<span style="color:#b45309;">+${delta} kcal au-dessus de l'objectif</span>`);
     document.getElementById('dayModalBody').innerHTML=`
-        <div style="text-align:center;margin:10px 0;">
-            <div style="font-size:30px;font-weight:800;color:#10B981;">${h.kcal}<span style="font-size:14px;color:#94a3b8;">kcal</span></div>
-            <div style="font-size:12px;color:#64748b;">objectif ${goal.kcal} kcal</div>
+        <div style="text-align:center;margin:12px 0 4px;">
+            <div style="font-size:38px;font-weight:900;color:#10B981;line-height:1;">${h.kcal}<span style="font-size:15px;font-weight:700;color:#94a3b8;"> kcal</span></div>
+            <div style="font-size:12.5px;margin-top:6px;">${deltaTxt}</div>
+            <div style="font-size:11.5px;color:#94a3b8;margin-top:2px;">Objectif : ${goal.kcal} kcal</div>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
-            <div style="background:#f1f5f9;border-radius:8px;padding:10px;text-align:center;">
-                <div style="font-size:11px;color:#64748b;">PROTÉINE</div>
-                <div style="font-size:17px;font-weight:700;">${h.prot}g</div>
-                <div style="font-size:10px;color:#94a3b8;">/ ${protTarget}g</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px;">
+            <div style="background:#fdf2f8;border:1px solid #fbcfe8;border-radius:12px;padding:11px 6px;text-align:center;">
+                <div style="font-size:10.5px;font-weight:800;color:#be185d;letter-spacing:.03em;">PROTÉINES</div>
+                <div style="font-size:18px;font-weight:800;margin-top:2px;">${h.prot} g</div>
+                <div style="font-size:10.5px;color:#94a3b8;">objectif ${protTarget} g</div>
             </div>
-            <div style="background:#f1f5f9;border-radius:8px;padding:10px;text-align:center;">
-                <div style="font-size:11px;color:#64748b;">GLUCIDES</div>
-                <div style="font-size:17px;font-weight:700;">${h.carbs}g</div>
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:11px 6px;text-align:center;">
+                <div style="font-size:10.5px;font-weight:800;color:#1d4ed8;letter-spacing:.03em;">GLUCIDES</div>
+                <div style="font-size:18px;font-weight:800;margin-top:2px;">${h.carbs} g</div>
             </div>
-            <div style="background:#f1f5f9;border-radius:8px;padding:10px;text-align:center;">
-                <div style="font-size:11px;color:#64748b;">LIPIDES</div>
-                <div style="font-size:17px;font-weight:700;">${h.lip}g</div>
+            <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:11px 6px;text-align:center;">
+                <div style="font-size:10.5px;font-weight:800;color:#a16207;letter-spacing:.03em;">LIPIDES</div>
+                <div style="font-size:18px;font-weight:800;margin-top:2px;">${h.lip} g</div>
             </div>
         </div>
         ${detailRepasHtml(h)}`;
     document.getElementById('dayModal').classList.add('show');
 }
 
-// Détail des repas consommés : visible jusqu'à 3 jours en arrière
 function detailRepasHtml(h){
     const limite = new Date(); limite.setDate(limite.getDate()-3); limite.setHours(0,0,0,0);
     const isoLimite = limite.toISOString().slice(0,10);
     if(h.iso < isoLimite){
-        return `<div style="margin-top:14px;text-align:center;font-size:12px;color:#94a3b8;">Le détail des repas est consultable jusqu'à 3 jours en arrière.</div>`;
+        return `<div style="margin-top:16px;text-align:center;font-size:12.5px;color:#94a3b8;background:#f8fafc;border-radius:12px;padding:14px;">Le détail des repas est consultable jusqu'à 3 jours en arrière.</div>`;
     }
     if(!h.repas || !h.repas.length){
-        return `<div style="margin-top:14px;text-align:center;font-size:12px;color:#94a3b8;">Pas de détail enregistré pour cette journée.</div>`;
+        return `<div style="margin-top:16px;text-align:center;font-size:12.5px;color:#94a3b8;background:#f8fafc;border-radius:12px;padding:14px;">Pas de détail enregistré pour cette journée.</div>`;
     }
-    let html = `<div style="margin-top:16px;"><div style="font-size:12px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">🍽️ Repas consommés</div>`;
+    let html = `<div style="margin-top:18px;"><div style="font-size:11.5px;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">Repas de la journée</div>`;
     h.repas.forEach(r=>{
-        const mult = r.mult && r.mult !== 1 ? ` ×${r.mult}` : '';
-        const ings = r.ings.map(i=>`${i.n} ${i.u==='u' ? '×'+i.p : i.p+'g'}`).join(' · ');
-        html += `<div style="background:#f8fafc;border-radius:10px;padding:10px 12px;margin-bottom:8px;">
-            <div style="font-weight:700;font-size:13.5px;margin-bottom:3px;">${r.name}${mult}</div>
-            <div style="font-size:12px;color:#64748b;line-height:1.5;">${ings}</div>
+        const mult = r.mult && r.mult !== 1 ? ` <span style="color:#047857;">×${r.mult}</span>` : '';
+        const ings = r.ings.map(i=>
+            `<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 0;">
+                <span>${i.n}</span>
+                <span style="color:#94a3b8;flex-shrink:0;">${i.u==='u' ? '×'+i.p : i.p+' g'}</span>
+            </div>`).join('');
+        html += `<div style="background:#fcfbf8;border:1px solid #e7e3da;border-left:3px solid #10B981;border-radius:12px;padding:11px 13px;margin-bottom:9px;">
+            <div style="font-weight:800;font-size:14px;margin-bottom:5px;">${r.name}${mult}</div>
+            <div style="font-size:12.5px;color:#475569;">${ings}</div>
         </div>`;
     });
     return html + `</div>`;
@@ -3262,32 +3276,32 @@ function importData(input){
 // Chaque idée : nom + kcal de référence pour une portion "standard"
 const EAT_IDEAS = {
     sain: [
-        { nom:'Blanc de poulet + riz + légumes', kcal:450, ex:'150g poulet · 150g riz cuit · brocoli' },
-        { nom:'Saumon + patate douce', kcal:500, ex:'150g saumon · 200g patate douce' },
-        { nom:'Omelette 3 œufs + salade + pain complet', kcal:400, ex:'3 œufs · salade · 50g pain' },
-        { nom:'Bowl thon + quinoa', kcal:420, ex:'1 boîte thon · 150g quinoa · crudités' },
-        { nom:'Steak haché 5% + pommes de terre + légumes', kcal:480, ex:'150g steak · 200g pdt · haricots verts' }
+        { nom:'Blanc de poulet + riz + légumes', kcal:450, prot:42, ex:'150g poulet · 150g riz cuit · brocoli' },
+        { nom:'Saumon + patate douce', kcal:500, prot:33, ex:'150g saumon · 200g patate douce' },
+        { nom:'Omelette 3 œufs + salade + pain complet', kcal:400, prot:24, ex:'3 œufs · salade · 50g pain' },
+        { nom:'Bowl thon + quinoa', kcal:420, prot:35, ex:'1 boîte thon · 150g quinoa · crudités' },
+        { nom:'Steak haché 5% + pommes de terre + légumes', kcal:480, prot:34, ex:'150g steak · 200g pdt · haricots verts' }
     ],
     rapide: [
-        { nom:'Thon + riz pré-cuit + maïs + légumes', kcal:500, ex:'1 boîte thon · 1 sachet riz micro-ondes · maïs · légumes en conserve' },
-        { nom:'Bol fromage blanc + whey + avoine + amandes', kcal:450, ex:'300g fromage blanc · 20g whey · 30g avoine · 15g amandes' },
-        { nom:'Œufs brouillés + pain complet + fromage', kcal:450, ex:'4 œufs · 50g pain complet · 30g fromage' },
-        { nom:'Skyr + flocons + beurre cacahuète + banane', kcal:480, ex:'400g skyr · 40g avoine · 15g beurre cacahuète · 1 banane' },
-        { nom:'Wrap thon ou poulet + crudités', kcal:400, ex:'tortilla · 1 boîte thon (ou reste poulet) · crudités · fromage frais' }
+        { nom:'Thon + riz pré-cuit + maïs + légumes', kcal:500, prot:32, ex:'1 boîte thon · 1 sachet riz micro-ondes · maïs · légumes en conserve' },
+        { nom:'Bol fromage blanc + whey + avoine + amandes', kcal:450, prot:45, ex:'300g fromage blanc · 20g whey · 30g avoine · 15g amandes' },
+        { nom:'Œufs brouillés + pain complet + fromage', kcal:450, prot:30, ex:'4 œufs · 50g pain complet · 30g fromage' },
+        { nom:'Skyr + flocons + beurre cacahuète + banane', kcal:480, prot:42, ex:'400g skyr · 40g avoine · 15g beurre cacahuète · 1 banane' },
+        { nom:'Wrap thon ou poulet + crudités', kcal:400, prot:28, ex:'tortilla · 1 boîte thon (ou reste poulet) · crudités · fromage frais' }
     ],
     plaisir: [
-        { nom:'Pâtes bolognaise (riche en viande)', kcal:600, ex:'120g pâtes · 150g viande hachée · sauce tomate' },
-        { nom:'Burger maison double steak', kcal:650, ex:'pain · 2 steaks hachés · fromage · crudités' },
-        { nom:'Wrap poulet fromage', kcal:500, ex:'tortilla · 120g poulet · cheddar · sauce light' },
-        { nom:'Riz cantonais poulet + œuf', kcal:550, ex:'200g riz · 120g poulet · œuf · petits pois' },
-        { nom:'Chili con carne', kcal:520, ex:'150g bœuf haché · haricots rouges · riz' }
+        { nom:'Pâtes bolognaise (riche en viande)', kcal:600, prot:38, ex:'120g pâtes · 150g viande hachée · sauce tomate' },
+        { nom:'Burger maison double steak', kcal:650, prot:42, ex:'pain · 2 steaks hachés · fromage · crudités' },
+        { nom:'Wrap poulet fromage', kcal:500, prot:35, ex:'tortilla · 120g poulet · cheddar · sauce light' },
+        { nom:'Riz cantonais poulet + œuf', kcal:550, prot:35, ex:'200g riz · 120g poulet · œuf · petits pois' },
+        { nom:'Chili con carne', kcal:520, prot:36, ex:'150g bœuf haché · haricots rouges · riz' }
     ],
     vege: [
-        { nom:'Buddha bowl pois chiches', kcal:450, ex:'200g pois chiches · quinoa · légumes' },
-        { nom:'Tofu sauté + riz', kcal:480, ex:'200g tofu · 150g riz · légumes wok' },
-        { nom:'Lentilles + 2 œufs + légumes', kcal:420, ex:'200g lentilles · 2 œufs · légumes' },
-        { nom:'Dahl lentilles corail + riz', kcal:480, ex:'200g lentilles corail · 150g riz · épices' },
-        { nom:'Omelette feta + épinards + pain', kcal:430, ex:'3 œufs · 40g feta · épinards · 50g pain' }
+        { nom:'Buddha bowl pois chiches', kcal:450, prot:20, ex:'200g pois chiches · quinoa · légumes' },
+        { nom:'Tofu sauté + riz', kcal:480, prot:26, ex:'200g tofu · 150g riz · légumes wok' },
+        { nom:'Lentilles + 2 œufs + légumes', kcal:420, prot:28, ex:'200g lentilles · 2 œufs · légumes' },
+        { nom:'Dahl lentilles corail + riz', kcal:480, prot:22, ex:'200g lentilles corail · 150g riz · épices' },
+        { nom:'Omelette feta + épinards + pain', kcal:430, prot:25, ex:'3 œufs · 40g feta · épinards · 50g pain' }
     ]
 };
 
@@ -3366,6 +3380,8 @@ function showEatIdeas(cat){
     });
     const t = dayTotals();
     const reste = Math.max(0, goal.kcal - t.kcal);
+    const protTarget = Math.round(goal.weight * goal.protRatio);
+    const resteProt = Math.max(0, protTarget - t.prot);
     const ideas = EAT_IDEAS[cat] || [];
     const box = document.getElementById('eatIdeas');
     if(reste <= 50){
@@ -3374,13 +3390,23 @@ function showEatIdeas(cat){
     }
     // Cible = un repas normal (plafonné), pas toutes les calories restantes
     const cible = Math.round(Math.max(200, Math.min(reste, 650)));
-    box.innerHTML = ideas.map(idea=>{
+    // Chaque idée est évaluée aussi sur les protéines restantes
+    const evaluees = ideas.map(idea=>{
         const ratio = cible / idea.kcal;
-        const portionAjustee = adjustPortion(idea.ex, ratio);
-        return `<div class="eat-idea">
+        const protA = Math.round((idea.prot || 0) * ratio);
+        return { ...idea, ratio, protA, fit: protA <= resteProt + 8 };
+    });
+    // Les plats qui respectent tes protéines restantes d'abord
+    evaluees.sort((a,b)=> (b.fit - a.fit) || (a.protA - b.protA));
+    box.innerHTML = evaluees.map(idea=>{
+        const portionAjustee = adjustPortion(idea.ex, idea.ratio);
+        const protTag = idea.fit
+            ? `<span class="eat-prot ok">${idea.protA} g prot</span>`
+            : `<span class="eat-prot over">${idea.protA} g prot — dépasse ce qu'il te reste (${Math.round(resteProt)} g)</span>`;
+        return `<div class="eat-idea${idea.fit ? '' : ' eat-over'}">
             <div class="eat-idea-name">${idea.nom}</div>
             <div class="eat-idea-ex">${portionAjustee}</div>
-            <div class="eat-idea-kcal">≈ ${cible} kcal</div>
+            <div class="eat-idea-kcal">≈ ${cible} kcal · ${protTag}</div>
         </div>`;
     }).join('');
 }
