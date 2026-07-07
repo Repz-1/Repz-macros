@@ -148,8 +148,8 @@ let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}
         if(s && s.items){ state = s; jours = s.jours || 5; pers = s.pers || 1; }
     } catch(e){ state = null; }
     renderSegs();
-    if(state){ renderListe(); }
-    else if(base.length){ generer(); }
+    if(base.length){ generer(); }        // auto-génération à chaque ouverture, depuis le journal
+    else if(state){ renderListe(); }     // pas de base mais des ajouts manuels sauvegardés
     else { renderVide(); }
 })();
 
