@@ -32,6 +32,17 @@ body {
 }
 
 /* Journal d'entraînement */
+/* Carte Dernière séance */
+.last-session { display:none; align-items:center; gap:14px; background:var(--card); border:1px solid #efefef; border-radius:var(--radius); padding:18px; margin-top:26px; box-shadow:0 8px 24px rgba(24,24,24,.07); }
+.last-session.show { display:flex; }
+.ls-ic { flex:none; width:50px; height:50px; border-radius:15px; background:#FFF4CC; display:flex; align-items:center; justify-content:center; font-size:24px; }
+.ls-body { flex:1; min-width:0; }
+.ls-label { font-size:12px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em; }
+.ls-title { font-size:16.5px; font-weight:800; color:var(--noir); margin:2px 0 3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ls-meta { font-size:13px; font-weight:500; color:var(--text-dim); }
+.ls-btn { flex:none; background:var(--gold); color:var(--noir); border:none; border-radius:14px; padding:11px 18px; font-size:14px; font-weight:700; cursor:pointer; text-decoration:none; box-shadow:0 6px 16px rgba(247,181,0,.3); }
+.ls-btn:active { transform:scale(.96); }
+
 .wlog { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:22px; box-shadow:0 4px 16px rgba(15,23,42,.05); }
 .wlog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
 .wlog-title { font-size:17px; font-weight:800; }
@@ -127,19 +138,19 @@ body {
 .cta {
     display:inline-flex; align-items:center; justify-content:center;
     font-size:15px; font-weight:600; padding:13px 26px; border-radius:16px;
-    /* Par défaut (cartes secondaires) : discret, ne capte pas le regard */
-    background:#F4F4F2; color:var(--noir); box-shadow:none;
+    /* Par défaut (cartes secondaires) : blanc + contour gris clair */
+    background:#ffffff; color:var(--noir); border:1.5px solid #E6E6E6; box-shadow:none;
 }
 /* Action principale UNIQUE de l'écran : le seul élément vraiment coloré */
 .choice.featured .cta {
-    background:var(--gold); color:var(--noir);
+    background:var(--gold); color:var(--noir); border:none;
     box-shadow:0 8px 20px rgba(247,181,0,.35);
 }
 
 /* Carte vedette : bordure + halo jaune pour la faire ressortir (fond clair partout) */
 .choice.featured {
-    background:#ffffff; border:1.5px solid #FBE49A;
-    box-shadow:0 12px 30px rgba(247,181,0,.14);
+    background:#ffffff; border:1px solid #efefef;
+    box-shadow:0 16px 40px rgba(24,24,24,.13);
 }
 
 /* Badge Recommandé : jaune, texte noir (jamais rouge) */
@@ -406,8 +417,8 @@ function logout() {
 </script>
 
 <div class="intro">
-    <h2>S'entraîner</h2>
-    <p>Choisis comment tu veux t'entraîner aujourd'hui.</p>
+    <h2 id="introTitre">S'entraîner</h2>
+    <p id="introSub">Choisis comment tu veux t'entraîner aujourd'hui.</p>
 </div>
 
 <div class="choices">
@@ -440,6 +451,17 @@ function logout() {
     </a>
 
 </div>
+
+<!-- DERNIÈRE SÉANCE -->
+<a class="last-session" id="lastSession" href="ma-seance.html">
+    <span class="ls-ic">🔥</span>
+    <span class="ls-body">
+        <span class="ls-label">Dernière séance</span>
+        <span class="ls-title" id="lsTitle">—</span>
+        <span class="ls-meta" id="lsMeta"></span>
+    </span>
+    <span class="ls-btn">Refaire</span>
+</a>
 
 <!-- JOURNAL D'ENTRAÎNEMENT -->
 <div class="wlog">
@@ -850,6 +872,49 @@ function wlLabel(d){ return `${WL_JOURS[d.getDay()]} ${d.getDate()} ${WL_MOIS[d.
 function wlLabelLong(d){ return `${WL_JOURS_L[d.getDay()]} ${d.getDate()} ${WL_MOIS_L[d.getMonth()]}`; }
 function wlMuscleName(k){ const g = MUSCLE_GROUPS.find(x => x.k === k); return g ? g.n : k; }
 
+// ===== TITRE DYNAMIQUE SELON L'HEURE =====
+function majSalutation(){
+    const h = new Date().getHours();
+    const t = document.getElementById('introTitre');
+    const s = document.getElementById('introSub');
+    if(!t) return;
+    let titre, sous;
+    if(h < 12){ titre = "Bonjour 👋"; sous = "Prêt à t'entraîner ?"; }
+    else if(h < 18){ titre = "C'est le moment de bouger 💪"; sous = "Choisis comment tu veux t'entraîner."; }
+    else { titre = "Dernière séance de la journée ?"; sous = "Choisis ton mode d'entraînement."; }
+    t.textContent = titre;
+    if(s) s.textContent = sous;
+}
+
+// ===== CARTE DERNIÈRE SÉANCE =====
+function fmtDuree(sec){
+    if(!sec || sec < 60) return sec ? sec + ' s' : null;
+    const m = Math.round(sec/60);
+    if(m < 60) return m + ' min';
+    return Math.floor(m/60) + 'h' + String(m%60).padStart(2,'0');
+}
+function ilYaCombien(iso){
+    const d = wlIsoToDate(iso); const now = new Date(); now.setHours(0,0,0,0);
+    const diff = Math.round((now - d)/86400000);
+    if(diff <= 0) return "aujourd'hui";
+    if(diff === 1) return "hier";
+    return "il y a " + diff + " jours";
+}
+function renderDerniereSeance(){
+    let log = [];
+    try { log = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]'); } catch(e){ log = []; }
+    const card = document.getElementById('lastSession');
+    if(!card || !log.length) return;
+    const s = log[log.length - 1];
+    document.getElementById('lsTitle').textContent = s.titre || 'Séance libre';
+    const bouts = [];
+    if(s.iso) bouts.push(ilYaCombien(s.iso));
+    const dur = fmtDuree(s.duree);
+    if(dur) bouts.push(dur);
+    document.getElementById('lsMeta').textContent = bouts.join(' · ');
+    card.classList.add('show');
+}
+
 function loadMuscleLog(){ try { return JSON.parse(localStorage.getItem('repz_muscleLog') || '{}'); } catch(e){ return {}; } }
 function saveMuscleLog(o){ localStorage.setItem('repz_muscleLog', JSON.stringify(o)); }
 
@@ -956,6 +1021,8 @@ try{
 }catch(e){}
 
 renderWlog();
+majSalutation();
+renderDerniereSeance();
 </script>
 </body>
 </html>
