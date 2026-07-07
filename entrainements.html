@@ -114,7 +114,7 @@ body {
 /* Icônes : fond jaune très clair, trait noir (façon Apple Fitness) */
 .ch-icon {
     width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center;
-    background:#FEF3CD; margin-bottom:16px;
+    background:#FFF4CC; margin-bottom:16px;
 }
 .ch-icon svg { width:27px; height:27px; stroke:var(--noir); fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .choice h3 { font-size:19px; font-weight:800; margin-bottom:6px; letter-spacing:-.01em; color:var(--noir); }
@@ -123,15 +123,20 @@ body {
 /* Bouton unique, identique partout : jaune, coins très arrondis, texte noir */
 .cta {
     display:inline-flex; align-items:center; justify-content:center;
-    background:var(--gold); color:var(--noir);
     font-size:14.5px; font-weight:800; padding:13px 26px; border-radius:16px;
-    box-shadow:0 6px 16px rgba(247,181,0,.30);
+    /* Par défaut (cartes secondaires) : discret, ne capte pas le regard */
+    background:#F4F4F2; color:var(--noir); box-shadow:none;
+}
+/* Action principale UNIQUE de l'écran : le seul élément vraiment coloré */
+.choice.featured .cta {
+    background:var(--gold); color:var(--noir);
+    box-shadow:0 8px 20px rgba(247,181,0,.35);
 }
 
 /* Carte vedette : bordure + halo jaune pour la faire ressortir (fond clair partout) */
 .choice.featured {
-    background:#ffffff; border:2px solid var(--gold);
-    box-shadow:0 14px 34px rgba(247,181,0,.22);
+    background:#ffffff; border:1.5px solid #FBE49A;
+    box-shadow:0 12px 30px rgba(247,181,0,.14);
 }
 
 /* Badge Recommandé : jaune, texte noir (jamais rouge) */
