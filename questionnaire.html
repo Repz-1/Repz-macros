@@ -351,9 +351,9 @@ function logout() {
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 /* ===== CONFIG EMAILJS (à compléter sur PC) ===== */
-const EMAILJS_PUBLIC_KEY  = 'A_REMPLACER';           // Account > General > Public Key
+const EMAILJS_PUBLIC_KEY  = '969_hVpsdobwuZgcsvFZa';           // Account > General > Public Key
 const EMAILJS_SERVICE_ID  = 'service_kpiz7rc';       // déjà créé
-const EMAILJS_TEMPLATE_ID = 'A_REMPLACER';           // Email Templates > Settings
+const EMAILJS_TEMPLATE_ID = 'template_ah0jhvr';           // Email Templates > Settings
 const COACH_EMAIL = 'coach@belfit.be';
 
 /* ===== FLUX GUIDÉ ===== */
@@ -492,7 +492,35 @@ function buildParams(){
         regime: answers.regime, allergies: answers.allergies, patho: answers.patho,
         degoute: answers.degoute, repas: answers.repas, cuisine: answers.cuisine,
         objectif: r.objectif, kcal: r.kcal, prot: r.prot, carbs: r.carbs, lip: r.lip,
-        bmr: r.bmr, tdee: r.tdee
+        bmr: r.bmr, tdee: r.tdee,
+        // Variables attendues par le template EmailJS (mêmes noms que profil/aide)
+        type_demande: 'Questionnaire — nouveau programme',
+        prenom: (localStorage.getItem('repz_firstName') || answers.email.split('@')[0]),
+        client_email: answers.email,
+        obj_poids: answers.cible,
+        activite: answers.travail,
+        kcal_actuelles: r.kcal,
+        preference: answers.regime,
+        message:
+`Sexe : ${answers.sexe}
+Grossesse : ${answers.grossesse || 'N/A'}
+Âge : ${answers.age}
+Taille : ${answers.taille} cm
+Poids actuel : ${answers.poids} kg
+Objectif de poids : ${answers.cible}
+Travail / activité : ${answers.travail}
+Heures de sport : ${answers.heures}
+Temps libre : ${answers.libre}
+Régime : ${answers.regime}
+Allergies : ${answers.allergies}
+Pathologies : ${answers.patho}
+Aliments détestés : ${answers.degoute}
+Repas / jour : ${answers.repas}
+Temps de cuisine : ${answers.cuisine}
+--- Calcul de référence ---
+Objectif : ${r.objectif}
+Cible : ${r.kcal} kcal (P ${r.prot}g / G ${r.carbs}g / L ${r.lip}g)
+BMR : ${r.bmr} · TDEE : ${r.tdee}`
     };
 }
 function envoyerAuCoach(){
