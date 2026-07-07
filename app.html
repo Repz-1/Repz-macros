@@ -3358,35 +3358,59 @@ function importData(input){
 // ===== QUOI MANGER ? =====
 // Chaque idée : nom + kcal de référence pour une portion "standard"
 const EAT_IDEAS = {
+    // Chaque idée est composée d'aliments réels de la base : kcal/prot calculées exactement
+    // n = clé DB, q = grammes (ou nombre d'unités si l'aliment est à l'unité), l = libellé court
     sain: [
-        { nom:'Blanc de poulet + riz + légumes', kcal:450, prot:42, ex:'150g poulet · 150g riz cuit · brocoli' },
-        { nom:'Saumon + patate douce', kcal:500, prot:33, ex:'150g saumon · 200g patate douce' },
-        { nom:'Omelette + salade + pain complet', kcal:400, prot:24, ex:'3 œufs · salade · 50g pain' },
-        { nom:'Bowl thon + quinoa', kcal:420, prot:35, ex:'1 boîte thon · 150g quinoa · crudités' },
-        { nom:'Steak haché 5% + pommes de terre + légumes', kcal:480, prot:34, ex:'150g steak · 200g pdt · haricots verts' }
+        { nom:'Blanc de poulet + riz + légumes', ings:[{n:'Poulet cuit',q:150,l:'poulet'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Brocoli',q:150,l:'brocoli'}] },
+        { nom:'Saumon + patate douce', ings:[{n:'Saumon cuit',q:130,l:'saumon'},{n:'Patate douce (cuite)',q:250,l:'patate douce'}] },
+        { nom:'Omelette + salade + pain complet', ings:[{n:'Oeuf entier M (50g)',q:3,l:'œuf'},{n:'Salade verte',q:80,l:'salade'},{n:'Pain complet',q:60,l:'pain complet'}] },
+        { nom:'Bowl thon + quinoa', ings:[{n:'Thon naturel boite',q:140,l:'thon'},{n:'Quinoa (cuit)',q:185,l:'quinoa cuit'},{n:'Tomate',q:100,l:'tomate'}] },
+        { nom:'Steak haché 5% + pommes de terre + légumes', ings:[{n:'Boeuf hache 5% cuit',q:150,l:'steak 5%'},{n:'Pomme de terre cuite',q:250,l:'pommes de terre'},{n:'Haricots verts',q:150,l:'haricots verts'}] }
     ],
     rapide: [
-        { nom:'Thon + riz pré-cuit + maïs + légumes', kcal:500, prot:32, ex:'1 boîte thon · 1 sachet riz micro-ondes · maïs · légumes en conserve' },
-        { nom:'Bol fromage blanc + whey + avoine + amandes', kcal:450, prot:45, ex:'300g fromage blanc · 20g whey · 30g avoine · 15g amandes' },
-        { nom:'Œufs brouillés + pain complet + fromage', kcal:450, prot:30, ex:'4 œufs · 50g pain complet · 30g fromage' },
-        { nom:'Skyr + flocons + beurre cacahuète + banane', kcal:480, prot:42, ex:'400g skyr · 40g avoine · 15g beurre cacahuète · 1 banane' },
-        { nom:'Wrap thon ou poulet + crudités', kcal:400, prot:28, ex:'tortilla · 1 boîte thon (ou reste poulet) · crudités · fromage frais' }
+        { nom:'Thon + riz + maïs + légumes', ings:[{n:'Thon naturel boite',q:140,l:'thon'},{n:'Riz cuit',q:200,l:'riz cuit'},{n:'Maïs',q:80,l:'maïs'},{n:'Tomate',q:80,l:'tomate'}] },
+        { nom:'Bol fromage blanc + whey + avoine + amandes', ings:[{n:'Fromage blanc 0%',q:300,l:'fromage blanc 0%'},{n:'Whey',q:20,l:'whey'},{n:'Avoine',q:30,l:'avoine'},{n:'Amandes',q:15,l:'amandes'}] },
+        { nom:'Œufs brouillés + pain complet + fromage', ings:[{n:'Oeuf entier M (50g)',q:3,l:'œuf'},{n:'Pain complet',q:60,l:'pain complet'},{n:'Cheddar',q:20,l:'cheddar'}] },
+        { nom:'Skyr + avoine + beurre cacahuète + banane', ings:[{n:'Skyr',q:350,l:'skyr'},{n:'Avoine',q:40,l:'avoine'},{n:'Beurre cacahuète',q:15,l:'beurre cacahuète'},{n:'Banane',q:120,l:'banane'}] },
+        { nom:'Wrap thon + crudités', ings:[{n:'Wrap/Tortilla',q:60,l:'tortilla'},{n:'Thon naturel boite',q:140,l:'thon'},{n:'Tomate',q:80,l:'tomate'},{n:'Salade verte',q:40,l:'salade'}] }
     ],
     plaisir: [
-        { nom:'Pâtes bolognaise (riche en viande)', kcal:600, prot:38, ex:'120g pâtes · 150g viande hachée · sauce tomate' },
-        { nom:'Burger maison au steak', kcal:650, prot:42, ex:'pain · 2 steaks hachés · fromage · crudités' },
-        { nom:'Wrap poulet fromage', kcal:500, prot:35, ex:'tortilla · 120g poulet · cheddar · sauce light' },
-        { nom:'Riz cantonais poulet + œuf', kcal:550, prot:35, ex:'200g riz · 120g poulet · œuf · petits pois' },
-        { nom:'Chili con carne', kcal:520, prot:36, ex:'150g bœuf haché · haricots rouges · riz' }
+        { nom:'Pâtes bolognaise (riche en viande)', ings:[{n:'Pâtes blanches cuites',q:220,l:'pâtes cuites'},{n:'Boeuf hache 15% cuit',q:120,l:'bœuf haché 15%'},{n:'Sauce tomate',q:100,l:'sauce tomate'}] },
+        { nom:'Burger maison au steak', ings:[{n:'Pain hamburger',q:65,l:'pain burger'},{n:'Boeuf hache 15% cuit',q:130,l:'bœuf haché 15%'},{n:'Cheddar',q:25,l:'cheddar'},{n:'Tomate',q:50,l:'tomate'},{n:'Salade verte',q:30,l:'salade'}] },
+        { nom:'Wrap poulet fromage', ings:[{n:'Wrap/Tortilla',q:60,l:'tortilla'},{n:'Poulet cuit',q:120,l:'poulet'},{n:'Cheddar',q:20,l:'cheddar'},{n:'Salade verte',q:40,l:'salade'}] },
+        { nom:'Riz cantonais poulet + œuf', ings:[{n:'Riz cantonais',q:250,l:'riz cantonais'},{n:'Poulet cuit',q:100,l:'poulet'},{n:'Oeuf entier M (50g)',q:1,l:'œuf'}] },
+        { nom:'Chili con carne', ings:[{n:'Boeuf hache 5% cuit',q:150,l:'bœuf haché 5%'},{n:'Haricots rouges (cuits)',q:150,l:'haricots rouges'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Sauce tomate',q:80,l:'sauce tomate'}] }
     ],
     vege: [
-        { nom:'Buddha bowl pois chiches', kcal:450, prot:20, ex:'200g pois chiches · quinoa · légumes' },
-        { nom:'Tofu sauté + riz', kcal:480, prot:26, ex:'200g tofu · 150g riz · légumes wok' },
-        { nom:'Lentilles + œufs + légumes', kcal:420, prot:28, ex:'200g lentilles · 2 œufs · légumes' },
-        { nom:'Dahl lentilles corail + riz', kcal:480, prot:22, ex:'200g lentilles corail · 150g riz · épices' },
-        { nom:'Omelette feta + épinards + pain', kcal:430, prot:25, ex:'3 œufs · 40g feta · épinards · 50g pain' }
+        { nom:'Buddha bowl pois chiches', ings:[{n:'Pois chiches (cuits)',q:200,l:'pois chiches'},{n:'Quinoa (cuit)',q:150,l:'quinoa cuit'},{n:'Courgette',q:150,l:'courgette'}] },
+        { nom:'Tofu sauté + riz', ings:[{n:'Tofu',q:200,l:'tofu'},{n:'Riz cuit',q:200,l:'riz cuit'},{n:'Brocoli',q:150,l:'brocoli'},{n:'Huile olive',q:8,l:'huile olive'}] },
+        { nom:'Lentilles + œufs + légumes', ings:[{n:'Lentilles (cuites)',q:200,l:'lentilles'},{n:'Oeuf entier M (50g)',q:2,l:'œuf'},{n:'Épinards frais',q:100,l:'épinards'}] },
+        { nom:'Dahl lentilles corail + riz', ings:[{n:'Lentilles corail',q:200,l:'lentilles corail'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Lait de coco',q:50,l:'lait de coco'}] },
+        { nom:'Omelette feta + épinards + pain', ings:[{n:'Oeuf entier M (50g)',q:3,l:'œuf'},{n:'Feta',q:40,l:'feta'},{n:'Épinards frais',q:80,l:'épinards'},{n:'Pain complet',q:50,l:'pain complet'}] }
     ]
 };
+
+// Calcule kcal/prot exactes d'une idée pour un ratio donné, avec quantités arrondies (5g / unités entières)
+function ideaCompute(ings, ratio){
+    let kcal=0, prot=0; const parts=[];
+    ings.forEach(it=>{
+        const base = DB[it.n]; if(!base) return;
+        let q, grams, label;
+        if(base.unit){
+            q = Math.max(1, Math.round(it.q * ratio));
+            grams = q * base.unit;
+            label = q + ' ' + it.l + (q>1 ? 's' : '');
+        } else {
+            q = Math.max(5, Math.round(it.q * ratio / 5) * 5);
+            grams = q;
+            label = q + 'g ' + it.l;
+        }
+        const r = grams/100;
+        kcal += base.kcal*r; prot += base.prot*r;
+        parts.push(label);
+    });
+    return { kcal: Math.round(kcal), prot: Math.round(prot), txt: parts.join(' · ') };
+}
 
 function repzAcces(){
     return localStorage.getItem('repz_premium') === '1';
@@ -3414,34 +3438,6 @@ function toggleEat(){
         }
         document.getElementById('eatIdeas').innerHTML='';
     }
-}
-
-function adjustPortion(exText, ratio){
-    const parts = exText.split('·').map(s => s.trim());
-    const adjusted = parts.map(part => {
-        // Cas 1 : "150g poulet" → multiplier les grammes (arrondi à 5g)
-        let m = part.match(/^(\d+)\s*g\b(.*)$/i);
-        if(m){
-            const grams = Math.max(5, Math.round(parseInt(m[1]) * ratio / 5) * 5);
-            return `${grams}g${m[2]}`;
-        }
-        // Cas 2 : "3 œufs", "2 steaks", "1 banane" → multiplier l'unité (pas les boîtes/sachets)
-        m = part.match(/^(\d+)\s+(.*)$/);
-        if(m){
-            const reste = m[2].toLowerCase();
-            if(/bo[iî]te|sachet|tranche|portion/.test(reste)) return part;
-            let n = Math.max(1, Math.round(parseInt(m[1]) * ratio));
-            // Singulier si 1 : enlève un "s" final éventuel du premier mot
-            let label = m[2];
-            if(n === 1){
-                label = label.replace(/^(\S+?)s\b/, '$1'); // oeufs->oeuf, steaks->steak
-            }
-            return `${n} ${label}`;
-        }
-        // Cas 3 : pas de quantité → inchangé
-        return part;
-    });
-    return adjusted.join(' · ');
 }
 
 function showEatIdeas(cat){
@@ -3473,24 +3469,23 @@ function showEatIdeas(cat){
     }
     // Cible = un repas normal (plafonné), pas toutes les calories restantes
     const cible = Math.round(Math.max(200, Math.min(reste, 650)));
-    // Chaque idée est évaluée aussi sur les protéines restantes
-    // Ratio borné pour garder des portions réalistes (max +40%, min -25%)
+    // Ratio borné pour des portions réalistes, puis kcal/prot EXACTES recalculées
+    // depuis les quantités arrondies (base d'aliments)
     const evaluees = ideas.map(idea=>{
-        const ratio = Math.max(0.75, Math.min(1.4, cible / idea.kcal));
-        const kcalA = Math.round(idea.kcal * ratio / 10) * 10;
-        const protA = Math.round((idea.prot || 0) * ratio);
-        return { ...idea, ratio, kcalA, protA, fit: protA <= resteProt + 8 };
+        const base = ideaCompute(idea.ings, 1);
+        const ratio = Math.max(0.75, Math.min(1.4, cible / base.kcal));
+        const calc = ideaCompute(idea.ings, ratio);
+        return { ...idea, kcalA: calc.kcal, protA: calc.prot, portion: calc.txt, fit: calc.prot <= resteProt + 8 };
     });
     // Les plats qui respectent tes protéines restantes d'abord
     evaluees.sort((a,b)=> (b.fit - a.fit) || (a.protA - b.protA));
     box.innerHTML = evaluees.map(idea=>{
-        const portionAjustee = adjustPortion(idea.ex, idea.ratio);
         const protTag = idea.fit
             ? `<span class="eat-prot ok">${idea.protA} g prot</span>`
             : `<span class="eat-prot over">${idea.protA} g prot — dépasse ce qu'il te reste (${Math.round(resteProt)} g)</span>`;
         return `<div class="eat-idea${idea.fit ? '' : ' eat-over'}">
             <div class="eat-idea-name">${idea.nom}</div>
-            <div class="eat-idea-ex">${portionAjustee}</div>
+            <div class="eat-idea-ex">${idea.portion}</div>
             <div class="eat-idea-kcal">≈ ${idea.kcalA} kcal · ${protTag}</div>
         </div>`;
     }).join('');
