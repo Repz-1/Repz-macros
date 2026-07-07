@@ -3070,26 +3070,41 @@ function rayonDe(nom){
 // Construit la base "1 jour" à partir des repas du journal, prête pour la page Courses
 function genererCoursesBase(){
     const agg = {}; // name -> {qty, unit, unitLabel, cat}
+    const ajouter = (name, portion, estUnite, unitLabel) => {
+        const qty = parseFloat(portion) || 0;
+        if(qty <= 0) return;
+        if(!agg[name]){
+            agg[name] = { name:name, qty:0, unit: estUnite?'u':'g', unitLabel: estUnite ? (unitLabel||'u') : 'g', cat: rayonDe(name) };
+        }
+        agg[name].qty += qty;
+    };
+
+    // 1) Priorité : les repas du JOUR EN COURS (non encore enregistrés)
     recipes.forEach(rc => {
         if(!rc.ings) return;
         const mult = rc.mult || 1;
         rc.ings.forEach(ing => {
-            const base = DB[ing.name] || (ing.macros ? {} : null);
+            const base = DB[ing.name];
             const estUnite = base && base.unit ? true : false;
-            const qty = (parseFloat(ing.portion) || 0) * mult;
-            if(qty <= 0) return;
-            if(!agg[ing.name]){
-                agg[ing.name] = {
-                    name: ing.name,
-                    qty: 0,
-                    unit: estUnite ? 'u' : 'g',
-                    unitLabel: estUnite ? (base.unitLabel || 'u') : 'g',
-                    cat: rayonDe(ing.name)
-                };
-            }
-            agg[ing.name].qty += qty;
+            ajouter(ing.name, (parseFloat(ing.portion)||0) * mult, estUnite, base && base.unitLabel);
         });
     });
+
+    // 2) Si le journal du jour est vide, se rabattre sur la DERNIÈRE journée enregistrée
+    if(Object.keys(agg).length === 0 && Array.isArray(history) && history.length){
+        const dernier = history[0]; // le plus récent (unshift à l'enregistrement)
+        if(dernier && Array.isArray(dernier.repas)){
+            dernier.repas.forEach(r => {
+                const mult = r.mult || 1;
+                (r.ings||[]).forEach(i => {
+                    const estUnite = i.u === 'u';
+                    const base = DB[i.n];
+                    ajouter(i.n, (parseFloat(i.p)||0) * mult, estUnite, base && base.unitLabel);
+                });
+            });
+        }
+    }
+
     return Object.values(agg);
 }
 
