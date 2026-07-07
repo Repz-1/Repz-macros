@@ -122,7 +122,19 @@ function toggleFaq(i){
 }
 
 // ===== BULLE DE CONTACT =====
-function toggleChat(){ document.getElementById('chatPanel').classList.toggle('show'); }
+function toggleChat(){
+    const el = document.getElementById('chatPanel');
+    if(el.classList.contains('show')){
+        if(history.state && history.state.belfitOv){ history.back(); } else { el.classList.remove('show'); }
+    } else {
+        el.classList.add('show');
+        history.pushState({belfitOv:'chatPanel'}, '');
+    }
+}
+window.addEventListener('popstate', function(){
+    const el = document.getElementById('chatPanel');
+    if(el && el.classList.contains('show')){ el.classList.remove('show'); }
+});
 function envoyerMessage(){
     const msg = document.getElementById('chatMsg').value.trim();
     if(!msg){ alert('Écris ton message d\'abord.'); return; }

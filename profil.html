@@ -274,22 +274,22 @@ auth.onAuthStateChanged((user) => {
 </div>
 
 <!-- ===== MODALE PREMIUM (verrouillé) ===== -->
-<div class="modal-overlay" id="lockModal" onclick="if(event.target===this)this.classList.remove('show')">
+<div class="modal-overlay" id="lockModal" onclick="if(event.target===this)fermerOverlay('lockModal')">
     <div class="modal">
         <h3>Fonction Premium</h3>
         <p>L'ajustement personnalisé des macros et des calories est réalisé avec ton coach BELFIT. Il est réservé aux membres Premium.</p>
         <a href="plans.html" class="m-main">Découvrir Premium</a>
-        <button class="m-sec" onclick="document.getElementById('lockModal').classList.remove('show')">Plus tard</button>
+        <button class="m-sec" onclick="fermerOverlay('lockModal')">Plus tard</button>
     </div>
 </div>
 
 <!-- ===== MODALE AJUSTEMENT (premium) ===== -->
-<div class="modal-overlay" id="adjModal" onclick="if(event.target===this)this.classList.remove('show')">
+<div class="modal-overlay" id="adjModal" onclick="if(event.target===this)fermerOverlay('adjModal')">
     <div class="modal">
         <h3 id="adjTitle">Demander un ajustement</h3>
         <p id="adjText"></p>
         <button class="m-main" id="adjSend" onclick="envoyerAjustement()">Envoyer ma demande au coach</button>
-        <button class="m-sec" onclick="document.getElementById('adjModal').classList.remove('show')">Annuler</button>
+        <button class="m-sec" onclick="fermerOverlay('adjModal')">Annuler</button>
     </div>
 </div>
 
@@ -393,8 +393,20 @@ function afficherAvatar(){
 }
 
 // ===== PANELS =====
-function ouvrirPanel(id){ document.getElementById(id).classList.add('show'); window.scrollTo(0,0); }
-function fermerPanel(id){ document.getElementById(id).classList.remove('show'); }
+// Bouton retour Android : ferme le panneau/modale ouvert au lieu de quitter la page
+function ouvrirOverlay(id){ document.getElementById(id).classList.add('show'); history.pushState({belfitOv:id}, ''); }
+function fermerOverlay(id){
+    const el = document.getElementById(id);
+    if(!el || !el.classList.contains('show')) return;
+    if(history.state && history.state.belfitOv){ history.back(); } // déclenche popstate qui retire la classe
+    else { el.classList.remove('show'); }
+}
+window.addEventListener('popstate', function(){
+    const list = document.querySelectorAll('.panel.show, .modal-overlay.show');
+    if(list.length){ list[list.length-1].classList.remove('show'); }
+});
+function ouvrirPanel(id){ ouvrirOverlay(id); window.scrollTo(0,0); }
+function fermerPanel(id){ fermerOverlay(id); }
 
 // ===== MES INFORMATIONS =====
 function remplirInfos(){
@@ -448,7 +460,7 @@ function rafraichirAjustements(){
 }
 function tapAjustement(type){
     if(estInviteRepz()){ window.location.href = 'index.html'; return; }
-    if(!estPremium()){ document.getElementById('lockModal').classList.add('show'); return; }
+    if(!estPremium()){ ouvrirOverlay('lockModal'); return; }
     const q = lireQuota();
     adjType = type;
     const reste = q[type];
@@ -461,7 +473,7 @@ function tapAjustement(type){
         document.getElementById('adjText').textContent = "Ta demande d'ajustement de " + nom + " sera envoyée à ton coach BELFIT, qui te répondra sous 24–48h. Il te reste " + reste + " ajustement" + (reste>1?'s':'') + " ce mois-ci.";
         document.getElementById('adjSend').style.display = 'block';
     }
-    document.getElementById('adjModal').classList.add('show');
+    ouvrirOverlay('adjModal');
 }
 /* ===== CONFIG EMAILJS (même config que le questionnaire, à compléter sur PC) ===== */
 const EMAILJS_PUBLIC_KEY  = 'A_REMPLACER';           // Account > General > Public Key
@@ -471,7 +483,7 @@ const EMAILJS_TEMPLATE_ID = 'A_REMPLACER';           // Email Templates > Settin
 function envoyerAjustement(){
     const q = lireQuota();
     if(adjType && q[adjType] > 0){ q[adjType]--; ecrireQuota(q); }
-    document.getElementById('adjModal').classList.remove('show');
+    fermerOverlay('adjModal');
     rafraichirAjustements();
     const user = auth.currentUser;
     const email = user && user.email ? user.email : '';

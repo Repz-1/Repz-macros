@@ -201,19 +201,19 @@ auth.onAuthStateChanged((user) => {
 
         <div class="menu-card" style="margin-top:18px">
             <button class="acc-action" onclick="changerMdp()">Changer mon mot de passe</button>
-            <button class="acc-action danger" onclick="document.getElementById('delModal').classList.add('show')">Supprimer le compte</button>
+            <button class="acc-action danger" onclick="ouvrirOverlay('delModal')">Supprimer le compte</button>
         </div>
         <div class="note" id="mdpNote" style="display:none">Un e-mail de réinitialisation vient d'être envoyé à ton adresse. Ouvre-le pour choisir un nouveau mot de passe.</div>
     </div>
 </div>
 
 <!-- ===== MODALE SUPPRESSION ===== -->
-<div class="modal-overlay" id="delModal" onclick="if(event.target===this)this.classList.remove('show')">
+<div class="modal-overlay" id="delModal" onclick="if(event.target===this)fermerOverlay('delModal')">
     <div class="modal">
         <h3>Supprimer ton compte ?</h3>
         <p>Cette action est définitive : ton compte, ton accès Premium et tes données seront supprimés. Tes données locales (journal, pesées) resteront sur cet appareil tant que tu ne les effaces pas.</p>
         <button class="m-danger" onclick="supprimerCompte()">Oui, supprimer définitivement</button>
-        <button class="m-sec" onclick="document.getElementById('delModal').classList.remove('show')">Annuler</button>
+        <button class="m-sec" onclick="fermerOverlay('delModal')">Annuler</button>
     </div>
 </div>
 
@@ -230,8 +230,20 @@ function sauverNotifs(){
 }
 
 // ===== PANELS =====
-function ouvrirPanel(id){ document.getElementById(id).classList.add('show'); window.scrollTo(0,0); }
-function fermerPanel(id){ document.getElementById(id).classList.remove('show'); }
+// Bouton retour Android : ferme le panneau/modale ouvert au lieu de quitter la page
+function ouvrirOverlay(id){ document.getElementById(id).classList.add('show'); history.pushState({belfitOv:id}, ''); }
+function fermerOverlay(id){
+    const el = document.getElementById(id);
+    if(!el || !el.classList.contains('show')) return;
+    if(history.state && history.state.belfitOv){ history.back(); }
+    else { el.classList.remove('show'); }
+}
+window.addEventListener('popstate', function(){
+    const list = document.querySelectorAll('.panel.show, .modal-overlay.show');
+    if(list.length){ list[list.length-1].classList.remove('show'); }
+});
+function ouvrirPanel(id){ ouvrirOverlay(id); window.scrollTo(0,0); }
+function fermerPanel(id){ fermerOverlay(id); }
 
 // ===== COMPTE =====
 function remplirCompte(user){
@@ -271,7 +283,7 @@ function supprimerCompte(){
         alert('Ton compte a été supprimé.');
         window.location.href = 'index.html';
     }).catch((e)=>{
-        document.getElementById('delModal').classList.remove('show');
+        fermerOverlay('delModal');
         if(e && e.code === 'auth/requires-recent-login'){
             alert("Par sécurité, reconnecte-toi puis réessaie la suppression (ta session est trop ancienne).");
         } else {
