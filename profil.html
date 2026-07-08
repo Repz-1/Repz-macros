@@ -7,6 +7,8 @@
 <meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Profil</title>
 <link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
 <link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
 <style>
@@ -596,5 +598,6 @@ renderAllerg();
 rafraichirSubPrefs();
 rafraichirAjustements();
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 </body>
 </html>

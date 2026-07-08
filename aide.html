@@ -7,6 +7,8 @@
 <meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Aide</title>
 <link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
 <link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
 <style>
@@ -164,5 +166,6 @@ function mailtoFallback(msg, email){
     window.location.href = 'mailto:coach@belfit.be?subject=' + sujet + '&body=' + corps;
 }
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 </body>
 </html>
