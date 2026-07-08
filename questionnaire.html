@@ -270,8 +270,16 @@ function logout() {
         <div class="option" onclick="pick(this,'regime','Je mange de tout')"><span class="option-label">Non, je mange de tout</span></div>
         <div class="option" onclick="pick(this,'regime','Végétarien')"><span class="option-label">Végétarien</span></div>
         <div class="option" onclick="pick(this,'regime','Végan')"><span class="option-label">Végan</span></div>
-        <div class="option" onclick="pick(this,'regime','Sans porc')"><span class="option-label">Sans porc</span></div>
+        <div class="option" onclick="pick(this,'regime','Pescétarien')"><span class="option-label">Pescétarien</span></div>
     </div>
+</div>
+
+<!-- 9b. RESTRICTIONS ALIMENTAIRES (multi) -->
+<div class="q-step" data-q="restrictions">
+    <div class="q-title">As-tu des restrictions<br>alimentaires ?</div>
+    <div class="q-sub">Sélectionne toutes les réponses qui s'appliquent.</div>
+    <div class="chips" id="restricChips"></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextRestric()">Continuer</button></div>
 </div>
 
 <!-- 10. ALLERGIES (multi) -->
@@ -358,7 +366,7 @@ const EMAILJS_TEMPLATE_ID = 'template_ah0jhvr';           // Email Templates > S
 const COACH_EMAIL = 'coach@belfit.be';
 
 /* ===== FLUX GUIDÉ ===== */
-const STEPS = ['sexe','grossesse','age','taille','poids','travail','heures','libre','cible','regime','allergies','patho','degoute','repas','cuisine','email','merci'];
+const STEPS = ['sexe','grossesse','age','taille','poids','travail','heures','libre','cible','regime','restrictions','allergies','patho','degoute','repas','cuisine','email','merci'];
 const answers = {};
 let stepIdx = 0;
 
@@ -443,6 +451,28 @@ function nextAllergies(){
     showStep(stepIdx + 1);
 }
 
+/* Restrictions alimentaires multi-select */
+const RESTRIC = ['Aucune','Halal','Casher','Autre'];
+let restricSel = new Set(['Aucune']);
+function renderRestric(){
+    document.getElementById('restricChips').innerHTML = RESTRIC.map(a =>
+        `<div class="chip${restricSel.has(a) ? ' on' : ''}" onclick="toggleRestric('${a.replace(/'/g,"\\'")}')">${a}</div>`
+    ).join('');
+}
+function toggleRestric(a){
+    if(a === 'Aucune'){ restricSel = new Set(['Aucune']); }
+    else {
+        restricSel.delete('Aucune');
+        if(restricSel.has(a)) restricSel.delete(a); else restricSel.add(a);
+        if(restricSel.size === 0) restricSel.add('Aucune');
+    }
+    renderRestric();
+}
+function nextRestric(){
+    answers.restrictions = Array.from(restricSel).join(', ');
+    showStep(stepIdx + 1);
+}
+
 /* ===== CALCUL INTERNE (transmis au coach, pas montré au client) ===== */
 function computeInterne(){
     const { sexe, age, taille, poids, travail, heures, libre, cible } = answers;
@@ -490,7 +520,7 @@ function buildParams(){
         grossesse: answers.grossesse || 'N/A',
         age: answers.age, taille: answers.taille, poids: answers.poids, cible: answers.cible,
         travail: answers.travail, heures: answers.heures, libre: answers.libre,
-        regime: answers.regime, allergies: answers.allergies, patho: answers.patho,
+        regime: answers.regime, restrictions: answers.restrictions, allergies: answers.allergies, patho: answers.patho,
         degoute: answers.degoute, repas: answers.repas, cuisine: answers.cuisine,
         objectif: r.objectif, kcal: r.kcal, prot: r.prot, carbs: r.carbs, lip: r.lip,
         bmr: r.bmr, tdee: r.tdee,
@@ -513,6 +543,7 @@ Travail / activité : ${answers.travail}
 Heures de sport : ${answers.heures}
 Temps libre : ${answers.libre}
 Régime : ${answers.regime}
+Restrictions : ${answers.restrictions}
 Allergies : ${answers.allergies}
 Pathologies : ${answers.patho}
 Aliments détestés : ${answers.degoute}
@@ -531,7 +562,14 @@ function envoyerAuCoach(){
         emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, p)
             .then(() => finirMerci())
-            .catch(() => envoyerMailto(p));
+            .catch((err) => {
+                const detail = err && (err.status || err.text)
+                    ? ('Code ' + (err.status || '?') + ' — ' + (err.text || ''))
+                    : (err && err.message ? err.message : JSON.stringify(err));
+                alert('Envoi direct (EmailJS) impossible :\n' + detail + '\n\nOn passe par ton appli mail. (Message temporaire de diagnostic.)');
+                console.error('EmailJS error', err);
+                envoyerMailto(p);
+            });
     } else {
         envoyerMailto(p);
     }
@@ -552,6 +590,7 @@ Temps libre : ${p.libre}
 
 ALIMENTATION
 Regime : ${p.regime}
+Restrictions : ${p.restrictions}
 Allergies : ${p.allergies}
 Pathologie : ${p.patho}
 Deteste : ${p.degoute}
@@ -574,6 +613,7 @@ function finirMerci(){
 }
 
 renderAllerg();
+renderRestric();
 showStep(0);
 </script>
 
