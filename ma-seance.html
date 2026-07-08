@@ -612,7 +612,7 @@ function renderExercises(){
   // Filtrer selon le matériel, mais garder l'index original
   const visible = list.map((ex,i) => ({ex, i})).filter(o => exoVisible(o.ex));
   if(visible.length === 0){
-    c.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:14px;padding:40px 20px;">Aucun exercice pour ce muscle avec ce matériel.<br>Essaie un autre filtre.</div>';
+    c.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:14px;padding:34px 20px;line-height:1.5;"><span style="display:block;font-size:44px;margin-bottom:10px">💪</span>Aucun exercice pour ce muscle avec ce matériel.<br>Essaie un autre filtre.</div>';
     return;
   }
   c.innerHTML = visible.map(({ex,i}) => {

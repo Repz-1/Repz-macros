@@ -227,7 +227,7 @@ function renderListe(){
 
 function renderVide(){
     document.getElementById('liste').innerHTML =
-        `<div class="empty">Ta liste est vide.<br>Ajoute des aliments dans ton journal, puis reviens ici et appuie sur « Générer ma liste ».</div>`;
+        `<div class="empty"><span style="display:block;font-size:44px;margin-bottom:10px">🛒</span>Ta liste est vide.<br>Ajoute des aliments dans ton journal, puis reviens ici.</div>`;
 }
 
 function toggle(i){ if(state.items[i]){ state.items[i].done = !state.items[i].done; sauver(); renderListe(); } }

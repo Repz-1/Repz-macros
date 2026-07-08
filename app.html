@@ -305,10 +305,10 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .day-nav { display:flex; align-items:center; justify-content:center; gap:14px; padding:10px 0 2px; }
 /* En-tête aéré : logo à gauche, actions à droite (inspiré Lifesum) */
 .app-header { display:flex; align-items:center; justify-content:space-between; padding:calc(env(safe-area-inset-top) + 16px) 18px 8px; }
-.ah-logo { height:44px; width:auto; display:block; }
+.ah-logo { height:55px; width:auto; display:block; }
 .ah-actions { display:flex; align-items:center; gap:8px; }
-.ah-btn { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
-.ah-btn svg { width:24px; height:24px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.ah-btn { width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
+.ah-btn svg { width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .ah-btn:active { background:rgba(247,181,0,.14); transform:scale(.94); }
 .dn-arrow { width:34px; height:34px; border-radius:50%; border:1px solid #e7e3da; background:#fcfbf8; color:#1a1a1a; font-size:19px; line-height:1; cursor:pointer; }
 .dn-arrow:disabled { opacity:.3; }
@@ -499,7 +499,8 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .weight-val { font-weight:700; color:#F7B500; }
 .weight-del { background:none; border:none; color:#fca5a5; cursor:pointer; font-size:15px; font-weight:600; padding:2px 8px; line-height:1; }
 .weight-del:active { color:#ef4444; }
-.weight-empty { color:#94a3b8; font-size:13px; text-align:center; padding:14px; }
+.wm-last { font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
+.wm-last b { color:#191919; }
 
 /* ===== NOTE POIDS DU JOUR ===== */
 .weight-note {
@@ -542,11 +543,13 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .tdee-toggle:active { background:#374151; }
 .tdee-body { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 18px; }
 .tdee-body.open { max-height:1200px; padding:8px 18px 18px; }
-.tdee-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
-.tdee-field { margin-bottom:10px; }
+.tdee-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.tdee-field { margin-bottom:12px; }
+.calc-sec { font-size:11.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#a8a297; margin:20px 0 10px; }
+.calc-sec:first-of-type { margin-top:14px; }
 .tdee-field label { display:block; font-size:12px; color:#64748b; font-weight:500; margin-bottom:4px; }
 .tdee-field input, .tdee-field select {
-    width:100%; padding:9px 10px; border:1px solid #e2e8f0; border-radius:8px;
+    width:100%; padding:12px; border:1.5px solid #e7e2d9; border-radius:10px;
     font-size:14px; background:white; color:#0f172a;
 }
 .tdee-calc-btn {
@@ -725,7 +728,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 }
 .bn-item {
     flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
-    padding:9px 0 7px; text-decoration:none; color:#9ca3af;
+    padding:9px 0 7px; text-decoration:none; color:#6f6a61;
     -webkit-tap-highlight-color:transparent;
 }
 .bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
@@ -1048,6 +1051,7 @@ function afficherMessageInvite() {
         <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg> Mon poids du jour</h3>
         <label>Poids (kg)</label>
         <input type="number" id="wmInput" step="0.1" placeholder="kg" inputmode="decimal">
+        <div class="wm-last" id="wmLast" style="display:none"></div>
         <div class="modal-btns">
             <button class="modal-cancel" onclick="closeWeightModal()">Annuler</button>
             <button class="modal-save" onclick="saveWeightNutri()">Enregistrer</button>
@@ -1082,6 +1086,7 @@ function afficherMessageInvite() {
     <div class="modal">
         <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg> Calculer mes calories</h3>
         <p class="calc-intro">Réponds à ces questions pour une estimation personnalisée.</p>
+        <div class="calc-sec">Toi</div>
         <div class="tdee-grid">
             <div class="tdee-field"><label>Sexe</label><select id="cSex"><option value="h">Homme</option><option value="f">Femme</option></select></div>
             <div class="tdee-field"><label>Âge</label><input type="number" id="cAge" value="25"></div>
@@ -1090,6 +1095,7 @@ function afficherMessageInvite() {
         </div>
         <label>Masse grasse (%) — optionnel, plus précis</label>
         <input type="number" id="cBodyFat" placeholder="ex. 15 (laisse vide si inconnu)">
+        <div class="calc-sec">Ton activité</div>
         <label>Activité quotidienne (hors sport)</label>
         <select id="cDaily">
             <option value="1.2">Sédentaire (bureau, peu de marche)</option>
@@ -1101,6 +1107,7 @@ function afficherMessageInvite() {
             <div class="tdee-field"><label>Séances sport / sem.</label><input type="number" id="cTrainDays" value="4" min="0" max="14"></div>
             <div class="tdee-field"><label>Intensité</label><select id="cTrainInt"><option value="0.02">Légère</option><option value="0.03" selected>Modérée</option><option value="0.04">Intense</option></select></div>
         </div>
+        <div class="calc-sec">Ton objectif</div>
         <label>Objectif</label>
         <select id="cGoal">
             <option value="-500">Sèche agressive (-500 kcal)</option>
@@ -2853,7 +2860,9 @@ function openWeightModal(){
     const last = (weightLog && weightLog.length) ? weightLog[weightLog.length-1].weight : (goal.weight||'');
     const el = document.getElementById('wmInput');
     el.value = '';
-    el.placeholder = last ? (last+' kg la dernière fois') : 'kg';
+    el.placeholder = 'kg';
+    const wl = document.getElementById('wmLast');
+    if(wl){ if(last){ wl.innerHTML = 'Poids précédent : <b>'+last+' kg</b>'; wl.style.display='block'; } else { wl.style.display='none'; } }
     document.getElementById('weightModal').classList.add('show');
 }
 function closeWeightModal(){ document.getElementById('weightModal').classList.remove('show'); }
