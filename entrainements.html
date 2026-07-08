@@ -34,7 +34,7 @@ body {
 
 /* Journal d'entraînement */
 /* Carte Dernière séance */
-.last-session { display:none; align-items:center; gap:14px; background:var(--card); border:1px solid #efefef; border-radius:var(--radius); padding:18px; margin-top:26px; box-shadow:0 8px 24px rgba(24,24,24,.07); }
+.last-session { display:none; align-items:center; gap:14px; background:var(--card); border:1px solid #efefef; border-radius:var(--radius); padding:18px; margin-top:26px; box-shadow:0 2px 10px rgba(24,24,24,.05); }
 .last-session.show { display:flex; }
 .ls-ic { flex:none; width:50px; height:50px; border-radius:15px; background:#FFF4CC; display:flex; align-items:center; justify-content:center; font-size:24px; }
 .ls-body { flex:1; min-width:0; }
@@ -44,16 +44,18 @@ body {
 .ls-btn { flex:none; background:var(--gold); color:var(--noir); border:none; border-radius:14px; padding:11px 18px; font-size:14px; font-weight:700; cursor:pointer; text-decoration:none; box-shadow:0 6px 16px rgba(247,181,0,.3); }
 .ls-btn:active { transform:scale(.96); }
 
-.wlog { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:22px; box-shadow:0 4px 16px rgba(15,23,42,.05); }
+.wlog { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:22px; box-shadow:0 2px 10px rgba(15,23,42,.04); }
 .wlog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
 .wlog-title { font-size:17px; font-weight:800; }
 .wlog-sub { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
 .wlog-today { flex-shrink:0; background:#DFA004; color:#fff; border:none; border-radius:20px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
 .wlog-today:active { transform:scale(.96); }
 .wlog-list { display:flex; flex-direction:column; }
-.wlog-day { display:flex; align-items:center; gap:12px; padding:11px 2px; border-top:1px solid var(--line); cursor:pointer; }
+.wlog-day { display:flex; align-items:center; gap:12px; padding:13px 2px; border-top:1px solid var(--line); cursor:pointer; }
 .wlog-day:first-child { border-top:none; }
-.wlog-date { width:96px; flex-shrink:0; font-size:13px; font-weight:700; color:var(--text); }
+.wlog-date { width:96px; flex-shrink:0; font-size:14px; font-weight:800; color:var(--text); }
+.wlog-main { flex:1; min-width:0; }
+.wlog-meta { font-size:12px; font-weight:600; color:var(--text-dim); margin-top:5px; display:flex; align-items:center; gap:10px; }
 .wlog-day.is-today .wlog-date { color:#DFA004; }
 .wlog-tags { display:flex; flex-wrap:wrap; gap:6px; flex:1; }
 .wlog-tag { font-size:12px; font-weight:700; background:#FDF6E3; color:#8F6200; padding:4px 10px; border-radius:8px; }
@@ -112,7 +114,8 @@ body {
 
 /* Hero court */
 .intro { text-align:left; padding:18px 6px 14px; }
-.intro-eyebrow { font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#9b9b9b; }
+.intro-eyebrow { font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--noir); }
+.intro-eyebrow em { font-style:normal; color:var(--gold); }
 .intro h2 { font-size:26px; font-weight:800; line-height:1.15; letter-spacing:-.02em; margin-bottom:6px; color:var(--noir); }
 .intro p { font-size:17px; font-weight:500; color:#666; line-height:1.45; max-width:340px; margin:0; }
 
@@ -121,7 +124,7 @@ body {
 
 .choice {
     position:relative; display:block; border-radius:24px; padding:24px 22px;
-    background:#ffffff; border:1px solid #efefef; box-shadow:0 8px 24px rgba(24,24,24,.07);
+    background:#ffffff; border:1px solid #efefef; box-shadow:0 2px 10px rgba(24,24,24,.05);
     text-decoration:none; color:inherit;
     transition:transform .15s ease, box-shadow .15s ease;
 }
@@ -152,7 +155,7 @@ body {
 /* Carte vedette : bordure + halo jaune pour la faire ressortir (fond clair partout) */
 .choice.featured {
     background:#ffffff; border:1px solid #efefef;
-    box-shadow:0 16px 40px rgba(24,24,24,.13);
+    box-shadow:0 6px 18px rgba(24,24,24,.09);
 }
 
 /* Badge Recommandé : jaune, texte noir (jamais rouge) */
@@ -436,7 +439,7 @@ function logout() {
 </header>
 
 <div class="intro">
-    <span class="intro-eyebrow">Entraînement</span>
+    <span class="intro-eyebrow">BelFit <em>Training</em></span>
 </div>
 
 <div class="choices">
@@ -940,6 +943,11 @@ function renderWlog(){
     const list = document.getElementById('wlogList');
     if(!list) return;
     const log = loadMuscleLog();
+    // Durées des séances par date (depuis le sessionLog)
+    let slog = [];
+    try { slog = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]'); } catch(e){ slog = []; }
+    const durByIso = {};
+    slog.forEach(s => { if(s.iso && s.duree){ durByIso[s.iso] = (durByIso[s.iso]||0) + s.duree; } });
     // Purge des jours de plus de 9 jours (le 10e efface le 1er)
     const limite = wlIso(wlDateDaysAgo(8));
     let changed = false;
@@ -956,9 +964,15 @@ function renderWlog(){
         else if(vals.includes('repos')) tags = '<span class="wlog-tag repos">Repos</span>';
         else tags = vals.map(v => `<span class="wlog-tag">${wlMuscleName(v)}</span>`).join('');
         const estRepos = vals.includes('repos');
+        // Ligne méta : durée de la séance de ce jour
+        let meta = '';
+        if(!estRepos && durByIso[iso]){
+            const dtxt = fmtDuree(durByIso[iso]);
+            if(dtxt) meta = `<div class="wlog-meta"><span>⏱ ${dtxt}</span></div>`;
+        }
         html += `<div class="wlog-day${i === 0 ? ' is-today' : ''}${estRepos ? ' is-repos' : ''}" onclick="openMuscleLog('${iso}')">
             <div class="wlog-date">${wlLabel(d)}</div>
-            <div class="wlog-tags">${tags}</div>
+            <div class="wlog-main"><div class="wlog-tags">${tags}</div>${meta}</div>
         </div>`;
     }
     list.innerHTML = html;
