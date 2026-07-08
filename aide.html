@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
 <link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
 <style>
-:root{ --em:#10B981; --em-dark:#047857; --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0; --card:#fcfbf8; --bg:#eeece7; }
+:root{ --em:#F7B500; --em-dark:#8F6200; --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0; --card:#fcfbf8; --bg:#eeece7; }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
 .container { max-width:900px; margin:0 auto; padding:16px 16px 120px; }
@@ -30,20 +30,20 @@ body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .faq-item.open .faq-a { display:block; }
 
 /* Bulle de contact */
-.chat-fab { position:fixed; bottom:22px; right:18px; z-index:120; width:58px; height:58px; border-radius:50%; border:none; background:var(--em); color:#fff; box-shadow:0 8px 22px rgba(16,185,129,.4); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.chat-fab { position:fixed; bottom:22px; right:18px; z-index:120; width:58px; height:58px; border-radius:50%; border:none; background:var(--em); color:#fff; box-shadow:0 8px 22px rgba(247,181,0,.4); cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .chat-fab svg { width:27px; height:27px; stroke:#fff; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .chat-fab:active { transform:scale(.94); }
 .chat-panel { display:none; position:fixed; bottom:92px; right:16px; left:16px; max-width:400px; margin-left:auto; z-index:121; background:#fff; border-radius:20px; box-shadow:0 16px 44px rgba(15,23,42,.24); overflow:hidden; }
 .chat-panel.show { display:block; animation:cpUp .2s ease-out; }
 @keyframes cpUp { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
-.cp-head { background:linear-gradient(160deg,#10B981,#059669); color:#fff; padding:15px 17px; }
+.cp-head { background:linear-gradient(160deg,#F7B500,#DFA004); color:#fff; padding:15px 17px; }
 .cp-head h3 { font-size:16px; font-weight:800; }
 .cp-head p { font-size:12.5px; opacity:.9; margin-top:2px; }
 .cp-body { padding:14px 15px 15px; }
 .cp-body textarea { width:100%; min-height:96px; padding:12px; border:1.5px solid #e5e0d6; border-radius:12px; font-size:14px; font-family:inherit; resize:vertical; }
 .cp-body textarea:focus { outline:none; border-color:var(--em); }
 .cp-send { display:block; width:100%; margin-top:10px; background:var(--em); color:#fff; border:none; border-radius:12px; padding:13px; font-size:14.5px; font-weight:800; cursor:pointer; font-family:inherit; }
-.cp-ok { display:none; text-align:center; font-size:13px; font-weight:700; color:#047857; padding-top:10px; }
+.cp-ok { display:none; text-align:center; font-size:13px; font-weight:700; color:#8F6200; padding-top:10px; }
 </style>
 </head>
 <body>
