@@ -4,6 +4,7 @@
 <style>html,body{background:#eeece7 !important;margin:0}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#eeece7">
 <title>BELFIT — Mes stats</title>
 <style>
 :root{
@@ -189,7 +190,21 @@ function logout(){
 </script>
 
 <div class="container">
-    <a href="app.html" class="back-btn">←</a>
+    <style>
+    .app-header { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; }
+    .ah-logo { height:44px; width:auto; display:block; }
+    .ah-actions { display:flex; align-items:center; gap:8px; }
+    .ah-btn { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
+    .ah-btn svg { width:24px; height:24px; stroke:#047857; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .ah-btn:active { background:rgba(16,185,129,.14); transform:scale(.94); }
+    </style>
+    <header class="app-header">
+        <img src="belfit-logo-header.png" class="ah-logo" alt="BELFIT">
+        <div class="ah-actions">
+            <a href="profil.html" class="ah-btn" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></a>
+            <a href="parametres.html" class="ah-btn" aria-label="Réglages"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></a>
+        </div>
+    </header>
     <div class="page-title">Mes stats</div>
     <div class="page-sub">Suis ta progression : poids, calories et régularité.</div>
 
