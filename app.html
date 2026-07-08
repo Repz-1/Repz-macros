@@ -34,7 +34,7 @@ body {
     padding:2px 16px;
 }
 .app-logo { width:100%; max-width:230px; height:auto; display:block; margin:0 auto;
-    filter:drop-shadow(0 4px 16px rgba(16,185,129,.15)); }
+    filter:drop-shadow(0 4px 16px rgba(247,181,0,.15)); }
 .app-back-btn {
     display:inline-flex; align-items:center; justify-content:center;
     width:42px; height:42px;
@@ -48,7 +48,7 @@ body {
 .topbar-app {
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px;
-    background:linear-gradient(160deg,#10B981 0%,#059669 100%);
+    background:linear-gradient(160deg,#F7B500 0%,#DFA004 100%);
 }
 .topbar-home {
     display:inline-flex; align-items:center; justify-content:center;
@@ -74,18 +74,18 @@ body {
     transform:translateY(0); opacity:1; pointer-events:auto;
 }
 .sr-text { display:flex; align-items:baseline; gap:6px; white-space:nowrap; }
-.sr-num { font-size:22px; font-weight:800; color:#10B981; letter-spacing:-.5px; }
+.sr-num { font-size:22px; font-weight:800; color:#F7B500; letter-spacing:-.5px; }
 .sr-label { font-size:12px; font-weight:600; color:#94a3b8; }
 .sticky-remaining.over .sr-num { color:#ef4444; }
 .sr-bar { flex:1; height:7px; background:#f1f5f9; border-radius:10px; overflow:hidden; }
-.sr-bar-fill { height:100%; background:linear-gradient(90deg,#10B981,#34D399); border-radius:10px; width:0%; transition:width .4s ease; }
+.sr-bar-fill { height:100%; background:linear-gradient(90deg,#F7B500,#FFD264); border-radius:10px; width:0%; transition:width .4s ease; }
 .sr-bar-fill.over { background:linear-gradient(90deg,#f87171,#ef4444); }
 
 /* Bande dégradée décorative en bas (miroir du haut) */
 .bottom-gradient {
     height:70px;
     margin:24px -16px -170px;
-    background:linear-gradient(160deg,#10B981 0%,#059669 100%);
+    background:linear-gradient(160deg,#F7B500 0%,#DFA004 100%);
 }
 h1 { font-size:26px; font-weight:700; text-align:center; }
 .date-banner {
@@ -99,8 +99,8 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     padding:20px; margin-bottom:16px;
 }
 /* Carte nutrition claire (style anneau) */
-.nutri-card { position:relative; background:linear-gradient(160deg,#ecfdf5 0%, #fcfbf8 42%, #fcfbf8 100%); color:#1a1a1a; border:1.5px solid #c9efe1;
-    box-shadow:0 8px 22px rgba(16,185,129,.10); padding:20px 18px; border-radius:22px; overflow:hidden; }
+.nutri-card { position:relative; background:linear-gradient(160deg,#FFFBEF 0%, #fcfbf8 42%, #fcfbf8 100%); color:#1a1a1a; border:1.5px solid #c9efe1;
+    box-shadow:0 8px 22px rgba(247,181,0,.10); padding:20px 18px; border-radius:22px; overflow:hidden; }
 .nutri-card::before { display:none; }
 .nutri-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
 .nutri-datebar { position:relative; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px; padding-top:2px; }
@@ -111,15 +111,15 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .eat-lbl { display:inline-flex; align-items:center; gap:8px; }
 .eat-lbl .ic { width:17px; height:17px; color:#fff; }
 .modal-h3-ic { display:flex; align-items:center; gap:8px; }
-.modal-h3-ic .ic { width:20px; height:20px; color:#10B981; }
+.modal-h3-ic .ic { width:20px; height:20px; color:#F7B500; }
 .nutri-datebar .ndb-date { font-size:15px; font-weight:800; letter-spacing:.06em; color:#6b6660; text-transform:uppercase; }
 .nutri-datebar .ndb-edit { position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:12px; padding:5px 12px; border-radius:14px; }
-.nutri-title { font-size:16px; font-weight:800; color:#047857; }
+.nutri-title { font-size:16px; font-weight:800; color:#8F6200; }
 .nutri-card .goal-edit { background:#FFF6DD; color:#DFA004; font-weight:700; }
 .ring-wrap { display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 0 4px; }
 .ring-side { text-align:center; flex:1; min-width:0; }
 .ring-side .rs-lab { font-size:13px; color:#8a8580; }
-.ring-side .rs-val { font-size:23px; font-weight:800; margin-top:2px; color:#047857; }
+.ring-side .rs-val { font-size:23px; font-weight:800; margin-top:2px; color:#8F6200; }
 .ring-center { position:relative; width:184px; height:184px; flex-shrink:0; }
 .ring-txt { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .ring-txt .rt-lab { font-size:14px; color:#8a8580; }
@@ -172,8 +172,8 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .goal-current { font-size:32px; font-weight:800; }
 .goal-current span { font-size:16px; color:#94a3b8; font-weight:500; }
 .progress-track { background:#374151; border-radius:10px; height:14px; margin:12px 0 6px; overflow:hidden; }
-.progress-fill { background:linear-gradient(90deg,#10B981,#34D399); height:100%; border-radius:10px; transition:width .3s; }
-.progress-label { font-size:18px; color:#10B981; font-weight:700; margin-top:2px; }
+.progress-fill { background:linear-gradient(90deg,#F7B500,#FFD264); height:100%; border-radius:10px; transition:width .3s; }
+.progress-label { font-size:18px; color:#F7B500; font-weight:700; margin-top:2px; }
 .goal-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
 .goal-macro { background:#374151; border-radius:8px; padding:10px; text-align:center; }
 .goal-macro .gm-label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
@@ -191,7 +191,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     color:#1a1a1a; flex:1; padding:4px;
 }
 .recipe-header input.recipe-name:focus { outline:none; background:#f1f5f9; border-radius:4px; }
-.recipe-mult-badge { font-size:12px; background:#ecfdf5; color:#047857; padding:4px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
+.recipe-mult-badge { font-size:12px; background:#FFFBEF; color:#8F6200; padding:4px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
 
 .ing-row {
     background:#fff; padding:10px 12px; border-radius:10px; margin-bottom:6px;
@@ -208,7 +208,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     scroll-margin:140px; width:100%; padding:6px 2px; border:1.5px solid #e2e8f0; border-radius:8px;
     font-size:15px; font-weight:700; text-align:center; color:#1a1a1a; background:#f8fafc;
 }
-.ing-input input:focus { outline:none; border-color:#10B981; background:#fff; }
+.ing-input input:focus { outline:none; border-color:#F7B500; background:#fff; }
 .ing-unit { font-weight:500; font-size:12px; color:#94a3b8; }
 .ing-macros {
     text-align:right; line-height:1.2;
@@ -227,7 +227,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     scroll-margin:140px; width:100%; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px;
     font-size:14px; background:#eeece7; transition:border-color .15s, background .15s;
 }
-.add-ing input:focus { outline:none; border-color:#10B981; background:#fff; }
+.add-ing input:focus { outline:none; border-color:#F7B500; background:#fff; }
 .search-results {
     position:absolute; top:100%; left:0; right:0; z-index:300;
     background:white; border:1px solid #cbd5e1; border-radius:8px;
@@ -243,23 +243,23 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .search-item:active, .search-item:hover { background:#eff6ff; }
 .search-item .si-kcal { font-size:12px; color:#64748b; }
 .search-none { padding:14px; text-align:center; color:#94a3b8; font-size:13px; }
-.search-create { padding:12px; color:#10B981; font-weight:700; font-size:13.5px; cursor:pointer; border-top:1px solid #eef0f2; display:flex; align-items:center; justify-content:center; gap:6px; }
-.search-create:active { background:#ecfdf5; }
+.search-create { padding:12px; color:#F7B500; font-weight:700; font-size:13.5px; cursor:pointer; border-top:1px solid #eef0f2; display:flex; align-items:center; justify-content:center; gap:6px; }
+.search-create:active { background:#FFFBEF; }
 .search-create svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; }
 
 .recipe-total {
-    background:#ecfdf5; border:1px solid #a7f3d0;
-    border-radius:10px; padding:12px; margin-top:12px; font-size:14px; font-weight:700; color:#047857;
+    background:#FFFBEF; border:1px solid #F3E2A8;
+    border-radius:10px; padding:12px; margin-top:12px; font-size:14px; font-weight:700; color:#8F6200;
 }
-.recipe-total .rt-mult { color:#9a3412; background:#d1fae5; padding:6px 8px; border-radius:6px; margin-top:6px; font-size:13px; }
+.recipe-total .rt-mult { color:#9a3412; background:#FBEFC7; padding:6px 8px; border-radius:6px; margin-top:6px; font-size:13px; }
 
 
-.btn-mult { background:#ecfdf5; color:#047857; }
+.btn-mult { background:#FFFBEF; color:#8F6200; }
 
 .mult-input { width:54px; padding:9px; border:1px solid #e2e8f0; border-radius:8px; text-align:center; font-weight:600; }
 
 .add-recipe-btn {
-    width:100%; background:#10B981; color:white; padding:14px; border:none;
+    width:100%; background:#F7B500; color:white; padding:14px; border:none;
     border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; margin-bottom:20px;
     box-shadow:0 2px 8px rgba(255,140,0,.25);
 }
@@ -269,7 +269,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .fab {
     position:fixed; bottom:88px; right:16px; z-index:80;
     display:flex; align-items:center; gap:5px;
-    background:#10B981; color:white; border:none;
+    background:#F7B500; color:white; border:none;
     padding:12px 16px; border-radius:30px; cursor:pointer;
     box-shadow:0 4px 14px rgba(255,140,0,.4);
     font-size:14px; font-weight:700;
@@ -289,7 +289,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .mtype-title { font-size:16px; font-weight:800; color:#1a1a1a; text-align:center; margin-bottom:14px; }
 .mtype-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
 .mtype-opt { display:flex; flex-direction:column; align-items:center; gap:8px; background:#fff; border:1.5px solid #e7e2d9; border-radius:16px; padding:16px 8px; cursor:pointer; font-weight:800; font-size:14px; color:#1a1a1a; }
-.mtype-opt:active { transform:scale(.97); border-color:#10B981; background:#ecfdf5; }
+.mtype-opt:active { transform:scale(.97); border-color:#F7B500; background:#FFFBEF; }
 .mtype-opt .mt-ic { width:44px; height:44px; display:flex; align-items:center; justify-content:center; }
 .mtype-opt .mt-ic svg { width:40px; height:40px; }
 .mtype-cancel { display:block; width:100%; background:none; border:none; color:#6b7280; font-size:14px; font-weight:700; padding:14px 0 4px; cursor:pointer; }
@@ -315,11 +315,11 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .ah-logo { height:44px; width:auto; display:block; }
 .ah-actions { display:flex; align-items:center; gap:8px; }
 .ah-btn { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
-.ah-btn svg { width:24px; height:24px; stroke:#047857; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-.ah-btn:active { background:rgba(16,185,129,.14); transform:scale(.94); }
+.ah-btn svg { width:24px; height:24px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.ah-btn:active { background:rgba(247,181,0,.14); transform:scale(.94); }
 .dn-arrow { width:34px; height:34px; border-radius:50%; border:1px solid #e7e3da; background:#fcfbf8; color:#1a1a1a; font-size:19px; line-height:1; cursor:pointer; }
 .dn-arrow:disabled { opacity:.3; }
-.dn-arrow:active:not(:disabled) { background:#ecfdf5; border-color:#10B981; }
+.dn-arrow:active:not(:disabled) { background:#FFFBEF; border-color:#F7B500; }
 .dn-label { font-size:14px; font-weight:800; min-width:120px; text-align:center; }
 @keyframes daySlideL { from { transform:translateX(70px); opacity:.25; } to { transform:none; opacity:1; } }
 @keyframes daySlideR { from { transform:translateX(-70px); opacity:.25; } to { transform:none; opacity:1; } }
@@ -389,14 +389,14 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .dt-main { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:14px; }
 .dt-remaining-big { line-height:1; }
 .dt-rem-num { font-size:44px; font-weight:800; color:#fff; letter-spacing:-1px; }
-.dt-rem-label { font-size:13px; color:#10B981; font-weight:700; margin-top:4px; }
+.dt-rem-label { font-size:13px; color:#F7B500; font-weight:700; margin-top:4px; }
 .dt-remaining-big.over .dt-rem-num { color:#f87171; }
 .dt-remaining-big.over .dt-rem-label { color:#f87171; }
 .dt-consumed { text-align:right; }
 .dt-cons-num { font-size:18px; font-weight:700; color:#e5e7eb; }
 .dt-cons-sub { font-size:12px; color:#94a3b8; margin-top:2px; }
 .dt-progress { height:8px; background:#374151; border-radius:10px; overflow:hidden; margin-bottom:16px; }
-.dt-progress-fill { height:100%; background:linear-gradient(90deg,#10B981,#34D399); border-radius:10px; width:0%; transition:width .4s ease; }
+.dt-progress-fill { height:100%; background:linear-gradient(90deg,#F7B500,#FFD264); border-radius:10px; width:0%; transition:width .4s ease; }
 .dt-progress-fill.over { background:linear-gradient(90deg,#f87171,#ef4444); }
 .dt-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .dt-macro { background:#374151; border-radius:10px; padding:10px; text-align:center; }
@@ -413,7 +413,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .progress-macros-left {
     font-size:12px; color:#94a3b8; font-weight:600; margin-top:4px;
 }
-.progress-macros-left .pml-done { color:#22c55e; }
+.progress-macros-left .pml-done { color:#DFA004; }
 .progress-macros-left .pml-over { color:#fb923c; }
 
 /* ===== IDÉES RECETTES ===== */
@@ -448,7 +448,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .eat-idea-kcal { display:inline-block; font-size:12px; color:#be185d; font-weight:800; margin-top:9px; background:#fce7f3; padding:3px 10px; border-radius:20px; }
 .eat-portion { color:#b79aa8; font-weight:500; margin-left:6px; }
 .eat-prot { font-weight:700; }
-.eat-prot.ok { color:#047857; }
+.eat-prot.ok { color:#8F6200; }
 .eat-prot.over { color:#b45309; font-size:11px; }
 .eat-idea.eat-over { opacity:.55; }
 .eat-note { font-size:13px; color:#db2777; font-weight:700; text-align:center; padding:14px; }
@@ -465,9 +465,9 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .fridge-chip b { cursor:pointer; font-size:14px; line-height:1; opacity:.7; }
 .fridge-go { width:100%; margin-top:12px; background:#db2777; color:#fff; border:none; border-radius:11px; padding:12px; font-size:14px; font-weight:800; cursor:pointer; }
 .fridge-go:active { transform:scale(.99); }
-.fridge-cover { font-size:11.5px; font-weight:800; color:#047857; background:#ecfdf5; padding:2px 8px; border-radius:20px; margin-left:6px; }
+.fridge-cover { font-size:11.5px; font-weight:800; color:#8F6200; background:#FFFBEF; padding:2px 8px; border-radius:20px; margin-left:6px; }
 .fridge-miss { font-size:12px; color:#b45309; margin-top:7px; }
-.fridge-complete { font-size:12px; color:#047857; font-weight:700; margin-top:7px; }
+.fridge-complete { font-size:12px; color:#8F6200; font-weight:700; margin-top:7px; }
 
 /* HISTORIQUE */
 .history-card { position:relative; background:#fcfbf8; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(60,50,40,.07); overflow:hidden; }
@@ -478,7 +478,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .evolution-card h2 { font-size:17px; font-weight:700; margin-bottom:18px; }
 
 .recipe-card::before, .history-card::before, .evolution-card::before, .weight-card::before {
-    content:''; position:absolute; left:0; top:20px; bottom:20px; width:4px; background:#10B981; border-radius:0 4px 4px 0;
+    content:''; position:absolute; left:0; top:20px; bottom:20px; width:4px; background:#F7B500; border-radius:0 4px 4px 0;
 }
 
 .evo-section { margin-bottom:24px; }
@@ -493,7 +493,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
     flex:1; padding:11px; border:1px solid #e2e8f0; border-radius:8px; font-size:15px;
 }
 .weight-add-btn {
-    background:#16a34a; color:white; border:none; width:48px; padding:11px 0;
+    background:#DFA004; color:white; border:none; width:48px; padding:11px 0;
     border-radius:10px; font-size:18px; font-weight:700; cursor:pointer;
 }
 .weight-add-btn:active { background:#15803d; }
@@ -503,7 +503,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 }
 .weight-row:last-child { border-bottom:none; }
 .weight-date { color:#64748b; }
-.weight-val { font-weight:700; color:#10B981; }
+.weight-val { font-weight:700; color:#F7B500; }
 .weight-del { background:none; border:none; color:#fca5a5; cursor:pointer; font-size:15px; font-weight:600; padding:2px 8px; line-height:1; }
 .weight-del:active { color:#ef4444; }
 .weight-empty { color:#94a3b8; font-size:13px; text-align:center; padding:14px; }
@@ -511,19 +511,19 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 /* ===== NOTE POIDS DU JOUR ===== */
 .weight-note {
     display:flex; align-items:center; gap:11px; cursor:pointer;
-    background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:1.5px solid #a7f3d0;
+    background:linear-gradient(135deg,#FFFBEF,#FBEFC7); border:1.5px solid #F3E2A8;
     border-radius:16px; padding:13px 15px; margin:2px 0 18px;
-    box-shadow:0 4px 14px rgba(16,185,129,.10);
+    box-shadow:0 4px 14px rgba(247,181,0,.10);
 }
 .weight-note:active { transform:scale(.99); }
 .weight-note .wn-ic {
-    flex:none; color:#10B981; display:flex; align-items:center; justify-content:center;
+    flex:none; color:#F7B500; display:flex; align-items:center; justify-content:center;
 }
 .weight-note .wn-ic svg { width:22px; height:22px; }
 .weight-note .wn-txt { flex:1; }
-.weight-note .wn-title { font-size:13.5px; font-weight:800; color:#065f46; }
-.weight-note .wn-sub { font-size:11.5px; font-weight:600; color:#059669; margin-top:1px; }
-.weight-note .wn-cta { flex:none; font-size:13px; font-weight:800; color:#047857; }
+.weight-note .wn-title { font-size:13.5px; font-weight:800; color:#7a5600; }
+.weight-note .wn-sub { font-size:11.5px; font-weight:600; color:#DFA004; margin-top:1px; }
+.weight-note .wn-cta { flex:none; font-size:13px; font-weight:800; color:#8F6200; }
 
 /* ===== SAUVEGARDE ===== */
 .backup-card { background:white; border-radius:20px; padding:18px; box-shadow:0 4px 20px rgba(15,23,42,.06); margin-bottom:14px; }
@@ -536,8 +536,8 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 }
 .backup-export { background:#eff6ff; color:#2563eb; border:1.5px solid #bfdbfe; }
 .backup-export:active { background:#dbeafe; }
-.backup-import { background:#f0fdf4; color:#16a34a; border:1.5px solid #bbf7d0; }
-.backup-import:active { background:#dcfce7; }
+.backup-import { background:#f0fdf4; color:#DFA004; border:1.5px solid #bbf7d0; }
+.backup-import:active { background:#FBEFC7; }
 
 /* ===== CALCULATEUR DE MAINTIEN (TDEE) ===== */
 .tdee-card { background:white; border-radius:20px; box-shadow:0 4px 20px rgba(15,23,42,.06); margin-bottom:14px; overflow:hidden; }
@@ -557,7 +557,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
     font-size:14px; background:white; color:#0f172a;
 }
 .tdee-calc-btn {
-    width:100%; background:#10B981; color:white; border:none; padding:12px;
+    width:100%; background:#F7B500; color:white; border:none; padding:12px;
     border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; margin-top:4px;
 }
 .tdee-calc-btn:active { background:#E85D2A; }
@@ -567,21 +567,21 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .tdee-res-line span:last-child { font-weight:600; color:#0f172a; }
 .tdee-res-target { border-top:1px solid #e2e8f0; margin-top:4px; padding-top:10px; }
 .tdee-res-target span { font-size:16px; }
-.tdee-res-target span:last-child { color:#10B981; font-weight:800; }
+.tdee-res-target span:last-child { color:#F7B500; font-weight:800; }
 .tdee-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
-.tdee-macro { background:#ecfdf5; border-radius:8px; padding:10px; text-align:center; }
+.tdee-macro { background:#FFFBEF; border-radius:8px; padding:10px; text-align:center; }
 .tm-label { font-size:11px; color:#64748b; }
-.tm-val { font-size:16px; font-weight:700; color:#047857; margin-top:2px; }
+.tm-val { font-size:16px; font-weight:700; color:#8F6200; margin-top:2px; }
 .tdee-apply-btn {
     width:100%; background:#10b981; color:white; border:none; padding:12px;
     border-radius:8px; font-size:15px; font-weight:700; cursor:pointer;
 }
-.tdee-apply-btn:active { background:#059669; }
+.tdee-apply-btn:active { background:#DFA004; }
 
 /* Bouton "Calcul personnalisé" (Premium) */
 .tdee-premium-link {
     width:100%; margin-top:12px; display:flex; align-items:center; gap:12px;
-    background:linear-gradient(135deg,#ecfdf5,#ecfdf5); border:1.5px solid #d4af37;
+    background:linear-gradient(135deg,#FFFBEF,#FFFBEF); border:1.5px solid #d4af37;
     border-radius:14px; padding:14px; cursor:pointer; text-align:left;
 }
 .tdee-premium-link:active { transform:scale(.99); }
@@ -599,7 +599,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .cp-overlay.show { display:flex; }
 .cp-header {
     padding:16px 20px 10px; display:flex; align-items:center; gap:12px;
-    background:linear-gradient(180deg,#10B981,#34D399);
+    background:linear-gradient(180deg,#F7B500,#FFD264);
 }
 .cp-close { background:rgba(255,255,255,.2); border:none; color:#fff; width:34px; height:34px;
     border-radius:50%; font-size:18px; cursor:pointer; flex-shrink:0; }
@@ -617,7 +617,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
     background:#fff; border:2px solid #e5e7eb; cursor:pointer; text-align:left; width:100%;
 }
 .cp-opt:active { transform:scale(.99); }
-.cp-opt.sel { border-color:#10B981; background:#ecfdf5; }
+.cp-opt.sel { border-color:#F7B500; background:#FFFBEF; }
 .cp-opt-emoji { font-size:26px; }
 .cp-opt-txt { flex:1; }
 .cp-opt-title { font-size:16px; font-weight:700; color:#1a1a1a; }
@@ -628,10 +628,10 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .cp-input-row input, .cp-input-row select {
     padding:14px; border:1.5px solid #e5e7eb; border-radius:12px; font-size:16px; font-family:inherit;
 }
-.cp-input-row input:focus, .cp-input-row select:focus { outline:none; border-color:#10B981; }
+.cp-input-row input:focus, .cp-input-row select:focus { outline:none; border-color:#F7B500; }
 .cp-footer { padding:16px 22px calc(16px + env(safe-area-inset-bottom)); border-top:1px solid #e5e7eb; background:#fff; }
 .cp-next {
-    width:100%; background:#10B981; color:#fff; border:none; padding:16px; border-radius:14px;
+    width:100%; background:#F7B500; color:#fff; border:none; padding:16px; border-radius:14px;
     font-size:16px; font-weight:700; cursor:pointer;
 }
 .cp-next:active { transform:scale(.99); background:#e85d2a; }
@@ -640,7 +640,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 
 /* Résultat */
 .cp-result-big { text-align:center; margin-bottom:22px; }
-.cp-result-num { font-size:52px; font-weight:800; color:#10B981; letter-spacing:-1px; }
+.cp-result-num { font-size:52px; font-weight:800; color:#F7B500; letter-spacing:-1px; }
 .cp-result-lbl { font-size:15px; color:#6b7280; }
 .cp-result-lines { background:#fff; border-radius:14px; padding:16px; margin-bottom:16px; }
 .cp-result-line { display:flex; justify-content:space-between; padding:8px 0; font-size:14px; }
@@ -694,13 +694,13 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .add-ing { position:relative; display:flex; gap:8px; align-items:flex-start; }
 .add-ing input { flex:1; }
 .scan-btn {
-    flex-shrink:0; height:46px; padding:0 12px; border:1.5px solid #10B981; border-radius:10px;
-    background:#ecfdf5; color:#10B981; cursor:pointer;
+    flex-shrink:0; height:46px; padding:0 12px; border:1.5px solid #F7B500; border-radius:10px;
+    background:#FFFBEF; color:#F7B500; cursor:pointer;
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
 }
 .scan-btn svg { width:20px; height:20px; }
 .scan-btn-label { font-size:10px; font-weight:700; line-height:1; }
-.scan-btn:active { background:#d1fae5; transform:scale(.96); }
+.scan-btn:active { background:#FBEFC7; transform:scale(.96); }
 
 .scan-modal {
     position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:100000;
@@ -714,10 +714,10 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .scan-status.show { display:block; }
 .scan-status.info { background:#dbeafe; color:#1e40af; }
 .scan-status.error { background:#fee2e2; color:#991b1b; }
-.scan-status.success { background:#dcfce7; color:#166534; }
+.scan-status.success { background:#FBEFC7; color:#166534; }
 .scan-manual { display:flex; gap:8px; margin-bottom:12px; }
 .scan-manual input { flex:1; padding:11px; border:1.5px solid #e5e7eb; border-radius:9px; font-size:15px; }
-.scan-manual button { padding:11px 16px; border:none; border-radius:9px; background:#047857; color:#fff; font-weight:700; cursor:pointer; }
+.scan-manual button { padding:11px 16px; border:none; border-radius:9px; background:#8F6200; color:#fff; font-weight:700; cursor:pointer; }
 .scan-close { width:100%; padding:13px; border:none; border-radius:11px; background:#374151; color:#fff; font-weight:700; font-size:15px; cursor:pointer; }
 
 /* ===== BOTTOM NAVIGATION ===== */
@@ -737,7 +737,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 }
 .bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .bn-item span { font-size:10.5px; font-weight:700; }
-.bn-item.active { color:#10B981; }
+.bn-item.active { color:#F7B500; }
 .bn-item:active { transform:scale(.94); }
 
 </style>
@@ -782,7 +782,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
         <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:26px;">
             Suis tes repas et tes macros.<br>Ça prend 10 secondes.
         </p>
-        <a href="index.html" style="display:block; background:#10B981; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
+        <a href="index.html" style="display:block; background:#F7B500; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
             Créer mon compte
         </a>
         <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;">
@@ -1007,7 +1007,7 @@ function afficherMessageInvite() {
     <div class="mtype-box">
         <div class="mtype-title">Qu'est-ce que tu ajoutes ?</div>
         <div class="mtype-grid">
-            <button class="mtype-opt" onclick="choisirTypeRepas('repas')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg></span>Repas</button>
+            <button class="mtype-opt" onclick="choisirTypeRepas('repas')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F7B500" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg></span>Repas</button>
             <button class="mtype-opt" onclick="choisirTypeRepas('collation')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0012 3z"/><path d="M9 18h6M10 21h4"/></svg></span>Collation</button>
             <button class="mtype-opt" onclick="choisirTypeRepas('boisson')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 17a1.8 1.8 0 01-1.8 1.6H9.3a1.8 1.8 0 01-1.8-1.6L6 3z"/><path d="M6.6 10h10.8"/><path d="M17.5 3.5L19 2"/></svg></span>Boisson</button>
         </div>
@@ -2254,10 +2254,10 @@ const MEAL_SVG = {
     diner: `<svg viewBox="0 0 36 36"><ellipse fill="#939598" cx="18" cy="24" rx="18" ry="10"/><ellipse fill="#F1F2F2" cx="18" cy="22" rx="18" ry="10"/><ellipse fill="#FFCC4D" cx="18" cy="21.611" rx="14.8" ry="7.611"/><path fill="#FFE8B6" d="M11 27c-.552 0-1-.447-1-1s.448-1 1-1c1.898 0 3.082-1.085 3.174-1.835.091-.736-.96-1.081-1.417-1.195-.906-.225-1.58.033-2.358.335-1.068.414-2.531.978-4.106-.598-.689-.688-.868-1.604-.492-2.513C6.534 17.425 9.245 16 11 16c.552 0 1 .448 1 1s-.448 1-1 1c-1.115 0-2.995 1.099-3.351 1.96-.074.178-.044.23.058.333.629.628.928.548 1.971.147.862-.334 2.042-.79 3.564-.409 2.384.596 3.07 2.136 2.917 3.379C15.942 25.174 13.953 27 11 27zm6 1c-.552 0-1-.447-1-1s.448-1 1-1c5.697 0 9.833-1.247 12.293-3.707.391-.391 1.023-.391 1.414 0s.391 1.023 0 1.414C27.858 26.556 23.247 28 17 28z"/><path fill="#FFE8B6" d="M21.349 24.16c-.537 0-1.069-.06-1.591-.191-.543-.135-2.194-.548-2.246-1.883-.038-1 .661-2.172 5.938-3.957C22.875 17.66 21.492 17 20 17c-2.513 0-3.797.211-4.293.707-.391.391-1.023.391-1.414 0s-.391-1.023 0-1.414C15.248 15.338 16.741 15 20 15c2.396 0 5.396 1.333 5.676 3.053.107.662-.193 1.506-1.359 1.895-2.583.861-3.921 1.549-4.501 1.957.112.039.253.081.427.125 3.231.804 7.322-2.366 7.768-3.18.072-.481.488-.85.989-.85.553 0 1 .448 1 1 0 .706-.635 1.56-1.887 2.537-1.743 1.361-4.289 2.622-6.764 2.623z"/><path fill="#DD2E44" d="M27 20.5c0 2.485-2.029 5.5-7 5.5s-4-2-12-5c-3.376-1.266 5.029-5 10-5s9 2.015 9 4.5z"/><path fill="#EA596E" d="M16 24c-.256 0-.512-.098-.707-.293-.391-.391-.391-1.023 0-1.414.281-.305.112-.474 0-.586-.558-.558-2.238-.616-3.846.188-.495.247-1.095.047-1.342-.447-.247-.494-.047-1.095.447-1.342 1.977-.988 4.726-1.242 6.154.188 1.252 1.252.686 2.728 0 3.414-.194.194-.45.292-.706.292zm4-4c-2.414 0-3.685-1.271-4.707-2.293-.391-.391-.391-1.023 0-1.414s1.023-.391 1.414 0C17.661 17.247 18.414 18 20 18c.773 0 2.586 0 3.293-.707.391-.391 1.023-.391 1.414 0s.391 1.023 0 1.414C23.414 20 21.108 20 20 20zm0 4c-.553 0-1-.447-1-1s.447-1 1-1c1.847 0 4.548-.962 5.293-1.707.391-.391 1.023-.391 1.414 0s.391 1.023 0 1.414C25.416 22.998 22.041 24 20 24z"/><path fill="#FFAC33" d="M17.001 20c-.367 0-.72-.202-.896-.553-.999-1.997-3.077-6.153-4.098-14.323-.068-.548.32-1.048.868-1.116.544-.07 1.048.32 1.116.868.979 7.83 2.953 11.779 3.902 13.677.247.494.047 1.095-.447 1.342-.142.071-.295.105-.445.105z"/><path fill="#99AAB5" d="M35.125 11.042l-15.24-4.503C16.534 1.23 12.319 2.084 10 2c-.25-.009-.819.22-.833.625-.015.392 1.026.337 1.186.343 1.705.062 3.945.176 6.132 2.486C13.827 4.528 9.744 3.933 9 4c-.458.042-.5.375.042.625.445.206 4.572 1.647 6.84 2.34-1.419.489-3.286.715-6.434-.86C8.951 5.857 8.247 5.506 8 6c-.247.494.506.753 1 1 2.16 1.08 3.43 2.332 4.823 2.332 1.656 0 2.854-.505 3.792-.899.333-.14.634-.263.903-.343.016.01.028.024.044.033l14.805 6.592c.485.265 1.572-.791 1.837-1.275.265-.486.28-2.175-.079-2.398z"/><path fill="#FFAC33" d="M13 19c-.256 0-.512-.098-.707-.293-1.315-1.315-4.446-8.867-.074-14.332.345-.432.976-.501 1.405-.156.432.345.502.974.156 1.405-3.648 4.561-.778 10.963-.074 11.668.391.391.391 1.023 0 1.414-.194.196-.45.294-.706.294z"/></svg>`,
     snack: `<svg viewBox="0 0 36 36"><path fill="#FFE8B6" d="M28 2c2.684-1.342 5 4 3 13-1.106 4.977-5 9-9 12s-11-1-7-5 8-7 10-13c1.304-3.912 1-6 3-7z"/><path fill="#FFD983" d="M31 8c0 3-1 9-4 13s-7 5-4 1 5-7 6-11 2-7 2-3z"/><path fill="#FFCC4D" d="M22 20c-.296.592 1.167-3.833-3-6-1.984-1.032-10 1-4 1 3 0 4 2 2 4-.291.292-.489.603-.622.912-.417.346-.873.709-1.378 1.088-2.263 1.697-5.84 4.227-10 7-3 2-4 3-4 4 0 3 9 3 14 1s10-7 10-7l4-4c-3-4-7-2-7-2z"/><path fill="#FFE8B6" d="M22 20s1.792-4.729-3-7c-4.042-1.916-8-1-11 1s-2 4-3 5 1 2 3 0 8.316-4.895 11-4c3 1 2 2.999 3 5z"/><path fill="#A6D388" d="M26 35h-4c-2 0-3 1-4 1s-2-2 0-2 4 0 5-1 5 2 3 2z"/><circle fill="#3E721D" cx="18" cy="35" r="1"/><path fill="#FFCC4D" d="M32.208 28S28 35 26 35h-4c-2 0 0-1 1-2s5 0 5-6c0-3 4.208 1 4.208 1z"/><path fill="#FFE8B6" d="M26 19c3 0 8 3 7 9s-5 7-7 7h-2c-2 0-1-1 0-2s4 0 4-6c0-3-4-7-6-7 0 0 2-1 4-1z"/><path fill="#FFD983" d="M17 21c3 0 5 1 3 3-1.581 1.581-6 5-10 6s-8 1-5-1 9.764-8 12-8z"/><path fill="#C1694F" d="M2 31c1 0 1 0 1 .667C3 32.333 3 33 2 33s-1-1.333-1-1.333S1 31 2 31z"/></svg>`
 };
-const MEAL_NEUTRAL_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/></svg>`;
+const MEAL_NEUTRAL_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="#F7B500" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/></svg>`;
 // Icônes par type d'ajout (reprises du choix Repas / Collation / Boisson)
 const TYPE_SVG = {
-    repas: `<svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>`,
+    repas: `<svg viewBox="0 0 24 24" fill="none" stroke="#F7B500" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>`,
     collation: `<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0012 3z"/><path d="M9 18h6M10 21h4"/></svg>`,
     boisson: `<svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 17a1.8 1.8 0 01-1.8 1.6H9.3a1.8 1.8 0 01-1.8-1.6L6 3z"/><path d="M6.6 10h10.8"/><path d="M17.5 3.5L19 2"/></svg>`
 };
@@ -2610,7 +2610,7 @@ function renderTotals(){
     // Code couleur protéines : vert si cible atteinte (>=95%), orange sinon
     const protEl = document.getElementById('gmProt');
     if(t.prot >= protTarget*0.95){
-        protEl.style.color = '#22c55e'; // vert : cible protéines atteinte
+        protEl.style.color = '#DFA004'; // vert : cible protéines atteinte
     } else {
         protEl.style.color = '#fb923c'; // orange : protéines insuffisantes
     }
@@ -2957,7 +2957,7 @@ function applyCalc(){
     save();
     renderTotals();
     const btn = document.querySelector('#calcModal .tdee-apply-btn');
-    if(btn){ const o=btn.textContent; btn.textContent='✓ Objectif appliqué !'; btn.style.background='#059669';
+    if(btn){ const o=btn.textContent; btn.textContent='✓ Objectif appliqué !'; btn.style.background='#DFA004';
         setTimeout(()=>{ btn.textContent=o; btn.style.background=''; closeCalcModal(); }, 1200); }
 }
 function saveGoal(){
@@ -3031,7 +3031,7 @@ function applyTdee(){
     const btn=document.querySelector('.tdee-apply-btn');
     const orig=btn.textContent;
     btn.textContent=' Objectif appliqué !';
-    btn.style.background='#059669';
+    btn.style.background='#DFA004';
     setTimeout(()=>{ btn.textContent=orig; btn.style.background=''; }, 1800);
 }
 
@@ -3189,13 +3189,13 @@ function renderWeight(){
         data.forEach((w,i)=>{
             const px=x(i),py=y(w.weight);
             path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
-            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#10B981"/>`;
+            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#F7B500"/>`;
         });
         const labels=data.map((w,i)=>`<text x="${x(i).toFixed(1)}" y="${H-5}" font-size="8" fill="#94a3b8" text-anchor="middle">${w.date.split(' ')[0]}</text>`).join('');
         chart.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;margin-bottom:14px;background:#f8fafc;border-radius:8px;">
             <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(1)}</text>
             <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(1)}</text>
-            <path d="${path}" fill="none" stroke="#10B981" stroke-width="2"/>${pts}${labels}
+            <path d="${path}" fill="none" stroke="#F7B500" stroke-width="2"/>${pts}${labels}
         </svg>`;
     } else {
         chart.innerHTML='<div style="font-size:12px;color:#94a3b8;text-align:center;padding:8px;">Ajoute au moins 2 pesées pour voir la courbe </div>';
@@ -3248,7 +3248,7 @@ function renderHistory(){
         sorted.forEach((h,i)=>{
             const px=x(i), py=y(parseFloat(h.kcal));
             path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
-            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#10B981"/>`;
+            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#F7B500"/>`;
         });
         const labels=sorted.map((h,i)=>{
             const d=h.iso.slice(8,10)+'/'+h.iso.slice(5,7);
@@ -3260,7 +3260,7 @@ function renderHistory(){
             <text x="${W-padR}" y="${(goalY-3).toFixed(1)}" font-size="8" fill="#10b981" text-anchor="end">objectif ${goal.kcal}</text>
             <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(0)}</text>
             <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(0)}</text>
-            <path d="${path}" fill="none" stroke="#10B981" stroke-width="2"/>
+            <path d="${path}" fill="none" stroke="#F7B500" stroke-width="2"/>
             ${pts}
             ${labels}
         </svg>`;
@@ -3275,7 +3275,7 @@ function renderHistory(){
         row.className='history-row';
         row.style.cursor='pointer';
         row.innerHTML=`<div onclick="openDayModal('${h.iso}')" style="flex:1;"><div class="history-date">${h.date}</div><div class="history-detail">${h.prot}P · ${h.carbs}C · ${h.lip}L</div></div>
-            <div style="display:flex;align-items:center;gap:10px;"><div style="font-weight:700;color:#10B981;">${h.kcal} kcal</div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="font-weight:700;color:#F7B500;">${h.kcal} kcal</div>
             <span style="color:#cbd5e1;font-size:16px;" onclick="openDayModal('${h.iso}')">›</span>
             <button class="history-del" onclick="delHistory('${h.iso}')">✕</button></div>`;
         c.appendChild(row);
@@ -3353,13 +3353,13 @@ function openDayModal(iso){
     const protTarget=Math.round(goal.weight*goal.protRatio);
     const delta = h.kcal - goal.kcal;
     const deltaTxt = Math.abs(delta) <= Math.max(60, goal.kcal*0.03)
-        ? `<span style="color:#047857;font-weight:700;">Objectif atteint ✓</span>`
+        ? `<span style="color:#8F6200;font-weight:700;">Objectif atteint ✓</span>`
         : (delta < 0
             ? `<span style="color:#64748b;">${Math.abs(delta)} kcal sous l'objectif</span>`
             : `<span style="color:#b45309;">+${delta} kcal au-dessus de l'objectif</span>`);
     document.getElementById('dayModalBody').innerHTML=`
         <div style="text-align:center;margin:12px 0 4px;">
-            <div style="font-size:38px;font-weight:900;color:#10B981;line-height:1;">${h.kcal}<span style="font-size:15px;font-weight:700;color:#94a3b8;"> kcal</span></div>
+            <div style="font-size:38px;font-weight:900;color:#F7B500;line-height:1;">${h.kcal}<span style="font-size:15px;font-weight:700;color:#94a3b8;"> kcal</span></div>
             <div style="font-size:12.5px;margin-top:6px;">${deltaTxt}</div>
             <div style="font-size:11.5px;color:#94a3b8;margin-top:2px;">Objectif : ${goal.kcal} kcal</div>
         </div>
@@ -3391,15 +3391,15 @@ function detailRepasHtml(h){
     if(!h.repas || !h.repas.length){
         return `<div style="margin-top:16px;text-align:center;font-size:12.5px;color:#94a3b8;background:#f8fafc;border-radius:12px;padding:14px;">Pas de détail enregistré pour cette journée.</div>`;
     }
-    let html = `<div style="margin-top:18px;"><div style="font-size:11.5px;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">Repas de la journée</div>`;
+    let html = `<div style="margin-top:18px;"><div style="font-size:11.5px;font-weight:800;color:#DFA004;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">Repas de la journée</div>`;
     h.repas.forEach(r=>{
-        const mult = r.mult && r.mult !== 1 ? ` <span style="color:#047857;">×${r.mult}</span>` : '';
+        const mult = r.mult && r.mult !== 1 ? ` <span style="color:#8F6200;">×${r.mult}</span>` : '';
         const ings = r.ings.map(i=>
             `<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 0;">
                 <span>${i.n}</span>
                 <span style="color:#94a3b8;flex-shrink:0;">${i.u==='u' ? '×'+i.p : i.p+' g'}</span>
             </div>`).join('');
-        html += `<div style="background:#fcfbf8;border:1px solid #e7e3da;border-left:3px solid #10B981;border-radius:12px;padding:11px 13px;margin-bottom:9px;">
+        html += `<div style="background:#fcfbf8;border:1px solid #e7e3da;border-left:3px solid #F7B500;border-radius:12px;padding:11px 13px;margin-bottom:9px;">
             <div style="font-weight:800;font-size:14px;margin-bottom:5px;">${r.name}${mult}</div>
             <div style="font-size:12.5px;color:#475569;">${ings}</div>
         </div>`;
@@ -3893,7 +3893,7 @@ function montrerModalePremiumRepas(){
             <div style="font-size:42px;margin-bottom:10px">🍽️</div>
             <h3 style="font-size:19px;font-weight:800;margin-bottom:10px">Les idées repas sont Premium</h3>
             <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Laisse BELFIT te suggérer quoi manger selon tes envies et tes calories restantes. Tu peux toujours composer tes repas toi-même gratuitement 😊<br><br>Ton soutien fait grandir BELFIT 🙏</p>
-            <a href="plans.html" style="display:block;background:#047857;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
+            <a href="plans.html" style="display:block;background:#8F6200;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
             <button onclick="document.getElementById('cpPremOverlayRepas').remove()" style="background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px">Plus tard</button>
         </div>
     </div>`;
@@ -3907,7 +3907,7 @@ function montrerModalePremiumCalc(){
             <div style="font-size:42px;margin-bottom:10px">✨</div>
             <h3 style="font-size:19px;font-weight:800;margin-bottom:10px">Calcul personnalisé Premium</h3>
             <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Ce calcul affine tes besoins selon ton travail ET ton sport, pour un résultat vraiment sur mesure. Le calcul simple reste gratuit juste au-dessus 😊<br><br>Ton soutien fait grandir BELFIT 🙏</p>
-            <a href="plans.html" style="display:block;background:#047857;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
+            <a href="plans.html" style="display:block;background:#8F6200;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
             <button onclick="document.getElementById('cpPremOverlay').remove()" style="background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px">Plus tard</button>
         </div>
     </div>`;
@@ -3962,10 +3962,10 @@ function murCompte(){
     o.id = 'inviteMurAction';
     o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
     o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
-        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#10B981;">FIT</span></div>'
+        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#F7B500;">FIT</span></div>'
         + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
         + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
-        + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
+        + '<a href="index.html" style="display:block;background:#F7B500;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
         + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">Continuer à explorer</button>'
         + '</div>';
     document.body.appendChild(o);
@@ -3976,7 +3976,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     const b = document.createElement('a');
     b.href = 'index.html';
     b.id = 'inviteBandeau';
-    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFFBEF;border-bottom:1px solid #F3E2A8;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
     b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
