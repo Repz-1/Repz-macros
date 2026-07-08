@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html{background:#eeece7 !important;margin:0}body{background:linear-gradient(180deg,#dcf2e7 0%,#e9efe8 55%,#eeece7 100%) no-repeat top/100% 380px, #eeece7 !important;margin:0}</style>
+<style>html,body{background:#eeece7 !important;margin:0}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculatrice Macros - BELFIT</title>
-<meta name="theme-color" content="#dcf2e7">
+<meta name="theme-color" content="#eeece7">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="BELFIT Macros">
@@ -116,28 +116,32 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .nutri-datebar .ndb-edit { position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:12px; padding:5px 12px; border-radius:14px; }
 .nutri-title { font-size:16px; font-weight:800; color:#047857; }
 .nutri-card .goal-edit { background:#d1fae5; color:#047857; font-weight:700; }
-.ring-wrap { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:8px 0 18px; }
+.ring-wrap { display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 0 4px; }
 .ring-side { text-align:center; flex:1; min-width:0; }
 .ring-side .rs-lab { font-size:13px; color:#8a8580; }
 .ring-side .rs-val { font-size:23px; font-weight:800; margin-top:2px; color:#047857; }
 .ring-center { position:relative; width:184px; height:184px; flex-shrink:0; }
 .ring-txt { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .ring-txt .rt-lab { font-size:14px; color:#8a8580; }
-.ring-txt .rt-num { font-size:46px; font-weight:800; line-height:1; letter-spacing:-1px; color:#065f46; }
-.ring-txt .rt-sub { font-size:12px; color:#8a8580; margin-top:4px; }
+.ring-txt .rt-num { font-size:48px; font-weight:800; line-height:1; letter-spacing:-1.5px; color:#191919; }
+.ring-txt .rt-sub { font-size:12.5px; font-weight:700; color:#8a8580; margin-top:5px; }
+.ring-txt .rt-sub2 { font-size:11.5px; font-weight:600; color:#b4afa6; margin-top:4px; }
 .dt-remaining-big.over .rt-num { color:#f87171; }
-.nutri-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
-.nutri-macros .mcard { background:#fff; border:1px solid #efece6; border-radius:14px; padding:12px; }
+.nutri-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; padding-top:16px; border-top:1px solid #ece8df; }
+.nutri-macros .mcard { background:none; border:none; border-radius:0; padding:0; }
 .nutri-macros .m-name { font-size:13.5px; font-weight:800; }
-.nutri-macros .m-val { font-size:12.5px; color:#555; margin:3px 0 8px; }
-.nutri-macros .m-tg { color:#9ca3af; }
-.nutri-macros .mbar { height:6px; border-radius:6px; background:#eee; overflow:hidden; }
+.nutri-macros .m-val { font-size:12.5px; color:#191919; font-weight:800; margin:6px 0 8px; }
+.nutri-macros .m-tg { color:#9ca3af; font-weight:700; }
+.nutri-macros .mbar { height:7px; border-radius:6px; background:#efeadd; overflow:hidden; }
 .nutri-macros .mbar span { display:block; height:100%; width:0%; border-radius:6px; transition:width .4s ease; }
-.journal-title { font-size:15px; font-weight:800; letter-spacing:.06em; color:#6b6660; text-transform:uppercase; margin:24px 2px 12px; }
-.quick-actions { display:flex; gap:12px; margin:2px 0 18px; }
-.qa-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:16px; padding:14px 8px; font-size:13.5px; font-weight:700; color:#1a1a1a; cursor:pointer; box-shadow:0 4px 14px rgba(60,50,40,.05); }
-.qa-btn span { font-size:17px; }
-.qa-btn:active { transform:scale(.98); }
+.journal-title { font-size:21px; font-weight:800; letter-spacing:-.02em; color:#191919; text-transform:none; margin:26px 2px 14px; }
+.quick-actions { display:flex; background:var(--card,#fcfbf8); border:1px solid #ece8df; border-radius:20px; overflow:hidden; margin:2px 0 22px; box-shadow:0 2px 10px rgba(24,24,24,.04); }
+.qa-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; background:none; border:none; padding:14px 6px; font-size:12.5px; font-weight:700; color:#191919; cursor:pointer; }
+.qa-btn + .qa-btn { border-left:1px solid #ece8df; }
+.qa-ic { width:38px; height:38px; border-radius:12px; background:#FFF6DD; display:inline-flex; align-items:center; justify-content:center; color:#DFA004; }
+.qa-ic .ic { width:20px; height:20px; }
+.qa-lb { font-size:12.5px; font-weight:700; }
+.qa-btn:active { background:#faf7ef; }
 .calc-intro { font-size:13px; color:#8a8580; margin-bottom:14px; }
 .meal-card { position:relative; background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(60,50,40,.05); }
 .meal-card.open { overflow:visible; z-index:20; }
@@ -888,10 +892,6 @@ function afficherMessageInvite() {
         </div>
 
         <div class="ring-wrap">
-            <div class="ring-side">
-                <div class="rs-lab">Consommées</div>
-                <div class="rs-val" id="goalConsumed">0</div>
-            </div>
             <div class="ring-center">
                 <svg width="184" height="184" viewBox="0 0 190 190">
                     <circle cx="95" cy="95" r="82" fill="none" stroke="#dcecdf" stroke-width="13"
@@ -901,14 +901,10 @@ function afficherMessageInvite() {
                         style="transition:stroke-dasharray .4s ease, stroke .3s;"/>
                 </svg>
                 <div class="ring-txt">
-                    <div class="rt-lab">Restant</div>
                     <div class="dt-remaining-big"><span class="rt-num" id="dtRemNum">0</span></div>
                     <div class="rt-sub" id="dtRemLabel">kcal restantes</div>
+                    <div class="rt-sub2"><span id="goalConsumed">0</span> / <span id="goalKcal">4000</span> kcal</div>
                 </div>
-            </div>
-            <div class="ring-side">
-                <div class="rs-lab">Objectif</div>
-                <div class="rs-val" id="goalKcal">4000</div>
             </div>
         </div>
 
@@ -936,9 +932,9 @@ function afficherMessageInvite() {
 
     <!-- Actions rapides -->
     <div class="quick-actions">
-        <button class="qa-btn" onclick="openWeightModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span> Mon poids</button>
-        <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg></span> Calculer mes calories</button>
-        <button class="qa-btn" onclick="allerCourses()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.5 11.5a1.5 1.5 0 001.5 1.2h7.5a1.5 1.5 0 001.5-1.2L21 8H6.2"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></span> Ma liste de courses</button>
+        <button class="qa-btn" onclick="openWeightModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span><span class="qa-lb">Poids</span></button>
+        <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8 7h8M8 11h2M12 11h.01M15 11h.01M8 15h2M12 15h.01M15 15h.01M8 18h4"/></svg></span><span class="qa-lb">Calculateur</span></button>
+        <button class="qa-btn" onclick="allerCourses()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.5 11.5a1.5 1.5 0 001.5 1.2h7.5a1.5 1.5 0 001.5-1.2L21 8H6.2"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></span><span class="qa-lb">Courses</span></button>
     </div>
 
     <!-- NOTE : POIDS DU JOUR -->
@@ -980,7 +976,7 @@ function afficherMessageInvite() {
         </div>
     </div>
 
-    <div class="journal-title">Journal alimentaire</div>
+    <div class="journal-title">Aujourd’hui</div>
     <div id="recipesContainer"></div>
 
     <!-- BULLE POIDS -->
