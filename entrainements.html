@@ -949,9 +949,9 @@ function renderWlog(){
     let changed = false;
     Object.keys(log).forEach(k => { if(k < limite){ delete log[k]; changed = true; } });
     if(changed) saveMuscleLog(log);
-    // 9 jours, du plus récent au plus ancien
+    // 9 jours, du plus ancien au plus récent (aujourd'hui en bas)
     let html = '';
-    for(let i = 0; i < 9; i++){
+    for(let i = 8; i >= 0; i--){
         const d = wlDateDaysAgo(i);
         const iso = wlIso(d);
         const vals = log[iso] || [];
