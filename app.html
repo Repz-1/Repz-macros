@@ -101,21 +101,21 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 /* Carte nutrition claire (style anneau) */
 .nutri-card { position:relative; background:linear-gradient(160deg,#ecfdf5 0%, #fcfbf8 42%, #fcfbf8 100%); color:#1a1a1a; border:1.5px solid #c9efe1;
     box-shadow:0 8px 22px rgba(16,185,129,.10); padding:20px 18px; border-radius:22px; overflow:hidden; }
-.nutri-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#10B981,#34d399); }
+.nutri-card::before { display:none; }
 .nutri-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
 .nutri-datebar { position:relative; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px; padding-top:2px; }
-.nutri-datebar .ndb-cal { font-size:15px; display:inline-flex; color:#047857; }
+.nutri-datebar .ndb-cal { font-size:15px; display:inline-flex; color:#a8a297; }
 .ic { width:17px; height:17px; display:block; }
-.qa-ic { display:inline-flex; color:#10B981; }
+.qa-ic { display:inline-flex; color:#DFA004; }
 .qa-ic .ic { width:19px; height:19px; }
 .eat-lbl { display:inline-flex; align-items:center; gap:8px; }
 .eat-lbl .ic { width:17px; height:17px; color:#fff; }
 .modal-h3-ic { display:flex; align-items:center; gap:8px; }
 .modal-h3-ic .ic { width:20px; height:20px; color:#10B981; }
-.nutri-datebar .ndb-date { font-size:15px; font-weight:800; letter-spacing:.06em; color:#047857; text-transform:uppercase; }
+.nutri-datebar .ndb-date { font-size:15px; font-weight:800; letter-spacing:.06em; color:#6b6660; text-transform:uppercase; }
 .nutri-datebar .ndb-edit { position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:12px; padding:5px 12px; border-radius:14px; }
 .nutri-title { font-size:16px; font-weight:800; color:#047857; }
-.nutri-card .goal-edit { background:#d1fae5; color:#047857; font-weight:700; }
+.nutri-card .goal-edit { background:#FFF6DD; color:#DFA004; font-weight:700; }
 .ring-wrap { display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 0 4px; }
 .ring-side { text-align:center; flex:1; min-width:0; }
 .ring-side .rs-lab { font-size:13px; color:#8a8580; }
@@ -148,13 +148,13 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .meal-head { display:flex; align-items:center; gap:14px; padding:14px 16px; cursor:pointer; }
 .mh-emo { width:58px; height:58px; border-radius:16px; background:#f2efe9; display:flex; align-items:center; justify-content:center; font-size:30px; flex-shrink:0; }
 .mh-emo svg { width:42px; height:42px; }
-.mh-emo.plus { background:rgba(16,185,129,.12); color:#10B981; font-size:24px; font-weight:800; }
+.mh-emo.plus { background:rgba(247,181,0,.14); color:#DFA004; font-size:24px; font-weight:800; }
 .mh-info { flex:1; min-width:0; }
 .mh-name { font-size:18px; font-weight:800; }
 .mh-name-input { font-size:18px; font-weight:800; border:none; background:transparent; color:#1a1a1a; width:100%; padding:0; }
 .mh-name-input:focus { outline:none; background:#f1efe9; border-radius:6px; }
 .mh-sub { font-size:13px; color:#8a8580; margin-top:2px; }
-.mh-kcal { color:#10B981; font-weight:800; }
+.mh-kcal { color:#191919; font-weight:800; }
 .mh-del { background:none; border:none; color:#cbd5e1; font-size:16px; line-height:1; padding:6px; cursor:pointer; flex-shrink:0; }
 .mh-del:active { color:#ef4444; }
 .mh-chev { color:#b7b1a8; font-size:18px; transition:transform .2s; flex-shrink:0; }
@@ -165,7 +165,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .drag-ghost { position:fixed; z-index:90000; pointer-events:none; margin:0;
     box-shadow:0 16px 40px rgba(0,0,0,.28); transform:scale(1.02); opacity:.97; }
 .add-meal-card { border:1.5px dashed #d8d3ca; background:transparent; box-shadow:none; }
-.add-meal-card .mh-name { color:#10B981; }
+.add-meal-card .mh-name { color:#DFA004; }
 .goal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
 .goal-top h2 { font-size:15px; font-weight:600; color:#e8e4dc; }
 .goal-edit { font-size:12px; color:#cbd5e1; background:#374151; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
@@ -183,7 +183,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 /* RECIPES */
 .recipe-card {
     position:relative; background:#fcfbf8; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; margin-bottom:16px; overflow:hidden;
-    box-shadow:0 4px 20px rgba(15,23,42,.06); border-left:4px solid #10B981;
+    box-shadow:0 4px 20px rgba(15,23,42,.06); border-left:4px solid #F7B500;
 }
 .recipe-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:8px; }
 .recipe-header input.recipe-name {
@@ -403,11 +403,11 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .dt-macro .label { font-size:11px; color:#94a3b8; text-transform:uppercase; }
 .dt-macro .val { font-size:17px; font-weight:700; margin-top:2px; }
 .save-day-btn {
-    display:block; margin:14px auto 0; width:auto; background:transparent; color:#10B981;
-    padding:8px 18px; border:1.5px solid #10B981; border-radius:20px;
+    display:block; margin:14px auto 0; width:auto; background:transparent; color:#DFA004;
+    padding:8px 18px; border:1.5px solid #DFA004; border-radius:20px;
     font-size:12.5px; font-weight:700; cursor:pointer;
 }
-.save-day-btn:active { background:#ecfdf5; }
+.save-day-btn:active { background:#FFF6DD; }
 
 /* ===== MACROS RESTANTES (carte objectif) ===== */
 .progress-macros-left {
