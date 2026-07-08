@@ -113,16 +113,10 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .modal-h3-ic { display:flex; align-items:center; gap:8px; }
 .modal-h3-ic .ic { width:20px; height:20px; color:#F7B500; }
 .nutri-datebar .ndb-date { font-size:15px; font-weight:800; letter-spacing:.06em; color:#6b6660; text-transform:uppercase; }
-.nutri-datebar .ndb-edit { position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:12px; padding:4px 6px; border-radius:8px; }
 .nutri-title { font-size:16px; font-weight:800; color:#8F6200; }
-.nutri-card .goal-edit { background:none; color:#a8a297; font-weight:600; font-size:12px; }
 .ring-wrap { display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 0 4px; }
-.ring-side { text-align:center; flex:1; min-width:0; }
-.ring-side .rs-lab { font-size:13px; color:#8a8580; }
-.ring-side .rs-val { font-size:23px; font-weight:800; margin-top:2px; color:#8F6200; }
 .ring-center { position:relative; width:184px; height:184px; flex-shrink:0; }
 .ring-txt { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.ring-txt .rt-lab { font-size:14px; color:#8a8580; }
 .ring-txt .rt-num { font-size:48px; font-weight:800; line-height:1; letter-spacing:-1.5px; color:#191919; }
 .ring-txt .rt-sub { font-size:12.5px; font-weight:700; color:#8a8580; margin-top:5px; }
 .ring-txt .rt-sub2 { font-size:11.5px; font-weight:600; color:#b4afa6; margin-top:4px; }
@@ -168,7 +162,6 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .add-meal-card .mh-name { color:#DFA004; }
 .goal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
 .goal-top h2 { font-size:15px; font-weight:600; color:#e8e4dc; }
-.goal-edit { font-size:12px; color:#cbd5e1; background:#374151; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
 .goal-current { font-size:32px; font-weight:800; }
 .goal-current span { font-size:16px; color:#94a3b8; font-weight:500; }
 .progress-track { background:#374151; border-radius:10px; height:14px; margin:12px 0 6px; overflow:hidden; }
@@ -1049,22 +1042,6 @@ function afficherMessageInvite() {
 </div>
 
 <!-- MODAL OBJECTIF -->
-<div class="modal-overlay" id="goalModal">
-    <div class="modal">
-        <h3>Mon objectif</h3>
-        <label>Calories cibles (kcal)</label>
-        <input type="number" id="inputGoalKcal" value="4000">
-        <label>Poids corporel (kg)</label>
-        <input type="number" id="inputWeight" value="97">
-        <label>Protéine cible (g/kg, min. 2,2)</label>
-        <input type="number" id="inputProtRatio" value="2.2" step="0.1" min="2.2">
-        <div class="modal-btns">
-            <button class="modal-cancel" onclick="closeGoalModal()">Annuler</button>
-            <button class="modal-save" onclick="saveGoal()">Enregistrer</button>
-        </div>
-    </div>
-</div>
-
 <!-- MODAL POIDS -->
 <div class="modal-overlay" id="weightModal">
     <div class="modal">
@@ -2870,13 +2847,6 @@ function choisirTypeRepas(t){ closeMealTypeSheet(); addRecipe(null, t); }
 function delRecipe(rid){ const rc=recipes.find(r=>r.id===rid); if(rc&&rc.fixed) return; recipes=recipes.filter(r=>r.id!==rid); openMeals.delete(rid); renderRecipes(); }
 
 // ===== OBJECTIF MODAL =====
-function openGoalModal(){
-    document.getElementById('inputGoalKcal').value=goal.kcal;
-    document.getElementById('inputWeight').value=goal.weight;
-    document.getElementById('inputProtRatio').value=goal.protRatio;
-    document.getElementById('goalModal').classList.add('show');
-}
-function closeGoalModal(){ document.getElementById('goalModal').classList.remove('show'); }
 
 // ===== POIDS + CALCULATEUR (modals) =====
 function openWeightModal(){
@@ -2959,61 +2929,7 @@ function applyCalc(){
     if(btn){ const o=btn.textContent; btn.textContent='✓ Objectif appliqué !'; btn.style.background='#DFA004';
         setTimeout(()=>{ btn.textContent=o; btn.style.background=''; closeCalcModal(); }, 1200); }
 }
-function saveGoal(){
-    if(inviteBloque()) return;
-    goal.kcal=parseFloat(document.getElementById('inputGoalKcal').value)||4000;
-    goal.weight=parseFloat(document.getElementById('inputWeight').value)||97;
-    let pr=parseFloat(document.getElementById('inputProtRatio').value)||2.2;
-    if(pr < 2.2) pr = 2.2; // minimum 2,2g/kg
-    goal.protRatio=pr;
-    closeGoalModal();
-    renderTotals();
-}
 
-// ===== CALCULATEUR DE MAINTIEN (TDEE) =====
-let lastTdee = null; // stocke le dernier résultat pour l'appliquer
-
-function toggleTdee(){
-    const body=document.getElementById('tdeeBody');
-    const arrow=document.getElementById('tdeeArrow');
-    body.classList.toggle('open');
-    arrow.textContent = body.classList.contains('open') ? '▴' : '▾';
-    // Pré-remplir le poids depuis l'objectif (évite de le retaper)
-    if(body.classList.contains('open') && goal.weight){
-        document.getElementById('tdeeWeight').value = goal.weight;
-    }
-}
-
-function calcTdee(){
-    const sex=document.getElementById('tdeeSex').value;
-    const age=parseFloat(document.getElementById('tdeeAge').value)||25;
-    const weight=parseFloat(document.getElementById('tdeeWeight').value)||75;
-    const height=parseFloat(document.getElementById('tdeeHeight').value)||175;
-    const activity=parseFloat(document.getElementById('tdeeActivity').value)||1.55;
-    const adjust=parseFloat(document.getElementById('tdeeGoal').value)||0;
-
-    // Formule Mifflin-St Jeor
-    let bmr = 10*weight + 6.25*height - 5*age + (sex==='h' ? 5 : -161);
-    const tdee = bmr * activity;
-    const target = Math.round(tdee + adjust);
-
-    // Répartition macros : protéines 2,2g/kg, lipides 25% des kcal, reste en glucides
-    const prot = Math.round(weight * 2.2);
-    const lip = Math.round((target * 0.25) / 9);
-    const carbs = Math.round((target - (prot*4) - (lip*9)) / 4);
-
-    // Affichage
-    document.getElementById('resBmr').textContent = Math.round(bmr)+' kcal';
-    document.getElementById('resTdee').textContent = Math.round(tdee)+' kcal';
-    document.getElementById('resTarget').textContent = target+' kcal';
-    document.getElementById('resProt').textContent = prot+'g';
-    document.getElementById('resCarbs').textContent = carbs+'g';
-    document.getElementById('resLip').textContent = lip+'g';
-    document.getElementById('tdeeResult').style.display='block';
-
-    // Stocke pour application
-    lastTdee = { kcal:target, weight:weight, protRatio:2.2 };
-}
 
 function applyTdee(){
     if(!lastTdee) return;
@@ -3067,7 +2983,6 @@ function confirmerSaveDay(){
     save();
     window.scrollTo({top:0,behavior:'smooth'});
 }
-function delHistory(iso){ history=history.filter(h=>h.iso!==iso); renderHistory(); save(); }
 
 // ===== LISTE DE COURSES : catégorisation par rayon + génération depuis le journal =====
 function rayonDe(nom){
@@ -3139,21 +3054,6 @@ function allerCourses(){
 }
 
 // ===== SUIVI DU POIDS =====
-function addWeight(){
-    const val=parseFloat(document.getElementById('weightInput').value);
-    if(!val||val<=0){ alert('Entre un poids valide'); return; }
-    const iso=new Date().toISOString().slice(0,10);
-    const date=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
-    const existing=weightLog.findIndex(w=>w.iso===iso);
-    const entry={iso,date,weight:val};
-    if(existing>=0) weightLog[existing]=entry; else weightLog.push(entry);
-    weightLog.sort((a,b)=>a.iso.localeCompare(b.iso));
-    document.getElementById('weightInput').value='';
-    renderWeight();
-    renderWeightNote();
-    save();
-}
-function delWeight(iso){ weightLog=weightLog.filter(w=>w.iso!==iso); renderWeight(); renderWeightNote(); save(); }
 
 // Note qui invite à encoder le poids si pas encore fait aujourd'hui
 function renderWeightNote(){
@@ -3164,122 +3064,8 @@ function renderWeightNote(){
     note.style.display = dejaPese ? 'none' : 'flex';
 }
 
-function renderWeight(){
-    const chart=document.getElementById('weightChart');
-    const list=document.getElementById('weightList');
-    if(!chart || !list) return; // bulle poids déplacée vers la page Stats
-    if(weightLog.length===0){
-        chart.innerHTML='';
-        list.innerHTML='<div class="weight-empty">Aucune pesée. Ajoute ton poids pour suivre ton évolution.</div>';
-        return;
-    }
-    // Graphique (14 dernières pesées)
-    const data=weightLog.slice(-14);
-    if(data.length>=2){
-        const W=320,H=130,padL=34,padB=20,padT=12,padR=12;
-        const vals=data.map(w=>w.weight);
-        let maxV=Math.max(...vals), minV=Math.min(...vals);
-        const margin=(maxV-minV)*0.15||1; maxV+=margin; minV-=margin;
-        const range=maxV-minV||1;
-        const plotW=W-padL-padR, plotH=H-padT-padB;
-        const x=i=>padL+(plotW*i/(data.length-1));
-        const y=v=>padT+plotH-(plotH*(v-minV)/range);
-        let path='',pts='';
-        data.forEach((w,i)=>{
-            const px=x(i),py=y(w.weight);
-            path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
-            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#F7B500"/>`;
-        });
-        const labels=data.map((w,i)=>`<text x="${x(i).toFixed(1)}" y="${H-5}" font-size="8" fill="#94a3b8" text-anchor="middle">${w.date.split(' ')[0]}</text>`).join('');
-        chart.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;margin-bottom:14px;background:#f8fafc;border-radius:8px;">
-            <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(1)}</text>
-            <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(1)}</text>
-            <path d="${path}" fill="none" stroke="#F7B500" stroke-width="2"/>${pts}${labels}
-        </svg>`;
-    } else {
-        chart.innerHTML='<div style="font-size:12px;color:#94a3b8;text-align:center;padding:8px;">Ajoute au moins 2 pesées pour voir la courbe </div>';
-    }
-    // Liste (plus récent en premier) avec variation
-    list.innerHTML='';
-    const rev=[...weightLog].reverse();
-    rev.forEach((w,i)=>{
-        let diff='';
-        if(i<rev.length-1){
-            const d=(w.weight-rev[i+1].weight);
-            const sign=d>0?'+':'';
-            const color=d>0?'#10b981':(d<0?'#ef4444':'#94a3b8');
-            diff=`<span style="font-size:12px;color:${color};margin-left:8px;">${sign}${d.toFixed(1)}</span>`;
-        }
-        const row=document.createElement('div');
-        row.className='weight-row';
-        row.innerHTML=`<span class="weight-date">${w.date}</span>
-            <span style="display:flex;align-items:center;"><span class="weight-val">${w.weight} kg</span>${diff}
-            <button class="weight-del" onclick="delWeight('${w.iso}')">✕</button></span>`;
-        list.appendChild(row);
-    });
-}
-function renderHistory(){
-    const c=document.getElementById('historyList');
-    const chart=document.getElementById('historyChart');
-    if(!c || !chart) return; // section calories retirée de l'affichage
-    if(history.length===0){
-        chart.innerHTML='';
-        c.innerHTML='<div class="history-empty">Aucune journée enregistrée. Clique sur "Enregistrer cette journée" pour commencer ton suivi.</div>';
-        return;
-    }
-
-    // ===== GRAPHIQUE D'ÉVOLUTION (calories) =====
-    // On trie par date croissante et on prend les 14 derniers jours
-    const sorted=[...history].sort((a,b)=>a.iso.localeCompare(b.iso)).slice(-14);
-    if(sorted.length>=2){
-        const W=320, H=140, padL=38, padB=22, padT=10, padR=10;
-        const vals=sorted.map(h=>parseFloat(h.kcal));
-        const maxV=Math.max(...vals, goal.kcal);
-        const minV=Math.min(...vals, 0);
-        const range=maxV-minV || 1;
-        const plotW=W-padL-padR, plotH=H-padT-padB;
-        const x=i=>padL + (plotW*i/(sorted.length-1));
-        const y=v=>padT + plotH - (plotH*(v-minV)/range);
-        // Ligne objectif
-        const goalY=y(goal.kcal);
-        // Points et path
-        let path='', pts='';
-        sorted.forEach((h,i)=>{
-            const px=x(i), py=y(parseFloat(h.kcal));
-            path+=(i===0?'M':'L')+px.toFixed(1)+' '+py.toFixed(1)+' ';
-            pts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.5" fill="#F7B500"/>`;
-        });
-        const labels=sorted.map((h,i)=>{
-            const d=h.iso.slice(8,10)+'/'+h.iso.slice(5,7);
-            return `<text x="${x(i).toFixed(1)}" y="${H-6}" font-size="8" fill="#94a3b8" text-anchor="middle">${d}</text>`;
-        }).join('');
-        chart.innerHTML=`
-        <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;margin-bottom:14px;background:#f8fafc;border-radius:8px;">
-            <line x1="${padL}" y1="${goalY.toFixed(1)}" x2="${W-padR}" y2="${goalY.toFixed(1)}" stroke="#10b981" stroke-width="1" stroke-dasharray="4 3"/>
-            <text x="${W-padR}" y="${(goalY-3).toFixed(1)}" font-size="8" fill="#10b981" text-anchor="end">objectif ${goal.kcal}</text>
-            <text x="4" y="${(padT+5).toFixed(1)}" font-size="8" fill="#94a3b8">${maxV.toFixed(0)}</text>
-            <text x="4" y="${(padT+plotH).toFixed(1)}" font-size="8" fill="#94a3b8">${minV.toFixed(0)}</text>
-            <path d="${path}" fill="none" stroke="#F7B500" stroke-width="2"/>
-            ${pts}
-            ${labels}
-        </svg>`;
-    } else {
-        chart.innerHTML='<div style="font-size:12px;color:#94a3b8;text-align:center;padding:8px;">Enregistre au moins 2 jours pour voir le graphique d\'évolution </div>';
-    }
-
-    // ===== LISTE DES JOURS (cliquables) =====
-    c.innerHTML='';
-    history.forEach(h=>{
-        const row=document.createElement('div');
-        row.className='history-row';
-        row.style.cursor='pointer';
-        row.innerHTML=`<div onclick="openDayModal('${h.iso}')" style="flex:1;"><div class="history-date">${h.date}</div><div class="history-detail">${h.prot}P · ${h.carbs}C · ${h.lip}L</div></div>
-            <div style="display:flex;align-items:center;gap:10px;"><div style="font-weight:700;color:#F7B500;">${h.kcal} kcal</div>
-            <span style="color:#cbd5e1;font-size:16px;" onclick="openDayModal('${h.iso}')">›</span>
-            <button class="history-del" onclick="delHistory('${h.iso}')">✕</button></div>`;
-        c.appendChild(row);
-    });
-}
+function renderWeight(){ /* bulle poids déplacée vers la page Stats */ }
+function renderHistory(){ /* section calories déplacée vers la page Stats */ }
 
 // ===== MODAL DÉTAIL JOUR =====
 /* ===== Navigation par jour ===== */
@@ -3880,7 +3666,7 @@ function cpAppliquer(){
         goal.kcal = cpData.resultat.kcal;
         goal.weight = cpData.resultat.weight;
         goal.protRatio = cpData.resultat.protRatio;
-        saveGoal();
+        save();
         renderTotals();
     }
     fermerCalculPro();

@@ -896,19 +896,6 @@ function wlLabel(d){ return `${WL_JOURS[d.getDay()]} ${d.getDate()} ${WL_MOIS[d.
 function wlLabelLong(d){ return `${WL_JOURS_L[d.getDay()]} ${d.getDate()} ${WL_MOIS_L[d.getMonth()]}`; }
 function wlMuscleName(k){ const g = MUSCLE_GROUPS.find(x => x.k === k); return g ? g.n : k; }
 
-// ===== TITRE DYNAMIQUE SELON L'HEURE =====
-function majSalutation(){
-    const h = new Date().getHours();
-    const t = document.getElementById('introTitre');
-    const s = document.getElementById('introSub');
-    if(!t) return;
-    let titre, sous;
-    if(h < 12){ titre = "Bonjour 👋"; sous = "Prêt à t'entraîner ?"; }
-    else if(h < 18){ titre = "C'est le moment de bouger 💪"; sous = "Choisis comment tu veux t'entraîner."; }
-    else { titre = "Dernière séance de la journée ?"; sous = "Choisis ton mode d'entraînement."; }
-    t.textContent = titre;
-    if(s) s.textContent = sous;
-}
 
 // ===== CARTE DERNIÈRE SÉANCE =====
 function fmtDuree(sec){
@@ -1056,7 +1043,6 @@ try{
 }catch(e){}
 
 renderWlog();
-majSalutation();
 renderDerniereSeance();
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
