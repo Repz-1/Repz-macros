@@ -227,26 +227,6 @@ function logout(){
             <div class="option" onclick="pick(this,'niveau','confirme')"><span class="option-emoji">🏆</span><span class="option-label">Confirmé</span><span class="option-check">✓</span></div>
         </div>
     </div>
-    <!-- Q4 LIEU -->
-    <div class="q-step" data-q="lieu">
-        <div class="q-title">Où t'entraînes-tu ?</div>
-        <div class="q-sub">Pour te proposer les bons exercices.</div>
-        <div class="options">
-            <div class="option" onclick="pick(this,'lieu','salle')"><span class="option-emoji">🏋️</span><span class="option-label">En salle de sport</span><span class="option-check">✓</span></div>
-            <div class="option" onclick="pick(this,'lieu','maison')"><span class="option-emoji">🏠</span><span class="option-label">À la maison</span><span class="option-check">✓</span></div>
-        </div>
-    </div>
-    <!-- Q4b MATÉRIEL (conditionnel : maison) -->
-    <div class="q-step" data-q="materiel">
-        <div class="q-title">Quel matériel<br>as-tu ?</div>
-        <div class="q-sub">Plusieurs choix possibles — coche tout ce que tu as. On adapte les exercices.</div>
-        <div class="options">
-            <div class="option multi" onclick="pickMulti(this,'rien')"><span class="option-emoji">🤸</span><span class="option-label">Rien (poids du corps)</span><span class="option-check">✓</span></div>
-            <div class="option multi" onclick="pickMulti(this,'halteres')"><span class="option-emoji">🏋️</span><span class="option-label">Haltères</span><span class="option-check">✓</span></div>
-            <div class="option multi" onclick="pickMulti(this,'elastiques')"><span class="option-emoji">➰</span><span class="option-label">Élastiques / bandes</span><span class="option-check">✓</span></div>
-            <div class="option multi" onclick="pickMulti(this,'barre')"><span class="option-emoji">🔝</span><span class="option-label">Barre de traction</span><span class="option-check">✓</span></div>
-        </div>
-    </div>
     <!-- Q5 FRÉQUENCE -->
     <div class="q-step" data-q="frequence">
         <div class="q-title">Combien de jours<br>par semaine ?</div>
@@ -309,33 +289,18 @@ const PROGRAMMES_INFO = {
     'seche-circuit-4j':{name:'Perte de poids — Circuits', cat:'seche', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut du corps','Bas du corps','Full body','Cardio + abdos']},
     'seche-5j':   {name:'Perte de poids — 5 jours', cat:'seche', duree:'10 semaines', niveau:'Confirmé', seances:['Haut du corps','Bas du corps','Full body','Cardio + abdos','HIIT + gainage']},
     'seche-6j':   {name:'Perte de poids — 6 jours', cat:'seche', duree:'12 semaines', niveau:'Confirmé', seances:['Haut','Bas','Full body','Cardio + abdos','HIIT','Gainage + mobilité']},
-    'maison-pdc-2j':{name:'Maison — Poids du corps 2 jours', cat:'maison', duree:'4 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps']},
-    'maison-pdc-3j':{name:'Maison — Poids du corps 3 jours', cat:'maison', duree:'6 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps','Full body + gainage']},
-    'maison-pdc-4j':{name:'Maison — Poids du corps 4 jours', cat:'maison', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut A','Bas A','Haut B','Bas B + abdos']},
-    'maison-pdc-5j':{name:'Maison — Poids du corps 5 jours', cat:'maison', duree:'10 semaines', niveau:'Intermédiaire', seances:['Pecs / Triceps','Dos / Épaules','Jambes','Abdos / Gainage','Full body']},
-    'maison-pdc-6j':{name:'Maison — Poids du corps 6 jours', cat:'maison', duree:'12 semaines', niveau:'Confirmé', seances:['Pecs / Triceps','Dos','Jambes','Épaules / Abdos','Haut complet','Bas + gainage']},
-    'maison-halteres-2j':{name:'Maison — Haltères 2 jours', cat:'maison', duree:'6 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps']},
-    'maison-halteres-3j':{name:'Maison — Haltères 3 jours', cat:'maison', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut du corps','Bas du corps','Full body']},
-    'maison-halteres-4j':{name:'Maison — Haltères 4 jours', cat:'maison', duree:'10 semaines', niveau:'Intermédiaire', seances:['Haut A','Bas A','Haut B','Bas B']},
-    'maison-halteres-5j':{name:'Maison — Haltères 5 jours', cat:'maison', duree:'10 semaines', niveau:'Confirmé', seances:['Pecs / Triceps','Dos / Biceps','Jambes','Épaules','Full body']},
     'salle-ppl-3j':{name:'Salle — Push / Pull / Legs', cat:'salle', duree:'10 semaines', niveau:'Intermédiaire', seances:['Push','Pull','Legs']},
     'salle-half-4j':{name:'Salle — Half body', cat:'salle', duree:'10 semaines', niveau:'Intermédiaire', seances:['Haut','Bas','Haut','Bas']},
     'salle-ppl-6j':{name:'Salle — PPL x2', cat:'salle', duree:'12 semaines', niveau:'Confirmé', seances:['Push','Pull','Legs','Push','Pull','Legs']},
 };
 
-// Étapes de base ; "materiel" est inséré dynamiquement si lieu = maison
-const BASE_STEPS = ['sexe','objectif','niveau','lieu','frequence','result'];
+const BASE_STEPS = ['sexe','objectif','niveau','frequence','result'];
 let steps = [...BASE_STEPS];
 let current = 0;
 const answers = {};
-answers.materiel = []; // choix multiple
 
 function getSteps(){
-    // Reconstruit la liste selon le lieu choisi
-    if(answers.lieu === 'maison'){
-        return ['sexe','objectif','niveau','lieu','materiel','frequence','result'];
-    }
-    return ['sexe','objectif','niveau','lieu','frequence','result'];
+    return BASE_STEPS;
 }
 
 function pick(el, q, val){
@@ -346,41 +311,6 @@ function pick(el, q, val){
 }
 
 let lastMultiTap = 0;
-function pickMulti(el, val){
-    // Anti double-déclenchement mobile (touchstart + click)
-    const now = Date.now();
-    if(now - lastMultiTap < 350) return;
-    lastMultiTap = now;
-
-    // Source de vérité = answers.materiel (pas les classes CSS)
-    const isRien = (val === 'rien');
-    const wasSelected = answers.materiel.includes(val);
-
-    if(wasSelected){
-        // On décoche cet élément
-        answers.materiel = answers.materiel.filter(m => m !== val);
-    } else {
-        // On coche cet élément
-        if(isRien){
-            // "Rien" est exclusif : il remplace tout
-            answers.materiel = ['rien'];
-        } else {
-            // Un vrai matériel : on l'ajoute et on retire "rien" s'il était là
-            answers.materiel = answers.materiel.filter(m => m !== 'rien');
-            answers.materiel.push(val);
-        }
-    }
-
-    // Refléter l'état dans l'affichage (toutes les options de cette question)
-    const allOptions = el.parentNode.querySelectorAll('.option');
-    const vals = ['rien','halteres','elastiques','barre'];
-    allOptions.forEach((opt, i) => {
-        if(answers.materiel.includes(vals[i])) opt.classList.add('selected');
-        else opt.classList.remove('selected');
-    });
-
-    document.getElementById('nextBtn').disabled = answers.materiel.length === 0;
-}
 
 function showStep(i){
     steps = getSteps();
@@ -398,11 +328,7 @@ function showStep(i){
 
     if(!isResult){
         const nextBtn = document.getElementById('nextBtn');
-        if(stepName === 'materiel'){
-            nextBtn.disabled = answers.materiel.length === 0;
-        } else {
-            nextBtn.disabled = !answers[stepName];
-        }
+        nextBtn.disabled = !answers[stepName];
         nextBtn.textContent = (i === total-1) ? 'Voir mon résultat' : 'Suivant';
     }
     window.scrollTo(0,0);
@@ -429,8 +355,7 @@ function goBack(){
 }
 
 function restart(){
-    Object.keys(answers).forEach(k => { if(k!=='materiel') delete answers[k]; });
-    answers.materiel = [];
+    Object.keys(answers).forEach(k => delete answers[k]);
     document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
     steps = [...BASE_STEPS];
     showStep(0);
@@ -446,26 +371,7 @@ function computeResult(){
 
     let progId;
 
-    if(lieu === 'maison'){
-        const aHalteres = answers.materiel.includes('halteres') || answers.materiel.includes('elastiques');
-        if(aHalteres){
-            // Programmes haltères dispo : 2,3,4,5 jours
-            let j = Math.min(Math.max(jours, 2), 5);
-            if(niv === 'debutant' && jours >= 5){
-                j = 3;
-                coachAdvice = "Tu débutes et tu veux t'entraîner beaucoup, c'est motivant ! Mais c'est pendant le repos que le muscle se construit. On te conseille de commencer à 3 jours bien faits — tu pourras monter en fréquence dans quelques semaines.";
-            }
-            progId = 'maison-halteres-' + j + 'j';
-        } else {
-            // Poids du corps : 2 à 6 jours
-            let j = Math.min(Math.max(jours, 2), 6);
-            if(niv === 'debutant' && jours >= 5){
-                j = 3;
-                coachAdvice = "En tant que débutant, 3 séances par semaine donnent d'excellents résultats sans risque de surmenage. On t'a orienté vers un rythme tenable — tu augmenteras plus tard.";
-            }
-            progId = 'maison-pdc-' + j + 'j';
-        }
-    } else if(obj === 'masse'){
+    if(obj === 'masse'){
         const debConseilMasse = "Pour débuter la prise de masse, un corps complet 3 jours donne souvent les meilleurs résultats : plus de récupération, une meilleure technique. On te conseille de commencer là — mais c'est toi qui choisis, voici le programme que tu as demandé.";
         if(niv === 'debutant' && jours === 3){
             progId = 'masse-deb-3j';
@@ -532,11 +438,6 @@ function computeResult(){
     else desc = 'Reprends en douceur avec des séances complètes et progressives pour tout le corps.';
 
     let lieuLine = '';
-    if(lieu === 'maison'){
-        const matNoms = {halteres:'haltères', elastiques:'élastiques', barre:'barre de traction', rien:'poids du corps'};
-        const liste = answers.materiel.map(m => matNoms[m]).join(', ');
-        lieuLine = ` Adapté à ton matériel : ${liste}.`;
-    }
 
     // Mettre à jour le bouton vers le bon programme
     const btn = document.getElementById('btnVoirProg');
@@ -547,9 +448,8 @@ function computeResult(){
 
     // Récap personnalisé
     const objTxt = obj === 'masse' ? 'prendre du muscle' : (obj === 'seche' ? 'perdre du poids' : 'te remettre en forme');
-    const lieuTxt = lieu === 'maison' ? 'à la maison' : 'en salle';
     document.getElementById('resultRecap').textContent =
-        `Tu veux ${objTxt}, ${jours} jours par semaine, ${lieuTxt}.`;
+        `Tu veux ${objTxt}, ${jours} jours par semaine, en salle.`;
 
     // Description + infos réelles du programme
     document.getElementById('rpDesc').textContent = desc + lieuLine;
