@@ -38,7 +38,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .muscle-tabs { display:flex; gap:8px; overflow-x:auto; padding:4px 0 14px; -webkit-overflow-scrolling:touch; }
 .muscle-tabs::-webkit-scrollbar { display:none; }
 .muscle-tab { flex-shrink:0; padding:9px 16px; border-radius:30px; border:1.5px solid var(--line);
-    background:var(--card); font-size:13.5px; font-weight:600; color:var(--text-dim); cursor:pointer; white-space:nowrap; }
+    background:var(--card); font-size:13.5px; font-weight:600; color:var(--text-dim); cursor:pointer; white-space:nowrap;
+    transition:background .2s ease, color .2s ease, border-color .2s ease, transform .12s ease; }
+.muscle-tab:active { transform:scale(.94); }
 .muscle-tab.active { background:var(--dark); color:#fff; border-color:var(--dark); }
 
 .filter-tabs { display:flex; gap:8px; overflow-x:auto; padding:2px 0 14px; -webkit-overflow-scrolling:touch; }
@@ -51,21 +53,27 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .section-hint { font-size:13px; color:var(--text-dim); margin:6px 4px 14px; display:flex; align-items:center; gap:6px; }
 .swipe-hint { font-size:11px; color:#9ca3af; }
 
-.ex-list { display:flex; flex-direction:column; gap:10px; }
+.ex-list { display:flex; flex-direction:column; gap:12px; }
 .ex-item { display:flex; align-items:center; gap:14px; background:var(--card);
-    border:1.5px solid var(--line); border-radius:16px; padding:12px 14px; transition:border-color .15s; }
-.ex-item.selected { border-color:var(--orange); background:#ecfdf5; }
-.ex-photo { width:56px; height:56px; flex-shrink:0; border-radius:12px;
+    border:1.5px solid var(--line); border-radius:18px; padding:12px; transition:border-color .15s, background .15s; }
+.ex-item.selected { border-color:#F7B500; background:#FFFBEF; }
+.ex-photo { width:76px; height:76px; flex-shrink:0; border-radius:14px;
     background:#e5e7eb center/cover no-repeat; display:flex; align-items:center; justify-content:center;
     font-size:10px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; cursor:pointer; position:relative; }
-.ex-photo::after { content:'🔍'; position:absolute; bottom:2px; right:2px; font-size:11px; opacity:.7;
-    background:rgba(255,255,255,.7); border-radius:4px; padding:0 1px; }
-.ex-info { flex:1; cursor:pointer; }
-.ex-name { font-size:15px; font-weight:700; }
-.ex-meta { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
-.ex-check { width:26px; height:26px; flex-shrink:0; border-radius:50%; border:2px solid var(--line);
-    display:flex; align-items:center; justify-content:center; color:#fff; font-size:15px; font-weight:700; cursor:pointer; }
-.ex-item.selected .ex-check { background:var(--orange); border-color:var(--orange); }
+.ex-photo::after { content:'🔍'; position:absolute; bottom:3px; right:3px; font-size:11px; opacity:.65;
+    background:rgba(255,255,255,.75); border-radius:5px; padding:0 2px; }
+.ex-info { flex:1; min-width:0; cursor:pointer; }
+.ex-name { font-size:15.5px; font-weight:800; letter-spacing:-.01em; }
+.ex-equip { font-size:12.5px; color:var(--text-dim); font-weight:600; margin-top:2px; }
+.ex-stars { display:flex; align-items:center; gap:2px; margin-top:4px; font-size:12.5px; color:#e2e2e2; }
+.ex-stars span.on { color:#F7B500; }
+.ex-stars em { font-style:normal; color:var(--text-dim); font-size:11.5px; font-weight:600; margin-left:6px; }
+.ex-sets { font-size:12.5px; color:#374151; font-weight:700; margin-top:4px; }
+.ex-add { width:38px; height:38px; flex-shrink:0; border-radius:12px; border:1.8px solid var(--line);
+    background:var(--card); color:#9ca3af; font-size:21px; font-weight:400; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.ex-add:active { transform:scale(.9); }
+.ex-item.selected .ex-add { background:#F7B500; border-color:#F7B500; color:#fff; font-size:17px; }
 
 .session-bar { position:fixed; bottom:16px; left:16px; right:16px; max-width:448px; margin:0 auto;
     background:var(--orange); color:#fff; border-radius:18px; padding:15px 20px;
@@ -430,107 +438,107 @@ function logout(){
 <script>
 const EXERCISES = {
   pecs: [
-    {nom:'Développé couché', meta:'4 séries × 8-10 reps', desc:'Allongé sur le banc, descends la barre vers la poitrine puis pousse.', imgId:'Barbell_Bench_Press_-_Medium_Grip', mat:'barre'},
-    {nom:'Développé incliné haltères', meta:'3 séries × 10-12 reps', desc:'Banc incliné à 30°, pousse les haltères vers le haut.', imgId:'Incline_Dumbbell_Press', mat:'halteres'},
-    {nom:'Écarté à la poulie', meta:'3 séries × 12-15 reps', desc:'Bras semi-tendus, ramène les poignées devant toi.', imgId:'Cable_Crossover', mat:'machine'},
-    {nom:'Pompes', meta:'3 séries × max', desc:'Corps gainé, descends la poitrine au sol puis pousse.', imgId:'Pushups', mat:'rien'},
-    {nom:'Dips', meta:'3 séries × 10-12 reps', desc:'Aux barres parallèles, descends puis remonte en poussant.', imgId:'Dips_-_Chest_Version', mat:'machine'},
-    {nom:'Développé couché haltères', meta:'4 séries × 10 reps', desc:'Variante haltères pour plus d\'amplitude.', imgId:'Dumbbell_Bench_Press', mat:'halteres'},
-    {nom:'Écarté incliné haltères', meta:'3 séries × 12 reps', desc:'Banc incliné, ouvre puis ramène les haltères.', imgId:'Incline_Dumbbell_Flyes', mat:'halteres'},
-    {nom:'Pull-over', meta:'3 séries × 12-15 reps', desc:'Un haltère au-dessus de la tête, descends derrière puis remonte.', imgId:'Straight-Arm_Dumbbell_Pullover', mat:'halteres'},
-    {nom:'Pompes déclinées', meta:'3 séries × 12 reps', desc:'Pieds surélevés sur un banc, descends la poitrine puis pousse. Cible le haut des pecs.', imgId:'Push-Ups_With_Feet_Elevated', mat:'rien'},
-    {nom:'Pompes larges', meta:'3 séries × max', desc:'Mains plus larges que les épaules pour accentuer les pectoraux.', imgId:'Push-Up_Wide', mat:'rien'},
-    {nom:'Pompes inclinées', meta:'3 séries × 15 reps', desc:'Mains surélevées sur un support : variante plus accessible.', imgId:'Incline_Push-Up', mat:'rien'},
-    {nom:'Pompes sautées', meta:'4 séries × 8 reps', desc:'Pousse explosivement pour décoller les mains du sol. Pliométrie.', imgId:'Plyo_Push-up', mat:'rien'},
-    {nom:'Pompes rotation (T)', meta:'3 séries × 10 /côté', desc:'En haut de la pompe, ouvre le buste en planche latérale.', imgId:'Push_Up_to_Side_Plank', mat:'rien'},
+    {nom:'Développé couché', meta:'4 séries × 8-10 reps', desc:'Allongé sur le banc, descends la barre vers la poitrine puis pousse.', imgId:'Barbell_Bench_Press_-_Medium_Grip', lvl:1, mat:'barre'},
+    {nom:'Développé incliné haltères', meta:'3 séries × 10-12 reps', desc:'Banc incliné à 30°, pousse les haltères vers le haut.', imgId:'Incline_Dumbbell_Press', lvl:1, mat:'halteres'},
+    {nom:'Écarté à la poulie', meta:'3 séries × 12-15 reps', desc:'Bras semi-tendus, ramène les poignées devant toi.', imgId:'Cable_Crossover', lvl:1, mat:'machine'},
+    {nom:'Pompes', meta:'3 séries × max', desc:'Corps gainé, descends la poitrine au sol puis pousse.', imgId:'Pushups', lvl:1, mat:'rien'},
+    {nom:'Dips', meta:'3 séries × 10-12 reps', desc:'Aux barres parallèles, descends puis remonte en poussant.', imgId:'Dips_-_Chest_Version', lvl:2, mat:'machine'},
+    {nom:'Développé couché haltères', meta:'4 séries × 10 reps', desc:'Variante haltères pour plus d\'amplitude.', imgId:'Dumbbell_Bench_Press', lvl:1, mat:'halteres'},
+    {nom:'Écarté incliné haltères', meta:'3 séries × 12 reps', desc:'Banc incliné, ouvre puis ramène les haltères.', imgId:'Incline_Dumbbell_Flyes', lvl:1, mat:'halteres'},
+    {nom:'Pull-over', meta:'3 séries × 12-15 reps', desc:'Un haltère au-dessus de la tête, descends derrière puis remonte.', imgId:'Straight-Arm_Dumbbell_Pullover', lvl:2, mat:'halteres'},
+    {nom:'Pompes déclinées', meta:'3 séries × 12 reps', desc:'Pieds surélevés sur un banc, descends la poitrine puis pousse. Cible le haut des pecs.', imgId:'Push-Ups_With_Feet_Elevated', lvl:1, mat:'rien'},
+    {nom:'Pompes larges', meta:'3 séries × max', desc:'Mains plus larges que les épaules pour accentuer les pectoraux.', imgId:'Push-Up_Wide', lvl:1, mat:'rien'},
+    {nom:'Pompes inclinées', meta:'3 séries × 15 reps', desc:'Mains surélevées sur un support : variante plus accessible.', imgId:'Incline_Push-Up', lvl:1, mat:'rien'},
+    {nom:'Pompes sautées', meta:'4 séries × 8 reps', desc:'Pousse explosivement pour décoller les mains du sol. Pliométrie.', imgId:'Plyo_Push-up', lvl:1, mat:'rien'},
+    {nom:'Pompes rotation (T)', meta:'3 séries × 10 /côté', desc:'En haut de la pompe, ouvre le buste en planche latérale.', imgId:'Push_Up_to_Side_Plank', lvl:1, mat:'rien'},
   ],
   dos: [
-    {nom:'Tractions', meta:'4 séries × max', desc:'Suspendu à la barre, tire-toi jusqu\'au menton.', imgId:'Pullups', mat:'traction'},
-    {nom:'Rowing barre', meta:'4 séries × 8-10 reps', desc:'Buste penché, tire la barre vers le nombril.', imgId:'Bent_Over_Barbell_Row', mat:'barre'},
-    {nom:'Tirage vertical', meta:'3 séries × 10-12 reps', desc:'À la poulie haute, tire la barre vers la poitrine.', imgId:'Wide-Grip_Lat_Pulldown', mat:'machine'},
-    {nom:'Rowing haltère', meta:'3 séries × 10 reps', desc:'Un genou sur le banc, tire l\'haltère vers la hanche.', imgId:'One-Arm_Dumbbell_Row', mat:'halteres'},
-    {nom:'Tirage horizontal', meta:'3 séries × 12 reps', desc:'Assis, tire la poignée vers le ventre.', imgId:'Seated_Cable_Rows', mat:'machine'},
-    {nom:'Soulevé de terre', meta:'4 séries × 6-8 reps', desc:'Dos droit, soulève la barre du sol en poussant les jambes.', imgId:'Barbell_Deadlift', mat:'barre'},
-    {nom:'Rowing T-bar', meta:'3 séries × 10 reps', desc:'Tire la barre en T vers la poitrine, dos gainé.', imgId:'T-Bar_Row_with_Handle', mat:'barre'},
-    {nom:'Tirage élastique', meta:'3 séries × 15-20 reps', desc:'Écarte la bande devant toi en serrant les omoplates.', imgId:'Band_Pull_Apart', mat:'halteres'},
-    {nom:'Tractions supination', meta:'4 séries × max', desc:'Prise mains vers toi, tire-toi jusqu’au menton. Sollicite aussi les biceps.', imgId:'Chin-Up', mat:'traction'},
-    {nom:'Tractions prise large', meta:'3 séries × max', desc:'Prise large, tire les coudes vers le bas pour cibler les grands dorsaux.', imgId:'Wide-Grip_Rear_Pull-Up', mat:'traction'},
+    {nom:'Tractions', meta:'4 séries × max', desc:'Suspendu à la barre, tire-toi jusqu\'au menton.', imgId:'Pullups', lvl:1, mat:'traction'},
+    {nom:'Rowing barre', meta:'4 séries × 8-10 reps', desc:'Buste penché, tire la barre vers le nombril.', imgId:'Bent_Over_Barbell_Row', lvl:1, mat:'barre'},
+    {nom:'Tirage vertical', meta:'3 séries × 10-12 reps', desc:'À la poulie haute, tire la barre vers la poitrine.', imgId:'Wide-Grip_Lat_Pulldown', lvl:1, mat:'machine'},
+    {nom:'Rowing haltère', meta:'3 séries × 10 reps', desc:'Un genou sur le banc, tire l\'haltère vers la hanche.', imgId:'One-Arm_Dumbbell_Row', lvl:1, mat:'halteres'},
+    {nom:'Tirage horizontal', meta:'3 séries × 12 reps', desc:'Assis, tire la poignée vers le ventre.', imgId:'Seated_Cable_Rows', lvl:1, mat:'machine'},
+    {nom:'Soulevé de terre', meta:'4 séries × 6-8 reps', desc:'Dos droit, soulève la barre du sol en poussant les jambes.', imgId:'Barbell_Deadlift', lvl:2, mat:'barre'},
+    {nom:'Rowing T-bar', meta:'3 séries × 10 reps', desc:'Tire la barre en T vers la poitrine, dos gainé.', imgId:'T-Bar_Row_with_Handle', lvl:1, mat:'barre'},
+    {nom:'Tirage élastique', meta:'3 séries × 15-20 reps', desc:'Écarte la bande devant toi en serrant les omoplates.', imgId:'Band_Pull_Apart', lvl:1, mat:'halteres'},
+    {nom:'Tractions supination', meta:'4 séries × max', desc:'Prise mains vers toi, tire-toi jusqu’au menton. Sollicite aussi les biceps.', imgId:'Chin-Up', lvl:1, mat:'traction'},
+    {nom:'Tractions prise large', meta:'3 séries × max', desc:'Prise large, tire les coudes vers le bas pour cibler les grands dorsaux.', imgId:'Wide-Grip_Rear_Pull-Up', lvl:2, mat:'traction'},
   ],
   epaules: [
-    {nom:'Développé militaire', meta:'4 séries × 8-10 reps', desc:'Debout, pousse la barre au-dessus de la tête.', imgId:'Standing_Military_Press', mat:'barre'},
-    {nom:'Élévations latérales', meta:'4 séries × 12-15 reps', desc:'Monte les haltères sur les côtés jusqu\'à l\'horizontale.', imgId:'Side_Lateral_Raise', mat:'halteres'},
-    {nom:'Développé haltères', meta:'3 séries × 10-12 reps', desc:'Assis, pousse les haltères vers le haut.', imgId:'Seated_Dumbbell_Press', mat:'halteres'},
-    {nom:'Oiseau (rear delt)', meta:'3 séries × 15 reps', desc:'Buste penché, ouvre les bras vers l\'arrière.', imgId:'Seated_Bent-Over_Rear_Delt_Raise', mat:'halteres'},
-    {nom:'Élévations frontales', meta:'3 séries × 12 reps', desc:'Monte l\'haltère devant toi jusqu\'à l\'horizontale.', imgId:'Front_Dumbbell_Raise', mat:'halteres'},
-    {nom:'Face pull', meta:'3 séries × 15 reps', desc:'Tire la corde vers le visage, coudes hauts.', imgId:'Face_Pull', mat:'machine'},
-    {nom:'Pompes piquées', meta:'3 séries × 8-10 reps', desc:'Pieds surélevés, pousse comme un développé épaules avec ton poids de corps.', imgId:'Handstand_Push-Ups', mat:'rien'},
-    {nom:'Élévation latérale élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, lève les bras sur les côtés.', imgId:'Lateral_Raise_-_With_Bands', mat:'halteres'},
-    {nom:'Développé épaules élastique', meta:'3 séries × 12-15 reps', desc:'Bande sous les pieds, pousse au-dessus de la tête.', imgId:'Shoulder_Press_-_With_Bands', mat:'halteres'},
+    {nom:'Développé militaire', meta:'4 séries × 8-10 reps', desc:'Debout, pousse la barre au-dessus de la tête.', imgId:'Standing_Military_Press', lvl:1, mat:'barre'},
+    {nom:'Élévations latérales', meta:'4 séries × 12-15 reps', desc:'Monte les haltères sur les côtés jusqu\'à l\'horizontale.', imgId:'Side_Lateral_Raise', lvl:1, mat:'halteres'},
+    {nom:'Développé haltères', meta:'3 séries × 10-12 reps', desc:'Assis, pousse les haltères vers le haut.', imgId:'Seated_Dumbbell_Press', lvl:1, mat:'halteres'},
+    {nom:'Oiseau (rear delt)', meta:'3 séries × 15 reps', desc:'Buste penché, ouvre les bras vers l\'arrière.', imgId:'Seated_Bent-Over_Rear_Delt_Raise', lvl:2, mat:'halteres'},
+    {nom:'Élévations frontales', meta:'3 séries × 12 reps', desc:'Monte l\'haltère devant toi jusqu\'à l\'horizontale.', imgId:'Front_Dumbbell_Raise', lvl:1, mat:'halteres'},
+    {nom:'Face pull', meta:'3 séries × 15 reps', desc:'Tire la corde vers le visage, coudes hauts.', imgId:'Face_Pull', lvl:2, mat:'machine'},
+    {nom:'Pompes piquées', meta:'3 séries × 8-10 reps', desc:'Pieds surélevés, pousse comme un développé épaules avec ton poids de corps.', imgId:'Handstand_Push-Ups', lvl:3, mat:'rien'},
+    {nom:'Élévation latérale élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, lève les bras sur les côtés.', imgId:'Lateral_Raise_-_With_Bands', lvl:1, mat:'halteres'},
+    {nom:'Développé épaules élastique', meta:'3 séries × 12-15 reps', desc:'Bande sous les pieds, pousse au-dessus de la tête.', imgId:'Shoulder_Press_-_With_Bands', lvl:1, mat:'halteres'},
   ],
   biceps: [
-    {nom:'Curl barre', meta:'4 séries × 10 reps', desc:'Debout, fléchis les bras pour monter la barre.', imgId:'Barbell_Curl', mat:'barre'},
-    {nom:'Curl haltères', meta:'3 séries × 12 reps', desc:'Alterne la montée de chaque haltère.', imgId:'Dumbbell_Bicep_Curl', mat:'halteres'},
-    {nom:'Curl marteau', meta:'3 séries × 12 reps', desc:'Prise neutre, monte les haltères comme un marteau.', imgId:'Hammer_Curls', mat:'halteres'},
-    {nom:'Curl pupitre', meta:'3 séries × 10 reps', desc:'Bras calés sur le pupitre, fléchis lentement.', imgId:'Preacher_Curl', mat:'barre'},
-    {nom:'Curl concentré', meta:'3 séries × 12 reps', desc:'Assis, coude sur la cuisse, isole le biceps.', imgId:'Concentration_Curls', mat:'halteres'},
-    {nom:'Curl élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, fléchis les bras pour le curl.', imgId:'Close-Grip_EZ-Bar_Curl_with_Band', mat:'halteres'},
+    {nom:'Curl barre', meta:'4 séries × 10 reps', desc:'Debout, fléchis les bras pour monter la barre.', imgId:'Barbell_Curl', lvl:1, mat:'barre'},
+    {nom:'Curl haltères', meta:'3 séries × 12 reps', desc:'Alterne la montée de chaque haltère.', imgId:'Dumbbell_Bicep_Curl', lvl:1, mat:'halteres'},
+    {nom:'Curl marteau', meta:'3 séries × 12 reps', desc:'Prise neutre, monte les haltères comme un marteau.', imgId:'Hammer_Curls', lvl:1, mat:'halteres'},
+    {nom:'Curl pupitre', meta:'3 séries × 10 reps', desc:'Bras calés sur le pupitre, fléchis lentement.', imgId:'Preacher_Curl', lvl:1, mat:'barre'},
+    {nom:'Curl concentré', meta:'3 séries × 12 reps', desc:'Assis, coude sur la cuisse, isole le biceps.', imgId:'Concentration_Curls', lvl:1, mat:'halteres'},
+    {nom:'Curl élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, fléchis les bras pour le curl.', imgId:'Close-Grip_EZ-Bar_Curl_with_Band', lvl:1, mat:'halteres'},
   ],
   triceps: [
-    {nom:'Barre au front', meta:'4 séries × 10 reps', desc:'Allongé, descends la barre vers le front puis tends.', imgId:'Lying_Triceps_Press', mat:'barre'},
-    {nom:'Extension poulie', meta:'4 séries × 12-15 reps', desc:'Pousse la corde vers le bas en tendant les bras.', imgId:'Triceps_Pushdown', mat:'machine'},
-    {nom:'Dips entre bancs', meta:'3 séries × max', desc:'Mains sur le banc, descends puis pousse.', imgId:'Bench_Dips', mat:'rien'},
-    {nom:'Extension haltère nuque', meta:'3 séries × 12 reps', desc:'Un haltère derrière la tête, tends les bras.', imgId:'Seated_Triceps_Press', mat:'halteres'},
-    {nom:'Kickback', meta:'3 séries × 15 reps', desc:'Buste penché, tends le bras vers l\'arrière.', imgId:'Tricep_Dumbbell_Kickback', mat:'halteres'},
-    {nom:'Pompes diamant', meta:'3 séries × 12 reps', desc:'Mains jointes en losange sous la poitrine. Cible les triceps.', imgId:'Push-Ups_-_Close_Triceps_Position', mat:'rien'},
-    {nom:'Dips sur banc', meta:'3 séries × 15 reps', desc:'Mains sur un banc derrière toi, descends puis remonte par les triceps.', imgId:'Bench_Dips', mat:'rien'},
+    {nom:'Barre au front', meta:'4 séries × 10 reps', desc:'Allongé, descends la barre vers le front puis tends.', imgId:'Lying_Triceps_Press', lvl:2, mat:'barre'},
+    {nom:'Extension poulie', meta:'4 séries × 12-15 reps', desc:'Pousse la corde vers le bas en tendant les bras.', imgId:'Triceps_Pushdown', lvl:1, mat:'machine'},
+    {nom:'Dips entre bancs', meta:'3 séries × max', desc:'Mains sur le banc, descends puis pousse.', imgId:'Bench_Dips', lvl:1, mat:'rien'},
+    {nom:'Extension haltère nuque', meta:'3 séries × 12 reps', desc:'Un haltère derrière la tête, tends les bras.', imgId:'Seated_Triceps_Press', lvl:1, mat:'halteres'},
+    {nom:'Kickback', meta:'3 séries × 15 reps', desc:'Buste penché, tends le bras vers l\'arrière.', imgId:'Tricep_Dumbbell_Kickback', lvl:1, mat:'halteres'},
+    {nom:'Pompes diamant', meta:'3 séries × 12 reps', desc:'Mains jointes en losange sous la poitrine. Cible les triceps.', imgId:'Push-Ups_-_Close_Triceps_Position', lvl:2, mat:'rien'},
+    {nom:'Dips sur banc', meta:'3 séries × 15 reps', desc:'Mains sur un banc derrière toi, descends puis remonte par les triceps.', imgId:'Bench_Dips', lvl:1, mat:'rien'},
   ],
   jambes: [
-    {nom:'Squat', meta:'4 séries × 8-10 reps', desc:'Barre sur les épaules, descends en pliant les genoux.', imgId:'Barbell_Squat', mat:'rien'},
-    {nom:'Presse à cuisses', meta:'4 séries × 10-12 reps', desc:'Pousse la plateforme avec les jambes.', imgId:'Leg_Press', mat:'machine'},
-    {nom:'Fentes', meta:'3 séries × 12 reps/jambe', desc:'Un grand pas en avant, descends le genou arrière.', imgId:'Dumbbell_Lunges', mat:'rien'},
-    {nom:'Leg curl', meta:'3 séries × 12 reps', desc:'Allongé, fléchis les jambes pour travailler les ischios.', imgId:'Lying_Leg_Curls', mat:'machine'},
-    {nom:'Leg extension', meta:'3 séries × 15 reps', desc:'Assis, tends les jambes contre la résistance.', imgId:'Leg_Extensions', mat:'machine'},
-    {nom:'Mollets debout', meta:'4 séries × 15-20 reps', desc:'Monte sur la pointe des pieds avec charge.', imgId:'Standing_Calf_Raises', mat:'rien'},
-    {nom:'Soulevé de terre jambes tendues', meta:'3 séries × 10 reps', desc:'Descends la barre jambes quasi tendues, sens les ischios.', imgId:'Stiff-Legged_Barbell_Deadlift', mat:'barre'},
-    {nom:'Squat au poids du corps', meta:'4 séries × 20 reps', desc:'Descends en poussant les fesses en arrière, dos droit, puis remonte.', imgId:'Bodyweight_Squat', mat:'rien'},
-    {nom:'Squat sauté', meta:'4 séries × 15 reps', desc:'Squat puis saut explosif. Réception amortie.', imgId:'Freehand_Jump_Squat', mat:'rien'},
-    {nom:'Pont fessier', meta:'3 séries × 20 reps', desc:'Allongé, pousse les hanches vers le haut en serrant les fessiers.', imgId:'Butt_Lift_Bridge', mat:'rien'},
-    {nom:'Pont fessier unilatéral', meta:'3 séries × 12 /jambe', desc:'Une jambe tendue, monte les hanches avec l’autre jambe.', imgId:'Single_Leg_Glute_Bridge', mat:'rien'},
-    {nom:'Montées sur banc', meta:'3 séries × 12 /jambe', desc:'Monte sur un banc en poussant sur la jambe avant, genou opposé haut.', imgId:'Step-up_with_Knee_Raise', mat:'rien'},
+    {nom:'Squat', meta:'4 séries × 8-10 reps', desc:'Barre sur les épaules, descends en pliant les genoux.', imgId:'Barbell_Squat', lvl:1, mat:'rien'},
+    {nom:'Presse à cuisses', meta:'4 séries × 10-12 reps', desc:'Pousse la plateforme avec les jambes.', imgId:'Leg_Press', lvl:1, mat:'machine'},
+    {nom:'Fentes', meta:'3 séries × 12 reps/jambe', desc:'Un grand pas en avant, descends le genou arrière.', imgId:'Dumbbell_Lunges', lvl:1, mat:'rien'},
+    {nom:'Leg curl', meta:'3 séries × 12 reps', desc:'Allongé, fléchis les jambes pour travailler les ischios.', imgId:'Lying_Leg_Curls', lvl:1, mat:'machine'},
+    {nom:'Leg extension', meta:'3 séries × 15 reps', desc:'Assis, tends les jambes contre la résistance.', imgId:'Leg_Extensions', lvl:1, mat:'machine'},
+    {nom:'Mollets debout', meta:'4 séries × 15-20 reps', desc:'Monte sur la pointe des pieds avec charge.', imgId:'Standing_Calf_Raises', lvl:1, mat:'rien'},
+    {nom:'Soulevé de terre jambes tendues', meta:'3 séries × 10 reps', desc:'Descends la barre jambes quasi tendues, sens les ischios.', imgId:'Stiff-Legged_Barbell_Deadlift', lvl:2, mat:'barre'},
+    {nom:'Squat au poids du corps', meta:'4 séries × 20 reps', desc:'Descends en poussant les fesses en arrière, dos droit, puis remonte.', imgId:'Bodyweight_Squat', lvl:1, mat:'rien'},
+    {nom:'Squat sauté', meta:'4 séries × 15 reps', desc:'Squat puis saut explosif. Réception amortie.', imgId:'Freehand_Jump_Squat', lvl:2, mat:'rien'},
+    {nom:'Pont fessier', meta:'3 séries × 20 reps', desc:'Allongé, pousse les hanches vers le haut en serrant les fessiers.', imgId:'Butt_Lift_Bridge', lvl:1, mat:'rien'},
+    {nom:'Pont fessier unilatéral', meta:'3 séries × 12 /jambe', desc:'Une jambe tendue, monte les hanches avec l’autre jambe.', imgId:'Single_Leg_Glute_Bridge', lvl:1, mat:'rien'},
+    {nom:'Montées sur banc', meta:'3 séries × 12 /jambe', desc:'Monte sur un banc en poussant sur la jambe avant, genou opposé haut.', imgId:'Step-up_with_Knee_Raise', lvl:1, mat:'rien'},
   ],
   abdos: [
-    {nom:'Crunch', meta:'4 séries × 20 reps', desc:'Allongé, décolle les épaules en contractant les abdos.', imgId:'Crunches', mat:'rien'},
-    {nom:'Gainage planche', meta:'3 séries × 45 sec', desc:'Corps droit sur les avant-bras, gaine.', imgId:'Plank', mat:'rien'},
-    {nom:'Relevé de jambes', meta:'3 séries × 15 reps', desc:'Suspendu ou au sol, monte les jambes tendues.', imgId:'Hanging_Leg_Raise', mat:'rien'},
-    {nom:'Russian twist', meta:'3 séries × 20 reps', desc:'Assis, fais pivoter le buste de gauche à droite.', imgId:'Russian_Twist', mat:'rien'},
-    {nom:'Crunch vélo', meta:'3 séries × 20 reps', desc:'Pédale dans le vide en amenant coude vers genou opposé.', imgId:'Air_Bike', mat:'rien'},
-    {nom:'Crunch croisé', meta:'3 séries × 15 /côté', desc:'Amène le coude vers le genou opposé pour cibler les obliques.', imgId:'Cross-Body_Crunch', mat:'rien'},
-    {nom:'Relevé de bassin', meta:'3 séries × 15 reps', desc:'Genoux fléchis, décolle le bassin en contractant les abdos bas.', imgId:'Bent-Knee_Hip_Raise', mat:'rien'},
-    {nom:'Dead bug', meta:'3 séries × 12 /côté', desc:'Sur le dos, tends bras et jambe opposés sans creuser le dos.', imgId:'Dead_Bug', mat:'rien'},
-    {nom:'Battements de jambes', meta:'3 séries × 30 sec', desc:'Jambes tendues, battements verticaux rapides, bas du dos plaqué.', imgId:'Flutter_Kicks', mat:'rien'},
+    {nom:'Crunch', meta:'4 séries × 20 reps', desc:'Allongé, décolle les épaules en contractant les abdos.', imgId:'Crunches', lvl:1, mat:'rien'},
+    {nom:'Gainage planche', meta:'3 séries × 45 sec', desc:'Corps droit sur les avant-bras, gaine.', imgId:'Plank', lvl:1, mat:'rien'},
+    {nom:'Relevé de jambes', meta:'3 séries × 15 reps', desc:'Suspendu ou au sol, monte les jambes tendues.', imgId:'Hanging_Leg_Raise', lvl:3, mat:'rien'},
+    {nom:'Russian twist', meta:'3 séries × 20 reps', desc:'Assis, fais pivoter le buste de gauche à droite.', imgId:'Russian_Twist', lvl:2, mat:'rien'},
+    {nom:'Crunch vélo', meta:'3 séries × 20 reps', desc:'Pédale dans le vide en amenant coude vers genou opposé.', imgId:'Air_Bike', lvl:1, mat:'rien'},
+    {nom:'Crunch croisé', meta:'3 séries × 15 /côté', desc:'Amène le coude vers le genou opposé pour cibler les obliques.', imgId:'Cross-Body_Crunch', lvl:1, mat:'rien'},
+    {nom:'Relevé de bassin', meta:'3 séries × 15 reps', desc:'Genoux fléchis, décolle le bassin en contractant les abdos bas.', imgId:'Bent-Knee_Hip_Raise', lvl:1, mat:'rien'},
+    {nom:'Dead bug', meta:'3 séries × 12 /côté', desc:'Sur le dos, tends bras et jambe opposés sans creuser le dos.', imgId:'Dead_Bug', lvl:1, mat:'rien'},
+    {nom:'Battements de jambes', meta:'3 séries × 30 sec', desc:'Jambes tendues, battements verticaux rapides, bas du dos plaqué.', imgId:'Flutter_Kicks', lvl:1, mat:'rien'},
   ],
   etirements: [
-    {nom:'Étirement ischios', meta:'2 × 30 sec', desc:'Assis, une jambe tendue, penche le buste vers le pied sans arrondir le dos.', imgId:'90_90_Hamstring', mat:'rien'},
-    {nom:'Étirement quadriceps', meta:'2 × 30 sec /jambe', desc:'Debout, attrape la cheville et ramène le talon vers la fesse.', imgId:'All_Fours_Quad_Stretch', mat:'rien'},
-    {nom:'Étirement fessiers', meta:'2 × 30 sec /côté', desc:'Assis, cheville sur le genou opposé, penche-toi doucement en avant.', imgId:'Seated_Glute', mat:'rien'},
-    {nom:'Étirement mollets', meta:'2 × 30 sec /jambe', desc:'Mains au mur, jambe arrière tendue, talon au sol.', imgId:'Calf_Stretch_Hands_Against_Wall', mat:'rien'},
-    {nom:'Étirement adducteurs', meta:'2 × 30 sec', desc:'Assis, plantes de pieds jointes, laisse les genoux descendre.', imgId:'Adductor', mat:'rien'},
-    {nom:'Étirement pectoraux', meta:'2 × 30 sec', desc:'Bras contre un mur, tourne le buste à l’opposé pour ouvrir la poitrine.', imgId:'Chest_And_Front_Of_Shoulder_Stretch', mat:'rien'},
-    {nom:'Étirement épaules', meta:'2 × 20 sec /bras', desc:'Bras tendu en travers de la poitrine, tire-le avec l’autre bras.', imgId:'Shoulder_Circles', mat:'rien'},
-    {nom:'Étirement dorsaux', meta:'2 × 30 sec', desc:'Bras au-dessus de la tête, attrape le poignet et penche sur le côté.', imgId:'One_Arm_Against_Wall', mat:'rien'},
-    {nom:'Posture de l’enfant', meta:'2 × 40 sec', desc:'À genoux, buste au sol, bras tendus devant. Relâche le bas du dos.', imgId:'Childs_Pose', mat:'rien'},
-    {nom:'Étirement chat-vache', meta:'2 × 30 sec', desc:'À quatre pattes, alterne dos rond et dos creux au rythme du souffle.', imgId:'Cat_Stretch', mat:'rien'},
-    {nom:'Étirement triceps', meta:'2 × 20 sec /bras', desc:'Coude plié derrière la tête, pousse le coude avec l’autre main.', imgId:'Triceps_Stretch', mat:'rien'},
-    {nom:'Étirement genou-poitrine', meta:'2 × 30 sec /jambe', desc:'Allongé, ramène un genou vers la poitrine avec les mains.', imgId:'One_Knee_To_Chest', mat:'rien'},
+    {nom:'Étirement ischios', meta:'2 × 30 sec', desc:'Assis, une jambe tendue, penche le buste vers le pied sans arrondir le dos.', imgId:'90_90_Hamstring', lvl:1, mat:'rien'},
+    {nom:'Étirement quadriceps', meta:'2 × 30 sec /jambe', desc:'Debout, attrape la cheville et ramène le talon vers la fesse.', imgId:'All_Fours_Quad_Stretch', lvl:2, mat:'rien'},
+    {nom:'Étirement fessiers', meta:'2 × 30 sec /côté', desc:'Assis, cheville sur le genou opposé, penche-toi doucement en avant.', imgId:'Seated_Glute', lvl:3, mat:'rien'},
+    {nom:'Étirement mollets', meta:'2 × 30 sec /jambe', desc:'Mains au mur, jambe arrière tendue, talon au sol.', imgId:'Calf_Stretch_Hands_Against_Wall', lvl:1, mat:'rien'},
+    {nom:'Étirement adducteurs', meta:'2 × 30 sec', desc:'Assis, plantes de pieds jointes, laisse les genoux descendre.', imgId:'Adductor', lvl:2, mat:'rien'},
+    {nom:'Étirement pectoraux', meta:'2 × 30 sec', desc:'Bras contre un mur, tourne le buste à l’opposé pour ouvrir la poitrine.', imgId:'Chest_And_Front_Of_Shoulder_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement épaules', meta:'2 × 20 sec /bras', desc:'Bras tendu en travers de la poitrine, tire-le avec l’autre bras.', imgId:'Shoulder_Circles', lvl:1, mat:'rien'},
+    {nom:'Étirement dorsaux', meta:'2 × 30 sec', desc:'Bras au-dessus de la tête, attrape le poignet et penche sur le côté.', imgId:'One_Arm_Against_Wall', lvl:1, mat:'rien'},
+    {nom:'Posture de l’enfant', meta:'2 × 40 sec', desc:'À genoux, buste au sol, bras tendus devant. Relâche le bas du dos.', imgId:'Childs_Pose', lvl:1, mat:'rien'},
+    {nom:'Étirement chat-vache', meta:'2 × 30 sec', desc:'À quatre pattes, alterne dos rond et dos creux au rythme du souffle.', imgId:'Cat_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement triceps', meta:'2 × 20 sec /bras', desc:'Coude plié derrière la tête, pousse le coude avec l’autre main.', imgId:'Triceps_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement genou-poitrine', meta:'2 × 30 sec /jambe', desc:'Allongé, ramène un genou vers la poitrine avec les mains.', imgId:'One_Knee_To_Chest', lvl:1, mat:'rien'},
   ],
   cardio: [
-    {nom:'Corde à sauter', meta:'10-15 min', desc:'Sauts réguliers, poignets qui tournent, réception sur l’avant du pied.', imgId:'Rope_Jumping', mat:'rien'},
-    {nom:'Course à pied', meta:'20-30 min', desc:'Allure modérée à soutenue selon ton objectif.', imgId:'Trail_Running_Walking', mat:'rien'},
-    {nom:'Skipping rapide', meta:'5 × 1 min', desc:'Montées de genoux rapides sur place, intense. 1 min effort / 1 min repos.', imgId:'Fast_Skipping', mat:'rien'},
-    {nom:'Vélo d’appartement', meta:'20-30 min', desc:'Résistance modérée, cadence régulière.', imgId:'Bicycling_Stationary', mat:'machine'},
-    {nom:'Tapis de course', meta:'20-30 min', desc:'Marche rapide ou course selon ton niveau.', imgId:'Running_Treadmill', mat:'machine'},
-    {nom:'Elliptique', meta:'20-30 min', desc:'Mouvement fluide, faible impact sur les articulations.', imgId:'Elliptical_Trainer', mat:'machine'},
-    {nom:'Rameur', meta:'15-20 min', desc:'Poussée jambes puis tirage bras. Gainage constant.', imgId:'Rowing_Stationary', mat:'machine'},
+    {nom:'Corde à sauter', meta:'10-15 min', desc:'Sauts réguliers, poignets qui tournent, réception sur l’avant du pied.', imgId:'Rope_Jumping', lvl:2, mat:'rien'},
+    {nom:'Course à pied', meta:'20-30 min', desc:'Allure modérée à soutenue selon ton objectif.', imgId:'Trail_Running_Walking', lvl:1, mat:'rien'},
+    {nom:'Skipping rapide', meta:'5 × 1 min', desc:'Montées de genoux rapides sur place, intense. 1 min effort / 1 min repos.', imgId:'Fast_Skipping', lvl:1, mat:'rien'},
+    {nom:'Vélo d’appartement', meta:'20-30 min', desc:'Résistance modérée, cadence régulière.', imgId:'Bicycling_Stationary', lvl:1, mat:'machine'},
+    {nom:'Tapis de course', meta:'20-30 min', desc:'Marche rapide ou course selon ton niveau.', imgId:'Running_Treadmill', lvl:1, mat:'machine'},
+    {nom:'Elliptique', meta:'20-30 min', desc:'Mouvement fluide, faible impact sur les articulations.', imgId:'Elliptical_Trainer', lvl:2, mat:'machine'},
+    {nom:'Rameur', meta:'15-20 min', desc:'Poussée jambes puis tirage bras. Gainage constant.', imgId:'Rowing_Stationary', lvl:2, mat:'machine'},
   ]
 };
 
@@ -607,14 +615,29 @@ function renderExercises(){
   c.innerHTML = visible.map(({ex,i}) => {
     const sel = selected[mKey].has(i);
     const bg = ex.imgId ? `style="background-image:url('${IMG_BASE}${ex.imgId}/0.jpg')"` : '';
+    const sets = (ex.meta||'').replace(/\s*×\s*/g,' • ');
     return `<div class="ex-item ${sel?'selected':''}" id="ex-${mKey}-${i}">
       <div class="ex-photo" ${bg} onclick="openModal('${mKey}',${i})"></div>
       <div class="ex-info" onclick="openModal('${mKey}',${i})">
-        <div class="ex-name">${ex.nom}</div><div class="ex-meta">${ex.meta}</div>
+        <div class="ex-name">${ex.nom}</div>
+        <div class="ex-equip">${equipLabel(ex.mat)}</div>
+        ${starsHtml(ex.lvl)}
+        <div class="ex-sets">${sets}</div>
       </div>
-      <div class="ex-check" onclick="toggleSelect('${mKey}',${i})">✓</div>
+      <button class="ex-add" onclick="event.stopPropagation();toggleSelect('${mKey}',${i})" aria-label="Ajouter">${sel?'✓':'+'}</button>
     </div>`;
   }).join('');
+}
+
+function equipLabel(mat){
+  return ({barre:'Barre', halteres:'Haltères', machine:'Machine / poulie', poulie:'Poulie', rien:'Poids du corps', kettlebell:'Kettlebell', elastique:'Élastique'})[mat] || (mat ? mat.charAt(0).toUpperCase()+mat.slice(1) : '—');
+}
+function starsHtml(lvl){
+  lvl = lvl || 2;
+  const label = {1:'Débutant',2:'Intermédiaire',3:'Avancé'}[lvl];
+  let s = '';
+  for(let k=1;k<=3;k++) s += `<span class="${k<=lvl?'on':''}">★</span>`;
+  return `<div class="ex-stars">${s}<em>${label}</em></div>`;
 }
 
 function switchMuscle(i){
@@ -626,7 +649,10 @@ function switchMuscle(i){
 function toggleSelect(mKey, i){
   if(selected[mKey].has(i)) selected[mKey].delete(i);
   else selected[mKey].add(i);
-  document.getElementById(`ex-${mKey}-${i}`).classList.toggle('selected');
+  const item = document.getElementById(`ex-${mKey}-${i}`);
+  item.classList.toggle('selected');
+  const btn = item.querySelector('.ex-add');
+  if(btn) btn.textContent = selected[mKey].has(i) ? '✓' : '+';
   updateCount();
 }
 
