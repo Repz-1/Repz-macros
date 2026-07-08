@@ -39,6 +39,13 @@ body {
     font-size:30px; font-weight:800; letter-spacing:.04em; margin-bottom:6px;
 }
 
+.guest-hero { text-align:center; margin:6px 0 4px; }
+.guest-txt { font-size:13.5px; color:#6f6a61; font-weight:600; line-height:1.5; margin-bottom:14px; }
+.btn-guest { width:100%; background:#F7B500; color:#191919; border:none; border-radius:14px; padding:15px;
+    font-size:16px; font-weight:800; cursor:pointer; box-shadow:0 6px 16px rgba(247,181,0,.28); }
+.btn-guest:active { transform:scale(.99); }
+.guest-or { display:flex; align-items:center; gap:12px; margin:18px 0 4px; color:#b4afa6; font-size:12px; font-weight:700; }
+.guest-or::before, .guest-or::after { content:''; flex:1; height:1px; background:#e7e3da; }
 .auth-subtitle {
     font-size:14px; color:var(--text-dim); font-weight:600;
 }
@@ -162,6 +169,13 @@ body {
         <p class="auth-subtitle">Ton coach nutrition & entraînement</p>
     </div>
 
+    <!-- MODE INVITÉ EN AVANT -->
+    <div class="guest-hero">
+        <p class="guest-txt">Explore l'appli librement, sans compte ni carte.<br>Tu pourras t'inscrire plus tard pour sauvegarder tes données.</p>
+        <button class="btn btn-guest" onclick="continuerInvite()">Découvrir BELFIT →</button>
+        <div class="guest-or"><span>ou</span></div>
+    </div>
+
     <!-- FORM LOGIN -->
     <form class="auth-form active" id="loginForm">
         <div class="error" id="loginError"></div>
@@ -239,12 +253,7 @@ body {
         </div>
     </form>
 
-    <!-- SÉPARATEUR + INVITÉ -->
-    <div style="margin-top:20px; padding-top:18px; border-top:1px solid #e5e7eb; text-align:center;">
-        <a onclick="continuerInvite()" style="display:inline-block; color:#6b7280; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">
-            Découvrir l'appli sans compte →
-        </a>
-    </div>
+
 </div>
 
 <!-- Firebase SDK -->
