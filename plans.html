@@ -55,6 +55,21 @@ body {
 .pc-note { font-size:10.5px; color:var(--text-dim); margin-top:8px; font-weight:600; }
 .cafe-line { text-align:center; font-size:13px; color:var(--text-dim); font-weight:600; margin:14px 0 18px; }
 .badge-be { display:inline-block; background:#fff; border:1.5px solid var(--line); border-radius:30px; padding:7px 14px; font-size:12px; font-weight:700; color:var(--text); margin-top:12px; }
+
+/* ===== Bénéfices avant le prix ===== */
+.daydream { background:var(--card); border:1px solid var(--line); border-radius:22px; padding:22px 20px; margin-bottom:16px; box-shadow:0 2px 12px rgba(24,24,24,.05); }
+.daydream h3 { font-size:20px; font-weight:800; letter-spacing:-.02em; margin-bottom:18px; text-align:center; }
+.dd-item { display:flex; align-items:flex-start; gap:14px; padding:11px 0; border-top:1px solid var(--line); }
+.dd-item:first-of-type { border-top:none; padding-top:2px; }
+.dd-emo { font-size:26px; flex-shrink:0; width:34px; text-align:center; }
+.dd-txt { display:flex; flex-direction:column; }
+.dd-txt b { font-size:15px; font-weight:800; }
+.dd-txt span { font-size:13.5px; color:var(--text-dim); font-weight:600; margin-top:1px; }
+.unlock { background:linear-gradient(135deg,#191919,#2a2620); border-radius:22px; padding:22px 20px; margin-bottom:26px; }
+.unlock h3 { font-size:19px; font-weight:800; letter-spacing:-.02em; color:#fff; margin-bottom:16px; text-align:center; }
+.unlock-list { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+.unlock-list li { display:flex; align-items:center; gap:11px; font-size:14.5px; font-weight:700; color:#f5f2ea; }
+.unlock-list li::before { content:'✓'; flex-shrink:0; width:24px; height:24px; border-radius:50%; background:#10B981; color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .rassur { text-align:center; font-size:13.5px; color:var(--text-dim); margin-bottom:16px; }
 .deja-prem { background:linear-gradient(135deg,#FFFBEF,#fcfbf8); border:1.5px solid #F3E2A8; color:#7a5600; text-align:center; padding:16px 16px 14px; border-radius:16px; margin-bottom:16px; }
 .deja-prem .dp-title { font-size:14.5px; font-weight:800; margin-bottom:3px; }
@@ -74,12 +89,12 @@ body {
 .cmp-col.prem { background:rgba(247,181,0,.07); }
 .cmp-row:last-child .cmp-col.prem { border-radius:0 0 10px 10px; }
 .ck { width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; }
-.cmp-col.prem .ck { background:var(--orange); }
+.cmp-col.prem .ck { background:#10B981; }
 .ck-empty { width:26px; height:26px; }
 .ck-lite { width:22px; height:22px; border-radius:50%; background:#e7e3da; color:#8a857c; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .ck-no { color:#c9c4ba; font-size:15px; font-weight:700; }
 .ck-txt { font-size:11px; font-weight:800; color:#8a857c; }
-.ck-txt.prem-txt { color:var(--green); }
+.ck-txt.prem-txt { color:#047857; }
 .cmp-row.star { background:linear-gradient(90deg,rgba(247,181,0,.07),transparent); }
 .cmp-row.star .cmp-feat b { font-weight:800; }
 .free-plan { margin-top:2px; }
@@ -261,6 +276,27 @@ function logout() {
     <div class="badge-be">🇧🇪 App belge indépendante — soutiens BELFIT !</div>
 </div>
 
+<!-- BÉNÉFICES : montrer le résultat avant le prix -->
+<div class="daydream">
+    <h3>Imagine ton quotidien avec BelFit</h3>
+    <div class="dd-item"><span class="dd-emo">📅</span><div class="dd-txt"><b>Chaque matin</b><span>Ton objectif est déjà calculé.</span></div></div>
+    <div class="dd-item"><span class="dd-emo">🍽️</span><div class="dd-txt"><b>Chaque repas</b><span>BelFit sait quoi te proposer.</span></div></div>
+    <div class="dd-item"><span class="dd-emo">🏋️</span><div class="dd-txt"><b>Chaque entraînement</b><span>Ton programme est prêt.</span></div></div>
+    <div class="dd-item"><span class="dd-emo">🛒</span><div class="dd-txt"><b>Chaque semaine</b><span>Ta liste de courses est générée automatiquement.</span></div></div>
+</div>
+
+<div class="unlock">
+    <h3>Ce que Premium débloque</h3>
+    <ul class="unlock-list">
+        <li>Calcul automatique des calories</li>
+        <li>Macros personnalisées</li>
+        <li>Programme alimentaire intelligent</li>
+        <li>Liste de courses automatique</li>
+        <li>Programmes d'entraînement complets</li>
+        <li>Historique illimité</li>
+    </ul>
+</div>
+
 <div class="plans">
     <!-- PREMIUM d'abord -->
     <div class="plan premium">
@@ -269,7 +305,7 @@ function logout() {
         <div class="deja-prem" id="dejaPrem" style="display:none;">
             <div class="dp-title">Membre Premium ✨</div>
             <div class="dp-sub">Tout est débloqué — merci de faire grandir BELFIT</div>
-            <a href="questionnaire.html" class="dp-btn">Créer mon programme sur mesure</a>
+            <a href="questionnaire.html" class="dp-btn">Créer mon programme</a>
         </div>
 
         <div class="price-cards">
@@ -370,6 +406,46 @@ function logout() {
         </div>
         <div class="faq-a">
             1. Paiement Premium<br>2. Questionnaire rapide (2 min)<br>3. Ton programme calculé instantanément<br>4. Appliqué directement à ton journal
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Puis-je annuler quand je veux ?</span>
+            <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-a">
+            Oui. L'abonnement peut être annulé à tout moment, sans frais ni engagement.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Mes données sont-elles conservées ?</span>
+            <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-a">
+            Oui. Ton journal, ton poids et tes stats sont liés à ton compte et restent disponibles à ta reconnexion, sur tous tes appareils.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Puis-je utiliser BelFit hors connexion ?</span>
+            <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-a">
+            En partie : le journal et tes séances fonctionnent même sans réseau, et tout se synchronise dès que la connexion revient.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Les programmes sont-ils adaptés aux débutants ?</span>
+            <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-a">
+            Oui. Que tu débutes ou non, BelFit adapte les calories, les macros et l'entraînement à ton niveau et à ton objectif.
         </div>
     </div>
 </div>
