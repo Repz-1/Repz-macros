@@ -114,12 +114,14 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .modal-h3-ic .ic { width:20px; height:20px; color:#F7B500; }
 .nutri-datebar .ndb-date { font-size:15px; font-weight:800; letter-spacing:.06em; color:#6b6660; text-transform:uppercase; }
 .nutri-title { font-size:16px; font-weight:800; color:#8F6200; }
-.ring-wrap { display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 0 4px; }
+.ring-wrap { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:8px 0 4px; }
+.ring-side { text-align:center; flex:1; min-width:0; }
+.ring-side .rs-lab { font-size:12.5px; font-weight:600; color:#8a8580; }
+.ring-side .rs-val { font-size:22px; font-weight:800; margin-top:2px; color:#191919; letter-spacing:-.02em; }
 .ring-center { position:relative; width:184px; height:184px; flex-shrink:0; }
 .ring-txt { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .ring-txt .rt-num { font-size:48px; font-weight:800; line-height:1; letter-spacing:-1.5px; color:#191919; }
 .ring-txt .rt-sub { font-size:12.5px; font-weight:700; color:#8a8580; margin-top:5px; }
-.ring-txt .rt-sub2 { font-size:11.5px; font-weight:600; color:#b4afa6; margin-top:4px; }
 .dt-remaining-big.over .rt-num { color:#f87171; }
 .nutri-macros { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; padding-top:16px; border-top:1px solid #ece8df; }
 .nutri-macros .mcard { background:none; border:none; border-radius:0; padding:0; }
@@ -887,6 +889,10 @@ function afficherMessageInvite() {
         </div>
 
         <div class="ring-wrap">
+            <div class="ring-side">
+                <div class="rs-lab">Consommées</div>
+                <div class="rs-val" id="goalConsumed">0</div>
+            </div>
             <div class="ring-center">
                 <svg width="184" height="184" viewBox="0 0 190 190">
                     <circle cx="95" cy="95" r="82" fill="none" stroke="#dcecdf" stroke-width="13"
@@ -898,8 +904,11 @@ function afficherMessageInvite() {
                 <div class="ring-txt">
                     <div class="dt-remaining-big"><span class="rt-num" id="dtRemNum">0</span></div>
                     <div class="rt-sub" id="dtRemLabel">kcal restantes</div>
-                    <div class="rt-sub2"><span id="goalConsumed">0</span> / <span id="goalKcal">4000</span> kcal</div>
                 </div>
+            </div>
+            <div class="ring-side">
+                <div class="rs-lab">Objectif</div>
+                <div class="rs-val" id="goalKcal">4000</div>
             </div>
         </div>
 
