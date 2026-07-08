@@ -3453,6 +3453,49 @@ function runFridge(){
     }).join('');
 }
 
+// ===== NAVIGATION RETOUR & MODALS =====
+// "Retour" ferme le modal ouvert au lieu de quitter la page.
+(function(){
+    const SEL = '.modal-overlay.show, .cp-premium-overlay.show';
+    let uiClose = false;
+    function anyOpen(){ return document.querySelector(SEL); }
+    function closeAll(){
+        document.querySelectorAll(SEL).forEach(o => o.classList.remove('show'));
+        if(typeof fermerNavJour === 'function'){ try{ fermerNavJour(); }catch(e){} }
+    }
+    // Détecter toute ouverture d'overlay, quel que soit le code qui l'ouvre
+    const mo = new MutationObserver(muts => {
+        for(const m of muts){
+            if(m.attributeName === 'class' && m.target.classList.contains('show')){
+                if(!(history.state && history.state.bfModal)){
+                    try{ history.pushState({bfModal:1}, ''); }catch(e){}
+                }
+                return;
+            }
+        }
+    });
+    function watchAll(){
+        document.querySelectorAll('.modal-overlay, .cp-premium-overlay').forEach(el => {
+            mo.observe(el, { attributes:true, attributeFilter:['class'] });
+        });
+    }
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchAll);
+    else watchAll();
+    window.addEventListener('popstate', () => {
+        if(uiClose){ uiClose = false; return; }
+        if(anyOpen()) closeAll();
+    });
+    // Fermeture via un bouton de l'UI : consommer l'état poussé pour garder l'historique propre
+    document.addEventListener('click', () => {
+        setTimeout(() => {
+            if(!anyOpen() && history.state && history.state.bfModal){
+                uiClose = true;
+                try{ history.back(); }catch(e){ uiClose = false; }
+            }
+        }, 80);
+    }, true);
+})();
+
 // ===== DÉMARRAGE DE L'APP =====
 // Aliments persos créés par l'utilisateur (fusionnés dans la base de recherche)
 try{ Object.assign(DB, JSON.parse(localStorage.getItem('repz_customFoods')||'{}')); }catch(e){}
