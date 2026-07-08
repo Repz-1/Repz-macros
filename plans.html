@@ -9,7 +9,7 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-    --orange:#10B981; --green:#047857; --bg:#eeece7; --card:#ffffff;
+    --orange:#F7B500; --green:#8F6200; --bg:#eeece7; --card:#ffffff;
     --dark:#1f2937; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px;
 }
 body {
@@ -31,7 +31,7 @@ body {
 
 .plan { background:var(--card); border:1.5px solid var(--line); border-radius:var(--radius);
     padding:28px 24px; position:relative; transition:all .2s; margin-bottom:16px; }
-.plan.premium { border-color:var(--green); background:linear-gradient(135deg,#f0fdf4,#ffffff); }
+.plan.premium { border-color:var(--green); background:linear-gradient(135deg,#FFFCF0,#ffffff); }
 
 .plan-name { font-size:18px; font-weight:800; margin-bottom:4px; }
 .plan-desc { font-size:13px; color:var(--text-dim); margin-bottom:16px; line-height:1.5; }
@@ -44,7 +44,7 @@ body {
 .price-cards { display:flex; gap:10px; align-items:stretch; }
 .pc { position:relative; flex:1; background:#fff; border:2px solid var(--line); border-radius:16px; padding:26px 8px 16px; text-align:center; cursor:pointer; transition:border-color .15s, background .15s, transform .1s; }
 .pc:active { transform:scale(.98); }
-.pc.selected { border-color:var(--orange); background:linear-gradient(180deg,#ecfdf5,#ffffff); box-shadow:0 6px 18px rgba(16,185,129,.14); }
+.pc.selected { border-color:var(--orange); background:linear-gradient(180deg,#FFFBEF,#ffffff); box-shadow:0 6px 18px rgba(247,181,0,.14); }
 .pc:not(.selected) .pc-dur, .pc:not(.selected) .pc-price, .pc:not(.selected) .pc-permo { color:#9ca3af; }
 .pc-badge { position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:var(--orange); color:#fff; font-size:10px; font-weight:800; padding:4px 10px; border-radius:20px; letter-spacing:.04em; white-space:nowrap; }
 .pc-badge.gold { background:#d4af37; color:#1a1a1a; }
@@ -56,10 +56,10 @@ body {
 .cafe-line { text-align:center; font-size:13px; color:var(--text-dim); font-weight:600; margin:14px 0 18px; }
 .badge-be { display:inline-block; background:#fff; border:1.5px solid var(--line); border-radius:30px; padding:7px 14px; font-size:12px; font-weight:700; color:var(--text); margin-top:12px; }
 .rassur { text-align:center; font-size:13.5px; color:var(--text-dim); margin-bottom:16px; }
-.deja-prem { background:linear-gradient(135deg,#ecfdf5,#fcfbf8); border:1.5px solid #a7f3d0; color:#065f46; text-align:center; padding:16px 16px 14px; border-radius:16px; margin-bottom:16px; }
+.deja-prem { background:linear-gradient(135deg,#FFFBEF,#fcfbf8); border:1.5px solid #F3E2A8; color:#7a5600; text-align:center; padding:16px 16px 14px; border-radius:16px; margin-bottom:16px; }
 .deja-prem .dp-title { font-size:14.5px; font-weight:800; margin-bottom:3px; }
-.deja-prem .dp-sub { font-size:12.5px; color:#047857; font-weight:600; margin-bottom:12px; }
-.deja-prem .dp-btn { display:block; background:#10B981; color:#fff; text-decoration:none; padding:12px; border-radius:12px; font-size:14px; font-weight:800; }
+.deja-prem .dp-sub { font-size:12.5px; color:#8F6200; font-weight:600; margin-bottom:12px; }
+.deja-prem .dp-btn { display:block; background:#F7B500; color:#fff; text-decoration:none; padding:12px; border-radius:12px; font-size:14px; font-weight:800; }
 .rassur strong { color:var(--text); }
 .compare { position:relative; margin:8px 0 24px; }
 .cmp-head, .cmp-row { display:grid; grid-template-columns:1fr 66px 76px; align-items:stretch; column-gap:10px; }
@@ -71,7 +71,7 @@ body {
 .cmp-row:first-of-type { border-top:1px solid var(--line); }
 .cmp-feat { display:flex; align-items:center; padding:17px 12px 17px 2px; font-size:14px; font-weight:600; line-height:1.3; }
 .cmp-col { display:flex; align-items:center; justify-content:center; padding:15px 0; }
-.cmp-col.prem { background:rgba(16,185,129,.07); }
+.cmp-col.prem { background:rgba(247,181,0,.07); }
 .cmp-row:last-child .cmp-col.prem { border-radius:0 0 10px 10px; }
 .ck { width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .cmp-col.prem .ck { background:var(--orange); }
@@ -80,7 +80,7 @@ body {
 .ck-no { color:#c9c4ba; font-size:15px; font-weight:700; }
 .ck-txt { font-size:11px; font-weight:800; color:#8a857c; }
 .ck-txt.prem-txt { color:var(--green); }
-.cmp-row.star { background:linear-gradient(90deg,rgba(16,185,129,.07),transparent); }
+.cmp-row.star { background:linear-gradient(90deg,rgba(247,181,0,.07),transparent); }
 .cmp-row.star .cmp-feat b { font-weight:800; }
 .free-plan { margin-top:2px; }
 .free-plan .plan-desc { margin-bottom:16px; }
@@ -134,14 +134,14 @@ body {
     flex:1; padding:11px 14px; border:1.5px solid #e2e8f0; border-radius:10px;
     font-size:15px; font-weight:600; text-transform:uppercase;
 }
-.promo-row input:focus { outline:none; border-color:#10B981; }
+.promo-row input:focus { outline:none; border-color:#F7B500; }
 .promo-row button {
-    background:#10B981; color:#fff; border:none; border-radius:10px;
+    background:#F7B500; color:#fff; border:none; border-radius:10px;
     padding:0 18px; font-size:15px; font-weight:700; cursor:pointer;
 }
 .promo-row button:active { transform:scale(.96); background:#e85d2a; }
 .promo-msg { font-size:13px; font-weight:600; margin-top:8px; min-height:16px; text-align:center; }
-.promo-msg.ok { color:#16a34a; }
+.promo-msg.ok { color:#DFA004; }
 .promo-msg.err { color:#ef4444; }
 .faq h3 { font-size:18px; font-weight:800; margin-bottom:16px; text-align:center; }
 .faq-item { margin-bottom:14px; }
@@ -189,7 +189,7 @@ body {
 #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
 @keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-#repzSplash .sp-loader{position:absolute;top:calc(50% + 130px);left:50%;transform:translateX(-50%);width:40px;height:40px;border:4px solid #d1fae5;border-top-color:#10B981;border-radius:50%;animation:spSpin .8s linear infinite;}
+#repzSplash .sp-loader{position:absolute;top:calc(50% + 130px);left:50%;transform:translateX(-50%);width:40px;height:40px;border:4px solid #FBEFC7;border-top-color:#F7B500;border-radius:50%;animation:spSpin .8s linear infinite;}
 @keyframes spSpin{to{transform:translateX(-50%) rotate(360deg)}}
 </style>
 <div id="repzSplash">
