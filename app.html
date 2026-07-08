@@ -3411,8 +3411,13 @@ function addFridgeItem(){
         if(!fridgeItems.some(x=>fnorm(x)===fnorm(v))) fridgeItems.push(v);
     });
     inp.value=''; renderFridgeChips();
+    runFridge(); // résultats immédiats dès qu'on ajoute un ingrédient
 }
-function removeFridgeItem(i){ fridgeItems.splice(i,1); renderFridgeChips(); }
+function removeFridgeItem(i){
+    fridgeItems.splice(i,1); renderFridgeChips();
+    if(fridgeItems.length) runFridge();
+    else document.getElementById('eatIdeas').innerHTML='';
+}
 function renderFridgeChips(){
     document.getElementById('fridgeChips').innerHTML = fridgeItems.map((it,i)=>
         `<span class="fridge-chip">${it}<b onclick="removeFridgeItem(${i})">×</b></span>`).join('');
@@ -3425,6 +3430,14 @@ function fridgeHas(ing){
 }
 function runFridge(){
     const box = document.getElementById('eatIdeas');
+    // absorber une saisie en cours non validée
+    const inp = document.getElementById('fridgeInput');
+    if(inp && inp.value.trim()){
+        inp.value.split(',').map(x=>x.trim()).filter(Boolean).forEach(v=>{
+            if(!fridgeItems.some(x=>fnorm(x)===fnorm(v))) fridgeItems.push(v);
+        });
+        inp.value=''; renderFridgeChips();
+    }
     if(fridgeItems.length===0){ box.innerHTML='<div class="eat-note">Ajoute au moins un ingrédient que tu as.</div>'; return; }
     const t = dayTotals();
     const reste = Math.max(0, goal.kcal - t.kcal);
