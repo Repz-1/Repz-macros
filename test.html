@@ -254,7 +254,7 @@ function logout(){
             </div>
 
             <div class="result-btns">
-                <a href="programmes.html" id="btnVoirProg" class="btn-primary">Voir ce programme</a>
+                <a href="programmes.html?v=4" id="btnVoirProg" class="btn-primary">Voir ce programme</a>
                 <a href="#" class="btn-secondary" onclick="restart();return false;">Refaire le test</a>
             </div>
         </div>
@@ -279,7 +279,6 @@ const PROGRAMMES_INFO = {
     'masse-3j':   {name:'Prise de masse — 3 jours', cat:'masse', duree:'8 semaines', niveau:'Intermédiaire', seances:['Pecs / Triceps','Dos / Biceps','Jambes / Épaules']},
     'masse-4j':   {name:'Prise de masse — 4 jours', cat:'masse', duree:'10 semaines', niveau:'Confirmé', seances:['Pecs','Dos','Jambes','Épaules / Bras']},
     'masse-5j':   {name:'Prise de masse — 5 jours', cat:'masse', duree:'12 semaines', niveau:'Confirmé', seances:['Pecs','Dos','Jambes','Épaules','Bras']},
-    'masse-deb-3j':{name:'Prise de masse débutant — Full body', cat:'masse', duree:'6 semaines', niveau:'Débutant', seances:['Corps complet A','Corps complet B','Corps complet C']},
     'masse-2j':   {name:'Prise de masse — 2 jours', cat:'masse', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut du corps','Bas du corps']},
     'deb-full-3j':{name:'Débutant — Full body', cat:'debutant', duree:'6 semaines', niveau:'Débutant', seances:['Corps complet A','Corps complet B','Corps complet C']},
     'deb-2j':     {name:'Débutant — Remise en route', cat:'debutant', duree:'4 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps + gainage']},
@@ -373,7 +372,8 @@ function computeResult(){
     if(obj === 'masse'){
         const debConseilMasse = "Pour débuter la prise de masse, un corps complet 3 jours donne souvent les meilleurs résultats : plus de récupération, une meilleure technique. On te conseille de commencer là — mais c'est toi qui choisis, voici le programme que tu as demandé.";
         if(niv === 'debutant' && jours === 3){
-            progId = 'masse-deb-3j';
+            progId = 'deb-full-3j';
+            coachAdvice = "Pour débuter, un corps complet 3 jours est la meilleure base : tu construiras du muscle en apprenant la technique. Mange en léger surplus calorique pour la prise de masse.";
         } else if(jours <= 2){
             progId = 'masse-2j';
             coachAdvice = (niv === 'debutant')
@@ -440,7 +440,7 @@ function computeResult(){
 
     // Mettre à jour le bouton vers le bon programme
     const btn = document.getElementById('btnVoirProg');
-    if(btn) btn.href = `programmes.html?cat=${prog.cat}&prog=${progId}`;
+    if(btn) btn.href = `programmes.html?v=4&cat=${prog.cat}&prog=${progId}`;
 
     // Titre = nom exact du programme
     document.getElementById('resultName').textContent = prog.name;

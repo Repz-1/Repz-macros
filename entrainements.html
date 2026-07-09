@@ -457,7 +457,7 @@ function logout() {
     </a>
 
     <!-- Séance libre (gratuit) -->
-    <a href="ma-seance.html?v=2" class="choice">
+    <a href="ma-seance.html?v=3" class="choice">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
         <h3>Séance libre</h3>
         <p>Compose toi-même ton entraînement, exercice par exercice.</p>
@@ -465,7 +465,7 @@ function logout() {
     </a>
 
     <!-- Mes programmes (Premium) -->
-    <a href="programmes.html" class="choice locked" id="choiceLib" onclick="return checkPremium(event)">
+    <a href="programmes.html?v=4" class="choice locked" id="choiceLib" onclick="return checkPremium(event)">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg></span>
         <h3>Mes programmes</h3>
@@ -476,7 +476,7 @@ function logout() {
 </div>
 
 <!-- DERNIÈRE SÉANCE -->
-<a class="last-session" id="lastSession" href="ma-seance.html?v=2">
+<a class="last-session" id="lastSession" href="ma-seance.html?v=3">
     <span class="ls-ic">🔥</span>
     <span class="ls-body">
         <span class="ls-label">Dernière séance</span>
