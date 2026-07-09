@@ -461,21 +461,6 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .eat-open { display:block; text-align:right; font-size:12.5px; font-weight:800; color:#DFA004; margin-top:8px; }
 
 
-/* ===== Cuisine avec ce que j'ai ===== */
-.eat-cat-fridge { grid-column:1 / -1; background:#fdf2f8; border-style:dashed; }
-.fridge-panel { background:#fff; border:1.5px solid #f3d9e7; border-radius:14px; padding:13px; margin-bottom:14px; }
-.fridge-row { display:flex; gap:8px; }
-.fridge-input { flex:1; border:1.5px solid #f3d9e7; border-radius:10px; padding:11px 12px; font-size:14px; outline:none; }
-.fridge-input:focus { border-color:#db2777; }
-.fridge-add { flex:none; width:44px; border:none; background:#db2777; color:#fff; border-radius:10px; font-size:20px; font-weight:800; cursor:pointer; }
-.fridge-chips { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
-.fridge-chip { display:inline-flex; align-items:center; gap:6px; background:#fce7f3; color:#be185d; font-size:12.5px; font-weight:700; padding:5px 10px; border-radius:20px; }
-.fridge-chip b { cursor:pointer; font-size:14px; line-height:1; opacity:.7; }
-.fridge-go { width:100%; margin-top:12px; background:#db2777; color:#fff; border:none; border-radius:11px; padding:12px; font-size:14px; font-weight:800; cursor:pointer; }
-.fridge-go:active { transform:scale(.99); }
-.fridge-cover { font-size:11.5px; font-weight:800; color:#8F6200; background:#FFFBEF; padding:2px 8px; border-radius:20px; margin-left:6px; }
-.fridge-miss { font-size:12px; color:#b45309; margin-top:7px; }
-.fridge-complete { font-size:12px; color:#8F6200; font-weight:700; margin-top:7px; }
 
 /* HISTORIQUE */
 .history-card { position:relative; background:#fcfbf8; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(60,50,40,.07); overflow:hidden; }
@@ -979,15 +964,6 @@ function afficherMessageInvite() {
                 <button class="eat-cat" onclick="showEatIdeas('rapide')">Rapide</button>
                 <button class="eat-cat" onclick="showEatIdeas('plaisir')">Plaisir</button>
                 <button class="eat-cat" onclick="showEatIdeas('vege')">Végé</button>
-                <button class="eat-cat eat-cat-fridge" onclick="toggleFridge()">🧊 Cuisiner avec ce que j'ai</button>
-            </div>
-            <div id="fridgePanel" class="fridge-panel" style="display:none">
-                <div class="fridge-row">
-                    <input id="fridgeInput" class="fridge-input" placeholder="Ex : poulet, riz, œufs…" oninput="fridgeLive()" onkeydown="if(event.key==='Enter'){event.preventDefault();addFridgeItem();}">
-                    <button class="fridge-add" onclick="addFridgeItem()">＋</button>
-                </div>
-                <div id="fridgeChips" class="fridge-chips"></div>
-                <button class="fridge-go" onclick="runFridge()">Trouver mes recettes</button>
             </div>
             <div id="eatIdeas" class="eat-ideas"></div>
         </div>
@@ -3389,7 +3365,6 @@ function toggleEat(){
 }
 
 function showEatIdeas(cat){
-    const fp=document.getElementById('fridgePanel'); if(fp) fp.style.display='none';
     const cats = document.querySelectorAll('.eat-cat');
     // Si la catégorie cliquée est déjà ouverte → refermer
     let dejaActive = false;
@@ -3457,120 +3432,8 @@ function openIdeaRecipe(i){
     document.getElementById('recipeModal').classList.add('show');
 }
 
-// ===== Cuisine avec ce que j'ai =====
-let fridgeItems = [];
-function fnorm(s){
-    return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-        .replace(/œ/g,'oe').replace(/æ/g,'ae').trim();
-}
-function toggleFridge(){
-    const p = document.getElementById('fridgePanel');
-    const btn = document.querySelector('.eat-cat-fridge');
-    const open = p.style.display === 'none';
-    document.querySelectorAll('.eat-cat').forEach(b=>b.classList.remove('active'));
-    document.getElementById('eatIdeas').innerHTML='';
-    if(open){ p.style.display='block'; btn.classList.add('active'); renderFridgeChips(); }
-    else { p.style.display='none'; }
-}
-function addFridgeItem(){
-    try{
-        const inp = document.getElementById('fridgeInput');
-        const raw = inp.value.trim(); if(!raw) return;
-        raw.split(',').map(s=>s.trim()).filter(Boolean).forEach(v=>{
-            if(!fridgeItems.some(x=>fnorm(x)===fnorm(v))) fridgeItems.push(v);
-        });
-        inp.value=''; renderFridgeChips();
-        runFridge(); // résultats immédiats dès qu'on ajoute un ingrédient
-    }catch(e){ fridgeError(e); }
-}
-function fridgeError(e){
-    const box = document.getElementById('eatIdeas');
-    if(box) box.innerHTML = '<div class="eat-note">Oups, une erreur : ' + (e && e.message ? e.message : e) + '</div>';
-}
-function removeFridgeItem(i){
-    fridgeItems.splice(i,1); renderFridgeChips();
-    runFridge();
-}
 // Recherche en direct pendant la frappe (comme l'encodage d'aliments)
-let fridgeTimer = null;
-function fridgeLive(){
-    clearTimeout(fridgeTimer);
-    fridgeTimer = setTimeout(function(){ try{ runFridge(true); }catch(e){ fridgeError(e); } }, 200);
-}
-function renderFridgeChips(){
-    document.getElementById('fridgeChips').innerHTML = fridgeItems.map((it,i)=>
-        `<span class="fridge-chip">${it}<b onclick="removeFridgeItem(${i})">×</b></span>`).join('');
-}
 // un ingrédient de recette est "dispo" si un terme du frigo matche son libellé ou sa clé DB
-function fridgeHas(ing){
-    const hay = fnorm(ing.l) + ' ' + fnorm(ing.n);
-    const lbl = fnorm(ing.l);
-    return fridgeItems.some(f=>{ const t=fnorm(f); return t.length>=2 && (hay.indexOf(t)>=0 || (lbl.length>=2 && t.indexOf(lbl)>=0)); });
-}
-function runFridge(live){
-  try{
-    const box = document.getElementById('eatIdeas');
-    const inp = document.getElementById('fridgeInput');
-    const saved = fridgeItems.slice();
-    if(inp && inp.value.trim()){
-        const typed = inp.value.split(',').map(x=>x.trim()).filter(Boolean);
-        if(live){
-            // recherche à la volée : on ajoute temporairement le texte tapé
-            typed.forEach(v=>{ if(!fridgeItems.some(x=>fnorm(x)===fnorm(v))) fridgeItems.push(v); });
-        } else {
-            // validation : le texte devient une chip permanente
-            typed.forEach(v=>{ if(!fridgeItems.some(x=>fnorm(x)===fnorm(v))) fridgeItems.push(v); });
-            inp.value=''; renderFridgeChips();
-        }
-    }
-    if(fridgeItems.length===0){
-        box.innerHTML='<div class="eat-note">Tape un ingrédient que tu as (poulet, riz, œufs…).</div>';
-        fridgeItems = saved;
-        return;
-    }
-    runFridgeCore(box);
-    if(live) fridgeItems = saved; // en live, on ne garde pas le texte non validé
-  }catch(e){ fridgeError(e); }
-}
-function runFridgeCore(box){
-    const t = dayTotals();
-    const reste = Math.max(0, goal.kcal - t.kcal);
-    const protTarget = Math.round(goal.weight * goal.protRatio);
-    const resteProt = Math.max(0, protTarget - t.prot);
-    const cible = Math.round(Math.max(200, Math.min(reste>50?reste:650, 650)));
-    const all = [];
-    Object.keys(EAT_IDEAS).forEach(cat=> EAT_IDEAS[cat].forEach(idea=> all.push(idea)));
-    const scored = all.map(idea=>{
-        const have = idea.ings.filter(fridgeHas);
-        const miss = idea.ings.filter(i=>!fridgeHas(i));
-        const cover = have.length / idea.ings.length;
-        const base = ideaCompute(idea.ings, 1);
-        const ratio = Math.max(0.75, Math.min(1.4, cible / (base.kcal||cible)));
-        const calc = ideaCompute(idea.ings, ratio);
-        return { nom:idea.nom, have:have.length, total:idea.ings.length, cover, miss,
-                 kcalA:calc.kcal, protA:calc.prot, portion:calc.txt, fit: calc.prot <= resteProt+8 };
-    }).filter(r=> r.have>0)
-      .sort((a,b)=> (b.cover-a.cover) || (b.have-a.have) || (b.fit-a.fit) || (a.protA-b.protA));
-    if(scored.length===0){
-        box.innerHTML='<div class="eat-note">Aucune recette ne colle à ces ingrédients pour l\'instant. Essaie un aliment de base : poulet, riz, œufs, thon, pâtes…</div>';
-        return;
-    }
-    const top = scored.slice(0,6);
-    lastIdeas = top.map(r => ({ nom:r.nom, kcal:r.kcalA, prot:r.protA, portion:r.portion }));
-    box.innerHTML = top.map((r,ix)=>{
-        const missTxt = r.miss.length
-            ? `<div class="fridge-miss">Il te manque : ${r.miss.map(m=>m.l).join(', ')}</div>`
-            : `<div class="fridge-complete">Tu as tout ✓</div>`;
-        const protTag = r.fit ? `${r.protA} g prot` : `${r.protA} g prot (dépasse tes ${Math.round(resteProt)} g restants)`;
-        return `<div class="eat-idea${r.fit?'':' eat-over'}" onclick="openIdeaRecipe(${ix})">
-            <div class="eat-idea-name">${r.nom} <span class="fridge-cover">${r.have}/${r.total}</span></div>
-            <div class="eat-idea-ex">${r.portion}</div>
-            <div class="eat-idea-kcal">≈ ${r.kcalA} kcal · ${protTag}</div>
-            <span class="eat-open">Voir la recette →</span>
-            ${missTxt}
-        </div>`;
-    }).join('');
-}
 
 // ===== NAVIGATION RETOUR & MODALS =====
 // "Retour" ferme le modal ouvert au lieu de quitter la page.
