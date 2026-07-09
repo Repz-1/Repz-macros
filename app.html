@@ -458,7 +458,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .rm-tip { background:#FFF6DD; border-radius:12px; padding:11px 13px; font-size:13px; font-weight:600; color:#7a5600; margin-top:14px; line-height:1.45; }
 .rm-tip::before { content:'💡 '; }
 .eat-idea { cursor:pointer; }
-.eat-open { float:right; font-size:12px; font-weight:800; color:#DFA004; }
+.eat-open { display:block; text-align:right; font-size:12.5px; font-weight:800; color:#DFA004; margin-top:8px; }
 
 
 /* ===== Cuisine avec ce que j'ai ===== */
@@ -3436,7 +3436,8 @@ function showEatIdeas(cat){
         return `<div class="eat-idea${idea.fit ? '' : ' eat-over'}" onclick="openIdeaRecipe(${ix})">
             <div class="eat-idea-name">${idea.nom}</div>
             <div class="eat-idea-ex">${idea.portion}</div>
-            <div class="eat-idea-kcal">≈ ${idea.kcalA} kcal · ${protTag} <span class="eat-open">Recette →</span></div>
+            <div class="eat-idea-kcal">≈ ${idea.kcalA} kcal · ${protTag}</div>
+            <span class="eat-open">Voir la recette →</span>
         </div>`;
     }).join('');
 }
@@ -3564,7 +3565,8 @@ function runFridgeCore(box){
         return `<div class="eat-idea${r.fit?'':' eat-over'}" onclick="openIdeaRecipe(${ix})">
             <div class="eat-idea-name">${r.nom} <span class="fridge-cover">${r.have}/${r.total}</span></div>
             <div class="eat-idea-ex">${r.portion}</div>
-            <div class="eat-idea-kcal">≈ ${r.kcalA} kcal · ${protTag} <span class="eat-open">Recette →</span></div>
+            <div class="eat-idea-kcal">≈ ${r.kcalA} kcal · ${protTag}</div>
+            <span class="eat-open">Voir la recette →</span>
             ${missTxt}
         </div>`;
     }).join('');
