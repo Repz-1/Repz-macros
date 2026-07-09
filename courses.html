@@ -165,10 +165,18 @@ function setJours(j){ jours = j; renderSegs(); if(state && base.length) generer(
 function setPers(p){ pers = p; renderSegs(); if(state && base.length) generer(); }
 
 // ---- Génération depuis la base ----
+function nomCourse(n){
+    // En courses on achète le produit cru, pas cuit
+    return (n||'')
+        .replace(/\bcuites\b/gi,'crues')
+        .replace(/\bcuits\b/gi,'crus')
+        .replace(/\bcuite\b/gi,'crue')
+        .replace(/\bcuit\b/gi,'cru');
+}
 function generer(){
     if(!base.length){ renderVide(); return; }
     const items = base.map(it => ({
-        name: it.name,
+        name: nomCourse(it.name),
         qty: it.qty * jours * pers,
         unit: it.unit,
         unitLabel: it.unitLabel,
