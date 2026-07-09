@@ -1,6 +1,6 @@
 /* BELFIT service worker — installabilité + hors-ligne de base */
-const CACHE = 'belfit-v1';
-const CORE = ['./index.html','./app.html','./manifest.json','./icon-192-v5.png','./icon-512-v5.png','./belfit-logo-header.png'];
+const CACHE = 'belfit-v2';
+const CORE = ['./index.html','./app.html','./manifest.json','./icon-192-v7.png','./icon-512-v7.png','./belfit-logo-header.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
