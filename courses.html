@@ -166,8 +166,14 @@ function setPers(p){ pers = p; renderSegs(); if(state && base.length) generer();
 
 // ---- Génération depuis la base ----
 function nomCourse(n){
+    n = n || '';
+    const low = n.toLowerCase();
+    // Œufs : tout regrouper en "Œufs entiers L" (sans confondre avec bœuf)
+    if((low.indexOf('oeuf') >= 0 || low.indexOf('œuf') >= 0) && low.indexOf('boeuf') < 0 && low.indexOf('bœuf') < 0){
+        return 'Œufs entiers L';
+    }
     // En courses on achète le produit cru, pas cuit
-    return (n||'')
+    return n
         .replace(/\bcuites\b/gi,'crues')
         .replace(/\bcuits\b/gi,'crus')
         .replace(/\bcuite\b/gi,'crue')
@@ -184,6 +190,13 @@ function generer(){
         done: false,
         manuel: false
     }));
+    // Fusionner les doublons de même nom + unité (ex. plusieurs formes d'œufs)
+    const fusion = [];
+    items.forEach(it => {
+        const ex = fusion.find(x => x.name === it.name && x.unit === it.unit && x.cat === it.cat);
+        if(ex){ ex.qty += it.qty; } else { fusion.push(it); }
+    });
+    items.length = 0; fusion.forEach(x => items.push(x));
     // Conserver les produits ajoutés manuellement d'une génération précédente
     if(state && state.items){
         state.items.filter(i => i.manuel).forEach(i => items.push(i));
