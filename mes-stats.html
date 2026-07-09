@@ -66,6 +66,14 @@ body{
     border-radius:6px 6px 0 0; min-height:4px; transition:height .4s ease;
 }
 .chart-bar.weight { background:linear-gradient(180deg,#047857,#10b981); }
+.chart-bar.charge { background:linear-gradient(180deg,#DFA004,#F7B500); }
+/* Sélecteur d'exercice */
+.exo-select { width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:12px; font-size:14px; font-weight:700; font-family:inherit; background:#fff; color:var(--text); margin-bottom:14px; -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; }
+.exo-select:focus { outline:none; border-color:#F7B500; }
+.exo-pr { display:flex; gap:10px; margin-bottom:14px; }
+.exo-pr-box { flex:1; background:#FFF9E8; border:1px solid #F3D98A; border-radius:12px; padding:10px 12px; text-align:center; }
+.exo-pr-box .v { font-size:19px; font-weight:800; color:#B98A00; }
+.exo-pr-box .l { font-size:10.5px; color:var(--text-dim); margin-top:2px; }
 .chart-val { font-size:10px; font-weight:700; color:var(--text); }
 .chart-day { font-size:10px; color:var(--text-dim); }
 .chart-empty { text-align:center; color:var(--text-dim); font-size:14px; padding:26px 10px 30px; line-height:1.5; }
@@ -222,6 +230,13 @@ function logout(){
         <div id="kcalChart"></div>
     </div>
 
+    <!-- PROGRESSION EXERCICES -->
+    <div class="stat-card">
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></svg>Progression par exercice</h2>
+        <div class="card-sub">Ta charge sur la série la plus lourde, séance après séance</div>
+        <div id="exoProgWrap"></div>
+    </div>
+
     <!-- INVITATION PREMIUM (bienveillante) -->
     <div class="premium-invite" id="premiumInvite">
         <div class="pi-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg></div>
@@ -338,6 +353,76 @@ function renderKcal(){
 
 renderWeight();
 renderKcal();
+
+// ===== PROGRESSION PAR EXERCICE =====
+function getSetLog(){
+    try { return JSON.parse(localStorage.getItem('repz_setLog') || '{}'); } catch(e){ return {}; }
+}
+function topSet(sets){
+    // Meilleure charge de la séance (série la plus lourde)
+    let best = null;
+    sets.forEach(s => {
+        const w = (s.w === '' || s.w == null) ? null : parseFloat(s.w);
+        if(w != null && (best == null || w > best.w)) best = { w:w, r:s.r };
+    });
+    return best;
+}
+function renderExoProg(sel){
+    const wrap = document.getElementById('exoProgWrap');
+    const log = getSetLog();
+    // Ne garder que les exos avec au moins une charge chiffrée
+    const noms = Object.keys(log).filter(n =>
+        log[n].some(e => e.sets.some(s => s.w !== '' && s.w != null))
+    ).sort();
+
+    if(!noms.length){
+        wrap.innerHTML = '<div class="chart-empty"><span class="ce-emo">💪</span>Aucune série enregistrée pour l\'instant.<br>Pendant une séance, touche « 📊 Séries » sur un exercice et note tes charges.</div>';
+        return;
+    }
+
+    const nom = (sel && noms.includes(sel)) ? sel : noms[0];
+    const hist = log[nom].filter(e => e.sets.some(s => s.w !== '' && s.w != null)).slice(-7);
+
+    // PR (charge max jamais soulevée sur cet exo)
+    let pr = 0, prReps = 0;
+    log[nom].forEach(e => e.sets.forEach(s => {
+        const w = parseFloat(s.w);
+        if(!isNaN(w) && w > pr){ pr = w; prReps = s.r || 0; }
+    }));
+    // Progression depuis la 1re séance chiffrée
+    const first = topSet(log[nom].find(e => topSet(e.sets)).sets);
+    const last = topSet(hist[hist.length-1].sets);
+    const delta = (first && last) ? (last.w - first.w) : 0;
+    const deltaStr = delta > 0 ? `+${delta} kg` : (delta < 0 ? `${delta} kg` : '—');
+
+    const options = noms.map(n => `<option value="${n}" ${n===nom?'selected':''}>${n}</option>`).join('');
+
+    const vals = hist.map(e => topSet(e.sets).w);
+    const max = Math.max(...vals), min = Math.min(...vals);
+    const span = max - min || 1;
+
+    const bars = hist.map(e => {
+        const t = topSet(e.sets);
+        const h = 25 + ((t.w - min) / span) * 75; // 25→100 % pour rester lisible
+        const d = new Date(e.iso + 'T00:00');
+        const jour = d.toLocaleDateString('fr-FR', {day:'numeric', month:'short'});
+        return `<div class="chart-bar-wrap">
+            <div class="chart-val">${t.w}</div>
+            <div class="chart-bar charge" style="height:${h}%"></div>
+            <div class="chart-day">${jour}</div>
+        </div>`;
+    }).join('');
+
+    wrap.innerHTML = `
+        <select class="exo-select" onchange="renderExoProg(this.value)">${options}</select>
+        <div class="exo-pr">
+            <div class="exo-pr-box"><div class="v">${pr} kg</div><div class="l">Record${prReps?` × ${prReps}`:''}</div></div>
+            <div class="exo-pr-box"><div class="v">${deltaStr}</div><div class="l">Depuis le début</div></div>
+            <div class="exo-pr-box"><div class="v">${hist.length}</div><div class="l">Séances suivies</div></div>
+        </div>
+        <div class="chart">${bars}</div>`;
+}
+renderExoProg();
 </script>
 
 
@@ -351,7 +436,7 @@ renderKcal();
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html" class="bn-item active">
+    <a href="mes-stats.html?v=2" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
