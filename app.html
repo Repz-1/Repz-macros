@@ -983,7 +983,7 @@ function afficherMessageInvite() {
             </div>
             <div id="fridgePanel" class="fridge-panel" style="display:none">
                 <div class="fridge-row">
-                    <input id="fridgeInput" class="fridge-input" placeholder="Ex : poulet, riz, œufs…" oninput="fridgeLive()" onkeydown="if(event.key==='Enter'){event.preventDefault();addFridgeItem();}">
+                    <input id="fridgeInput" class="fridge-input" placeholder="Ex : poulet, riz, œufs…" onkeydown="if(event.key==='Enter'){event.preventDefault();addFridgeItem();}">
                     <button class="fridge-add" onclick="addFridgeItem()">＋</button>
                 </div>
                 <div id="fridgeChips" class="fridge-chips"></div>
@@ -3482,12 +3482,6 @@ function addFridgeItem(){
         runFridge(); // résultats immédiats dès qu'on ajoute un ingrédient
     }catch(e){ fridgeError(e); }
 }
-let fridgeTimer = null;
-function fridgeLive(){
-    // recherche en direct pendant la frappe, sans toucher aux ingrédients validés
-    clearTimeout(fridgeTimer);
-    fridgeTimer = setTimeout(()=>{ try{ runFridge(true); }catch(e){ fridgeError(e); } }, 250);
-}
 function fridgeError(e){
     const box = document.getElementById('eatIdeas');
     if(box) box.innerHTML = '<div class="eat-note">Oups, une erreur : ' + (e && e.message ? e.message : e) + '</div>';
@@ -3507,26 +3501,17 @@ function fridgeHas(ing){
     const lbl = fnorm(ing.l);
     return fridgeItems.some(f=>{ const t=fnorm(f); return t.length>=2 && (hay.indexOf(t)>=0 || (lbl.length>=2 && t.indexOf(lbl)>=0)); });
 }
-function runFridge(live){
+function runFridge(){
   try{
     const box = document.getElementById('eatIdeas');
+    // valider la saisie en cours comme ingrédient
     const inp = document.getElementById('fridgeInput');
-    let items = fridgeItems.slice();
     if(inp && inp.value.trim()){
-        const typed = inp.value.split(',').map(x=>x.trim()).filter(Boolean);
-        if(live){
-            typed.forEach(v=>{ if(!items.some(x=>fnorm(x)===fnorm(v))) items.push(v); });
-        } else {
-            typed.forEach(v=>{ if(!fridgeItems.some(x=>fnorm(x)===fnorm(v))) fridgeItems.push(v); });
-            inp.value=''; renderFridgeChips();
-            items = fridgeItems.slice();
-        }
+        inp.value.split(',').map(x=>x.trim()).filter(Boolean).forEach(v=>{
+            if(!fridgeItems.some(x=>fnorm(x)===fnorm(v))) fridgeItems.push(v);
+        });
+        inp.value=''; renderFridgeChips();
     }
-    const saved = fridgeItems; fridgeItems = items; // fridgeHas lit fridgeItems
-    try{ runFridgeCore(box); } finally { fridgeItems = saved; }
-  }catch(e){ fridgeError(e); }
-}
-function runFridgeCore(box){
     if(fridgeItems.length===0){ box.innerHTML='<div class="eat-note">Ajoute au moins un ingrédient que tu as.</div>'; return; }
     const t = dayTotals();
     const reste = Math.max(0, goal.kcal - t.kcal);
@@ -3564,6 +3549,7 @@ function runFridgeCore(box){
             ${missTxt}
         </div>`;
     }).join('');
+  }catch(e){ fridgeError(e); }
 }
 
 // ===== NAVIGATION RETOUR & MODALS =====
