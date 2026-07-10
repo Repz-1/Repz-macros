@@ -99,14 +99,6 @@ body{
 .score-row .sr-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,#DFA004,#F7B500); }
 .score-row .sr-val { width:38px; text-align:right; font-size:12.5px; font-weight:800; font-variant-numeric:tabular-nums; }
 
-/* ===== VUE D'ENSEMBLE ===== */
-.overview { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
-.ov-box { background:#fff; border:1.5px solid #e7e2d9; border-radius:16px; padding:14px; box-shadow:0 4px 12px rgba(60,50,40,.05); }
-.ov-val { font-size:21px; font-weight:800; letter-spacing:-.01em; }
-.ov-val .ov-emo { font-size:16px; }
-.ov-lbl { font-size:11.5px; color:var(--text-dim); margin-top:3px; font-weight:600; }
-.ov-delta { font-size:12px; font-weight:800; }
-.ov-delta.down { color:#059669; } .ov-delta.up { color:#DC2626; } .ov-delta.flat { color:var(--text-dim); }
 
 /* ===== ACCENTS PAR CARTE ===== */
 .stat-card.acc-green::before { background:#10B981; }
@@ -301,9 +293,6 @@ function logout(){
         <div class="score-note" id="scoreNote"></div>
         <div class="score-rows" id="scoreRows"></div>
     </div>
-
-    <!-- VUE D'ENSEMBLE -->
-    <div class="overview" id="overview" style="display:none"></div>
 
     <!-- POIDS -->
     <div class="stat-card acc-green">
@@ -544,50 +533,6 @@ function renderScore(){
     ).join('');
 }
 
-// ===== VUE D'ENSEMBLE =====
-function renderOverview(){
-    const ov = document.getElementById('overview');
-    const boxes = [];
-
-    // Poids actuel + delta 30 jours
-    if(weightLog.length){
-        const sorted = [...weightLog].sort((a,b)=>a.iso.localeCompare(b.iso));
-        const last = parseFloat(sorted[sorted.length-1].weight);
-        const anc = sorted.filter(w => w.iso >= isoNDaysAgo(30));
-        let deltaHtml = '';
-        if(anc.length >= 2){
-            const d = Math.round((last - parseFloat(anc[0].weight)) * 10) / 10;
-            const cls = d < 0 ? 'down' : (d > 0 ? 'up' : 'flat');
-            const fl = d < 0 ? '↘' : (d > 0 ? '↗' : '→');
-            deltaHtml = `<span class="ov-delta ${cls}">${fl} ${d > 0 ? '+' : ''}${d} kg</span>`;
-        }
-        boxes.push(`<div class="ov-box"><div class="ov-val">${last} kg</div><div class="ov-lbl">${deltaHtml || 'Poids actuel'}${deltaHtml ? ' · 30 j' : ''}</div></div>`);
-    }
-
-    // Séances ce mois
-    const moisIso = new Date().toISOString().slice(0,7);
-    const seancesMois = sessionLog.filter(s => (s.iso||'').startsWith(moisIso)).length;
-    const joursMuscleMois = Object.keys(muscleLog).filter(iso => iso.startsWith(moisIso) && muscleLog[iso].length && !(muscleLog[iso].length===1 && muscleLog[iso][0]==='repos')).length;
-    const nbSeances = Math.max(seancesMois, joursMuscleMois);
-    if(nbSeances) boxes.push(`<div class="ov-box"><div class="ov-val">${nbSeances}</div><div class="ov-lbl">Séances ce mois</div></div>`);
-
-    // Série de jours actifs
-    const streak = calcStreak();
-    if(streak) boxes.push(`<div class="ov-box"><div class="ov-val">${streak}</div><div class="ov-lbl">Jour${streak>1?'s':''} consécutif${streak>1?'s':''} actifs</div></div>`);
-
-    // Objectif kcal atteint (±10 %) sur les journées du mois
-    if(goalStats.kcal > 0){
-        const histMois = history.filter(e => (e.iso||'').startsWith(moisIso));
-        if(histMois.length){
-            const ok = histMois.filter(e => Math.abs(parseInt(e.kcal||0) - goalStats.kcal) <= goalStats.kcal * 0.1).length;
-            boxes.push(`<div class="ov-box"><div class="ov-val">${Math.round(ok / histMois.length * 100)} %</div><div class="ov-lbl">Objectif kcal atteint</div></div>`);
-        }
-    }
-
-    if(boxes.length >= 2){ ov.style.display = 'grid'; ov.innerHTML = boxes.slice(0,4).join(''); }
-    else ov.style.display = 'none';
-}
-
 // ===== RECORDS PERSONNELS =====
 function renderRecords(){
     const w = document.getElementById('recordsWrap');
@@ -692,7 +637,6 @@ function bodyMapSVG(compte, max){
 }
 
 renderScore();
-renderOverview();
 renderRepartition();
 renderRecords();
 renderWeight();
@@ -780,7 +724,7 @@ renderExoProg();
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=8" class="bn-item active">
+    <a href="mes-stats.html?v=9" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
