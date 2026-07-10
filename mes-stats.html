@@ -335,13 +335,6 @@ function logout(){
         <div id="repartWrap"></div>
     </div>
 
-    <!-- RÉGULARITÉ -->
-    <div class="stat-card acc-gold">
-        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/></svg>Régularité</h2>
-        <div class="card-sub">Ta constance, la clé des résultats</div>
-        <div id="regulariteWrap"></div>
-    </div>
-
     <!-- RECORDS PERSONNELS -->
     <div class="stat-card acc-violet">
         <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 01-10 0V4z"/><path d="M7 6H4a2 2 0 002 4h1"/><path d="M17 6h3a2 2 0 01-2 4h-1"/></svg>Records personnels</h2>
@@ -595,28 +588,6 @@ function renderOverview(){
     else ov.style.display = 'none';
 }
 
-// ===== RÉGULARITÉ =====
-function renderRegularite(){
-    const w = document.getElementById('regulariteWrap');
-    const joursTotal = new Set([
-        ...history.map(e => e.iso),
-        ...Object.keys(muscleLog).filter(iso => muscleLog[iso].length),
-        ...sessionLog.map(s => s.iso),
-        ...weightLog.map(x => x.iso),
-    ].filter(Boolean)).size;
-    if(!joursTotal){
-        w.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#DFA004"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/></svg></span><div>Remplis ton journal (nutrition ou entraînement) pour bâtir ta régularité.</div></div>';
-        return;
-    }
-    const streak = calcStreak();
-    const totalSeances = Math.max(sessionLog.length, Object.keys(muscleLog).filter(iso => muscleLog[iso].length && !(muscleLog[iso].length===1 && muscleLog[iso][0]==='repos')).length);
-    w.innerHTML = `<div class="stat-summary">
-        <div class="stat-box"><div class="sb-val">${streak}</div><div class="sb-lbl">Jours consécutifs</div></div>
-        <div class="stat-box"><div class="sb-val">${joursTotal}</div><div class="sb-lbl">Journées enregistrées</div></div>
-        <div class="stat-box"><div class="sb-val">${totalSeances}</div><div class="sb-lbl">Séances au total</div></div>
-    </div>`;
-}
-
 // ===== RECORDS PERSONNELS =====
 function renderRecords(){
     const w = document.getElementById('recordsWrap');
@@ -723,7 +694,6 @@ function bodyMapSVG(compte, max){
 renderScore();
 renderOverview();
 renderRepartition();
-renderRegularite();
 renderRecords();
 renderWeight();
 renderKcal();
@@ -810,7 +780,7 @@ renderExoProg();
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=7" class="bn-item active">
+    <a href="mes-stats.html?v=8" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
