@@ -11,7 +11,7 @@
 <title>BELFIT — Mes stats</title>
 <style>
 :root{
-    --orange:#10B981; --green:#047857; --gold:#d4af37;
+    --orange:#F7B500; --noir:#181818; --gold:#F7B500;
     --text:#1a1a1a; --text-dim:#6b7280; --line:#e5e7eb;
     --card:#ffffff; --bg:#eeece7;
 }
@@ -25,7 +25,7 @@ body{
 .topbar {
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px;
-    background:linear-gradient(160deg,#10B981 0%,#059669 100%);
+    background:linear-gradient(160deg,#F7B500 0%,#DFA004 100%);
 }
 .topbar-home {
     width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
@@ -49,7 +49,7 @@ body{
     background:var(--orange); border-radius:4px 0 0 4px;
 }
 .stat-card h2 { font-size:17px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
-.stat-card h2 .h2ic { width:20px; height:20px; stroke:#10B981; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+.stat-card h2 .h2ic { width:20px; height:20px; stroke:#DFA004; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
 .stat-card .card-sub { font-size:13px; color:var(--text-dim); margin-bottom:16px; }
 
 /* MINI RÉSUMÉ (chiffres clés) */
@@ -62,10 +62,10 @@ body{
 .chart { display:flex; align-items:flex-end; gap:6px; height:130px; padding-top:10px; }
 .chart-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%; justify-content:flex-end; }
 .chart-bar {
-    width:100%; max-width:34px; background:linear-gradient(180deg,#10B981,#34D399);
+    width:100%; max-width:34px; background:linear-gradient(180deg,#DFA004,#F7B500);
     border-radius:6px 6px 0 0; min-height:4px; transition:height .4s ease;
 }
-.chart-bar.weight { background:linear-gradient(180deg,#047857,#10b981); }
+.chart-bar.weight { background:linear-gradient(180deg,#181818,#4a4a4a); }
 .chart-bar.charge { background:linear-gradient(180deg,#DFA004,#F7B500); }
 /* Sélecteur d'exercice */
 .exo-select { width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:12px; font-size:14px; font-weight:700; font-family:inherit; background:#fff; color:var(--text); margin-bottom:14px; -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; }
@@ -81,16 +81,16 @@ body{
 
 /* BLOC PREMIUM BIENVEILLANT */
 .premium-invite {
-    position:relative; background:linear-gradient(145deg,#ecfdf5,#ecfdf5);
+    position:relative; background:linear-gradient(145deg,#FFF9E8,#FFFDF5);
     border:1.5px solid var(--gold); border-radius:20px; padding:24px 20px;
     text-align:center; margin-bottom:16px;
 }
 .premium-invite .pi-icon { margin-bottom:10px; }
-.premium-invite .pi-icon svg { width:40px; height:40px; stroke:#10B981; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.premium-invite .pi-icon svg { width:40px; height:40px; stroke:#DFA004; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .premium-invite h3 { font-size:18px; font-weight:800; margin-bottom:8px; }
 .premium-invite p { font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:18px; }
 .premium-invite .pi-btn {
-    display:inline-block; background:var(--green); color:#fff; text-decoration:none;
+    display:inline-block; background:var(--orange); color:var(--noir); text-decoration:none;
     padding:13px 28px; border-radius:14px; font-size:15px; font-weight:700;
 }
 .premium-invite .pi-btn:active { transform:scale(.98); opacity:.92; }
@@ -119,7 +119,7 @@ body{
 }
 .bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .bn-item span { font-size:10.5px; font-weight:700; }
-.bn-item.active { color:#10B981; }
+.bn-item.active { color:#DFA004; }
 .bn-item:active { transform:scale(.94); }
 
 </style>
@@ -201,8 +201,8 @@ function logout(){
     .ah-logo { height:55px; width:auto; display:block; }
     .ah-actions { display:flex; align-items:center; gap:8px; }
     .ah-btn { width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
-    .ah-btn svg { width:27px; height:27px; stroke:#047857; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-    .ah-btn:active { background:rgba(16,185,129,.14); transform:scale(.94); }
+    .ah-btn svg { width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .ah-btn:active { background:rgba(247,181,0,.16); transform:scale(.94); }
     </style>
     <header class="app-header">
         <img src="belfit-logo-header.png" class="ah-logo" alt="BELFIT">
@@ -436,7 +436,7 @@ renderExoProg();
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=2" class="bn-item active">
+    <a href="mes-stats.html?v=3" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
@@ -459,10 +459,10 @@ function murCompte(){
     o.id = 'inviteMurAction';
     o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
     o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
-        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#10B981;">FIT</span></div>'
+        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#F7B500;">FIT</span></div>'
         + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
         + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
-        + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
+        + '<a href="index.html" style="display:block;background:#F7B500;color:#181818;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
         + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">Continuer à explorer</button>'
         + '</div>';
     document.body.appendChild(o);
@@ -473,7 +473,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     const b = document.createElement('a');
     b.href = 'index.html';
     b.id = 'inviteBandeau';
-    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFF9E8;border-bottom:1px solid #F3D98A;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
     b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
