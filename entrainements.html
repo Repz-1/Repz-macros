@@ -788,10 +788,14 @@ function closeTimer(){
 (function(){
     const fab = document.getElementById('chronoFab');
     if(!fab) return;
-    // Restaurer la position sauvegardée
+    // Restaurer la position sauvegardée (aimantée au bord le plus proche)
     try{
         const p = JSON.parse(localStorage.getItem('belfit_chronoPos') || 'null');
-        if(p){ appliquerPos(p.x, p.y); }
+        if(p){
+            const w = fab.offsetWidth || 52;
+            const snapX = (p.x + w/2 < window.innerWidth/2) ? 16 : window.innerWidth - w - 16;
+            appliquerPos(snapX, p.y);
+        }
     }catch(e){}
     function appliquerPos(x, y){
         const maxX = window.innerWidth - fab.offsetWidth - 4;
@@ -824,7 +828,13 @@ function closeTimer(){
     fab.addEventListener('touchend', function(e){
         if(dragging){
             const r = fab.getBoundingClientRect();
-            const p = appliquerPos(r.left, r.top);
+            // Aimanté au bord le plus proche (gauche ou droit), jamais au milieu
+            const snapX = (r.left + r.width/2 < window.innerWidth/2)
+                ? 16
+                : window.innerWidth - r.width - 16;
+            const p = appliquerPos(snapX, r.top);
+            fab.style.transition = 'left .22s ease, top .22s ease';
+            setTimeout(()=>{ fab.style.transition = ''; }, 250);
             try{ localStorage.setItem('belfit_chronoPos', JSON.stringify(p)); }catch(err){}
         } else {
             toggleTimer(); // simple tap = ouvrir/fermer le chrono
