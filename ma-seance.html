@@ -117,7 +117,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
 .done-item { display:flex; align-items:center; gap:12px; background:var(--card);
     border:none; border-radius:20px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:all .15s; box-shadow:0 2px 8px rgba(24,24,24,.05); }
-.done-item.done { background:#FFFDF4; box-shadow:inset 0 0 0 1.5px #F3D98A; opacity:.62; }
+.done-item.done { background:#FFFDF4; box-shadow:inset 0 0 0 1.5px #F3D98A; opacity:.62; padding:7px 12px; }
+.done-item.done .ex-chips, .done-item.done .done-alt, .done-item.done .sets-btn, .done-item.done .done-meta { display:none; }
+.done-item.done .done-photo { width:44px; height:44px; border-radius:12px; }
+.done-item.done .sets-panel { display:none !important; }
 @keyframes checkPop { 0%{transform:scale(.5);} 60%{transform:scale(1.2);} 100%{transform:scale(1);} }
 .done-item.done .done-check { animation:checkPop .28s ease; }
 .done-item.done .done-name { text-decoration:line-through; color:var(--text-dim); }
@@ -210,6 +213,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 }
 @keyframes congratsPop { from { opacity:0; transform:scale(.8); } to { opacity:1; transform:scale(1); } }
 .congrats-emoji { font-size:64px; margin-bottom:12px; animation:congratsBounce .6s ease .2s; }
+.confetti { position:fixed; top:-12px; z-index:200; pointer-events:none; border-radius:2px; animation:confFall linear forwards; }
+@keyframes confFall { to { transform:translateY(105vh) rotate(720deg); opacity:.9; } }
 @keyframes congratsBounce { 0%,100%{transform:translateY(0);} 30%{transform:translateY(-12px);} 60%{transform:translateY(-6px);} }
 .congrats-title { font-size:24px; font-weight:800; color:#1a1a1a; margin-bottom:8px; }
 .cg-stats { display:flex; gap:8px; margin:14px 0 4px; }
@@ -1018,7 +1023,23 @@ function calculerBilan(exos){
   return { tonnage: Math.round(tonnage), records };
 }
 
+function lancerConfettis(){
+  const cols = ['#F7B500','#181818','#ffffff','#DFA004','#FFE28A'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    const taille = 6 + Math.random()*7;
+    c.style.cssText = `left:${Math.random()*100}vw; width:${taille}px; height:${taille*0.45}px;`
+      + `background:${cols[Math.floor(Math.random()*cols.length)]};`
+      + `animation-duration:${2 + Math.random()*2}s; animation-delay:${Math.random()*0.6}s;`
+      + `transform:rotate(${Math.random()*360}deg);`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
 function montrerFelicitations(){
+  lancerConfettis();
   arreterDureeSeance();
   // Enregistrer la séance dans le journal (pour le dashboard et les stats)
   if(!sessionEnregistree){
