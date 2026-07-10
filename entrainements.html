@@ -914,7 +914,7 @@ initWheels(); updateTimerDisplay();
 })();
 </script>
 <script>
-/* ===== JOURNAL D'ENTRAÎNEMENT (9 jours glissants) ===== */
+/* ===== JOURNAL D'ENTRAÎNEMENT (8 jours glissants, ancien → récent) ===== */
 const MUSCLE_GROUPS = [
     {k:'pecs', n:'Pecs'}, {k:'dos', n:'Dos'}, {k:'epaules', n:'Épaules'},
     {k:'biceps', n:'Biceps'}, {k:'triceps', n:'Triceps'}, {k:'jambes', n:'Jambes'},
@@ -975,14 +975,14 @@ function renderWlog(){
     try { slog = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]'); } catch(e){ slog = []; }
     const durByIso = {};
     slog.forEach(s => { if(s.iso && s.duree){ durByIso[s.iso] = (durByIso[s.iso]||0) + s.duree; } });
-    // Purge des jours de plus de 9 jours (le 10e efface le 1er)
-    const limite = wlIso(wlDateDaysAgo(8));
+    // Purge des jours de plus de 8 jours (le 9e efface le 1er)
+    const limite = wlIso(wlDateDaysAgo(7));
     let changed = false;
     Object.keys(log).forEach(k => { if(k < limite){ delete log[k]; changed = true; } });
     if(changed) saveMuscleLog(log);
-    // Aujourd'hui en haut, puis hier ; les 7 jours précédents se déroulent sous le bouton
+    // Du plus ancien (7 j) en haut au plus récent (aujourd'hui) en bas — 8 jours
     let html = '';
-    for(let i = 0; i <= 8; i++){
+    for(let i = 7; i >= 0; i--){
         const d = wlDateDaysAgo(i);
         const iso = wlIso(d);
         const vals = log[iso] || [];
@@ -1077,7 +1077,7 @@ function syncMuscleLogFromCloud(u){
         firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
             const cloud = (doc.exists && doc.data().muscleLog) ? doc.data().muscleLog : {};
             const merged = Object.assign({}, loadMuscleLog(), cloud); // cloud prioritaire en cas de conflit
-            const limite = wlIso(wlDateDaysAgo(8));
+            const limite = wlIso(wlDateDaysAgo(7));
             Object.keys(merged).forEach(function(k){ if(k < limite) delete merged[k]; });
             saveMuscleLog(merged);
             pushMuscleLogToCloud(merged); // consolide et nettoie les jours effacés
