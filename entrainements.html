@@ -335,9 +335,9 @@ body {
 .timer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:64;}
 .timer-overlay.show{display:block;}
 .timer-container{position:fixed;top:28%;transform:translateY(-50%);left:16px;right:16px;max-width:448px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 12px 34px rgba(0,0,0,.18);z-index:65;display:none;}
-.timer-container.show{display:block;animation:slideUpT .3s ease-out;}
+.timer-container.show{display:block;animation:timerPop .3s ease-out;}
 body.timer-open .water-fab{display:none;}
-@keyframes slideUpT{from{transform:translateY(calc(-50% + 24px));opacity:0;}to{transform:translateY(-50%);opacity:1;}}
+@keyframes timerPop{from{transform:translateY(calc(-50% + 24px));opacity:0;}to{transform:translateY(-50%);opacity:1;}}
 .timer-display{text-align:center;margin-bottom:20px;}
 .timer-big{font-size:56px;font-weight:800;color:var(--orange);font-family:'Monaco','Courier';letter-spacing:2px;}
 .timer-label{font-size:13px;color:#9ca3af;margin-top:8px;}
