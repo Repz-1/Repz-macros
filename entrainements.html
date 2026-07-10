@@ -68,6 +68,11 @@ body {
 .wlog-day.is-repos .wlog-date { color:#fff; }
 .wlog-day.is-repos .wlog-tag.repos { background:rgba(255,255,255,.22); color:#fff; }
 .wlog-empty { font-size:12.5px; color:#b7b1a8; }
+/* Journal replié : les jours anciens sont masqués tant qu'on n'a pas déroulé */
+.wlog-list:not(.expanded) .wlog-day.wlog-old { display:none; }
+.wlog-list:not(.expanded) .wlog-day:not(.wlog-old) { border-top:1px solid var(--line); }
+.wlog-expand { width:100%; background:none; border:1.5px dashed #E5DFD2; border-radius:12px; padding:10px; font-size:13px; font-weight:700; color:#8F6200; cursor:pointer; font-family:inherit; margin-bottom:8px; }
+.wlog-expand:active { transform:scale(.98); }
 
 /* Modale journal */
 .ml-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
@@ -943,6 +948,7 @@ function renderWlog(){
     Object.keys(log).forEach(k => { if(k < limite){ delete log[k]; changed = true; } });
     if(changed) saveMuscleLog(log);
     // 9 jours, du plus ancien au plus récent (aujourd'hui en bas)
+    // Replié par défaut : seuls hier + aujourd'hui sont visibles
     let html = '';
     for(let i = 8; i >= 0; i--){
         const d = wlDateDaysAgo(i);
@@ -959,12 +965,24 @@ function renderWlog(){
             const dtxt = fmtDuree(durByIso[iso]);
             if(dtxt) meta = `<div class="wlog-meta"><span>⏱ ${dtxt}</span></div>`;
         }
-        html += `<div class="wlog-day${i === 0 ? ' is-today' : ''}${estRepos ? ' is-repos' : ''}" onclick="openMuscleLog('${iso}')">
+        html += `<div class="wlog-day${i === 0 ? ' is-today' : ''}${estRepos ? ' is-repos' : ''}${i > 1 ? ' wlog-old' : ''}" onclick="openMuscleLog('${iso}')">
             <div class="wlog-date">${wlLabel(d)}</div>
             <div class="wlog-main"><div class="wlog-tags">${tags}</div>${meta}</div>
         </div>`;
     }
+    // Bouton pour dérouler / replier les 7 jours précédents
+    html = `<button class="wlog-expand" id="wlogExpand" onclick="toggleWlogDays(event)">${window.wlogOpen ? 'Réduire' : '📅 Voir les jours précédents'}</button>` + html;
     list.innerHTML = html;
+    list.classList.toggle('expanded', !!window.wlogOpen);
+}
+
+function toggleWlogDays(e){
+    e.stopPropagation();
+    window.wlogOpen = !window.wlogOpen;
+    const list = document.getElementById('wlogList');
+    const btn = document.getElementById('wlogExpand');
+    list.classList.toggle('expanded', window.wlogOpen);
+    if(btn) btn.textContent = window.wlogOpen ? 'Réduire' : '📅 Voir les jours précédents';
 }
 
 
