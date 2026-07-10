@@ -71,9 +71,9 @@ body {
 /* Journal replié : les jours anciens se déroulent sous le bouton */
 .wlog-old-wrap { max-height:0; overflow:hidden; transition:max-height .35s ease; }
 .wlog-list.expanded .wlog-old-wrap { max-height:800px; }
-.wlog-expand { width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px; font-size:13.5px; font-weight:800; color:var(--text); cursor:pointer; font-family:inherit; margin-top:10px; box-shadow:0 1px 6px rgba(15,23,42,.05); }
-.wlog-expand:active { transform:scale(.98); }
-.wlog-expand svg { width:16px; height:16px; stroke:#DFA004; stroke-width:3; fill:none; stroke-linecap:round; stroke-linejoin:round; transition:transform .3s ease; }
+.wlog-expand { width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--gold); border:none; border-radius:14px; padding:12px 18px; font-size:14px; font-weight:700; color:var(--noir); cursor:pointer; font-family:inherit; margin-top:12px; box-shadow:0 6px 16px rgba(247,181,0,.3); }
+.wlog-expand:active { transform:scale(.96); }
+.wlog-expand svg { width:16px; height:16px; stroke:var(--noir); stroke-width:2.5; fill:none; stroke-linecap:round; stroke-linejoin:round; transition:transform .3s ease; }
 .wlog-list.expanded .wlog-expand svg { transform:rotate(180deg); }
 .wlog-old-wrap .wlog-day:first-child { border-top:none; }
 
