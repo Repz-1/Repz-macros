@@ -228,7 +228,12 @@ body {
             <input type="password" class="input" id="registerPasswordConfirm" placeholder="••••••••" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Créer un compte</button>
+        <div class="consent-group">
+            <input type="checkbox" id="registerConsent" onchange="document.getElementById('btnRegister').disabled = !this.checked">
+            <label for="registerConsent">J'accepte la <a href="confidentialite.html" target="_blank">politique de confidentialité</a> de BELFIT et consens au traitement de mes données (dont poids et objectifs nutritionnels) pour mon suivi personnalisé.</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btnRegister" disabled>Créer un compte</button>
 
         <div class="toggle-form">
             Déjà un compte ? <a onclick="toggleForm('login')">Se connecter</a>
@@ -374,12 +379,26 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         errorDiv.classList.add('show');
         return;
     }
+
+    // RGPD : double vérification du consentement (le bouton est déjà bloqué sans la case)
+    if(!document.getElementById('registerConsent').checked) {
+        loadingDiv.classList.remove('show');
+        errorDiv.textContent = 'Merci d\'accepter la politique de confidentialité pour créer ton compte';
+        errorDiv.classList.add('show');
+        return;
+    }
     
     try {
         const cred = await auth.createUserWithEmailAndPassword(email, password);
         // Enregistrer le prénom dans le profil Firebase + en local
         if(cred && cred.user){
             await cred.user.updateProfile({ displayName: firstName });
+            // RGPD : preuve du consentement (horodatage + version de la politique)
+            try {
+                await firebase.firestore().collection('users').doc(cred.user.uid).set({
+                    consentRGPD: { accepte: true, date: new Date().toISOString(), version: '2026-07' }
+                }, { merge: true });
+            } catch(e){ /* non bloquant */ }
         }
         localStorage.setItem('repz_firstName', firstName);
         window.location.href = 'app.html';
