@@ -133,7 +133,8 @@ body{
 .rep-track { flex:1; height:9px; background:#F1F2F5; border-radius:6px; overflow:hidden; }
 .rep-fill { height:100%; border-radius:6px; transition:width .5s ease; }
 .rep-val { width:22px; text-align:right; font-size:12px; font-weight:800; color:#6b7280; font-variant-numeric:tabular-nums; }
-.repart-note { font-size:12.5px; color:#8F6200; background:#FFF9E8; border:1px solid #F3D98A; border-radius:12px; padding:10px 13px; margin-top:6px; font-weight:600; }
+.repart-note { font-size:12.5px; color:#8F6200; background:#FFF9E8; border:1px solid #F3D98A; border-radius:12px; padding:10px 13px; margin-top:6px; font-weight:600; display:flex; align-items:flex-start; gap:8px; }
+.repart-note .rn-ic { width:16px; height:16px; flex-shrink:0; margin-top:1px; fill:none; stroke:#DFA004; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 /* Heatmap corporelle */
 .bodymap { width:118px; flex-shrink:0; }
 .bodymap svg { width:100%; height:auto; display:block; }
@@ -597,10 +598,10 @@ function renderRepartition(){
     let note = '';
     if(manques.length){
         const noms = manques.map(k => groupes.find(g=>g.k===k).n.toLowerCase());
-        note = `<div class="repart-note">💡 Tu n'as pas travaillé : ${noms.join(', ')}. Pense à équilibrer.</div>`;
+        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0012 2z"/></svg>Tu n'as pas travaillé : ${noms.join(', ')}. Pense à équilibrer.</div>`;
     } else {
         const min = grands.reduce((a,b)=> (compte[a]||0) <= (compte[b]||0) ? a : b);
-        note = `<div class="repart-note">💪 Bel équilibre ! Ton groupe le moins sollicité : ${groupes.find(g=>g.k===min).n.toLowerCase()}.</div>`;
+        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Bel équilibre ! Ton groupe le moins sollicité : ${groupes.find(g=>g.k===min).n.toLowerCase()}.</div>`;
     }
 
     wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG(compte, max)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>peu <i style="background:#F7B500"></i> <i style="background:#EF4444"></i>bcp</div></div><div class="repart-body">${bars}</div></div>${note}`;
