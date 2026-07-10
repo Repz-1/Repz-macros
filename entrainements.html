@@ -137,6 +137,32 @@ body {
 }
 .choice:active { transform:scale(.985); }
 
+/* ===== Cartes photo (style Nike) ===== */
+.choice.ph {
+    border:none; overflow:hidden; min-height:200px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    background-size:cover; background-position:center;
+    box-shadow:0 8px 22px rgba(24,24,24,.16); color:#fff;
+}
+.choice.ph::after {
+    content:''; position:absolute; inset:0; border-radius:inherit;
+    background:linear-gradient(180deg, rgba(10,10,10,.08) 28%, rgba(10,10,10,.62) 70%, rgba(10,10,10,.85) 100%);
+    pointer-events:none;
+}
+.choice.ph > * { position:relative; z-index:1; }
+.choice.ph .ch-icon { display:none; }
+.choice.ph h3 { color:#fff; font-size:21px; }
+.choice.ph > p { color:rgba(255,255,255,.84); font-weight:600; max-width:34ch; }
+.choice.ph .cta {
+    background:rgba(255,255,255,.14); color:#fff;
+    border:1.5px solid rgba(255,255,255,.55); backdrop-filter:blur(4px); box-shadow:none;
+}
+.choice.ph.featured .cta { background:var(--gold); color:var(--noir); border:none; box-shadow:0 8px 20px rgba(247,181,0,.4); }
+.choice.ph .lock-badge { background:rgba(10,10,10,.55); color:#fff; border:1px solid rgba(255,255,255,.3); backdrop-filter:blur(4px); }
+.choice.ph .badge { top:18px; left:22px; right:auto; }
+.choice.ph .wlog-list { background:#fff; border-radius:16px; color:var(--text); }
+.choice.ph .wlog-list.expanded { padding:4px 16px; }
+
 /* Icônes : fond jaune très clair, trait noir (façon Apple Fitness) */
 .ch-icon {
     width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center;
@@ -451,7 +477,7 @@ function logout() {
 <div class="choices">
 
     <!-- Carte VEDETTE : programme intelligent (Premium) -->
-    <a href="test.html" class="choice featured locked" id="choiceTest" onclick="return checkPremium(event)">
+    <a href="test.html" class="choice ph featured locked" id="choiceTest" onclick="return checkPremium(event)" style="background-image:url('https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=900&q=70')">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z"/></svg></span>
         <span class="badge">✨ Recommandé</span>
@@ -461,7 +487,7 @@ function logout() {
     </a>
 
     <!-- Séance libre (gratuit) -->
-    <a href="ma-seance.html?v=3" class="choice">
+    <a href="ma-seance.html?v=3" class="choice ph" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=70')">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
         <h3>Séance libre</h3>
         <p>Compose toi-même ton entraînement, exercice par exercice.</p>
@@ -469,7 +495,7 @@ function logout() {
     </a>
 
     <!-- Mes programmes (Premium) -->
-    <a href="programmes.html?v=4" class="choice locked" id="choiceLib" onclick="return checkPremium(event)">
+    <a href="programmes.html?v=4" class="choice ph locked" id="choiceLib" onclick="return checkPremium(event)" style="background-image:url('https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=900&q=70')">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg></span>
         <h3>Mes programmes</h3>
@@ -491,7 +517,7 @@ function logout() {
 </a>
 
 <!-- JOURNAL D'ENTRAÎNEMENT (carte au même style que les bulles du dessus) -->
-<div class="choice" style="margin-top:24px">
+<div class="choice ph" style="margin-top:24px; background-image:url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=900&q=70')">
     <div class="ch-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/><path d="M9 16l2 2 4-4"/></svg></div>
     <h3>Journal d'entraînement</h3>
     <p>Note les muscles travaillés sur tes 9 derniers jours.</p>
