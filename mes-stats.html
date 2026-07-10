@@ -587,9 +587,11 @@ function renderRepartition(){
         return;
     }
     const max = Math.max(...groupes.map(g => compte[g.k] || 0));
+    // Largeur : proportionnelle au max, mais un minimum visible dès 1 séance
     const bars = groupes.filter(g => compte[g.k]).sort((a,b)=>(compte[b.k]||0)-(compte[a.k]||0)).map(g => {
         const n = compte[g.k] || 0;
-        return `<div class="rep-row"><div class="rep-lbl">${g.n}</div><div class="rep-track"><div class="rep-fill" style="width:${Math.round(n/max*100)}%;background:${g.c}"></div></div><div class="rep-val">${n}</div></div>`;
+        const w = Math.max(18, Math.round(n/max*100));
+        return `<div class="rep-row"><div class="rep-lbl">${g.n}</div><div class="rep-track"><div class="rep-fill" style="width:${w}%;background:${g.c}"></div></div><div class="rep-val">${n}</div></div>`;
     }).join('');
 
     // Détection de déséquilibre : muscle le moins travaillé parmi les grands groupes
@@ -604,19 +606,18 @@ function renderRepartition(){
         note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Bel équilibre ! Ton groupe le moins sollicité : ${groupes.find(g=>g.k===min).n.toLowerCase()}.</div>`;
     }
 
-    wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG(compte, max)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>peu <i style="background:#F7B500"></i> <i style="background:#EF4444"></i>bcp</div></div><div class="repart-body">${bars}</div></div>${note}`;
+    wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG(compte, max)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>0 <i style="background:#FDE9A8"></i> <i style="background:#F7B500"></i> <i style="background:#EF4444"></i>5+</div></div><div class="repart-body">${bars}</div></div>${note}`;
 }
 
 function bodyMapSVG(compte, max){
     // Couleur d'un muscle selon son intensité (0 = gris, 1 = rouge)
     function col(k){
         const n = compte[k] || 0;
-        if(!n || !max) return '#E9EBEF';
-        const t = n / max;
-        if(t < 0.25) return '#FDE9A8';
-        if(t < 0.5) return '#F7CE4B';
-        if(t < 0.75) return '#F7B500';
-        return '#EF4444';
+        if(!n) return '#E9EBEF';       // pas travaillé
+        if(n === 1) return '#FDE9A8';  // 1 fois : jaune très clair
+        if(n === 2) return '#F7CE4B';  // 2 fois : jaune
+        if(n <= 4) return '#F7B500';   // 3-4 fois : or
+        return '#EF4444';              // 5+ : rouge (bien sollicité)
     }
     // Silhouette simplifiée vue de face — chaque zone = un groupe
     return `<svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
