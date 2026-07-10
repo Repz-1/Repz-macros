@@ -77,7 +77,7 @@ body{
 .chart-val { font-size:10px; font-weight:700; color:var(--text); }
 .chart-day { font-size:10px; color:var(--text-dim); }
 .chart-empty { text-align:center; color:var(--text-dim); font-size:14px; padding:26px 10px 30px; line-height:1.5; }
-.chart-empty .ce-emo { display:block; font-size:44px; margin-bottom:10px; }
+
 
 /* ===== NOTE DE PROGRESSION GLOBALE (signature BelFit) ===== */
 .score-card {
@@ -125,7 +125,10 @@ body{
 
 /* ===== ÉTATS VIDES COMPACTS ===== */
 .chart-empty { text-align:left !important; padding:4px 0 2px !important; display:flex; align-items:flex-start; gap:12px; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
-.chart-empty .ce-emo { display:block; font-size:26px !important; margin:0 !important; line-height:1.2; }
+.chart-empty .ce-ic { flex-shrink:0; width:34px; height:34px; border-radius:11px; background:#F4F5F7; display:flex; align-items:center; justify-content:center; }
+.chart-empty .ce-ic svg { width:19px; height:19px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.pr-rank { width:26px; height:26px; flex-shrink:0; border-radius:50%; background:#F5F3FF; color:#8B5CF6; font-size:12.5px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.pr-rank.r1 { background:#8B5CF6; color:#fff; }
 .ce-btn { display:inline-block; margin-top:8px; background:#F7B500; color:#181818; text-decoration:none; font-size:12.5px; font-weight:800; padding:8px 14px; border-radius:11px; }
 
 /* ===== RECORDS ===== */
@@ -356,7 +359,7 @@ function renderWeight(){
     const summary = document.getElementById('weightSummary');
     const sub = document.getElementById('weightSub');
     if(!weightLog.length){
-        chart.innerHTML = '<div class="chart-empty"><span class="ce-emo">📈</span><div>Aucune pesée enregistrée.<br><a class="ce-btn" href="app.html">＋ Ajouter mon poids</a></div></div>';
+        chart.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#10B981"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span><div>Aucune pesée enregistrée.<br><a class="ce-btn" href="app.html">＋ Ajouter mon poids</a></div></div>';
         summary.innerHTML = '';
         return;
     }
@@ -401,7 +404,7 @@ function renderKcal(){
     const summary = document.getElementById('kcalSummary');
     const sub = document.getElementById('kcalSub');
     if(!history.length){
-        chart.innerHTML = '<div class="chart-empty"><span class="ce-emo">🔥</span><div>Aucune journée enregistrée.<br><a class="ce-btn" href="app.html">＋ Enregistrer ma journée</a></div></div>';
+        chart.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#F97316"><path d="M12 3c1 3-2 4-2 7a4 4 0 008 0c0-1-.5-2-1-3 3 2 4 5 4 7a7 7 0 11-14 0c0-4 3-6 5-11z"/></svg></span><div>Aucune journée enregistrée.<br><a class="ce-btn" href="app.html">＋ Enregistrer ma journée</a></div></div>';
         summary.innerHTML = '';
         return;
     }
@@ -508,15 +511,15 @@ function renderScore(){
     const dot = document.getElementById('scoreDot');
     dot.style.background = global >= 70 ? '#10B981' : (global >= 40 ? '#F97316' : '#DC2626');
     document.getElementById('scoreNote').textContent =
-        global >= 85 ? 'Semaine exemplaire, continue comme ça 🔥' :
-        global >= 70 ? 'Très bonne semaine, tu es sur la bonne voie 💪' :
+        global >= 85 ? 'Semaine exemplaire, continue comme ça' :
+        global >= 70 ? 'Très bonne semaine, tu es sur la bonne voie' :
         global >= 40 ? 'Bonne base — un peu plus de constance et ça décolle' :
         'Chaque jour compte : reprends une petite habitude aujourd\'hui';
     const rows = [
-        ['🍽 Nutrition', s.nutrition],
-        ['🏋️ Entraînement', s.entrainement],
-        ['⚖️ Poids', s.poids],
-        ['📅 Régularité', s.regularite],
+        ['Nutrition', s.nutrition],
+        ['Entraînement', s.entrainement],
+        ['Poids', s.poids],
+        ['Régularité', s.regularite],
     ];
     document.getElementById('scoreRows').innerHTML = rows.map(r =>
         `<div class="score-row"><div class="sr-lbl">${r[0]}</div><div class="sr-bar"><div class="sr-fill" style="width:${r[1]}%"></div></div><div class="sr-val">${r[1]}%</div></div>`
@@ -548,11 +551,11 @@ function renderOverview(){
     const seancesMois = sessionLog.filter(s => (s.iso||'').startsWith(moisIso)).length;
     const joursMuscleMois = Object.keys(muscleLog).filter(iso => iso.startsWith(moisIso) && muscleLog[iso].length && !(muscleLog[iso].length===1 && muscleLog[iso][0]==='repos')).length;
     const nbSeances = Math.max(seancesMois, joursMuscleMois);
-    if(nbSeances) boxes.push(`<div class="ov-box"><div class="ov-val">${nbSeances} <span class="ov-emo">🏋️</span></div><div class="ov-lbl">Séances ce mois</div></div>`);
+    if(nbSeances) boxes.push(`<div class="ov-box"><div class="ov-val">${nbSeances}</div><div class="ov-lbl">Séances ce mois</div></div>`);
 
     // Série de jours actifs
     const streak = calcStreak();
-    if(streak) boxes.push(`<div class="ov-box"><div class="ov-val">${streak} <span class="ov-emo">🔥</span></div><div class="ov-lbl">Jour${streak>1?'s':''} consécutif${streak>1?'s':''}</div></div>`);
+    if(streak) boxes.push(`<div class="ov-box"><div class="ov-val">${streak}</div><div class="ov-lbl">Jour${streak>1?'s':''} consécutif${streak>1?'s':''} actifs</div></div>`);
 
     // Objectif kcal atteint (±10 %) sur les journées du mois
     if(goalStats.kcal > 0){
@@ -577,13 +580,13 @@ function renderRegularite(){
         ...weightLog.map(x => x.iso),
     ].filter(Boolean)).size;
     if(!joursTotal){
-        w.innerHTML = '<div class="chart-empty"><span class="ce-emo">📅</span><div>Remplis ton journal (nutrition ou entraînement) pour bâtir ta régularité.</div></div>';
+        w.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#DFA004"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/></svg></span><div>Remplis ton journal (nutrition ou entraînement) pour bâtir ta régularité.</div></div>';
         return;
     }
     const streak = calcStreak();
     const totalSeances = Math.max(sessionLog.length, Object.keys(muscleLog).filter(iso => muscleLog[iso].length && !(muscleLog[iso].length===1 && muscleLog[iso][0]==='repos')).length);
     w.innerHTML = `<div class="stat-summary">
-        <div class="stat-box"><div class="sb-val">${streak} 🔥</div><div class="sb-lbl">Jours consécutifs</div></div>
+        <div class="stat-box"><div class="sb-val">${streak}</div><div class="sb-lbl">Jours consécutifs</div></div>
         <div class="stat-box"><div class="sb-val">${joursTotal}</div><div class="sb-lbl">Journées enregistrées</div></div>
         <div class="stat-box"><div class="sb-val">${totalSeances}</div><div class="sb-lbl">Séances au total</div></div>
     </div>`;
@@ -602,19 +605,18 @@ function renderRecords(){
         if(best > 0) prs.push({ nom, best, reps, dateBest });
     });
     if(!prs.length){
-        w.innerHTML = '<div class="chart-empty"><span class="ce-emo">🏆</span><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=9">🏋️ Lancer une séance</a></div></div>';
+        w.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#8B5CF6"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 01-10 0V4z"/><path d="M7 6H4a2 2 0 002 4h1"/><path d="M17 6h3a2 2 0 01-2 4h-1"/></svg></span><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=9">Lancer une séance</a></div></div>';
         return;
     }
     prs.sort((a,b) => b.best - a.best);
-    const medals = ['🥇','🥈','🥉','🏅','🏅'];
     let html = prs.slice(0,5).map((p,i) =>
-        `<div class="pr-row"><span class="pr-medal">${medals[i]}</span><span class="pr-name">${p.nom}</span><span class="pr-val">${p.best} kg${p.reps ? ' × ' + p.reps : ''}</span></div>`
+        `<div class="pr-row"><span class="pr-rank${i===0?' r1':''}">${i+1}</span><span class="pr-name">${p.nom}</span><span class="pr-val">${p.best} kg${p.reps ? ' × ' + p.reps : ''}</span></div>`
     ).join('');
     // Record le plus récent
     const recent = [...prs].sort((a,b) => (b.dateBest||'').localeCompare(a.dateBest||''))[0];
     if(recent && recent.dateBest){
         const d = new Date(recent.dateBest + 'T00:00');
-        html += `<div class="pr-recent">⚡ Dernier record : <b>${recent.nom}</b> — ${recent.best} kg, le ${d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}</div>`;
+        html += `<div class="pr-recent">Dernier record : <b>${recent.nom}</b> — ${recent.best} kg, le ${d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}</div>`;
     }
     w.innerHTML = html;
 }
@@ -648,7 +650,7 @@ function renderExoProg(sel){
     ).sort();
 
     if(!noms.length){
-        wrap.innerHTML = '<div class="chart-empty"><span class="ce-emo">💪</span><div>Aucune série enregistrée. Pendant une séance, touche « 📊 Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=9">🏋️ Lancer une séance</a></div></div>';
+        wrap.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#3B82F6"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg></span><div>Aucune série enregistrée. Pendant une séance, touche « Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=9">Lancer une séance</a></div></div>';
         return;
     }
 
@@ -708,7 +710,7 @@ renderExoProg();
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=4" class="bn-item active">
+    <a href="mes-stats.html?v=5" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
