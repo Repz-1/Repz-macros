@@ -126,6 +126,9 @@ body{
 /* ===== RÉPARTITION MUSCULAIRE ===== */
 .stat-card.acc-red::before { background:#EF4444; }
 .stat-card.acc-red h2 .h2ic { stroke:#EF4444; }
+.repart-tabs { display:flex; gap:6px; margin:2px 0 14px; }
+.rt-btn { flex:1; padding:8px 6px; border:1.5px solid #E6E8EC; background:#fff; border-radius:11px; font-size:12px; font-weight:700; color:#6b7280; font-family:inherit; cursor:pointer; }
+.rt-btn.active { background:#FFF4CC; border-color:#F7B500; color:#8F6200; }
 .repart-layout { display:flex; gap:16px; align-items:center; }
 .repart-body { flex:1; min-width:0; }
 .rep-row { display:flex; align-items:center; gap:9px; margin-bottom:9px; }
@@ -323,7 +326,11 @@ function logout(){
     <!-- RÉPARTITION MUSCULAIRE -->
     <div class="stat-card acc-red">
         <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z"/></svg>Répartition musculaire</h2>
-        <div class="card-sub">Les muscles travaillés cette semaine</div>
+        <div class="repart-tabs">
+            <button class="rt-btn active" data-p="semaine" onclick="setRepartPeriode('semaine',this)">Cette semaine</button>
+            <button class="rt-btn" data-p="7" onclick="setRepartPeriode('7',this)">7 jours</button>
+            <button class="rt-btn" data-p="14" onclick="setRepartPeriode('14',this)">14 jours</button>
+        </div>
         <div id="repartWrap"></div>
     </div>
 
@@ -565,13 +572,27 @@ function renderRecords(){
     w.innerHTML = html;
 }
 
+let repartPeriode = 'semaine';
+function setRepartPeriode(p, btn){
+    repartPeriode = p;
+    document.querySelectorAll('.rt-btn').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    renderRepartition();
+}
 function renderRepartition(){
     const wrap = document.getElementById('repartWrap');
-    // Début de la semaine en cours (lundi) — le bonhomme repart gris chaque lundi
-    const auj = new Date();
-    const jourSem = (auj.getDay() + 6) % 7; // 0 = lundi
-    const lundi = new Date(auj); lundi.setDate(auj.getDate() - jourSem);
-    const depuis = lundi.toISOString().slice(0,10);
+    let depuis, labelPeriode;
+    if(repartPeriode === 'semaine'){
+        const auj = new Date();
+        const jourSem = (auj.getDay() + 6) % 7; // 0 = lundi
+        const lundi = new Date(auj); lundi.setDate(auj.getDate() - jourSem);
+        depuis = lundi.toISOString().slice(0,10);
+        labelPeriode = 'cette semaine';
+    } else {
+        const n = parseInt(repartPeriode);
+        depuis = isoNDaysAgo(n - 1);
+        labelPeriode = `ces ${n} derniers jours`;
+    }
     // Compter les muscles travaillés depuis lundi (journal muscles)
     const compte = {};
     Object.keys(muscleLog).forEach(iso => {
