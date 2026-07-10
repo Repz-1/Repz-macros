@@ -333,10 +333,10 @@ body {
 /* ===== CHRONO (identique ma-seance) ===== */
 .timer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:64;}
 .timer-overlay.show{display:block;}
-.timer-container{position:fixed;bottom:80px;left:16px;right:16px;max-width:448px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:65;display:none;}
+.timer-container{position:fixed;top:45%;transform:translateY(-50%);left:16px;right:16px;max-width:448px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 12px 34px rgba(0,0,0,.18);z-index:65;display:none;}
 .timer-container.show{display:block;animation:slideUpT .3s ease-out;}
 body.timer-open .water-fab{display:none;}
-@keyframes slideUpT{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes slideUpT{from{transform:translateY(calc(-50% + 24px));opacity:0;}to{transform:translateY(-50%);opacity:1;}}
 .timer-display{text-align:center;margin-bottom:20px;}
 .timer-big{font-size:56px;font-weight:800;color:var(--orange);font-family:'Monaco','Courier';letter-spacing:2px;}
 .timer-label{font-size:13px;color:#9ca3af;margin-top:8px;}
@@ -487,7 +487,7 @@ function logout() {
     </a>
 
     <!-- Séance libre (gratuit) -->
-    <a href="ma-seance.html?v=3" class="choice ph" style="background-image:url('img/card-libre.jpg')">
+    <a href="ma-seance.html?v=4" class="choice ph" style="background-image:url('img/card-libre.jpg')">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
         <h3>Séance libre</h3>
         <p>Compose toi-même ton entraînement, exercice par exercice.</p>
@@ -506,7 +506,7 @@ function logout() {
 </div>
 
 <!-- DERNIÈRE SÉANCE -->
-<a class="last-session" id="lastSession" href="ma-seance.html?v=3">
+<a class="last-session" id="lastSession" href="ma-seance.html?v=4">
     <span class="ls-ic">🔥</span>
     <span class="ls-body">
         <span class="ls-label">Dernière séance</span>
