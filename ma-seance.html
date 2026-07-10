@@ -734,8 +734,11 @@ function toggleSets(i){
   const p = document.getElementById('setsPanel'+i);
   if(!p) return;
   if(!p.classList.contains('open') && (!sessionSets[i] || !sessionSets[i].length)){
-    // Première ouverture : préparer 3 séries, placeholders = dernière perf
-    sessionSets[i] = [{w:'',r:''},{w:'',r:''},{w:'',r:''}];
+    // Première ouverture : autant de lignes que de séries prévues (ex. « 4 séries × 8-10 reps »)
+    let nb = 3;
+    const m = (sessionExs[i].meta || '').match(/(\d+)\s*série/i);
+    if(m) nb = Math.min(8, Math.max(1, parseInt(m[1])));
+    sessionSets[i] = Array.from({length: nb}, () => ({w:'', r:''}));
     renderSets(i);
   }
   p.classList.toggle('open');
