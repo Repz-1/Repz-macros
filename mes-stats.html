@@ -131,6 +131,24 @@ body{
 .pr-rank.r1 { background:#8B5CF6; color:#fff; }
 .ce-btn { display:inline-block; margin-top:8px; background:#F7B500; color:#181818; text-decoration:none; font-size:12.5px; font-weight:800; padding:8px 14px; border-radius:11px; }
 
+/* ===== RÉPARTITION MUSCULAIRE ===== */
+.stat-card.acc-red::before { background:#EF4444; }
+.stat-card.acc-red h2 .h2ic { stroke:#EF4444; }
+.repart-layout { display:flex; gap:16px; align-items:center; }
+.repart-body { flex:1; min-width:0; }
+.rep-row { display:flex; align-items:center; gap:9px; margin-bottom:9px; }
+.rep-lbl { width:66px; font-size:12px; font-weight:700; color:#4b5563; flex-shrink:0; }
+.rep-track { flex:1; height:9px; background:#F1F2F5; border-radius:6px; overflow:hidden; }
+.rep-fill { height:100%; border-radius:6px; transition:width .5s ease; }
+.rep-val { width:22px; text-align:right; font-size:12px; font-weight:800; color:#6b7280; font-variant-numeric:tabular-nums; }
+.repart-note { font-size:12.5px; color:#8F6200; background:#FFF9E8; border:1px solid #F3D98A; border-radius:12px; padding:10px 13px; margin-top:6px; font-weight:600; }
+/* Heatmap corporelle */
+.bodymap { width:118px; flex-shrink:0; }
+.bodymap svg { width:100%; height:auto; display:block; }
+.bodymap .bp { fill:#E9EBEF; stroke:#D4D7DE; stroke-width:.6; transition:fill .4s; }
+.bodymap-legend { display:flex; align-items:center; justify-content:center; gap:5px; font-size:10.5px; color:#9aa0aa; margin-top:6px; font-weight:600; }
+.bodymap-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+
 /* ===== RECORDS ===== */
 .pr-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-top:1px solid var(--line); }
 .pr-row:first-child { border-top:none; }
@@ -308,6 +326,13 @@ function logout(){
         <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></svg>Progression par exercice</h2>
         <div class="card-sub">Ta charge sur la série la plus lourde, séance après séance</div>
         <div id="exoProgWrap"></div>
+    </div>
+
+    <!-- RÉPARTITION MUSCULAIRE -->
+    <div class="stat-card acc-red">
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z"/></svg>Répartition musculaire</h2>
+        <div class="card-sub">Ce que tu as travaillé ces 30 derniers jours</div>
+        <div id="repartWrap"></div>
     </div>
 
     <!-- RÉGULARITÉ -->
@@ -621,8 +646,83 @@ function renderRecords(){
     w.innerHTML = html;
 }
 
+function renderRepartition(){
+    const wrap = document.getElementById('repartWrap');
+    const depuis = isoNDaysAgo(30);
+    // Compter les occurrences de chaque muscle sur 30 jours (journal muscles)
+    const compte = {};
+    Object.keys(muscleLog).forEach(iso => {
+        if(iso < depuis) return;
+        (muscleLog[iso] || []).forEach(m => {
+            if(m === 'repos') return;
+            compte[m] = (compte[m] || 0) + 1;
+        });
+    });
+    const groupes = [
+        {k:'pecs', n:'Pecs', c:'#EF4444'}, {k:'dos', n:'Dos', c:'#F97316'},
+        {k:'epaules', n:'Épaules', c:'#F7B500'}, {k:'biceps', n:'Biceps', c:'#10B981'},
+        {k:'triceps', n:'Triceps', c:'#06B6D4'}, {k:'jambes', n:'Jambes', c:'#3B82F6'},
+        {k:'abdos', n:'Abdos', c:'#8B5CF6'}, {k:'cardio', n:'Cardio', c:'#EC4899'},
+    ];
+    const total = Object.values(compte).reduce((a,b)=>a+b, 0);
+    if(!total){
+        wrap.innerHTML = '<div class="chart-empty"><svg class="ce-ic" style="stroke:#EF4444" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z"/></svg><div>Renseigne les muscles travaillés dans ton journal pour voir ta répartition.</div></div>';
+        return;
+    }
+    const max = Math.max(...groupes.map(g => compte[g.k] || 0));
+    const bars = groupes.filter(g => compte[g.k]).sort((a,b)=>(compte[b.k]||0)-(compte[a.k]||0)).map(g => {
+        const n = compte[g.k] || 0;
+        return `<div class="rep-row"><div class="rep-lbl">${g.n}</div><div class="rep-track"><div class="rep-fill" style="width:${Math.round(n/max*100)}%;background:${g.c}"></div></div><div class="rep-val">${n}</div></div>`;
+    }).join('');
+
+    // Détection de déséquilibre : muscle le moins travaillé parmi les grands groupes
+    const grands = ['pecs','dos','jambes','epaules'];
+    const manques = grands.filter(k => !compte[k]);
+    let note = '';
+    if(manques.length){
+        const noms = manques.map(k => groupes.find(g=>g.k===k).n.toLowerCase());
+        note = `<div class="repart-note">💡 Tu n'as pas travaillé : ${noms.join(', ')}. Pense à équilibrer.</div>`;
+    } else {
+        const min = grands.reduce((a,b)=> (compte[a]||0) <= (compte[b]||0) ? a : b);
+        note = `<div class="repart-note">💪 Bel équilibre ! Ton groupe le moins sollicité : ${groupes.find(g=>g.k===min).n.toLowerCase()}.</div>`;
+    }
+
+    wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG(compte, max)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>peu <i style="background:#F7B500"></i> <i style="background:#EF4444"></i>bcp</div></div><div class="repart-body">${bars}</div></div>${note}`;
+}
+
+function bodyMapSVG(compte, max){
+    // Couleur d'un muscle selon son intensité (0 = gris, 1 = rouge)
+    function col(k){
+        const n = compte[k] || 0;
+        if(!n || !max) return '#E9EBEF';
+        const t = n / max;
+        if(t < 0.25) return '#FDE9A8';
+        if(t < 0.5) return '#F7CE4B';
+        if(t < 0.75) return '#F7B500';
+        return '#EF4444';
+    }
+    // Silhouette simplifiée vue de face — chaque zone = un groupe
+    return `<svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="16" r="11" class="bp"/>
+        <rect x="42" y="27" width="16" height="8" rx="3" class="bp"/>
+        <path class="bp" style="fill:${col('epaules')}" d="M30 37 q-8 1 -10 8 l4 6 q6 -6 12 -6z"/>
+        <path class="bp" style="fill:${col('epaules')}" d="M70 37 q8 1 10 8 l-4 6 q-6 -6 -12 -6z"/>
+        <path class="bp" style="fill:${col('pecs')}" d="M36 37 h28 q3 0 3 4 v10 q0 4 -4 4 h-26 q-4 0 -4 -4 v-10 q0 -4 3 -4z"/>
+        <path class="bp" style="fill:${col('abdos')}" d="M39 60 h22 q2 0 2 3 v20 q0 3 -3 3 h-20 q-3 0 -3 -3 v-20 q0 -3 2 -3z"/>
+        <path class="bp" style="fill:${col('biceps')}" d="M22 47 q-4 8 -4 18 l6 2 q2 -10 4 -16z"/>
+        <path class="bp" style="fill:${col('biceps')}" d="M78 47 q4 8 4 18 l-6 2 q-2 -10 -4 -16z"/>
+        <path class="bp" style="fill:${col('triceps')}" d="M17 66 q-2 8 -1 16 l6 -1 q0 -8 1 -14z"/>
+        <path class="bp" style="fill:${col('triceps')}" d="M83 66 q2 8 1 16 l-6 -1 q0 -8 -1 -14z"/>
+        <path class="bp" style="fill:${col('jambes')}" d="M40 89 h9 v40 q0 6 -5 6 q-5 0 -5 -6 z"/>
+        <path class="bp" style="fill:${col('jambes')}" d="M60 89 h-9 v40 q0 6 5 6 q5 0 5 -6 z"/>
+        <path class="bp" style="fill:${col('jambes')}" d="M39 137 h10 v34 q0 4 -5 4 q-5 0 -5 -4z"/>
+        <path class="bp" style="fill:${col('jambes')}" d="M61 137 h-10 v34 q0 4 5 4 q5 0 5 -4z"/>
+    </svg>`;
+}
+
 renderScore();
 renderOverview();
+renderRepartition();
 renderRegularite();
 renderRecords();
 renderWeight();
@@ -710,7 +810,7 @@ renderExoProg();
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=5" class="bn-item active">
+    <a href="mes-stats.html?v=6" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
