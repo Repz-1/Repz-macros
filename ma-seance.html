@@ -12,7 +12,7 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-    --orange:#F7B500; --bg:#f6f5f2; --card:#ffffff; --dark:#181818;
+    --orange:#F7B500; --bg:#F5F6F8; --card:#ffffff; --dark:#181818;
     --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --green:#F7B500; --radius:20px;
 }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
@@ -89,39 +89,41 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .screen { display:none; }
 .screen.active { display:block; }
 
-.session-progress { background:var(--dark); color:#fff; border-radius:var(--radius); padding:20px; margin-bottom:18px; text-align:center; }
+.session-progress { background:#fff; color:#181818; border-radius:var(--radius); padding:16px 18px 14px; margin-bottom:12px; text-align:center; box-shadow:0 2px 10px rgba(24,24,24,.05); }
+.session-meta { font-size:12.5px; font-weight:700; color:#9aa0aa; margin-bottom:10px; display:none; }
+.session-meta.show { display:block; }
 .session-progress-row { display:flex; align-items:center; justify-content:space-around; }
 .sp-block { flex:1; }
-.sp-time { border-left:1px solid #374151; }
-.session-progress .big { font-size:30px; font-weight:800; }
-.session-progress .lbl { font-size:13px; color:#cbd5e1; margin-top:2px; }
-.session-progress .bar { height:8px; background:#374151; border-radius:10px; margin-top:14px; overflow:hidden; }
+.sp-time { border-left:1px solid #EEF0F3; }
+.session-progress .big { font-size:26px; font-weight:800; letter-spacing:-.01em; }
+.session-progress .lbl { font-size:12px; color:#9aa0aa; margin-top:2px; font-weight:600; }
+.session-progress .bar { height:5px; background:#EEF0F3; border-radius:10px; margin-top:12px; overflow:hidden; }
 .session-progress .fill { height:100%; background:var(--orange); border-radius:10px; transition:width .3s; width:0%; }
 
-.done-item { display:flex; align-items:center; gap:14px; background:var(--card);
-    border:1.5px solid var(--line); border-radius:16px; padding:12px 14px; margin-bottom:10px; cursor:pointer; transition:all .15s; }
-.done-item.done { background:#f0fdf4; border-color:#bbf7d0; }
+.done-item { display:flex; align-items:center; gap:12px; background:var(--card);
+    border:none; border-radius:20px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:all .15s; box-shadow:0 2px 8px rgba(24,24,24,.05); }
+.done-item.done { background:#FFFDF4; box-shadow:inset 0 0 0 1.5px #F3D98A; }
 .done-item.done .done-name { text-decoration:line-through; color:var(--text-dim); }
-.done-check { width:30px; height:30px; flex-shrink:0; border-radius:9px; border:2px solid var(--line);
-    display:flex; align-items:center; justify-content:center; color:#fff; font-size:17px; font-weight:700; }
-.done-item.done .done-check { background:var(--green); border-color:var(--green); color:#181818; }
+.done-check { width:27px; height:27px; flex-shrink:0; border-radius:50%; border:2px solid #DCDFE4;
+    display:flex; align-items:center; justify-content:center; color:transparent; font-size:15px; font-weight:800; transition:all .15s; }
+.done-item.done .done-check { background:var(--orange); border-color:var(--orange); color:#181818; }
 .done-info { flex:1; }
-.done-name { font-size:15px; font-weight:700; }
+.done-name { font-size:15px; font-weight:800; letter-spacing:-.01em; }
 .done-meta { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
-.done-alt { margin-top:7px; background:#fff; border:1.5px solid #E6E6E6; color:#1a1a1a; border-radius:10px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+.done-alt { margin-top:6px; background:#F2F3F6; border:none; color:#4b5563; border-radius:9px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
 .done-alt:active { transform:scale(.96); background:#f7f7f5; }
 #sessionList:not(.locked) .done-alt { display:none; }
 #sessionList.locked .done-alt { pointer-events:auto; }
 /* ===== BOUTON DÉMARRER LA SÉANCE ===== */
 .start-session-btn {
     width:100%; background:var(--green); color:#181818; border:none; border-radius:16px;
-    padding:17px; font-size:17px; font-weight:800; cursor:pointer; margin-bottom:18px;
-    box-shadow:0 4px 16px rgba(22,163,74,.3);
+    padding:15px; font-size:16px; font-weight:800; cursor:pointer; margin-bottom:14px;
+    box-shadow:0 6px 18px rgba(247,181,0,.35);
 }
 .start-session-btn:active { transform:scale(.98); opacity:.92; }
 #sessionList.locked { opacity:.45; filter:grayscale(.3); }
 /* ===== SUIVI DES SÉRIES ===== */
-.sets-btn { margin-top:7px; background:#FFF4CC; border:1.5px solid #F7B500; color:#1a1a1a; border-radius:10px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+.sets-btn { margin-top:6px; background:#F2F3F6; border:none; color:#4b5563; border-radius:9px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
 .sets-btn:active { transform:scale(.96); }
 #sessionList.locked .sets-btn { display:none; }
 .sets-panel { display:none; width:100%; margin-top:10px; padding-top:10px; border-top:1px dashed #ECECEC; cursor:default; }
@@ -160,7 +162,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .sp-time .big.paused { color:var(--orange); animation:pausePulse 1.4s ease infinite; }
 @keyframes pausePulse { 0%,100%{opacity:1;} 50%{opacity:.45;} }
 
-.done-photo { width:50px; height:50px; flex-shrink:0; border-radius:11px; overflow:hidden;
+.done-photo { width:84px; height:84px; flex-shrink:0; border-radius:18px; overflow:hidden;
     background:linear-gradient(135deg,#e5e7eb,#f3f4f6); display:flex; align-items:center; justify-content:center;
     font-size:9px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; }
 .done-photo img { width:100%; height:100%; object-fit:cover; }
@@ -389,6 +391,7 @@ function logout(){
         <h1 id="sessionScreenTitle">Ma séance</h1>
     </div>
     <div class="session-progress">
+        <div class="session-meta" id="sessionMeta"></div>
         <div class="session-progress-row">
             <div class="sp-block">
                 <div class="big"><span id="doneCount">0</span>/<span id="totalCount">0</span></div>
@@ -401,7 +404,7 @@ function logout(){
         </div>
         <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
-    <button class="start-session-btn" id="startSessionBtn" onclick="demarrerDureeSeance()">▶ Démarrer la séance</button>
+    <button class="start-session-btn" id="startSessionBtn" onclick="demarrerDureeSeance()">Commencer</button>
     <div class="session-controls" id="sessionControls">
         <button class="sc-pause" id="scPauseBtn" onclick="togglePauseSeance()">⏸ Pause</button>
         <button class="sc-stop" onclick="terminerSeance()">Terminer la séance</button>
@@ -702,7 +705,7 @@ function renderSessionList(){
         <div class="done-name">${ex.nom}</div>
         <div class="done-meta">${ex.meta}</div>
         <button class="done-alt" onclick="event.stopPropagation();swapExercise(${i})">⇄ Alternative</button>
-        <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i})">📊 Séries</button>
+        <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i})">Séries</button>
       </div>
       <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
       <div class="sets-panel" id="setsPanel${i}" onclick="event.stopPropagation()">
@@ -823,6 +826,16 @@ function goToSession(customRefs){
   sessionSets = [];
   renderSessionList();
   document.getElementById('totalCount').textContent = sessionExs.length;
+  // Ligne méta : nb d'exercices + durée estimée (~9-12 min par exercice)
+  const meta = document.getElementById('sessionMeta');
+  if(meta){
+    const n = sessionExs.length;
+    if(n){
+      const mn = Math.round(n*9/5)*5, mx = Math.round(n*12/5)*5;
+      meta.textContent = `${n} exercice${n>1?'s':''} · ⏱ ${mn}-${mx} min`;
+      meta.classList.add('show');
+    } else meta.classList.remove('show');
+  }
   document.getElementById('doneCount').textContent = 0;
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('screenSelect').classList.remove('active');
