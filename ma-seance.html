@@ -89,27 +89,47 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .screen { display:none; }
 .screen.active { display:block; }
 
-.session-progress { background:#fff; color:#181818; border-radius:var(--radius); padding:16px 18px 14px; margin-bottom:12px; text-align:center; box-shadow:0 2px 10px rgba(24,24,24,.05); }
-.session-meta { font-size:12.5px; font-weight:700; color:#9aa0aa; margin-bottom:10px; display:none; }
-.session-meta.show { display:block; }
-.session-progress-row { display:flex; align-items:center; justify-content:space-around; }
-.sp-block { flex:1; }
-.sp-time { border-left:1px solid #EEF0F3; }
-.session-progress .big { font-size:26px; font-weight:800; letter-spacing:-.01em; }
-.session-progress .lbl { font-size:12px; color:#9aa0aa; margin-top:2px; font-weight:600; }
-.session-progress .bar { height:5px; background:#EEF0F3; border-radius:10px; margin-top:12px; overflow:hidden; }
+.session-progress { background:#fff; color:#181818; border-radius:18px; padding:13px 16px 12px; margin-bottom:12px; box-shadow:0 2px 10px rgba(24,24,24,.05); }
+/* ===== Bannière immersive (même DA que la page Entraînement) ===== */
+.sess-hero {
+    position:relative; border-radius:24px; overflow:hidden; min-height:150px;
+    background:url('img/card-libre.jpg') center/cover; color:#fff;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:18px 20px; margin-bottom:12px; box-shadow:0 8px 22px rgba(24,24,24,.18);
+}
+.sess-hero::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,10,10,.15) 20%, rgba(10,10,10,.66) 72%, rgba(10,10,10,.86) 100%); }
+.sess-hero > * { position:relative; z-index:1; }
+.sh-back {
+    position:absolute; top:14px; left:14px; z-index:2; width:38px; height:38px; border-radius:50%;
+    background:rgba(10,10,10,.45); color:#fff; font-size:19px; text-decoration:none;
+    display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);
+}
+.sh-title { font-size:23px; font-weight:800; letter-spacing:-.01em; margin:0 0 3px; color:#fff; }
+.sh-meta { font-size:13px; font-weight:700; color:rgba(255,255,255,.85); display:none; }
+.sh-meta.show { display:block; }
+/* Ligne de stats compacte */
+.sp-line { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:800; }
+.sp-line .sp-dim { color:#9aa0aa; font-weight:700; font-size:13.5px; }
+.sp-timer { font-variant-numeric:tabular-nums; }
+.sp-timer.paused { color:#B98A00; animation:pausePulse 1.4s ease infinite; }
+.session-progress .bar { height:8px; background:#EEF0F3; border-radius:10px; margin-top:10px; overflow:hidden; }
 .session-progress .fill { height:100%; background:var(--orange); border-radius:10px; transition:width .3s; width:0%; }
 
 .done-item { display:flex; align-items:center; gap:12px; background:var(--card);
     border:none; border-radius:20px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:all .15s; box-shadow:0 2px 8px rgba(24,24,24,.05); }
-.done-item.done { background:#FFFDF4; box-shadow:inset 0 0 0 1.5px #F3D98A; }
+.done-item.done { background:#FFFDF4; box-shadow:inset 0 0 0 1.5px #F3D98A; opacity:.62; }
+@keyframes checkPop { 0%{transform:scale(.5);} 60%{transform:scale(1.2);} 100%{transform:scale(1);} }
+.done-item.done .done-check { animation:checkPop .28s ease; }
 .done-item.done .done-name { text-decoration:line-through; color:var(--text-dim); }
 .done-check { width:27px; height:27px; flex-shrink:0; border-radius:50%; border:2px solid #DCDFE4;
     display:flex; align-items:center; justify-content:center; color:transparent; font-size:15px; font-weight:800; transition:all .15s; }
 .done-item.done .done-check { background:var(--orange); border-color:var(--orange); color:#181818; }
 .done-info { flex:1; }
 .done-name { font-size:15px; font-weight:800; letter-spacing:-.01em; }
-.done-meta { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
+.done-meta { font-size:12.5px; color:#5b6270; margin-top:2px; font-weight:600; }
+.ex-chips { display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+.ex-chip { font-size:11px; font-weight:800; padding:3px 8px; border-radius:7px; background:#F2F3F6; color:#4b5563; }
+.ex-chip.gold { background:#FFF4CC; color:#8F6200; }
 .done-alt { margin-top:6px; background:#F2F3F6; border:none; color:#4b5563; border-radius:9px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
 .done-alt:active { transform:scale(.96); background:#f7f7f5; }
 #sessionList:not(.locked) .done-alt { display:none; }
@@ -123,7 +143,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .start-session-btn:active { transform:scale(.98); opacity:.92; }
 #sessionList.locked { opacity:.45; filter:grayscale(.3); }
 /* ===== SUIVI DES SÉRIES ===== */
-.sets-btn { margin-top:6px; background:#F2F3F6; border:none; color:#4b5563; border-radius:9px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+.sets-btn { margin-top:6px; background:none; border:none; color:#6b7280; padding:4px 2px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:4px; }
+.sets-btn::after { content:''; width:7px; height:7px; border-right:2px solid #9aa0aa; border-bottom:2px solid #9aa0aa; transform:rotate(45deg) translateY(-2px); transition:transform .2s; }
+.sets-btn.open::after { transform:rotate(225deg) translateY(-1px); }
 .sets-btn:active { transform:scale(.96); }
 #sessionList.locked .sets-btn { display:none; }
 .sets-panel { display:none; width:100%; margin-top:10px; padding-top:10px; border-top:1px dashed #ECECEC; cursor:default; }
@@ -159,7 +181,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     background:none; border:none; color:var(--text-dim); font-size:14px; font-weight:600;
     cursor:pointer; padding:12px; width:100%; margin-top:4px;
 }
-.sp-time .big.paused { color:var(--orange); animation:pausePulse 1.4s ease infinite; }
+
 @keyframes pausePulse { 0%,100%{opacity:1;} 50%{opacity:.45;} }
 
 .done-photo { width:84px; height:84px; flex-shrink:0; border-radius:18px; overflow:hidden;
@@ -190,6 +212,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .congrats-emoji { font-size:64px; margin-bottom:12px; animation:congratsBounce .6s ease .2s; }
 @keyframes congratsBounce { 0%,100%{transform:translateY(0);} 30%{transform:translateY(-12px);} 60%{transform:translateY(-6px);} }
 .congrats-title { font-size:24px; font-weight:800; color:#1a1a1a; margin-bottom:8px; }
+.cg-stats { display:flex; gap:8px; margin:14px 0 4px; }
+.cg-box { flex:1; background:#F7F7F5; border-radius:14px; padding:11px 6px; }
+.cg-box .v { font-size:17px; font-weight:800; }
+.cg-box .l { font-size:10.5px; color:#6b7280; font-weight:700; margin-top:2px; }
+.cg-record { margin-top:10px; background:#FFF4CC; border:1px solid #F3D98A; border-radius:12px; padding:10px 13px; font-size:12.5px; color:#8F6200; font-weight:700; }
 .congrats-text { font-size:15px; color:var(--text-dim); line-height:1.5; margin-bottom:24px; }
 .congrats-btn {
     width:100%; background:var(--green); color:#181818; border:none; border-radius:14px;
@@ -386,21 +413,15 @@ function logout(){
 
 <!-- ÉCRAN 2 : MA SÉANCE -->
 <div class="screen" id="screenSession">
-    <div class="top">
-        <a href="#" class="back-btn" id="backBtnSession" onclick="goToSelect();return false;">←</a>
-        <h1 id="sessionScreenTitle">Ma séance</h1>
+    <div class="sess-hero">
+        <a href="#" class="sh-back" id="backBtnSession" onclick="goToSelect();return false;">←</a>
+        <h1 class="sh-title" id="sessionScreenTitle">Ma séance</h1>
+        <div class="sh-meta" id="sessionMeta"></div>
     </div>
     <div class="session-progress">
-        <div class="session-meta" id="sessionMeta"></div>
-        <div class="session-progress-row">
-            <div class="sp-block">
-                <div class="big"><span id="doneCount">0</span>/<span id="totalCount">0</span></div>
-                <div class="lbl">exercices terminés</div>
-            </div>
-            <div class="sp-block sp-time">
-                <div class="big" id="sessionTimer">0:00</div>
-                <div class="lbl">durée</div>
-            </div>
+        <div class="sp-line">
+            <span><b id="doneCount">0</b><span class="sp-dim">/<span id="totalCount">0</span> exercices</span></span>
+            <span class="sp-timer" id="sessionTimer">0:00</span>
         </div>
         <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
@@ -429,6 +450,7 @@ function logout(){
         <div class="congrats-emoji">🎉</div>
         <div class="congrats-title">Séance terminée !</div>
         <div class="congrats-text" id="congratsText">Bravo, tu as tout donné. Repos mérité 💪</div>
+        <div id="congratsStats"></div>
         <button class="congrats-btn" onclick="window.location.href='app.html'">Retour au journal</button>
     </div>
 </div>
@@ -697,15 +719,20 @@ function getSelectedExercises(){
 function renderSessionList(){
   const c = document.getElementById('sessionList');
   if(!sessionExs.length){ c.innerHTML = '<div class="empty-session">Aucun exercice sélectionné.</div>'; return; }
+  const NOMS_MUSCLES = {pecs:'Pecs', dos:'Dos', epaules:'Épaules', biceps:'Biceps', triceps:'Triceps', jambes:'Jambes', abdos:'Abdos', etirements:'Étirements', cardio:'Cardio'};
   c.innerHTML = sessionExs.map((ex,i) => {
     const last = getLastPerf(ex.nom);
+    const muscle = (sessionRefs[i] && NOMS_MUSCLES[sessionRefs[i].mKey]) || '';
+    const chips = (muscle ? `<span class="ex-chip">${muscle}</span>` : '')
+                + (last ? `<span class="ex-chip gold">Dern. ${last}</span>` : '');
     return `<div class="done-item" onclick="toggleDone(this)" style="flex-wrap:wrap">
       <div class="done-check">✓</div>
       <div class="done-info">
         <div class="done-name">${ex.nom}</div>
         <div class="done-meta">${ex.meta}</div>
+        ${chips ? `<div class="ex-chips">${chips}</div>` : ''}
         <button class="done-alt" onclick="event.stopPropagation();swapExercise(${i})">⇄ Alternative</button>
-        <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i})">Séries</button>
+        <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i}, this)">Séries</button>
       </div>
       <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
       <div class="sets-panel" id="setsPanel${i}" onclick="event.stopPropagation()">
@@ -733,9 +760,10 @@ function getLastPerf(nom){
   if(sameW && w !== '') return `${w} kg × ${sets.map(s => s.r || '?').join(' · ')}`;
   return sets.map(s => `${s.w || '?'}kg×${s.r || '?'}`).join(' · ');
 }
-function toggleSets(i){
+function toggleSets(i, btn){
   const p = document.getElementById('setsPanel'+i);
   if(!p) return;
+  if(btn) btn.classList.toggle('open', !p.classList.contains('open'));
   if(!p.classList.contains('open') && (!sessionSets[i] || !sessionSets[i].length)){
     // Première ouverture : autant de lignes que de séries prévues (ex. « 4 séries × 8-10 reps »)
     let nb = 3;
@@ -832,7 +860,7 @@ function goToSession(customRefs){
     const n = sessionExs.length;
     if(n){
       const mn = Math.round(n*9/5)*5, mx = Math.round(n*12/5)*5;
-      meta.textContent = `${n} exercice${n>1?'s':''} · ⏱ ${mn}-${mx} min`;
+      meta.textContent = `${n} exercice${n>1?'s':''} · ${mn}-${mx} min`;
       meta.classList.add('show');
     } else meta.classList.remove('show');
   }
@@ -972,6 +1000,24 @@ function toggleDone(el){
 }
 
 let sessionEnregistree = false;
+function calculerBilan(exos){
+  let tonnage = 0;
+  const records = [];
+  const anciens = getSetLog();
+  exos.forEach(e => {
+    let bestAvant = 0;
+    (anciens[e.nom] || []).forEach(h => h.sets.forEach(s => {
+      const w = parseFloat(s.w); if(!isNaN(w) && w > bestAvant) bestAvant = w;
+    }));
+    e.sets.forEach(s => {
+      const w = parseFloat(s.w), r = parseInt(s.r);
+      if(!isNaN(w) && !isNaN(r)) tonnage += w * r;
+      if(!isNaN(w) && bestAvant > 0 && w > bestAvant && !records.includes(e.nom)) records.push(e.nom);
+    });
+  });
+  return { tonnage: Math.round(tonnage), records };
+}
+
 function montrerFelicitations(){
   arreterDureeSeance();
   // Enregistrer la séance dans le journal (pour le dashboard et les stats)
@@ -983,6 +1029,8 @@ function montrerFelicitations(){
       if(l) log = JSON.parse(l);
       const duree = dureeDebut ? Math.floor((Date.now()-dureeDebut)/1000) : 0;
       const exos = collecterSeries();
+      // Bilan : tonnage total + records battus (comparés AVANT sauvegarde)
+      window.bilanSeance = calculerBilan(exos);
       log.push({
         iso: new Date().toISOString().slice(0,10),
         ts: Date.now(),
@@ -1009,6 +1057,20 @@ function montrerFelicitations(){
     'Du bon boulot aujourd\'hui. Repos mérité 👊'
   ];
   const msg = messages[Math.floor(Math.random()*messages.length)];
+  // Bilan chiffré : durée, tonnage, records
+  const statsEl = document.getElementById('congratsStats');
+  if(statsEl){
+    const b = window.bilanSeance || { tonnage:0, records:[] };
+    const min = dureeDebut ? Math.max(1, Math.round((Date.now()-dureeDebut)/60000)) : 0;
+    let sHtml = '<div class="cg-stats">';
+    if(min) sHtml += `<div class="cg-box"><div class="v">${min} min</div><div class="l">Durée</div></div>`;
+    if(b.tonnage > 0) sHtml += `<div class="cg-box"><div class="v">${b.tonnage.toLocaleString('fr-FR')} kg</div><div class="l">Soulevés au total</div></div>`;
+    sHtml += `<div class="cg-box"><div class="v">${sessionExs.length}</div><div class="l">Exercices</div></div></div>`;
+    if(b.records && b.records.length){
+      sHtml += `<div class="cg-record">🏆 Nouveau record : ${b.records.join(', ')} !</div>`;
+    }
+    statsEl.innerHTML = sHtml;
+  }
   const txt = document.getElementById('congratsText');
   if(txt) txt.textContent = (prenom ? `Bravo ${prenom} ! ` : '') + msg + (dureeStr ? ` (${dureeStr.trim()})` : '');
   const overlay = document.getElementById('congratsOverlay');
