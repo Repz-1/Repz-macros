@@ -63,7 +63,8 @@ body {
 .daydream h3 { font-size:20px; font-weight:800; letter-spacing:-.02em; margin-bottom:18px; text-align:center; }
 .dd-item { display:flex; align-items:flex-start; gap:14px; padding:11px 0; border-top:1px solid var(--line); }
 .dd-item:first-of-type { border-top:none; padding-top:2px; }
-.dd-emo { font-size:26px; flex-shrink:0; width:34px; text-align:center; }
+.dd-emo { flex-shrink:0; width:34px; height:34px; border-radius:10px; background:#FFF4CC; display:flex; align-items:center; justify-content:center; }
+.dd-emo svg { width:19px; height:19px; fill:none; stroke:#DFA004; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .dd-txt { display:flex; flex-direction:column; }
 .dd-txt b { font-size:15px; font-weight:800; }
 .dd-txt span { font-size:13.5px; color:var(--text-dim); font-weight:600; margin-top:1px; }
@@ -280,10 +281,10 @@ function logout() {
 <!-- BÉNÉFICES : montrer le résultat avant le prix -->
 <div class="daydream">
     <h3>Imagine ton quotidien avec BelFit</h3>
-    <div class="dd-item"><span class="dd-emo">📅</span><div class="dd-txt"><b>Chaque matin</b><span>Ton objectif est déjà calculé.</span></div></div>
-    <div class="dd-item"><span class="dd-emo">🍽️</span><div class="dd-txt"><b>Chaque repas</b><span>BelFit sait quoi te proposer.</span></div></div>
-    <div class="dd-item"><span class="dd-emo">🏋️</span><div class="dd-txt"><b>Chaque entraînement</b><span>Ton programme est prêt.</span></div></div>
-    <div class="dd-item"><span class="dd-emo">🛒</span><div class="dd-txt"><b>Chaque semaine</b><span>Ta liste de courses est générée automatiquement.</span></div></div>
+    <div class="dd-item"><span class="dd-emo"><svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/></svg></span><div class="dd-txt"><b>Chaque matin</b><span>Ton objectif est déjà calculé.</span></div></div>
+    <div class="dd-item"><span class="dd-emo"><svg viewBox="0 0 24 24"><path d="M3 2v7a3 3 0 006 0V2M6 2v20M16 2c-1.5 0-3 1.5-3 5s1.5 5 3 5 3-1.5 3-5-1.5-5-3-5zM16 12v10"/></svg></span><div class="dd-txt"><b>Chaque repas</b><span>BelFit sait quoi te proposer.</span></div></div>
+    <div class="dd-item"><span class="dd-emo"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg></span><div class="dd-txt"><b>Chaque entraînement</b><span>Ton programme est prêt.</span></div></div>
+    <div class="dd-item"><span class="dd-emo"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg></span><div class="dd-txt"><b>Chaque semaine</b><span>Ta liste de courses est générée automatiquement.</span></div></div>
 </div>
 
 <div class="unlock">
@@ -304,7 +305,7 @@ function logout() {
         <div class="plan-name">Premium</div>
         <div class="plan-desc">Ton plan nutrition personnalisé + tous les programmes d’entraînement</div>
         <div class="deja-prem" id="dejaPrem" style="display:none;">
-            <div class="dp-title">Membre Premium ✨</div>
+            <div class="dp-title">Membre Premium</div>
             <div class="dp-sub">Tout est débloqué — merci de faire grandir BELFIT</div>
             <a href="questionnaire.html" class="dp-btn">Créer mon programme</a>
         </div>
@@ -354,7 +355,7 @@ function logout() {
                 <div class="pc-note">Meilleur prix</div>
             </div>
         </div>
-        <div class="cafe-line">☕ À partir de 0,92 € par semaine — moins cher qu'un café.</div>
+        <div class="cafe-line">À partir de 0,92 € par semaine — moins cher qu'un café.</div>
 
         <div class="rassur">✓ <strong>Sans engagement</strong>, résiliable à tout moment</div>
         <button class="plan-btn premium" id="planPayBtn" onclick="payerFormule()">Débloquer Premium</button>
@@ -529,7 +530,7 @@ function validerCode(){
                     .set({ premium:true, source:'promo', updatedAt: Date.now() }, { merge:true });
             }
         }catch(e){ console.warn('premium promo write', e); }
-        msg.textContent = '🎉 Premium débloqué !';
+        msg.textContent = 'Premium débloqué !';
         msg.className = 'promo-msg ok';
         input.value = '';
         setTimeout(() => { window.location.href = 'app.html'; }, 1500);

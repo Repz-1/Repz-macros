@@ -345,8 +345,8 @@ function logout(){
     <div class="premium-invite" id="premiumInvite">
         <div class="pi-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg></div>
         <h3>Débloque tout ton historique</h3>
-        <p>Tu vois ici tes 7 derniers jours. Passe à BELFIT Premium pour suivre toute ta progression sur des semaines et des mois, avec tes moyennes et tes tendances.<br><br>Ton soutien nous aide à faire grandir BELFIT 🙏</p>
-        <a href="plans.html" class="pi-btn">Soutenir BELFIT & débloquer</a>
+        <p>Tu vois ici tes 7 derniers jours. Passe à BELFIT Premium pour suivre toute ta progression sur des semaines et des mois, avec tes moyennes et tes tendances.<br><br>Ton soutien nous aide à faire grandir BELFIT.</p>
+        <a href="plans.html?v=2" class="pi-btn">Soutenir BELFIT & débloquer</a>
         <div class="locked-note">Historique complet · Moyennes · Tendances</div>
     </div>
 </div>
@@ -376,7 +376,7 @@ function renderWeight(){
     const summary = document.getElementById('weightSummary');
     const sub = document.getElementById('weightSub');
     if(!weightLog.length){
-        chart.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#10B981"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span><div>Aucune pesée enregistrée.<br><a class="ce-btn" href="app.html?poids=1">＋ Ajouter mon poids</a></div></div>';
+        chart.innerHTML = '<div class="chart-empty"><div>Aucune pesée enregistrée.<br><a class="ce-btn" href="app.html?poids=1">＋ Ajouter mon poids</a></div></div>';
         summary.innerHTML = '';
         return;
     }
@@ -421,7 +421,7 @@ function renderKcal(){
     const summary = document.getElementById('kcalSummary');
     const sub = document.getElementById('kcalSub');
     if(!history.length){
-        chart.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#F97316"><path d="M12 3c1 3-2 4-2 7a4 4 0 008 0c0-1-.5-2-1-3 3 2 4 5 4 7a7 7 0 11-14 0c0-4 3-6 5-11z"/></svg></span><div>Aucune journée enregistrée.<br><a class="ce-btn" href="app.html?v=2">＋ Enregistrer ma journée</a></div></div>';
+        chart.innerHTML = '<div class="chart-empty"><div>Aucune journée enregistrée.<br><a class="ce-btn" href="app.html?v=2">＋ Enregistrer ma journée</a></div></div>';
         summary.innerHTML = '';
         return;
     }
@@ -556,7 +556,7 @@ function renderRecords(){
         if(best > 0) prs.push({ nom, best, reps, dateBest });
     });
     if(!prs.length){
-        w.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#8B5CF6"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 01-10 0V4z"/><path d="M7 6H4a2 2 0 002 4h1"/><path d="M17 6h3a2 2 0 01-2 4h-1"/></svg></span><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=9">Lancer une séance</a></div></div>';
+        w.innerHTML = '<div class="chart-empty"><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=9">Lancer une séance</a></div></div>';
         return;
     }
     prs.sort((a,b) => b.best - a.best);
@@ -610,7 +610,7 @@ function renderRepartition(){
     ];
     const total = Object.values(compte).reduce((a,b)=>a+b, 0);
     if(!total){
-        wrap.innerHTML = '<div class="chart-empty"><svg class="ce-ic" style="stroke:#EF4444" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z"/></svg><div>Renseigne les muscles travaillés dans ton journal pour voir ta répartition.</div></div>';
+        wrap.innerHTML = '<div class="chart-empty"><div>Renseigne les muscles travaillés dans ton journal pour voir ta répartition.</div></div>';
         return;
     }
     const max = Math.max(...groupes.map(g => compte[g.k] || 0));
@@ -702,7 +702,7 @@ function renderExoProg(sel){
     ).sort();
 
     if(!noms.length){
-        wrap.innerHTML = '<div class="chart-empty"><span class="ce-ic"><svg viewBox="0 0 24 24" style="stroke:#3B82F6"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg></span><div>Aucune série enregistrée. Pendant une séance, touche « Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=9">Lancer une séance</a></div></div>';
+        wrap.innerHTML = '<div class="chart-empty"><div>Aucune série enregistrée. Pendant une séance, touche « Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=9">Lancer une séance</a></div></div>';
         return;
     }
 
@@ -766,7 +766,7 @@ renderExoProg();
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
-    <a href="plans.html" class="bn-item bn-premium" id="bnPremium">
+    <a href="plans.html?v=2" class="bn-item bn-premium" id="bnPremium">
         <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
         <span>Premium</span>
     </a>
@@ -800,7 +800,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     b.href = 'index.html';
     b.id = 'inviteBandeau';
     b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFF9E8;border-bottom:1px solid #F3D98A;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
-    b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
+    b.innerHTML = 'Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
     else { document.body.insertBefore(b, document.body.firstChild); }
