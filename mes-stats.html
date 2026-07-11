@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html{background:#efece5!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#efece5 100%)!important}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#f7efd9">
@@ -13,7 +13,7 @@
 :root{
     --orange:#F7B500; --noir:#181818; --gold:#F7B500;
     --text:#1a1a1a; --text-dim:#6b7280; --line:#e5e7eb;
-    --card:#ffffff; --bg:#eeece7;
+    --card:#ffffff; --bg:#F5F6F8;
 }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{
@@ -40,7 +40,7 @@ body{
 
 /* CARTES STATS */
 .stat-card {
-    position:relative; background:#fcfbf8;
+    position:relative; background:#F5F6F8;
     border:1.5px solid #e7e2d9; border-radius:20px; padding:20px;
     box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:16px; overflow:hidden;
 }
@@ -203,7 +203,7 @@ body{
 <body style="padding-top:max(12px,env(safe-area-inset-top));">
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
 #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -346,7 +346,7 @@ function logout(){
         <div class="pi-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg></div>
         <h3>Débloque tout ton historique</h3>
         <p>Tu vois ici tes 7 derniers jours. Passe à BELFIT Premium pour suivre toute ta progression sur des semaines et des mois, avec tes moyennes et tes tendances.<br><br>Ton soutien nous aide à faire grandir BELFIT.</p>
-        <a href="plans.html?v=2" class="pi-btn">Soutenir BELFIT & débloquer</a>
+        <a href="plans.html?v=3" class="pi-btn">Soutenir BELFIT & débloquer</a>
         <div class="locked-note">Historique complet · Moyennes · Tendances</div>
     </div>
 </div>
@@ -421,7 +421,7 @@ function renderKcal(){
     const summary = document.getElementById('kcalSummary');
     const sub = document.getElementById('kcalSub');
     if(!history.length){
-        chart.innerHTML = '<div class="chart-empty"><div>Aucune journée enregistrée.<br><a class="ce-btn" href="app.html?v=2">＋ Enregistrer ma journée</a></div></div>';
+        chart.innerHTML = '<div class="chart-empty"><div>Aucune journée enregistrée.<br><a class="ce-btn" href="app.html?v=3">＋ Enregistrer ma journée</a></div></div>';
         summary.innerHTML = '';
         return;
     }
@@ -556,7 +556,7 @@ function renderRecords(){
         if(best > 0) prs.push({ nom, best, reps, dateBest });
     });
     if(!prs.length){
-        w.innerHTML = '<div class="chart-empty"><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=9">Lancer une séance</a></div></div>';
+        w.innerHTML = '<div class="chart-empty"><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=10">Lancer une séance</a></div></div>';
         return;
     }
     prs.sort((a,b) => b.best - a.best);
@@ -702,7 +702,7 @@ function renderExoProg(sel){
     ).sort();
 
     if(!noms.length){
-        wrap.innerHTML = '<div class="chart-empty"><div>Aucune série enregistrée. Pendant une séance, touche « Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=9">Lancer une séance</a></div></div>';
+        wrap.innerHTML = '<div class="chart-empty"><div>Aucune série enregistrée. Pendant une séance, touche « Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=10">Lancer une séance</a></div></div>';
         return;
     }
 
@@ -754,19 +754,19 @@ renderExoProg();
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-    <a href="app.html?v=2" class="bn-item">
+    <a href="app.html?v=3" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
         <span>Journal</span>
     </a>
-    <a href="entrainements.html?v=9" class="bn-item">
+    <a href="entrainements.html?v=10" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=17" class="bn-item active">
+    <a href="mes-stats.html?v=18" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
-    <a href="plans.html?v=2" class="bn-item bn-premium" id="bnPremium">
+    <a href="plans.html?v=3" class="bn-item bn-premium" id="bnPremium">
         <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
         <span>Premium</span>
     </a>

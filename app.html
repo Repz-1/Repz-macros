@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html{background:#efece5!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#efece5 100%)!important}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculatrice Macros - BELFIT</title>
@@ -25,7 +25,7 @@
 
 body {
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:#eeece7;
+    background:#F5F6F8;
     padding:0; min-height:100vh; color:#1a1a1a;
 }
 .container { max-width:900px; margin:0 auto; padding:16px 16px 210px; }
@@ -99,7 +99,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     padding:20px; margin-bottom:16px;
 }
 /* Carte nutrition claire (style anneau) */
-.nutri-card { position:relative; background:linear-gradient(160deg,#FFFBEF 0%, #fcfbf8 42%, #fcfbf8 100%); color:#1a1a1a; border:1.5px solid #c9efe1;
+.nutri-card { position:relative; background:linear-gradient(160deg,#FFFBEF 0%, #ffffff 42%, #ffffff 100%); color:#1a1a1a; border:1.5px solid #c9efe1;
     box-shadow:0 8px 22px rgba(247,181,0,.10); padding:20px 18px; border-radius:22px; overflow:hidden; }
 .nutri-card::before { display:none; }
 .nutri-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
@@ -131,15 +131,15 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .nutri-macros .mbar { height:7px; border-radius:6px; background:#efeadd; overflow:hidden; }
 .nutri-macros .mbar span { display:block; height:100%; width:0%; border-radius:6px; transition:width .4s ease; }
 .journal-title { font-size:21px; font-weight:800; letter-spacing:-.02em; color:#191919; text-transform:none; margin:6px 2px 16px; }
-.quick-actions { display:flex; background:var(--card,#fcfbf8); border:1px solid #ece8df; border-radius:20px; overflow:hidden; margin:2px 0 18px; box-shadow:0 2px 10px rgba(24,24,24,.04); }
+.quick-actions { display:flex; background:var(--card,#ffffff); border:1px solid #ece8df; border-radius:20px; overflow:hidden; margin:2px 0 18px; box-shadow:0 2px 10px rgba(24,24,24,.04); }
 .qa-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; background:none; border:none; padding:14px 6px; font-size:12.5px; font-weight:700; color:#191919; cursor:pointer; }
 .qa-btn + .qa-btn { border-left:1px solid #ece8df; }
 .qa-ic { width:38px; height:38px; border-radius:12px; background:#FFF6DD; display:inline-flex; align-items:center; justify-content:center; color:#DFA004; }
 .qa-ic .ic { width:20px; height:20px; }
 .qa-lb { font-size:12.5px; font-weight:700; }
-.qa-btn:active { background:#faf7ef; }
+.qa-btn:active { background:#F5F6F8; }
 .calc-intro { font-size:13px; color:#8a8580; margin-bottom:14px; }
-.meal-card { position:relative; background:var(--card,#fcfbf8); border:1.5px solid #e7e2d9; border-radius:18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(60,50,40,.05); }
+.meal-card { position:relative; background:var(--card,#ffffff); border:1.5px solid #e7e2d9; border-radius:18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(60,50,40,.05); }
 .meal-card.open { overflow:visible; z-index:20; }
 .meal-head { display:flex; align-items:center; gap:14px; padding:14px 16px; cursor:pointer; }
 .mh-emo { width:58px; height:58px; border-radius:16px; background:#f2efe9; display:flex; align-items:center; justify-content:center; font-size:30px; flex-shrink:0; }
@@ -177,7 +177,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 
 /* RECIPES */
 .recipe-card {
-    position:relative; background:#fcfbf8; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; margin-bottom:16px; overflow:hidden;
+    position:relative; background:#ffffff; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; margin-bottom:16px; overflow:hidden;
     box-shadow:0 4px 20px rgba(15,23,42,.06); border-left:4px solid #F7B500;
 }
 .recipe-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:8px; }
@@ -220,7 +220,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 }
 .add-ing input {
     scroll-margin:140px; width:100%; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px;
-    font-size:14px; background:#eeece7; transition:border-color .15s, background .15s;
+    font-size:14px; background:#F5F6F8; transition:border-color .15s, background .15s;
 }
 .add-ing input:focus { outline:none; border-color:#F7B500; background:#fff; }
 .search-results {
@@ -279,7 +279,7 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 /* ===== CHOIX TYPE DE REPAS ===== */
 .mtype-sheet { display:none; position:fixed; inset:0; z-index:1000; background:rgba(15,23,42,.45); align-items:flex-end; }
 .mtype-sheet.show { display:flex; }
-.mtype-box { width:100%; background:#fcfbf8; border-radius:22px 22px 0 0; padding:18px 16px calc(18px + env(safe-area-inset-bottom)); animation:mtUp .22s ease-out; }
+.mtype-box { width:100%; background:#ffffff; border-radius:22px 22px 0 0; padding:18px 16px calc(18px + env(safe-area-inset-bottom)); animation:mtUp .22s ease-out; }
 @keyframes mtUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
 .mtype-title { font-size:16px; font-weight:800; color:#1a1a1a; text-align:center; margin-bottom:14px; }
 .mtype-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
@@ -312,7 +312,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .ah-btn { width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
 .ah-btn svg { width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .ah-btn:active { background:rgba(247,181,0,.14); transform:scale(.94); }
-.dn-arrow { width:34px; height:34px; border-radius:50%; border:1px solid #e7e3da; background:#fcfbf8; color:#1a1a1a; font-size:19px; line-height:1; cursor:pointer; }
+.dn-arrow { width:34px; height:34px; border-radius:50%; border:1px solid #e7e3da; background:#ffffff; color:#1a1a1a; font-size:19px; line-height:1; cursor:pointer; }
 .dn-arrow:disabled { opacity:.3; }
 .dn-arrow:active:not(:disabled) { background:#FFFBEF; border-color:#F7B500; }
 .dn-label { font-size:14px; font-weight:800; min-width:120px; text-align:center; }
@@ -463,11 +463,11 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 
 
 /* HISTORIQUE */
-.history-card { position:relative; background:#fcfbf8; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(60,50,40,.07); overflow:hidden; }
+.history-card { position:relative; background:#ffffff; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(60,50,40,.07); overflow:hidden; }
 .history-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
 
 /* ===== MON ÉVOLUTION (fusion) ===== */
-.evolution-card { position:relative; background:#fcfbf8; border:1.5px solid #e7e2d9; border-radius:20px; padding:20px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:14px; overflow:hidden; }
+.evolution-card { position:relative; background:#ffffff; border:1.5px solid #e7e2d9; border-radius:20px; padding:20px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:14px; overflow:hidden; }
 .evolution-card h2 { font-size:17px; font-weight:700; margin-bottom:18px; }
 
 .recipe-card::before, .history-card::before, .evolution-card::before, .weight-card::before {
@@ -479,7 +479,7 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .evo-label { font-size:13px; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.04em; margin-bottom:12px; }
 
 /* ===== SUIVI DU POIDS ===== */
-.weight-card { position:relative; background:#fcfbf8; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:14px; overflow:hidden; }
+.weight-card { position:relative; background:#ffffff; border:1.5px solid #e7e2d9; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:14px; overflow:hidden; }
 .weight-card h2 { font-size:15px; font-weight:600; margin-bottom:12px; }
 .weight-input-row { display:flex; gap:8px; margin-bottom:14px; }
 .weight-input-row input {
@@ -3207,7 +3207,7 @@ function detailRepasHtml(h){
                 <span>${i.n}</span>
                 <span style="color:#94a3b8;flex-shrink:0;">${i.u==='u' ? '×'+i.p : i.p+' g'}</span>
             </div>`).join('');
-        html += `<div style="background:#fcfbf8;border:1px solid #e7e3da;border-left:3px solid #F7B500;border-radius:12px;padding:11px 13px;margin-bottom:9px;">
+        html += `<div style="background:#ffffff;border:1px solid #e7e3da;border-left:3px solid #F7B500;border-radius:12px;padding:11px 13px;margin-bottom:9px;">
             <div style="font-weight:800;font-size:14px;margin-bottom:5px;">${r.name}${mult}</div>
             <div style="font-size:12.5px;color:#475569;">${ings}</div>
         </div>`;
@@ -3753,7 +3753,7 @@ function montrerModalePremiumRepas(){
             <div style="font-size:42px;margin-bottom:10px">🍽️</div>
             <h3 style="font-size:19px;font-weight:800;margin-bottom:10px">Les idées repas sont Premium</h3>
             <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Laisse BELFIT te suggérer quoi manger selon tes envies et tes calories restantes. Tu peux toujours composer tes repas toi-même gratuitement 😊<br><br>Ton soutien fait grandir BELFIT 🙏</p>
-            <a href="plans.html?v=2" style="display:block;background:#8F6200;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
+            <a href="plans.html?v=3" style="display:block;background:#8F6200;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
             <button onclick="document.getElementById('cpPremOverlayRepas').remove()" style="background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px">Plus tard</button>
         </div>
     </div>`;
@@ -3767,7 +3767,7 @@ function montrerModalePremiumCalc(){
             <div style="font-size:42px;margin-bottom:10px">✨</div>
             <h3 style="font-size:19px;font-weight:800;margin-bottom:10px">Calcul personnalisé Premium</h3>
             <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Ce calcul affine tes besoins selon ton travail ET ton sport, pour un résultat vraiment sur mesure. Le calcul simple reste gratuit juste au-dessus 😊<br><br>Ton soutien fait grandir BELFIT 🙏</p>
-            <a href="plans.html?v=2" style="display:block;background:#8F6200;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
+            <a href="plans.html?v=3" style="display:block;background:#8F6200;color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px">Soutenir BELFIT & débloquer</a>
             <button onclick="document.getElementById('cpPremOverlay').remove()" style="background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px">Plus tard</button>
         </div>
     </div>`;
@@ -3799,15 +3799,15 @@ document.addEventListener('DOMContentLoaded', () => {
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
         <span>Journal</span>
     </a>
-    <a href="entrainements.html?v=9" class="bn-item">
+    <a href="entrainements.html?v=10" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=17" class="bn-item">
+    <a href="mes-stats.html?v=18" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
-    <a href="plans.html?v=2" class="bn-item bn-premium" id="bnPremium">
+    <a href="plans.html?v=3" class="bn-item bn-premium" id="bnPremium">
         <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
         <span>Premium</span>
     </a>

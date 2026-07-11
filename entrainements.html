@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>html{background:#efece5!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#efece5 100%)!important}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f7efd9">
@@ -16,7 +16,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
     --orange:#F7B500;   /* Jaune BelFit (couleur principale) */
-    --bg:#F8F8F8;
+    --bg:#F5F6F8;
     --card:#ffffff;
     --dark:#1f2937;
     --line:#e5e7eb;
@@ -61,7 +61,7 @@ body {
 .wlog-meta { font-size:12px; font-weight:600; color:var(--text-dim); margin-top:5px; display:flex; align-items:center; gap:10px; }
 .wlog-day.is-today .wlog-date { color:#DFA004; }
 .wlog-tags { display:flex; flex-wrap:wrap; gap:6px; flex:1; }
-.wlog-tag { font-size:12px; font-weight:700; background:#FDF6E3; color:#8F6200; padding:4px 10px; border-radius:8px; }
+.wlog-tag { font-size:12px; font-weight:700; background:#F5F6F8; color:#8F6200; padding:4px 10px; border-radius:8px; }
 .wlog-tag.repos { background:#f1f5f9; color:#64748b; }
 .wlog-day.is-repos { background:#DFA004; border-radius:12px; border-top:none; padding-left:12px; padding-right:12px; margin:3px 0; }
 .wlog-day.is-repos + .wlog-day { border-top:none; }
@@ -366,7 +366,7 @@ body.timer-open .water-fab{display:none;}
 <body style="padding-top:max(12px,env(safe-area-inset-top));">
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
 #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -488,7 +488,7 @@ function logout() {
     </a>
 
     <!-- Séance libre (gratuit) -->
-    <a href="ma-seance.html?v=10" class="choice ph" style="background-image:url('img/card-libre.jpg')">
+    <a href="ma-seance.html?v=11" class="choice ph" style="background-image:url('img/card-libre.jpg')">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
         <h3>Séance libre</h3>
         <p>Compose toi-même ton entraînement, exercice par exercice.</p>
@@ -496,7 +496,7 @@ function logout() {
     </a>
 
     <!-- Mes programmes (Premium) -->
-    <a href="programmes.html?v=4" class="choice ph locked" id="choiceLib" onclick="return checkPremium(event)" style="background-image:url('img/card-programmes.jpg')">
+    <a href="programmes.html?v=5" class="choice ph locked" id="choiceLib" onclick="return checkPremium(event)" style="background-image:url('img/card-programmes.jpg')">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg></span>
         <h3>Mes programmes</h3>
@@ -507,7 +507,7 @@ function logout() {
 </div>
 
 <!-- DERNIÈRE SÉANCE -->
-<a class="last-session" id="lastSession" href="ma-seance.html?v=10">
+<a class="last-session" id="lastSession" href="ma-seance.html?v=11">
     <span class="ls-ic">🔥</span>
     <span class="ls-body">
         <span class="ls-label">Dernière séance</span>
@@ -544,7 +544,7 @@ function logout() {
         <div class="pm-icon">💪</div>
         <h3>Les programmes sont Premium</h3>
         <p>Les programmes structurés et sur mesure font partie de BELFIT Premium. En attendant, tu peux composer ta séance librement, c'est gratuit !<br><br>Ton soutien nous aide à faire grandir BELFIT 🙏</p>
-        <a href="plans.html?v=2" class="pm-btn">Soutenir BELFIT & débloquer</a>
+        <a href="plans.html?v=3" class="pm-btn">Soutenir BELFIT & débloquer</a>
         <button class="pm-close" onclick="fermerPremium()">Plus tard</button>
     </div>
 </div>
@@ -623,11 +623,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=17" class="bn-item">
+    <a href="mes-stats.html?v=18" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
-    <a href="plans.html?v=2" class="bn-item bn-premium" id="bnPremium">
+    <a href="plans.html?v=3" class="bn-item bn-premium" id="bnPremium">
         <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
         <span>Premium</span>
     </a>
@@ -660,7 +660,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     const b = document.createElement('a');
     b.href = 'index.html';
     b.id = 'inviteBandeau';
-    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FDF6E3;border-bottom:1px solid #F3DDA0;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#F5F6F8;border-bottom:1px solid #F3DDA0;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
     b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }

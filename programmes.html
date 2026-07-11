@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html{background:#efece5!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#efece5 100%)!important}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f7efd9">
@@ -11,7 +11,7 @@
 <title>BELFIT — Programmes</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-:root { --orange:#F7B500; --bg:#eeece7; --card:#fcfbf8; --dark:#1f2937;
+:root { --orange:#F7B500; --bg:#F5F6F8; --card:#ffffff; --dark:#1f2937;
     --line:#e7e3da; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px; }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:var(--bg); color:var(--text); min-height:100vh; padding:16px 16px 40px; }
@@ -133,7 +133,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 <body>
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
 #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -605,7 +605,7 @@ function showSeances(catKey, progId){
     document.getElementById('seanceIntro').textContent = `${prog.duree} · niveau ${prog.niveau}. Choisis une séance pour voir les exercices.`;
     document.getElementById('seanceList').innerHTML = prog.seances.map((s,i) => {
         const seanceId = progId + '-' + i;
-        return `<div class="seance-card" onclick="window.location.href='ma-seance.html?v=10&s=${encodeURIComponent(seanceId)}&t=${encodeURIComponent(s.titre)}&f=${filtre}'">
+        return `<div class="seance-card" onclick="window.location.href='ma-seance.html?v=11&s=${encodeURIComponent(seanceId)}&t=${encodeURIComponent(s.titre)}&f=${filtre}'">
             <div class="seance-num">J${i+1}</div>
             <div class="seance-info"><div class="seance-title">${s.titre}</div><div class="seance-sub">${s.sub}</div></div>
             <div class="seance-arrow">→</div>
