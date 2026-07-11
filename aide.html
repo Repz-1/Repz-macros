@@ -178,9 +178,24 @@ function envoyerMessage(){
     }
 }
 function mailtoFallback(msg, email){
-    const sujet = encodeURIComponent('Assistance BELFIT');
-    const corps = encodeURIComponent('Message : ' + msg + '\n\nMon compte : ' + email);
-    window.location.href = 'mailto:contact@belfit.be?subject=' + sujet + '&body=' + corps;
+    // EmailJS indisponible : on prévient honnêtement au lieu d'ouvrir l'appli mail par surprise
+    const panel = document.getElementById('chatPanel');
+    if(panel){
+        const sujet = encodeURIComponent(typeDemande + ' — BELFIT');
+        const corps = encodeURIComponent('Message : ' + msg + '\n\nMon compte : ' + email);
+        const lien = 'mailto:contact@belfit.be?subject=' + sujet + '&body=' + corps;
+        let fb = document.getElementById('chatFallback');
+        if(!fb){
+            fb = document.createElement('div');
+            fb.id = 'chatFallback';
+            fb.style.cssText = 'margin-top:10px;background:#FFF9E8;border:1px solid #F3D98A;border-radius:12px;padding:12px;font-size:13px;color:#8F6200;font-weight:600;line-height:1.5;';
+            const zone = document.getElementById('chatMsg').parentElement;
+            zone.appendChild(fb);
+        }
+        fb.innerHTML = 'L\'envoi direct est momentanément indisponible. '
+            + '<a href="' + lien + '" style="display:inline-block;margin-top:8px;background:#F7B500;color:#181818;text-decoration:none;font-weight:800;padding:9px 14px;border-radius:10px;">Envoyer par e-mail</a>'
+            + '<span style="display:block;margin-top:6px;font-size:11.5px;color:#9a8a5a;">Ton message est prêt — appuie sur Envoyer dans ton appli mail.</span>';
+    }
 }
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
