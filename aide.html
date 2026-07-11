@@ -109,7 +109,7 @@ const FAQ = [
     { q:"Comment annuler mon abonnement ?", a:"Ton abonnement est géré par notre partenaire de paiement Lemon Squeezy : utilise le lien de gestion reçu dans ton e-mail de confirmation d'achat, ou écris-nous via la bulle de contact et on s'en occupe." },
     { q:"J'ai un code promo, où l'utiliser ?", a:"Sur la page Premium au moment de choisir ta formule. Si tu as un souci avec un code, contacte-nous via la bulle." },
     { q:"L'app fonctionne-t-elle hors ligne ?", a:"Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium." },
-    { q:"Comment vous contacter ?", a:"Via la bulle de conversation en bas à droite de cette page, ou par e-mail à coach@belfit.be. Réponse sous 24–48h." }
+    { q:"Comment vous contacter ?", a:"Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h." }
 ];
 document.getElementById('faqCard').innerHTML = FAQ.map((f,i)=>`
     <div class="faq-item" id="faq${i}">
@@ -163,7 +163,7 @@ function envoyerMessage(){
 function mailtoFallback(msg, email){
     const sujet = encodeURIComponent('Assistance BELFIT');
     const corps = encodeURIComponent('Message : ' + msg + '\n\nMon compte : ' + email);
-    window.location.href = 'mailto:coach@belfit.be?subject=' + sujet + '&body=' + corps;
+    window.location.href = 'mailto:contact@belfit.be?subject=' + sujet + '&body=' + corps;
 }
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
