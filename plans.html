@@ -13,7 +13,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
     --orange:#F7B500; --green:#8F6200; --bg:#F5F6F8; --card:#ffffff;
-    --dark:#1f2937; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px;
+    --dark:#1f2937; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#565b66; --radius:20px;
 }
 body {
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
@@ -55,6 +55,7 @@ body {
 .pc-price { font-size:16px; font-weight:800; margin-top:10px; }
 .pc-permo { font-size:12px; font-weight:700; color:var(--green); margin-top:3px; }
 .pc-note { font-size:10.5px; color:var(--text-dim); margin-top:8px; font-weight:600; }
+.badge-be-mini { text-align:center; font-size:11.5px; color:#9aa0aa; font-weight:600; margin:8px 0 2px; }
 .cafe-line { text-align:center; font-size:13px; color:var(--text-dim); font-weight:600; margin:14px 0 18px; }
 .badge-be { display:inline-block; background:#fff; border:1.5px solid var(--line); border-radius:30px; padding:7px 14px; font-size:12px; font-weight:700; color:var(--text); margin-top:12px; }
 
@@ -68,15 +69,19 @@ body {
 .daydream h3 { font-size:20px; font-weight:800; letter-spacing:-.02em; margin-bottom:18px; text-align:center; }
 .dd-item { display:flex; align-items:flex-start; gap:14px; padding:11px 0; border-top:1px solid var(--line); }
 .dd-item:first-of-type { border-top:none; padding-top:2px; }
-.dd-emo { flex-shrink:0; width:34px; height:34px; border-radius:10px; background:#FFF4CC; display:flex; align-items:center; justify-content:center; }
-.dd-emo svg { width:19px; height:19px; fill:none; stroke:#DFA004; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.dd-emo { flex-shrink:0; width:40px; height:40px; border-radius:12px; background:#FFF4CC; display:flex; align-items:center; justify-content:center; }
+.dd-emo svg { width:22px; height:22px; fill:none; stroke:#DFA004; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
 .dd-txt { display:flex; flex-direction:column; }
 .dd-txt b { font-size:15px; font-weight:800; }
 .dd-txt span { font-size:13.5px; color:var(--text-dim); font-weight:600; margin-top:1px; }
 .unlock { background:linear-gradient(135deg,#191919,#2a2620); border-radius:22px; padding:22px 20px; margin-bottom:26px; }
 .unlock h3 { font-size:19px; font-weight:800; letter-spacing:-.02em; color:#fff; margin-bottom:16px; text-align:center; }
 .unlock-list { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
-.unlock-list li { display:flex; align-items:center; gap:11px; font-size:14.5px; font-weight:700; color:#f5f2ea; }
+.unlock-list li { display:flex; align-items:flex-start; gap:11px; font-size:14.5px; font-weight:700; color:#f5f2ea; }
+.unlock-list li b { font-weight:800; }
+.unlock-list li span { display:block; font-size:12.5px; font-weight:500; color:#c9c4b8; margin-top:2px; line-height:1.4; }
+.unlock-list li > div, .unlock-list li { flex-direction:column; }
+.unlock-list li { flex-direction:row; }
 .unlock-list li::before { content:'✓'; flex-shrink:0; width:24px; height:24px; border-radius:50%; background:var(--orange); color:#181818; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .rassur { text-align:center; font-size:13.5px; color:var(--text-dim); margin-bottom:16px; }
 .deja-prem { background:linear-gradient(135deg,#FFFBEF,#ffffff); border:1.5px solid #F3E2A8; color:#7a5600; text-align:center; padding:16px 16px 14px; border-radius:16px; margin-bottom:16px; }
@@ -90,8 +95,8 @@ body {
 .cmp-h { text-align:center; font-size:12px; font-weight:800; letter-spacing:.05em; padding:9px 0; }
 .cmp-h.free { color:var(--text-dim); }
 .cmp-h.prem { background:var(--orange); color:#181818; border-radius:10px 10px 0 0; }
-.cmp-row { border-bottom:1px solid var(--line); }
-.cmp-row:first-of-type { border-top:1px solid var(--line); }
+.cmp-row { }
+
 .cmp-feat { display:flex; align-items:center; padding:17px 12px 17px 2px; font-size:14px; font-weight:600; line-height:1.3; }
 .cmp-col { display:flex; align-items:center; justify-content:center; padding:15px 0; }
 .cmp-col.prem { background:rgba(247,181,0,.10); box-shadow:inset 1px 0 0 rgba(247,181,0,.25), inset -1px 0 0 rgba(247,181,0,.25); }
@@ -103,7 +108,8 @@ body {
 .ck-no { color:#c9c4ba; font-size:15px; font-weight:700; }
 .ck-txt { font-size:11px; font-weight:800; color:#8a857c; }
 .ck-txt.prem-txt { color:#8F6200; }
-.cmp-row.star { background:linear-gradient(90deg,rgba(247,181,0,.07),transparent); }
+.cmp-row.star { background:linear-gradient(90deg,rgba(247,181,0,.10),transparent); border-radius:8px; }
+.cmp-row:nth-child(even) { background:#FAFAFB; border-radius:8px; }
 .cmp-row.star .cmp-feat b { font-weight:800; }
 .free-plan { margin-top:2px; }
 .free-plan .plan-desc { margin-bottom:16px; }
@@ -116,8 +122,11 @@ body {
     transition:all .15s; }
 .plan-btn.free { background:var(--dark); color:#fff; }
 .plan-btn.free:active { transform:scale(.98); opacity:.9; }
-.plan-btn.premium { background:var(--orange); color:#fff; }
-.plan-btn.premium:active { transform:scale(.98); opacity:.9; }
+@keyframes ctaGlow { 0%,100% { box-shadow:0 6px 20px rgba(247,181,0,.38); } 50% { box-shadow:0 8px 28px rgba(247,181,0,.62); } }
+.plan-btn.premium { background:linear-gradient(135deg,#FFC933,#F7B500 55%,#E5A100); color:#181818; box-shadow:0 6px 20px rgba(247,181,0,.42); animation:ctaGlow 2.6s ease-in-out infinite; position:relative; overflow:hidden; }
+.plan-btn.premium::after { content:''; position:absolute; top:0; left:-60%; width:40%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent); transform:skewX(-20deg); animation:ctaShine 3.4s ease-in-out infinite; }
+@keyframes ctaShine { 0% { left:-60%; } 55%,100% { left:130%; } }
+.plan-btn.premium:active { transform:scale(.97); }
 
 .faq { max-width:480px; margin:40px auto 0; }
 
@@ -279,8 +288,7 @@ function logout() {
 
 <div class="hero">
     <h2>Atteins ton objectif,<br>sans y penser</h2>
-    <p>BelFit calcule tes calories, tes macros et ton plan sur mesure — comme un diététicien, dans ta poche.</p>
-    <div class="badge-be">🇧🇪 App belge indépendante — soutiens BELFIT !</div>
+    <p>Tes calories, tes macros et ton plan sur mesure — comme un diététicien, dans ta poche.</p>
 </div>
 
 <!-- BÉNÉFICES : montrer le résultat avant le prix -->
@@ -295,12 +303,12 @@ function logout() {
 <div class="unlock">
     <h3>Ce que Premium débloque</h3>
     <ul class="unlock-list">
-        <li>Calcul automatique des calories</li>
-        <li>Macros personnalisées</li>
-        <li>Programme alimentaire intelligent</li>
-        <li>Liste de courses automatique</li>
-        <li>Programmes d'entraînement complets</li>
-        <li>Historique illimité</li>
+        <li><div><b>Calcul automatique des calories</b><span>Plus besoin de compter, tout est fait pour toi.</span></div></li>
+        <li><div><b>Macros personnalisées</b><span>Protéines, glucides et lipides ajustés à ton objectif.</span></div></li>
+        <li><div><b>Programme alimentaire intelligent</b><span>Un vrai plan repas construit pour toi.</span></div></li>
+        <li><div><b>Liste de courses automatique</b><span>Générée chaque semaine, prête à l'emploi.</span></div></li>
+        <li><div><b>Programmes d'entraînement complets</b><span>15 programmes détaillés, séance par séance.</span></div></li>
+        <li><div><b>Historique illimité</b><span>Suis ta progression sur des mois, sans limite.</span></div></li>
     </ul>
 </div>
 
@@ -366,6 +374,7 @@ function logout() {
                 <div class="pc-note">Meilleur prix</div>
             </div>
         </div>
+        <div class="badge-be-mini">🇧🇪 App belge indépendante</div>
         <div class="cafe-line">À partir de 0,92 € par semaine — moins cher qu'un café.</div>
 
         <div class="rassur">✓ <strong>Sans engagement</strong>, résiliable à tout moment</div>
