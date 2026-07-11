@@ -233,6 +233,12 @@ body {
             <input type="password" class="input" id="registerPasswordConfirm" placeholder="••••••••" required>
         </div>
 
+        <div class="form-group">
+            <label class="label">Code de parrainage <span style="font-weight:500;color:#9aa0aa">(optionnel)</span></label>
+            <input type="text" class="input" id="registerRef" placeholder="Ex : RACI-4829" autocapitalize="characters" style="text-transform:uppercase">
+            <div class="field-hint" id="refHint" style="display:none;color:#059669">Code de parrainage détecté depuis ton lien d'invitation ✓</div>
+        </div>
+
         <div class="consent-group">
             <input type="checkbox" id="registerConsent" onchange="document.getElementById('btnRegister').disabled = !this.checked">
             <label for="registerConsent">J'accepte la <a href="confidentialite.html" target="_blank">politique de confidentialité</a> de BELFIT et consens au traitement de mes données (dont poids et objectifs nutritionnels) pour mon suivi personnalisé.</label>
@@ -393,6 +399,20 @@ function checkPwStrength(){
     }
 }
 
+// Pré-remplir le code de parrainage depuis le lien d'invitation (?ref=XXX)
+(function(){
+    const ref = new URLSearchParams(location.search).get('ref');
+    if(ref){
+        const el = document.getElementById('registerRef');
+        if(el){
+            el.value = ref.toUpperCase();
+            const hint = document.getElementById('refHint');
+            if(hint) hint.style.display = 'block';
+        }
+        try { sessionStorage.setItem('belfit_ref', ref.toUpperCase()); } catch(e){}
+    }
+})();
+
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const firstName = document.getElementById('registerFirstName').value.trim();
@@ -441,9 +461,21 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             await cred.user.updateProfile({ displayName: firstName });
             // RGPD : preuve du consentement (horodatage + version de la politique)
             try {
-                await firebase.firestore().collection('users').doc(cred.user.uid).set({
+                const docUser = {
                     consentRGPD: { accepte: true, date: new Date().toISOString(), version: '2026-07' }
-                }, { merge: true });
+                };
+                // Parrainage : code du parrain saisi ou capté via le lien d'invitation
+                const refEl = document.getElementById('registerRef');
+                const refCode = ((refEl && refEl.value) || sessionStorage.getItem('belfit_ref') || '').trim().toUpperCase();
+                if(refCode){
+                    docUser.parraine_par = refCode;
+                    docUser.parrainage_date = new Date().toISOString();
+                    docUser.parrainage_recompense = false; // passera à true quand l'avantage sera accordé
+                }
+                // Code de parrainage propre au nouvel utilisateur : PRENOM-XXXX
+                const suffixe = Math.floor(1000 + Math.random()*9000);
+                docUser.mon_code_parrainage = (firstName.toUpperCase().replace(/[^A-Z]/g,'').slice(0,10) || 'BELFIT') + '-' + suffixe;
+                await firebase.firestore().collection('users').doc(cred.user.uid).set(docUser, { merge: true });
             } catch(e){ /* non bloquant */ }
         }
         localStorage.setItem('repz_firstName', firstName);
