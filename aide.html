@@ -137,13 +137,30 @@ window.addEventListener('popstate', function(){
     const el = document.getElementById('chatPanel');
     if(el && el.classList.contains('show')){ el.classList.remove('show'); }
 });
+// Type de demande (question / suggestion), pilotable via ?chat=
+let typeDemande = 'Message assistance';
+(function(){
+    const c = new URLSearchParams(location.search).get('chat');
+    if(!c) return;
+    if(c === 'suggestion') typeDemande = 'Suggestion d\'amélioration';
+    else if(c === 'question') typeDemande = 'Question';
+    // Ouvrir la bulle automatiquement à l'arrivée
+    window.addEventListener('DOMContentLoaded', function(){
+        setTimeout(function(){
+            const el = document.getElementById('chatPanel');
+            if(el && !el.classList.contains('show')) toggleChat();
+            const msg = document.getElementById('chatMsg');
+            if(msg && c === 'suggestion') msg.placeholder = 'Ton idée pour améliorer BELFIT...';
+        }, 250);
+    });
+})();
 function envoyerMessage(){
     const msg = document.getElementById('chatMsg').value.trim();
     if(!msg){ alert('Écris ton message d\'abord.'); return; }
     const user = auth.currentUser;
     const email = user && user.email ? user.email : '';
     const params = {
-        type_demande: 'Message assistance',
+        type_demande: typeDemande,
         client_email: email,
         prenom: localStorage.getItem('repz_firstName') || '—',
         message: msg
