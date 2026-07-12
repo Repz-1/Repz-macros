@@ -434,14 +434,15 @@ body.search-open .fab-row { display:none; }
 
 /* ===== IDÉES RECETTES ===== */
 .eat-card { position:relative; background:transparent; border:none; box-shadow:none; margin-bottom:18px; overflow:visible; }
+.eat-card { text-align:center; }
 .eat-toggle {
-    display:inline-flex; align-items:center; justify-content:center; gap:10px; width:fit-content; max-width:52%;
+    display:inline-flex; align-items:center; justify-content:center; gap:10px; width:fit-content; max-width:80%; margin:0 auto;
     background:linear-gradient(135deg,#a855f7,#db2777); color:#fff; border:none; padding:11px 18px;
     font-size:13.5px; font-weight:800; cursor:pointer; border-radius:22px;
     box-shadow:0 4px 14px rgba(190,24,93,.28);
 }
 .eat-toggle:active { filter:brightness(.95); transform:scale(.98); }
-.eat-body { max-height:0; overflow:hidden; transition:max-height .35s ease, margin .35s ease; padding:0 14px; }
+.eat-body { max-height:0; overflow:hidden; transition:max-height .35s ease, margin .35s ease; padding:0 14px; text-align:left; }
 .eat-body.open { max-height:1600px; padding:16px 14px 18px; margin-top:12px; background:#fdf4f8; border:1.5px solid #f3d9e7; border-radius:18px; box-shadow:0 6px 18px rgba(160,60,110,.08); }
 .eat-intro { font-size:13.5px; color:#7a5c6b; margin-bottom:14px; }
 .eat-intro b { color:#db2777; font-size:15px; }
@@ -982,7 +983,7 @@ function afficherMessageInvite() {
 
     <!-- QUOI MANGER ? -->
     <div class="eat-card">
-        <button class="eat-toggle" onclick="toggleEat()" style="display:none;">
+        <button class="eat-toggle" onclick="toggleEat()">
             <span class="eat-lbl"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> Idées recettes</span>
             <span style="display:flex;align-items:center;gap:8px;">
                 <span id="eatLock" style="font-size:13px;">🔒</span>
@@ -1026,10 +1027,6 @@ function afficherMessageInvite() {
     <button class="water-fab" onclick="openWater()" aria-label="Compteur d'eau">
         <span style="font-size:18px;">💧</span>
         <span class="wf-count" id="waterFabCount">0 L</span>
-    </button>
-    <button class="recipes-fab" onclick="ouvrirRecettesDepuisBulle()" aria-label="Idées recettes">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px;"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg>
-        <span>Idées recettes</span>
     </button>
     <button class="fab" onclick="openMealTypeSheet()" aria-label="Ajouter un repas">
         <span class="fab-plus">＋</span>
