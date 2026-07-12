@@ -250,7 +250,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .modal-body h3 { font-size:20px; font-weight:800; margin-bottom:6px; }
 .modal-meta { font-size:13px; color:var(--orange); font-weight:700; margin-bottom:12px; }
 .modal-desc { font-size:14px; color:var(--text-dim); line-height:1.6; }
-.modal-close { width:100%; margin-top:18px; background:var(--dark); color:#fff; border:none;
+.modal-add { width:100%; margin-top:18px; background:#F7B500; color:#1a1a1a; border:none;
+    padding:14px; border-radius:12px; font-size:15px; font-weight:800; cursor:pointer; display:none; }
+.modal-add.added { background:#F5F6F8; color:#1a1a1a; }
+.modal-add.visible { display:block; }
+.modal-close { width:100%; margin-top:10px; background:var(--dark); color:#fff; border:none;
     padding:13px; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; }
 
 /* ===== TIMER ENTRE SÉRIES ===== */
@@ -477,6 +481,7 @@ function logout(){
             <h3 id="modalName"></h3>
             <div class="modal-meta" id="modalMeta"></div>
             <div class="modal-desc" id="modalDesc"></div>
+            <button class="modal-add" id="modalAdd" onclick="modalToggleSelect()">Ajouter à ma séance</button>
             <button class="modal-close" onclick="closeModal()">Fermer</button>
         </div>
     </div>
@@ -1113,8 +1118,23 @@ function carouselMove(dir){
   renderDots();
 }
 
+let modalCtx = null; // {mKey, i} quand ouvert depuis la liste de choix
+function majModalAdd(){
+  const b = document.getElementById('modalAdd');
+  if(!modalCtx){ b.classList.remove('visible'); return; }
+  const sel = selected[modalCtx.mKey].has(modalCtx.i);
+  b.classList.add('visible');
+  b.classList.toggle('added', sel);
+  b.textContent = sel ? '✓ Dans ma séance — retirer' : 'Ajouter à ma séance';
+}
+function modalToggleSelect(){
+  if(!modalCtx) return;
+  toggleSelect(modalCtx.mKey, modalCtx.i);
+  majModalAdd();
+}
 function openModal(mKey, i){
   const ex = EXERCISES[mKey][i];
+  modalCtx = {mKey, i};
   document.getElementById('modalName').textContent = ex.nom;
   document.getElementById('modalMeta').textContent = ex.meta;
   document.getElementById('modalDesc').textContent = ex.desc;
@@ -1131,6 +1151,7 @@ function openModal(mKey, i){
   carouselIndex = 0;
   document.getElementById('carouselTrack').style.transform = 'translateX(0%)';
   renderDots();
+  majModalAdd();
   document.getElementById('photoModal').classList.add('show');
 }
 function closeModal(){ document.getElementById('photoModal').classList.remove('show'); }
@@ -1141,6 +1162,8 @@ let sessionRefs = [];
 function openSessionPhoto(i){
   const ex = sessionExs[i];
   if(!ex) return;
+  modalCtx = null;
+  document.getElementById('modalAdd').classList.remove('visible');
   document.getElementById('modalName').textContent = ex.nom;
   document.getElementById('modalMeta').textContent = ex.meta || '';
   document.getElementById('modalDesc').textContent = ex.desc || '';
