@@ -173,6 +173,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     flex:1; background:#fff; border:1.5px solid var(--line); border-radius:14px;
     padding:13px; font-size:14.5px; font-weight:700; color:var(--text); cursor:pointer;
 }
+.sc-rest {
+    flex:1; background:var(--gold); border:1.5px solid var(--gold); border-radius:14px;
+    padding:13px; font-size:14.5px; font-weight:800; color:#181818; cursor:pointer;
+}
+.sc-rest:active { transform:scale(.98); }
+.sc-rest.running { background:#181818; border-color:#181818; color:var(--gold); }
 .sc-pause.paused { background:#FFF9E8; border-color:var(--orange); color:#8F6200; }
 .sc-pause:active { transform:scale(.98); }
 .sc-stop {
@@ -433,6 +439,7 @@ function logout(){
     <button class="start-session-btn" id="startSessionBtn" onclick="demarrerDureeSeance()">Commencer</button>
     <div class="session-controls" id="sessionControls">
         <button class="sc-pause" id="scPauseBtn" onclick="togglePauseSeance()">⏸ Pause</button>
+        <button class="sc-rest" id="scRestBtn" onclick="toggleTimer()">⏱ Repos</button>
         <button class="sc-stop" onclick="terminerSeance()">Terminer la séance</button>
     </div>
     <div id="sessionList"></div>
@@ -1411,15 +1418,18 @@ function dismissChronoHint(){
 function updateChronoFab(){
     const fab = document.getElementById('chronoFab');
     const t = document.getElementById('chronoFabTime');
-    if(!fab || !t) return;
+    const restBtn = document.getElementById('scRestBtn');
     if(timerRunning){
         const min = Math.floor(totalSeconds / 60);
         const sec = totalSeconds % 60;
-        t.textContent = (min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
-        fab.classList.add('running');
+        const txt = (min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
+        if(t) t.textContent = txt;
+        if(fab) fab.classList.add('running');
+        if(restBtn){ restBtn.textContent = '⏱ ' + txt; restBtn.classList.add('running'); }
     } else {
-        t.textContent = '';
-        fab.classList.remove('running');
+        if(t) t.textContent = '';
+        if(fab) fab.classList.remove('running');
+        if(restBtn){ restBtn.textContent = '⏱ Repos'; restBtn.classList.remove('running'); }
     }
 }
 
