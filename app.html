@@ -982,7 +982,7 @@ function afficherMessageInvite() {
 
     <!-- QUOI MANGER ? -->
     <div class="eat-card">
-        <button class="eat-toggle" onclick="toggleEat()" style="display:none;">
+        <button class="eat-toggle" onclick="toggleEat()">
             <span class="eat-lbl"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> Idées recettes</span>
             <span style="display:flex;align-items:center;gap:8px;">
                 <span id="eatLock" style="font-size:13px;">🔒</span>
@@ -1001,7 +1001,7 @@ function afficherMessageInvite() {
         </div>
     </div>
 
-    <div class="journal-title">Mes repas</div>
+    
     <div id="recipesContainer"></div>
 
     <!-- BULLE POIDS -->
@@ -1026,10 +1026,6 @@ function afficherMessageInvite() {
     <button class="water-fab" onclick="openWater()" aria-label="Compteur d'eau">
         <span style="font-size:18px;">💧</span>
         <span class="wf-count" id="waterFabCount">0 L</span>
-    </button>
-    <button class="recipes-fab" onclick="ouvrirRecettesDepuisBulle()" aria-label="Idées recettes">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px;"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg>
-        <span>Idées recettes</span>
     </button>
     <button class="fab" onclick="openMealTypeSheet()" aria-label="Ajouter un repas">
         <span class="fab-plus">＋</span>
