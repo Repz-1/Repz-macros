@@ -963,7 +963,7 @@ function renderWlog(){
         const estRepos = vals.includes('repos');
         // Ligne méta : durée de la séance de ce jour
         let meta = '';
-        if(!estRepos && durByIso[iso] && durByIso[iso] >= 120){ // on ignore les séances tests (< 2 min)
+        if(!estRepos && durByIso[iso] && durByIso[iso] >= 1800){ // durée affichée seulement à partir de 30 min
             const dtxt = fmtDuree(durByIso[iso]);
             if(dtxt) meta = `<div class="wlog-meta"><span>⏱ ${dtxt}</span></div>`;
         }
