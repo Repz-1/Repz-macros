@@ -605,7 +605,7 @@ function showSeances(catKey, progId){
     document.getElementById('seanceIntro').textContent = `${prog.duree} · niveau ${prog.niveau}. Choisis une séance pour voir les exercices.`;
     document.getElementById('seanceList').innerHTML = prog.seances.map((s,i) => {
         const seanceId = progId + '-' + i;
-        return `<div class="seance-card" onclick="window.location.href='ma-seance.html?v=11&s=${encodeURIComponent(seanceId)}&t=${encodeURIComponent(s.titre)}&f=${filtre}'">
+        return `<div class="seance-card" onclick="window.location.href='ma-seance.html?v=12&s=${encodeURIComponent(seanceId)}&t=${encodeURIComponent(s.titre)}&f=${filtre}'">
             <div class="seance-num">J${i+1}</div>
             <div class="seance-info"><div class="seance-title">${s.titre}</div><div class="seance-sub">${s.sub}</div></div>
             <div class="seance-arrow">→</div>

@@ -264,17 +264,17 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
 /* Bouton flottant chrono */
 .chrono-fab {
-    position:fixed; bottom:80px; right:16px; z-index:46;
-    width:52px; height:52px; border-radius:50%;
+    position:fixed; bottom:88px; right:16px; z-index:60;
+    width:66px; height:66px; border-radius:50%;
     background:var(--gold); color:#181818; border:none; cursor:pointer;
     display:none; flex-direction:column; align-items:center; justify-content:center;
-    box-shadow:0 6px 18px rgba(247,181,0,.45); opacity:.95;
+    box-shadow:0 8px 22px rgba(247,181,0,.55); opacity:1;
     transition:opacity .15s, transform .15s;
 }
 .chrono-fab.visible { display:flex; }
-.chrono-fab svg { width:24px; height:24px; }
+.chrono-fab svg { width:30px; height:30px; }
 .chrono-fab:active { opacity:1; transform:scale(.94); }
-.chrono-fab-time { font-size:10px; font-weight:800; line-height:1; margin-top:1px; }
+.chrono-fab-time { font-size:11px; font-weight:800; line-height:1; margin-top:2px; }
 .chrono-fab.running { opacity:1; background:#181818; color:var(--gold); box-shadow:0 6px 20px rgba(0,0,0,.45); }
 
 /* Message d'info chrono */
