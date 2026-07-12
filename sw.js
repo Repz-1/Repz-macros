@@ -1,5 +1,5 @@
 /* BELFIT service worker — installabilité + hors-ligne de base */
-const CACHE = 'belfit-v17';
+const CACHE = 'belfit-v18';
 const CORE = ['./index.html','./app.html','./manifest.json','./icon-192-v7.png','./icon-512-v7.png','./belfit-logo-header.png'];
 
 self.addEventListener('install', e => {
