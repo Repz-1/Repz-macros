@@ -735,7 +735,7 @@ function renderSessionList(){
     const chips = (muscle ? `<span class="ex-chip">${muscle}</span>` : '')
                 + (last ? `<span class="ex-chip gold">Dern. ${last}</span>` : '');
     return `<div class="done-item" onclick="toggleDone(this)" style="flex-wrap:wrap">
-      <div class="done-check">✓</div>
+      <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
       <div class="done-info">
         <div class="done-name">${ex.nom}</div>
         <div class="done-meta">${ex.meta}</div>
@@ -743,7 +743,7 @@ function renderSessionList(){
         <button class="done-alt" onclick="event.stopPropagation();swapExercise(${i})">⇄ Alternative</button>
         <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i}, this)">Séries</button>
       </div>
-      <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
+      <div class="done-check">✓</div>
       <div class="sets-panel" id="setsPanel${i}" onclick="event.stopPropagation()">
         ${last ? `<div class="sets-last">Dernière fois : <b>${last}</b></div>` : ''}
         <div id="setsRows${i}"></div>

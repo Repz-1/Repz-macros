@@ -495,7 +495,7 @@ function logout() {
     </a>
 
     <!-- Séance libre (gratuit) -->
-    <a href="ma-seance.html?v=19" class="choice ph md" style="background-image:url('img/card-libre.jpg')">
+    <a href="ma-seance.html?v=20" class="choice ph md" style="background-image:url('img/card-libre.jpg')">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
         <h3>Séance libre</h3>
         <p>Compose toi-même ton entraînement, exercice par exercice.</p>
@@ -948,25 +948,34 @@ function renderWlog(){
     try { slog = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]'); } catch(e){ slog = []; }
     const durByIso = {};
     slog.forEach(s => { if(s.iso && s.duree){ durByIso[s.iso] = (durByIso[s.iso]||0) + s.duree; } });
-    // Purge des jours de plus de 8 jours (le 9e efface le 1er)
-    const limite = wlIso(wlDateDaysAgo(7));
+    // Fenêtre ancrée sur le dernier jour encodé : elle ne bouge pas tant qu'on n'encode pas,
+    // et encoder un nouveau jour fait tourner la fenêtre (le jour le plus ancien s'efface).
+    const todayIso = wlIso(wlDateDaysAgo(0));
+    let anchorIso = null;
+    Object.keys(log).forEach(k => { if((log[k]||[]).length && k <= todayIso && (!anchorIso || k > anchorIso)) anchorIso = k; });
+    const anchor = anchorIso ? wlIsoToDate(anchorIso) : wlDateDaysAgo(0);
+    // Purge : tout ce qui sort de la fenêtre de 8 jours ancrée
+    const limite = wlIso(new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() - 7));
     let changed = false;
     Object.keys(log).forEach(k => { if(k < limite){ delete log[k]; changed = true; } });
     if(changed) saveMuscleLog(log);
-    // Du plus ancien (7 j) en haut au plus récent (aujourd'hui) en bas — 8 jours
+    // 8 jours ancrés, + la ligne d'aujourd'hui si elle est au-delà de l'ancre (encodable)
+    const jours = [];
+    for(let i = 7; i >= 0; i--) jours.push(new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() - i));
+    if(todayIso > wlIso(anchor)) jours.push(wlDateDaysAgo(0));
     let html = '';
     let nbSeances = 0, nbRepos = 0;
     const musclesSet = [];
-    for(let i = 7; i >= 0; i--){
-        const d = wlDateDaysAgo(i);
+    jours.forEach(d => {
         const iso = wlIso(d);
+        const estToday = iso === todayIso;
         const vals = log[iso] || [];
         const estRepos = vals.includes('repos');
         const estSeance = vals.length > 0 && !estRepos;
         if(estSeance){ nbSeances++; vals.forEach(v => { const n = wlMuscleName(v); if(n && !musclesSet.includes(n)) musclesSet.push(n); }); }
         if(estRepos) nbRepos++;
         let tags;
-        if(vals.length === 0) tags = i === 0 ? '<span class="wlog-fill-cta">À remplir →</span>' : '<span class="wlog-empty">À remplir</span>';
+        if(vals.length === 0) tags = estToday ? '<span class="wlog-fill-cta">À remplir →</span>' : '<span class="wlog-empty">À remplir</span>';
         else if(estRepos) tags = '<span class="wlog-tag repos">Repos</span>';
         else tags = vals.map(v => `<span class="wlog-tag">${wlMuscleName(v)}</span>`).join('');
         // Ligne méta : durée de la séance de ce jour
@@ -975,11 +984,11 @@ function renderWlog(){
             const dtxt = fmtDuree(durByIso[iso]);
             if(dtxt) meta = `<div class="wlog-meta"><span>⏱ ${dtxt}</span></div>`;
         }
-        html += `<div class="wlog-day${i === 0 ? ' is-today' : ''}${i === 0 && vals.length === 0 ? ' a-remplir' : ''}${estRepos ? ' is-repos' : ''}" onclick="openMuscleLog('${iso}')">
+        html += `<div class="wlog-day${estToday ? ' is-today' : ''}${estToday && vals.length === 0 ? ' a-remplir' : ''}${estRepos ? ' is-repos' : ''}" onclick="openMuscleLog('${iso}')">
             <div class="wlog-date">${wlLabel(d)}</div>
             <div class="wlog-main"><div class="wlog-tags">${tags}</div>${meta}</div>
         </div>`;
-    }
+    });
     // Résumé compact de la semaine
     let mTxt = musclesSet.slice(0, 4).join(', ');
     if(musclesSet.length > 4) mTxt += ' +' + (musclesSet.length - 4);
