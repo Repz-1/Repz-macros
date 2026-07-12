@@ -149,6 +149,13 @@ body {
 .pay-close:active { color:#94a3b8; }
 .pay-title { font-size:20px; font-weight:800; color:#1a1a1a; margin-bottom:6px; }
 .pay-sub { font-size:14px; color:var(--text-dim); margin-bottom:22px; line-height:1.5; }
+.pay-consent { display:flex; gap:10px; align-items:flex-start; text-align:left; font-size:13px; color:#374151; line-height:1.5; margin:14px 0 4px; cursor:pointer; }
+.pay-consent input { margin-top:2px; width:18px; height:18px; accent-color:#F7B500; flex-shrink:0; }
+.pay-consent a { color:#8F6200; font-weight:600; }
+.pay-consent.err { animation:consentShake .3s; }
+.pay-consent.err span { color:#DC2626; }
+@keyframes consentShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+.pay-btn:disabled { opacity:.45; cursor:not-allowed; }
 .pay-btn {
     width:100%; background:var(--green); color:#fff; border:none; border-radius:14px;
     padding:15px; font-size:16px; font-weight:700; cursor:pointer; margin-bottom:8px;
@@ -480,7 +487,12 @@ function logout() {
         <div class="pay-title">Finaliser ton abonnement</div>
         <div class="pay-sub">Tu vas être redirigé vers le paiement sécurisé.</div>
 
-        <button class="pay-btn" id="payGoBtn">Continuer vers le paiement</button>
+        <label class="pay-consent" id="payConsentRow">
+            <input type="checkbox" id="payConsent" onchange="majConsentBtn()">
+            <span>J'accepte les <a href="confidentialite.html" target="_blank">conditions d'utilisation</a> et je confirme avoir lu l'<a href="confidentialite.html#sante" target="_blank">avertissement santé</a> (BELFIT n'est pas un service médical).</span>
+        </label>
+
+        <button class="pay-btn" id="payGoBtn" disabled>Continuer vers le paiement</button>
 
         <div class="pay-promo">
             <button class="pay-promo-toggle" id="payPromoToggle" onclick="togglePromoField()">J'ai un code promo</button>
@@ -509,9 +521,37 @@ function goToPremium(){
 // ===== MODALE PAIEMENT =====
 let lienPaiement = '';
 
+function majConsentBtn(){
+    const ok = document.getElementById('payConsent').checked;
+    document.getElementById('payGoBtn').disabled = !ok;
+    if(ok) document.getElementById('payConsentRow').classList.remove('err');
+}
+function enregistrerConsentement(){
+    const ts = new Date().toISOString();
+    try { localStorage.setItem('repz_consentCGV', ts); } catch(e){}
+    try {
+        const u = (window.firebase && firebase.auth) ? firebase.auth().currentUser : null;
+        if(u && firebase.firestore){
+            firebase.firestore().collection('users').doc(u.uid).set({
+                consentCGV: ts,
+                consentCGVFormule: formuleActive,
+                consentCGVVersion: '2026-07'
+            }, { merge:true });
+        }
+    } catch(e){}
+}
 function ouvrirPaiement(lien){
     lienPaiement = lien;
-    document.getElementById('payGoBtn').onclick = () => { window.location.href = lienPaiement; };
+    document.getElementById('payConsent').checked = false;
+    majConsentBtn();
+    document.getElementById('payGoBtn').onclick = () => {
+        if(!document.getElementById('payConsent').checked){
+            document.getElementById('payConsentRow').classList.add('err');
+            return;
+        }
+        enregistrerConsentement();
+        setTimeout(() => { window.location.href = lienPaiement; }, 250);
+    };
     document.getElementById('payOverlay').classList.add('show');
 }
 function fermerPaiement(e){
