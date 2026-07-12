@@ -604,6 +604,17 @@ body.search-open .fab, body.search-open .water-fab { display:none; }
 .cp-body { flex:1; overflow-y:auto; padding:28px 22px; display:flex; flex-direction:column; }
 .cp-step { display:none; animation:cpFade .3s ease; }
 .cp-step.active { display:block; }
+.cp-slider-card { background:#F5F6F8; border-radius:20px; padding:18px 18px 14px; margin-bottom:14px; }
+.cp-slider-lab { font-size:12.5px; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
+.cp-slider-val { font-size:26px; font-weight:800; color:#111; margin-bottom:10px; }
+.cp-slider-delta { font-size:14px; font-weight:700; color:#6b7280; margin-left:6px; }
+.cp-range { width:100%; -webkit-appearance:none; appearance:none; height:6px; border-radius:3px; background:#e5e7eb; outline:none; }
+.cp-range::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:26px; height:26px; border-radius:50%; background:#F7B500; border:3px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.18); cursor:pointer; }
+.cp-range::-moz-range-thumb { width:26px; height:26px; border-radius:50%; background:#F7B500; border:3px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.18); cursor:pointer; }
+.cp-timeline { margin-top:12px; font-size:13.5px; color:#374151; background:#fff; border-radius:14px; padding:12px 14px; line-height:1.5; }
+.cp-timeline b { color:#111; }
+.cp-rythme-warn { color:#DC2626; font-weight:600; }
+.cp-maintien-note { font-size:13.5px; color:#374151; background:#F5F6F8; border-radius:14px; padding:12px 14px; }
 @keyframes cpFade { from{opacity:0;transform:translateX(12px);} to{opacity:1;transform:translateX(0);} }
 .cp-q { font-size:23px; font-weight:800; color:#1a1a1a; margin-bottom:6px; line-height:1.25; }
 .cp-hint { font-size:14px; color:#6b7280; margin-bottom:24px; }
@@ -3667,17 +3678,22 @@ renderWeightNote();
                 <button class="cp-opt" onclick="cpChoix('sport',0.3,this)"><span class="cp-opt-emoji">🔥</span><span class="cp-opt-txt"><span class="cp-opt-title">6 à 7 séances / semaine</span></span></button>
             </div>
         </div>
-        <!-- Étape 5 : Objectif -->
+        <!-- Étape 5 : Objectif (poids cible + rythme) -->
         <div class="cp-step" data-step="5">
             <div class="cp-q">Ton objectif ?</div>
-            <div class="cp-hint">On ajuste tes calories en fonction.</div>
-            <div class="cp-options">
-                <button class="cp-opt" onclick="cpChoix('objectif',-500,this)"><span class="cp-opt-emoji">📉</span><span class="cp-opt-txt"><span class="cp-opt-title">Perte de poids</span><span class="cp-opt-sub">Déficit de 500 kcal</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('objectif',-300,this)"><span class="cp-opt-emoji">🔽</span><span class="cp-opt-txt"><span class="cp-opt-title">Perte douce</span><span class="cp-opt-sub">Déficit de 300 kcal</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('objectif',0,this)"><span class="cp-opt-emoji">⚖️</span><span class="cp-opt-txt"><span class="cp-opt-title">Maintien</span><span class="cp-opt-sub">Stabiliser mon poids</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('objectif',300,this)"><span class="cp-opt-emoji">📈</span><span class="cp-opt-txt"><span class="cp-opt-title">Prise de masse propre</span><span class="cp-opt-sub">Surplus de 300 kcal</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('objectif',500,this)"><span class="cp-opt-emoji">🚀</span><span class="cp-opt-txt"><span class="cp-opt-title">Prise de masse</span><span class="cp-opt-sub">Surplus de 500 kcal</span></span></button>
+            <div class="cp-hint">Choisis ton poids cible, puis le rythme qui te convient.</div>
+            <div class="cp-slider-card">
+                <div class="cp-slider-lab">Poids cible</div>
+                <div class="cp-slider-val"><span id="cpCibleVal">–</span> kg <span class="cp-slider-delta" id="cpCibleDelta"></span></div>
+                <input type="range" class="cp-range" id="cpCible" step="0.5" oninput="cpMajObjectif()">
             </div>
+            <div class="cp-slider-card" id="cpRythmeCard">
+                <div class="cp-slider-lab">Rythme</div>
+                <div class="cp-slider-val"><span id="cpRythmeVal">0.3</span> kg / semaine</div>
+                <input type="range" class="cp-range" id="cpRythme" min="0.1" max="1" step="0.05" value="0.3" oninput="cpMajObjectif()">
+                <div class="cp-timeline" id="cpTimeline"></div>
+            </div>
+            <div class="cp-maintien-note" id="cpMaintienNote" style="display:none;">⚖️ Poids cible = poids actuel → on calcule ton <b>maintien</b>.</div>
         </div>
         <!-- Étape 6 : Résultat -->
         <div class="cp-step" data-step="6">
@@ -3688,6 +3704,7 @@ renderWeightNote();
             <div class="cp-result-lines">
                 <div class="cp-result-line"><span>Métabolisme de base</span><span id="cpResBmr">–</span></div>
                 <div class="cp-result-line"><span>Maintien (avec ton activité)</span><span id="cpResTdee">–</span></div>
+                <div class="cp-result-line" id="cpResObjLine" style="display:none;"><span>Ton objectif</span><span id="cpResObj">–</span></div>
             </div>
             <div class="cp-result-macros">
                 <div class="cp-macro"><div class="m-l">Protéines</div><div class="m-v" id="cpResProt">–</div></div>
@@ -3714,7 +3731,7 @@ function ouvrirCalculPro(){
         return;
     }
     cpStep = 1;
-    cpData.sexe = null; cpData.travail = null; cpData.sport = null; cpData.objectif = null;
+    cpData.sexe = null; cpData.travail = null; cpData.sport = null; cpData.objectif = 0; cpData.poidsCible = null; cpData.rythme = 0;
     // Pré-remplir mensurations depuis l'objectif connu si dispo
     document.getElementById('cpOverlay').classList.add('show');
     cpShowStep();
@@ -3761,13 +3778,62 @@ function cpNext(){
     if(cpStep === 3 && cpData.travail === null) return;
     if(cpStep === 4 && cpData.sport === null) return;
     if(cpStep === 5){
-        if(cpData.objectif === null) return;
         cpCalculer(); // calculer avant d'afficher l'écran résultat
     }
-    if(cpStep < CP_TOTAL){ cpStep++; cpShowStep(); }
+    if(cpStep < CP_TOTAL){ cpStep++; cpShowStep(); if(cpStep === 5) cpInitObjectif(); }
 }
 function cpBack(){ if(cpStep > 1){ cpStep--; cpShowStep(); } }
 
+function cpInitObjectif(){
+    const w = cpData.weight;
+    const s = document.getElementById('cpCible');
+    s.min = Math.max(40, Math.round(w) - 25);
+    s.max = Math.round(w) + 15;
+    s.value = w;
+    cpMajObjectif();
+}
+function cpMajObjectif(){
+    const w = cpData.weight;
+    const cible = parseFloat(document.getElementById('cpCible').value);
+    const delta = +(cible - w).toFixed(1);
+    document.getElementById('cpCibleVal').textContent = cible;
+    const dEl = document.getElementById('cpCibleDelta');
+    dEl.textContent = delta === 0 ? '' : (delta > 0 ? '+' + delta + ' kg' : delta + ' kg');
+    dEl.style.color = delta === 0 ? '#6b7280' : (delta < 0 ? '#16a34a' : '#F7B500');
+
+    const rythmeCard = document.getElementById('cpRythmeCard');
+    const maintienNote = document.getElementById('cpMaintienNote');
+    if(delta === 0){
+        rythmeCard.style.display = 'none';
+        maintienNote.style.display = 'block';
+        cpData.objectif = 0; cpData.poidsCible = cible; cpData.rythme = 0; cpData.semaines = 0;
+        return;
+    }
+    rythmeCard.style.display = 'block';
+    maintienNote.style.display = 'none';
+
+    const r = document.getElementById('cpRythme');
+    // Prise de masse : rythme plafonné à 0.5 kg/sem (au-delà = gras)
+    r.max = delta > 0 ? 0.5 : 1;
+    if(parseFloat(r.value) > parseFloat(r.max)) r.value = r.max;
+    const rythme = parseFloat(r.value);
+    document.getElementById('cpRythmeVal').textContent = rythme.toFixed(2).replace(/0$/,'');
+
+    const semaines = Math.ceil(Math.abs(delta) / rythme);
+    const dateFin = new Date(Date.now() + semaines * 7 * 24 * 3600 * 1000);
+    const dateTxt = dateFin.toLocaleDateString('fr-BE', { day:'numeric', month:'long', year: dateFin.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined });
+    const kcalJour = Math.round(rythme * 7700 / 7) * (delta < 0 ? -1 : 1);
+
+    let warn = '';
+    if(delta < 0 && rythme > 0.7) warn = '<div class="cp-rythme-warn">⚠️ Rythme agressif — difficile à tenir sur la durée.</div>';
+    document.getElementById('cpTimeline').innerHTML =
+        `${delta < 0 ? '📉' : '📈'} <b>${Math.abs(delta)} kg</b> à ${rythme} kg/sem → <b>${semaines} semaine${semaines>1?'s':''}</b><br>` +
+        `🎯 Objectif atteint vers le <b>${dateTxt}</b><br>` +
+        `${delta < 0 ? '🔻 Déficit' : '🔺 Surplus'} de <b>${Math.abs(kcalJour)} kcal/jour</b>` + warn;
+
+    cpData.objectif = kcalJour;
+    cpData.poidsCible = cible; cpData.rythme = rythme; cpData.semaines = semaines;
+}
 function cpCalculer(){
     const { sexe, age, weight, height, travail, sport, objectif } = cpData;
     // Mifflin-St Jeor
@@ -3785,8 +3851,13 @@ function cpCalculer(){
     document.getElementById('cpResProt').textContent = prot+'g';
     document.getElementById('cpResCarbs').textContent = carbs+'g';
     document.getElementById('cpResLip').textContent = lip+'g';
+    const objLine = document.getElementById('cpResObjLine');
+    if(cpData.poidsCible && cpData.rythme > 0){
+        objLine.style.display = 'flex';
+        document.getElementById('cpResObj').textContent = cpData.poidsCible + ' kg en ' + cpData.semaines + ' sem.';
+    } else { objLine.style.display = 'none'; }
 
-    cpData.resultat = { kcal:target, weight:weight, protRatio:2.2 };
+    cpData.resultat = { kcal:target, weight:weight, protRatio:2.2, poidsCible: cpData.poidsCible||null, rythme: cpData.rythme||0 };
 }
 
 function cpAppliquer(){
