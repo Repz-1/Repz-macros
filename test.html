@@ -489,10 +489,7 @@ showStep(0);
       var had = localStorage.getItem('repz_premium') === '1';
       if(prem){ localStorage.setItem('repz_premium','1'); }
       else { localStorage.removeItem('repz_premium'); }
-      if(prem !== had && !sessionStorage.getItem('repz_premSynced')){
-        sessionStorage.setItem('repz_premSynced','1');
-        location.reload();
-      }
+      // Sync silencieuse : pas de reload sur cette page (le quiz serait perdu)
     }).catch(function(e){ console.warn('premium sync', e); });
   }
   try{
