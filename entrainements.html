@@ -31,8 +31,8 @@
 }
 body {
     font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:90px;
-    padding:16px;
+    background:var(--bg); color:var(--text); min-height:100vh;
+    padding:16px 16px 170px; /* espace pour la nav + le FAB chrono */
 }
 
 /* Journal d'entraînement */
@@ -144,13 +144,13 @@ body {
 }
 .choice.ph::after {
     content:''; position:absolute; inset:0; border-radius:inherit;
-    background:linear-gradient(180deg, rgba(10,10,10,.08) 28%, rgba(10,10,10,.62) 70%, rgba(10,10,10,.85) 100%);
+    background:linear-gradient(180deg, rgba(10,10,10,.32) 0%, rgba(10,10,10,.42) 38%, rgba(10,10,10,.78) 74%, rgba(10,10,10,.92) 100%);
     pointer-events:none;
 }
 .choice.ph > * { position:relative; z-index:1; }
 .choice.ph .ch-icon { display:none; }
-.choice.ph h3 { color:#fff; font-size:21px; }
-.choice.ph > p { color:rgba(255,255,255,.84); font-weight:600; max-width:34ch; }
+.choice.ph h3 { color:#fff; font-size:21px; text-shadow:0 1px 10px rgba(0,0,0,.55); }
+.choice.ph > p { color:rgba(255,255,255,.92); font-weight:600; max-width:34ch; text-shadow:0 1px 8px rgba(0,0,0,.55); }
 .choice.ph .cta {
     background:rgba(255,255,255,.14); color:#fff;
     border:1.5px solid rgba(255,255,255,.55); backdrop-filter:blur(4px); box-shadow:none;
@@ -158,7 +158,13 @@ body {
 .choice.ph.featured .cta { background:var(--gold); color:var(--noir); border:none; box-shadow:0 8px 20px rgba(247,181,0,.4); }
 .choice.ph .lock-badge { background:rgba(10,10,10,.55); color:#fff; border:1px solid rgba(255,255,255,.3); backdrop-filter:blur(4px); }
 .choice.ph .badge { position:absolute; top:18px; left:22px; right:auto; margin:0; }
-.choice.ph.featured { min-height:250px; }
+.choice.ph.featured { min-height:260px; }
+/* Hiérarchie : Créer (260) > Séance libre (220) > Programmes / Journal (185) */
+.choice.ph.md { min-height:220px; }
+.choice.ph.sm { min-height:185px; }
+.choice.ph.sm h3 { font-size:18px; }
+.choice.ph.sm > p { font-size:13px; margin-bottom:12px; }
+.choice.ph.sm .cta { padding:10px 20px; font-size:14px; border-radius:14px; }
 .choice.ph .wlog-list { background:#fff; border-radius:16px; color:var(--text); }
 .choice.ph .wlog-list.expanded { padding:4px 16px; }
 
@@ -486,7 +492,7 @@ function logout() {
     </a>
 
     <!-- Séance libre (gratuit) -->
-    <a href="ma-seance.html?v=15" class="choice ph" style="background-image:url('img/card-libre.jpg')">
+    <a href="ma-seance.html?v=15" class="choice ph md" style="background-image:url('img/card-libre.jpg')">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
         <h3>Séance libre</h3>
         <p>Compose toi-même ton entraînement, exercice par exercice.</p>
@@ -494,7 +500,7 @@ function logout() {
     </a>
 
     <!-- Mes programmes (Premium) -->
-    <a href="programmes.html?v=5" class="choice ph locked" id="choiceLib" onclick="return checkPremium(event)" style="background-image:url('img/card-programmes.jpg')">
+    <a href="programmes.html?v=5" class="choice ph sm locked" id="choiceLib" onclick="return checkPremium(event)" style="background-image:url('img/card-programmes.jpg')">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg></span>
         <h3>Mes programmes</h3>
@@ -505,7 +511,7 @@ function logout() {
 </div>
 
 <!-- JOURNAL D'ENTRAÎNEMENT (carte au même style que les bulles du dessus) -->
-<div class="choice ph" style="margin-top:24px; background-image:url('img/card-journal.jpg')">
+<div class="choice ph sm" style="margin-top:24px; background-image:url('img/card-journal.jpg')">
     <div class="ch-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/><path d="M9 16l2 2 4-4"/></svg></div>
     <h3>Journal d'entraînement</h3>
     <p>Note les muscles travaillés sur tes 8 derniers jours.</p>
