@@ -408,7 +408,7 @@ function logout(){
     </div>
     <div class="muscle-tabs" id="muscleTabs"></div>
     <div class="filter-tabs" id="filterTabs"></div>
-    <p class="section-hint">Touche un exercice pour l'ajouter · <span class="swipe-hint">glisse ← → pour changer de muscle</span></p>
+    <p class="section-hint">Touche un exercice pour l'ajouter.</p>
     <div class="ex-list" id="exList"></div>
     <div class="session-bar hidden" id="sessionBar" onclick="goToSession()">
         <span class="count"><span id="selCount">0</span> exercices sélectionnés</span>
@@ -1159,19 +1159,7 @@ function openSessionPhoto(i){
 // SWIPE entre muscles
 let touchStartX = 0;
 const selectScreen = document.getElementById('screenSelect');
-let swipeSurTabs = false;
-selectScreen.addEventListener('touchstart', e => {
-  touchStartX = e.changedTouches[0].screenX;
-  swipeSurTabs = !!(e.target.closest && e.target.closest('.muscle-tabs, .filter-tabs'));
-}, {passive:true});
-selectScreen.addEventListener('touchend', e => {
-  if(swipeSurTabs) return; // sur les bulles : on laisse défiler, pas de changement de muscle
-  const dx = e.changedTouches[0].screenX - touchStartX;
-  if(Math.abs(dx) > 60){
-    if(dx < 0) switchMuscle(currentMuscle+1); // slide gauche = muscle suivant
-    else switchMuscle(currentMuscle-1);
-  }
-}, {passive:true});
+// Changement de muscle : uniquement en tapant les bulles (le swipe écran créait des conflits avec le défilement)
 
 // SWIPE sur le carrousel photo
 let carStartX = 0;
