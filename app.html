@@ -292,6 +292,19 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
     .fab { padding:12px 15px; bottom:84px; right:14px; }
 }
 
+/* ===== BULLE RECETTES (centrée) ===== */
+.recipes-fab {
+    position:fixed; bottom:88px; left:50%; transform:translateX(-50%); z-index:80;
+    display:flex; align-items:center; gap:6px;
+    background:#fff; color:#1a1a1a; border:1.5px solid #e5e7eb;
+    padding:12px 16px; border-radius:30px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+    font-size:14px; font-weight:700; opacity:.9;
+    transition:transform .15s, opacity .15s;
+}
+.recipes-fab:active { transform:translateX(-50%) scale(.94); opacity:1; }
+body.search-open .recipes-fab { display:none; }
+
 /* ===== COMPTEUR D'EAU ===== */
 .water-fab {
     position:fixed; bottom:88px; left:16px; z-index:80;
@@ -1018,6 +1031,12 @@ function afficherMessageInvite() {
         <button class="mtype-cancel" onclick="closeMealTypeSheet()">Annuler</button>
     </div>
 </div>
+
+<!-- BOUTON FLOTTANT RECETTES -->
+<button class="recipes-fab" onclick="ouvrirRecettesDepuisBulle()" aria-label="Idées recettes">
+    <span style="font-size:17px;">🍳</span>
+    <span>Recettes</span>
+</button>
 
 <!-- BOUTON FLOTTANT EAU -->
 <button class="water-fab" onclick="openWater()" aria-label="Compteur d'eau">
@@ -3416,6 +3435,12 @@ function ideaCompute(ings, ratio){
 
 function repzAcces(){
     return localStorage.getItem('repz_premium') === '1';
+}
+function ouvrirRecettesDepuisBulle(){
+    const card = document.querySelector('.eat-card');
+    const body = document.getElementById('eatBody');
+    if(card) card.scrollIntoView({behavior:'smooth', block:'center'});
+    if(body && !body.classList.contains('open')) toggleEat();
 }
 function toggleEat(){
     if(!repzAcces()){
