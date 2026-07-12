@@ -62,6 +62,8 @@ body {
 .wlog-tag { font-size:12px; font-weight:700; background:#F5F6F8; color:#8F6200; padding:4px 10px; border-radius:8px; }
 .wlog-tag.repos { background:#f1f5f9; color:#64748b; }
 .wlog-day.is-repos { opacity:.6; }
+.wlog-day.is-today { opacity:1; }
+.wlog-day.is-today .wlog-tag.repos { opacity:.6; }
 .wlog-day.is-repos .wlog-date { color:#94a3b8; font-weight:700; }
 .wlog-empty { font-size:12.5px; color:#b7b1a8; }
 .wlog-day.is-today.a-remplir { background:#FFF9EC; border-left:3px solid #F7B500; border-radius:10px; border-top:none; padding-left:10px; padding-right:10px; margin-top:3px; }
@@ -985,7 +987,7 @@ function renderWlog(){
             if(dtxt) meta = `<div class="wlog-meta"><span>⏱ ${dtxt}</span></div>`;
         }
         html += `<div class="wlog-day${estToday ? ' is-today' : ''}${estToday && vals.length === 0 ? ' a-remplir' : ''}${estRepos ? ' is-repos' : ''}" onclick="openMuscleLog('${iso}')">
-            <div class="wlog-date">${wlLabel(d)}</div>
+            <div class="wlog-date">${estToday ? "Aujourd'hui" : wlLabel(d)}</div>
             <div class="wlog-main"><div class="wlog-tags">${tags}</div>${meta}</div>
         </div>`;
     });
