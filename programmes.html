@@ -444,8 +444,7 @@ function showProgs(catKey){
         const niveauxPresents = ordre.filter(n => parNiveau[n] && parNiveau[n].length);
         progState = { catKey, parNiveau, niveauxPresents, sel: niveauxPresents[0] };
         if(niveauxPresents.length > 1){
-            const opts = ['Tous', ...niveauxPresents];
-            filterEl.innerHTML = opts.map(o => `<button class="niv-pill" data-niv="${o}" onclick="selectNiveau('${o}')">${o === 'Tous' ? 'Tous les niveaux' : o}</button>`).join('');
+            filterEl.innerHTML = niveauxPresents.map(o => `<button class="niv-pill" data-niv="${o}" onclick="selectNiveau('${o}')">${o}</button>`).join('');
             filterEl.style.display = 'flex';
         } else {
             filterEl.innerHTML = ''; filterEl.style.display = 'none';
