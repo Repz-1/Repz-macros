@@ -72,6 +72,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .prog-card:active { transform:scale(.98); }
 .prog-badge { display:inline-block; font-size:11px; font-weight:800; text-transform:uppercase;
     letter-spacing:.05em; background:#ecfdf5; color:#047857; padding:5px 11px; border-radius:20px; margin-bottom:11px; }
+.prog-badge.lieu { background:#F5F6F8; color:#475569; margin-left:6px; }
 .prog-name { font-size:18px; font-weight:800; margin-bottom:6px; letter-spacing:-.01em; }
 .prog-desc { font-size:13.5px; color:var(--text-dim); line-height:1.5; margin-bottom:14px; }
 .prog-stats { display:flex; flex-wrap:wrap; gap:8px; }
@@ -206,10 +207,9 @@ function logout(){
 <script>
 // ===== DONNÉES =====
 const CATEGORIES = [
-    {key:'masse', emoji:'💪', name:'Prise de masse', sub:'Prendre du muscle et du volume'},
-    {key:'debutant', emoji:'🌱', name:'Débutant', sub:'Commencer en douceur'},
-    {key:'seche', emoji:'🔥', name:'Perte de poids', sub:'Brûler et se définir'},
-    {key:'salle', emoji:'🏋️', name:'Salle', sub:'Machines et charges libres'},
+    {key:'masse', emoji:'💪', name:'Prendre du muscle', sub:'Volume, force et développement'},
+    {key:'seche', emoji:'🔥', name:'Perdre du poids', sub:'Brûler et se définir'},
+    {key:'forme', emoji:'⚡', name:'Me remettre en forme', sub:'Reprendre le sport en douceur'},
 ];
 
 // Programmes par catégorie (Prise de masse complète, autres à venir)
@@ -257,8 +257,42 @@ const PROGRAMMES = {
                 {titre:'Jour 2 — Bas du corps', sub:'6 exercices · ~55 min'},
             ]
         },
+        {
+            id:'salle-ppl-3j', badge:'3 jours/semaine', name:'Salle — Push / Pull / Legs',
+            desc:'Le grand classique en salle : pousser, tirer, jambes. Efficace et structuré.',
+            duree:'10 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Push — Pecs / Épaules / Triceps', sub:'6 exercices · ~60 min'},
+                {titre:'Pull — Dos / Biceps', sub:'6 exercices · ~60 min'},
+                {titre:'Legs — Jambes complètes', sub:'6 exercices · ~65 min'},
+            ]
+        },
+        {
+            id:'salle-half-4j', badge:'4 jours/semaine', name:'Salle — Half body',
+            desc:'Le corps en deux moitiés, travaillées deux fois par semaine. Bon compromis volume/récup.',
+            duree:'10 semaines', niveau:'Intermédiaire',
+            seances:[
+                {titre:'Jour 1 — Haut du corps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 2 — Bas du corps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 3 — Haut du corps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 4 — Bas du corps', sub:'6 exercices · ~60 min'},
+            ]
+        },
+        {
+            id:'salle-ppl-6j', badge:'6 jours/semaine', name:'Salle — PPL x2',
+            desc:'Push/Pull/Legs répété deux fois par semaine. Pour les confirmés très assidus.',
+            duree:'12 semaines', niveau:'Confirmé',
+            seances:[
+                {titre:'Jour 1 — Push', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 2 — Pull', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 3 — Legs', sub:'6 exercices · ~65 min'},
+                {titre:'Jour 4 — Push', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 5 — Pull', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 6 — Legs', sub:'6 exercices · ~65 min'},
+            ]
+        },
     ],
-    debutant: [
+    forme: [
         {
             id:'deb-full-3j', badge:'3 jours/semaine', name:'Débutant — Full body',
             desc:'Tout le corps à chaque séance. La meilleure façon de démarrer la musculation en douceur.',
@@ -336,42 +370,6 @@ const PROGRAMMES = {
             ]
         },
     ],
-    salle: [
-        {
-            id:'salle-ppl-3j', badge:'3 jours/semaine', name:'Salle — Push / Pull / Legs',
-            desc:'Le grand classique en salle : pousser, tirer, jambes. Efficace et structuré.',
-            duree:'10 semaines', niveau:'Intermédiaire',
-            seances:[
-                {titre:'Push — Pecs / Épaules / Triceps', sub:'6 exercices · ~60 min'},
-                {titre:'Pull — Dos / Biceps', sub:'6 exercices · ~60 min'},
-                {titre:'Legs — Jambes complètes', sub:'6 exercices · ~65 min'},
-            ]
-        },
-        {
-            id:'salle-half-4j', badge:'4 jours/semaine', name:'Salle — Half body',
-            desc:'Le corps en deux moitiés, travaillées deux fois par semaine. Bon compromis volume/récup.',
-            duree:'10 semaines', niveau:'Intermédiaire',
-            seances:[
-                {titre:'Jour 1 — Haut du corps', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 2 — Bas du corps', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 3 — Haut du corps', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 4 — Bas du corps', sub:'6 exercices · ~60 min'},
-            ]
-        },
-        {
-            id:'salle-ppl-6j', badge:'6 jours/semaine', name:'Salle — PPL x2',
-            desc:'Push/Pull/Legs répété deux fois par semaine. Pour les confirmés très assidus.',
-            duree:'12 semaines', niveau:'Confirmé',
-            seances:[
-                {titre:'Jour 1 — Push', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 2 — Pull', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 3 — Legs', sub:'6 exercices · ~65 min'},
-                {titre:'Jour 4 — Push', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 5 — Pull', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 6 — Legs', sub:'6 exercices · ~65 min'},
-            ]
-        },
-    ],
 };
 
 const SESSION_EXOS = {"masse-3j-0": ["pecs:0", "pecs:1", "pecs:2", "triceps:0", "triceps:1", "triceps:2"], "masse-3j-1": ["dos:1", "dos:0", "dos:2", "dos:3", "biceps:0", "biceps:2"], "masse-3j-2": ["jambes:0", "jambes:1", "jambes:3", "jambes:5", "epaules:0", "epaules:1"], "masse-4j-0": ["pecs:0", "pecs:1", "pecs:5", "pecs:2", "pecs:4"], "masse-4j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "dos:4"], "masse-4j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4"], "masse-4j-3": ["epaules:0", "epaules:1", "epaules:3", "biceps:0", "triceps:0", "triceps:1"], "masse-5j-0": ["pecs:0", "pecs:1", "pecs:5", "pecs:2", "pecs:4"], "masse-5j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "dos:6"], "masse-5j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "masse-5j-3": ["epaules:0", "epaules:1", "epaules:4", "epaules:3", "epaules:5"], "masse-5j-4": ["biceps:0", "biceps:1", "biceps:2", "triceps:0", "triceps:1", "triceps:3"], "deb-full-3j-0": ["pecs:0", "dos:1", "jambes:0", "epaules:0", "abdos:1"], "deb-full-3j-1": ["pecs:3", "dos:2", "jambes:1", "biceps:0", "abdos:0"], "deb-full-3j-2": ["pecs:1", "dos:0", "jambes:2", "triceps:1", "abdos:3"], "deb-2j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "deb-2j-1": ["jambes:0", "jambes:1", "jambes:3", "abdos:1", "abdos:0"], "seche-full-3j-0": ["jambes:0", "pecs:3", "dos:2", "epaules:1", "abdos:2", "jambes:2", "abdos:1"], "seche-full-3j-1": ["jambes:1", "pecs:0", "dos:1", "triceps:1", "abdos:3", "jambes:5", "abdos:0"], "seche-full-3j-2": ["jambes:2", "pecs:1", "dos:0", "biceps:0", "abdos:3", "jambes:3", "abdos:2"], "seche-circuit-4j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1", "pecs:3"], "seche-circuit-4j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5", "abdos:1"], "seche-circuit-4j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-circuit-4j-3": ["cardio:6", "cardio:0", "abdos:0", "abdos:1", "abdos:3"], "salle-ppl-3j-0": ["pecs:0", "pecs:1", "epaules:0", "epaules:1", "triceps:1", "triceps:0"], "salle-ppl-3j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "biceps:0", "biceps:2"], "salle-ppl-3j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "salle-half-4j-0": ["pecs:0", "dos:1", "epaules:0", "biceps:0", "triceps:0", "abdos:1"], "salle-half-4j-1": ["jambes:0", "jambes:1", "jambes:3", "jambes:4", "jambes:5", "abdos:0"], "salle-half-4j-2": ["pecs:1", "dos:0", "epaules:1", "biceps:2", "triceps:1", "abdos:3"], "salle-half-4j-3": ["jambes:2", "jambes:1", "jambes:6", "jambes:4", "jambes:5", "abdos:2"], "salle-ppl-6j-0": ["pecs:0", "pecs:1", "epaules:0", "epaules:1", "triceps:0", "triceps:1"], "salle-ppl-6j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "biceps:0", "biceps:2"], "salle-ppl-6j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "salle-ppl-6j-3": ["pecs:5", "pecs:2", "epaules:2", "epaules:4", "triceps:3", "triceps:4"], "salle-ppl-6j-4": ["dos:6", "dos:4", "dos:0", "dos:3", "biceps:1", "biceps:3"], "salle-ppl-6j-5": ["jambes:0", "jambes:6", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "masse-2j-0": ["pecs:0", "pecs:1", "dos:0", "dos:1", "epaules:0", "biceps:0", "triceps:0"], "masse-2j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5", "abdos:1"], "seche-2j-0": ["jambes:0", "pecs:3", "dos:2", "epaules:1", "abdos:6", "abdos:1"], "seche-2j-1": ["jambes:1", "pecs:0", "dos:1", "triceps:1", "abdos:3", "abdos:0"], "seche-5j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "seche-5j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5"], "seche-5j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-5j-3": ["cardio:6", "cardio:0", "abdos:1", "abdos:0", "abdos:3"], "seche-5j-4": ["cardio:2", "jambes:8", "cardio:0", "abdos:1", "abdos:7"], "seche-6j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "seche-6j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5"], "seche-6j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-6j-3": ["cardio:4", "cardio:6", "abdos:0", "abdos:1", "abdos:3"], "seche-6j-4": ["cardio:2", "jambes:8", "pecs:11", "cardio:0", "abdos:8"], "seche-6j-5": ["abdos:1", "abdos:7", "etirements:8", "etirements:9", "etirements:0"]};
@@ -384,7 +382,6 @@ function renderCats(){
         `<div class="cat-card" onclick="showProgs('${c.key}')">
             <div class="cat-emoji">${c.emoji}</div>
             <div class="cat-info"><div class="cat-name">${c.name}</div><div class="cat-sub">${c.sub}</div></div>
-            <div class="cat-arrow">→</div>
         </div>`
     ).join('');
 }
@@ -399,13 +396,14 @@ function showCats(){
 let progState = null;
 
 function carteProg(p){
+    const showNiv = progState.sel === 'Tous' || progState.niveauxPresents.length === 1;
     return `<div class="prog-card" onclick="showSeances('${progState.catKey}','${p.id}')">
-                <span class="prog-badge">${p.badge}</span>
+                <span class="prog-badge">${p.badge}</span>${p.lieu ? `<span class="prog-badge lieu">🏋️ ${p.lieu}</span>` : ''}
                 <div class="prog-name">${p.name}</div>
                 <div class="prog-desc">${p.desc}</div>
                 <div class="prog-stats">
                     <span><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/></svg><b>${p.duree}</b></span>
-                    <span><svg viewBox="0 0 24 24"><path d="M5 20v-6M12 20V8M19 20V4"/></svg><b>${p.niveau}</b></span>
+                    ${showNiv ? `<span><svg viewBox="0 0 24 24"><path d="M5 20v-6M12 20V8M19 20V4"/></svg><b>${p.niveau}</b></span>` : ''}
                     <span><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg><b>${p.seances.length} séances</b></span>
                 </div>
             </div>`;
@@ -447,7 +445,7 @@ function showProgs(catKey){
         progState = { catKey, parNiveau, niveauxPresents, sel: niveauxPresents[0] };
         if(niveauxPresents.length > 1){
             const opts = ['Tous', ...niveauxPresents];
-            filterEl.innerHTML = opts.map(o => `<button class="niv-pill" data-niv="${o}" onclick="selectNiveau('${o}')">${o}</button>`).join('');
+            filterEl.innerHTML = opts.map(o => `<button class="niv-pill" data-niv="${o}" onclick="selectNiveau('${o}')">${o === 'Tous' ? 'Tous les niveaux' : o}</button>`).join('');
             filterEl.style.display = 'flex';
         } else {
             filterEl.innerHTML = ''; filterEl.style.display = 'none';
@@ -472,7 +470,6 @@ function showSeances(catKey, progId){
         return `<div class="seance-card" onclick="window.location.href='ma-seance.html?v=18&s=${encodeURIComponent(seanceId)}&t=${encodeURIComponent(s.titre)}&f=${filtre}'">
             <div class="seance-num">J${i+1}</div>
             <div class="seance-info"><div class="seance-title">${s.titre}</div><div class="seance-sub">${s.sub}</div></div>
-            <div class="seance-arrow">→</div>
         </div>`;
     }).join('');
     document.getElementById('screenProgs').classList.remove('active');
@@ -486,8 +483,11 @@ renderCats();
 // Si on arrive depuis le test avec un programme recommandé, l'ouvrir directement
 (function openFromTest(){
     const params = new URLSearchParams(window.location.search);
-    const cat = params.get('cat');
+    let cat = params.get('cat');
     const prog = params.get('prog');
+    // Compat anciennes clés de catégories
+    if(cat === 'debutant') cat = 'forme';
+    if(cat === 'salle') cat = 'masse';
     if(cat && prog && PROGRAMMES[cat] && PROGRAMMES[cat].find(p => p.id === prog)){
         showSeances(cat, prog);
     }

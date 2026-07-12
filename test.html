@@ -254,7 +254,7 @@ function logout(){
             </div>
 
             <div class="result-btns">
-                <a href="programmes.html?v=6" id="btnVoirProg" class="btn-primary">Voir ce programme</a>
+                <a href="programmes.html?v=7" id="btnVoirProg" class="btn-primary">Voir ce programme</a>
                 <a href="#" class="btn-secondary" onclick="restart();return false;">Refaire le test</a>
             </div>
         </div>
@@ -440,7 +440,7 @@ function computeResult(){
 
     // Mettre à jour le bouton vers le bon programme
     const btn = document.getElementById('btnVoirProg');
-    if(btn) btn.href = `programmes.html?v=6&cat=${prog.cat}&prog=${progId}`;
+    if(btn) btn.href = `programmes.html?v=7&cat=${prog.cat}&prog=${progId}`;
 
     // Titre = nom exact du programme
     document.getElementById('resultName').textContent = prog.name;
