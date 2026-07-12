@@ -1159,8 +1159,13 @@ function openSessionPhoto(i){
 // SWIPE entre muscles
 let touchStartX = 0;
 const selectScreen = document.getElementById('screenSelect');
-selectScreen.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+let swipeSurTabs = false;
+selectScreen.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+  swipeSurTabs = !!(e.target.closest && e.target.closest('.muscle-tabs, .filter-tabs'));
+}, {passive:true});
 selectScreen.addEventListener('touchend', e => {
+  if(swipeSurTabs) return; // sur les bulles : on laisse défiler, pas de changement de muscle
   const dx = e.changedTouches[0].screenX - touchStartX;
   if(Math.abs(dx) > 60){
     if(dx < 0) switchMuscle(currentMuscle+1); // slide gauche = muscle suivant
