@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
+<style>html{background:#FAF9F6!important;margin:0}body{margin:0!important;background:#FAF9F6!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#191919">
@@ -221,6 +221,43 @@ body {
 .bt-opt.active { background:#fff; color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,.08); }
 .bt-save { background:var(--green); color:#fff; font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:10px; }
 
+/* ===== REFONTE PREMIUM : crème + noir + jaune accent ===== */
+body{ background:#FAF9F6 !important; }
+.topbar-app{ background:transparent !important; padding:14px 2px 4px !important; margin:-20px -20px 6px !important; }
+.tb-logo{ height:30px; width:auto; }
+.topbar-home{ background:#fff !important; border:1px solid #ececec; color:#181818 !important; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+.topbar-home svg{ stroke:#181818; }
+
+.hero-card{
+  background:linear-gradient(158deg,#242424 0%,#131313 100%);
+  border-radius:26px; padding:24px 24px 22px; margin:4px 0 32px; position:relative; overflow:hidden;
+  box-shadow:0 22px 50px rgba(20,20,20,.26);
+}
+.hero-card::before{ content:''; position:absolute; top:-45%; right:-25%; width:300px; height:300px;
+  background:radial-gradient(circle,rgba(247,181,0,.20),transparent 70%); pointer-events:none; }
+.hero-badge{ display:inline-flex; align-items:center; gap:5px; background:var(--orange); color:#181818;
+  font-size:11px; font-weight:800; letter-spacing:.09em; padding:5px 12px; border-radius:20px; margin-bottom:15px; position:relative; }
+.hero-card h1{ color:#fff; font-size:26px; font-weight:800; line-height:1.16; letter-spacing:-.02em; margin-bottom:9px; position:relative; }
+.hero-card > p{ color:rgba(255,255,255,.70); font-size:14px; font-weight:500; line-height:1.5; margin-bottom:20px; position:relative; max-width:290px; }
+.hero-foot{ display:flex; align-items:center; justify-content:space-between; gap:14px; position:relative; }
+.hero-price{ color:#fff; font-weight:500; line-height:1; }
+.hero-price .hp-from{ color:rgba(255,255,255,.55); font-size:12.5px; }
+.hero-price b{ color:var(--orange); font-size:27px; font-weight:800; letter-spacing:-.01em; margin:0 1px; }
+.hero-price .hp-mo{ color:rgba(255,255,255,.55); font-size:12.5px; }
+.hero-cta{ background:var(--orange); color:#181818; font-size:14.5px; font-weight:800; padding:13px 20px;
+  border-radius:14px; text-decoration:none; cursor:pointer; white-space:nowrap; box-shadow:0 8px 20px rgba(247,181,0,.32); }
+.hero-cta:active{ transform:scale(.97); }
+
+.section-title{ font-size:20px; font-weight:800; letter-spacing:-.02em; margin:34px 2px 16px; }
+.reassure{ display:flex; align-items:center; justify-content:center; gap:6px 14px; flex-wrap:wrap;
+  font-size:12.5px; color:#8a857c; font-weight:600; margin:16px auto 4px; max-width:420px; }
+.reassure span{ display:inline-flex; align-items:center; gap:5px; }
+.reassure svg{ width:14px; height:14px; stroke:var(--orange); fill:none; stroke-width:2.4; }
+
+/* Daydream épuré (sans grosse carte) */
+.daydream{ background:transparent !important; border:none !important; box-shadow:none !important; padding:0 2px !important; margin-bottom:6px !important; }
+.daydream h3{ display:none; }
+.dd-item{ border-top:1px solid #ece9e3 !important; }
 </style>
 </head>
 <body>
@@ -290,16 +327,23 @@ function logout() {
 </script>
 
 <div class="topbar-app">
-    <a href="app.html" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
-    <span class="topbar-title">Nos formules</span>
+    <a href="app.html" class="topbar-home" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <img src="belfit-logo-header.png" class="tb-logo" alt="BelFit">
     <span style="width:38px"></span>
 </div>
 
 
-<div class="hero">
-    <h2>Atteins ton objectif,<br>sans y penser</h2>
-    <p>Tes calories, tes macros et ton plan sur mesure — comme un diététicien, dans ta poche.</p>
+<div class="hero-card">
+    <span class="hero-badge">✦ PREMIUM</span>
+    <h1>Ton coach nutrition,<br>dans ta poche.</h1>
+    <p>Calories, macros et plan sur mesure — comme un diététicien, sans y penser.</p>
+    <div class="hero-foot">
+        <div class="hero-price"><span class="hp-from">dès</span> <b>3,99€</b><span class="hp-mo">/mois</span></div>
+        <a class="hero-cta" onclick="scrollFormules()">Voir les formules</a>
+    </div>
 </div>
+
+<h2 class="section-title">Ton quotidien avec Premium</h2>
 
 <!-- BÉNÉFICES : montrer le résultat avant le prix -->
 <div class="daydream">
@@ -310,17 +354,7 @@ function logout() {
     <div class="dd-item"><span class="dd-emo"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg></span><div class="dd-txt"><b>Chaque semaine</b><span>Ta liste de courses est générée automatiquement.</span></div></div>
 </div>
 
-<div class="unlock">
-    <h3>Ce que Premium débloque</h3>
-    <ul class="unlock-list">
-        <li><div><b>Calcul automatique des calories</b><span>Plus besoin de compter, tout est fait pour toi.</span></div></li>
-        <li><div><b>Macros personnalisées</b><span>Protéines, glucides et lipides ajustés à ton objectif.</span></div></li>
-        <li><div><b>Programme alimentaire sur mesure</b><span>Préparé par un vrai coach, adapté à ton objectif.</span></div></li>
-        <li><div><b>Liste de courses automatique</b><span>Générée chaque semaine, prête à l'emploi.</span></div></li>
-        <li><div><b>Programmes d'entraînement complets</b><span>Des séances détaillées, exercice par exercice.</span></div></li>
-        <li><div><b>Historique illimité</b><span>Suis ta progression sur des mois, sans limite.</span></div></li>
-    </ul>
-</div>
+<h2 class="section-title">Standard ou Premium ?</h2>
 
 <div class="plans">
     <!-- PREMIUM d'abord -->
@@ -359,6 +393,9 @@ function logout() {
         
         </div>
 
+        <h3 id="formules" style="font-size:18px;font-weight:800;letter-spacing:-.01em;margin:26px 0 4px;scroll-margin-top:16px;">Choisis ta formule</h3>
+        <p style="font-size:13px;color:var(--text-dim);font-weight:500;margin-bottom:16px;">Le tarif au mois baisse avec la durée. Sans engagement.</p>
+
         <div class="price-cards">
             <div class="pc" id="pcMensuel" onclick="choisirFormule('mensuel')">
                 <div class="pc-dur">1<small>mois</small></div>
@@ -386,7 +423,11 @@ function logout() {
         <div class="badge-be-mini">🇧🇪 App belge indépendante</div>
         <div class="cafe-line">À partir de 0,92 € par semaine — moins cher qu'un café.</div>
 
-        <div class="rassur">✓ <strong>Sans engagement</strong>, résiliable à tout moment</div>
+        <div class="reassure">
+            <span><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Paiement sécurisé</span>
+            <span><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Résiliable à tout moment</span>
+            <span><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Sans engagement</span>
+        </div>
         <button class="plan-btn premium" id="planPayBtn" onclick="payerFormule()">Débloquer Premium</button>
     </div>
 
@@ -659,6 +700,7 @@ function choisirFormule(f){
     document.getElementById('pcAnnuel').classList.toggle('selected', f==='annuel');
 }
 function payerFormule(){ ouvrirPaiement(FORMULES[formuleActive].lien); }
+function scrollFormules(){ const el = document.getElementById('formules'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }
 // Init
 choisirFormule('trimestriel');
 
