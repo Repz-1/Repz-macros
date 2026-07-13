@@ -82,7 +82,7 @@ function goTo(i){
 }
 
 // Précharger les autres onglets après le démarrage
-window.addEventListener('load', ()=> setTimeout(()=>{ chargerFrame(1); chargerFrame(2); chargerFrame(3); }, 900));
+window.addEventListener('load', ()=> setTimeout(()=>{ chargerFrame(1); chargerFrame(2); chargerFrame(3); }, 400));
 window.addEventListener('resize', ()=> applyX(false));
 
 // ===== Gestes transmis par les pages embarquées (postMessage) =====
