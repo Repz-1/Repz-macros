@@ -58,9 +58,12 @@ body {
 .wlog-nav { width:32px; height:32px; border-radius:50%; border:none; background:#F5F6F8; color:#1a1a1a; font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .wlog-nav:active { transform:scale(.94); }
 .wlog-nav.off { opacity:.3; }
+.wlog-nav.info { font-size:13px; font-style:italic; font-family:Georgia, serif; }
+.wlog-nav.info.actif { background:#F7B500; color:#fff; }
+.wlog-more { position:absolute; top:-3px; right:-3px; width:13px; height:13px; border-radius:50%; background:#fff; color:#334155; font-size:10px; font-weight:800; font-style:normal; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.2); }
 .wlog-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:7px 4px; padding-bottom:8px; }
 .wlog-wd { text-align:center; font-size:10.5px; font-weight:800; color:#94a3b8; }
-.wlog-cell { aspect-ratio:1; width:100%; max-width:38px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:12.5px; font-weight:700; color:#334155; cursor:pointer; }
+.wlog-cell { aspect-ratio:1; width:100%; max-width:38px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:12.5px; font-weight:700; color:#334155; cursor:pointer; position:relative; }
 .wlog-cell:active { transform:scale(.92); }
 .wlog-cell.seance { color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.35); }
 .wlog-cell.repos { background:#EDEFF2; color:#94a3b8; }
@@ -72,7 +75,11 @@ body {
 .wlog-legende .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; }
 .wlog-legende .dot.repos { background:#E2E6EA; }
 .wlog-legende .dot.today { background:#fff; box-shadow:0 0 0 2px #F7B500; width:7px; height:7px; }
-.ml-stats { font-size:12.5px; font-weight:700; color:#64748b; background:#F5F6F8; border-radius:10px; padding:9px 12px; margin:-4px 0 12px; }
+.ml-stats { margin:-4px 0 12px; }
+.ml-stats-ligne { font-size:12.5px; font-weight:700; color:#64748b; background:#F5F6F8; border-radius:10px; padding:9px 12px; margin-bottom:8px; }
+.ml-exo { display:flex; align-items:center; justify-content:space-between; font-size:13px; padding:7px 2px; border-bottom:1px solid #F1F3F5; color:#334155; }
+.ml-exo:last-child { border-bottom:none; }
+.ml-exo b { font-weight:700; color:#64748b; font-size:12px; flex-shrink:0; margin-left:10px; }
 .wlog-sum-pill { font-size:11.5px; font-weight:700; background:#F5F6F8; color:#475569; padding:4px 10px; border-radius:8px; white-space:nowrap; }
 /* Journal : les jours se déroulent dans la carte quand on appuie sur Ouvrir */
 .wlog-list { max-height:0; overflow:hidden; transition:max-height .4s ease; }
@@ -624,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=19" class="bn-item">
+    <a href="mes-stats.html?v=20" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
@@ -954,30 +961,40 @@ function renderWlog(){
     const today = wlDateDaysAgo(0);
     const todayIso = wlIso(today);
 
-    // --- Résumé de la semaine en cours (lundi → dimanche, comme les stats) ---
-    const lundi = new Date(today); lundi.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-    let nbSeances = 0, nbRepos = 0; const musclesSet = [];
-    for(let i = 0; i < 7; i++){
-        const d = new Date(lundi.getFullYear(), lundi.getMonth(), lundi.getDate() + i);
-        const iso = wlIso(d);
-        if(iso > todayIso) break;
-        const vals = log[iso] || [];
-        if(vals.includes('repos')) nbRepos++;
-        else if(vals.length){ nbSeances++; vals.forEach(v => { const n = wlMuscleName(v); if(n && !musclesSet.includes(n)) musclesSet.push(n); }); }
-    }
-    let mTxt = musclesSet.slice(0, 4).join(', ');
-    if(musclesSet.length > 4) mTxt += ' +' + (musclesSet.length - 4);
-    let sum = `<div class="wlog-sum"><span class="wlog-sum-pill">🏋️ ${nbSeances} séance${nbSeances > 1 ? 's' : ''}</span><span class="wlog-sum-pill">😴 ${nbRepos} repos</span>`;
-    if(mTxt) sum += `<span class="wlog-sum-pill">💪 ${mTxt}</span>`;
-    sum += '</div>';
-
     // --- Calendrier du mois affiché ---
     const ref = new Date(today.getFullYear(), today.getMonth() + wlogMoisOffset, 1);
     const titre = WL_MOIS_L[ref.getMonth()] + ' ' + ref.getFullYear();
+
+    // --- Résumé utile : séances du mois affiché + dernière séance notée ---
+    const prefixeMois = wlIso(ref).slice(0, 7);
+    let nbSeancesMois = 0;
+    let dernierIso = null;
+    Object.keys(log).forEach(iso => {
+        const vals = (log[iso] || []).filter(v => v !== 'repos');
+        if(!vals.length) return;
+        if(iso.slice(0, 7) === prefixeMois && iso <= todayIso) nbSeancesMois++;
+        if(iso <= todayIso && (!dernierIso || iso > dernierIso)) dernierIso = iso;
+    });
+    let sum = '<div class="wlog-sum">';
+    if(nbSeancesMois || dernierIso){
+        sum += `<span class="wlog-sum-pill">🏋️ ${nbSeancesMois} séance${nbSeancesMois > 1 ? 's' : ''} en ${WL_MOIS_L[ref.getMonth()]}</span>`;
+        if(dernierIso){
+            const dm = (log[dernierIso] || []).filter(v => v !== 'repos').map(wlMuscleName);
+            let dmTxt = dm.slice(0, 2).join(', ');
+            if(dm.length > 2) dmTxt += ' +' + (dm.length - 2);
+            sum += `<span class="wlog-sum-pill">💪 Dernière : ${dmTxt} · ${wlLabel(wlIsoToDate(dernierIso))}</span>`;
+        }
+    } else {
+        sum += '<span class="wlog-sum-pill">Touche un jour pour noter ta première séance 👇</span>';
+    }
+    sum += '</div>';
     let cal = `<div class="wlog-cal-head">
         <button class="wlog-nav" onclick="event.stopPropagation();wlogMoisOffset--;renderWlog()">‹</button>
         <div class="wlog-cal-titre">${titre}</div>
-        <button class="wlog-nav${wlogMoisOffset === 0 ? ' off' : ''}" onclick="event.stopPropagation();if(wlogMoisOffset < 0){wlogMoisOffset++;renderWlog();}">›</button>
+        <div style="display:flex;gap:6px;">
+            <button class="wlog-nav info${window.wlogLegende ? ' actif' : ''}" onclick="event.stopPropagation();window.wlogLegende=!window.wlogLegende;renderWlog()">i</button>
+            <button class="wlog-nav${wlogMoisOffset === 0 ? ' off' : ''}" onclick="event.stopPropagation();if(wlogMoisOffset < 0){wlogMoisOffset++;renderWlog();}">›</button>
+        </div>
     </div>`;
     cal += '<div class="wlog-grid">' + ['L','M','M','J','V','S','D'].map(j => `<div class="wlog-wd">${j}</div>`).join('');
     const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
@@ -996,21 +1013,29 @@ function renderWlog(){
             style = ` style="background:${WL_COLORS[muscles[0]]}"`;
         } else if(muscles.length > 1){
             cls += ' seance';
-            // Camembert : un segment égal par muscle travaillé
-            const part = 100 / muscles.length;
-            const segs = muscles.map((m, idx) => `${WL_COLORS[m]} ${(idx*part).toFixed(2)}% ${((idx+1)*part).toFixed(2)}%`).join(', ');
-            style = ` style="background:conic-gradient(${segs})"`;
+            // Deux couleurs max : au-delà, moitié/moitié + petit indicateur
+            style = ` style="background:conic-gradient(${WL_COLORS[muscles[0]]} 0% 50%, ${WL_COLORS[muscles[1]]} 50% 100%)"`;
         } else if(repos){
             cls += ' repos';
         }
         if(iso === todayIso) cls += ' today';
         if(futur) cls += ' futur';
-        cal += `<div class="${cls}"${futur ? '' : ` onclick="event.stopPropagation();openMuscleLog('${iso}')"`}${style}>${j}</div>`;
+        const plus = muscles.length > 2 ? '<i class="wlog-more">+</i>' : '';
+        cal += `<div class="${cls}"${futur ? '' : ` onclick="event.stopPropagation();openMuscleLog('${iso}')"`}${style}>${j}${plus}</div>`;
     }
     cal += '</div>';
-    cal += '<div class="wlog-legende">'
-        + MUSCLE_GROUPS.filter(g => WL_COLORS[g.k]).map(g => `<span><i class="dot" style="background:${WL_COLORS[g.k]}"></i>${g.n}</span>`).join('')
-        + '<span><i class="dot repos"></i>Repos</span><span><i class="dot today"></i>Aujourd\'hui</span></div>';
+    if(window.wlogLegende){
+        // Seulement les muscles réellement présents sur le mois affiché (tous si mois vide)
+        const utilises = [];
+        Object.keys(log).forEach(iso => {
+            if(iso.slice(0, 7) !== prefixeMois) return;
+            (log[iso] || []).forEach(v => { if(WL_COLORS[v] && !utilises.includes(v)) utilises.push(v); });
+        });
+        const src = utilises.length ? MUSCLE_GROUPS.filter(g => utilises.includes(g.k)) : MUSCLE_GROUPS.filter(g => WL_COLORS[g.k]);
+        cal += '<div class="wlog-legende">'
+            + src.map(g => `<span><i class="dot" style="background:${WL_COLORS[g.k]}"></i>${g.n}</span>`).join('')
+            + '<span><i class="dot repos"></i>Repos</span><span><i class="dot today"></i>Aujourd\'hui</span></div>';
+    }
 
     list.innerHTML = sum + cal;
     list.classList.toggle('expanded', !!window.wlogOpen);
@@ -1054,10 +1079,16 @@ function openMuscleLog(iso){
             const parts = [];
             const dtxt = fmtDuree(duree);
             if(dtxt && duree >= 60) parts.push('⏱ ' + dtxt);
-            if(nbExos) parts.push(nbExos + ' exo' + (nbExos > 1 ? 's' : ''));
             if(nbSeries) parts.push(nbSeries + ' série' + (nbSeries > 1 ? 's' : ''));
             if(tonnage > 0) parts.push('🏋️ ' + Math.round(tonnage).toLocaleString('fr-BE') + ' kg');
-            if(parts.length) statsHtml = parts.join(' · ');
+            if(parts.length) statsHtml = '<div class="ml-stats-ligne">' + parts.join(' · ') + '</div>';
+            // Liste des exercices : nom + nombre de séries
+            const lignes = [];
+            slog.forEach(s => (s.exos || []).forEach(ex => {
+                const n = (ex.sets || []).length;
+                lignes.push(`<div class="ml-exo"><span>${ex.nom}</span><b>${n} série${n > 1 ? 's' : ''}</b></div>`);
+            }));
+            if(lignes.length) statsHtml += lignes.join('');
         }
     } catch(e){}
     const st = document.getElementById('mlStats');

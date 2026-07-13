@@ -556,7 +556,7 @@ function renderRecords(){
         if(best > 0) prs.push({ nom, best, reps, dateBest });
     });
     if(!prs.length){
-        w.innerHTML = '<div class="chart-empty"><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=14">Lancer une séance</a></div></div>';
+        w.innerHTML = '<div class="chart-empty"><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=15">Lancer une séance</a></div></div>';
         return;
     }
     prs.sort((a,b) => b.best - a.best);
@@ -633,8 +633,21 @@ function renderRepartition(){
         return Math.round((new Date(aujIso) - new Date(dernier)) / 86400000);
     }
     const negliges = grands.map(k => ({k, j: joursDepuis(k)})).filter(x => x.j > 6);
+    // Suggestion du jour : ce que tu as fait le même jour la semaine passée
+    const dSem = new Date(aujIso); dSem.setDate(dSem.getDate() - 7);
+    const isoSem = dSem.toISOString().slice(0, 10);
+    const memesJour = (muscleLog[isoSem] || []).filter(v => v !== 'repos').map(k => { const g = groupes.find(x => x.k === k); return g ? g.n.toLowerCase() : null; }).filter(Boolean);
+    const aujFait = (muscleLog[aujIso] || []).length > 0;
     let note = '';
-    if(negliges.length){
+    if(memesJour.length && !aujFait){
+        const jourNom = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'][new Date(aujIso).getDay()];
+        let txt = `Suggestion du jour : ${memesJour.join(', ')} — comme ${jourNom} dernier.`;
+        if(negliges.length){
+            const items = negliges.map(x => { const nom = groupes.find(g=>g.k===x.k).n.toLowerCase(); return x.j === Infinity ? nom : `${nom} (${x.j} j)`; });
+            txt += ` Et pense à : ${items.join(', ')}.`;
+        }
+        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 9l12-2"/></svg>${txt}</div>`;
+    } else if(negliges.length){
         const items = negliges.map(x => {
             const nom = groupes.find(g=>g.k===x.k).n.toLowerCase();
             return x.j === Infinity ? nom : `${nom} (${x.j} j)`;
@@ -702,7 +715,7 @@ function renderExoProg(sel){
     ).sort();
 
     if(!noms.length){
-        wrap.innerHTML = '<div class="chart-empty"><div>Aucune série enregistrée. Pendant une séance, touche « Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=14">Lancer une séance</a></div></div>';
+        wrap.innerHTML = '<div class="chart-empty"><div>Aucune série enregistrée. Pendant une séance, touche « Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=15">Lancer une séance</a></div></div>';
         return;
     }
 
@@ -758,7 +771,7 @@ renderExoProg();
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
         <span>Journal</span>
     </a>
-    <a href="entrainements.html?v=14" class="bn-item">
+    <a href="entrainements.html?v=15" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
