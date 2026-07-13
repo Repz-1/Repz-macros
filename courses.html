@@ -148,8 +148,8 @@ let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}
         if(s && s.items){ state = s; jours = s.jours || 5; pers = s.pers || 1; }
     } catch(e){ state = null; }
     renderSegs();
-    if(state){ renderListe(); }
-    else if(base.length){ generer(); }
+    if(base.length){ generer(); }       // régénère automatiquement depuis le journal à l'ouverture
+    else if(state){ renderListe(); }     // pas de base fraîche : on garde la liste existante
     else { renderVide(); }
 })();
 
@@ -165,13 +165,16 @@ function setPers(p){ pers = p; renderSegs(); if(state && base.length) generer();
 // ---- Génération depuis la base ----
 function generer(){
     if(!base.length){ renderVide(); return; }
+    // Mémoriser les cases déjà cochées (par nom) pour ne pas perdre la progression
+    const dejaCoches = {};
+    if(state && state.items){ state.items.forEach(i => { if(i.done) dejaCoches[i.name] = true; }); }
     const items = base.map(it => ({
         name: it.name,
         qty: it.qty * jours * pers,
         unit: it.unit,
         unitLabel: it.unitLabel,
         cat: it.cat,
-        done: false,
+        done: !!dejaCoches[it.name],
         manuel: false
     }));
     // Conserver les produits ajoutés manuellement d'une génération précédente
