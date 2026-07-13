@@ -52,29 +52,31 @@ body {
 .wlog-today { flex-shrink:0; background:#DFA004; color:#fff; border:none; border-radius:20px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
 .wlog-today:active { transform:scale(.96); }
 .wlog-list { display:flex; flex-direction:column; }
-.wlog-day { display:flex; align-items:center; gap:12px; padding:13px 2px; border-top:1px solid var(--line); cursor:pointer; }
-.wlog-day:first-child { border-top:none; }
-.wlog-date { width:96px; flex-shrink:0; font-size:14px; font-weight:800; color:var(--text); }
-.wlog-main { flex:1; min-width:0; }
-.wlog-meta { font-size:12px; font-weight:600; color:var(--text-dim); margin-top:5px; display:flex; align-items:center; gap:10px; }
-.wlog-day.is-today .wlog-date { color:#DFA004; }
-.wlog-tags { display:flex; flex-wrap:wrap; gap:6px; flex:1; }
-.wlog-tag { font-size:12px; font-weight:700; background:#F5F6F8; color:#8F6200; padding:4px 10px; border-radius:8px; }
-.wlog-tag.repos { background:#f1f5f9; color:#64748b; }
-.wlog-day.is-repos { opacity:.6; }
-.wlog-day.is-today { opacity:1; }
-.wlog-day.is-today .wlog-tag.repos { opacity:.6; }
-.wlog-day.is-repos .wlog-date { color:#94a3b8; font-weight:700; }
-.wlog-empty { font-size:12.5px; color:#b7b1a8; }
-.wlog-day.is-today.a-remplir { background:#FFF9EC; border-left:3px solid #F7B500; border-radius:10px; border-top:none; padding-left:10px; padding-right:10px; margin-top:3px; }
-.wlog-fill-cta { font-size:13px; font-weight:800; color:#DFA004; }
-.wlog-sum { display:flex; flex-wrap:wrap; gap:6px; padding:12px 2px 12px; border-bottom:1px solid var(--line); }
-.wlog-sum + .wlog-day { border-top:none; }
+.wlog-sum { display:flex; flex-wrap:wrap; gap:6px; padding:12px 2px 10px; border-bottom:1px solid var(--line); }
+.wlog-cal-head { display:flex; align-items:center; justify-content:space-between; padding:12px 2px 8px; }
+.wlog-cal-titre { font-size:14.5px; font-weight:800; text-transform:capitalize; }
+.wlog-nav { width:32px; height:32px; border-radius:50%; border:none; background:#F5F6F8; color:#1a1a1a; font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.wlog-nav:active { transform:scale(.94); }
+.wlog-nav.off { opacity:.3; }
+.wlog-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:7px 4px; padding-bottom:8px; }
+.wlog-wd { text-align:center; font-size:10.5px; font-weight:800; color:#94a3b8; }
+.wlog-cell { aspect-ratio:1; width:100%; max-width:38px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:12.5px; font-weight:700; color:#334155; cursor:pointer; }
+.wlog-cell:active { transform:scale(.92); }
+.wlog-cell.seance { background:#F7B500; color:#fff; }
+.wlog-cell.repos { background:#EDEFF2; color:#94a3b8; }
+.wlog-cell.today { box-shadow:0 0 0 2px #F7B500; }
+.wlog-cell.today.seance { box-shadow:0 0 0 2px #fff, 0 0 0 4px #F7B500; }
+.wlog-cell.futur { color:#CBD5E1; cursor:default; }
+.wlog-cell.futur:active { transform:none; }
+.wlog-legende { display:flex; gap:14px; padding:2px 2px 12px; font-size:11.5px; font-weight:700; color:#64748b; }
+.wlog-legende .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; }
+.wlog-legende .dot.seance { background:#F7B500; }
+.wlog-legende .dot.repos { background:#E2E6EA; }
+.wlog-legende .dot.today { background:#fff; box-shadow:0 0 0 2px #F7B500; width:7px; height:7px; }
 .wlog-sum-pill { font-size:11.5px; font-weight:700; background:#F5F6F8; color:#475569; padding:4px 10px; border-radius:8px; white-space:nowrap; }
 /* Journal : les jours se déroulent dans la carte quand on appuie sur Ouvrir */
 .wlog-list { max-height:0; overflow:hidden; transition:max-height .4s ease; }
 .wlog-list.expanded { max-height:1000px; margin-top:16px; }
-.wlog-list .wlog-day:first-child { border-top:none; }
 
 /* Modale journal */
 .ml-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
@@ -519,7 +521,7 @@ function logout() {
 <div class="choice ph sm" style="margin-top:24px; background-image:url('img/card-journal.jpg')">
     <div class="ch-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/><path d="M9 16l2 2 4-4"/></svg></div>
     <h3>Journal d'entraînement</h3>
-    <p>Note les muscles travaillés sur tes 8 derniers jours.</p>
+    <p>Note les muscles travaillés, jour après jour.</p>
     <button class="cta" id="wlogCta" onclick="toggleWlogDays(event)">Ouvrir</button>
     <div class="wlog-list" id="wlogList"></div>
 </div>
@@ -941,63 +943,61 @@ function fmtDuree(sec){
 function loadMuscleLog(){ try { return JSON.parse(localStorage.getItem('repz_muscleLog') || '{}'); } catch(e){ return {}; } }
 function saveMuscleLog(o){ localStorage.setItem('repz_muscleLog', JSON.stringify(o)); }
 
+let wlogMoisOffset = 0; // 0 = mois courant, négatif = mois passés
+
 function renderWlog(){
     const list = document.getElementById('wlogList');
     if(!list) return;
     const log = loadMuscleLog();
-    // Durées des séances par date (depuis le sessionLog)
-    let slog = [];
-    try { slog = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]'); } catch(e){ slog = []; }
-    const durByIso = {};
-    slog.forEach(s => { if(s.iso && s.duree){ durByIso[s.iso] = (durByIso[s.iso]||0) + s.duree; } });
-    // Fenêtre ancrée sur le dernier jour encodé : elle ne bouge pas tant qu'on n'encode pas,
-    // et encoder un nouveau jour fait tourner la fenêtre (le jour le plus ancien s'efface).
-    const todayIso = wlIso(wlDateDaysAgo(0));
-    let anchorIso = null;
-    Object.keys(log).forEach(k => { if((log[k]||[]).length && k <= todayIso && (!anchorIso || k > anchorIso)) anchorIso = k; });
-    const anchor = anchorIso ? wlIsoToDate(anchorIso) : wlDateDaysAgo(0);
-    // Purge : tout ce qui sort de la fenêtre de 8 jours ancrée
-    const limite = wlIso(new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() - 7));
-    let changed = false;
-    Object.keys(log).forEach(k => { if(k < limite){ delete log[k]; changed = true; } });
-    if(changed) saveMuscleLog(log);
-    // 8 jours ancrés, + la ligne d'aujourd'hui si elle est au-delà de l'ancre (encodable)
-    const jours = [];
-    for(let i = 7; i >= 0; i--) jours.push(new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() - i));
-    if(todayIso > wlIso(anchor)) jours.push(wlDateDaysAgo(0));
-    let html = '';
-    let nbSeances = 0, nbRepos = 0;
-    const musclesSet = [];
-    jours.forEach(d => {
+    const today = wlDateDaysAgo(0);
+    const todayIso = wlIso(today);
+
+    // --- Résumé de la semaine en cours (lundi → dimanche, comme les stats) ---
+    const lundi = new Date(today); lundi.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    let nbSeances = 0, nbRepos = 0; const musclesSet = [];
+    for(let i = 0; i < 7; i++){
+        const d = new Date(lundi.getFullYear(), lundi.getMonth(), lundi.getDate() + i);
         const iso = wlIso(d);
-        const estToday = iso === todayIso;
+        if(iso > todayIso) break;
         const vals = log[iso] || [];
-        const estRepos = vals.includes('repos');
-        const estSeance = vals.length > 0 && !estRepos;
-        if(estSeance){ nbSeances++; vals.forEach(v => { const n = wlMuscleName(v); if(n && !musclesSet.includes(n)) musclesSet.push(n); }); }
-        if(estRepos) nbRepos++;
-        let tags;
-        if(vals.length === 0) tags = estToday ? '<span class="wlog-fill-cta">À remplir →</span>' : '<span class="wlog-empty">À remplir</span>';
-        else if(estRepos) tags = '<span class="wlog-tag repos">Repos</span>';
-        else tags = vals.map(v => `<span class="wlog-tag">${wlMuscleName(v)}</span>`).join('');
-        // Ligne méta : durée de la séance de ce jour
-        let meta = '';
-        if(!estRepos && durByIso[iso] && durByIso[iso] >= 1800){ // durée affichée seulement à partir de 30 min
-            const dtxt = fmtDuree(durByIso[iso]);
-            if(dtxt) meta = `<div class="wlog-meta"><span>⏱ ${dtxt}</span></div>`;
-        }
-        html += `<div class="wlog-day${estToday ? ' is-today' : ''}${estToday && vals.length === 0 ? ' a-remplir' : ''}${estRepos ? ' is-repos' : ''}" onclick="openMuscleLog('${iso}')">
-            <div class="wlog-date">${estToday ? "Aujourd'hui" : wlLabel(d)}</div>
-            <div class="wlog-main"><div class="wlog-tags">${tags}</div>${meta}</div>
-        </div>`;
-    });
-    // Résumé compact de la semaine
+        if(vals.includes('repos')) nbRepos++;
+        else if(vals.length){ nbSeances++; vals.forEach(v => { const n = wlMuscleName(v); if(n && !musclesSet.includes(n)) musclesSet.push(n); }); }
+    }
     let mTxt = musclesSet.slice(0, 4).join(', ');
     if(musclesSet.length > 4) mTxt += ' +' + (musclesSet.length - 4);
     let sum = `<div class="wlog-sum"><span class="wlog-sum-pill">🏋️ ${nbSeances} séance${nbSeances > 1 ? 's' : ''}</span><span class="wlog-sum-pill">😴 ${nbRepos} repos</span>`;
     if(mTxt) sum += `<span class="wlog-sum-pill">💪 ${mTxt}</span>`;
     sum += '</div>';
-    list.innerHTML = sum + html;
+
+    // --- Calendrier du mois affiché ---
+    const ref = new Date(today.getFullYear(), today.getMonth() + wlogMoisOffset, 1);
+    const titre = WL_MOIS_L[ref.getMonth()] + ' ' + ref.getFullYear();
+    let cal = `<div class="wlog-cal-head">
+        <button class="wlog-nav" onclick="event.stopPropagation();wlogMoisOffset--;renderWlog()">‹</button>
+        <div class="wlog-cal-titre">${titre}</div>
+        <button class="wlog-nav${wlogMoisOffset === 0 ? ' off' : ''}" onclick="event.stopPropagation();if(wlogMoisOffset < 0){wlogMoisOffset++;renderWlog();}">›</button>
+    </div>`;
+    cal += '<div class="wlog-grid">' + ['L','M','M','J','V','S','D'].map(j => `<div class="wlog-wd">${j}</div>`).join('');
+    const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
+    const decal = (new Date(ref.getFullYear(), ref.getMonth(), 1).getDay() + 6) % 7; // semaine qui démarre lundi
+    for(let i = 0; i < decal; i++) cal += '<div></div>';
+    for(let j = 1; j <= njours; j++){
+        const iso = wlIso(new Date(ref.getFullYear(), ref.getMonth(), j));
+        const vals = log[iso] || [];
+        const repos = vals.includes('repos');
+        const seance = vals.length > 0 && !repos;
+        const futur = iso > todayIso;
+        let cls = 'wlog-cell';
+        if(seance) cls += ' seance';
+        else if(repos) cls += ' repos';
+        if(iso === todayIso) cls += ' today';
+        if(futur) cls += ' futur';
+        cal += `<div class="${cls}"${futur ? '' : ` onclick="event.stopPropagation();openMuscleLog('${iso}')"`}>${j}</div>`;
+    }
+    cal += '</div>';
+    cal += '<div class="wlog-legende"><span><i class="dot seance"></i>Séance</span><span><i class="dot repos"></i>Repos</span><span><i class="dot today"></i>Aujourd\'hui</span></div>';
+
+    list.innerHTML = sum + cal;
     list.classList.toggle('expanded', !!window.wlogOpen);
     const cta = document.getElementById('wlogCta');
     if(cta) cta.textContent = window.wlogOpen ? 'Réduire' : 'Ouvrir';
