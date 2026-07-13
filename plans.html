@@ -785,9 +785,10 @@ function continuerStandard(){
   var x0=null, y0=null, axis=null;
   // screenX/screenY : coordonnées ÉCRAN (stables même quand la page glisse sous le doigt)
   // capture:true = on écoute AVANT les gestionnaires de la page (graphiques, etc.)
+  var t0 = 0;
   document.addEventListener('touchstart', function(e){
     if(e.touches.length !== 1){ x0=null; return; }
-    x0 = e.touches[0].screenX; y0 = e.touches[0].screenY; axis = null;
+    x0 = e.touches[0].screenX; y0 = e.touches[0].screenY; axis = null; t0 = Date.now();
   }, {passive:true, capture:true});
   document.addEventListener('touchmove', function(e){
     if(x0 === null) return;
@@ -805,7 +806,7 @@ function continuerStandard(){
     if(x0 === null) return;
     if(axis === 'h'){
       var dx = e.changedTouches[0].screenX - x0;
-      try{ parent.postMessage({bfS:'end', dx:dx}, '*'); }catch(_){ }
+      try{ parent.postMessage({bfS:'end', dx:dx, dt:Date.now()-t0}, '*'); }catch(_){ }
     }
     x0 = null; axis = null;
   }, {passive:true, capture:true});
