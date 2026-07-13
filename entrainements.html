@@ -4,15 +4,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>html,body{background:#eeece7 !important;margin:0}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7efd9">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Entraînements</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
     --orange:#F7B500;   /* Jaune BelFit (couleur principale) */
-    --bg:#F8F8F8;
+    --bg:#F5F6F8;
     --card:#ffffff;
     --dark:#1f2937;
     --line:#e5e7eb;
@@ -20,21 +24,19 @@
     --text-dim:#6b7280;
     --gold:#F7B500;
     --noir:#181818;
-    --ok:#16a34a;        /* vert : uniquement terminé/progression */
+    --ok:#DFA004;        /* vert : uniquement terminé/progression */
     --logo-red:#DE2F14;  /* rouge du logo */
     --green:#8F6200;
     --radius:22px;
 }
 body {
     font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:90px;
-    padding:16px;
+    background:var(--bg); color:var(--text); min-height:100vh;
+    padding:16px 16px 170px; /* espace pour la nav + le FAB chrono */
 }
 
 /* Journal d'entraînement */
 /* Carte Dernière séance */
-.last-session { display:none; align-items:center; gap:14px; background:var(--card); border:1px solid #efefef; border-radius:var(--radius); padding:18px; margin-top:26px; box-shadow:0 8px 24px rgba(24,24,24,.07); }
-.last-session.show { display:flex; }
 .ls-ic { flex:none; width:50px; height:50px; border-radius:15px; background:#FFF4CC; display:flex; align-items:center; justify-content:center; font-size:24px; }
 .ls-body { flex:1; min-width:0; }
 .ls-label { font-size:12px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em; }
@@ -43,25 +45,45 @@ body {
 .ls-btn { flex:none; background:var(--gold); color:var(--noir); border:none; border-radius:14px; padding:11px 18px; font-size:14px; font-weight:700; cursor:pointer; text-decoration:none; box-shadow:0 6px 16px rgba(247,181,0,.3); }
 .ls-btn:active { transform:scale(.96); }
 
-.wlog { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:22px; box-shadow:0 4px 16px rgba(15,23,42,.05); }
+.wlog { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:22px; box-shadow:0 2px 10px rgba(15,23,42,.04); }
 .wlog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
 .wlog-title { font-size:17px; font-weight:800; }
 .wlog-sub { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
 .wlog-today { flex-shrink:0; background:#DFA004; color:#fff; border:none; border-radius:20px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
 .wlog-today:active { transform:scale(.96); }
 .wlog-list { display:flex; flex-direction:column; }
-.wlog-day { display:flex; align-items:center; gap:12px; padding:11px 2px; border-top:1px solid var(--line); cursor:pointer; }
-.wlog-day:first-child { border-top:none; }
-.wlog-date { width:96px; flex-shrink:0; font-size:13px; font-weight:700; color:var(--text); }
-.wlog-day.is-today .wlog-date { color:#DFA004; }
-.wlog-tags { display:flex; flex-wrap:wrap; gap:6px; flex:1; }
-.wlog-tag { font-size:12px; font-weight:700; background:#FDF6E3; color:#8F6200; padding:4px 10px; border-radius:8px; }
-.wlog-tag.repos { background:#f1f5f9; color:#64748b; }
-.wlog-day.is-repos { background:#DFA004; border-radius:12px; border-top:none; padding-left:12px; padding-right:12px; margin:3px 0; }
-.wlog-day.is-repos + .wlog-day { border-top:none; }
-.wlog-day.is-repos .wlog-date { color:#fff; }
-.wlog-day.is-repos .wlog-tag.repos { background:rgba(255,255,255,.22); color:#fff; }
-.wlog-empty { font-size:12.5px; color:#b7b1a8; }
+.wlog-sum { display:flex; flex-wrap:wrap; gap:6px; padding:12px 2px 10px; border-bottom:1px solid var(--line); }
+.wlog-cal-head { display:flex; align-items:center; justify-content:space-between; padding:12px 2px 8px; }
+.wlog-cal-titre { font-size:14.5px; font-weight:800; text-transform:capitalize; }
+.wlog-nav { width:32px; height:32px; border-radius:50%; border:none; background:#F5F6F8; color:#1a1a1a; font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.wlog-nav:active { transform:scale(.94); }
+.wlog-nav.off { opacity:.3; }
+.wlog-nav.info { font-size:13px; font-style:italic; font-family:Georgia, serif; }
+.wlog-nav.info.actif { background:#F7B500; color:#fff; }
+.wlog-more { position:absolute; top:-3px; right:-3px; width:13px; height:13px; border-radius:50%; background:#fff; color:#334155; font-size:10px; font-weight:800; font-style:normal; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+.wlog-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:7px 4px; padding-bottom:8px; }
+.wlog-wd { text-align:center; font-size:10.5px; font-weight:800; color:#94a3b8; }
+.wlog-cell { aspect-ratio:1; width:100%; max-width:38px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:12.5px; font-weight:700; color:#334155; cursor:pointer; position:relative; }
+.wlog-cell:active { transform:scale(.92); }
+.wlog-cell.seance { color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.35); }
+.wlog-cell.repos { background:#EDEFF2; color:#94a3b8; }
+.wlog-cell.today { box-shadow:0 0 0 2px #F7B500; }
+.wlog-cell.today.seance { box-shadow:0 0 0 2px #fff, 0 0 0 4px #F7B500; }
+.wlog-cell.futur { color:#CBD5E1; cursor:default; }
+.wlog-cell.futur:active { transform:none; }
+.wlog-legende { display:flex; flex-wrap:wrap; gap:6px 12px; padding:2px 2px 12px; font-size:11px; font-weight:700; color:#64748b; }
+.wlog-legende .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; }
+.wlog-legende .dot.repos { background:#E2E6EA; }
+.wlog-legende .dot.today { background:#fff; box-shadow:0 0 0 2px #F7B500; width:7px; height:7px; }
+.ml-stats { margin:-4px 0 12px; }
+.ml-stats-ligne { font-size:12.5px; font-weight:700; color:#64748b; background:#F5F6F8; border-radius:10px; padding:9px 12px; margin-bottom:8px; }
+.ml-exo { display:flex; align-items:center; justify-content:space-between; font-size:13px; padding:7px 2px; border-bottom:1px solid #F1F3F5; color:#334155; }
+.ml-exo:last-child { border-bottom:none; }
+.ml-exo b { font-weight:700; color:#64748b; font-size:12px; flex-shrink:0; margin-left:10px; }
+.wlog-sum-pill { font-size:11.5px; font-weight:700; background:#F5F6F8; color:#475569; padding:4px 10px; border-radius:8px; white-space:nowrap; }
+/* Journal : les jours se déroulent dans la carte quand on appuie sur Ouvrir */
+.wlog-list { max-height:0; overflow:hidden; transition:max-height .4s ease; }
+.wlog-list.expanded { max-height:1000px; margin-top:16px; }
 
 /* Modale journal */
 .ml-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
@@ -111,7 +133,8 @@ body {
 
 /* Hero court */
 .intro { text-align:left; padding:18px 6px 14px; }
-.intro-eyebrow { font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#9b9b9b; }
+.intro-eyebrow { font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--noir); }
+.intro-eyebrow em { font-style:normal; color:var(--gold); }
 .intro h2 { font-size:26px; font-weight:800; line-height:1.15; letter-spacing:-.02em; margin-bottom:6px; color:var(--noir); }
 .intro p { font-size:17px; font-weight:500; color:#666; line-height:1.45; max-width:340px; margin:0; }
 
@@ -120,11 +143,44 @@ body {
 
 .choice {
     position:relative; display:block; border-radius:24px; padding:24px 22px;
-    background:#ffffff; border:1px solid #efefef; box-shadow:0 8px 24px rgba(24,24,24,.07);
+    background:#ffffff; border:1px solid #efefef; box-shadow:0 2px 10px rgba(24,24,24,.05);
     text-decoration:none; color:inherit;
     transition:transform .15s ease, box-shadow .15s ease;
 }
 .choice:active { transform:scale(.985); }
+
+/* ===== Cartes photo (style Nike) ===== */
+.choice.ph {
+    border:none; overflow:hidden; min-height:200px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    background-size:cover; background-position:center;
+    box-shadow:0 8px 22px rgba(24,24,24,.16); color:#fff;
+}
+.choice.ph::after {
+    content:''; position:absolute; inset:0; border-radius:inherit;
+    background:linear-gradient(180deg, rgba(10,10,10,.32) 0%, rgba(10,10,10,.42) 38%, rgba(10,10,10,.78) 74%, rgba(10,10,10,.92) 100%);
+    pointer-events:none;
+}
+.choice.ph > * { position:relative; z-index:1; }
+.choice.ph .ch-icon { display:none; }
+.choice.ph h3 { color:#fff; font-size:21px; text-shadow:0 1px 10px rgba(0,0,0,.55); }
+.choice.ph > p { color:rgba(255,255,255,.92); font-weight:600; max-width:34ch; text-shadow:0 1px 8px rgba(0,0,0,.55); }
+.choice.ph .cta {
+    background:rgba(255,255,255,.14); color:#fff;
+    border:1.5px solid rgba(255,255,255,.55); backdrop-filter:blur(4px); box-shadow:none;
+}
+.choice.ph.featured .cta { background:var(--gold); color:var(--noir); border:none; box-shadow:0 8px 20px rgba(247,181,0,.4); }
+.choice.ph .lock-badge { background:rgba(10,10,10,.55); color:#fff; border:1px solid rgba(255,255,255,.3); backdrop-filter:blur(4px); }
+.choice.ph .badge { position:absolute; top:18px; left:22px; right:auto; margin:0; }
+.choice.ph.featured { min-height:260px; }
+/* Hiérarchie : Créer (260) > Séance libre (220) > Programmes / Journal (185) */
+.choice.ph.md { min-height:220px; }
+.choice.ph.sm { min-height:185px; }
+.choice.ph.sm h3 { font-size:18px; }
+.choice.ph.sm > p { font-size:13px; margin-bottom:12px; }
+.choice.ph.sm .cta { padding:10px 20px; font-size:14px; border-radius:14px; }
+.choice.ph .wlog-list { background:#fff; border-radius:16px; color:var(--text); }
+.choice.ph .wlog-list.expanded { padding:4px 16px; }
 
 /* Icônes : fond jaune très clair, trait noir (façon Apple Fitness) */
 .ch-icon {
@@ -151,7 +207,7 @@ body {
 /* Carte vedette : bordure + halo jaune pour la faire ressortir (fond clair partout) */
 .choice.featured {
     background:#ffffff; border:1px solid #efefef;
-    box-shadow:0 16px 40px rgba(24,24,24,.13);
+    box-shadow:0 6px 18px rgba(24,24,24,.09);
 }
 
 /* Badge Recommandé : jaune, texte noir (jamais rouge) */
@@ -213,7 +269,7 @@ body {
     background:#0ea5e9; color:#fff; border:none;
     padding:12px 16px; border-radius:30px; cursor:pointer;
     box-shadow:0 4px 14px rgba(14,165,233,.4);
-    font-size:14px; font-weight:700; opacity:.72;
+    font-size:14px; font-weight:700; opacity:.95;
     transition:transform .15s, opacity .15s;
 }
 .water-fab:active { transform:scale(.94); opacity:1; background:#0284c7; }
@@ -285,7 +341,7 @@ body {
 }
 .bn-item {
     flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
-    padding:9px 0 7px; text-decoration:none; color:#9ca3af;
+    padding:9px 0 7px; text-decoration:none; color:#6f6a61;
     -webkit-tap-highlight-color:transparent;
 }
 .bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
@@ -296,10 +352,10 @@ body {
 /* ===== CHRONO (identique ma-seance) ===== */
 .timer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:64;}
 .timer-overlay.show{display:block;}
-.timer-container{position:fixed;bottom:80px;left:16px;right:16px;max-width:448px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:65;display:none;}
-.timer-container.show{display:block;animation:slideUpT .3s ease-out;}
+.timer-container{position:fixed;top:28%;transform:translateY(-50%);left:16px;right:16px;max-width:448px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 12px 34px rgba(0,0,0,.18);z-index:65;display:none;}
+.timer-container.show{display:block;animation:timerPop .3s ease-out;}
 body.timer-open .water-fab{display:none;}
-@keyframes slideUpT{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes timerPop{from{transform:translateY(calc(-50% + 24px));opacity:0;}to{transform:translateY(-50%);opacity:1;}}
 .timer-display{text-align:center;margin-bottom:20px;}
 .timer-big{font-size:56px;font-weight:800;color:var(--orange);font-family:'Monaco','Courier';letter-spacing:2px;}
 .timer-label{font-size:13px;color:#9ca3af;margin-top:8px;}
@@ -318,35 +374,34 @@ body.timer-open .water-fab{display:none;}
 .wheel-unit{font-size:12px;color:#9ca3af;font-weight:600;margin-top:-6px;}
 .wheel-sep{font-size:28px;font-weight:800;color:#1a1a1a;align-self:flex-start;margin-top:54px;}
 .wheel-highlight{position:absolute;top:50px;left:0;right:0;height:50px;border-top:1.5px solid var(--orange);border-bottom:1.5px solid var(--orange);pointer-events:none;opacity:.5;}
-.chrono-fab{position:fixed;bottom:84px;right:16px;z-index:66;width:52px;height:52px;border-radius:50%;background:#1f2937;color:#fff;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(31,41,55,.4);opacity:.82;transition:opacity .15s,transform .15s,background .2s;-webkit-tap-highlight-color:transparent;}
-.chrono-fab svg{width:24px;height:24px;}
+.chrono-fab{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));right:8px;z-index:66;width:60px;height:60px;border-radius:50%;background:var(--gold);color:#181818;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(247,181,0,.55);opacity:1;transition:opacity .15s,transform .15s,background .2s;-webkit-tap-highlight-color:transparent;}
+.chrono-fab svg{width:30px;height:30px;}
 .chrono-fab:active{opacity:1;transform:scale(.94);}
-.chrono-fab-time{font-size:10px;font-weight:800;line-height:1;margin-top:1px;font-variant-numeric:tabular-nums;}
-.chrono-fab.running{opacity:1;background:var(--orange);box-shadow:0 6px 20px rgba(217,142,4,.45);}
+.chrono-fab-time{font-size:11px;font-weight:800;line-height:1;margin-top:2px;font-variant-numeric:tabular-nums;}
+.chrono-fab.running{opacity:1;background:#181818;color:var(--gold);box-shadow:0 6px 20px rgba(0,0,0,.45);}
 </style>
 </head>
 <body style="padding-top:max(12px,env(safe-area-inset-top));">
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
 #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
 @keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-#repzSplash .sp-loader{position:absolute;top:calc(50% + 130px);left:50%;transform:translateX(-50%);width:40px;height:40px;border:4px solid #F7E9C4;border-top-color:#DFA004;border-radius:50%;animation:spSpin .8s linear infinite;}
-@keyframes spSpin{to{transform:translateX(-50%) rotate(360deg)}}
+
+
 </style>
 <div id="repzSplash">
-  <img class="sp-sym" src="logo-symbol.png" alt="BELFIT">
-  <img class="sp-txt" src="logo-text.png" alt="REP Z">
-  <div class="sp-loader"></div>
+  <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
+  <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
 </div>
 <script>
 (function(){
   var s=document.getElementById('repzSplash');
   if(!s) return;
-  if(sessionStorage.getItem('repz_splash')){ s.remove(); return; }
-  sessionStorage.setItem('repz_splash','1');
+  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){} if(seen){ s.remove(); return; }
+  try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
   setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
 })();
 </script>
@@ -417,24 +472,41 @@ function logout() {
 }
 </script>
 
+<!-- EN-TÊTE COMMUN -->
+<style>
+.app-header { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; }
+.ah-logo { height:55px; width:auto; display:block; }
+.ah-actions { display:flex; align-items:center; gap:8px; }
+.ah-btn { width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
+.ah-btn svg { width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.ah-btn:active { background:rgba(247,181,0,.16); transform:scale(.94); }
+</style>
+<header class="app-header">
+    <img src="belfit-logo-header.png" class="ah-logo" alt="BELFIT">
+    <div class="ah-actions">
+        <a href="profil.html" class="ah-btn" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></a>
+        <a href="parametres.html" class="ah-btn" aria-label="Réglages"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></a>
+    </div>
+</header>
+
 <div class="intro">
-    <span class="intro-eyebrow">Entraînement</span>
+    <span class="intro-eyebrow">BelFit <em>Training</em></span>
 </div>
 
 <div class="choices">
 
     <!-- Carte VEDETTE : programme intelligent (Premium) -->
-    <a href="test.html" class="choice featured locked" id="choiceTest" onclick="return checkPremium(event)">
+    <a href="test.html?v=7" class="choice ph featured locked" id="choiceTest" onclick="return checkPremium(event)" style="background-image:url('img/card-creer.jpg')">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z"/></svg></span>
-        <span class="badge">✨ Recommandé</span>
+        <span class="badge">✨ Sur mesure</span>
         <h3>Créer mon programme</h3>
         <p>BelFit crée un programme personnalisé selon ton objectif, ton niveau et ton matériel.</p>
         <span class="cta">Commencer</span>
     </a>
 
     <!-- Séance libre (gratuit) -->
-    <a href="ma-seance.html" class="choice">
+    <a href="ma-seance.html?v=20" class="choice ph md" style="background-image:url('img/card-libre.jpg')">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
         <h3>Séance libre</h3>
         <p>Compose toi-même ton entraînement, exercice par exercice.</p>
@@ -442,7 +514,7 @@ function logout() {
     </a>
 
     <!-- Mes programmes (Premium) -->
-    <a href="programmes.html" class="choice locked" id="choiceLib" onclick="return checkPremium(event)">
+    <a href="programmes.html?v=9" class="choice ph sm locked" id="choiceLib" onclick="return checkPremium(event)" style="background-image:url('img/card-programmes.jpg')">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg></span>
         <h3>Mes programmes</h3>
@@ -452,26 +524,12 @@ function logout() {
 
 </div>
 
-<!-- DERNIÈRE SÉANCE -->
-<a class="last-session" id="lastSession" href="ma-seance.html">
-    <span class="ls-ic">🔥</span>
-    <span class="ls-body">
-        <span class="ls-label">Dernière séance</span>
-        <span class="ls-title" id="lsTitle">—</span>
-        <span class="ls-meta" id="lsMeta"></span>
-    </span>
-    <span class="ls-btn">Refaire</span>
-</a>
-
-<!-- JOURNAL D'ENTRAÎNEMENT -->
-<div class="wlog">
-    <div class="wlog-head">
-        <div>
-            <h3 class="wlog-title">Journal d'entraînement</h3>
-            <p class="wlog-sub">Tes 9 derniers jours · note les muscles travaillés</p>
-        </div>
-        <button class="wlog-today" onclick="openMuscleLog(todayISO())">+ Aujourd'hui</button>
-    </div>
+<!-- JOURNAL D'ENTRAÎNEMENT (carte au même style que les bulles du dessus) -->
+<div class="choice ph sm" style="margin-top:24px; background-image:url('img/card-journal.jpg')">
+    <div class="ch-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/><path d="M9 16l2 2 4-4"/></svg></div>
+    <h3>Journal d'entraînement</h3>
+    <p>Note les muscles travaillés, jour après jour.</p>
+    <button class="cta" id="wlogCta" onclick="toggleWlogDays(event)">Ouvrir</button>
     <div class="wlog-list" id="wlogList"></div>
 </div>
 
@@ -479,6 +537,7 @@ function logout() {
 <div class="ml-overlay" id="mlOverlay" onclick="if(event.target.id==='mlOverlay')closeMuscleLog()">
     <div class="ml-modal">
         <h3 class="ml-date" id="mlDate">—</h3>
+        <div class="ml-stats" id="mlStats"></div>
         <div class="ml-groups" id="mlGroups"></div>
         <div class="ml-btns">
             <button class="ml-clear" onclick="clearMuscleDay()">Effacer</button>
@@ -493,7 +552,7 @@ function logout() {
         <div class="pm-icon">💪</div>
         <h3>Les programmes sont Premium</h3>
         <p>Les programmes structurés et sur mesure font partie de BELFIT Premium. En attendant, tu peux composer ta séance librement, c'est gratuit !<br><br>Ton soutien nous aide à faire grandir BELFIT 🙏</p>
-        <a href="plans.html" class="pm-btn">Soutenir BELFIT & débloquer</a>
+        <a href="plans.html?v=6" class="pm-btn">Soutenir BELFIT & débloquer</a>
         <button class="pm-close" onclick="fermerPremium()">Plus tard</button>
     </div>
 </div>
@@ -572,11 +631,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html" class="bn-item">
+    <a href="mes-stats.html?v=22" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
-    <a href="plans.html" class="bn-item bn-premium" id="bnPremium">
+    <a href="plans.html?v=6" class="bn-item bn-premium" id="bnPremium">
         <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
         <span>Premium</span>
     </a>
@@ -609,7 +668,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     const b = document.createElement('a');
     b.href = 'index.html';
     b.id = 'inviteBandeau';
-    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FDF6E3;border-bottom:1px solid #F3DDA0;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#F5F6F8;border-bottom:1px solid #F3DDA0;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
     b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
@@ -737,10 +796,14 @@ function closeTimer(){
 (function(){
     const fab = document.getElementById('chronoFab');
     if(!fab) return;
-    // Restaurer la position sauvegardée
+    // Restaurer la position sauvegardée (aimantée au bord le plus proche)
     try{
         const p = JSON.parse(localStorage.getItem('belfit_chronoPos') || 'null');
-        if(p){ appliquerPos(p.x, p.y); }
+        if(p){
+            const w = fab.offsetWidth || 52;
+            const snapX = (p.x + w/2 < window.innerWidth/2) ? 16 : window.innerWidth - w - 16;
+            appliquerPos(snapX, p.y);
+        }
     }catch(e){}
     function appliquerPos(x, y){
         const maxX = window.innerWidth - fab.offsetWidth - 4;
@@ -773,7 +836,13 @@ function closeTimer(){
     fab.addEventListener('touchend', function(e){
         if(dragging){
             const r = fab.getBoundingClientRect();
-            const p = appliquerPos(r.left, r.top);
+            // Aimanté au bord le plus proche (gauche ou droit), jamais au milieu
+            const snapX = (r.left + r.width/2 < window.innerWidth/2)
+                ? 16
+                : window.innerWidth - r.width - 16;
+            const p = appliquerPos(snapX, r.top);
+            fab.style.transition = 'left .22s ease, top .22s ease';
+            setTimeout(()=>{ fab.style.transition = ''; }, 250);
             try{ localStorage.setItem('belfit_chronoPos', JSON.stringify(p)); }catch(err){}
         } else {
             toggleTimer(); // simple tap = ouvrir/fermer le chrono
@@ -853,12 +922,13 @@ initWheels(); updateTimerDisplay();
 })();
 </script>
 <script>
-/* ===== JOURNAL D'ENTRAÎNEMENT (9 jours glissants) ===== */
+/* ===== JOURNAL D'ENTRAÎNEMENT (8 jours glissants, ancien → récent) ===== */
 const MUSCLE_GROUPS = [
     {k:'pecs', n:'Pecs'}, {k:'dos', n:'Dos'}, {k:'epaules', n:'Épaules'},
     {k:'biceps', n:'Biceps'}, {k:'triceps', n:'Triceps'}, {k:'jambes', n:'Jambes'},
     {k:'abdos', n:'Abdos'}, {k:'cardio', n:'Cardio'}, {k:'repos', n:'Repos'}
 ];
+const WL_COLORS = {pecs:'#EF4444', dos:'#F97316', epaules:'#F7B500', biceps:'#10B981', triceps:'#06B6D4', jambes:'#3B82F6', abdos:'#8B5CF6', cardio:'#EC4899'};
 const WL_JOURS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 const WL_JOURS_L = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const WL_MOIS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
@@ -872,78 +942,114 @@ function wlLabel(d){ return `${WL_JOURS[d.getDay()]} ${d.getDate()} ${WL_MOIS[d.
 function wlLabelLong(d){ return `${WL_JOURS_L[d.getDay()]} ${d.getDate()} ${WL_MOIS_L[d.getMonth()]}`; }
 function wlMuscleName(k){ const g = MUSCLE_GROUPS.find(x => x.k === k); return g ? g.n : k; }
 
-// ===== TITRE DYNAMIQUE SELON L'HEURE =====
-function majSalutation(){
-    const h = new Date().getHours();
-    const t = document.getElementById('introTitre');
-    const s = document.getElementById('introSub');
-    if(!t) return;
-    let titre, sous;
-    if(h < 12){ titre = "Bonjour 👋"; sous = "Prêt à t'entraîner ?"; }
-    else if(h < 18){ titre = "C'est le moment de bouger 💪"; sous = "Choisis comment tu veux t'entraîner."; }
-    else { titre = "Dernière séance de la journée ?"; sous = "Choisis ton mode d'entraînement."; }
-    t.textContent = titre;
-    if(s) s.textContent = sous;
-}
 
-// ===== CARTE DERNIÈRE SÉANCE =====
 function fmtDuree(sec){
     if(!sec || sec < 60) return sec ? sec + ' s' : null;
     const m = Math.round(sec/60);
     if(m < 60) return m + ' min';
     return Math.floor(m/60) + 'h' + String(m%60).padStart(2,'0');
 }
-function ilYaCombien(iso){
-    const d = wlIsoToDate(iso); const now = new Date(); now.setHours(0,0,0,0);
-    const diff = Math.round((now - d)/86400000);
-    if(diff <= 0) return "aujourd'hui";
-    if(diff === 1) return "hier";
-    return "il y a " + diff + " jours";
-}
-function renderDerniereSeance(){
-    let log = [];
-    try { log = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]'); } catch(e){ log = []; }
-    const card = document.getElementById('lastSession');
-    if(!card || !log.length) return;
-    const s = log[log.length - 1];
-    document.getElementById('lsTitle').textContent = s.titre || 'Séance libre';
-    const bouts = [];
-    if(s.iso) bouts.push(ilYaCombien(s.iso));
-    const dur = fmtDuree(s.duree);
-    if(dur) bouts.push(dur);
-    document.getElementById('lsMeta').textContent = bouts.join(' · ');
-    card.classList.add('show');
-}
-
 function loadMuscleLog(){ try { return JSON.parse(localStorage.getItem('repz_muscleLog') || '{}'); } catch(e){ return {}; } }
 function saveMuscleLog(o){ localStorage.setItem('repz_muscleLog', JSON.stringify(o)); }
+
+let wlogMoisOffset = 0; // 0 = mois courant, négatif = mois passés
 
 function renderWlog(){
     const list = document.getElementById('wlogList');
     if(!list) return;
     const log = loadMuscleLog();
-    // Purge des jours de plus de 9 jours (le 10e efface le 1er)
-    const limite = wlIso(wlDateDaysAgo(8));
-    let changed = false;
-    Object.keys(log).forEach(k => { if(k < limite){ delete log[k]; changed = true; } });
-    if(changed) saveMuscleLog(log);
-    // 9 jours, du plus récent au plus ancien
-    let html = '';
-    for(let i = 0; i < 9; i++){
-        const d = wlDateDaysAgo(i);
-        const iso = wlIso(d);
-        const vals = log[iso] || [];
-        let tags;
-        if(vals.length === 0) tags = '<span class="wlog-empty">À remplir</span>';
-        else if(vals.includes('repos')) tags = '<span class="wlog-tag repos">Repos</span>';
-        else tags = vals.map(v => `<span class="wlog-tag">${wlMuscleName(v)}</span>`).join('');
-        const estRepos = vals.includes('repos');
-        html += `<div class="wlog-day${i === 0 ? ' is-today' : ''}${estRepos ? ' is-repos' : ''}" onclick="openMuscleLog('${iso}')">
-            <div class="wlog-date">${wlLabel(d)}</div>
-            <div class="wlog-tags">${tags}</div>
-        </div>`;
+    const today = wlDateDaysAgo(0);
+    const todayIso = wlIso(today);
+
+    // --- Calendrier du mois affiché ---
+    const ref = new Date(today.getFullYear(), today.getMonth() + wlogMoisOffset, 1);
+    const titre = WL_MOIS_L[ref.getMonth()] + ' ' + ref.getFullYear();
+
+    // --- Résumé utile : séances du mois affiché + dernière séance notée ---
+    const prefixeMois = wlIso(ref).slice(0, 7);
+    let nbSeancesMois = 0;
+    let dernierIso = null;
+    Object.keys(log).forEach(iso => {
+        const vals = (log[iso] || []).filter(v => v !== 'repos');
+        if(!vals.length) return;
+        if(iso.slice(0, 7) === prefixeMois && iso <= todayIso) nbSeancesMois++;
+        if(iso <= todayIso && (!dernierIso || iso > dernierIso)) dernierIso = iso;
+    });
+    let sum = '<div class="wlog-sum">';
+    if(nbSeancesMois || dernierIso){
+        sum += `<span class="wlog-sum-pill">🏋️ ${nbSeancesMois} séance${nbSeancesMois > 1 ? 's' : ''} en ${WL_MOIS_L[ref.getMonth()]}</span>`;
+        if(dernierIso){
+            const dm = (log[dernierIso] || []).filter(v => v !== 'repos').map(wlMuscleName);
+            let dmTxt = dm.slice(0, 2).join(', ');
+            if(dm.length > 2) dmTxt += ' +' + (dm.length - 2);
+            sum += `<span class="wlog-sum-pill">💪 Dernière : ${dmTxt} · ${wlLabel(wlIsoToDate(dernierIso))}</span>`;
+        }
+    } else {
+        sum += '<span class="wlog-sum-pill">Touche un jour pour noter ta première séance 👇</span>';
     }
-    list.innerHTML = html;
+    sum += '</div>';
+    let cal = `<div class="wlog-cal-head">
+        <button class="wlog-nav" onclick="event.stopPropagation();wlogMoisOffset--;renderWlog()">‹</button>
+        <div class="wlog-cal-titre">${titre}</div>
+        <div style="display:flex;gap:6px;">
+            <button class="wlog-nav info${window.wlogLegende ? ' actif' : ''}" onclick="event.stopPropagation();window.wlogLegende=!window.wlogLegende;renderWlog()">i</button>
+            <button class="wlog-nav${wlogMoisOffset === 0 ? ' off' : ''}" onclick="event.stopPropagation();if(wlogMoisOffset < 0){wlogMoisOffset++;renderWlog();}">›</button>
+        </div>
+    </div>`;
+    cal += '<div class="wlog-grid">' + ['L','M','M','J','V','S','D'].map(j => `<div class="wlog-wd">${j}</div>`).join('');
+    const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
+    const decal = (new Date(ref.getFullYear(), ref.getMonth(), 1).getDay() + 6) % 7; // semaine qui démarre lundi
+    for(let i = 0; i < decal; i++) cal += '<div></div>';
+    for(let j = 1; j <= njours; j++){
+        const iso = wlIso(new Date(ref.getFullYear(), ref.getMonth(), j));
+        const vals = (log[iso] || []).filter(v => WL_COLORS[v] || v === 'repos');
+        const repos = vals.includes('repos');
+        const muscles = vals.filter(v => v !== 'repos');
+        const futur = iso > todayIso;
+        let cls = 'wlog-cell';
+        let style = '';
+        if(muscles.length === 1){
+            cls += ' seance';
+            style = ` style="background:${WL_COLORS[muscles[0]]}"`;
+        } else if(muscles.length > 1){
+            cls += ' seance';
+            // Deux couleurs max : au-delà, moitié/moitié + petit indicateur
+            style = ` style="background:conic-gradient(${WL_COLORS[muscles[0]]} 0% 50%, ${WL_COLORS[muscles[1]]} 50% 100%)"`;
+        } else if(repos){
+            cls += ' repos';
+        }
+        if(iso === todayIso) cls += ' today';
+        if(futur) cls += ' futur';
+        const plus = muscles.length > 2 ? '<i class="wlog-more">+</i>' : '';
+        cal += `<div class="${cls}"${futur ? '' : ` onclick="event.stopPropagation();openMuscleLog('${iso}')"`}${style}>${j}${plus}</div>`;
+    }
+    cal += '</div>';
+    if(window.wlogLegende){
+        // Seulement les muscles réellement présents sur le mois affiché (tous si mois vide)
+        const utilises = [];
+        Object.keys(log).forEach(iso => {
+            if(iso.slice(0, 7) !== prefixeMois) return;
+            (log[iso] || []).forEach(v => { if(WL_COLORS[v] && !utilises.includes(v)) utilises.push(v); });
+        });
+        const src = utilises.length ? MUSCLE_GROUPS.filter(g => utilises.includes(g.k)) : MUSCLE_GROUPS.filter(g => WL_COLORS[g.k]);
+        cal += '<div class="wlog-legende">'
+            + src.map(g => `<span><i class="dot" style="background:${WL_COLORS[g.k]}"></i>${g.n}</span>`).join('')
+            + '<span><i class="dot repos"></i>Repos</span><span><i class="dot today"></i>Aujourd\'hui</span></div>';
+    }
+
+    list.innerHTML = sum + cal;
+    list.classList.toggle('expanded', !!window.wlogOpen);
+    const cta = document.getElementById('wlogCta');
+    if(cta) cta.textContent = window.wlogOpen ? 'Réduire' : 'Ouvrir';
+}
+
+function toggleWlogDays(e){
+    e.stopPropagation(); e.preventDefault();
+    window.wlogOpen = !window.wlogOpen;
+    const list = document.getElementById('wlogList');
+    const cta = document.getElementById('wlogCta');
+    list.classList.toggle('expanded', window.wlogOpen);
+    if(cta) cta.textContent = window.wlogOpen ? 'Réduire' : 'Ouvrir';
 }
 
 
@@ -953,6 +1059,41 @@ function openMuscleLog(iso){
     mlCurrentIso = iso;
     mlSel = (loadMuscleLog()[iso] || []).slice();
     document.getElementById('mlDate').textContent = wlLabelLong(wlIsoToDate(iso));
+    // Détail de la journée si une séance a été trackée ce jour-là
+    let statsHtml = '';
+    try {
+        const slog = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]').filter(s => s.iso === iso);
+        if(slog.length){
+            let duree = 0, nbExos = 0, tonnage = 0, nbSeries = 0;
+            slog.forEach(s => {
+                duree += s.duree || 0;
+                (s.exos || []).forEach(ex => {
+                    nbExos++;
+                    (ex.sets || []).forEach(sr => {
+                        nbSeries++;
+                        const w = parseFloat(sr.w), r = parseFloat(sr.r);
+                        if(w > 0 && r > 0) tonnage += w * r;
+                    });
+                });
+            });
+            const parts = [];
+            const dtxt = fmtDuree(duree);
+            if(dtxt && duree >= 60) parts.push('⏱ ' + dtxt);
+            if(nbSeries) parts.push(nbSeries + ' série' + (nbSeries > 1 ? 's' : ''));
+            if(tonnage > 0) parts.push('🏋️ ' + Math.round(tonnage).toLocaleString('fr-BE') + ' kg');
+            if(parts.length) statsHtml = '<div class="ml-stats-ligne">' + parts.join(' · ') + '</div>';
+            // Liste des exercices : nom + nombre de séries
+            const lignes = [];
+            slog.forEach(s => (s.exos || []).forEach(ex => {
+                const n = (ex.sets || []).length;
+                lignes.push(`<div class="ml-exo"><span>${ex.nom}</span><b>${n} série${n > 1 ? 's' : ''}</b></div>`);
+            }));
+            if(lignes.length) statsHtml += lignes.join('');
+        }
+    } catch(e){}
+    const st = document.getElementById('mlStats');
+    st.innerHTML = statsHtml;
+    st.style.display = statsHtml ? 'block' : 'none';
     renderMlGroups();
     document.getElementById('mlOverlay').classList.add('show');
 }
@@ -1006,12 +1147,12 @@ function syncMuscleLogFromCloud(u){
         firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
             const cloud = (doc.exists && doc.data().muscleLog) ? doc.data().muscleLog : {};
             const merged = Object.assign({}, loadMuscleLog(), cloud); // cloud prioritaire en cas de conflit
-            const limite = wlIso(wlDateDaysAgo(8));
+            const limite = wlIso(wlDateDaysAgo(7));
             Object.keys(merged).forEach(function(k){ if(k < limite) delete merged[k]; });
             saveMuscleLog(merged);
             pushMuscleLogToCloud(merged); // consolide et nettoie les jours effacés
             renderWlog();
-        }).catch(function(){});
+                }).catch(function(){});
     }catch(e){}
 }
 try{
@@ -1021,8 +1162,9 @@ try{
 }catch(e){}
 
 renderWlog();
-majSalutation();
-renderDerniereSeance();
+
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
+<script>/*repzSplashFailsafe*/setTimeout(function(){var s=document.getElementById('repzSplash');if(s)s.remove();},4000);</script>
 </body>
 </html>

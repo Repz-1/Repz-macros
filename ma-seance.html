@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html,body{background:#eeece7 !important;margin:0}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7efd9">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Ma séance</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-    --orange:#10B981; --bg:#f3f4f6; --card:#ffffff; --dark:#1f2937;
-    --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --green:#16a34a; --radius:20px;
+    --orange:#F7B500; --gold:#F7B500; --bg:#F5F6F8; --card:#ffffff; --dark:#181818;
+    --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --green:#F7B500; --radius:20px;
 }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:var(--bg); color:var(--text); min-height:100vh; padding:16px 16px 90px; overflow-x:hidden; }
 .topbar-app {
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px; margin:-16px -16px 8px;
-    background:linear-gradient(160deg,#10B981 0%,#059669 100%);
+    background:linear-gradient(160deg,#F7B500 0%,#DFA004 100%);
 }
 .topbar-home {
     display:inline-flex; align-items:center; justify-content:center;
@@ -37,7 +41,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .muscle-tabs { display:flex; gap:8px; overflow-x:auto; padding:4px 0 14px; -webkit-overflow-scrolling:touch; }
 .muscle-tabs::-webkit-scrollbar { display:none; }
 .muscle-tab { flex-shrink:0; padding:9px 16px; border-radius:30px; border:1.5px solid var(--line);
-    background:var(--card); font-size:13.5px; font-weight:600; color:var(--text-dim); cursor:pointer; white-space:nowrap; }
+    background:var(--card); font-size:13.5px; font-weight:600; color:var(--text-dim); cursor:pointer; white-space:nowrap;
+    transition:background .2s ease, color .2s ease, border-color .2s ease, transform .12s ease; }
+.muscle-tab:active { transform:scale(.94); }
 .muscle-tab.active { background:var(--dark); color:#fff; border-color:var(--dark); }
 
 .filter-tabs { display:flex; gap:8px; overflow-x:auto; padding:2px 0 14px; -webkit-overflow-scrolling:touch; }
@@ -45,29 +51,33 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .filter-tab { flex-shrink:0; padding:7px 14px; border-radius:30px; border:1.5px solid var(--line);
     background:var(--card); font-size:12.5px; font-weight:600; color:var(--text-dim);
     cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:5px; }
-.filter-tab.active { background:rgba(16,185,129,.12); color:var(--orange); border-color:var(--orange); }
+.filter-tab.active { background:rgba(247,181,0,.14); color:#8F6200; border-color:var(--orange); }
 
 .section-hint { font-size:13px; color:var(--text-dim); margin:6px 4px 14px; display:flex; align-items:center; gap:6px; }
 .swipe-hint { font-size:11px; color:#9ca3af; }
 
-.ex-list { display:flex; flex-direction:column; gap:10px; }
+.ex-list { display:flex; flex-direction:column; gap:12px; }
 .ex-item { display:flex; align-items:center; gap:14px; background:var(--card);
-    border:1.5px solid var(--line); border-radius:16px; padding:12px 14px; transition:border-color .15s; }
-.ex-item.selected { border-color:var(--orange); background:#ecfdf5; }
-.ex-photo { width:56px; height:56px; flex-shrink:0; border-radius:12px;
+    border:1.5px solid var(--line); border-radius:18px; padding:12px; transition:border-color .15s, background .15s; }
+.ex-item.selected { border-color:#F7B500; background:#FFFBEF; }
+.ex-photo { width:76px; height:76px; flex-shrink:0; border-radius:14px;
     background:#e5e7eb center/cover no-repeat; display:flex; align-items:center; justify-content:center;
     font-size:10px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; cursor:pointer; position:relative; }
-.ex-photo::after { content:'🔍'; position:absolute; bottom:2px; right:2px; font-size:11px; opacity:.7;
-    background:rgba(255,255,255,.7); border-radius:4px; padding:0 1px; }
-.ex-info { flex:1; cursor:pointer; }
-.ex-name { font-size:15px; font-weight:700; }
-.ex-meta { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
-.ex-check { width:26px; height:26px; flex-shrink:0; border-radius:50%; border:2px solid var(--line);
-    display:flex; align-items:center; justify-content:center; color:#fff; font-size:15px; font-weight:700; cursor:pointer; }
-.ex-item.selected .ex-check { background:var(--orange); border-color:var(--orange); }
+.ex-info { flex:1; min-width:0; cursor:pointer; }
+.ex-name { font-size:15.5px; font-weight:800; letter-spacing:-.01em; }
+.ex-equip { font-size:12.5px; color:var(--text-dim); font-weight:600; margin-top:2px; }
+.ex-stars { display:flex; align-items:center; gap:2px; margin-top:4px; font-size:12.5px; color:#e2e2e2; }
+.ex-stars span.on { color:#F7B500; }
+.ex-stars em { font-style:normal; color:var(--text-dim); font-size:11.5px; font-weight:600; margin-left:6px; }
+.ex-sets { font-size:12.5px; color:#374151; font-weight:700; margin-top:4px; }
+.ex-add { width:44px; height:44px; flex-shrink:0; border-radius:50%; border:none;
+    background:#fff; color:#1a1a1a; font-size:24px; font-weight:600; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all .15s; box-shadow:0 2px 10px rgba(0,0,0,.12); }
+.ex-add:active { transform:scale(.9); }
+.ex-item.selected .ex-add { background:#F7B500; color:#fff; font-size:20px; box-shadow:0 2px 10px rgba(247,181,0,.4); }
 
 .session-bar { position:fixed; bottom:16px; left:16px; right:16px; max-width:448px; margin:0 auto;
-    background:var(--orange); color:#fff; border-radius:18px; padding:15px 20px;
+    background:var(--orange); color:#181818; border-radius:18px; padding:15px 20px;
     display:flex; align-items:center; justify-content:space-between;
     box-shadow:0 8px 24px rgba(16,185,129,.35); cursor:pointer; z-index:50; }
 .session-bar.hidden { display:none; }
@@ -77,37 +87,81 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .screen { display:none; }
 .screen.active { display:block; }
 
-.session-progress { background:var(--dark); color:#fff; border-radius:var(--radius); padding:20px; margin-bottom:18px; text-align:center; }
-.session-progress-row { display:flex; align-items:center; justify-content:space-around; }
-.sp-block { flex:1; }
-.sp-time { border-left:1px solid #374151; }
-.session-progress .big { font-size:30px; font-weight:800; }
-.session-progress .lbl { font-size:13px; color:#cbd5e1; margin-top:2px; }
-.session-progress .bar { height:8px; background:#374151; border-radius:10px; margin-top:14px; overflow:hidden; }
+.session-progress { background:#fff; color:#181818; border-radius:18px; padding:13px 16px 12px; margin-bottom:12px; box-shadow:0 2px 10px rgba(24,24,24,.05); }
+/* ===== Bannière immersive (même DA que la page Entraînement) ===== */
+.sess-hero {
+    position:relative; border-radius:24px; overflow:hidden; min-height:150px;
+    background:url('img/card-libre.jpg') center/cover; color:#fff;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:18px 20px; margin-bottom:12px; box-shadow:0 8px 22px rgba(24,24,24,.18);
+}
+.sess-hero::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,10,10,.15) 20%, rgba(10,10,10,.66) 72%, rgba(10,10,10,.86) 100%); }
+.sess-hero > * { position:relative; z-index:1; }
+.sh-back {
+    position:absolute; top:14px; left:14px; z-index:2; width:38px; height:38px; border-radius:50%;
+    background:rgba(10,10,10,.45); color:#fff; font-size:19px; text-decoration:none;
+    display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);
+}
+.sh-title { font-size:23px; font-weight:800; letter-spacing:-.01em; margin:0 0 3px; color:#fff; }
+.sh-meta { font-size:13px; font-weight:700; color:rgba(255,255,255,.85); display:none; }
+.sh-meta.show { display:block; }
+/* Ligne de stats compacte */
+.sp-line { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:800; }
+.sp-line .sp-dim { color:#9aa0aa; font-weight:700; font-size:13.5px; }
+.sp-timer { font-variant-numeric:tabular-nums; }
+.sp-timer.paused { color:#B98A00; animation:pausePulse 1.4s ease infinite; }
+.session-progress .bar { height:8px; background:#EEF0F3; border-radius:10px; margin-top:10px; overflow:hidden; }
 .session-progress .fill { height:100%; background:var(--orange); border-radius:10px; transition:width .3s; width:0%; }
 
-.done-item { display:flex; align-items:center; gap:14px; background:var(--card);
-    border:1.5px solid var(--line); border-radius:16px; padding:12px 14px; margin-bottom:10px; cursor:pointer; transition:all .15s; }
-.done-item.done { background:#f0fdf4; border-color:#bbf7d0; }
+.done-item { display:flex; align-items:center; gap:12px; background:var(--card);
+    border:none; border-radius:20px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:all .15s; box-shadow:0 2px 8px rgba(24,24,24,.05); }
+.done-item.done { background:#FFFDF4; box-shadow:inset 0 0 0 1.5px #F3D98A; opacity:.62; padding:7px 12px; }
+.done-item.done .ex-chips, .done-item.done .done-alt, .done-item.done .sets-btn, .done-item.done .done-meta { display:none; }
+.done-item.done .done-photo { width:44px; height:44px; border-radius:12px; }
+.done-item.done .sets-panel { display:none !important; }
+@keyframes checkPop { 0%{transform:scale(.5);} 60%{transform:scale(1.2);} 100%{transform:scale(1);} }
+.done-item.done .done-check { animation:checkPop .28s ease; }
 .done-item.done .done-name { text-decoration:line-through; color:var(--text-dim); }
-.done-check { width:30px; height:30px; flex-shrink:0; border-radius:9px; border:2px solid var(--line);
-    display:flex; align-items:center; justify-content:center; color:#fff; font-size:17px; font-weight:700; }
-.done-item.done .done-check { background:var(--green); border-color:var(--green); }
+.done-check { width:27px; height:27px; flex-shrink:0; border-radius:50%; border:2px solid #DCDFE4;
+    display:flex; align-items:center; justify-content:center; color:transparent; font-size:15px; font-weight:800; transition:all .15s; }
+.done-item.done .done-check { background:var(--orange); border-color:var(--orange); color:#181818; }
 .done-info { flex:1; }
-.done-name { font-size:15px; font-weight:700; }
-.done-meta { font-size:12.5px; color:var(--text-dim); margin-top:2px; }
-.done-alt { margin-top:7px; background:#fff; border:1.5px solid #E6E6E6; color:#1a1a1a; border-radius:10px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+.done-name { font-size:15px; font-weight:800; letter-spacing:-.01em; }
+.done-meta { font-size:12.5px; color:#5b6270; margin-top:2px; font-weight:600; }
+.ex-chips { display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+.ex-chip { font-size:11px; font-weight:800; padding:3px 8px; border-radius:7px; background:#F2F3F6; color:#4b5563; }
+.ex-chip.gold { background:#FFF4CC; color:#8F6200; }
+.done-alt { margin-top:6px; background:#F2F3F6; border:none; color:#4b5563; border-radius:9px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
 .done-alt:active { transform:scale(.96); background:#f7f7f5; }
 #sessionList:not(.locked) .done-alt { display:none; }
 #sessionList.locked .done-alt { pointer-events:auto; }
 /* ===== BOUTON DÉMARRER LA SÉANCE ===== */
 .start-session-btn {
-    width:100%; background:var(--green); color:#fff; border:none; border-radius:16px;
-    padding:17px; font-size:17px; font-weight:800; cursor:pointer; margin-bottom:18px;
-    box-shadow:0 4px 16px rgba(22,163,74,.3);
+    width:100%; background:var(--green); color:#181818; border:none; border-radius:16px;
+    padding:15px; font-size:16px; font-weight:800; cursor:pointer; margin-bottom:14px;
+    box-shadow:0 6px 18px rgba(247,181,0,.35);
 }
 .start-session-btn:active { transform:scale(.98); opacity:.92; }
 #sessionList.locked { opacity:.45; filter:grayscale(.3); }
+/* ===== SUIVI DES SÉRIES ===== */
+.sets-btn { margin-top:6px; background:none; border:none; color:#6b7280; padding:4px 2px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:4px; }
+.sets-btn::after { content:''; width:7px; height:7px; border-right:2px solid #9aa0aa; border-bottom:2px solid #9aa0aa; transform:rotate(45deg) translateY(-2px); transition:transform .2s; }
+.sets-btn.open::after { transform:rotate(225deg) translateY(-1px); }
+.sets-btn:active { transform:scale(.96); }
+#sessionList.locked .sets-btn { display:none; }
+.sets-panel { display:none; width:100%; margin-top:10px; padding-top:10px; border-top:1px dashed #ECECEC; cursor:default; }
+.sets-panel.open { display:block; }
+.sets-last { font-size:11.5px; color:var(--text-dim); margin-bottom:8px; }
+.sets-last b { color:#B98A00; font-weight:800; }
+.set-row { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+.set-num { width:22px; height:22px; flex-shrink:0; border-radius:7px; background:#F7F7F5; color:#8a8a8a; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.set-row input { width:64px; padding:7px 6px; border:1.5px solid #ECECEC; border-radius:9px; font-size:14px; font-weight:700; font-family:inherit; text-align:center; background:#fff; color:#1a1a1a; }
+.set-row input:focus { outline:none; border-color:#F7B500; }
+.set-row input::placeholder { color:#C9C9C9; font-weight:600; }
+.set-x { font-size:12px; color:var(--text-dim); font-weight:700; }
+.set-unit { font-size:11px; color:var(--text-dim); }
+.set-del { margin-left:auto; width:26px; height:26px; border:none; background:none; color:#c9c9c9; font-size:16px; cursor:pointer; line-height:1; }
+.set-add { background:none; border:none; color:#B98A00; font-size:12.5px; font-weight:800; cursor:pointer; font-family:inherit; padding:4px 0; }
 #sessionList.locked .done-item { pointer-events:none; }
 #sessionList.locked .done-photo { pointer-events:auto; cursor:pointer; }
 
@@ -118,7 +172,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     flex:1; background:#fff; border:1.5px solid var(--line); border-radius:14px;
     padding:13px; font-size:14.5px; font-weight:700; color:var(--text); cursor:pointer;
 }
-.sc-pause.paused { background:#ecfdf5; border-color:var(--orange); color:var(--orange); }
+.sc-pause.paused { background:#FFF9E8; border-color:var(--orange); color:#8F6200; }
 .sc-pause:active { transform:scale(.98); }
 .sc-stop {
     flex:1; background:#fff; border:1.5px solid #fecaca; border-radius:14px;
@@ -129,10 +183,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     background:none; border:none; color:var(--text-dim); font-size:14px; font-weight:600;
     cursor:pointer; padding:12px; width:100%; margin-top:4px;
 }
-.sp-time .big.paused { color:var(--orange); animation:pausePulse 1.4s ease infinite; }
+
 @keyframes pausePulse { 0%,100%{opacity:1;} 50%{opacity:.45;} }
 
-.done-photo { width:50px; height:50px; flex-shrink:0; border-radius:11px; overflow:hidden;
+.done-photo { width:84px; height:84px; flex-shrink:0; border-radius:18px; overflow:hidden;
     background:linear-gradient(135deg,#e5e7eb,#f3f4f6); display:flex; align-items:center; justify-content:center;
     font-size:9px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; }
 .done-photo img { width:100%; height:100%; object-fit:cover; }
@@ -158,11 +212,18 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 }
 @keyframes congratsPop { from { opacity:0; transform:scale(.8); } to { opacity:1; transform:scale(1); } }
 .congrats-emoji { font-size:64px; margin-bottom:12px; animation:congratsBounce .6s ease .2s; }
+.confetti { position:fixed; top:-12px; z-index:200; pointer-events:none; border-radius:2px; animation:confFall linear forwards; }
+@keyframes confFall { to { transform:translateY(105vh) rotate(720deg); opacity:.9; } }
 @keyframes congratsBounce { 0%,100%{transform:translateY(0);} 30%{transform:translateY(-12px);} 60%{transform:translateY(-6px);} }
 .congrats-title { font-size:24px; font-weight:800; color:#1a1a1a; margin-bottom:8px; }
+.cg-stats { display:flex; gap:8px; margin:14px 0 4px; }
+.cg-box { flex:1; background:#F7F7F5; border-radius:14px; padding:11px 6px; }
+.cg-box .v { font-size:17px; font-weight:800; }
+.cg-box .l { font-size:10.5px; color:#6b7280; font-weight:700; margin-top:2px; }
+.cg-record { margin-top:10px; background:#FFF4CC; border:1px solid #F3D98A; border-radius:12px; padding:10px 13px; font-size:12.5px; color:#8F6200; font-weight:700; }
 .congrats-text { font-size:15px; color:var(--text-dim); line-height:1.5; margin-bottom:24px; }
 .congrats-btn {
-    width:100%; background:var(--green); color:#fff; border:none; border-radius:14px;
+    width:100%; background:var(--green); color:#181818; border:none; border-radius:14px;
     padding:15px; font-size:16px; font-weight:700; cursor:pointer;
 }
 .congrats-btn:active { transform:scale(.98); opacity:.92; }
@@ -176,7 +237,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
 .carousel-arrow { position:absolute; top:50%; transform:translateY(-50%);
     width:36px; height:36px; border-radius:50%; border:none; background:rgba(255,255,255,.85);
-    font-size:22px; color:#1f2937; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    font-size:22px; color:#181818; cursor:pointer; display:flex; align-items:center; justify-content:center;
     box-shadow:0 2px 8px rgba(0,0,0,.15); }
 .carousel-arrow.left { left:10px; }
 .carousel-arrow.right { right:10px; }
@@ -187,7 +248,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .modal-body h3 { font-size:20px; font-weight:800; margin-bottom:6px; }
 .modal-meta { font-size:13px; color:var(--orange); font-weight:700; margin-bottom:12px; }
 .modal-desc { font-size:14px; color:var(--text-dim); line-height:1.6; }
-.modal-close { width:100%; margin-top:18px; background:var(--dark); color:#fff; border:none;
+.modal-add { width:100%; margin-top:18px; background:#F7B500; color:#1a1a1a; border:none;
+    padding:14px; border-radius:12px; font-size:15px; font-weight:800; cursor:pointer; display:none; }
+.modal-add.added { background:#F5F6F8; color:#1a1a1a; }
+.modal-add.visible { display:block; }
+.modal-close { width:100%; margin-top:10px; background:var(--dark); color:#fff; border:none;
     padding:13px; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; }
 
 /* ===== TIMER ENTRE SÉRIES ===== */
@@ -195,52 +260,50 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:44;
 }
 .timer-overlay.show { display:block; }
-.timer-container { position:fixed; bottom:80px; left:16px; right:16px; max-width:448px;
+.timer-container { position:fixed; top:28%; transform:translateY(-50%); left:16px; right:16px; max-width:448px;
     margin:0 auto; background:var(--card); border-radius:18px; padding:20px; 
     box-shadow:0 8px 24px rgba(0,0,0,.1); z-index:45; display:none; }
-.timer-container.show { display:block; animation:slideUp .3s ease-out; }
+.timer-container.show { display:block; animation:timerPop .3s ease-out; }
 
 /* Bouton flottant chrono */
 .chrono-fab {
-    position:fixed; bottom:80px; right:16px; z-index:46;
-    width:52px; height:52px; border-radius:50%;
-    background:#1f2937; color:#fff; border:none; cursor:pointer;
+    position:fixed; bottom:88px; right:16px; z-index:60;
+    width:66px; height:66px; border-radius:50%;
+    background:var(--gold); color:#181818; border:none; cursor:pointer;
     display:none; flex-direction:column; align-items:center; justify-content:center;
-    box-shadow:0 4px 14px rgba(31,41,55,.4); opacity:.72;
+    box-shadow:0 8px 22px rgba(247,181,0,.55); opacity:1;
     transition:opacity .15s, transform .15s;
 }
 .chrono-fab.visible { display:flex; }
-.chrono-fab svg { width:24px; height:24px; }
+.chrono-fab svg { width:30px; height:30px; }
 .chrono-fab:active { opacity:1; transform:scale(.94); }
-.chrono-fab-time { font-size:10px; font-weight:800; line-height:1; margin-top:1px; }
-.chrono-fab.running { opacity:1; }
+.chrono-fab-time { font-size:11px; font-weight:800; line-height:1; margin-top:2px; }
+.chrono-fab.running { opacity:1; background:#181818; color:var(--gold); box-shadow:0 6px 20px rgba(0,0,0,.45); }
 
 /* Message d'info chrono */
 .chrono-hint {
     position:fixed; bottom:144px; right:16px; z-index:47;
-    background:#1f2937; color:#fff; font-size:13px; font-weight:600;
+    background:#181818; color:#fff; font-size:13px; font-weight:600;
     padding:10px 12px; border-radius:12px; max-width:240px;
     box-shadow:0 6px 20px rgba(0,0,0,.25); display:none;
     align-items:center; gap:8px;
 }
 .chrono-hint.show { display:flex; animation:slideUp .3s ease-out; }
 .chrono-hint button {
-    background:#10B981; color:#fff; border:none; border-radius:8px;
+    background:#F7B500; color:#181818; border:none; border-radius:8px;
     padding:5px 10px; font-weight:700; font-size:12px; cursor:pointer; flex-shrink:0;
 }
-@keyframes slideUp {
-    from { transform:translateY(20px); opacity:0; }
-    to { transform:translateY(0); opacity:1; }
-}
+@keyframes slideUp { from{transform:translateY(20px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+@keyframes timerPop { from{transform:translateY(calc(-50% + 24px));opacity:0;} to{transform:translateY(-50%);opacity:1;} }
 .timer-display { text-align:center; margin-bottom:20px; }
 .timer-big { font-size:56px; font-weight:800; color:var(--orange); font-family:'Monaco','Courier'; letter-spacing:2px; }
 .timer-label { font-size:13px; color:var(--text-dim); margin-top:8px; }
 .timer-controls { display:flex; gap:10px; justify-content:center; }
 .timer-btn { flex:1; max-width:100px; padding:12px; border:none; border-radius:12px;
     font-size:14px; font-weight:700; cursor:pointer; transition:all .15s; }
-.timer-btn.start { background:var(--orange); color:#fff; }
+.timer-btn.start { background:var(--orange); color:#181818; }
 .timer-btn.start:active { transform:scale(.95); }
-.timer-btn.pause { background:var(--orange); color:#fff; }
+.timer-btn.pause { background:var(--orange); color:#181818; }
 .timer-btn.pause:active { transform:scale(.95); }
 .timer-btn.reset { background:#f3f4f6; color:var(--text); border:1px solid var(--line); }
 .timer-btn.reset:active { background:#e5e7eb; }
@@ -274,25 +337,24 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 <body>
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
 #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
 @keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-#repzSplash .sp-loader{position:absolute;top:calc(50% + 130px);left:50%;transform:translateX(-50%);width:40px;height:40px;border:4px solid #d1fae5;border-top-color:#10B981;border-radius:50%;animation:spSpin .8s linear infinite;}
-@keyframes spSpin{to{transform:translateX(-50%) rotate(360deg)}}
+
+
 </style>
 <div id="repzSplash">
-  <img class="sp-sym" src="logo-symbol.png" alt="BELFIT">
-  <img class="sp-txt" src="logo-text.png" alt="REP Z">
-  <div class="sp-loader"></div>
+  <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
+  <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
 </div>
 <script>
 (function(){
   var s=document.getElementById('repzSplash');
   if(!s) return;
-  if(sessionStorage.getItem('repz_splash')){ s.remove(); return; }
-  sessionStorage.setItem('repz_splash','1');
+  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){} if(seen){ s.remove(); return; }
+  try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
   setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
 })();
 </script>
@@ -349,7 +411,7 @@ function logout(){
     </div>
     <div class="muscle-tabs" id="muscleTabs"></div>
     <div class="filter-tabs" id="filterTabs"></div>
-    <p class="section-hint">Touche un exercice pour l'ajouter · <span class="swipe-hint">glisse ← → pour changer de muscle</span></p>
+    <p class="section-hint">Touche un exercice pour l'ajouter.</p>
     <div class="ex-list" id="exList"></div>
     <div class="session-bar hidden" id="sessionBar" onclick="goToSession()">
         <span class="count"><span id="selCount">0</span> exercices sélectionnés</span>
@@ -359,24 +421,19 @@ function logout(){
 
 <!-- ÉCRAN 2 : MA SÉANCE -->
 <div class="screen" id="screenSession">
-    <div class="top">
-        <a href="#" class="back-btn" id="backBtnSession" onclick="goToSelect();return false;">←</a>
-        <h1 id="sessionScreenTitle">Ma séance</h1>
+    <div class="sess-hero">
+        <a href="#" class="sh-back" id="backBtnSession" onclick="goToSelect();return false;">←</a>
+        <h1 class="sh-title" id="sessionScreenTitle">Ma séance</h1>
+        <div class="sh-meta" id="sessionMeta"></div>
     </div>
     <div class="session-progress">
-        <div class="session-progress-row">
-            <div class="sp-block">
-                <div class="big"><span id="doneCount">0</span>/<span id="totalCount">0</span></div>
-                <div class="lbl">exercices terminés</div>
-            </div>
-            <div class="sp-block sp-time">
-                <div class="big" id="sessionTimer">0:00</div>
-                <div class="lbl">durée</div>
-            </div>
+        <div class="sp-line">
+            <span><b id="doneCount">0</b><span class="sp-dim">/<span id="totalCount">0</span> exercices</span></span>
+            <span class="sp-timer" id="sessionTimer">0:00</span>
         </div>
         <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
-    <button class="start-session-btn" id="startSessionBtn" onclick="demarrerDureeSeance()">▶ Démarrer la séance</button>
+    <button class="start-session-btn" id="startSessionBtn" onclick="demarrerDureeSeance()">Commencer</button>
     <div class="session-controls" id="sessionControls">
         <button class="sc-pause" id="scPauseBtn" onclick="togglePauseSeance()">⏸ Pause</button>
         <button class="sc-stop" onclick="terminerSeance()">Terminer la séance</button>
@@ -401,6 +458,7 @@ function logout(){
         <div class="congrats-emoji">🎉</div>
         <div class="congrats-title">Séance terminée !</div>
         <div class="congrats-text" id="congratsText">Bravo, tu as tout donné. Repos mérité 💪</div>
+        <div id="congratsStats"></div>
         <button class="congrats-btn" onclick="window.location.href='app.html'">Retour au journal</button>
     </div>
 </div>
@@ -421,6 +479,7 @@ function logout(){
             <h3 id="modalName"></h3>
             <div class="modal-meta" id="modalMeta"></div>
             <div class="modal-desc" id="modalDesc"></div>
+            <button class="modal-add" id="modalAdd" onclick="modalToggleSelect()">Ajouter à ma séance</button>
             <button class="modal-close" onclick="closeModal()">Fermer</button>
         </div>
     </div>
@@ -429,112 +488,111 @@ function logout(){
 <script>
 const EXERCISES = {
   pecs: [
-    {nom:'Développé couché', meta:'4 séries × 8-10 reps', desc:'Allongé sur le banc, descends la barre vers la poitrine puis pousse.', imgId:'Barbell_Bench_Press_-_Medium_Grip', mat:'barre'},
-    {nom:'Développé incliné haltères', meta:'3 séries × 10-12 reps', desc:'Banc incliné à 30°, pousse les haltères vers le haut.', imgId:'Incline_Dumbbell_Press', mat:'halteres'},
-    {nom:'Écarté à la poulie', meta:'3 séries × 12-15 reps', desc:'Bras semi-tendus, ramène les poignées devant toi.', imgId:'Cable_Crossover', mat:'machine'},
-    {nom:'Pompes', meta:'3 séries × max', desc:'Corps gainé, descends la poitrine au sol puis pousse.', imgId:'Pushups', mat:'rien'},
-    {nom:'Dips', meta:'3 séries × 10-12 reps', desc:'Aux barres parallèles, descends puis remonte en poussant.', imgId:'Dips_-_Chest_Version', mat:'machine'},
-    {nom:'Développé couché haltères', meta:'4 séries × 10 reps', desc:'Variante haltères pour plus d\'amplitude.', imgId:'Dumbbell_Bench_Press', mat:'halteres'},
-    {nom:'Écarté incliné haltères', meta:'3 séries × 12 reps', desc:'Banc incliné, ouvre puis ramène les haltères.', imgId:'Incline_Dumbbell_Flyes', mat:'halteres'},
-    {nom:'Pull-over', meta:'3 séries × 12-15 reps', desc:'Un haltère au-dessus de la tête, descends derrière puis remonte.', imgId:'Straight-Arm_Dumbbell_Pullover', mat:'halteres'},
-    {nom:'Pompes déclinées', meta:'3 séries × 12 reps', desc:'Pieds surélevés sur un banc, descends la poitrine puis pousse. Cible le haut des pecs.', imgId:'Push-Ups_With_Feet_Elevated', mat:'rien'},
-    {nom:'Pompes larges', meta:'3 séries × max', desc:'Mains plus larges que les épaules pour accentuer les pectoraux.', imgId:'Push-Up_Wide', mat:'rien'},
-    {nom:'Pompes inclinées', meta:'3 séries × 15 reps', desc:'Mains surélevées sur un support : variante plus accessible.', imgId:'Incline_Push-Up', mat:'rien'},
-    {nom:'Pompes sautées', meta:'4 séries × 8 reps', desc:'Pousse explosivement pour décoller les mains du sol. Pliométrie.', imgId:'Plyo_Push-up', mat:'rien'},
-    {nom:'Pompes rotation (T)', meta:'3 séries × 10 /côté', desc:'En haut de la pompe, ouvre le buste en planche latérale.', imgId:'Push_Up_to_Side_Plank', mat:'rien'},
+    {nom:'Développé couché', meta:'4 séries × 8-10 reps', desc:'Allongé sur le banc, descends la barre vers la poitrine puis pousse.', imgId:'Barbell_Bench_Press_-_Medium_Grip', lvl:1, mat:'barre'},
+    {nom:'Développé incliné haltères', meta:'3 séries × 10-12 reps', desc:'Banc incliné à 30°, pousse les haltères vers le haut.', imgId:'Incline_Dumbbell_Press', lvl:1, mat:'halteres'},
+    {nom:'Écarté à la poulie', meta:'3 séries × 12-15 reps', desc:'Bras semi-tendus, ramène les poignées devant toi.', imgId:'Cable_Crossover', lvl:1, mat:'machine'},
+    {nom:'Pompes', meta:'3 séries × max', desc:'Corps gainé, descends la poitrine au sol puis pousse.', imgId:'Pushups', lvl:1, mat:'rien'},
+    {nom:'Dips', meta:'3 séries × 10-12 reps', desc:'Aux barres parallèles, descends puis remonte en poussant.', imgId:'Dips_-_Chest_Version', lvl:2, mat:'machine'},
+    {nom:'Développé couché haltères', meta:'4 séries × 10 reps', desc:'Variante haltères pour plus d\'amplitude.', imgId:'Dumbbell_Bench_Press', lvl:1, mat:'halteres'},
+    {nom:'Écarté incliné haltères', meta:'3 séries × 12 reps', desc:'Banc incliné, ouvre puis ramène les haltères.', imgId:'Incline_Dumbbell_Flyes', lvl:1, mat:'halteres'},
+    {nom:'Pull-over', meta:'3 séries × 12-15 reps', desc:'Un haltère au-dessus de la tête, descends derrière puis remonte.', imgId:'Straight-Arm_Dumbbell_Pullover', lvl:2, mat:'halteres'},
+    {nom:'Pompes déclinées', meta:'3 séries × 12 reps', desc:'Pieds surélevés sur un banc, descends la poitrine puis pousse. Cible le haut des pecs.', imgId:'Push-Ups_With_Feet_Elevated', lvl:1, mat:'rien'},
+    {nom:'Pompes larges', meta:'3 séries × max', desc:'Mains plus larges que les épaules pour accentuer les pectoraux.', imgId:'Push-Up_Wide', lvl:1, mat:'rien'},
+    {nom:'Pompes inclinées', meta:'3 séries × 15 reps', desc:'Mains surélevées sur un support : variante plus accessible.', imgId:'Incline_Push-Up', lvl:1, mat:'rien'},
+    {nom:'Pompes sautées', meta:'4 séries × 8 reps', desc:'Pousse explosivement pour décoller les mains du sol. Pliométrie.', imgId:'Plyo_Push-up', lvl:1, mat:'rien'},
   ],
   dos: [
-    {nom:'Tractions', meta:'4 séries × max', desc:'Suspendu à la barre, tire-toi jusqu\'au menton.', imgId:'Pullups', mat:'traction'},
-    {nom:'Rowing barre', meta:'4 séries × 8-10 reps', desc:'Buste penché, tire la barre vers le nombril.', imgId:'Bent_Over_Barbell_Row', mat:'barre'},
-    {nom:'Tirage vertical', meta:'3 séries × 10-12 reps', desc:'À la poulie haute, tire la barre vers la poitrine.', imgId:'Wide-Grip_Lat_Pulldown', mat:'machine'},
-    {nom:'Rowing haltère', meta:'3 séries × 10 reps', desc:'Un genou sur le banc, tire l\'haltère vers la hanche.', imgId:'One-Arm_Dumbbell_Row', mat:'halteres'},
-    {nom:'Tirage horizontal', meta:'3 séries × 12 reps', desc:'Assis, tire la poignée vers le ventre.', imgId:'Seated_Cable_Rows', mat:'machine'},
-    {nom:'Soulevé de terre', meta:'4 séries × 6-8 reps', desc:'Dos droit, soulève la barre du sol en poussant les jambes.', imgId:'Barbell_Deadlift', mat:'barre'},
-    {nom:'Rowing T-bar', meta:'3 séries × 10 reps', desc:'Tire la barre en T vers la poitrine, dos gainé.', imgId:'T-Bar_Row_with_Handle', mat:'barre'},
-    {nom:'Tirage élastique', meta:'3 séries × 15-20 reps', desc:'Écarte la bande devant toi en serrant les omoplates.', imgId:'Band_Pull_Apart', mat:'halteres'},
-    {nom:'Tractions supination', meta:'4 séries × max', desc:'Prise mains vers toi, tire-toi jusqu’au menton. Sollicite aussi les biceps.', imgId:'Chin-Up', mat:'traction'},
-    {nom:'Tractions prise large', meta:'3 séries × max', desc:'Prise large, tire les coudes vers le bas pour cibler les grands dorsaux.', imgId:'Wide-Grip_Rear_Pull-Up', mat:'traction'},
+    {nom:'Tractions', meta:'4 séries × max', desc:'Suspendu à la barre, tire-toi jusqu\'au menton.', imgId:'Pullups', lvl:1, mat:'traction'},
+    {nom:'Rowing barre', meta:'4 séries × 8-10 reps', desc:'Buste penché, tire la barre vers le nombril.', imgId:'Bent_Over_Barbell_Row', lvl:1, mat:'barre'},
+    {nom:'Tirage vertical', meta:'3 séries × 10-12 reps', desc:'À la poulie haute, tire la barre vers la poitrine.', imgId:'Wide-Grip_Lat_Pulldown', lvl:1, mat:'machine'},
+    {nom:'Rowing haltère', meta:'3 séries × 10 reps', desc:'Un genou sur le banc, tire l\'haltère vers la hanche.', imgId:'One-Arm_Dumbbell_Row', lvl:1, mat:'halteres'},
+    {nom:'Tirage horizontal', meta:'3 séries × 12 reps', desc:'Assis, tire la poignée vers le ventre.', imgId:'Seated_Cable_Rows', lvl:1, mat:'machine'},
+    {nom:'Soulevé de terre', meta:'4 séries × 6-8 reps', desc:'Dos droit, soulève la barre du sol en poussant les jambes.', imgId:'Barbell_Deadlift', lvl:2, mat:'barre'},
+    {nom:'Rowing T-bar', meta:'3 séries × 10 reps', desc:'Tire la barre en T vers la poitrine, dos gainé.', imgId:'T-Bar_Row_with_Handle', lvl:1, mat:'barre'},
+    {nom:'Tirage élastique', meta:'3 séries × 15-20 reps', desc:'Écarte la bande devant toi en serrant les omoplates.', imgId:'Band_Pull_Apart', lvl:1, mat:'halteres'},
+    {nom:'Tractions supination', meta:'4 séries × max', desc:'Prise mains vers toi, tire-toi jusqu’au menton. Sollicite aussi les biceps.', imgId:'Chin-Up', lvl:1, mat:'traction'},
+    {nom:'Tractions prise large', meta:'3 séries × max', desc:'Prise large, tire les coudes vers le bas pour cibler les grands dorsaux.', imgId:'Wide-Grip_Rear_Pull-Up', lvl:2, mat:'traction'},
   ],
   epaules: [
-    {nom:'Développé militaire', meta:'4 séries × 8-10 reps', desc:'Debout, pousse la barre au-dessus de la tête.', imgId:'Standing_Military_Press', mat:'barre'},
-    {nom:'Élévations latérales', meta:'4 séries × 12-15 reps', desc:'Monte les haltères sur les côtés jusqu\'à l\'horizontale.', imgId:'Side_Lateral_Raise', mat:'halteres'},
-    {nom:'Développé haltères', meta:'3 séries × 10-12 reps', desc:'Assis, pousse les haltères vers le haut.', imgId:'Seated_Dumbbell_Press', mat:'halteres'},
-    {nom:'Oiseau (rear delt)', meta:'3 séries × 15 reps', desc:'Buste penché, ouvre les bras vers l\'arrière.', imgId:'Seated_Bent-Over_Rear_Delt_Raise', mat:'halteres'},
-    {nom:'Élévations frontales', meta:'3 séries × 12 reps', desc:'Monte l\'haltère devant toi jusqu\'à l\'horizontale.', imgId:'Front_Dumbbell_Raise', mat:'halteres'},
-    {nom:'Face pull', meta:'3 séries × 15 reps', desc:'Tire la corde vers le visage, coudes hauts.', imgId:'Face_Pull', mat:'machine'},
-    {nom:'Pompes piquées', meta:'3 séries × 8-10 reps', desc:'Pieds surélevés, pousse comme un développé épaules avec ton poids de corps.', imgId:'Handstand_Push-Ups', mat:'rien'},
-    {nom:'Élévation latérale élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, lève les bras sur les côtés.', imgId:'Lateral_Raise_-_With_Bands', mat:'halteres'},
-    {nom:'Développé épaules élastique', meta:'3 séries × 12-15 reps', desc:'Bande sous les pieds, pousse au-dessus de la tête.', imgId:'Shoulder_Press_-_With_Bands', mat:'halteres'},
+    {nom:'Développé militaire', meta:'4 séries × 8-10 reps', desc:'Debout, pousse la barre au-dessus de la tête.', imgId:'Standing_Military_Press', lvl:1, mat:'barre'},
+    {nom:'Élévations latérales', meta:'4 séries × 12-15 reps', desc:'Monte les haltères sur les côtés jusqu\'à l\'horizontale.', imgId:'Side_Lateral_Raise', lvl:1, mat:'halteres'},
+    {nom:'Développé haltères', meta:'3 séries × 10-12 reps', desc:'Assis, pousse les haltères vers le haut.', imgId:'Seated_Dumbbell_Press', lvl:1, mat:'halteres'},
+    {nom:'Oiseau (rear delt)', meta:'3 séries × 15 reps', desc:'Buste penché, ouvre les bras vers l\'arrière.', imgId:'Seated_Bent-Over_Rear_Delt_Raise', lvl:2, mat:'halteres'},
+    {nom:'Élévations frontales', meta:'3 séries × 12 reps', desc:'Monte l\'haltère devant toi jusqu\'à l\'horizontale.', imgId:'Front_Dumbbell_Raise', lvl:1, mat:'halteres'},
+    {nom:'Face pull', meta:'3 séries × 15 reps', desc:'Tire la corde vers le visage, coudes hauts.', imgId:'Face_Pull', lvl:2, mat:'machine'},
+    {nom:'Pompes piquées', meta:'3 séries × 8-10 reps', desc:'Pieds surélevés, pousse comme un développé épaules avec ton poids de corps.', imgId:'Handstand_Push-Ups', lvl:3, mat:'rien'},
+    {nom:'Élévation latérale élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, lève les bras sur les côtés.', imgId:'Lateral_Raise_-_With_Bands', lvl:1, mat:'halteres'},
+    {nom:'Développé épaules élastique', meta:'3 séries × 12-15 reps', desc:'Bande sous les pieds, pousse au-dessus de la tête.', imgId:'Shoulder_Press_-_With_Bands', lvl:1, mat:'halteres'},
   ],
   biceps: [
-    {nom:'Curl barre', meta:'4 séries × 10 reps', desc:'Debout, fléchis les bras pour monter la barre.', imgId:'Barbell_Curl', mat:'barre'},
-    {nom:'Curl haltères', meta:'3 séries × 12 reps', desc:'Alterne la montée de chaque haltère.', imgId:'Dumbbell_Bicep_Curl', mat:'halteres'},
-    {nom:'Curl marteau', meta:'3 séries × 12 reps', desc:'Prise neutre, monte les haltères comme un marteau.', imgId:'Hammer_Curls', mat:'halteres'},
-    {nom:'Curl pupitre', meta:'3 séries × 10 reps', desc:'Bras calés sur le pupitre, fléchis lentement.', imgId:'Preacher_Curl', mat:'barre'},
-    {nom:'Curl concentré', meta:'3 séries × 12 reps', desc:'Assis, coude sur la cuisse, isole le biceps.', imgId:'Concentration_Curls', mat:'halteres'},
-    {nom:'Curl élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, fléchis les bras pour le curl.', imgId:'Close-Grip_EZ-Bar_Curl_with_Band', mat:'halteres'},
+    {nom:'Curl barre', meta:'4 séries × 10 reps', desc:'Debout, fléchis les bras pour monter la barre.', imgId:'Barbell_Curl', lvl:1, mat:'barre'},
+    {nom:'Curl haltères', meta:'3 séries × 12 reps', desc:'Alterne la montée de chaque haltère.', imgId:'Dumbbell_Bicep_Curl', lvl:1, mat:'halteres'},
+    {nom:'Curl marteau', meta:'3 séries × 12 reps', desc:'Prise neutre, monte les haltères comme un marteau.', imgId:'Hammer_Curls', lvl:1, mat:'halteres'},
+    {nom:'Curl pupitre', meta:'3 séries × 10 reps', desc:'Bras calés sur le pupitre, fléchis lentement.', imgId:'Preacher_Curl', lvl:1, mat:'barre'},
+    {nom:'Curl concentré', meta:'3 séries × 12 reps', desc:'Assis, coude sur la cuisse, isole le biceps.', imgId:'Concentration_Curls', lvl:1, mat:'halteres'},
+    {nom:'Curl élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, fléchis les bras pour le curl.', imgId:'Close-Grip_EZ-Bar_Curl_with_Band', lvl:1, mat:'halteres'},
   ],
   triceps: [
-    {nom:'Barre au front', meta:'4 séries × 10 reps', desc:'Allongé, descends la barre vers le front puis tends.', imgId:'Lying_Triceps_Press', mat:'barre'},
-    {nom:'Extension poulie', meta:'4 séries × 12-15 reps', desc:'Pousse la corde vers le bas en tendant les bras.', imgId:'Triceps_Pushdown', mat:'machine'},
-    {nom:'Dips entre bancs', meta:'3 séries × max', desc:'Mains sur le banc, descends puis pousse.', imgId:'Bench_Dips', mat:'rien'},
-    {nom:'Extension haltère nuque', meta:'3 séries × 12 reps', desc:'Un haltère derrière la tête, tends les bras.', imgId:'Seated_Triceps_Press', mat:'halteres'},
-    {nom:'Kickback', meta:'3 séries × 15 reps', desc:'Buste penché, tends le bras vers l\'arrière.', imgId:'Tricep_Dumbbell_Kickback', mat:'halteres'},
-    {nom:'Pompes diamant', meta:'3 séries × 12 reps', desc:'Mains jointes en losange sous la poitrine. Cible les triceps.', imgId:'Push-Ups_-_Close_Triceps_Position', mat:'rien'},
-    {nom:'Dips sur banc', meta:'3 séries × 15 reps', desc:'Mains sur un banc derrière toi, descends puis remonte par les triceps.', imgId:'Bench_Dips', mat:'rien'},
+    {nom:'Barre au front', meta:'4 séries × 10 reps', desc:'Allongé, descends la barre vers le front puis tends.', imgId:'Lying_Triceps_Press', lvl:2, mat:'barre'},
+    {nom:'Extension poulie', meta:'4 séries × 12-15 reps', desc:'Pousse la corde vers le bas en tendant les bras.', imgId:'Triceps_Pushdown', lvl:1, mat:'machine'},
+    {nom:'Dips entre bancs', meta:'3 séries × max', desc:'Mains sur le banc, descends puis pousse.', imgId:'Bench_Dips', lvl:1, mat:'rien'},
+    {nom:'Extension haltère nuque', meta:'3 séries × 12 reps', desc:'Un haltère derrière la tête, tends les bras.', imgId:'Seated_Triceps_Press', lvl:1, mat:'halteres'},
+    {nom:'Kickback', meta:'3 séries × 15 reps', desc:'Buste penché, tends le bras vers l\'arrière.', imgId:'Tricep_Dumbbell_Kickback', lvl:1, mat:'halteres'},
+    {nom:'Pompes diamant', meta:'3 séries × 12 reps', desc:'Mains jointes en losange sous la poitrine. Cible les triceps.', imgId:'Push-Ups_-_Close_Triceps_Position', lvl:2, mat:'rien'},
+    {nom:'Dips sur banc', meta:'3 séries × 15 reps', desc:'Mains sur un banc derrière toi, descends puis remonte par les triceps.', imgId:'Bench_Dips', lvl:1, mat:'rien'},
   ],
   jambes: [
-    {nom:'Squat', meta:'4 séries × 8-10 reps', desc:'Barre sur les épaules, descends en pliant les genoux.', imgId:'Barbell_Squat', mat:'rien'},
-    {nom:'Presse à cuisses', meta:'4 séries × 10-12 reps', desc:'Pousse la plateforme avec les jambes.', imgId:'Leg_Press', mat:'machine'},
-    {nom:'Fentes', meta:'3 séries × 12 reps/jambe', desc:'Un grand pas en avant, descends le genou arrière.', imgId:'Dumbbell_Lunges', mat:'rien'},
-    {nom:'Leg curl', meta:'3 séries × 12 reps', desc:'Allongé, fléchis les jambes pour travailler les ischios.', imgId:'Lying_Leg_Curls', mat:'machine'},
-    {nom:'Leg extension', meta:'3 séries × 15 reps', desc:'Assis, tends les jambes contre la résistance.', imgId:'Leg_Extensions', mat:'machine'},
-    {nom:'Mollets debout', meta:'4 séries × 15-20 reps', desc:'Monte sur la pointe des pieds avec charge.', imgId:'Standing_Calf_Raises', mat:'rien'},
-    {nom:'Soulevé de terre jambes tendues', meta:'3 séries × 10 reps', desc:'Descends la barre jambes quasi tendues, sens les ischios.', imgId:'Stiff-Legged_Barbell_Deadlift', mat:'barre'},
-    {nom:'Squat au poids du corps', meta:'4 séries × 20 reps', desc:'Descends en poussant les fesses en arrière, dos droit, puis remonte.', imgId:'Bodyweight_Squat', mat:'rien'},
-    {nom:'Squat sauté', meta:'4 séries × 15 reps', desc:'Squat puis saut explosif. Réception amortie.', imgId:'Freehand_Jump_Squat', mat:'rien'},
-    {nom:'Pont fessier', meta:'3 séries × 20 reps', desc:'Allongé, pousse les hanches vers le haut en serrant les fessiers.', imgId:'Butt_Lift_Bridge', mat:'rien'},
-    {nom:'Pont fessier unilatéral', meta:'3 séries × 12 /jambe', desc:'Une jambe tendue, monte les hanches avec l’autre jambe.', imgId:'Single_Leg_Glute_Bridge', mat:'rien'},
-    {nom:'Montées sur banc', meta:'3 séries × 12 /jambe', desc:'Monte sur un banc en poussant sur la jambe avant, genou opposé haut.', imgId:'Step-up_with_Knee_Raise', mat:'rien'},
+    {nom:'Squat', meta:'4 séries × 8-10 reps', desc:'Barre sur les épaules, descends en pliant les genoux.', imgId:'Barbell_Squat', lvl:1, mat:'barre'},
+    {nom:'Presse à cuisses', meta:'4 séries × 10-12 reps', desc:'Pousse la plateforme avec les jambes.', imgId:'Leg_Press', lvl:1, mat:'machine'},
+    {nom:'Fentes', meta:'3 séries × 12 reps/jambe', desc:'Un grand pas en avant, descends le genou arrière.', imgId:'Dumbbell_Lunges', lvl:1, mat:'rien'},
+    {nom:'Leg curl', meta:'3 séries × 12 reps', desc:'Allongé, fléchis les jambes pour travailler les ischios.', imgId:'Lying_Leg_Curls', lvl:1, mat:'machine'},
+    {nom:'Leg extension', meta:'3 séries × 15 reps', desc:'Assis, tends les jambes contre la résistance.', imgId:'Leg_Extensions', lvl:1, mat:'machine'},
+    {nom:'Mollets debout', meta:'4 séries × 15-20 reps', desc:'Monte sur la pointe des pieds avec charge.', imgId:'Standing_Calf_Raises', lvl:1, mat:'machine'},
+    {nom:'Soulevé de terre jambes tendues', meta:'3 séries × 10 reps', desc:'Descends la barre jambes quasi tendues, sens les ischios.', imgId:'Stiff-Legged_Barbell_Deadlift', lvl:2, mat:'barre'},
+    {nom:'Squat au poids du corps', meta:'4 séries × 20 reps', desc:'Descends en poussant les fesses en arrière, dos droit, puis remonte.', imgId:'Bodyweight_Squat', lvl:1, mat:'rien'},
+    {nom:'Squat sauté', meta:'4 séries × 15 reps', desc:'Squat puis saut explosif. Réception amortie.', imgId:'Freehand_Jump_Squat', lvl:2, mat:'rien'},
+    {nom:'Pont fessier', meta:'3 séries × 20 reps', desc:'Allongé, pousse les hanches vers le haut en serrant les fessiers.', imgId:'Butt_Lift_Bridge', lvl:1, mat:'rien'},
+    {nom:'Pont fessier unilatéral', meta:'3 séries × 12 /jambe', desc:'Une jambe tendue, monte les hanches avec l’autre jambe.', imgId:'Single_Leg_Glute_Bridge', lvl:1, mat:'rien'},
+    {nom:'Montées sur banc', meta:'3 séries × 12 /jambe', desc:'Monte sur un banc en poussant sur la jambe avant, genou opposé haut.', imgId:'Step-up_with_Knee_Raise', lvl:1, mat:'rien'},
   ],
   abdos: [
-    {nom:'Crunch', meta:'4 séries × 20 reps', desc:'Allongé, décolle les épaules en contractant les abdos.', imgId:'Crunches', mat:'rien'},
-    {nom:'Gainage planche', meta:'3 séries × 45 sec', desc:'Corps droit sur les avant-bras, gaine.', imgId:'Plank', mat:'rien'},
-    {nom:'Relevé de jambes', meta:'3 séries × 15 reps', desc:'Suspendu ou au sol, monte les jambes tendues.', imgId:'Hanging_Leg_Raise', mat:'rien'},
-    {nom:'Russian twist', meta:'3 séries × 20 reps', desc:'Assis, fais pivoter le buste de gauche à droite.', imgId:'Russian_Twist', mat:'rien'},
-    {nom:'Crunch vélo', meta:'3 séries × 20 reps', desc:'Pédale dans le vide en amenant coude vers genou opposé.', imgId:'Air_Bike', mat:'rien'},
-    {nom:'Crunch croisé', meta:'3 séries × 15 /côté', desc:'Amène le coude vers le genou opposé pour cibler les obliques.', imgId:'Cross-Body_Crunch', mat:'rien'},
-    {nom:'Relevé de bassin', meta:'3 séries × 15 reps', desc:'Genoux fléchis, décolle le bassin en contractant les abdos bas.', imgId:'Bent-Knee_Hip_Raise', mat:'rien'},
-    {nom:'Dead bug', meta:'3 séries × 12 /côté', desc:'Sur le dos, tends bras et jambe opposés sans creuser le dos.', imgId:'Dead_Bug', mat:'rien'},
-    {nom:'Battements de jambes', meta:'3 séries × 30 sec', desc:'Jambes tendues, battements verticaux rapides, bas du dos plaqué.', imgId:'Flutter_Kicks', mat:'rien'},
+    {nom:'Crunch', meta:'4 séries × 20 reps', desc:'Allongé, décolle les épaules en contractant les abdos.', imgId:'Crunches', lvl:1, mat:'rien'},
+    {nom:'Gainage planche', meta:'3 séries × 45 sec', desc:'Corps droit sur les avant-bras, gaine.', imgId:'Plank', lvl:1, mat:'rien'},
+    {nom:'Relevé de jambes', meta:'3 séries × 15 reps', desc:'Suspendu ou au sol, monte les jambes tendues.', imgId:'Hanging_Leg_Raise', lvl:3, mat:'rien'},
+    {nom:'Russian twist', meta:'3 séries × 20 reps', desc:'Assis, fais pivoter le buste de gauche à droite.', imgId:'Russian_Twist', lvl:2, mat:'rien'},
+    {nom:'Crunch vélo', meta:'3 séries × 20 reps', desc:'Pédale dans le vide en amenant coude vers genou opposé.', imgId:'Air_Bike', lvl:1, mat:'rien'},
+    {nom:'Crunch croisé', meta:'3 séries × 15 /côté', desc:'Amène le coude vers le genou opposé pour cibler les obliques.', imgId:'Cross-Body_Crunch', lvl:1, mat:'rien'},
+    {nom:'Relevé de bassin', meta:'3 séries × 15 reps', desc:'Genoux fléchis, décolle le bassin en contractant les abdos bas.', imgId:'Bent-Knee_Hip_Raise', lvl:1, mat:'rien'},
+    {nom:'Dead bug', meta:'3 séries × 12 /côté', desc:'Sur le dos, tends bras et jambe opposés sans creuser le dos.', imgId:'Dead_Bug', lvl:1, mat:'rien'},
+    {nom:'Battements de jambes', meta:'3 séries × 30 sec', desc:'Jambes tendues, battements verticaux rapides, bas du dos plaqué.', imgId:'Flutter_Kicks', lvl:1, mat:'rien'},
   ],
   etirements: [
-    {nom:'Étirement ischios', meta:'2 × 30 sec', desc:'Assis, une jambe tendue, penche le buste vers le pied sans arrondir le dos.', imgId:'90_90_Hamstring', mat:'rien'},
-    {nom:'Étirement quadriceps', meta:'2 × 30 sec /jambe', desc:'Debout, attrape la cheville et ramène le talon vers la fesse.', imgId:'All_Fours_Quad_Stretch', mat:'rien'},
-    {nom:'Étirement fessiers', meta:'2 × 30 sec /côté', desc:'Assis, cheville sur le genou opposé, penche-toi doucement en avant.', imgId:'Seated_Glute', mat:'rien'},
-    {nom:'Étirement mollets', meta:'2 × 30 sec /jambe', desc:'Mains au mur, jambe arrière tendue, talon au sol.', imgId:'Calf_Stretch_Hands_Against_Wall', mat:'rien'},
-    {nom:'Étirement adducteurs', meta:'2 × 30 sec', desc:'Assis, plantes de pieds jointes, laisse les genoux descendre.', imgId:'Adductor', mat:'rien'},
-    {nom:'Étirement pectoraux', meta:'2 × 30 sec', desc:'Bras contre un mur, tourne le buste à l’opposé pour ouvrir la poitrine.', imgId:'Chest_And_Front_Of_Shoulder_Stretch', mat:'rien'},
-    {nom:'Étirement épaules', meta:'2 × 20 sec /bras', desc:'Bras tendu en travers de la poitrine, tire-le avec l’autre bras.', imgId:'Shoulder_Circles', mat:'rien'},
-    {nom:'Étirement dorsaux', meta:'2 × 30 sec', desc:'Bras au-dessus de la tête, attrape le poignet et penche sur le côté.', imgId:'One_Arm_Against_Wall', mat:'rien'},
-    {nom:'Posture de l’enfant', meta:'2 × 40 sec', desc:'À genoux, buste au sol, bras tendus devant. Relâche le bas du dos.', imgId:'Childs_Pose', mat:'rien'},
-    {nom:'Étirement chat-vache', meta:'2 × 30 sec', desc:'À quatre pattes, alterne dos rond et dos creux au rythme du souffle.', imgId:'Cat_Stretch', mat:'rien'},
-    {nom:'Étirement triceps', meta:'2 × 20 sec /bras', desc:'Coude plié derrière la tête, pousse le coude avec l’autre main.', imgId:'Triceps_Stretch', mat:'rien'},
-    {nom:'Étirement genou-poitrine', meta:'2 × 30 sec /jambe', desc:'Allongé, ramène un genou vers la poitrine avec les mains.', imgId:'One_Knee_To_Chest', mat:'rien'},
+    {nom:'Étirement ischios', meta:'2 × 30 sec', desc:'Assis, une jambe tendue, penche le buste vers le pied sans arrondir le dos.', imgId:'90_90_Hamstring', lvl:1, mat:'rien'},
+    {nom:'Étirement quadriceps', meta:'2 × 30 sec /jambe', desc:'Debout, attrape la cheville et ramène le talon vers la fesse.', imgId:'All_Fours_Quad_Stretch', lvl:2, mat:'rien'},
+    {nom:'Étirement fessiers', meta:'2 × 30 sec /côté', desc:'Assis, cheville sur le genou opposé, penche-toi doucement en avant.', imgId:'Seated_Glute', lvl:3, mat:'rien'},
+    {nom:'Étirement mollets', meta:'2 × 30 sec /jambe', desc:'Mains au mur, jambe arrière tendue, talon au sol.', imgId:'Calf_Stretch_Hands_Against_Wall', lvl:1, mat:'rien'},
+    {nom:'Étirement adducteurs', meta:'2 × 30 sec', desc:'Assis, plantes de pieds jointes, laisse les genoux descendre.', imgId:'Adductor', lvl:2, mat:'rien'},
+    {nom:'Étirement pectoraux', meta:'2 × 30 sec', desc:'Bras contre un mur, tourne le buste à l’opposé pour ouvrir la poitrine.', imgId:'Chest_And_Front_Of_Shoulder_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement épaules', meta:'2 × 20 sec /bras', desc:'Bras tendu en travers de la poitrine, tire-le avec l’autre bras.', imgId:'Shoulder_Circles', lvl:1, mat:'rien'},
+    {nom:'Étirement dorsaux', meta:'2 × 30 sec', desc:'Bras au-dessus de la tête, attrape le poignet et penche sur le côté.', imgId:'One_Arm_Against_Wall', lvl:1, mat:'rien'},
+    {nom:'Posture de l’enfant', meta:'2 × 40 sec', desc:'À genoux, buste au sol, bras tendus devant. Relâche le bas du dos.', imgId:'Childs_Pose', lvl:1, mat:'rien'},
+    {nom:'Étirement chat-vache', meta:'2 × 30 sec', desc:'À quatre pattes, alterne dos rond et dos creux au rythme du souffle.', imgId:'Cat_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement triceps', meta:'2 × 20 sec /bras', desc:'Coude plié derrière la tête, pousse le coude avec l’autre main.', imgId:'Triceps_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement genou-poitrine', meta:'2 × 30 sec /jambe', desc:'Allongé, ramène un genou vers la poitrine avec les mains.', imgId:'One_Knee_To_Chest', lvl:1, mat:'rien'},
   ],
   cardio: [
-    {nom:'Corde à sauter', meta:'10-15 min', desc:'Sauts réguliers, poignets qui tournent, réception sur l’avant du pied.', imgId:'Rope_Jumping', mat:'rien'},
-    {nom:'Course à pied', meta:'20-30 min', desc:'Allure modérée à soutenue selon ton objectif.', imgId:'Trail_Running_Walking', mat:'rien'},
-    {nom:'Skipping rapide', meta:'5 × 1 min', desc:'Montées de genoux rapides sur place, intense. 1 min effort / 1 min repos.', imgId:'Fast_Skipping', mat:'rien'},
-    {nom:'Vélo d’appartement', meta:'20-30 min', desc:'Résistance modérée, cadence régulière.', imgId:'Bicycling_Stationary', mat:'machine'},
-    {nom:'Tapis de course', meta:'20-30 min', desc:'Marche rapide ou course selon ton niveau.', imgId:'Running_Treadmill', mat:'machine'},
-    {nom:'Elliptique', meta:'20-30 min', desc:'Mouvement fluide, faible impact sur les articulations.', imgId:'Elliptical_Trainer', mat:'machine'},
-    {nom:'Rameur', meta:'15-20 min', desc:'Poussée jambes puis tirage bras. Gainage constant.', imgId:'Rowing_Stationary', mat:'machine'},
+    {nom:'Corde à sauter', meta:'10-15 min', desc:'Sauts réguliers, poignets qui tournent, réception sur l’avant du pied.', imgId:'Rope_Jumping', lvl:2, mat:'rien'},
+    {nom:'Course à pied', meta:'20-30 min', desc:'Allure modérée à soutenue selon ton objectif.', imgId:'Trail_Running_Walking', lvl:1, mat:'rien'},
+    {nom:'Skipping rapide', meta:'5 × 1 min', desc:'Montées de genoux rapides sur place, intense. 1 min effort / 1 min repos.', imgId:'Fast_Skipping', lvl:1, mat:'rien'},
+    {nom:'Vélo d’appartement', meta:'20-30 min', desc:'Résistance modérée, cadence régulière.', imgId:'Bicycling_Stationary', lvl:1, mat:'machine'},
+    {nom:'Tapis de course', meta:'20-30 min', desc:'Marche rapide ou course selon ton niveau.', imgId:'Running_Treadmill', lvl:1, mat:'machine'},
+    {nom:'Elliptique', meta:'20-30 min', desc:'Mouvement fluide, faible impact sur les articulations.', imgId:'Elliptical_Trainer', lvl:2, mat:'machine'},
+    {nom:'Rameur', meta:'15-20 min', desc:'Poussée jambes puis tirage bras. Gainage constant.', imgId:'Rowing_Stationary', lvl:2, mat:'machine'},
   ]
 };
 
 
-const SESSION_EXOS = {"masse-3j-0":["pecs:0","pecs:1","pecs:2","triceps:0","triceps:1","triceps:2"],"masse-3j-1":["dos:1","dos:0","dos:2","dos:3","biceps:0","biceps:2"],"masse-3j-2":["jambes:0","jambes:1","jambes:3","jambes:5","epaules:0","epaules:1"],"masse-4j-0":["pecs:0","pecs:1","pecs:5","pecs:2","pecs:4"],"masse-4j-1":["dos:0","dos:1","dos:2","dos:3","dos:4"],"masse-4j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4"],"masse-4j-3":["epaules:0","epaules:1","epaules:3","biceps:0","triceps:0","triceps:1"],"masse-5j-0":["pecs:0","pecs:1","pecs:5","pecs:2","pecs:4"],"masse-5j-1":["dos:0","dos:1","dos:2","dos:3","dos:6"],"masse-5j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"masse-5j-3":["epaules:0","epaules:1","epaules:4","epaules:3","epaules:5"],"masse-5j-4":["biceps:0","biceps:1","biceps:2","triceps:0","triceps:1","triceps:3"],"deb-full-3j-0":["pecs:0","dos:1","jambes:0","epaules:0","abdos:1"],"deb-full-3j-1":["pecs:3","dos:2","jambes:1","biceps:0","abdos:0"],"deb-full-3j-2":["pecs:1","dos:0","jambes:2","triceps:1","abdos:3"],"deb-2j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"deb-2j-1":["jambes:0","jambes:1","jambes:3","abdos:1","abdos:0"],"seche-full-3j-0":["jambes:0","pecs:3","dos:2","epaules:1","abdos:2","jambes:2","abdos:1"],"seche-full-3j-1":["jambes:1","pecs:0","dos:1","triceps:1","abdos:3","jambes:5","abdos:0"],"seche-full-3j-2":["jambes:2","pecs:1","dos:0","biceps:0","abdos:3","jambes:3","abdos:2"],"seche-circuit-4j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1","pecs:3"],"seche-circuit-4j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5","abdos:1"],"seche-circuit-4j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-circuit-4j-3":["abdos:0","abdos:1","abdos:2","abdos:3","abdos:0"],"maison-halteres-3j-0":["pecs:5","epaules:2","biceps:1","triceps:3","abdos:1"],"maison-halteres-3j-1":["jambes:2","jambes:0","jambes:5","abdos:3","abdos:0"],"maison-halteres-3j-2":["pecs:5","dos:3","epaules:2","biceps:1","jambes:2","abdos:1"],"salle-ppl-3j-0":["pecs:0","pecs:1","epaules:0","epaules:1","triceps:1","triceps:0"],"salle-ppl-3j-1":["dos:0","dos:1","dos:2","dos:3","biceps:0","biceps:2"],"salle-ppl-3j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"salle-half-4j-0":["pecs:0","dos:1","epaules:0","biceps:0","triceps:0","abdos:1"],"salle-half-4j-1":["jambes:0","jambes:1","jambes:3","jambes:4","jambes:5","abdos:0"],"salle-half-4j-2":["pecs:1","dos:0","epaules:1","biceps:2","triceps:1","abdos:3"],"salle-half-4j-3":["jambes:2","jambes:1","jambes:6","jambes:4","jambes:5","abdos:2"],"salle-ppl-6j-0":["pecs:0","pecs:1","epaules:0","epaules:1","triceps:0","triceps:1"],"salle-ppl-6j-1":["dos:0","dos:1","dos:2","dos:3","biceps:0","biceps:2"],"salle-ppl-6j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"salle-ppl-6j-3":["pecs:5","pecs:2","epaules:2","epaules:4","triceps:3","triceps:4"],"salle-ppl-6j-4":["dos:6","dos:4","dos:0","dos:3","biceps:1","biceps:3"],"salle-ppl-6j-5":["jambes:0","jambes:6","jambes:2","jambes:3","jambes:4","jambes:5"],"maison-pdc-2j-0":["pecs:3","dos:8","epaules:6","triceps:6","abdos:1"],"maison-pdc-2j-1":["jambes:7","jambes:2","jambes:9","jambes:11","abdos:4"],"maison-pdc-3j-0":["pecs:3","pecs:8","dos:0","triceps:6","epaules:6"],"maison-pdc-3j-1":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:5"],"maison-pdc-3j-2":["pecs:9","dos:8","jambes:8","abdos:1","abdos:5"],"maison-pdc-4j-0":["pecs:3","pecs:8","triceps:5","triceps:6","pecs:12"],"maison-pdc-4j-1":["jambes:7","jambes:2","jambes:10","jambes:11","jambes:8"],"maison-pdc-4j-2":["dos:0","dos:8","dos:9","epaules:6","abdos:1"],"maison-pdc-4j-3":["abdos:0","abdos:4","abdos:6","abdos:7","abdos:8"],"maison-pdc-5j-0":["pecs:3","pecs:8","pecs:9","triceps:5","triceps:6"],"maison-pdc-5j-1":["dos:0","dos:8","dos:9","epaules:6"],"maison-pdc-5j-2":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:8"],"maison-pdc-5j-3":["abdos:0","abdos:4","abdos:5","abdos:7","abdos:8"],"maison-pdc-5j-4":["pecs:3","jambes:7","dos:0","cardio:0","abdos:1"],"maison-pdc-6j-0":["pecs:3","pecs:8","pecs:9","triceps:5","triceps:6"],"maison-pdc-6j-1":["dos:0","dos:8","dos:9","abdos:1"],"maison-pdc-6j-2":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:5"],"maison-pdc-6j-3":["epaules:6","abdos:4","abdos:5","abdos:6","abdos:3"],"maison-pdc-6j-4":["triceps:5","triceps:6","dos:8","pecs:12"],"maison-pdc-6j-5":["jambes:8","pecs:11","cardio:0","cardio:2","abdos:1"],"masse-deb-3j-0":["pecs:0","dos:1","jambes:0","epaules:0","abdos:1"],"masse-deb-3j-1":["pecs:3","dos:2","jambes:1","biceps:0","abdos:0"],"masse-deb-3j-2":["pecs:1","dos:0","jambes:2","triceps:1","abdos:3"],"masse-2j-0":["pecs:0","pecs:1","dos:0","dos:1","epaules:0","biceps:0","triceps:0"],"masse-2j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5","abdos:1"],"seche-2j-0":["jambes:0","pecs:3","dos:2","epaules:1","abdos:2","abdos:1"],"seche-2j-1":["jambes:1","pecs:0","dos:1","triceps:1","abdos:3","abdos:0"],"seche-5j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"seche-5j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5"],"seche-5j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-5j-3":["pecs:1","dos:1","jambes:1","epaules:1","abdos:1","abdos:2"],"seche-5j-4":["abdos:0","abdos:1","abdos:2","abdos:3","jambes:2"],"seche-6j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"seche-6j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5"],"seche-6j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-6j-3":["pecs:1","dos:1","epaules:1","triceps:0","abdos:1","abdos:2"],"seche-6j-4":["jambes:1","jambes:3","pecs:0","dos:2","abdos:3"],"seche-6j-5":["abdos:0","abdos:1","abdos:2","abdos:3","jambes:2"],"maison-halteres-2j-0":["pecs:5","epaules:2","biceps:1","triceps:3","abdos:1"],"maison-halteres-2j-1":["jambes:2","jambes:0","jambes:5","abdos:3","abdos:0"],"maison-halteres-4j-0":["pecs:5","epaules:2","triceps:3","abdos:1"],"maison-halteres-4j-1":["jambes:2","jambes:0","jambes:5","abdos:0"],"maison-halteres-4j-2":["dos:3","biceps:1","epaules:2","abdos:3"],"maison-halteres-4j-3":["jambes:0","jambes:2","jambes:5","abdos:2"],"maison-halteres-5j-0":["pecs:5","triceps:3","abdos:1"],"maison-halteres-5j-1":["dos:3","biceps:1","abdos:0"],"maison-halteres-5j-2":["jambes:2","jambes:0","jambes:5"],"maison-halteres-5j-3":["epaules:2","epaules:4","abdos:3","abdos:2"],"maison-halteres-5j-4":["pecs:5","dos:3","jambes:0","abdos:1"]};
+const SESSION_EXOS = {"masse-3j-0":["pecs:0","pecs:1","pecs:2","triceps:0","triceps:1","triceps:2"],"masse-3j-1":["dos:1","dos:0","dos:2","dos:3","biceps:0","biceps:2"],"masse-3j-2":["jambes:0","jambes:1","jambes:3","jambes:5","epaules:0","epaules:1"],"masse-4j-0":["pecs:0","pecs:1","pecs:5","pecs:2","pecs:4"],"masse-4j-1":["dos:0","dos:1","dos:2","dos:3","dos:4"],"masse-4j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4"],"masse-4j-3":["epaules:0","epaules:1","epaules:3","biceps:0","triceps:0","triceps:1"],"masse-5j-0":["pecs:0","pecs:1","pecs:5","pecs:2","pecs:4"],"masse-5j-1":["dos:0","dos:1","dos:2","dos:3","dos:6"],"masse-5j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"masse-5j-3":["epaules:0","epaules:1","epaules:4","epaules:3","epaules:5"],"masse-5j-4":["biceps:0","biceps:1","biceps:2","triceps:0","triceps:1","triceps:3"],"deb-full-3j-0":["pecs:0","dos:1","jambes:0","epaules:0","abdos:1"],"deb-full-3j-1":["pecs:3","dos:2","jambes:1","biceps:0","abdos:0"],"deb-full-3j-2":["pecs:1","dos:0","jambes:2","triceps:1","abdos:3"],"deb-2j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"deb-2j-1":["jambes:0","jambes:1","jambes:3","abdos:1","abdos:0"],"seche-full-3j-0":["jambes:0","pecs:3","dos:2","epaules:1","abdos:2","jambes:2","abdos:1"],"seche-full-3j-1":["jambes:1","pecs:0","dos:1","triceps:1","abdos:3","jambes:5","abdos:0"],"seche-full-3j-2":["jambes:2","pecs:1","dos:0","biceps:0","abdos:3","jambes:3","abdos:2"],"seche-circuit-4j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1","pecs:3"],"seche-circuit-4j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5","abdos:1"],"seche-circuit-4j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-circuit-4j-3":["cardio:6","cardio:0","abdos:0","abdos:1","abdos:3"],"maison-halteres-3j-0":["pecs:5","epaules:2","biceps:1","triceps:3","abdos:1"],"maison-halteres-3j-1":["jambes:2","jambes:0","jambes:5","abdos:3","abdos:0"],"maison-halteres-3j-2":["pecs:5","dos:3","epaules:2","biceps:1","jambes:2","abdos:1"],"salle-ppl-3j-0":["pecs:0","pecs:1","epaules:0","epaules:1","triceps:1","triceps:0"],"salle-ppl-3j-1":["dos:0","dos:1","dos:2","dos:3","biceps:0","biceps:2"],"salle-ppl-3j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"salle-half-4j-0":["pecs:0","dos:1","epaules:0","biceps:0","triceps:0","abdos:1"],"salle-half-4j-1":["jambes:0","jambes:1","jambes:3","jambes:4","jambes:5","abdos:0"],"salle-half-4j-2":["pecs:1","dos:0","epaules:1","biceps:2","triceps:1","abdos:3"],"salle-half-4j-3":["jambes:2","jambes:1","jambes:6","jambes:4","jambes:5","abdos:2"],"salle-ppl-6j-0":["pecs:0","pecs:1","epaules:0","epaules:1","triceps:0","triceps:1"],"salle-ppl-6j-1":["dos:0","dos:1","dos:2","dos:3","biceps:0","biceps:2"],"salle-ppl-6j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"salle-ppl-6j-3":["pecs:5","pecs:2","epaules:2","epaules:4","triceps:3","triceps:4"],"salle-ppl-6j-4":["dos:6","dos:4","dos:0","dos:3","biceps:1","biceps:3"],"salle-ppl-6j-5":["jambes:0","jambes:6","jambes:2","jambes:3","jambes:4","jambes:5"],"maison-pdc-2j-0":["pecs:3","dos:8","epaules:6","triceps:6","abdos:1"],"maison-pdc-2j-1":["jambes:7","jambes:2","jambes:9","jambes:11","abdos:4"],"maison-pdc-3j-0":["pecs:3","pecs:8","dos:0","triceps:6","epaules:6"],"maison-pdc-3j-1":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:5"],"maison-pdc-3j-2":["pecs:9","dos:8","jambes:8","abdos:1","abdos:5"],"maison-pdc-4j-0":["pecs:3","pecs:8","triceps:5","triceps:6","pecs:12"],"maison-pdc-4j-1":["jambes:7","jambes:2","jambes:10","jambes:11","jambes:8"],"maison-pdc-4j-2":["dos:0","dos:8","dos:9","epaules:6","abdos:1"],"maison-pdc-4j-3":["abdos:0","abdos:4","abdos:6","abdos:7","abdos:8"],"maison-pdc-5j-0":["pecs:3","pecs:8","pecs:9","triceps:5","triceps:6"],"maison-pdc-5j-1":["dos:0","dos:8","dos:9","epaules:6"],"maison-pdc-5j-2":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:8"],"maison-pdc-5j-3":["abdos:0","abdos:4","abdos:5","abdos:7","abdos:8"],"maison-pdc-5j-4":["pecs:3","jambes:7","dos:0","cardio:0","abdos:1"],"maison-pdc-6j-0":["pecs:3","pecs:8","pecs:9","triceps:5","triceps:6"],"maison-pdc-6j-1":["dos:0","dos:8","dos:9","abdos:1"],"maison-pdc-6j-2":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:5"],"maison-pdc-6j-3":["epaules:6","abdos:4","abdos:5","abdos:6","abdos:3"],"maison-pdc-6j-4":["triceps:5","triceps:6","dos:8","pecs:12"],"maison-pdc-6j-5":["jambes:8","pecs:11","cardio:0","cardio:2","abdos:1"],"masse-2j-0":["pecs:0","pecs:1","dos:0","dos:1","epaules:0","biceps:0","triceps:0"],"masse-2j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5","abdos:1"],"seche-2j-0":["jambes:0","pecs:3","dos:2","epaules:1","abdos:6","abdos:1"],"seche-2j-1":["jambes:1","pecs:0","dos:1","triceps:1","abdos:3","abdos:0"],"seche-5j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"seche-5j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5"],"seche-5j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-5j-3":["cardio:6","cardio:0","abdos:1","abdos:0","abdos:3"],"seche-5j-4":["cardio:2","jambes:8","cardio:0","abdos:1","abdos:7"],"seche-6j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"seche-6j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5"],"seche-6j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-6j-3":["cardio:4","cardio:6","abdos:0","abdos:1","abdos:3"],"seche-6j-4":["cardio:2","jambes:8","pecs:11","cardio:0","abdos:8"],"seche-6j-5":["abdos:1","abdos:7","etirements:8","etirements:9","etirements:0"],"maison-halteres-2j-0":["pecs:5","epaules:2","biceps:1","triceps:3","abdos:1"],"maison-halteres-2j-1":["jambes:2","jambes:0","jambes:5","abdos:3","abdos:0"],"maison-halteres-4j-0":["pecs:5","epaules:2","triceps:3","abdos:1"],"maison-halteres-4j-1":["jambes:2","jambes:0","jambes:5","abdos:0"],"maison-halteres-4j-2":["dos:3","biceps:1","epaules:2","abdos:3"],"maison-halteres-4j-3":["jambes:0","jambes:2","jambes:5","abdos:2"],"maison-halteres-5j-0":["pecs:5","triceps:3","abdos:1"],"maison-halteres-5j-1":["dos:3","biceps:1","abdos:0"],"maison-halteres-5j-2":["jambes:2","jambes:0","jambes:5"],"maison-halteres-5j-3":["epaules:2","epaules:4","abdos:3","abdos:2"],"maison-halteres-5j-4":["pecs:5","dos:3","jambes:0","abdos:1"]};
 
 const MUSCLES = [
   {key:'pecs', label:'Pecs'}, {key:'dos', label:'Dos'}, {key:'epaules', label:'Épaules'},
@@ -600,20 +658,35 @@ function renderExercises(){
   // Filtrer selon le matériel, mais garder l'index original
   const visible = list.map((ex,i) => ({ex, i})).filter(o => exoVisible(o.ex));
   if(visible.length === 0){
-    c.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:14px;padding:40px 20px;">Aucun exercice pour ce muscle avec ce matériel.<br>Essaie un autre filtre.</div>';
+    c.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:14px;padding:34px 20px;line-height:1.5;"><span style="display:block;font-size:44px;margin-bottom:10px">💪</span>Aucun exercice pour ce muscle avec ce matériel.<br>Essaie un autre filtre.</div>';
     return;
   }
   c.innerHTML = visible.map(({ex,i}) => {
     const sel = selected[mKey].has(i);
     const bg = ex.imgId ? `style="background-image:url('${IMG_BASE}${ex.imgId}/0.jpg')"` : '';
+    const sets = (ex.meta||'').replace(/\s*×\s*/g,' • ');
     return `<div class="ex-item ${sel?'selected':''}" id="ex-${mKey}-${i}">
       <div class="ex-photo" ${bg} onclick="openModal('${mKey}',${i})"></div>
       <div class="ex-info" onclick="openModal('${mKey}',${i})">
-        <div class="ex-name">${ex.nom}</div><div class="ex-meta">${ex.meta}</div>
+        <div class="ex-name">${ex.nom}</div>
+        <div class="ex-equip">${equipLabel(ex.mat)}</div>
+        ${starsHtml(ex.lvl)}
+        <div class="ex-sets">${sets}</div>
       </div>
-      <div class="ex-check" onclick="toggleSelect('${mKey}',${i})">✓</div>
+      <button class="ex-add" onclick="event.stopPropagation();toggleSelect('${mKey}',${i})" aria-label="Ajouter">${sel?'✓':'+'}</button>
     </div>`;
   }).join('');
+}
+
+function equipLabel(mat){
+  return ({barre:'Barre', halteres:'Haltères', machine:'Machine / poulie', poulie:'Poulie', rien:'Poids du corps', kettlebell:'Kettlebell', elastique:'Élastique'})[mat] || (mat ? mat.charAt(0).toUpperCase()+mat.slice(1) : '—');
+}
+function starsHtml(lvl){
+  lvl = lvl || 2;
+  const label = {1:'Débutant',2:'Intermédiaire',3:'Avancé'}[lvl];
+  let s = '';
+  for(let k=1;k<=3;k++) s += `<span class="${k<=lvl?'on':''}">★</span>`;
+  return `<div class="ex-stars">${s}<em>${label}</em></div>`;
 }
 
 function switchMuscle(i){
@@ -625,7 +698,10 @@ function switchMuscle(i){
 function toggleSelect(mKey, i){
   if(selected[mKey].has(i)) selected[mKey].delete(i);
   else selected[mKey].add(i);
-  document.getElementById(`ex-${mKey}-${i}`).classList.toggle('selected');
+  const item = document.getElementById(`ex-${mKey}-${i}`);
+  item.classList.toggle('selected');
+  const btn = item.querySelector('.ex-add');
+  if(btn) btn.textContent = selected[mKey].has(i) ? '✓' : '+';
   updateCount();
 }
 
@@ -652,17 +728,110 @@ function getSelectedExercises(){
 function renderSessionList(){
   const c = document.getElementById('sessionList');
   if(!sessionExs.length){ c.innerHTML = '<div class="empty-session">Aucun exercice sélectionné.</div>'; return; }
-  c.innerHTML = sessionExs.map((ex,i) =>
-    `<div class="done-item" onclick="toggleDone(this)">
-      <div class="done-check">✓</div>
+  const NOMS_MUSCLES = {pecs:'Pecs', dos:'Dos', epaules:'Épaules', biceps:'Biceps', triceps:'Triceps', jambes:'Jambes', abdos:'Abdos', etirements:'Étirements', cardio:'Cardio'};
+  c.innerHTML = sessionExs.map((ex,i) => {
+    const last = getLastPerf(ex.nom);
+    const muscle = (sessionRefs[i] && NOMS_MUSCLES[sessionRefs[i].mKey]) || '';
+    const chips = (muscle ? `<span class="ex-chip">${muscle}</span>` : '')
+                + (last ? `<span class="ex-chip gold">Dern. ${last}</span>` : '');
+    return `<div class="done-item" onclick="toggleDone(this)" style="flex-wrap:wrap">
+      <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
       <div class="done-info">
         <div class="done-name">${ex.nom}</div>
         <div class="done-meta">${ex.meta}</div>
+        ${chips ? `<div class="ex-chips">${chips}</div>` : ''}
         <button class="done-alt" onclick="event.stopPropagation();swapExercise(${i})">⇄ Alternative</button>
+        <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i}, this)">Séries</button>
       </div>
-      <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
-    </div>`
-  ).join('');
+      <div class="done-check">✓</div>
+      <div class="sets-panel" id="setsPanel${i}" onclick="event.stopPropagation()">
+        ${last ? `<div class="sets-last">Dernière fois : <b>${last}</b></div>` : ''}
+        <div id="setsRows${i}"></div>
+        <button class="set-add" onclick="addSet(${i})">＋ Ajouter une série</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== SUIVI DES SÉRIES (poids × reps) =====
+let sessionSets = []; // sessionSets[i] = [{w:'', r:''}, ...]
+
+function getSetLog(){
+  try { return JSON.parse(localStorage.getItem('repz_setLog') || '{}'); } catch(e){ return {}; }
+}
+function getLastPerf(nom){
+  const hist = getSetLog()[nom];
+  if(!hist || !hist.length) return null;
+  const sets = hist[hist.length-1].sets.filter(s => s.w !== '' || s.r !== '');
+  if(!sets.length) return null;
+  const w = sets[0].w;
+  const sameW = sets.every(s => s.w === w);
+  if(sameW && w !== '') return `${w} kg × ${sets.map(s => s.r || '?').join(' · ')}`;
+  return sets.map(s => `${s.w || '?'}kg×${s.r || '?'}`).join(' · ');
+}
+function toggleSets(i, btn){
+  const p = document.getElementById('setsPanel'+i);
+  if(!p) return;
+  if(btn) btn.classList.toggle('open', !p.classList.contains('open'));
+  if(!p.classList.contains('open') && (!sessionSets[i] || !sessionSets[i].length)){
+    // Première ouverture : autant de lignes que de séries prévues (ex. « 4 séries × 8-10 reps »)
+    let nb = 3;
+    const m = (sessionExs[i].meta || '').match(/(\d+)\s*série/i);
+    if(m) nb = Math.min(8, Math.max(1, parseInt(m[1])));
+    sessionSets[i] = Array.from({length: nb}, () => ({w:'', r:''}));
+    renderSets(i);
+  }
+  p.classList.toggle('open');
+}
+function renderSets(i){
+  const c = document.getElementById('setsRows'+i);
+  if(!c) return;
+  const hist = getSetLog()[sessionExs[i].nom];
+  const lastSets = (hist && hist.length) ? hist[hist.length-1].sets : [];
+  c.innerHTML = (sessionSets[i]||[]).map((s,j) => {
+    const ph = lastSets[j] || lastSets[lastSets.length-1] || {};
+    return `<div class="set-row">
+      <div class="set-num">${j+1}</div>
+      <input type="number" inputmode="decimal" step="0.5" min="0" placeholder="${ph.w !== undefined && ph.w !== '' ? ph.w : '××'}" value="${s.w}" oninput="sessionSets[${i}][${j}].w=this.value"><span class="set-unit">kg</span>
+      <span class="set-x">×</span>
+      <input type="number" inputmode="numeric" min="0" placeholder="${ph.r !== undefined && ph.r !== '' ? ph.r : '××'}" value="${s.r}" oninput="sessionSets[${i}][${j}].r=this.value"><span class="set-unit">reps</span>
+      <button class="set-del" onclick="delSet(${i},${j})">✕</button>
+    </div>`;
+  }).join('');
+}
+function addSet(i){
+  if(!sessionSets[i]) sessionSets[i] = [];
+  // Pré-remplir avec la série précédente saisie (enchaînement rapide)
+  const prev = sessionSets[i][sessionSets[i].length-1];
+  sessionSets[i].push({ w: prev && prev.w ? prev.w : '', r: '' });
+  renderSets(i);
+}
+function delSet(i,j){
+  sessionSets[i].splice(j,1);
+  renderSets(i);
+}
+function collecterSeries(){
+  // Retourne [{nom, sets:[{w,r}]}] pour les exos avec au moins une série remplie
+  const out = [];
+  sessionExs.forEach((ex,i) => {
+    const sets = (sessionSets[i]||[]).filter(s => s.w !== '' || s.r !== '')
+      .map(s => ({ w: s.w === '' ? '' : parseFloat(s.w), r: s.r === '' ? '' : parseInt(s.r) }));
+    if(sets.length) out.push({ nom: ex.nom, sets: sets });
+  });
+  return out;
+}
+function sauverSeries(exos){
+  if(!exos.length) return;
+  try {
+    const log = getSetLog();
+    const iso = new Date().toISOString().slice(0,10);
+    exos.forEach(e => {
+      if(!log[e.nom]) log[e.nom] = [];
+      log[e.nom].push({ iso: iso, sets: e.sets });
+      if(log[e.nom].length > 30) log[e.nom] = log[e.nom].slice(-30);
+    });
+    localStorage.setItem('repz_setLog', JSON.stringify(log));
+  } catch(e){}
 }
 
 // Remplacer un exercice par un autre du même muscle (avant de démarrer)
@@ -680,6 +849,7 @@ function swapExercise(idx){
   if(next === -1) return; // aucune alternative disponible
   sessionRefs[idx] = {mKey:ref.mKey, i:next, ex:list[next]};
   sessionExs[idx] = list[next];
+  sessionSets[idx] = [];
   renderSessionList();
   if(!seanceDemarree){ document.getElementById('sessionList').classList.add('locked'); }
 }
@@ -690,8 +860,19 @@ function goToSession(customRefs){
   const refs = customRefs || getSelectedRefs();
   sessionRefs = refs;
   sessionExs = refs.map(r => r.ex);
+  sessionSets = [];
   renderSessionList();
   document.getElementById('totalCount').textContent = sessionExs.length;
+  // Ligne méta : nb d'exercices + durée estimée (~9-12 min par exercice)
+  const meta = document.getElementById('sessionMeta');
+  if(meta){
+    const n = sessionExs.length;
+    if(n){
+      const mn = Math.round(n*9/5)*5, mx = Math.round(n*12/5)*5;
+      meta.textContent = `${n} exercice${n>1?'s':''} · ${mn}-${mx} min`;
+      meta.classList.add('show');
+    } else meta.classList.remove('show');
+  }
   document.getElementById('doneCount').textContent = 0;
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('screenSelect').classList.remove('active');
@@ -828,7 +1009,41 @@ function toggleDone(el){
 }
 
 let sessionEnregistree = false;
+function calculerBilan(exos){
+  let tonnage = 0;
+  const records = [];
+  const anciens = getSetLog();
+  exos.forEach(e => {
+    let bestAvant = 0;
+    (anciens[e.nom] || []).forEach(h => h.sets.forEach(s => {
+      const w = parseFloat(s.w); if(!isNaN(w) && w > bestAvant) bestAvant = w;
+    }));
+    e.sets.forEach(s => {
+      const w = parseFloat(s.w), r = parseInt(s.r);
+      if(!isNaN(w) && !isNaN(r)) tonnage += w * r;
+      if(!isNaN(w) && bestAvant > 0 && w > bestAvant && !records.includes(e.nom)) records.push(e.nom);
+    });
+  });
+  return { tonnage: Math.round(tonnage), records };
+}
+
+function lancerConfettis(){
+  const cols = ['#F7B500','#181818','#ffffff','#DFA004','#FFE28A'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    const taille = 6 + Math.random()*7;
+    c.style.cssText = `left:${Math.random()*100}vw; width:${taille}px; height:${taille*0.45}px;`
+      + `background:${cols[Math.floor(Math.random()*cols.length)]};`
+      + `animation-duration:${2 + Math.random()*2}s; animation-delay:${Math.random()*0.6}s;`
+      + `transform:rotate(${Math.random()*360}deg);`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
 function montrerFelicitations(){
+  lancerConfettis();
   arreterDureeSeance();
   // Enregistrer la séance dans le journal (pour le dashboard et les stats)
   if(!sessionEnregistree){
@@ -838,13 +1053,18 @@ function montrerFelicitations(){
       const l = localStorage.getItem('repz_sessionLog');
       if(l) log = JSON.parse(l);
       const duree = dureeDebut ? Math.floor((Date.now()-dureeDebut)/1000) : 0;
+      const exos = collecterSeries();
+      // Bilan : tonnage total + records battus (comparés AVANT sauvegarde)
+      window.bilanSeance = calculerBilan(exos);
       log.push({
         iso: new Date().toISOString().slice(0,10),
         ts: Date.now(),
         duree: duree,
-        titre: (new URLSearchParams(window.location.search).get('t')) || 'Séance libre'
+        titre: (new URLSearchParams(window.location.search).get('t')) || 'Séance libre',
+        exos: exos
       });
       localStorage.setItem('repz_sessionLog', JSON.stringify(log));
+      sauverSeries(exos);
     } catch(e){}
   }
   // Durée finale de la séance
@@ -862,6 +1082,20 @@ function montrerFelicitations(){
     'Du bon boulot aujourd\'hui. Repos mérité 👊'
   ];
   const msg = messages[Math.floor(Math.random()*messages.length)];
+  // Bilan chiffré : durée, tonnage, records
+  const statsEl = document.getElementById('congratsStats');
+  if(statsEl){
+    const b = window.bilanSeance || { tonnage:0, records:[] };
+    const min = dureeDebut ? Math.max(1, Math.round((Date.now()-dureeDebut)/60000)) : 0;
+    let sHtml = '<div class="cg-stats">';
+    if(min) sHtml += `<div class="cg-box"><div class="v">${min} min</div><div class="l">Durée</div></div>`;
+    if(b.tonnage > 0) sHtml += `<div class="cg-box"><div class="v">${b.tonnage.toLocaleString('fr-FR')} kg</div><div class="l">Soulevés au total</div></div>`;
+    sHtml += `<div class="cg-box"><div class="v">${sessionExs.length}</div><div class="l">Exercices</div></div></div>`;
+    if(b.records && b.records.length){
+      sHtml += `<div class="cg-record">🏆 Nouveau record : ${b.records.join(', ')} !</div>`;
+    }
+    statsEl.innerHTML = sHtml;
+  }
   const txt = document.getElementById('congratsText');
   if(txt) txt.textContent = (prenom ? `Bravo ${prenom} ! ` : '') + msg + (dureeStr ? ` (${dureeStr.trim()})` : '');
   const overlay = document.getElementById('congratsOverlay');
@@ -882,8 +1116,23 @@ function carouselMove(dir){
   renderDots();
 }
 
+let modalCtx = null; // {mKey, i} quand ouvert depuis la liste de choix
+function majModalAdd(){
+  const b = document.getElementById('modalAdd');
+  if(!modalCtx){ b.classList.remove('visible'); return; }
+  const sel = selected[modalCtx.mKey].has(modalCtx.i);
+  b.classList.add('visible');
+  b.classList.toggle('added', sel);
+  b.textContent = sel ? '✓ Dans ma séance — retirer' : 'Ajouter à ma séance';
+}
+function modalToggleSelect(){
+  if(!modalCtx) return;
+  toggleSelect(modalCtx.mKey, modalCtx.i);
+  majModalAdd();
+}
 function openModal(mKey, i){
   const ex = EXERCISES[mKey][i];
+  modalCtx = {mKey, i};
   document.getElementById('modalName').textContent = ex.nom;
   document.getElementById('modalMeta').textContent = ex.meta;
   document.getElementById('modalDesc').textContent = ex.desc;
@@ -900,6 +1149,7 @@ function openModal(mKey, i){
   carouselIndex = 0;
   document.getElementById('carouselTrack').style.transform = 'translateX(0%)';
   renderDots();
+  majModalAdd();
   document.getElementById('photoModal').classList.add('show');
 }
 function closeModal(){ document.getElementById('photoModal').classList.remove('show'); }
@@ -910,6 +1160,8 @@ let sessionRefs = [];
 function openSessionPhoto(i){
   const ex = sessionExs[i];
   if(!ex) return;
+  modalCtx = null;
+  document.getElementById('modalAdd').classList.remove('visible');
   document.getElementById('modalName').textContent = ex.nom;
   document.getElementById('modalMeta').textContent = ex.meta || '';
   document.getElementById('modalDesc').textContent = ex.desc || '';
@@ -929,14 +1181,7 @@ function openSessionPhoto(i){
 // SWIPE entre muscles
 let touchStartX = 0;
 const selectScreen = document.getElementById('screenSelect');
-selectScreen.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive:true});
-selectScreen.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].screenX - touchStartX;
-  if(Math.abs(dx) > 60){
-    if(dx < 0) switchMuscle(currentMuscle+1); // slide gauche = muscle suivant
-    else switchMuscle(currentMuscle-1);
-  }
-}, {passive:true});
+// Changement de muscle : uniquement en tapant les bulles (le swipe écran créait des conflits avec le défilement)
 
 // SWIPE sur le carrousel photo
 let carStartX = 0;
@@ -1211,10 +1456,10 @@ function murCompte(){
     o.id = 'inviteMurAction';
     o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
     o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
-        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#10B981;">FIT</span></div>'
+        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#F7B500;">FIT</span></div>'
         + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
         + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
-        + '<a href="index.html" style="display:block;background:#10B981;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
+        + '<a href="index.html" style="display:block;background:#F7B500;color:#181818;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
         + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">Continuer à explorer</button>'
         + '</div>';
     document.body.appendChild(o);
@@ -1225,7 +1470,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     const b = document.createElement('a');
     b.href = 'index.html';
     b.id = 'inviteBandeau';
-    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#ecfdf5;border-bottom:1px solid #a7f3d0;color:#047857;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFF9E8;border-bottom:1px solid #F3D98A;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
     b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
@@ -1256,5 +1501,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
   }catch(e){}
 })();
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
+<script>/*repzSplashFailsafe*/setTimeout(function(){var s=document.getElementById('repzSplash');if(s)s.remove();},4000);</script>
 </body>
 </html>

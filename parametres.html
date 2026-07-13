@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html,body{background:#eeece7 !important;margin:0}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#10B981">
+<meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Paramètres</title>
 <link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
-<link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v7.png">
 <style>
-:root{ --em:#10B981; --em-dark:#047857; --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0; --card:#fcfbf8; --bg:#eeece7; }
+:root{ --em:#F7B500; --em-dark:#8F6200; --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0; --card:#ffffff; --bg:#F5F6F8; }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
 .container { max-width:900px; margin:0 auto; padding:16px 16px 60px; }
 .back-btn { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#fff; border:1.5px solid var(--line); color:var(--text); text-decoration:none; font-size:19px; cursor:pointer; }
 .page-title { font-size:24px; font-weight:800; margin:10px 2px 18px; }
 .sec-label { font-size:13px; font-weight:800; letter-spacing:.07em; color:#8a8375; text-transform:uppercase; margin:0 4px 10px; }
+.ref-row { display:flex; align-items:center; gap:10px; padding:13px 18px; border-top:1px solid var(--line); }
+.ref-lbl { font-size:12.5px; font-weight:700; color:var(--text-dim); }
+.ref-code { flex:1; font-size:15px; font-weight:800; letter-spacing:.04em; color:#8F6200; font-variant-numeric:tabular-nums; }
+.ref-copy { background:#FFF4CC; border:1.5px solid #F7B500; color:#181818; border-radius:10px; padding:6px 13px; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; }
 .menu-card { background:var(--card); border:1.5px solid #e7e2d9; border-radius:20px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:22px; overflow:hidden; }
 .menu-row { display:flex; align-items:center; gap:13px; width:100%; background:none; border:none; text-align:left; padding:16px; font-size:15.5px; font-weight:700; color:var(--text); cursor:pointer; border-bottom:1px solid var(--line); font-family:inherit; text-decoration:none; }
 .menu-row:last-child { border-bottom:none; }
@@ -51,7 +57,7 @@ body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .acc-action.danger { color:#dc2626; }
 .acc-action:active { background:#f5f2ec; }
 .save-btn { display:block; width:100%; background:var(--em); color:#fff; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; margin-top:4px; font-family:inherit; }
-.saved-toast { display:none; text-align:center; font-size:13.5px; font-weight:800; color:#047857; padding:10px; }
+.saved-toast { display:none; text-align:center; font-size:13.5px; font-weight:800; color:#8F6200; padding:10px; }
 .note { font-size:12.5px; color:var(--dim); line-height:1.55; padding:12px 16px 14px; }
 
 /* Pied */
@@ -94,6 +100,7 @@ auth.onAuthStateChanged((user) => {
         authVerifie = true;
         if(estInvite) localStorage.removeItem('repz_invite');
         remplirCompte(user);
+        chargerCodeParrainage(user);
     } else if(estInvite){
         authVerifie = true;
     } else if(!authVerifie){
@@ -154,6 +161,24 @@ auth.onAuthStateChanged((user) => {
             <span class="mr-txt">Invite des amis<span class="mr-sub">1 mois offert quand ton filleul s'abonne</span></span>
             <span class="mr-chev">›</span>
         </button>
+        <div class="ref-row" id="refRow" style="display:none">
+            <span class="ref-lbl">Ton code</span>
+            <span class="ref-code" id="monCodeRef">—</span>
+            <button class="ref-copy" onclick="copierCodeRef()">Copier</button>
+        </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="sec-label">Contact</div>
+    <div class="menu-card">
+        <a class="menu-row" href="aide.html?chat=question">
+            <span class="mr-txt">Nous écrire<span class="mr-sub">Directement depuis l'app — réponse rapide</span></span>
+            <span class="mr-chev">›</span>
+        </a>
+        <a class="menu-row" href="aide.html?chat=suggestion">
+            <span class="mr-txt">Suggérer une amélioration<span class="mr-sub">Une idée pour l'app ? On t'écoute</span></span>
+            <span class="mr-chev">›</span>
+        </a>
     </div>
 
     <!-- DOCUMENTS -->
@@ -292,9 +317,44 @@ function supprimerCompte(){
     });
 }
 
+// ===== PARRAINAGE =====
+let monCodeParrainage = '';
+
+function chargerCodeParrainage(u){
+    if(!u || !window.firebase || !firebase.firestore) return;
+    const doc = firebase.firestore().collection('users').doc(u.uid);
+    doc.get().then(function(snap){
+        let code = snap.exists ? snap.data().mon_code_parrainage : null;
+        if(!code){
+            // Compte créé avant le système : générer le code maintenant
+            const prenom = (u.displayName || 'BELFIT').toUpperCase().replace(/[^A-Z]/g,'').slice(0,10) || 'BELFIT';
+            code = prenom + '-' + Math.floor(1000 + Math.random()*9000);
+            doc.set({ mon_code_parrainage: code }, { merge:true }).catch(function(){});
+        }
+        monCodeParrainage = code;
+        const el = document.getElementById('monCodeRef');
+        const row = document.getElementById('refRow');
+        if(el){ el.textContent = code; }
+        if(row){ row.style.display = 'flex'; }
+    }).catch(function(){});
+}
+
+function copierCodeRef(){
+    if(!monCodeParrainage) return;
+    const lien = 'https://www.belfit.be/?ref=' + monCodeParrainage;
+    if(navigator.clipboard){
+        navigator.clipboard.writeText(lien);
+        const btn = document.querySelector('.ref-copy');
+        if(btn){ btn.textContent = 'Copié ✓'; setTimeout(()=>{ btn.textContent = 'Copier'; }, 1800); }
+    }
+}
+
 // ===== INVITER DES AMIS =====
 function inviterAmis(){
-    const texte = "Je suis sur BELFIT 🇧🇪 — coaching nutrition & training avec un vrai coach. Rejoins-moi : https://repz-1.github.io/Repz-macros/ (mentionne mon prénom à l'inscription, on gagne tous les deux un avantage sur l'abonnement 💪)";
+    const lien = monCodeParrainage
+        ? 'https://www.belfit.be/?ref=' + monCodeParrainage
+        : 'https://www.belfit.be/';
+    const texte = "Je suis sur BELFIT 🇧🇪 — coaching nutrition & training avec un vrai coach. Rejoins-moi : " + lien + " — avec mon lien, on gagne tous les deux un avantage sur l'abonnement 💪";
     if(navigator.share){
         navigator.share({ title:'BELFIT', text:texte }).catch(()=>{});
     } else if(navigator.clipboard){
@@ -312,5 +372,6 @@ function logout(){
     auth.signOut().finally(()=>{ window.location.href='index.html'; });
 }
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 </body>
 </html>

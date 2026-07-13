@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html,body{background:#eeece7 !important;margin:0}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#10B981">
+<meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Profil</title>
 <link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
-<link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v7.png">
 <style>
 :root{
-    --em:#10B981; --em-dark:#047857;
+    --em:#F7B500; --em-dark:#8F6200;
     --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0;
-    --card:#fcfbf8; --bg:#eeece7;
+    --card:#ffffff; --bg:#F5F6F8;
 }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{
@@ -26,8 +28,8 @@ body{
 
 /* ===== EN-TÊTE PROFIL ===== */
 .profile-card { position:relative; background:var(--card); border:1.5px solid #e7e2d9; border-radius:22px; padding:24px 18px 20px; box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:22px; text-align:center; }
-.avatar-badge { width:34px; height:34px; margin:0 auto 10px; border-radius:50%; background:#d1fae5; display:flex; align-items:center; justify-content:center; }
-.avatar-badge svg { width:19px; height:19px; stroke:#047857; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.avatar-badge { width:34px; height:34px; margin:0 auto 10px; border-radius:50%; background:#FBEFC7; display:flex; align-items:center; justify-content:center; }
+.avatar-badge svg { width:19px; height:19px; stroke:#8F6200; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .avatar-wrap { position:relative; width:104px; height:104px; margin:0 auto 12px; }
 .avatar { width:104px; height:104px; border-radius:50%; background:#e7e2d9; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #fff; box-shadow:0 4px 14px rgba(60,50,40,.14); }
 .avatar img { width:100%; height:100%; object-fit:cover; }
@@ -47,13 +49,13 @@ body{
 .menu-row { display:flex; align-items:center; gap:13px; width:100%; background:none; border:none; text-align:left; padding:16px; font-size:15.5px; font-weight:700; color:var(--text); cursor:pointer; border-bottom:1px solid var(--line); font-family:inherit; }
 .menu-row:last-child { border-bottom:none; }
 .menu-row:active { background:#f5f2ec; }
-.mr-ic { flex:none; width:36px; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center; background:#ecfdf5; }
-.mr-ic svg { width:19px; height:19px; stroke:#047857; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.mr-ic { flex:none; width:36px; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center; background:#FFFBEF; }
+.mr-ic svg { width:19px; height:19px; stroke:#8F6200; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .mr-ic.locked { background:#f3f0ea; }
 .mr-ic.locked svg { stroke:#a8a094; }
 .mr-txt { flex:1; }
 .mr-sub { display:block; font-size:12.5px; font-weight:600; color:var(--dim); margin-top:2px; }
-.mr-sub.quota { color:#047857; }
+.mr-sub.quota { color:#8F6200; }
 .mr-chev { color:#c4bcae; font-size:18px; }
 
 /* ===== EMAIL ===== */
@@ -63,7 +65,7 @@ body{
 .mail-card p { font-size:13.5px; color:#b45309; margin:6px 0 14px; line-height:1.5; }
 .mail-btn { background:#ea580c; color:#fff; border:none; border-radius:12px; padding:12px 22px; font-size:14px; font-weight:800; cursor:pointer; }
 .mail-btn:disabled { opacity:.55; }
-.mail-ok { display:none; font-size:13px; font-weight:700; color:#047857; margin-top:10px; }
+.mail-ok { display:none; font-size:13px; font-weight:700; color:#8F6200; margin-top:10px; }
 
 /* ===== SOUS-PAGES (panneaux) ===== */
 .panel { display:none; position:fixed; inset:0; z-index:900; background:var(--bg); overflow-y:auto; }
@@ -82,17 +84,17 @@ body{
 .edit-row input:focus, .edit-row select:focus { outline:none; border-color:var(--em); }
 .save-btn { display:block; width:100%; background:var(--em); color:#fff; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; margin-top:4px; }
 .save-btn:active { background:#0e9f6e; }
-.saved-toast { display:none; text-align:center; font-size:13.5px; font-weight:800; color:#047857; padding:10px; }
+.saved-toast { display:none; text-align:center; font-size:13.5px; font-weight:800; color:#8F6200; padding:10px; }
 
 /* Préférences & allergies */
 .pref-opts { display:flex; flex-direction:column; gap:8px; padding:14px 16px; }
 .pref-opt { display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border:1.5px solid #e5e0d6; border-radius:13px; background:#fff; font-size:14.5px; font-weight:700; cursor:pointer; }
-.pref-opt.on { border-color:var(--em); background:#ecfdf5; color:#047857; }
+.pref-opt.on { border-color:var(--em); background:#FFFBEF; color:#8F6200; }
 .pref-opt .po-check { display:none; }
 .pref-opt.on .po-check { display:inline; }
 .chips { display:flex; flex-wrap:wrap; gap:8px; padding:14px 16px; }
 .chip { padding:9px 14px; border:1.5px solid #e5e0d6; border-radius:20px; background:#fff; font-size:13.5px; font-weight:700; cursor:pointer; }
-.chip.on { border-color:var(--em); background:#ecfdf5; color:#047857; }
+.chip.on { border-color:var(--em); background:#FFFBEF; color:#8F6200; }
 
 /* Modale quota / premium */
 .modal-overlay { display:none; position:fixed; inset:0; z-index:950; background:rgba(15,23,42,.5); align-items:center; justify-content:center; padding:22px; }
@@ -113,7 +115,7 @@ body{
 .bn-item { display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:#8a8375; flex:1; padding:2px 0; }
 .bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .bn-item span { font-size:10.5px; font-weight:700; }
-.bn-item.active { color:#10B981; }
+.bn-item.active { color:#F7B500; }
 .bn-item:active { transform:scale(.94); }
 </style>
 </head>
@@ -278,7 +280,7 @@ auth.onAuthStateChanged((user) => {
     <div class="modal">
         <h3>Fonction Premium</h3>
         <p>L'ajustement personnalisé des macros et des calories est réalisé avec ton coach BELFIT. Il est réservé aux membres Premium.</p>
-        <a href="plans.html" class="m-main">Découvrir Premium</a>
+        <a href="plans.html?v=6" class="m-main">Découvrir Premium</a>
         <button class="m-sec" onclick="fermerOverlay('lockModal')">Plus tard</button>
     </div>
 </div>
@@ -299,15 +301,15 @@ auth.onAuthStateChanged((user) => {
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
         <span>Journal</span>
     </a>
-    <a href="entrainements.html" class="bn-item">
+    <a href="entrainements.html?v=16" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html" class="bn-item">
+    <a href="mes-stats.html?v=22" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
-    <a href="plans.html" class="bn-item bn-premium" id="bnPremium">
+    <a href="plans.html?v=6" class="bn-item bn-premium" id="bnPremium">
         <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
         <span>Premium</span>
     </a>
@@ -596,5 +598,6 @@ renderAllerg();
 rafraichirSubPrefs();
 rafraichirAjustements();
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 </body>
 </html>

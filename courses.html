@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html,body{background:#F8F8F8 !important;margin:0}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#F7B500">
+<meta name="theme-color" content="#f7efd9">
 <title>BelFit — Ma liste de courses</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
-<link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v7.png">
 <style>
-:root{ --gold:#F7B500; --noir:#181818; --bg:#F8F8F8; --card:#fff; --line:#efefef; --dim:#6b7280; --ok:#16a34a; }
+:root{ --gold:#F7B500; --noir:#181818; --bg:#F5F6F8; --card:#fff; --line:#efefef; --dim:#6b7280; --ok:#DFA004; }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--noir); -webkit-font-smoothing:antialiased; }
 .container{ max-width:760px; margin:0 auto; padding:16px 16px 120px; }
@@ -27,6 +29,7 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 .prep h3{ font-size:15px; font-weight:800; margin-bottom:14px; }
 .prep-row{ margin-bottom:14px; }
 .prep-lbl{ font-size:13px; font-weight:700; color:var(--dim); margin-bottom:8px; }
+.prep-note{ font-size:12px; font-weight:600; color:#94a3b8; margin-top:10px; display:none; }
 .seg{ display:flex; gap:8px; flex-wrap:wrap; }
 .seg button{ flex:1; min-width:60px; padding:11px 8px; border:1.5px solid #E6E6E6; border-radius:12px; background:#fff; font-size:14px; font-weight:700; color:var(--noir); cursor:pointer; font-family:inherit; }
 .seg button.on{ background:#FFF4CC; border-color:var(--gold); color:#8a6400; }
@@ -70,7 +73,7 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 .bn-item{ display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:#8a8375; flex:1; padding:2px 0; }
 .bn-item svg{ width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .bn-item span{ font-size:10.5px; font-weight:700; }
-.bn-item.active{ color:#10B981; }
+.bn-item.active{ color:#F7B500; }
 </style>
 </head>
 <body>
@@ -93,6 +96,7 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
             <div class="seg" id="segPers"></div>
         </div>
         <button class="gen-btn" onclick="generer()">Générer ma liste</button>
+        <div class="prep-note" id="prepNote"></div>
     </div>
 
     <!-- LISTE -->
@@ -114,9 +118,9 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
     <a href="app.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg><span>Journal</span></a>
-    <a href="entrainements.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg><span>S'entraîner</span></a>
-    <a href="mes-stats.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg><span>Stats</span></a>
-    <a href="plans.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg><span>Premium</span></a>
+    <a href="entrainements.html?v=16" class="bn-item"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg><span>S'entraîner</span></a>
+    <a href="mes-stats.html?v=22" class="bn-item"><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg><span>Stats</span></a>
+    <a href="plans.html?v=6" class="bn-item"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg><span>Premium</span></a>
 </nav>
 
 <script>
@@ -134,6 +138,7 @@ const RAYONS = [
 ];
 
 let base = [];          // items "1 jour" venant du journal : {name, qty, unit, unitLabel, cat}
+let baseNjours = 1;      // nombre de journées ayant servi à la moyenne
 let jours = 5, pers = 1;
 let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}]}
 
@@ -141,15 +146,18 @@ let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}
 (function init(){
     try {
         const b = JSON.parse(localStorage.getItem('repz_coursesBase') || 'null');
-        if(b && b.items) base = b.items;
+        if(b && b.items){ base = b.items; baseNjours = b.njours || 1; }
     } catch(e){ base = []; }
     try {
         const s = JSON.parse(localStorage.getItem('repz_courses') || 'null');
         if(s && s.items){ state = s; jours = s.jours || 5; pers = s.pers || 1; }
     } catch(e){ state = null; }
     renderSegs();
-    if(base.length){ generer(); }       // régénère automatiquement depuis le journal à l'ouverture
-    else if(state){ renderListe(); }     // pas de base fraîche : on garde la liste existante
+    renderSegs();
+    const pn = document.getElementById('prepNote');
+    if(pn && baseNjours > 1){ pn.textContent = '✨ Quantités basées sur la moyenne de tes ' + baseNjours + ' dernières journées.'; pn.style.display = 'block'; }
+    if(base.length){ generer(); }        // auto-génération à chaque ouverture, depuis le journal
+    else if(state){ renderListe(); }     // pas de base mais des ajouts manuels sauvegardés
     else { renderVide(); }
 })();
 
@@ -163,20 +171,41 @@ function setJours(j){ jours = j; renderSegs(); if(state && base.length) generer(
 function setPers(p){ pers = p; renderSegs(); if(state && base.length) generer(); }
 
 // ---- Génération depuis la base ----
+function nomCourse(n){
+    n = n || '';
+    const low = n.toLowerCase();
+    // Œufs : tout regrouper en "Œufs entiers L" (sans confondre avec bœuf)
+    if((low.indexOf('oeuf') >= 0 || low.indexOf('œuf') >= 0) && low.indexOf('boeuf') < 0 && low.indexOf('bœuf') < 0){
+        return 'Œufs entiers L';
+    }
+    // En courses on achète le produit cru, pas cuit
+    return n
+        .replace(/\bcuites\b/gi,'crues')
+        .replace(/\bcuits\b/gi,'crus')
+        .replace(/\bcuite\b/gi,'crue')
+        .replace(/\bcuit\b/gi,'cru');
+}
 function generer(){
     if(!base.length){ renderVide(); return; }
     // Mémoriser les cases déjà cochées (par nom) pour ne pas perdre la progression
     const dejaCoches = {};
     if(state && state.items){ state.items.forEach(i => { if(i.done) dejaCoches[i.name] = true; }); }
     const items = base.map(it => ({
-        name: it.name,
-        qty: it.qty * jours * pers,
+        name: nomCourse(it.name),
+        qty: it.unit === 'u' ? Math.ceil(it.qty * jours * pers) : Math.round(it.qty * jours * pers),
         unit: it.unit,
         unitLabel: it.unitLabel,
         cat: it.cat,
         done: !!dejaCoches[it.name],
         manuel: false
     }));
+    // Fusionner les doublons de même nom + unité (ex. plusieurs formes d'œufs)
+    const fusion = [];
+    items.forEach(it => {
+        const ex = fusion.find(x => x.name === it.name && x.unit === it.unit && x.cat === it.cat);
+        if(ex){ ex.qty += it.qty; } else { fusion.push(it); }
+    });
+    items.length = 0; fusion.forEach(x => items.push(x));
     // Conserver les produits ajoutés manuellement d'une génération précédente
     if(state && state.items){
         state.items.filter(i => i.manuel).forEach(i => items.push(i));
@@ -228,7 +257,7 @@ function renderListe(){
 
 function renderVide(){
     document.getElementById('liste').innerHTML =
-        `<div class="empty">Ta liste est vide.<br>Ajoute des aliments dans ton journal, puis reviens ici et appuie sur « Générer ma liste ».</div>`;
+        `<div class="empty"><span style="display:block;font-size:44px;margin-bottom:10px">🛒</span>Ta liste est vide.<br>Ajoute des aliments dans ton journal, puis reviens ici.</div>`;
 }
 
 function toggle(i){ if(state.items[i]){ state.items[i].done = !state.items[i].done; sauver(); renderListe(); } }
@@ -260,5 +289,6 @@ function partager(){
     else if(navigator.clipboard){ navigator.clipboard.writeText(txt); alert('Liste copiée !'); }
 }
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 </body>
 </html>

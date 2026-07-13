@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html,body{background:#eeece7 !important;margin:0}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#10B981">
+<meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Aide</title>
 <link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
-<link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v7.png">
 <style>
-:root{ --em:#10B981; --em-dark:#047857; --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0; --card:#fcfbf8; --bg:#eeece7; }
+:root{ --em:#F7B500; --em-dark:#8F6200; --text:#1a1a1a; --dim:#6b7280; --line:#eee9e0; --card:#ffffff; --bg:#F5F6F8; }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
 .container { max-width:900px; margin:0 auto; padding:16px 16px 120px; }
@@ -30,20 +32,20 @@ body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .faq-item.open .faq-a { display:block; }
 
 /* Bulle de contact */
-.chat-fab { position:fixed; bottom:22px; right:18px; z-index:120; width:58px; height:58px; border-radius:50%; border:none; background:var(--em); color:#fff; box-shadow:0 8px 22px rgba(16,185,129,.4); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.chat-fab { position:fixed; bottom:22px; right:18px; z-index:120; width:58px; height:58px; border-radius:50%; border:none; background:var(--em); color:#fff; box-shadow:0 8px 22px rgba(247,181,0,.4); cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .chat-fab svg { width:27px; height:27px; stroke:#fff; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .chat-fab:active { transform:scale(.94); }
 .chat-panel { display:none; position:fixed; bottom:92px; right:16px; left:16px; max-width:400px; margin-left:auto; z-index:121; background:#fff; border-radius:20px; box-shadow:0 16px 44px rgba(15,23,42,.24); overflow:hidden; }
 .chat-panel.show { display:block; animation:cpUp .2s ease-out; }
 @keyframes cpUp { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
-.cp-head { background:linear-gradient(160deg,#10B981,#059669); color:#fff; padding:15px 17px; }
+.cp-head { background:linear-gradient(160deg,#F7B500,#DFA004); color:#fff; padding:15px 17px; }
 .cp-head h3 { font-size:16px; font-weight:800; }
 .cp-head p { font-size:12.5px; opacity:.9; margin-top:2px; }
 .cp-body { padding:14px 15px 15px; }
 .cp-body textarea { width:100%; min-height:96px; padding:12px; border:1.5px solid #e5e0d6; border-radius:12px; font-size:14px; font-family:inherit; resize:vertical; }
 .cp-body textarea:focus { outline:none; border-color:var(--em); }
 .cp-send { display:block; width:100%; margin-top:10px; background:var(--em); color:#fff; border:none; border-radius:12px; padding:13px; font-size:14.5px; font-weight:800; cursor:pointer; font-family:inherit; }
-.cp-ok { display:none; text-align:center; font-size:13px; font-weight:700; color:#047857; padding-top:10px; }
+.cp-ok { display:none; text-align:center; font-size:13px; font-weight:700; color:#8F6200; padding-top:10px; }
 </style>
 </head>
 <body>
@@ -107,7 +109,7 @@ const FAQ = [
     { q:"Comment annuler mon abonnement ?", a:"Ton abonnement est géré par notre partenaire de paiement Lemon Squeezy : utilise le lien de gestion reçu dans ton e-mail de confirmation d'achat, ou écris-nous via la bulle de contact et on s'en occupe." },
     { q:"J'ai un code promo, où l'utiliser ?", a:"Sur la page Premium au moment de choisir ta formule. Si tu as un souci avec un code, contacte-nous via la bulle." },
     { q:"L'app fonctionne-t-elle hors ligne ?", a:"Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium." },
-    { q:"Comment vous contacter ?", a:"Via la bulle de conversation en bas à droite de cette page, ou par e-mail à coach@belfit.be. Réponse sous 24–48h." }
+    { q:"Comment vous contacter ?", a:"Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h." }
 ];
 document.getElementById('faqCard').innerHTML = FAQ.map((f,i)=>`
     <div class="faq-item" id="faq${i}">
@@ -135,13 +137,30 @@ window.addEventListener('popstate', function(){
     const el = document.getElementById('chatPanel');
     if(el && el.classList.contains('show')){ el.classList.remove('show'); }
 });
+// Type de demande (question / suggestion), pilotable via ?chat=
+let typeDemande = 'Message assistance';
+(function(){
+    const c = new URLSearchParams(location.search).get('chat');
+    if(!c) return;
+    if(c === 'suggestion') typeDemande = 'Suggestion d\'amélioration';
+    else if(c === 'question') typeDemande = 'Question';
+    // Ouvrir la bulle automatiquement à l'arrivée
+    window.addEventListener('DOMContentLoaded', function(){
+        setTimeout(function(){
+            const el = document.getElementById('chatPanel');
+            if(el && !el.classList.contains('show')) toggleChat();
+            const msg = document.getElementById('chatMsg');
+            if(msg && c === 'suggestion') msg.placeholder = 'Ton idée pour améliorer BELFIT...';
+        }, 250);
+    });
+})();
 function envoyerMessage(){
     const msg = document.getElementById('chatMsg').value.trim();
     if(!msg){ alert('Écris ton message d\'abord.'); return; }
     const user = auth.currentUser;
     const email = user && user.email ? user.email : '';
     const params = {
-        type_demande: 'Message assistance',
+        type_demande: typeDemande,
         client_email: email,
         prenom: localStorage.getItem('repz_firstName') || '—',
         message: msg
@@ -159,10 +178,26 @@ function envoyerMessage(){
     }
 }
 function mailtoFallback(msg, email){
-    const sujet = encodeURIComponent('Assistance BELFIT');
-    const corps = encodeURIComponent('Message : ' + msg + '\n\nMon compte : ' + email);
-    window.location.href = 'mailto:coach@belfit.be?subject=' + sujet + '&body=' + corps;
+    // EmailJS indisponible : on prévient honnêtement au lieu d'ouvrir l'appli mail par surprise
+    const panel = document.getElementById('chatPanel');
+    if(panel){
+        const sujet = encodeURIComponent(typeDemande + ' — BELFIT');
+        const corps = encodeURIComponent('Message : ' + msg + '\n\nMon compte : ' + email);
+        const lien = 'mailto:contact@belfit.be?subject=' + sujet + '&body=' + corps;
+        let fb = document.getElementById('chatFallback');
+        if(!fb){
+            fb = document.createElement('div');
+            fb.id = 'chatFallback';
+            fb.style.cssText = 'margin-top:10px;background:#FFF9E8;border:1px solid #F3D98A;border-radius:12px;padding:12px;font-size:13px;color:#8F6200;font-weight:600;line-height:1.5;';
+            const zone = document.getElementById('chatMsg').parentElement;
+            zone.appendChild(fb);
+        }
+        fb.innerHTML = 'L\'envoi direct est momentanément indisponible. '
+            + '<a href="' + lien + '" style="display:inline-block;margin-top:8px;background:#F7B500;color:#181818;text-decoration:none;font-weight:800;padding:9px 14px;border-radius:10px;">Envoyer par e-mail</a>'
+            + '<span style="display:block;margin-top:6px;font-size:11.5px;color:#9a8a5a;">Ton message est prêt — appuie sur Envoyer dans ton appli mail.</span>';
+    }
 }
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 </body>
 </html>

@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<style>html,body{background:#eeece7 !important;margin:0}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7efd9">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Le test</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-:root { --orange:#10B981; --bg:#f3f4f6; --card:#ffffff; --dark:#1f2937;
+:root { --orange:#F7B500; --bg:#F5F6F8; --card:#ffffff; --dark:#1f2937;
     --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px; }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:var(--bg); color:var(--text);
@@ -35,7 +39,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .q-title { font-size:23px; font-weight:800; line-height:1.25; letter-spacing:-.02em; margin-bottom:8px; }
 .coach-advice {
     display:flex; gap:10px; align-items:flex-start;
-    background:linear-gradient(135deg,#ecfdf5,#ecfdf5);
+    background:linear-gradient(135deg,#FFFBEF,#FFFBEF);
     border:1.5px solid #fed7aa; border-radius:14px;
     padding:14px 16px; margin:14px 0; text-align:left;
     font-size:14px; line-height:1.5; color:#7c2d12;
@@ -48,7 +52,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     border:2px solid var(--line); border-radius:16px; padding:15px 18px;
     cursor:pointer; transition:all .15s; }
 .option:active { transform:scale(.98); }
-.option.selected { border-color:var(--orange); background:#ecfdf5; }
+.option.selected { border-color:var(--orange); background:#FFFBEF; }
 .option-emoji { font-size:26px; flex-shrink:0; }
 .option-label { font-size:16.5px; font-weight:700; flex:1; }
 .option-check { width:24px; height:24px; border-radius:50%; border:2px solid var(--line);
@@ -61,12 +65,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .q-footer { padding:14px 4px 4px; max-width:480px; margin:0 auto; width:100%; flex-shrink:0; }
 .next-btn { width:100%; background:var(--orange); color:#fff; border:none;
     padding:16px; border-radius:16px; font-size:16px; font-weight:700; cursor:pointer;
-    box-shadow:0 6px 18px rgba(16,185,129,.3); transition:opacity .2s; }
+    box-shadow:0 6px 18px rgba(247,181,0,.3); transition:opacity .2s; }
 .next-btn:disabled { opacity:.4; box-shadow:none; cursor:not-allowed; }
 
 /* Résultat */
 .result { text-align:center; padding:0 4px; }
-.result-badge { display:inline-block; background:rgba(16,185,129,.14); color:var(--orange);
+.result-badge { display:inline-block; background:rgba(247,181,0,.14); color:var(--orange);
     font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
     padding:7px 16px; border-radius:20px; margin-bottom:22px; }
 .result h2 { font-size:28px; font-weight:800; margin-bottom:14px; line-height:1.2; }
@@ -87,7 +91,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .result-btns { display:flex; flex-direction:column; gap:10px; }
 .btn-primary { width:100%; background:var(--orange); color:#fff; border:none; padding:16px;
     border-radius:16px; font-size:16px; font-weight:700; cursor:pointer; text-decoration:none; text-align:center;
-    box-shadow:0 6px 18px rgba(16,185,129,.3); }
+    box-shadow:0 6px 18px rgba(247,181,0,.3); }
 .btn-secondary { width:100%; background:var(--card); color:var(--text); border:1.5px solid var(--line);
     padding:15px; border-radius:16px; font-size:15px; font-weight:600; cursor:pointer; text-align:center; text-decoration:none; }
 </style>
@@ -95,25 +99,24 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 <body>
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#eeece7;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
 #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
 @keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-#repzSplash .sp-loader{position:absolute;top:calc(50% + 130px);left:50%;transform:translateX(-50%);width:40px;height:40px;border:4px solid #d1fae5;border-top-color:#10B981;border-radius:50%;animation:spSpin .8s linear infinite;}
-@keyframes spSpin{to{transform:translateX(-50%) rotate(360deg)}}
+
+
 </style>
 <div id="repzSplash">
-  <img class="sp-sym" src="logo-symbol.png" alt="BELFIT">
-  <img class="sp-txt" src="logo-text.png" alt="REP Z">
-  <div class="sp-loader"></div>
+  <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
+  <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
 </div>
 <script>
 (function(){
   var s=document.getElementById('repzSplash');
   if(!s) return;
-  if(sessionStorage.getItem('repz_splash')){ s.remove(); return; }
-  sessionStorage.setItem('repz_splash','1');
+  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){} if(seen){ s.remove(); return; }
+  try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
   setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
 })();
 </script>
@@ -125,12 +128,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
         <div style="font-size:42px; margin-bottom:12px;">💪</div>
         <h2 style="font-size:21px; font-weight:800; margin-bottom:10px; color:#1a1a1a;">Ton programme est prêt !</h2>
         <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:24px;">
-            Crée ton compte pour découvrir le programme fait pour toi et accéder à toutes tes séances.<br><b style="color:#10B981;">Ça ne te prend que 10 secondes !</b>
+            Crée ton compte pour découvrir le programme fait pour toi et accéder à toutes tes séances.<br><b style="color:#F7B500;">Ça ne te prend que 10 secondes !</b>
         </p>
-        <a href="index.html" style="display:block; background:#10B981; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:10px;">
+        <a href="index.html" style="display:block; background:#F7B500; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:10px;">
             Créer mon compte
         </a>
-        <a href="index.html" style="display:block; color:#10B981; text-decoration:none; font-size:14px; font-weight:600; padding:8px;">
+        <a href="index.html" style="display:block; color:#F7B500; text-decoration:none; font-size:14px; font-weight:600; padding:8px;">
             J'ai déjà un compte — me connecter
         </a>
         <a href="app.html" style="display:block; color:#9ca3af; text-decoration:none; font-size:14px; padding:8px;">
@@ -223,26 +226,6 @@ function logout(){
             <div class="option" onclick="pick(this,'niveau','confirme')"><span class="option-emoji">🏆</span><span class="option-label">Confirmé</span><span class="option-check">✓</span></div>
         </div>
     </div>
-    <!-- Q4 LIEU -->
-    <div class="q-step" data-q="lieu">
-        <div class="q-title">Où t'entraînes-tu ?</div>
-        <div class="q-sub">Pour te proposer les bons exercices.</div>
-        <div class="options">
-            <div class="option" onclick="pick(this,'lieu','salle')"><span class="option-emoji">🏋️</span><span class="option-label">En salle de sport</span><span class="option-check">✓</span></div>
-            <div class="option" onclick="pick(this,'lieu','maison')"><span class="option-emoji">🏠</span><span class="option-label">À la maison</span><span class="option-check">✓</span></div>
-        </div>
-    </div>
-    <!-- Q4b MATÉRIEL (conditionnel : maison) -->
-    <div class="q-step" data-q="materiel">
-        <div class="q-title">Quel matériel<br>as-tu ?</div>
-        <div class="q-sub">Plusieurs choix possibles — coche tout ce que tu as. On adapte les exercices.</div>
-        <div class="options">
-            <div class="option multi" onclick="pickMulti(this,'rien')"><span class="option-emoji">🤸</span><span class="option-label">Rien (poids du corps)</span><span class="option-check">✓</span></div>
-            <div class="option multi" onclick="pickMulti(this,'halteres')"><span class="option-emoji">🏋️</span><span class="option-label">Haltères</span><span class="option-check">✓</span></div>
-            <div class="option multi" onclick="pickMulti(this,'elastiques')"><span class="option-emoji">➰</span><span class="option-label">Élastiques / bandes</span><span class="option-check">✓</span></div>
-            <div class="option multi" onclick="pickMulti(this,'barre')"><span class="option-emoji">🔝</span><span class="option-label">Barre de traction</span><span class="option-check">✓</span></div>
-        </div>
-    </div>
     <!-- Q5 FRÉQUENCE -->
     <div class="q-step" data-q="frequence">
         <div class="q-title">Combien de jours<br>par semaine ?</div>
@@ -271,7 +254,7 @@ function logout(){
             </div>
 
             <div class="result-btns">
-                <a href="programmes.html" id="btnVoirProg" class="btn-primary">Voir ce programme</a>
+                <a href="programmes.html?v=9" id="btnVoirProg" class="btn-primary">Voir ce programme</a>
                 <a href="#" class="btn-secondary" onclick="restart();return false;">Refaire le test</a>
             </div>
         </div>
@@ -296,7 +279,6 @@ const PROGRAMMES_INFO = {
     'masse-3j':   {name:'Prise de masse — 3 jours', cat:'masse', duree:'8 semaines', niveau:'Intermédiaire', seances:['Pecs / Triceps','Dos / Biceps','Jambes / Épaules']},
     'masse-4j':   {name:'Prise de masse — 4 jours', cat:'masse', duree:'10 semaines', niveau:'Confirmé', seances:['Pecs','Dos','Jambes','Épaules / Bras']},
     'masse-5j':   {name:'Prise de masse — 5 jours', cat:'masse', duree:'12 semaines', niveau:'Confirmé', seances:['Pecs','Dos','Jambes','Épaules','Bras']},
-    'masse-deb-3j':{name:'Prise de masse débutant — Full body', cat:'masse', duree:'6 semaines', niveau:'Débutant', seances:['Corps complet A','Corps complet B','Corps complet C']},
     'masse-2j':   {name:'Prise de masse — 2 jours', cat:'masse', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut du corps','Bas du corps']},
     'deb-full-3j':{name:'Débutant — Full body', cat:'debutant', duree:'6 semaines', niveau:'Débutant', seances:['Corps complet A','Corps complet B','Corps complet C']},
     'deb-2j':     {name:'Débutant — Remise en route', cat:'debutant', duree:'4 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps + gainage']},
@@ -305,33 +287,18 @@ const PROGRAMMES_INFO = {
     'seche-circuit-4j':{name:'Perte de poids — Circuits', cat:'seche', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut du corps','Bas du corps','Full body','Cardio + abdos']},
     'seche-5j':   {name:'Perte de poids — 5 jours', cat:'seche', duree:'10 semaines', niveau:'Confirmé', seances:['Haut du corps','Bas du corps','Full body','Cardio + abdos','HIIT + gainage']},
     'seche-6j':   {name:'Perte de poids — 6 jours', cat:'seche', duree:'12 semaines', niveau:'Confirmé', seances:['Haut','Bas','Full body','Cardio + abdos','HIIT','Gainage + mobilité']},
-    'maison-pdc-2j':{name:'Maison — Poids du corps 2 jours', cat:'maison', duree:'4 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps']},
-    'maison-pdc-3j':{name:'Maison — Poids du corps 3 jours', cat:'maison', duree:'6 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps','Full body + gainage']},
-    'maison-pdc-4j':{name:'Maison — Poids du corps 4 jours', cat:'maison', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut A','Bas A','Haut B','Bas B + abdos']},
-    'maison-pdc-5j':{name:'Maison — Poids du corps 5 jours', cat:'maison', duree:'10 semaines', niveau:'Intermédiaire', seances:['Pecs / Triceps','Dos / Épaules','Jambes','Abdos / Gainage','Full body']},
-    'maison-pdc-6j':{name:'Maison — Poids du corps 6 jours', cat:'maison', duree:'12 semaines', niveau:'Confirmé', seances:['Pecs / Triceps','Dos','Jambes','Épaules / Abdos','Haut complet','Bas + gainage']},
-    'maison-halteres-2j':{name:'Maison — Haltères 2 jours', cat:'maison', duree:'6 semaines', niveau:'Débutant', seances:['Haut du corps','Bas du corps']},
-    'maison-halteres-3j':{name:'Maison — Haltères 3 jours', cat:'maison', duree:'8 semaines', niveau:'Intermédiaire', seances:['Haut du corps','Bas du corps','Full body']},
-    'maison-halteres-4j':{name:'Maison — Haltères 4 jours', cat:'maison', duree:'10 semaines', niveau:'Intermédiaire', seances:['Haut A','Bas A','Haut B','Bas B']},
-    'maison-halteres-5j':{name:'Maison — Haltères 5 jours', cat:'maison', duree:'10 semaines', niveau:'Confirmé', seances:['Pecs / Triceps','Dos / Biceps','Jambes','Épaules','Full body']},
     'salle-ppl-3j':{name:'Salle — Push / Pull / Legs', cat:'salle', duree:'10 semaines', niveau:'Intermédiaire', seances:['Push','Pull','Legs']},
     'salle-half-4j':{name:'Salle — Half body', cat:'salle', duree:'10 semaines', niveau:'Intermédiaire', seances:['Haut','Bas','Haut','Bas']},
     'salle-ppl-6j':{name:'Salle — PPL x2', cat:'salle', duree:'12 semaines', niveau:'Confirmé', seances:['Push','Pull','Legs','Push','Pull','Legs']},
 };
 
-// Étapes de base ; "materiel" est inséré dynamiquement si lieu = maison
-const BASE_STEPS = ['sexe','objectif','niveau','lieu','frequence','result'];
+const BASE_STEPS = ['sexe','objectif','niveau','frequence','result'];
 let steps = [...BASE_STEPS];
 let current = 0;
 const answers = {};
-answers.materiel = []; // choix multiple
 
 function getSteps(){
-    // Reconstruit la liste selon le lieu choisi
-    if(answers.lieu === 'maison'){
-        return ['sexe','objectif','niveau','lieu','materiel','frequence','result'];
-    }
-    return ['sexe','objectif','niveau','lieu','frequence','result'];
+    return BASE_STEPS;
 }
 
 function pick(el, q, val){
@@ -342,41 +309,6 @@ function pick(el, q, val){
 }
 
 let lastMultiTap = 0;
-function pickMulti(el, val){
-    // Anti double-déclenchement mobile (touchstart + click)
-    const now = Date.now();
-    if(now - lastMultiTap < 350) return;
-    lastMultiTap = now;
-
-    // Source de vérité = answers.materiel (pas les classes CSS)
-    const isRien = (val === 'rien');
-    const wasSelected = answers.materiel.includes(val);
-
-    if(wasSelected){
-        // On décoche cet élément
-        answers.materiel = answers.materiel.filter(m => m !== val);
-    } else {
-        // On coche cet élément
-        if(isRien){
-            // "Rien" est exclusif : il remplace tout
-            answers.materiel = ['rien'];
-        } else {
-            // Un vrai matériel : on l'ajoute et on retire "rien" s'il était là
-            answers.materiel = answers.materiel.filter(m => m !== 'rien');
-            answers.materiel.push(val);
-        }
-    }
-
-    // Refléter l'état dans l'affichage (toutes les options de cette question)
-    const allOptions = el.parentNode.querySelectorAll('.option');
-    const vals = ['rien','halteres','elastiques','barre'];
-    allOptions.forEach((opt, i) => {
-        if(answers.materiel.includes(vals[i])) opt.classList.add('selected');
-        else opt.classList.remove('selected');
-    });
-
-    document.getElementById('nextBtn').disabled = answers.materiel.length === 0;
-}
 
 function showStep(i){
     steps = getSteps();
@@ -394,11 +326,7 @@ function showStep(i){
 
     if(!isResult){
         const nextBtn = document.getElementById('nextBtn');
-        if(stepName === 'materiel'){
-            nextBtn.disabled = answers.materiel.length === 0;
-        } else {
-            nextBtn.disabled = !answers[stepName];
-        }
+        nextBtn.disabled = !answers[stepName];
         nextBtn.textContent = (i === total-1) ? 'Voir mon résultat' : 'Suivant';
     }
     window.scrollTo(0,0);
@@ -425,8 +353,7 @@ function goBack(){
 }
 
 function restart(){
-    Object.keys(answers).forEach(k => { if(k!=='materiel') delete answers[k]; });
-    answers.materiel = [];
+    Object.keys(answers).forEach(k => delete answers[k]);
     document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
     steps = [...BASE_STEPS];
     showStep(0);
@@ -442,29 +369,11 @@ function computeResult(){
 
     let progId;
 
-    if(lieu === 'maison'){
-        const aHalteres = answers.materiel.includes('halteres') || answers.materiel.includes('elastiques');
-        if(aHalteres){
-            // Programmes haltères dispo : 2,3,4,5 jours
-            let j = Math.min(Math.max(jours, 2), 5);
-            if(niv === 'debutant' && jours >= 5){
-                j = 3;
-                coachAdvice = "Tu débutes et tu veux t'entraîner beaucoup, c'est motivant ! Mais c'est pendant le repos que le muscle se construit. On te conseille de commencer à 3 jours bien faits — tu pourras monter en fréquence dans quelques semaines.";
-            }
-            progId = 'maison-halteres-' + j + 'j';
-        } else {
-            // Poids du corps : 2 à 6 jours
-            let j = Math.min(Math.max(jours, 2), 6);
-            if(niv === 'debutant' && jours >= 5){
-                j = 3;
-                coachAdvice = "En tant que débutant, 3 séances par semaine donnent d'excellents résultats sans risque de surmenage. On t'a orienté vers un rythme tenable — tu augmenteras plus tard.";
-            }
-            progId = 'maison-pdc-' + j + 'j';
-        }
-    } else if(obj === 'masse'){
+    if(obj === 'masse'){
         const debConseilMasse = "Pour débuter la prise de masse, un corps complet 3 jours donne souvent les meilleurs résultats : plus de récupération, une meilleure technique. On te conseille de commencer là — mais c'est toi qui choisis, voici le programme que tu as demandé.";
         if(niv === 'debutant' && jours === 3){
-            progId = 'masse-deb-3j';
+            progId = 'deb-full-3j';
+            coachAdvice = "Pour débuter, un corps complet 3 jours est la meilleure base : tu construiras du muscle en apprenant la technique. Mange en léger surplus calorique pour la prise de masse.";
         } else if(jours <= 2){
             progId = 'masse-2j';
             coachAdvice = (niv === 'debutant')
@@ -528,24 +437,18 @@ function computeResult(){
     else desc = 'Reprends en douceur avec des séances complètes et progressives pour tout le corps.';
 
     let lieuLine = '';
-    if(lieu === 'maison'){
-        const matNoms = {halteres:'haltères', elastiques:'élastiques', barre:'barre de traction', rien:'poids du corps'};
-        const liste = answers.materiel.map(m => matNoms[m]).join(', ');
-        lieuLine = ` Adapté à ton matériel : ${liste}.`;
-    }
 
     // Mettre à jour le bouton vers le bon programme
     const btn = document.getElementById('btnVoirProg');
-    if(btn) btn.href = `programmes.html?cat=${prog.cat}&prog=${progId}`;
+    if(btn) btn.href = `programmes.html?v=9&cat=${prog.cat}&prog=${progId}`;
 
     // Titre = nom exact du programme
     document.getElementById('resultName').textContent = prog.name;
 
     // Récap personnalisé
     const objTxt = obj === 'masse' ? 'prendre du muscle' : (obj === 'seche' ? 'perdre du poids' : 'te remettre en forme');
-    const lieuTxt = lieu === 'maison' ? 'à la maison' : 'en salle';
     document.getElementById('resultRecap').textContent =
-        `Tu veux ${objTxt}, ${jours} jours par semaine, ${lieuTxt}.`;
+        `Tu veux ${objTxt}, ${jours} jours par semaine, en salle.`;
 
     // Description + infos réelles du programme
     document.getElementById('rpDesc').textContent = desc + lieuLine;
@@ -586,10 +489,7 @@ showStep(0);
       var had = localStorage.getItem('repz_premium') === '1';
       if(prem){ localStorage.setItem('repz_premium','1'); }
       else { localStorage.removeItem('repz_premium'); }
-      if(prem !== had && !sessionStorage.getItem('repz_premSynced')){
-        sessionStorage.setItem('repz_premSynced','1');
-        location.reload();
-      }
+      // Sync silencieuse : pas de reload sur cette page (le quiz serait perdu)
     }).catch(function(e){ console.warn('premium sync', e); });
   }
   try{
@@ -599,5 +499,7 @@ showStep(0);
   }catch(e){}
 })();
 </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
+<script>/*repzSplashFailsafe*/setTimeout(function(){var s=document.getElementById('repzSplash');if(s)s.remove();},4000);</script>
 </body>
 </html>
