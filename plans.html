@@ -553,7 +553,15 @@ function ouvrirPaiement(lien){
             return;
         }
         enregistrerConsentement();
-        setTimeout(() => { window.location.href = lienPaiement; }, 250);
+        // Transmettre l'uid Firebase à LemonSqueezy (le webhook en a besoin pour activer le bon compte)
+        let url = lienPaiement;
+        const usr = (window.firebase && firebase.auth) ? firebase.auth().currentUser : null;
+        if(usr && usr.uid){
+            const sep = url.indexOf('?') === -1 ? '?' : '&';
+            url += sep + 'checkout[custom][uid]=' + encodeURIComponent(usr.uid);
+            if(usr.email){ url += '&checkout[email]=' + encodeURIComponent(usr.email); }
+        }
+        setTimeout(() => { window.location.href = url; }, 250);
     };
     document.getElementById('payOverlay').classList.add('show');
 }
