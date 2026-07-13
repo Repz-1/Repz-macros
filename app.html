@@ -2272,6 +2272,8 @@ let history = [];
 let weightLog = []; // suivi du poids corporel : [{iso, date, weight}]
 
 // ===== STOCKAGE LOCAL =====
+// Filet de sécurité : on persiste l'état dès que l'app passe en arrière-plan
+document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'hidden') save(); });
 function save(){
     try {
         localStorage.setItem('repz_goal', JSON.stringify(goal));
@@ -2288,6 +2290,19 @@ function load(){
         const h = localStorage.getItem('repz_history'); if(h) history = JSON.parse(h);
         const n = localStorage.getItem('repz_nextRid'); if(n) nextRid = parseInt(n);
         const w = localStorage.getItem('repz_weightLog'); if(w) weightLog = JSON.parse(w);
+        // Réparation d'intégrité : quantités numériques, ids uniques, ingrédients orphelins purgés
+        if(Array.isArray(recipes)){
+            recipes.forEach(rc => {
+                if(!Array.isArray(rc.ings)) rc.ings = [];
+                rc.ings = rc.ings.filter(i => i && typeof i.name === 'string' && (i.macros || DB[i.name]));
+                const vus = new Set();
+                rc.ings.forEach(i => {
+                    i.portion = parseFloat(i.portion) || 0;
+                    while(vus.has(i.id)) i.id = i.id + 1000;
+                    vus.add(i.id);
+                });
+            });
+        }
         // S'il n'y a aucune recette, en créer une par défaut nommée "1"
         if(!recipes || recipes.length === 0){
             recipes = [];
@@ -2702,6 +2717,7 @@ function updatePortion(rid,iid,val){
     const el=document.getElementById(`m-${rid}-${iid}`);
     if(el) el.innerHTML=`<div class="ing-kcal">${m.kcal.toFixed(0)} kcal</div><div class="ing-sub">${m.prot.toFixed(0)}P · ${m.carbs.toFixed(0)}C · ${m.lip.toFixed(0)}L</div>`;
     renderTotals();
+    save();
 }
 function normalize(str){
     return str.toLowerCase()
@@ -2743,6 +2759,7 @@ function addIngredient(rid,name){
     const defaultPortion = DB[name].unit ? 1 : 100; // 1 oeuf, ou 100g
     rc.ings.push({id:nid,name:name,portion:defaultPortion});
     renderRecipes();
+    save();
     // Garder la main dans le champ de recherche (clavier ouvert, pas de saut)
     const inp = document.getElementById('search-'+rid);
     if(inp){ inp.value=''; inp.focus({preventScroll:true}); }
@@ -2900,9 +2917,10 @@ function delIng(rid,iid){
     const rc=recipes.find(r=>r.id===rid); if(!rc) return;
     rc.ings=rc.ings.filter(i=>i.id!==iid);
     renderRecipes();
+    save();
 }
 function renameRecipe(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.name=val; save();} }
-function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes();} }
+function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes(); save();} }
 function addRecipe(name, typeKey){
     if(inviteBloque()) return;
     const t = typeKey || 'repas';
