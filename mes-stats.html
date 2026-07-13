@@ -641,11 +641,7 @@ function renderRepartition(){
     let note = '';
     if(memesJour.length && !aujFait){
         const jourNom = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'][new Date(aujIso).getDay()];
-        let txt = `Suggestion du jour : ${memesJour.join(', ')} — comme ${jourNom} dernier.`;
-        if(negliges.length){
-            const items = negliges.map(x => { const nom = groupes.find(g=>g.k===x.k).n.toLowerCase(); return x.j === Infinity ? nom : `${nom} (${x.j} j)`; });
-            txt += ` Et pense à : ${items.join(', ')}.`;
-        }
+        const txt = `Suggestion du jour : ${memesJour.join(', ')} — comme ${jourNom} dernier.`;
         note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 9l12-2"/></svg>${txt}</div>`;
     } else if(negliges.length){
         const items = negliges.map(x => {
