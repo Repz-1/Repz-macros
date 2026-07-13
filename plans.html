@@ -602,7 +602,11 @@ function ouvrirPaiement(lien){
             url += sep + 'checkout[custom][uid]=' + encodeURIComponent(usr.uid);
             if(usr.email){ url += '&checkout[email]=' + encodeURIComponent(usr.email); }
         }
-        setTimeout(() => { window.location.href = url; }, 250);
+        // Paiement TOUJOURS en plein écran (jamais dans le panneau du shell)
+        setTimeout(() => {
+            try { (window.top || window).location.href = url; }
+            catch(e){ window.location.href = url; }
+        }, 250);
     };
     document.getElementById('payOverlay').classList.add('show');
 }
