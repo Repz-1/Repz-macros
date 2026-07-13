@@ -29,6 +29,7 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 .prep h3{ font-size:15px; font-weight:800; margin-bottom:14px; }
 .prep-row{ margin-bottom:14px; }
 .prep-lbl{ font-size:13px; font-weight:700; color:var(--dim); margin-bottom:8px; }
+.prep-note{ font-size:12px; font-weight:600; color:#94a3b8; margin-top:10px; display:none; }
 .seg{ display:flex; gap:8px; flex-wrap:wrap; }
 .seg button{ flex:1; min-width:60px; padding:11px 8px; border:1.5px solid #E6E6E6; border-radius:12px; background:#fff; font-size:14px; font-weight:700; color:var(--noir); cursor:pointer; font-family:inherit; }
 .seg button.on{ background:#FFF4CC; border-color:var(--gold); color:#8a6400; }
@@ -95,6 +96,7 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
             <div class="seg" id="segPers"></div>
         </div>
         <button class="gen-btn" onclick="generer()">Générer ma liste</button>
+        <div class="prep-note" id="prepNote"></div>
     </div>
 
     <!-- LISTE -->
@@ -136,6 +138,7 @@ const RAYONS = [
 ];
 
 let base = [];          // items "1 jour" venant du journal : {name, qty, unit, unitLabel, cat}
+let baseNjours = 1;      // nombre de journées ayant servi à la moyenne
 let jours = 5, pers = 1;
 let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}]}
 
@@ -143,13 +146,15 @@ let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}
 (function init(){
     try {
         const b = JSON.parse(localStorage.getItem('repz_coursesBase') || 'null');
-        if(b && b.items) base = b.items;
+        if(b && b.items){ base = b.items; baseNjours = b.njours || 1; }
     } catch(e){ base = []; }
     try {
         const s = JSON.parse(localStorage.getItem('repz_courses') || 'null');
         if(s && s.items){ state = s; jours = s.jours || 5; pers = s.pers || 1; }
     } catch(e){ state = null; }
     renderSegs();
+    const pn = document.getElementById('prepNote');
+    if(pn && baseNjours > 1){ pn.textContent = '✨ Quantités basées sur la moyenne de tes ' + baseNjours + ' dernières journées.'; pn.style.display = 'block'; }
     if(base.length){ generer(); }        // auto-génération à chaque ouverture, depuis le journal
     else if(state){ renderListe(); }     // pas de base mais des ajouts manuels sauvegardés
     else { renderVide(); }
@@ -183,7 +188,7 @@ function generer(){
     if(!base.length){ renderVide(); return; }
     const items = base.map(it => ({
         name: nomCourse(it.name),
-        qty: it.qty * jours * pers,
+        qty: it.unit === 'u' ? Math.ceil(it.qty * jours * pers) : Math.round(it.qty * jours * pers),
         unit: it.unit,
         unitLabel: it.unitLabel,
         cat: it.cat,

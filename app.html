@@ -3104,43 +3104,55 @@ function rayonDe(nom){
 
 // Construit la base "1 jour" à partir des repas du journal, prête pour la page Courses
 function genererCoursesBase(){
-    const agg = {}; // name -> {qty, unit, unitLabel, cat}
-    const ajouter = (name, portion, estUnite, unitLabel) => {
-        const qty = parseFloat(portion) || 0;
-        if(qty <= 0) return;
-        if(!agg[name]){
-            agg[name] = { name:name, qty:0, unit: estUnite?'u':'g', unitLabel: estUnite ? (unitLabel||'u') : 'g', cat: rayonDe(name) };
-        }
-        agg[name].qty += qty;
+    // Liste intelligente : moyenne des habitudes réelles sur les 14 derniers jours
+    // enregistrés (+ le jour en cours). Un aliment mangé 5 j/7 pèse 5x plus
+    // qu'un aliment mangé 1 j/7 — la liste reflète la fréquence de consommation.
+    const parJour = []; // un agrégat {name -> qty} par journée distincte
+
+    const aggJour = (repas) => {
+        const j = {};
+        repas.forEach(r => {
+            const mult = r.mult || 1;
+            (r.ings || []).forEach(i => {
+                const nom = i.n !== undefined ? i.n : i.name;
+                const qty = (parseFloat(i.p !== undefined ? i.p : i.portion) || 0) * mult;
+                if(!nom || qty <= 0) return;
+                j[nom] = (j[nom] || 0) + qty;
+            });
+        });
+        return j;
     };
 
-    // 1) Priorité : les repas du JOUR EN COURS (non encore enregistrés)
-    recipes.forEach(rc => {
-        if(!rc.ings) return;
-        const mult = rc.mult || 1;
-        rc.ings.forEach(ing => {
-            const base = DB[ing.name];
-            const estUnite = base && base.unit ? true : false;
-            ajouter(ing.name, (parseFloat(ing.portion)||0) * mult, estUnite, base && base.unitLabel);
-        });
-    });
+    // 1) Le jour en cours (s'il contient des aliments)
+    const aujIso = new Date().toISOString().slice(0, 10);
+    const repasAuj = recipes.filter(r => r.ings && r.ings.length)
+        .map(r => ({ mult: r.mult, ings: r.ings.map(i => ({ n: i.name, p: i.portion })) }));
+    if(repasAuj.length) parJour.push(aggJour(repasAuj));
 
-    // 2) Si le journal du jour est vide, se rabattre sur la DERNIÈRE journée enregistrée
-    if(Object.keys(agg).length === 0 && Array.isArray(history) && history.length){
-        const dernier = history[0]; // le plus récent (unshift à l'enregistrement)
-        if(dernier && Array.isArray(dernier.repas)){
-            dernier.repas.forEach(r => {
-                const mult = r.mult || 1;
-                (r.ings||[]).forEach(i => {
-                    const estUnite = i.u === 'u';
-                    const base = DB[i.n];
-                    ajouter(i.n, (parseFloat(i.p)||0) * mult, estUnite, base && base.unitLabel);
-                });
-            });
-        }
+    // 2) Les journées enregistrées avec détail (14 max, sans doublonner aujourd'hui)
+    if(Array.isArray(history)){
+        history.filter(e => e && Array.isArray(e.repas) && e.repas.length && !(e.iso === aujIso && repasAuj.length))
+            .slice(0, 14)
+            .forEach(e => parJour.push(aggJour(e.repas)));
     }
 
-    return Object.values(agg);
+    if(!parJour.length) return { items: [], njours: 0 };
+
+    // 3) Moyenne journalière par aliment sur l'ensemble des journées
+    const totaux = {};
+    parJour.forEach(j => Object.keys(j).forEach(nom => { totaux[nom] = (totaux[nom] || 0) + j[nom]; }));
+    const items = Object.keys(totaux).map(nom => {
+        const base = DB[nom];
+        const estUnite = base && base.unit ? true : false;
+        return {
+            name: nom,
+            qty: totaux[nom] / parJour.length, // quantité moyenne pour 1 jour
+            unit: estUnite ? 'u' : 'g',
+            unitLabel: estUnite ? (base.unitLabel || 'u') : 'g',
+            cat: rayonDe(nom)
+        };
+    });
+    return { items: items, njours: parJour.length };
 }
 
 function allerCourses(){
@@ -3150,7 +3162,7 @@ function allerCourses(){
         return;
     }
     const base = genererCoursesBase();
-    localStorage.setItem('repz_coursesBase', JSON.stringify({ items: base, ts: Date.now() }));
+    localStorage.setItem('repz_coursesBase', JSON.stringify({ items: base.items, njours: base.njours, ts: Date.now() }));
     window.location.href = 'courses.html';
 }
 
