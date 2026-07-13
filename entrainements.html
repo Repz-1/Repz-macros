@@ -62,17 +62,17 @@ body {
 .wlog-wd { text-align:center; font-size:10.5px; font-weight:800; color:#94a3b8; }
 .wlog-cell { aspect-ratio:1; width:100%; max-width:38px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:12.5px; font-weight:700; color:#334155; cursor:pointer; }
 .wlog-cell:active { transform:scale(.92); }
-.wlog-cell.seance { background:#F7B500; color:#fff; }
+.wlog-cell.seance { color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.35); }
 .wlog-cell.repos { background:#EDEFF2; color:#94a3b8; }
 .wlog-cell.today { box-shadow:0 0 0 2px #F7B500; }
 .wlog-cell.today.seance { box-shadow:0 0 0 2px #fff, 0 0 0 4px #F7B500; }
 .wlog-cell.futur { color:#CBD5E1; cursor:default; }
 .wlog-cell.futur:active { transform:none; }
-.wlog-legende { display:flex; gap:14px; padding:2px 2px 12px; font-size:11.5px; font-weight:700; color:#64748b; }
+.wlog-legende { display:flex; flex-wrap:wrap; gap:6px 12px; padding:2px 2px 12px; font-size:11px; font-weight:700; color:#64748b; }
 .wlog-legende .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; }
-.wlog-legende .dot.seance { background:#F7B500; }
 .wlog-legende .dot.repos { background:#E2E6EA; }
 .wlog-legende .dot.today { background:#fff; box-shadow:0 0 0 2px #F7B500; width:7px; height:7px; }
+.ml-stats { font-size:12.5px; font-weight:700; color:#64748b; background:#F5F6F8; border-radius:10px; padding:9px 12px; margin:-4px 0 12px; }
 .wlog-sum-pill { font-size:11.5px; font-weight:700; background:#F5F6F8; color:#475569; padding:4px 10px; border-radius:8px; white-space:nowrap; }
 /* Journal : les jours se déroulent dans la carte quand on appuie sur Ouvrir */
 .wlog-list { max-height:0; overflow:hidden; transition:max-height .4s ease; }
@@ -530,6 +530,7 @@ function logout() {
 <div class="ml-overlay" id="mlOverlay" onclick="if(event.target.id==='mlOverlay')closeMuscleLog()">
     <div class="ml-modal">
         <h3 class="ml-date" id="mlDate">—</h3>
+        <div class="ml-stats" id="mlStats"></div>
         <div class="ml-groups" id="mlGroups"></div>
         <div class="ml-btns">
             <button class="ml-clear" onclick="clearMuscleDay()">Effacer</button>
@@ -920,6 +921,7 @@ const MUSCLE_GROUPS = [
     {k:'biceps', n:'Biceps'}, {k:'triceps', n:'Triceps'}, {k:'jambes', n:'Jambes'},
     {k:'abdos', n:'Abdos'}, {k:'cardio', n:'Cardio'}, {k:'repos', n:'Repos'}
 ];
+const WL_COLORS = {pecs:'#EF4444', dos:'#F97316', epaules:'#F7B500', biceps:'#10B981', triceps:'#06B6D4', jambes:'#3B82F6', abdos:'#8B5CF6', cardio:'#EC4899'};
 const WL_JOURS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 const WL_JOURS_L = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const WL_MOIS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
@@ -983,19 +985,32 @@ function renderWlog(){
     for(let i = 0; i < decal; i++) cal += '<div></div>';
     for(let j = 1; j <= njours; j++){
         const iso = wlIso(new Date(ref.getFullYear(), ref.getMonth(), j));
-        const vals = log[iso] || [];
+        const vals = (log[iso] || []).filter(v => WL_COLORS[v] || v === 'repos');
         const repos = vals.includes('repos');
-        const seance = vals.length > 0 && !repos;
+        const muscles = vals.filter(v => v !== 'repos');
         const futur = iso > todayIso;
         let cls = 'wlog-cell';
-        if(seance) cls += ' seance';
-        else if(repos) cls += ' repos';
+        let style = '';
+        if(muscles.length === 1){
+            cls += ' seance';
+            style = ` style="background:${WL_COLORS[muscles[0]]}"`;
+        } else if(muscles.length > 1){
+            cls += ' seance';
+            // Camembert : un segment égal par muscle travaillé
+            const part = 100 / muscles.length;
+            const segs = muscles.map((m, idx) => `${WL_COLORS[m]} ${(idx*part).toFixed(2)}% ${((idx+1)*part).toFixed(2)}%`).join(', ');
+            style = ` style="background:conic-gradient(${segs})"`;
+        } else if(repos){
+            cls += ' repos';
+        }
         if(iso === todayIso) cls += ' today';
         if(futur) cls += ' futur';
-        cal += `<div class="${cls}"${futur ? '' : ` onclick="event.stopPropagation();openMuscleLog('${iso}')"`}>${j}</div>`;
+        cal += `<div class="${cls}"${futur ? '' : ` onclick="event.stopPropagation();openMuscleLog('${iso}')"`}${style}>${j}</div>`;
     }
     cal += '</div>';
-    cal += '<div class="wlog-legende"><span><i class="dot seance"></i>Séance</span><span><i class="dot repos"></i>Repos</span><span><i class="dot today"></i>Aujourd\'hui</span></div>';
+    cal += '<div class="wlog-legende">'
+        + MUSCLE_GROUPS.filter(g => WL_COLORS[g.k]).map(g => `<span><i class="dot" style="background:${WL_COLORS[g.k]}"></i>${g.n}</span>`).join('')
+        + '<span><i class="dot repos"></i>Repos</span><span><i class="dot today"></i>Aujourd\'hui</span></div>';
 
     list.innerHTML = sum + cal;
     list.classList.toggle('expanded', !!window.wlogOpen);
@@ -1019,6 +1034,35 @@ function openMuscleLog(iso){
     mlCurrentIso = iso;
     mlSel = (loadMuscleLog()[iso] || []).slice();
     document.getElementById('mlDate').textContent = wlLabelLong(wlIsoToDate(iso));
+    // Détail de la journée si une séance a été trackée ce jour-là
+    let statsHtml = '';
+    try {
+        const slog = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]').filter(s => s.iso === iso);
+        if(slog.length){
+            let duree = 0, nbExos = 0, tonnage = 0, nbSeries = 0;
+            slog.forEach(s => {
+                duree += s.duree || 0;
+                (s.exos || []).forEach(ex => {
+                    nbExos++;
+                    (ex.sets || []).forEach(sr => {
+                        nbSeries++;
+                        const w = parseFloat(sr.w), r = parseFloat(sr.r);
+                        if(w > 0 && r > 0) tonnage += w * r;
+                    });
+                });
+            });
+            const parts = [];
+            const dtxt = fmtDuree(duree);
+            if(dtxt && duree >= 60) parts.push('⏱ ' + dtxt);
+            if(nbExos) parts.push(nbExos + ' exo' + (nbExos > 1 ? 's' : ''));
+            if(nbSeries) parts.push(nbSeries + ' série' + (nbSeries > 1 ? 's' : ''));
+            if(tonnage > 0) parts.push('🏋️ ' + Math.round(tonnage).toLocaleString('fr-BE') + ' kg');
+            if(parts.length) statsHtml = parts.join(' · ');
+        }
+    } catch(e){}
+    const st = document.getElementById('mlStats');
+    st.innerHTML = statsHtml;
+    st.style.display = statsHtml ? 'block' : 'none';
     renderMlGroups();
     document.getElementById('mlOverlay').classList.add('show');
 }
