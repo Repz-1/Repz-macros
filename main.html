@@ -38,6 +38,36 @@ html, body { height:100%; overflow:hidden; background:#F8F8F8; font-family:'Manr
 </head>
 <body>
 
+<!-- SPLASH BELFIT -->
+<style>
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash.hide{opacity:0;pointer-events:none;}
+#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
+#repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
+@keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+</style>
+<div id="repzSplash">
+  <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
+  <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit">
+</div>
+<script>
+(function(){
+  var s=document.getElementById('repzSplash');
+  if(!s) return;
+  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){}
+  if(seen){ s.remove(); return; }
+  try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
+  var tc=document.querySelector('meta[name="theme-color"]');
+  var old=tc?tc.getAttribute('content'):null;
+  if(tc) tc.setAttribute('content','#0a0a0a');
+  setTimeout(function(){
+    s.classList.add('hide');
+    if(tc&&old) tc.setAttribute('content',old);
+    setTimeout(function(){ if(s)s.remove(); },550);
+  }, 1800);
+})();
+</script>
+
 <div id="deck">
     <div class="panel"><iframe id="f0" src="app.html" title="Journal"></iframe></div>
     <div class="panel"><iframe id="f1" data-src="entrainements.html" title="S'entraîner"></iframe></div>
@@ -73,13 +103,22 @@ function chargerFrame(i){
     if(f && f.dataset.src){ f.src = f.dataset.src; delete f.dataset.src; }
 }
 
+let depuisHistorique = false;
 function goTo(i){
     if(i < 0 || i > 3 || i === idx) { dragDx = 0; applyX(true); return; }
     chargerFrame(i);
     idx = i; dragDx = 0;
     applyX(true);
     majNav();
+    // Historique : le bouton retour ramène à l'onglet précédent (et quitte depuis le Journal)
+    if(!depuisHistorique){ try{ history.pushState({tab:i}, '', '#'+i); }catch(e){} }
+    depuisHistorique = false;
 }
+window.addEventListener('popstate', function(ev){
+    const t = (ev.state && typeof ev.state.tab === 'number') ? ev.state.tab : 0;
+    depuisHistorique = true;
+    goTo(t);
+});
 
 // Précharger les autres onglets après le démarrage
 window.addEventListener('load', ()=> setTimeout(()=>{ chargerFrame(1); chargerFrame(2); chargerFrame(3); }, 400));
