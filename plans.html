@@ -753,38 +753,70 @@ function continuerStandard(){
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 <script>/*repzSplashFailsafe*/setTimeout(function(){var s=document.getElementById('repzSplash');if(s)s.remove();},4000);</script>
 
+
+
 <script>
-/* ===== Swipe entre onglets (navigation gestuelle) ===== */
+/* ===== Mode embarqué (shell main.html) : nav cachée, gestes transmis, liens adaptés ===== */
 (function(){
-  var ORDRE = ['app.html','entrainements.html','mes-stats.html','plans.html'];
-  var ici = location.pathname.split('/').pop() || 'app.html';
-  var idx = ORDRE.indexOf(ici);
-  if(idx === -1) return;
-  var x0=null, y0=null, t0=0;
-  document.addEventListener('touchstart', function(e){
-    if(e.touches.length !== 1) return;
-    // Ignorer si le geste démarre sur un élément défilable horizontalement ou une modale
-    var el = e.target;
+  if(window.self === window.top) return;   // page ouverte en direct : rien à faire
+  // Cacher la nav locale et le splash (le shell a sa propre nav)
+  var st = document.createElement('style');
+  st.textContent = '.bottom-nav{display:none!important}#repzSplash{display:none!important}';
+  document.head.appendChild(st);
+  var sp = document.getElementById('repzSplash'); if(sp) sp.remove();
+
+  // --- Liens : onglets -> demande de slide au shell ; autres pages -> fenêtre principale
+  var TABS = {'app.html':0,'entrainements.html':1,'mes-stats.html':2,'plans.html':3};
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a) return;
+    var href = a.getAttribute('href') || '';
+    if(/^(https?:|mailto:|tel:|#|javascript:)/i.test(href)) return;
+    var file = href.split('?')[0].split('#')[0].split('/').pop();
+    if(file in TABS){
+      e.preventDefault();
+      try{ parent.postMessage({belfitTab: TABS[file]}, '*'); }catch(_){ }
+    } else {
+      a.target = '_top';
+    }
+  }, true);
+
+  // --- Gestes : détecter l'axe ici, transmettre l'horizontal au shell
+  var x0=null, y0=null, axis=null;
+  function dansScrollHorizontal(el){
     while(el && el !== document.body){
-      if(el.scrollWidth > el.clientWidth + 5) return;   // carrousel/scroll horizontal
-      var st = getComputedStyle(el);
-      if(st.position === 'fixed' && el.classList && (el.className+'').indexOf('nav') === -1) return; // modale/overlay
+      if(el.scrollWidth > el.clientWidth + 5) return true;
       el = el.parentElement;
     }
-    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
+    return false;
+  }
+  document.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1){ x0=null; return; }
+    if(dansScrollHorizontal(e.target)){ x0=null; return; }
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; axis = null;
   }, {passive:true});
+  document.addEventListener('touchmove', function(e){
+    if(x0 === null) return;
+    var dx = e.touches[0].clientX - x0, dy = e.touches[0].clientY - y0;
+    if(axis === null && (Math.abs(dx) > 10 || Math.abs(dy) > 10)){
+      axis = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'h' : 'v';
+    }
+    if(axis === 'h'){
+      e.preventDefault();
+      try{ parent.postMessage({bfS:'move', dx:dx}, '*'); }catch(_){ }
+    }
+  }, {passive:false});
   document.addEventListener('touchend', function(e){
     if(x0 === null) return;
-    var dx = e.changedTouches[0].clientX - x0;
-    var dy = e.changedTouches[0].clientY - y0;
-    var dt = Date.now() - t0;
-    x0 = null;
-    // Geste valide : horizontal net, assez long, assez rapide
-    if(Math.abs(dx) < 70 || Math.abs(dy) > Math.abs(dx)*0.6 || dt > 600) return;
-    var cible = dx < 0 ? idx+1 : idx-1;
-    if(cible < 0 || cible >= ORDRE.length) return;
-    document.body.style.transition = 'opacity .15s'; document.body.style.opacity = '0.6';
-    location.href = ORDRE[cible];
+    if(axis === 'h'){
+      var dx = e.changedTouches[0].clientX - x0;
+      try{ parent.postMessage({bfS:'end', dx:dx}, '*'); }catch(_){ }
+    }
+    x0 = null; axis = null;
+  }, {passive:true});
+  document.addEventListener('touchcancel', function(){
+    if(axis === 'h'){ try{ parent.postMessage({bfS:'cancel'}, '*'); }catch(_){ } }
+    x0 = null; axis = null;
   }, {passive:true});
 })();
 </script>

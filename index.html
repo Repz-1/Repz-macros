@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>if(window.self!==window.top){try{window.top.location=window.location.href;}catch(e){}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -307,7 +308,7 @@ auth.onAuthStateChanged((user) => {
     if(user) {
         // Déjà connecté : on nettoie le mode invité et on file à l'accueil
         localStorage.removeItem('repz_invite');
-        window.location.href = 'app.html';
+        window.location.href = 'main.html';
     } else {
         // Pas connecté : on affiche le formulaire de connexion
         // Le splash reste "consommé" ici pour ne pas le rejouer après login
@@ -320,7 +321,7 @@ auth.onAuthStateChanged((user) => {
 function continuerInvite() {
     localStorage.setItem('repz_invite', '1');
     // Une session Firebase encore active écraserait le mode invité : on la coupe d'abord
-    auth.signOut().finally(()=>{ window.location.href = 'app.html'; });
+    auth.signOut().finally(()=>{ window.location.href = 'main.html'; });
 }
 
 function toggleForm(formName) {
@@ -346,7 +347,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         if(cred && cred.user && cred.user.displayName){
             localStorage.setItem('repz_firstName', cred.user.displayName);
         }
-        window.location.href = 'app.html';
+        window.location.href = 'main.html';
     } catch(error) {
         loadingDiv.classList.remove('show');
         let message = 'Email ou mot de passe incorrect';
@@ -482,7 +483,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             } catch(e){ /* non bloquant */ }
         }
         localStorage.setItem('repz_firstName', firstName);
-        window.location.href = 'app.html';
+        window.location.href = 'main.html';
     } catch(error) {
         loadingDiv.classList.remove('show');
         let message = 'Erreur : ' + error.code;

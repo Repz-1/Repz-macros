@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#F8F8F8">
+<title>BelFit</title>
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; background:#F8F8F8; font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+
+/* Le deck : 4 panneaux côte à côte qui glissent */
+#deck { display:flex; height:100%; width:400vw; will-change:transform; }
+.panel { width:100vw; height:100%; flex-shrink:0; }
+.panel iframe { width:100%; height:100%; border:none; display:block; background:#F8F8F8; }
+
+/* Barre de navigation unique (celle des pages est cachée en mode embarqué) */
+.bottom-nav {
+    position:fixed; bottom:0; left:0; right:0; z-index:80;
+    display:flex; justify-content:space-around; align-items:center;
+    background:rgba(252,251,248,.94); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid #e7e2d9; padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+}
+.bn-item { display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:#8a8375; flex:1; padding:2px 0; background:none; border:none; font-family:inherit; cursor:pointer; }
+.bn-item svg { width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.bn-item span { font-size:10.5px; font-weight:700; }
+.bn-item.active { color:#10B981; }
+.bn-item.bn-premium.active { color:#DE2F14; }
+</style>
+</head>
+<body>
+
+<div id="deck">
+    <div class="panel"><iframe id="f0" src="app.html" title="Journal"></iframe></div>
+    <div class="panel"><iframe id="f1" data-src="entrainements.html" title="S'entraîner"></iframe></div>
+    <div class="panel"><iframe id="f2" data-src="mes-stats.html" title="Stats"></iframe></div>
+    <div class="panel"><iframe id="f3" data-src="plans.html" title="Premium"></iframe></div>
+</div>
+
+<nav class="bottom-nav" id="shellNav">
+    <button class="bn-item active" onclick="goTo(0)"><svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg><span>Journal</span></button>
+    <button class="bn-item" onclick="goTo(1)"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg><span>S'entraîner</span></button>
+    <button class="bn-item" onclick="goTo(2)"><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg><span>Stats</span></button>
+    <button class="bn-item bn-premium" onclick="goTo(3)"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg><span>Premium</span></button>
+</nav>
+
+<script>
+const deck = document.getElementById('deck');
+const W = () => window.innerWidth;
+let idx = 0;          // onglet courant
+let dragDx = 0;       // déplacement du doigt en cours
+let animating = false;
+
+function applyX(withTransition){
+    deck.style.transition = withTransition ? 'transform .28s cubic-bezier(.22,.61,.36,1)' : 'none';
+    deck.style.transform = 'translateX(' + (-(idx * W()) + dragDx) + 'px)';
+}
+
+function majNav(){
+    document.querySelectorAll('#shellNav .bn-item').forEach((b,i)=> b.classList.toggle('active', i===idx));
+}
+
+function chargerFrame(i){
+    const f = document.getElementById('f'+i);
+    if(f && f.dataset.src){ f.src = f.dataset.src; delete f.dataset.src; }
+}
+
+function goTo(i){
+    if(i < 0 || i > 3 || i === idx) { dragDx = 0; applyX(true); return; }
+    chargerFrame(i);
+    idx = i; dragDx = 0;
+    applyX(true);
+    majNav();
+}
+
+// Précharger les autres onglets après le démarrage
+window.addEventListener('load', ()=> setTimeout(()=>{ chargerFrame(1); chargerFrame(2); chargerFrame(3); }, 900));
+window.addEventListener('resize', ()=> applyX(false));
+
+// ===== Gestes transmis par les pages embarquées (postMessage) =====
+window.addEventListener('message', (e)=>{
+    const d = e.data || {};
+    if(typeof d.belfitTab === 'number'){ goTo(d.belfitTab); return; }
+    if(!d.bfS) return;
+    if(d.bfS === 'move'){
+        // borner aux extrémités (résistance)
+        let dx = d.dx;
+        if((idx === 0 && dx > 0) || (idx === 3 && dx < 0)) dx = dx / 3;
+        dragDx = dx;
+        // précharger le panneau vers lequel on tire
+        chargerFrame(dx < 0 ? idx+1 : idx-1);
+        applyX(false);
+    } else if(d.bfS === 'end'){
+        const seuil = W() * 0.22;
+        if(Math.abs(d.dx) > seuil){ goTo(idx + (d.dx < 0 ? 1 : -1)); }
+        else { dragDx = 0; applyX(true); }
+    } else if(d.bfS === 'cancel'){
+        dragDx = 0; applyX(true);
+    }
+});
+
+// Onglet initial via l'ancre (main.html#2 = Stats), sinon Journal
+(function(){
+    const h = parseInt((location.hash || '').replace('#',''), 10);
+    if(!isNaN(h) && h >= 0 && h <= 3){ idx = h; chargerFrame(h); }
+})();
+applyX(false);
+majNav();
+</script>
+</body>
+</html>

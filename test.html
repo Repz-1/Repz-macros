@@ -139,7 +139,7 @@ body { font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,
         <a href="index.html" style="display:block; color:#F7B500; text-decoration:none; font-size:14px; font-weight:600; padding:8px;">
             J'ai déjà un compte — me connecter
         </a>
-        <a href="app.html" style="display:block; color:#9ca3af; text-decoration:none; font-size:14px; padding:8px;">
+        <a href="main.html#0" style="display:block; color:#9ca3af; text-decoration:none; font-size:14px; padding:8px;">
             Retour au journal
         </a>
     </div>
@@ -179,7 +179,7 @@ function repzAcces(){
     return localStorage.getItem('repz_premium') === '1';
 }
 if(!repzAcces()){
-    window.location.href = 'entrainements.html?premium=1';
+    window.location.href = 'main.html#1';
 }
 function logout(){
     // Déconnexion : on nettoie aussi le statut local (premium, invité)
@@ -192,7 +192,7 @@ function logout(){
 </script>
 
 <div class="q-top">
-    <a href="entrainements.html" class="back-btn" id="backBtn" onclick="return goBack()">←</a>
+    <a href="main.html#1" class="back-btn" id="backBtn" onclick="return goBack()">←</a>
     <div class="progress-wrap">
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
         <div class="progress-txt" id="progressTxt">Question 1 / 5</div>

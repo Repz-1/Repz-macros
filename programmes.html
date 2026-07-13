@@ -161,7 +161,7 @@ function repzAcces(){
     return localStorage.getItem('repz_premium') === '1';
 }
 if(!repzAcces()){
-    window.location.href = 'entrainements.html?premium=1';
+    window.location.href = 'main.html#1';
 }
 function logout(){
     // Déconnexion : on nettoie aussi le statut local (premium, invité)
@@ -174,14 +174,14 @@ function logout(){
 </script>
 
 <div class="topbar-app">
-    <a href="app.html" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
-    <a href="plans.html" class="premium-pill">✨ Premium</a>
+    <a href="main.html#0" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
+    <a href="main.html#3" class="premium-pill">✨ Premium</a>
 </div>
 
 <!-- ÉCRAN 1 : CATÉGORIES (accueil) -->
 <div class="screen active" id="screenCats">
     <div class="top">
-        <a href="entrainements.html" class="back-btn">←</a>
+        <a href="main.html#1" class="back-btn">←</a>
         <h1>Tous les programmes</h1>
     </div>
     <p class="intro-txt">Parcours la bibliothèque complète par objectif.</p>
