@@ -3350,7 +3350,7 @@ function confirmerSaveDay(){
 function rayonDe(nom){
     const n = nom.toLowerCase();
     const has = (...mots) => mots.some(m => n.includes(m));
-    if(has('oeuf','œuf')) return 'oeufs';
+    if(has('oeuf','œuf') && !has('boeuf','bœuf')) return 'oeufs'; // 'boeuf' contient 'oeuf' -> exclure
     if(has('poulet','dinde','boeuf','bœuf','steak','haché','hache','porc','veau','agneau','jambon','saucisse','lardon','viande','escalope','magret','canard')) return 'viandes';
     if(has('saumon','thon','poisson','cabillaud','colin','merlu','crevette','sardine','maquereau','truite','crustac','moule','fruits de mer')) return 'poissons';
     if(has('cacahuète','cacahuete','arachide','purée d','puree d') ||
