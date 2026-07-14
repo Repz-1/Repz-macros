@@ -769,14 +769,16 @@ body.search-open .fab-row { display:none; }
 
 
 .scan-btn {
-    flex-shrink:0; height:38px; padding:0 13px; border:none; border-radius:10px;
-    background:#FFF4CC; color:#181818; cursor:pointer;
-    display:flex; align-items:center; gap:6px;
+    flex-shrink:0; height:40px; width:52px; padding:0; border:none; border-radius:0 10px 10px 0;
+    background:transparent; color:#3f3f3f; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    border-left:1px solid #E9E7E0;
     font-family:inherit;
 }
-.scan-btn svg { width:18px; height:18px; stroke:#181818; }
-.scan-btn-label { font-size:12px; font-weight:700; line-height:1; letter-spacing:.01em; }
-.scan-btn:active { background:#F7B500; transform:scale(.96); }
+.scan-btn svg { width:21px; height:21px; stroke:#3f3f3f; stroke-width:1.7; }
+.scan-btn-label { display:none; }
+.scan-btn:active { background:#F6F4EE; }
+.scan-btn:active svg { stroke:#181818; }
 
 .scan-modal {
     position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:100000;
@@ -2699,7 +2701,7 @@ function renderRecipes(){
             </div>`;
         });
         h += `<div class="add-ing">
-            <input type="text" id="search-${rc.id}" placeholder=" Ajouter un aliment..." autocomplete="off"
+            <input type="text" id="search-${rc.id}" placeholder="Ajouter ou scanner un aliment…" autocomplete="off"
                 oninput="filterIngredients(${rc.id},this.value)" onfocus="filterIngredients(${rc.id},this.value)">
             <button class="scan-btn" onclick="openScanner(${rc.id})" title="Scanner un code-barres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5v14M6 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg><span class="scan-btn-label">Scan</span></button>
             <div class="search-results" id="results-${rc.id}"></div>
