@@ -2306,6 +2306,53 @@ let weightLog = []; // suivi du poids corporel : [{iso, date, weight}]
 // ===== STOCKAGE LOCAL =====
 // Filet de sécurité : on persiste l'état dès que l'app passe en arrière-plan
 document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'hidden') save(); });
+// ===== SAUVEGARDE CLOUD (Firestore) : objectif, poids, historique, repas =====
+let cloudPushTimer = null;
+function pushAppDataToCloud(){
+    try{
+        if(!window.firebase || !firebase.auth || !firebase.firestore) return;
+        const u = firebase.auth().currentUser;
+        if(!u) return;
+        clearTimeout(cloudPushTimer);
+        cloudPushTimer = setTimeout(()=>{
+            const data = {
+                goal: goal,
+                weightLog: weightLog,
+                history: history.slice(0, 90),
+                recipes: recipes,
+                nextRid: nextRid,
+                customFoods: JSON.parse(localStorage.getItem('repz_customFoods') || '[]')
+            };
+            firebase.firestore().collection('users').doc(u.uid)
+                .set({ appData: JSON.stringify(data), appDataTs: Date.now() }, { merge:true })
+                .catch(e=>console.warn('cloud push', e));
+        }, 2500);
+    }catch(e){}
+}
+function restaureDepuisCloud(u){
+    try{
+        if(!u || !window.firebase || !firebase.firestore) return;
+        // On ne restaure QUE si l'appareil est vierge (pas d'objectif local personnalisé)
+        const localGoal = localStorage.getItem('repz_goal');
+        const localHist = localStorage.getItem('repz_history');
+        if(localGoal || localHist) { pushAppDataToCloud(); return; }
+        firebase.firestore().collection('users').doc(u.uid).get().then(doc=>{
+            if(!doc.exists || !doc.data().appData) return;
+            const d = JSON.parse(doc.data().appData);
+            if(d.goal) goal = d.goal;
+            if(d.weightLog) weightLog = d.weightLog;
+            if(d.history) history = d.history;
+            if(Array.isArray(d.recipes) && d.recipes.length) { recipes = d.recipes; }
+            if(d.nextRid) nextRid = d.nextRid;
+            if(d.customFoods) localStorage.setItem('repz_customFoods', JSON.stringify(d.customFoods));
+            ensureFixedMeals();
+            save();
+            renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
+            console.log('Données restaurées depuis le cloud');
+        }).catch(e=>console.warn('cloud restore', e));
+    }catch(e){}
+}
+
 function save(){
     try {
         localStorage.setItem('repz_goal', JSON.stringify(goal));
@@ -2313,6 +2360,7 @@ function save(){
         localStorage.setItem('repz_history', JSON.stringify(history));
         localStorage.setItem('repz_nextRid', String(nextRid));
         localStorage.setItem('repz_weightLog', JSON.stringify(weightLog));
+        pushAppDataToCloud();
     } catch(e){}
 }
 function load(){
@@ -4108,7 +4156,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
   }
   try{
     if(window.firebase && firebase.auth){
-      firebase.auth().onAuthStateChanged(function(u){ if(u) syncPremium(u); });
+      firebase.auth().onAuthStateChanged(function(u){ if(u){ syncPremium(u); restaureDepuisCloud(u); } });
     }
   }catch(e){}
 })();
