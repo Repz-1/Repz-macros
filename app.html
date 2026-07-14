@@ -150,8 +150,13 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 .mh-emo.plus { background:rgba(247,181,0,.14); color:#DFA004; font-size:24px; font-weight:800; }
 .mh-info { flex:1; min-width:0; }
 .mh-name { font-size:18px; font-weight:800; }
-.mh-name-input { font-size:18px; font-weight:800; border:none; background:transparent; color:#1a1a1a; width:100%; padding:0; }
+.mh-name-row { display:flex; align-items:center; gap:6px; }
+.mh-name-input { font-size:18px; font-weight:800; border:none; background:transparent; color:#1a1a1a; width:100%; padding:0; pointer-events:none; }
+.mh-name-input.edit { pointer-events:auto; }
 .mh-name-input:focus { outline:none; background:#f1efe9; border-radius:6px; }
+.mh-edit { flex:none; background:none; border:none; padding:4px; color:#c2bdb2; cursor:pointer; display:flex; }
+.mh-edit svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.mh-edit:active { color:#F7B500; }
 .mh-sub { font-size:13px; color:#8a8580; margin-top:2px; }
 .mh-kcal { color:#191919; font-weight:800; }
 .mh-del { background:none; border:none; color:#cbd5e1; font-size:16px; line-height:1; padding:6px; cursor:pointer; flex-shrink:0; }
@@ -2576,7 +2581,7 @@ function renderRecipes(){
         const rightTxt = hasFood
             ? `<span class="mh-kcal">${ft.kcal.toFixed(0)} kcal</span>`
             : (rc.fixed ? `<span class="mh-range">${mealRange(rc.fixedKey)}</span>` : `<span class="mh-range">Vide</span>`);
-        const nameHtml = `<input class="mh-name-input" value="${rc.name}" onclick="event.stopPropagation()" onchange="renameRecipe(${rc.id},this.value)">`;
+        const nameHtml = `<div class="mh-name-row"><input class="mh-name-input" value="${rc.name}" readonly onchange="renameRecipe(${rc.id},this.value)" onblur="this.setAttribute('readonly','');this.classList.remove('edit')"><button class="mh-edit" onclick="event.stopPropagation();activerRenommage(this)" title="Renommer"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div>`;
 
         let h = `<div class="meal-head" onclick="toggleMeal(${rc.id})">
             <div class="mh-emo">${emoji}</div>
@@ -2976,6 +2981,14 @@ function delIng(rid,iid){
     rc.ings=rc.ings.filter(i=>i.id!==iid);
     renderRecipes();
     save();
+}
+function activerRenommage(btn){
+    const inp = btn.parentElement.querySelector('.mh-name-input');
+    if(!inp) return;
+    inp.removeAttribute('readonly');
+    inp.classList.add('edit');
+    inp.focus();
+    inp.select();
 }
 function renameRecipe(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.name=val; save();} }
 function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes(); save();} }
