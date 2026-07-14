@@ -2861,7 +2861,7 @@ const SEARCH_ALIAS = {
     'patate':'feculent pomme de terre', 'pomme de terre':'feculent patate',
     'lait':'boisson laitier', 'yaourt':'laitier yogourt', 'skyr':'laitier yaourt', 'fromage blanc':'laitier',
     'cacahuete':'arachide beurre', 'amande':'oleagineux noix', 'noix':'oleagineux', 'pecan':'oleagineux noix',
-    'whey':'proteine poudre shaker', 'oeuf':'proteine',
+    'whey':'proteine poudre shaker iso', 'iso':'whey proteine', 'oeuf':'proteine',
     'pain':'boulangerie', 'wrap':'boulangerie tortilla', 'biscotte':'boulangerie'
 };
 let SEARCH_TEXT_CACHE = null;
@@ -4323,15 +4323,13 @@ function basculerEcoute(){
     vocalRec.lang = 'fr-FR';
     vocalRec.interimResults = true;
     vocalRec.continuous = true;
-    let final = '';
     vocalRec.onresult = (e)=>{
-        let interim = '';
-        for(let i = e.resultIndex; i < e.results.length; i++){
-            if(e.results[i].isFinal) final += e.results[i][0].transcript;
-            else interim += e.results[i][0].transcript;
-        }
-        document.getElementById('vmLive').textContent = final + interim;
-        document.getElementById('vmInput').value = (final + interim).trim();
+        // Android duplique les résultats si on accumule : on reconstruit tout à chaque fois
+        let txt = '';
+        for(let i = 0; i < e.results.length; i++){ txt += e.results[i][0].transcript + ' '; }
+        txt = txt.replace(/\s+/g,' ').trim();
+        document.getElementById('vmLive').textContent = txt;
+        document.getElementById('vmInput').value = txt;
     };
     vocalRec.onend = ()=>{ vocalEcoute = false; document.getElementById('vmMicBtn').classList.remove('ecoute'); };
     vocalRec.onerror = ()=>{ vocalEcoute = false; document.getElementById('vmMicBtn').classList.remove('ecoute'); };
@@ -4355,7 +4353,22 @@ function analyserVocal(){
     arreterEcoute();
     const txt = document.getElementById('vmInput').value.trim();
     if(!txt) return;
-    const segments = txt.toLowerCase().split(/,| et | puis | avec | \+ /).map(x=>x.trim()).filter(x=>x);
+    // Découpe : virgules/"et"/"puis", PUIS chaque nouvelle quantité ouvre un segment (l'oral n'a pas de ponctuation)
+    const bruts = txt.toLowerCase().split(/,| et | puis | avec | \+ /).map(x=>x.trim()).filter(x=>x);
+    const segments = [];
+    bruts.forEach(b=>{
+        const toks = b.split(/\s+/);
+        let cur = [];
+        let aAliment = false;
+        toks.forEach(tk=>{
+            const tkn = normalize(tk).replace(/'/g,' ').trim();
+            const estQte = /^\d+[.,]?\d*(g|gr|ml|cl)?$/.test(tkn) || VOCAL_NOMBRES[tkn]!==undefined;
+            if(estQte && aAliment){ segments.push(cur.join(' ')); cur = []; aAliment = false; }
+            cur.push(tk);
+            if(!estQte && !VOCAL_STOP.includes(tkn) && !VOCAL_MESURES[tkn] && !/^(g|gr|ml|cl|grammes?)$/.test(tkn)) aAliment = true;
+        });
+        if(cur.length) segments.push(cur.join(' '));
+    });
     vocalProps = [];
     const inconnus = [];
     segments.forEach(seg=>{
