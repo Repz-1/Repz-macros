@@ -12,6 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Entraînements</title>
+<script src="i18n-strings.js?v=2"></script>
+<script src="i18n.js?v=2"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
@@ -412,16 +414,12 @@ body.timer-open .water-fab{display:none;}
 <div id="messageInvite" style="display:none; position:fixed; inset:0; z-index:90000; background:#f3f4f6; align-items:center; justify-content:center; padding:24px;">
     <div style="max-width:340px; text-align:center; background:#fff; border-radius:22px; padding:36px 26px; box-shadow:0 12px 40px rgba(0,0,0,.12);">
         <div style="font-size:46px; margin-bottom:16px;">💪</div>
-        <h2 style="font-size:22px; font-weight:800; margin-bottom:8px; color:#1a1a1a;">Crée ton compte</h2>
+        <h2 style="font-size:22px; font-weight:800; margin-bottom:8px; color:#1a1a1a;" data-i18n="guest_create_title">Crée ton compte</h2>
         <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:26px;">
-            Accède à tous tes programmes.<br>Ça prend 10 secondes.
+            <span data-i18n-html="tr_guest_sub">Accède à tous tes programmes.<br>Ça prend 10 secondes.</span>
         </p>
-        <a href="index.html" style="display:block; background:#DFA004; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
-            Créer mon compte
-        </a>
-        <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;">
-            Me connecter
-        </a>
+        <a href="index.html" style="display:block; background:#DFA004; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;" data-i18n="guest_create_btn">Créer mon compte</a>
+        <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;" data-i18n="guest_login_btn">Me connecter</a>
     </div>
 </div>
 
@@ -499,27 +497,27 @@ function logout() {
     <a href="test.html?v=7" class="choice ph featured locked" id="choiceTest" onclick="return checkPremium(event)" style="background-image:url('img/card-creer.jpg')">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z"/></svg></span>
-        <span class="badge">✨ Sur mesure</span>
-        <h3>Créer mon programme</h3>
-        <p>BelFit crée un programme personnalisé selon ton objectif, ton niveau et ton matériel.</p>
-        <span class="cta">Commencer</span>
+        <span class="badge" data-i18n="tr_badge_custom">✨ Sur mesure</span>
+        <h3 data-i18n="tr_create_title">Créer mon programme</h3>
+        <p data-i18n="tr_create_sub">BelFit crée un programme personnalisé selon ton objectif, ton niveau et ton matériel.</p>
+        <span class="cta" data-i18n="tr_start">Commencer</span>
     </a>
 
     <!-- Séance libre (gratuit) -->
-    <a href="ma-seance.html?v=20" class="choice ph md" style="background-image:url('img/card-libre.jpg')">
+    <a href="ma-seance.html?v=21" class="choice ph md" style="background-image:url('img/card-libre.jpg')">
         <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
-        <h3>Séance libre</h3>
-        <p>Compose toi-même ton entraînement, exercice par exercice.</p>
-        <span class="cta">Créer ma séance</span>
+        <h3 data-i18n="tr_free_title">Séance libre</h3>
+        <p data-i18n="tr_free_sub">Compose toi-même ton entraînement, exercice par exercice.</p>
+        <span class="cta" data-i18n="tr_free_cta">Créer ma séance</span>
     </a>
 
     <!-- Mes programmes (Premium) -->
     <a href="programmes.html?v=9" class="choice ph sm locked" id="choiceLib" onclick="return checkPremium(event)" style="background-image:url('img/card-programmes.jpg')">
         <span class="lock-badge">🔒 Premium</span>
         <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg></span>
-        <h3>Mes programmes</h3>
-        <p>Retrouve tous tes programmes enregistrés.</p>
-        <span class="cta">Ouvrir</span>
+        <h3 data-i18n="tr_progs_title">Mes programmes</h3>
+        <p data-i18n="tr_progs_sub">Retrouve tous tes programmes enregistrés.</p>
+        <span class="cta" data-i18n="open">Ouvrir</span>
     </a>
 
 </div>
@@ -527,9 +525,9 @@ function logout() {
 <!-- JOURNAL D'ENTRAÎNEMENT (carte au même style que les bulles du dessus) -->
 <div class="choice ph sm" style="margin-top:24px; background-image:url('img/card-journal.jpg')">
     <div class="ch-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/><path d="M9 16l2 2 4-4"/></svg></div>
-    <h3>Journal d'entraînement</h3>
-    <p>Note les muscles travaillés, jour après jour.</p>
-    <button class="cta" id="wlogCta" onclick="toggleWlogDays(event)">Ouvrir</button>
+    <h3 data-i18n="tr_log_title">Journal d'entraînement</h3>
+    <p data-i18n="tr_log_sub">Note les muscles travaillés, jour après jour.</p>
+    <button class="cta" id="wlogCta" onclick="toggleWlogDays(event)" data-i18n="open">Ouvrir</button>
     <div class="wlog-list" id="wlogList"></div>
 </div>
 
@@ -540,8 +538,8 @@ function logout() {
         <div class="ml-stats" id="mlStats"></div>
         <div class="ml-groups" id="mlGroups"></div>
         <div class="ml-btns">
-            <button class="ml-clear" onclick="clearMuscleDay()">Effacer</button>
-            <button class="ml-save" onclick="saveMuscleDay()">Enregistrer</button>
+            <button class="ml-clear" onclick="clearMuscleDay()" data-i18n="clear">Effacer</button>
+            <button class="ml-save" onclick="saveMuscleDay()" data-i18n="save">Enregistrer</button>
         </div>
     </div>
 </div>
@@ -550,16 +548,14 @@ function logout() {
 <div class="premium-overlay" id="premiumOverlay" onclick="if(event.target.id==='premiumOverlay')fermerPremium()">
     <div class="premium-modal">
         <div class="pm-icon">💪</div>
-        <h3>Les programmes sont Premium</h3>
-        <p>Les programmes structurés et sur mesure font partie de BELFIT Premium. En attendant, tu peux composer ta séance librement, c'est gratuit !<br><br>Ton soutien nous aide à faire grandir BELFIT 🙏</p>
-        <a href="plans.html?v=6" class="pm-btn">Soutenir BELFIT & débloquer</a>
-        <button class="pm-close" onclick="fermerPremium()">Plus tard</button>
+        <h3 data-i18n="tr_prem_title">Les programmes sont Premium</h3>
+        <p data-i18n-html="tr_prem_body">Les programmes structurés et sur mesure font partie de BELFIT Premium. En attendant, tu peux composer ta séance librement, c'est gratuit !<br><br>Ton soutien nous aide à faire grandir BELFIT 🙏</p>
+        <a href="plans.html?v=6" class="pm-btn" data-i18n="support_unlock">Soutenir BELFIT & débloquer</a>
+        <button class="pm-close" onclick="fermerPremium()" data-i18n="later">Plus tard</button>
     </div>
 </div>
 
-<p class="note">
-    Tous les programmes incluent les exercices détaillés, le nombre de séries et de répétitions.
-</p>
+<p class="note" data-i18n="tr_note">Tous les programmes incluent les exercices détaillés, le nombre de séries et de répétitions.</p>
 
 <div class="bottom-gradient"></div>
 
@@ -631,7 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=22" class="bn-item">
+    <a href="mes-stats.html?v=23" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
@@ -655,10 +651,10 @@ function murCompte(){
     o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
     o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
         + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#DFA004;">FIT</span></div>'
-        + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
-        + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
-        + '<a href="index.html" style="display:block;background:#DFA004;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
-        + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">Continuer à explorer</button>'
+        + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">'+t('wall_title')+'</h2>'
+        + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">'+t('wall_body')+'</p>'
+        + '<a href="index.html" style="display:block;background:#DFA004;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">'+t('wall_cta')+'</a>'
+        + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">'+t('wall_later')+'</button>'
         + '</div>';
     document.body.appendChild(o);
 }
@@ -669,7 +665,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     b.href = 'index.html';
     b.id = 'inviteBandeau';
     b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#F5F6F8;border-bottom:1px solid #F3DDA0;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
-    b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
+    b.innerHTML = t('invite_banner');
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
     else { document.body.insertBefore(b, document.body.firstChild); }
@@ -681,7 +677,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
 <div class="timer-container" id="timerContainer">
     <div class="timer-display">
         <div class="timer-big" id="timerDisplay">01:30</div>
-        <div class="timer-label">Chronomètre</div>
+        <div class="timer-label" data-i18n="timer">Chronomètre</div>
     </div>
     <div class="timer-wheels">
         <div class="wheel-col">
@@ -696,9 +692,9 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
         <div class="wheel-highlight"></div>
     </div>
     <div class="timer-controls">
-        <button class="timer-btn start" id="timerStartBtn" onclick="startTimer()">Démarrer</button>
+        <button class="timer-btn start" id="timerStartBtn" onclick="startTimer()" data-i18n="start">Démarrer</button>
         <button class="timer-btn reset" onclick="resetTimer()">Reset</button>
-        <button class="timer-btn reset" onclick="closeTimer()">Fermer</button>
+        <button class="timer-btn reset" onclick="closeTimer()" data-i18n="close">Fermer</button>
     </div>
 </div>
 <button class="chrono-fab" id="chronoFab" aria-label="Chronomètre">
@@ -725,15 +721,15 @@ function startTimer(){
     const btn=document.getElementById('timerStartBtn');
     if(timerRunning){
         clearInterval(timerInterval); timerRunning=false;
-        btn.textContent='Reprendre'; updateChronoFab(); saveTimerState(); return;
+        btn.textContent=t('resume'); updateChronoFab(); saveTimerState(); return;
     }
-    timerRunning=true; btn.textContent='Pause'; saveTimerState();
+    timerRunning=true; btn.textContent=t('pause'); saveTimerState();
     timerInterval=setInterval(()=>{
         if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); saveTimerState(); }
         else{
             clearInterval(timerInterval); timerRunning=false;
             totalSeconds=lastPreset; updateTimerDisplay();
-            btn.textContent='Démarrer'; updateChronoFab(); saveTimerState();
+            btn.textContent=t('start'); updateChronoFab(); saveTimerState();
             if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
         }
     },1000);
@@ -763,7 +759,7 @@ function appliquerMolettes(){
     totalSeconds=wheelMinVal*60+wheelSecVal; lastPreset=totalSeconds;
     clearInterval(timerInterval); timerRunning=false; saveTimerState();
     updateTimerDisplay();
-    document.getElementById('timerStartBtn').textContent='Démarrer';
+    document.getElementById('timerStartBtn').textContent=t('start');
 }
 function initWheels(){
     const minutes=Array.from({length:61},(_,i)=>i);
@@ -774,7 +770,7 @@ function initWheels(){
 function resetTimer(){
     clearInterval(timerInterval); timerRunning=false;
     totalSeconds=lastPreset; updateTimerDisplay(); saveTimerState();
-    document.getElementById('timerStartBtn').textContent='Démarrer';
+    document.getElementById('timerStartBtn').textContent=t('start');
 }
 function toggleTimer(){
     const c=document.getElementById('timerContainer'), o=document.getElementById('timerOverlay');
@@ -867,13 +863,13 @@ function closeTimer(){
                 // relancer automatiquement le décompte
                 timerRunning = true;
                 const btn = document.getElementById('timerStartBtn');
-                if(btn) btn.textContent = 'Pause';
+                if(btn) btn.textContent = t('pause');
                 timerInterval = setInterval(()=>{
                     if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); saveTimerState(); }
                     else{
                         clearInterval(timerInterval); timerRunning=false;
                         totalSeconds=lastPreset; updateTimerDisplay();
-                        if(btn) btn.textContent='Démarrer'; updateChronoFab(); saveTimerState();
+                        if(btn) btn.textContent=t('start'); updateChronoFab(); saveTimerState();
                         if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
                     }
                 },1000);
@@ -923,23 +919,20 @@ initWheels(); updateTimerDisplay();
 </script>
 <script>
 /* ===== JOURNAL D'ENTRAÎNEMENT (8 jours glissants, ancien → récent) ===== */
-const MUSCLE_GROUPS = [
-    {k:'pecs', n:'Pecs'}, {k:'dos', n:'Dos'}, {k:'epaules', n:'Épaules'},
-    {k:'biceps', n:'Biceps'}, {k:'triceps', n:'Triceps'}, {k:'jambes', n:'Jambes'},
-    {k:'abdos', n:'Abdos'}, {k:'cardio', n:'Cardio'}, {k:'repos', n:'Repos'}
-];
+const MUSCLE_KEYS = ['pecs','dos','epaules','biceps','triceps','jambes','abdos','cardio','repos'];
+const MUSCLE_GROUPS = MUSCLE_KEYS.map(k => ({ k, get n(){ return t('mus_'+k); } }));
 const WL_COLORS = {pecs:'#EF4444', dos:'#F97316', epaules:'#F7B500', biceps:'#10B981', triceps:'#06B6D4', jambes:'#3B82F6', abdos:'#8B5CF6', cardio:'#EC4899'};
-const WL_JOURS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-const WL_JOURS_L = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-const WL_MOIS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
-const WL_MOIS_L = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const WL_JOURS = t('days_short').split('|');
+const WL_JOURS_L = t('days_long').split('|');
+const WL_MOIS = t('months_min').split('|');
+const WL_MOIS_L = t('months_long').split('|');
 
 function wlDateDaysAgo(n){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - n); return d; }
 function wlIso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 function todayISO(){ return wlIso(new Date()); }
 function wlIsoToDate(iso){ const p = iso.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
-function wlLabel(d){ return `${WL_JOURS[d.getDay()]} ${d.getDate()} ${WL_MOIS[d.getMonth()]}`; }
-function wlLabelLong(d){ return `${WL_JOURS_L[d.getDay()]} ${d.getDate()} ${WL_MOIS_L[d.getMonth()]}`; }
+function wlLabel(d){ return `${t('days_short').split('|')[d.getDay()]} ${d.getDate()} ${t('months_min').split('|')[d.getMonth()]}`; }
+function wlLabelLong(d){ return `${t('days_long').split('|')[d.getDay()]} ${d.getDate()} ${t('months_long').split('|')[d.getMonth()]}`; }
 function wlMuscleName(k){ const g = MUSCLE_GROUPS.find(x => x.k === k); return g ? g.n : k; }
 
 
@@ -963,7 +956,7 @@ function renderWlog(){
 
     // --- Calendrier du mois affiché ---
     const ref = new Date(today.getFullYear(), today.getMonth() + wlogMoisOffset, 1);
-    const titre = WL_MOIS_L[ref.getMonth()] + ' ' + ref.getFullYear();
+    const titre = t('months_long').split('|')[ref.getMonth()] + ' ' + ref.getFullYear();
 
     // --- Résumé utile : séances du mois affiché + dernière séance notée ---
     const prefixeMois = wlIso(ref).slice(0, 7);
@@ -977,15 +970,15 @@ function renderWlog(){
     });
     let sum = '<div class="wlog-sum">';
     if(nbSeancesMois || dernierIso){
-        sum += `<span class="wlog-sum-pill">🏋️ ${nbSeancesMois} séance${nbSeancesMois > 1 ? 's' : ''} en ${WL_MOIS_L[ref.getMonth()]}</span>`;
+        sum += `<span class="wlog-sum-pill">🏋️ ${nbSeancesMois} ${t(nbSeancesMois > 1 ? 'sessions' : 'session')} ${t('in_month')} ${t('months_long').split('|')[ref.getMonth()]}</span>`;
         if(dernierIso){
             const dm = (log[dernierIso] || []).filter(v => v !== 'repos').map(wlMuscleName);
             let dmTxt = dm.slice(0, 2).join(', ');
             if(dm.length > 2) dmTxt += ' +' + (dm.length - 2);
-            sum += `<span class="wlog-sum-pill">💪 Dernière : ${dmTxt} · ${wlLabel(wlIsoToDate(dernierIso))}</span>`;
+            sum += `<span class="wlog-sum-pill">💪 ${t('last_session')} : ${dmTxt} · ${wlLabel(wlIsoToDate(dernierIso))}</span>`;
         }
     } else {
-        sum += '<span class="wlog-sum-pill">Touche un jour pour noter ta première séance 👇</span>';
+        sum += '<span class="wlog-sum-pill">'+t('first_session_hint')+'</span>';
     }
     sum += '</div>';
     let cal = `<div class="wlog-cal-head">
@@ -996,7 +989,7 @@ function renderWlog(){
             <button class="wlog-nav${wlogMoisOffset === 0 ? ' off' : ''}" onclick="event.stopPropagation();if(wlogMoisOffset < 0){wlogMoisOffset++;renderWlog();}">›</button>
         </div>
     </div>`;
-    cal += '<div class="wlog-grid">' + ['L','M','M','J','V','S','D'].map(j => `<div class="wlog-wd">${j}</div>`).join('');
+    cal += '<div class="wlog-grid">' + t('days_min').split('|').map(j => `<div class="wlog-wd">${j}</div>`).join('');
     const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
     const decal = (new Date(ref.getFullYear(), ref.getMonth(), 1).getDay() + 6) % 7; // semaine qui démarre lundi
     for(let i = 0; i < decal; i++) cal += '<div></div>';
@@ -1034,13 +1027,13 @@ function renderWlog(){
         const src = utilises.length ? MUSCLE_GROUPS.filter(g => utilises.includes(g.k)) : MUSCLE_GROUPS.filter(g => WL_COLORS[g.k]);
         cal += '<div class="wlog-legende">'
             + src.map(g => `<span><i class="dot" style="background:${WL_COLORS[g.k]}"></i>${g.n}</span>`).join('')
-            + '<span><i class="dot repos"></i>Repos</span><span><i class="dot today"></i>Aujourd\'hui</span></div>';
+            + '<span><i class="dot repos"></i>'+t('mus_repos')+'</span><span><i class="dot today"></i>'+t('today')+'</span></div>';
     }
 
     list.innerHTML = sum + cal;
     list.classList.toggle('expanded', !!window.wlogOpen);
     const cta = document.getElementById('wlogCta');
-    if(cta) cta.textContent = window.wlogOpen ? 'Réduire' : 'Ouvrir';
+    if(cta) cta.textContent = window.wlogOpen ? t('collapse') : t('open');
 }
 
 function toggleWlogDays(e){
@@ -1049,7 +1042,7 @@ function toggleWlogDays(e){
     const list = document.getElementById('wlogList');
     const cta = document.getElementById('wlogCta');
     list.classList.toggle('expanded', window.wlogOpen);
-    if(cta) cta.textContent = window.wlogOpen ? 'Réduire' : 'Ouvrir';
+    if(cta) cta.textContent = window.wlogOpen ? t('collapse') : t('open');
 }
 
 
@@ -1079,14 +1072,14 @@ function openMuscleLog(iso){
             const parts = [];
             const dtxt = fmtDuree(duree);
             if(dtxt && duree >= 60) parts.push('⏱ ' + dtxt);
-            if(nbSeries) parts.push(nbSeries + ' série' + (nbSeries > 1 ? 's' : ''));
+            if(nbSeries) parts.push(nbSeries + ' ' + t(nbSeries > 1 ? 'sets' : 'set'));
             if(tonnage > 0) parts.push('🏋️ ' + Math.round(tonnage).toLocaleString('fr-BE') + ' kg');
             if(parts.length) statsHtml = '<div class="ml-stats-ligne">' + parts.join(' · ') + '</div>';
             // Liste des exercices : nom + nombre de séries
             const lignes = [];
             slog.forEach(s => (s.exos || []).forEach(ex => {
                 const n = (ex.sets || []).length;
-                lignes.push(`<div class="ml-exo"><span>${ex.nom}</span><b>${n} série${n > 1 ? 's' : ''}</b></div>`);
+                lignes.push(`<div class="ml-exo"><span>${ex.nom}</span><b>${n} ${t(n > 1 ? 'sets' : 'set')}</b></div>`);
             }));
             if(lignes.length) statsHtml += lignes.join('');
         }
@@ -1238,6 +1231,10 @@ renderWlog();
     x0 = null; axis = null;
   }, {passive:true, capture:true});
 })();
+
+window.addEventListener('langchange', function(){
+    try{ if(typeof renderWlog==='function') renderWlog(); }catch(e){}
+});
 </script>
 </body>
 </html>

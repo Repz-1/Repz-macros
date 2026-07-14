@@ -12,6 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Mes stats</title>
+<script src="i18n-strings.js?v=2"></script>
+<script src="i18n.js?v=2"></script>
 <style>
 :root{
     --orange:#F7B500; --noir:#181818; --gold:#F7B500;
@@ -291,13 +293,13 @@ function logout(){
             <a href="parametres.html" class="ah-btn" aria-label="Réglages"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></a>
         </div>
     </header>
-    <div class="page-title">Mes stats</div>
-    <div class="page-sub">Suis ta progression : poids, calories et régularité.</div>
+    <div class="page-title" data-i18n="st_title">Mes stats</div>
+    <div class="page-sub" data-i18n="st_sub">Suis ta progression : poids, calories et régularité.</div>
 
     <!-- NOTE DE PROGRESSION GLOBALE -->
     <div class="score-card" id="scoreCard" style="display:none">
         <div class="score-head"><div>
-            <div class="score-title">Progression globale · 7 jours</div>
+            <div class="score-title" data-i18n="st_score_title">Progression globale · 7 jours</div>
             <div class="score-val"><span id="scoreVal">–</span><small> %</small><span class="score-dot" id="scoreDot"></span></div>
         </div></div>
         <div class="score-note" id="scoreNote"></div>
@@ -306,48 +308,48 @@ function logout(){
 
     <!-- POIDS -->
     <div class="stat-card acc-green">
-        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7 14l3-3 2.5 2L20 7"/></svg>Évolution du poids</h2>
-        <div class="card-sub" id="weightSub">Tes dernières pesées</div>
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7 14l3-3 2.5 2L20 7"/></svg><span data-i18n="st_weight">Évolution du poids</span></h2>
+        <div class="card-sub" id="weightSub" data-i18n="st_weight_sub">Tes dernières pesées</div>
         <div id="weightSummary"></div>
         <div id="weightChart"></div>
     </div>
 
     <!-- CALORIES -->
     <div class="stat-card acc-orange">
-        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M12 3C9 7 7 9 7 13a5 5 0 0010 0c0-2-1-3.6-2.5-5-.3 1.2-1 2-2 2.4C13 8 13 5.5 12 3z"/></svg>Calories enregistrées</h2>
-        <div class="card-sub" id="kcalSub">Tes journées récentes</div>
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M12 3C9 7 7 9 7 13a5 5 0 0010 0c0-2-1-3.6-2.5-5-.3 1.2-1 2-2 2.4C13 8 13 5.5 12 3z"/></svg><span data-i18n="st_kcal">Calories enregistrées</span></h2>
+        <div class="card-sub" id="kcalSub" data-i18n="st_kcal_sub">Tes journées récentes</div>
         <div id="kcalSummary"></div>
         <div id="kcalChart"></div>
     </div>
 
     <!-- PROGRESSION EXERCICES -->
     <div class="stat-card acc-blue">
-        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></svg>Progression par exercice</h2>
-        <div class="card-sub">Ta charge sur la série la plus lourde, séance après séance</div>
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></svg><span data-i18n="st_exo">Progression par exercice</span></h2>
+        <div class="card-sub" data-i18n="st_exo_sub">Ta charge sur la série la plus lourde, séance après séance</div>
         <div id="exoProgWrap"></div>
     </div>
 
     <!-- RÉPARTITION MUSCULAIRE -->
     <div class="stat-card acc-red">
-        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z"/></svg>Répartition musculaire</h2>
-        <div class="repart-periode">Cette semaine</div>
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z"/></svg><span data-i18n="st_repart">Répartition musculaire</span></h2>
+        <div class="repart-periode" data-i18n="st_this_week">Cette semaine</div>
         <div id="repartWrap"></div>
     </div>
 
     <!-- RECORDS PERSONNELS -->
     <div class="stat-card acc-violet">
-        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 01-10 0V4z"/><path d="M7 6H4a2 2 0 002 4h1"/><path d="M17 6h3a2 2 0 01-2 4h-1"/></svg>Records personnels</h2>
-        <div class="card-sub">Tes meilleures charges, tous exercices confondus</div>
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 01-10 0V4z"/><path d="M7 6H4a2 2 0 002 4h1"/><path d="M17 6h3a2 2 0 01-2 4h-1"/></svg><span data-i18n="st_records">Records personnels</span></h2>
+        <div class="card-sub" data-i18n="st_records_sub">Tes meilleures charges, tous exercices confondus</div>
         <div id="recordsWrap"></div>
     </div>
 
     <!-- INVITATION PREMIUM (bienveillante) -->
     <div class="premium-invite" id="premiumInvite">
         <div class="pi-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg></div>
-        <h3>Débloque tout ton historique</h3>
-        <p>Tu vois ici tes 7 derniers jours. Passe à BELFIT Premium pour suivre toute ta progression sur des semaines et des mois, avec tes moyennes et tes tendances.<br><br>Ton soutien nous aide à faire grandir BELFIT.</p>
-        <a href="plans.html?v=6" class="pi-btn">Soutenir BELFIT & débloquer</a>
-        <div class="locked-note">Historique complet · Moyennes · Tendances</div>
+        <h3 data-i18n="st_prem_title">Débloque tout ton historique</h3>
+        <p data-i18n-html="st_prem_body">Tu vois ici tes 7 derniers jours. Passe à BELFIT Premium pour suivre toute ta progression sur des semaines et des mois, avec tes moyennes et tes tendances.<br><br>Ton soutien nous aide à faire grandir BELFIT.</p>
+        <a href="plans.html?v=6" class="pi-btn" data-i18n="support_unlock">Soutenir BELFIT & débloquer</a>
+        <div class="locked-note" data-i18n="st_locked_note">Historique complet · Moyennes · Tendances</div>
     </div>
 </div>
 
@@ -376,7 +378,7 @@ function renderWeight(){
     const summary = document.getElementById('weightSummary');
     const sub = document.getElementById('weightSub');
     if(!weightLog.length){
-        chart.innerHTML = '<div class="chart-empty"><div>Aucune pesée enregistrée.<br><a class="ce-btn" href="app.html?poids=1">＋ Ajouter mon poids</a></div></div>';
+        chart.innerHTML = '<div class="chart-empty"><div>'+t('st_no_weight')+'<br><a class="ce-btn" href="app.html?poids=1">'+t('st_add_weight')+'</a></div></div>';
         summary.innerHTML = '';
         return;
     }
@@ -386,9 +388,9 @@ function renderWeight(){
     let total = data.length;
     if(!estPremium && data.length > LIMITE_GRATUIT){
         data = data.slice(-LIMITE_GRATUIT);
-        sub.textContent = `${LIMITE_GRATUIT} dernières pesées (sur ${total})`;
+        sub.textContent = t('st_last_weighins',{n:LIMITE_GRATUIT,total:total});
     } else {
-        sub.textContent = `${data.length} pesée${data.length>1?'s':''}`;
+        sub.textContent = data.length + ' ' + t(data.length>1?'weighins':'weighin');
     }
     // Résumé : poids actuel + variation
     const actuel = parseFloat(data[data.length-1].weight);
@@ -396,8 +398,8 @@ function renderWeight(){
     const diff = (actuel - debut).toFixed(1);
     const diffTxt = diff > 0 ? `+${diff}` : diff;
     summary.innerHTML = `<div class="stat-summary">
-        <div class="stat-box"><div class="sb-val">${actuel} kg</div><div class="sb-lbl">Poids actuel</div></div>
-        <div class="stat-box"><div class="sb-val">${diffTxt} kg</div><div class="sb-lbl">Variation</div></div>
+        <div class="stat-box"><div class="sb-val">${actuel} kg</div><div class="sb-lbl">${t('st_cur_weight')}</div></div>
+        <div class="stat-box"><div class="sb-val">${diffTxt} kg</div><div class="sb-lbl">${t('st_variation')}</div></div>
     </div>`;
     // Graphique
     const poids = data.map(d=>parseFloat(d.weight));
@@ -421,7 +423,7 @@ function renderKcal(){
     const summary = document.getElementById('kcalSummary');
     const sub = document.getElementById('kcalSub');
     if(!history.length){
-        chart.innerHTML = '<div class="chart-empty"><div>Aucune journée enregistrée.<br><a class="ce-btn" href="app.html?v=27">＋ Enregistrer ma journée</a></div></div>';
+        chart.innerHTML = '<div class="chart-empty"><div>'+t('st_no_day')+'<br><a class="ce-btn" href="app.html?v=27">'+t('st_save_day')+'</a></div></div>';
         summary.innerHTML = '';
         return;
     }
@@ -429,16 +431,16 @@ function renderKcal(){
     let total = data.length;
     if(!estPremium && data.length > LIMITE_GRATUIT){
         data = data.slice(-LIMITE_GRATUIT);
-        sub.textContent = `${LIMITE_GRATUIT} dernières journées (sur ${total})`;
+        sub.textContent = t('st_last_days',{n:LIMITE_GRATUIT,total:total});
     } else {
-        sub.textContent = `${data.length} journée${data.length>1?'s':''}`;
+        sub.textContent = data.length + ' ' + t(data.length>1?'days':'day');
     }
     // Moyenne
     const moy = Math.round(data.reduce((s,d)=>s+parseInt(d.kcal||0),0)/data.length);
     const derniere = parseInt(data[data.length-1].kcal||0);
     summary.innerHTML = `<div class="stat-summary">
-        <div class="stat-box"><div class="sb-val">${moy}</div><div class="sb-lbl">Moyenne kcal</div></div>
-        <div class="stat-box"><div class="sb-val">${derniere}</div><div class="sb-lbl">Dernière journée</div></div>
+        <div class="stat-box"><div class="sb-val">${moy}</div><div class="sb-lbl">${t('st_avg_kcal')}</div></div>
+        <div class="stat-box"><div class="sb-val">${derniere}</div><div class="sb-lbl">${t('st_last_day')}</div></div>
     </div>`;
     const kcals = data.map(d=>parseInt(d.kcal||0));
     const max = Math.max(...kcals) * 1.1;
@@ -528,15 +530,15 @@ function renderScore(){
     const dot = document.getElementById('scoreDot');
     dot.style.background = global >= 70 ? '#10B981' : (global >= 40 ? '#F97316' : '#DC2626');
     document.getElementById('scoreNote').textContent =
-        global >= 85 ? 'Semaine exemplaire, continue comme ça' :
-        global >= 70 ? 'Très bonne semaine, tu es sur la bonne voie' :
-        global >= 40 ? 'Bonne base — un peu plus de constance et ça décolle' :
-        'Chaque jour compte : reprends une petite habitude aujourd\'hui';
+        global >= 85 ? t('st_note_a') :
+        global >= 70 ? t('st_note_b') :
+        global >= 40 ? t('st_note_c') :
+        t('st_note_d');
     const rows = [
-        ['Nutrition', s.nutrition],
-        ['Entraînement', s.entrainement],
-        ['Poids', s.poids],
-        ['Régularité', s.regularite],
+        [t('st_row_nutrition'), s.nutrition],
+        [t('st_row_training'), s.entrainement],
+        [t('st_row_weight'), s.poids],
+        [t('st_row_regularity'), s.regularite],
     ];
     document.getElementById('scoreRows').innerHTML = rows.map(r =>
         `<div class="score-row"><div class="sr-lbl">${r[0]}</div><div class="sr-bar"><div class="sr-fill" style="width:${r[1]}%"></div></div><div class="sr-val">${r[1]}%</div></div>`
@@ -556,7 +558,7 @@ function renderRecords(){
         if(best > 0) prs.push({ nom, best, reps, dateBest });
     });
     if(!prs.length){
-        w.innerHTML = '<div class="chart-empty"><div>Tes records apparaîtront ici dès que tu noteras tes charges en séance.<br><a class="ce-btn" href="entrainements.html?v=16">Lancer une séance</a></div></div>';
+        w.innerHTML = '<div class="chart-empty"><div>'+t('st_no_records')+'<br><a class="ce-btn" href="entrainements.html?v=17">'+t('st_start_session')+'</a></div></div>';
         return;
     }
     prs.sort((a,b) => b.best - a.best);
@@ -596,14 +598,14 @@ function renderRepartition(){
         });
     });
     const groupes = [
-        {k:'pecs', n:'Pecs', c:'#EF4444'}, {k:'dos', n:'Dos', c:'#F97316'},
-        {k:'epaules', n:'Épaules', c:'#F7B500'}, {k:'biceps', n:'Biceps', c:'#10B981'},
-        {k:'triceps', n:'Triceps', c:'#06B6D4'}, {k:'jambes', n:'Jambes', c:'#3B82F6'},
-        {k:'abdos', n:'Abdos', c:'#8B5CF6'}, {k:'cardio', n:'Cardio', c:'#EC4899'},
-    ];
+        {k:'pecs', c:'#EF4444'}, {k:'dos', c:'#F97316'},
+        {k:'epaules', c:'#F7B500'}, {k:'biceps', c:'#10B981'},
+        {k:'triceps', c:'#06B6D4'}, {k:'jambes', c:'#3B82F6'},
+        {k:'abdos', c:'#8B5CF6'}, {k:'cardio', c:'#EC4899'},
+    ].map(g => Object.defineProperty(g, 'n', { get(){ return t('mus_'+g.k); } }));
     const total = Object.values(compte).reduce((a,b)=>a+b, 0);
     if(!total){
-        wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG({}, 0)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>non travaillé</div></div><div class="repart-body"><div class="repart-vide">Renseigne les muscles travaillés dans ton journal : le bonhomme se colore au fil de ta semaine.</div></div></div>`;
+        wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG({}, 0)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>${t('st_not_worked')}</div></div><div class="repart-body"><div class="repart-vide">${t('st_repart_empty')}</div></div></div>`;
         return;
     }
     const max = Math.max(...groupes.map(g => compte[g.k] || 0));
@@ -633,20 +635,20 @@ function renderRepartition(){
     const aujFait = (muscleLog[aujIso] || []).length > 0;
     let note = '';
     if(memesJour.length && !aujFait){
-        const jourNom = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'][new Date(aujIso).getDay()];
-        const txt = `Suggestion du jour : ${memesJour.join(', ')} — comme ${jourNom} dernier.`;
+        const jourNom = t('days_long').split('|')[new Date(aujIso).getDay()].toLowerCase();
+        const txt = t('st_suggestion',{muscles:memesJour.join(', '),day:jourNom});
         note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 9l12-2"/></svg>${txt}</div>`;
     } else if(negliges.length){
         const items = negliges.map(x => {
             const nom = groupes.find(g=>g.k===x.k).n.toLowerCase();
             return x.j === Infinity ? nom : `${nom} (${x.j} j)`;
         });
-        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 9l12-2"/></svg>Pour ta prochaine séance, pense à : ${items.join(', ')}.</div>`;
+        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 9l12-2"/></svg>${t('st_next_hint')} ${items.join(', ')}.</div>`;
     } else {
-        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Bel équilibre, tous tes grands groupes sont à jour cette semaine.</div>`;
+        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>${t('st_balanced')}</div>`;
     }
 
-    wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG(compte, max)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>non travaillé</div></div><div class="repart-body">${bars}</div></div>${note}`;
+    wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG(compte, max)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>${t('st_not_worked')}</div></div><div class="repart-body">${bars}</div></div>${note}`;
 }
 
 function bodyMapSVG(compte, max){
@@ -704,7 +706,7 @@ function renderExoProg(sel){
     ).sort();
 
     if(!noms.length){
-        wrap.innerHTML = '<div class="chart-empty"><div>Aucune série enregistrée. Pendant une séance, touche « Séries » et note tes charges.<br><a class="ce-btn" href="entrainements.html?v=16">Lancer une séance</a></div></div>';
+        wrap.innerHTML = '<div class="chart-empty"><div>'+t('st_no_sets')+'<br><a class="ce-btn" href="entrainements.html?v=17">'+t('st_start_session')+'</a></div></div>';
         return;
     }
 
@@ -744,9 +746,9 @@ function renderExoProg(sel){
     wrap.innerHTML = `
         <select class="exo-select" onchange="renderExoProg(this.value)">${options}</select>
         <div class="exo-pr">
-            <div class="exo-pr-box"><div class="v">${pr} kg</div><div class="l">Record${prReps?` × ${prReps}`:''}</div></div>
-            <div class="exo-pr-box"><div class="v">${deltaStr}</div><div class="l">Depuis le début</div></div>
-            <div class="exo-pr-box"><div class="v">${hist.length}</div><div class="l">Séances suivies</div></div>
+            <div class="exo-pr-box"><div class="v">${pr} kg</div><div class="l">${t('st_record')}${prReps?` × ${prReps}`:''}</div></div>
+            <div class="exo-pr-box"><div class="v">${deltaStr}</div><div class="l">${t('st_since_start')}</div></div>
+            <div class="exo-pr-box"><div class="v">${hist.length}</div><div class="l">${t('st_sessions_tracked')}</div></div>
         </div>
         <div class="chart">${bars}</div>`;
 }
@@ -760,11 +762,11 @@ renderExoProg();
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
         <span>Journal</span>
     </a>
-    <a href="entrainements.html?v=16" class="bn-item">
+    <a href="entrainements.html?v=17" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
         <span>S'entraîner</span>
     </a>
-    <a href="mes-stats.html?v=18" class="bn-item active">
+    <a href="mes-stats.html?v=23" class="bn-item active">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
         <span>Stats</span>
     </a>
@@ -788,10 +790,10 @@ function murCompte(){
     o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
     o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
         + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#F7B500;">FIT</span></div>'
-        + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
-        + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
-        + '<a href="index.html" style="display:block;background:#F7B500;color:#181818;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
-        + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">Continuer à explorer</button>'
+        + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">'+t('wall_title')+'</h2>'
+        + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">'+t('wall_body')+'</p>'
+        + '<a href="index.html" style="display:block;background:#F7B500;color:#181818;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">'+t('wall_cta')+'</a>'
+        + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">'+t('wall_later')+'</button>'
         + '</div>';
     document.body.appendChild(o);
 }
@@ -802,7 +804,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     b.href = 'index.html';
     b.id = 'inviteBandeau';
     b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFF9E8;border-bottom:1px solid #F3D98A;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
-    b.innerHTML = 'Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
+    b.innerHTML = t('invite_banner');
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
     else { document.body.insertBefore(b, document.body.firstChild); }
@@ -906,6 +908,10 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     x0 = null; axis = null;
   }, {passive:true, capture:true});
 })();
+
+window.addEventListener('langchange', function(){
+    try{ renderScore(); renderWeight(); renderKcal(); renderRepartition(); renderRecords(); renderExoProg(); }catch(e){}
+});
 </script>
 </body>
 </html>

@@ -12,6 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Ma séance</title>
+<script src="i18n-strings.js?v=2"></script>
+<script src="i18n.js?v=2"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
@@ -410,15 +412,15 @@ function logout(){
 <div class="screen active" id="screenSelect">
     <div class="top">
         <a href="main.html#1" class="back-btn" id="backBtnSelect">←</a>
-        <h1>Choisir mes exercices</h1>
+        <h1 data-i18n="ms_title">Choisir mes exercices</h1>
     </div>
     <div class="muscle-tabs" id="muscleTabs"></div>
     <div class="filter-tabs" id="filterTabs"></div>
-    <p class="section-hint">Touche un exercice pour l'ajouter.</p>
+    <p class="section-hint" data-i18n="ms_hint">Touche un exercice pour l'ajouter.</p>
     <div class="ex-list" id="exList"></div>
     <div class="session-bar hidden" id="sessionBar" onclick="goToSession()">
-        <span class="count"><span id="selCount">0</span> exercices sélectionnés</span>
-        <span class="go">Ma séance →</span>
+        <span class="count"><span id="selCount">0</span> <span data-i18n="ms_selected">exercices sélectionnés</span></span>
+        <span class="go" data-i18n="ms_go">Ma séance →</span>
     </div>
 </div>
 
@@ -426,20 +428,20 @@ function logout(){
 <div class="screen" id="screenSession">
     <div class="sess-hero">
         <a href="#" class="sh-back" id="backBtnSession" onclick="goToSelect();return false;">←</a>
-        <h1 class="sh-title" id="sessionScreenTitle">Ma séance</h1>
+        <h1 class="sh-title" id="sessionScreenTitle" data-i18n="ms_session">Ma séance</h1>
         <div class="sh-meta" id="sessionMeta"></div>
     </div>
     <div class="session-progress">
         <div class="sp-line">
-            <span><b id="doneCount">0</b><span class="sp-dim">/<span id="totalCount">0</span> exercices</span></span>
+            <span><b id="doneCount">0</b><span class="sp-dim">/<span id="totalCount">0</span> <span data-i18n="ms_exercises">exercices</span></span></span>
             <span class="sp-timer" id="sessionTimer">0:00</span>
         </div>
         <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
-    <button class="start-session-btn" id="startSessionBtn" onclick="demarrerDureeSeance()">Commencer</button>
+    <button class="start-session-btn" id="startSessionBtn" onclick="demarrerDureeSeance()" data-i18n="tr_start">Commencer</button>
     <div class="session-controls" id="sessionControls">
-        <button class="sc-pause" id="scPauseBtn" onclick="togglePauseSeance()">⏸ Pause</button>
-        <button class="sc-stop" onclick="terminerSeance()">Terminer la séance</button>
+        <button class="sc-pause" id="scPauseBtn" onclick="togglePauseSeance()" data-i18n="ms_pause">⏸ Pause</button>
+        <button class="sc-stop" onclick="terminerSeance()" data-i18n="ms_finish">Terminer la séance</button>
     </div>
     <div id="sessionList"></div>
 </div>
@@ -448,10 +450,10 @@ function logout(){
 <div class="congrats-overlay" id="stopOverlay">
     <div class="congrats-card">
         <div class="congrats-emoji">🤔</div>
-        <div class="congrats-title">Terminer maintenant ?</div>
-        <div class="congrats-text" id="stopText">Tu n'as pas encore coché tous les exercices.</div>
-        <button class="congrats-btn" onclick="confirmerArret()">Oui, terminer</button>
-        <button class="sc-cancel" onclick="document.getElementById('stopOverlay').classList.remove('show')">Continuer la séance</button>
+        <div class="congrats-title" data-i18n="ms_stop_title">Terminer maintenant ?</div>
+        <div class="congrats-text" id="stopText" data-i18n="ms_stop_text">Tu n'as pas encore coché tous les exercices.</div>
+        <button class="congrats-btn" onclick="confirmerArret()" data-i18n="ms_stop_yes">Oui, terminer</button>
+        <button class="sc-cancel" onclick="document.getElementById('stopOverlay').classList.remove('show')" data-i18n="ms_stop_no">Continuer la séance</button>
     </div>
 </div>
 
@@ -459,10 +461,10 @@ function logout(){
 <div class="congrats-overlay" id="congratsOverlay">
     <div class="congrats-card">
         <div class="congrats-emoji">🎉</div>
-        <div class="congrats-title">Séance terminée !</div>
-        <div class="congrats-text" id="congratsText">Bravo, tu as tout donné. Repos mérité 💪</div>
+        <div class="congrats-title" data-i18n="ms_done_title">Séance terminée !</div>
+        <div class="congrats-text" id="congratsText" data-i18n="ms_done_text">Bravo, tu as tout donné. Repos mérité 💪</div>
         <div id="congratsStats"></div>
-        <button class="congrats-btn" onclick="window.location.href='main.html#0'">Retour au journal</button>
+        <button class="congrats-btn" onclick="window.location.href='main.html#0'" data-i18n="ms_back_journal">Retour au journal</button>
     </div>
 </div>
 
@@ -471,8 +473,8 @@ function logout(){
     <div class="modal-card">
         <div class="modal-carousel">
             <div class="carousel-track" id="carouselTrack">
-                <div class="carousel-slide" id="slide0"><span class="slide-label">Position de départ</span></div>
-                <div class="carousel-slide" id="slide1"><span class="slide-label">Position finale</span></div>
+                <div class="carousel-slide" id="slide0"><span class="slide-label" data-i18n="ms_pos_start">Position de départ</span></div>
+                <div class="carousel-slide" id="slide1"><span class="slide-label" data-i18n="ms_pos_end">Position finale</span></div>
             </div>
             <button class="carousel-arrow left" onclick="carouselMove(-1)">‹</button>
             <button class="carousel-arrow right" onclick="carouselMove(1)">›</button>
@@ -482,8 +484,8 @@ function logout(){
             <h3 id="modalName"></h3>
             <div class="modal-meta" id="modalMeta"></div>
             <div class="modal-desc" id="modalDesc"></div>
-            <button class="modal-add" id="modalAdd" onclick="modalToggleSelect()">Ajouter à ma séance</button>
-            <button class="modal-close" onclick="closeModal()">Fermer</button>
+            <button class="modal-add" id="modalAdd" onclick="modalToggleSelect()" data-i18n="ms_add_session">Ajouter à ma séance</button>
+            <button class="modal-close" onclick="closeModal()" data-i18n="close">Fermer</button>
         </div>
     </div>
 </div>
@@ -605,10 +607,10 @@ const MUSCLES = [
 
 // Filtres matériel
 const FILTERS = [
-  {key:'tout', label:'Tout', mats:null},
-  {key:'rien', label:'Poids du corps', mats:['rien','traction']},
-  {key:'halteres', label:'Haltères', mats:['rien','traction','halteres']},
-  {key:'salle', label:'Salle', mats:['rien','traction','halteres','barre','machine']},
+  {key:'tout', get label(){return t('flt_all');}, mats:null},
+  {key:'rien', get label(){return t('flt_bodyweight');}, mats:['rien','traction']},
+  {key:'halteres', get label(){return t('flt_dumbbells');}, mats:['rien','traction','halteres']},
+  {key:'salle', get label(){return t('flt_gym');}, mats:['rien','traction','halteres','barre','machine']},
 ];
 let currentFilter = 'tout';
 
@@ -661,7 +663,7 @@ function renderExercises(){
   // Filtrer selon le matériel, mais garder l'index original
   const visible = list.map((ex,i) => ({ex, i})).filter(o => exoVisible(o.ex));
   if(visible.length === 0){
-    c.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:14px;padding:34px 20px;line-height:1.5;"><span style="display:block;font-size:44px;margin-bottom:10px">💪</span>Aucun exercice pour ce muscle avec ce matériel.<br>Essaie un autre filtre.</div>';
+    c.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:14px;padding:34px 20px;line-height:1.5;"><span style="display:block;font-size:44px;margin-bottom:10px">💪</span>'+t('ms_no_exo')+'</div>';
     return;
   }
   c.innerHTML = visible.map(({ex,i}) => {
@@ -730,27 +732,27 @@ function getSelectedExercises(){
 // Rendu de la liste d'exercices de la séance (avec bouton Alternative)
 function renderSessionList(){
   const c = document.getElementById('sessionList');
-  if(!sessionExs.length){ c.innerHTML = '<div class="empty-session">Aucun exercice sélectionné.</div>'; return; }
-  const NOMS_MUSCLES = {pecs:'Pecs', dos:'Dos', epaules:'Épaules', biceps:'Biceps', triceps:'Triceps', jambes:'Jambes', abdos:'Abdos', etirements:'Étirements', cardio:'Cardio'};
+  if(!sessionExs.length){ c.innerHTML = '<div class="empty-session">'+t('ms_empty')+'</div>'; return; }
+  const NOMS_MUSCLES = {}; ['pecs','dos','epaules','biceps','triceps','jambes','abdos','etirements','cardio'].forEach(k => Object.defineProperty(NOMS_MUSCLES, k, { get(){ return t('mus_'+k); } }));
   c.innerHTML = sessionExs.map((ex,i) => {
     const last = getLastPerf(ex.nom);
     const muscle = (sessionRefs[i] && NOMS_MUSCLES[sessionRefs[i].mKey]) || '';
     const chips = (muscle ? `<span class="ex-chip">${muscle}</span>` : '')
-                + (last ? `<span class="ex-chip gold">Dern. ${last}</span>` : '');
+                + (last ? `<span class="ex-chip gold">${t('ms_last_abbr')} ${last}</span>` : '');
     return `<div class="done-item" onclick="toggleDone(this)" style="flex-wrap:wrap">
       <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
       <div class="done-info">
         <div class="done-name">${ex.nom}</div>
         <div class="done-meta">${ex.meta}</div>
         ${chips ? `<div class="ex-chips">${chips}</div>` : ''}
-        <button class="done-alt" onclick="event.stopPropagation();swapExercise(${i})">⇄ Alternative</button>
-        <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i}, this)">Séries</button>
+        <button class="done-alt" onclick="event.stopPropagation();swapExercise(${i})">⇄ ${t('ms_alt')}</button>
+        <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i}, this)">${t('ms_sets_btn')}</button>
       </div>
       <div class="done-check">✓</div>
       <div class="sets-panel" id="setsPanel${i}" onclick="event.stopPropagation()">
-        ${last ? `<div class="sets-last">Dernière fois : <b>${last}</b></div>` : ''}
+        ${last ? `<div class="sets-last">${t('ms_last_time')} : <b>${last}</b></div>` : ''}
         <div id="setsRows${i}"></div>
-        <button class="set-add" onclick="addSet(${i})">＋ Ajouter une série</button>
+        <button class="set-add" onclick="addSet(${i})">＋ ${t('ms_add_set')}</button>
       </div>
     </div>`;
   }).join('');
@@ -872,7 +874,7 @@ function goToSession(customRefs){
     const n = sessionExs.length;
     if(n){
       const mn = Math.round(n*9/5)*5, mx = Math.round(n*12/5)*5;
-      meta.textContent = `${n} exercice${n>1?'s':''} · ${mn}-${mx} min`;
+      meta.textContent = `${n} ${t(n>1?'ms_exercises':'ms_exercise')} · ${mn}-${mx} min`;
       meta.classList.add('show');
     } else meta.classList.remove('show');
   }
@@ -910,7 +912,7 @@ function reinitDureeSeance(){
   const ctrl = document.getElementById('sessionControls');
   if(ctrl) ctrl.classList.remove('visible');
   const pb = document.getElementById('scPauseBtn');
-  if(pb){ pb.textContent = '⏸ Pause'; pb.classList.remove('paused'); }
+  if(pb){ pb.textContent = t('ms_pause'); pb.classList.remove('paused'); }
   const list = document.getElementById('sessionList');
   if(list) list.classList.add('locked'); // exercices grisés tant que pas démarré
 }
@@ -948,13 +950,13 @@ function togglePauseSeance(){
   if(!enPause){
     enPause = true;
     pauseDebut = Date.now();
-    if(btn){ btn.textContent = '▶ Reprendre'; btn.classList.add('paused'); }
+    if(btn){ btn.textContent = t('ms_resume'); btn.classList.add('paused'); }
     if(timer) timer.classList.add('paused');
   } else {
     // Reprise : on décale le départ pour exclure le temps de pause
     dureeDebut += (Date.now() - pauseDebut);
     enPause = false; pauseDebut = null;
-    if(btn){ btn.textContent = '⏸ Pause'; btn.classList.remove('paused'); }
+    if(btn){ btn.textContent = t('ms_pause'); btn.classList.remove('paused'); }
     if(timer) timer.classList.remove('paused');
   }
 }
@@ -1063,7 +1065,7 @@ function montrerFelicitations(){
         iso: new Date().toISOString().slice(0,10),
         ts: Date.now(),
         duree: duree,
-        titre: (new URLSearchParams(window.location.search).get('t')) || 'Séance libre',
+        titre: (new URLSearchParams(window.location.search).get('t')) || t('tr_free_title'),
         exos: exos
       });
       localStorage.setItem('repz_sessionLog', JSON.stringify(log));
@@ -1075,15 +1077,10 @@ function montrerFelicitations(){
   if(dureeDebut){
     const s = Math.floor((Date.now()-dureeDebut)/1000);
     const min = Math.floor(s/60);
-    dureeStr = min > 0 ? ` en ${min} min` : '';
+    dureeStr = min > 0 ? ` ${t('ms_in')} ${min} min` : '';
   }
   const prenom = (localStorage.getItem('repz_firstName') || '').trim();
-  const messages = [
-    'Séance bouclée haut la main 💪',
-    'Séance terminée comme un chef ! 🔥',
-    'Encore une séance dans la poche. Continue comme ça !',
-    'Du bon boulot aujourd\'hui. Repos mérité 👊'
-  ];
+  const messages = [t('ms_msg1'), t('ms_msg2'), t('ms_msg3'), t('ms_msg4')];
   const msg = messages[Math.floor(Math.random()*messages.length)];
   // Bilan chiffré : durée, tonnage, records
   const statsEl = document.getElementById('congratsStats');
@@ -1091,16 +1088,16 @@ function montrerFelicitations(){
     const b = window.bilanSeance || { tonnage:0, records:[] };
     const min = dureeDebut ? Math.max(1, Math.round((Date.now()-dureeDebut)/60000)) : 0;
     let sHtml = '<div class="cg-stats">';
-    if(min) sHtml += `<div class="cg-box"><div class="v">${min} min</div><div class="l">Durée</div></div>`;
-    if(b.tonnage > 0) sHtml += `<div class="cg-box"><div class="v">${b.tonnage.toLocaleString('fr-FR')} kg</div><div class="l">Soulevés au total</div></div>`;
-    sHtml += `<div class="cg-box"><div class="v">${sessionExs.length}</div><div class="l">Exercices</div></div></div>`;
+    if(min) sHtml += `<div class="cg-box"><div class="v">${min} min</div><div class="l">${t('ms_duration')}</div></div>`;
+    if(b.tonnage > 0) sHtml += `<div class="cg-box"><div class="v">${b.tonnage.toLocaleString('fr-FR')} kg</div><div class="l">${t('ms_total_lifted')}</div></div>`;
+    sHtml += `<div class="cg-box"><div class="v">${sessionExs.length}</div><div class="l">${t('ms_exercises_cap')}</div></div></div>`;
     if(b.records && b.records.length){
-      sHtml += `<div class="cg-record">🏆 Nouveau record : ${b.records.join(', ')} !</div>`;
+      sHtml += `<div class="cg-record">🏆 ${t('ms_new_record')} : ${b.records.join(', ')} !</div>`;
     }
     statsEl.innerHTML = sHtml;
   }
   const txt = document.getElementById('congratsText');
-  if(txt) txt.textContent = (prenom ? `Bravo ${prenom} ! ` : '') + msg + (dureeStr ? ` (${dureeStr.trim()})` : '');
+  if(txt) txt.textContent = (prenom ? t('ms_bravo',{name:prenom})+' ' : '') + msg + (dureeStr ? ` (${dureeStr.trim()})` : '');
   const overlay = document.getElementById('congratsOverlay');
   if(overlay) overlay.classList.add('show');
 }
@@ -1126,7 +1123,7 @@ function majModalAdd(){
   const sel = selected[modalCtx.mKey].has(modalCtx.i);
   b.classList.add('visible');
   b.classList.toggle('added', sel);
-  b.textContent = sel ? '✓ Dans ma séance — retirer' : 'Ajouter à ma séance';
+  b.textContent = sel ? t('ms_in_session') : t('ms_add_session');
 }
 function modalToggleSelect(){
   if(!modalCtx) return;
@@ -1274,7 +1271,7 @@ updateCount();
 <div class="timer-container" id="timerContainer">
     <div class="timer-display">
         <div class="timer-big" id="timerDisplay">01:30</div>
-        <div class="timer-label">Repos entre les séries</div>
+        <div class="timer-label" data-i18n="ms_rest_label">Repos entre les séries</div>
     </div>
     <div class="timer-wheels">
         <div class="wheel-col">
@@ -1303,7 +1300,7 @@ updateCount();
 
 <!-- MESSAGE D'INFO CHRONO (apparaît au début) -->
 <div class="chrono-hint" id="chronoHint">
-    ⏱️ Un chronomètre de repos est dispo ici → <button onclick="dismissChronoHint()">OK</button>
+    <span data-i18n="ms_chrono_hint">⏱️ Un chronomètre de repos est dispo ici →</span> <button onclick="dismissChronoHint()">OK</button>
 </div>
 
 <script>
@@ -1323,7 +1320,7 @@ function updateTimerDisplay(){
 function startTimer(){
     if(timerRunning) return;
     timerRunning = true;
-    document.getElementById('timerStartBtn').textContent = 'Pause';
+    document.getElementById('timerStartBtn').textContent = t('pause');
     document.getElementById('timerStartBtn').classList.add('pause');
     
     timerInterval = setInterval(()=>{
@@ -1333,7 +1330,7 @@ function startTimer(){
         } else {
             clearInterval(timerInterval);
             timerRunning = false;
-            document.getElementById('timerStartBtn').textContent = 'Démarrer';
+            document.getElementById('timerStartBtn').textContent = t('start');
             document.getElementById('timerStartBtn').classList.remove('pause');
             updateChronoFab();
             // Alerte sonore
@@ -1383,7 +1380,7 @@ function appliquerMolettes(){
     timerRunning = false;
     updateTimerDisplay();
     const btn = document.getElementById('timerStartBtn');
-    if(btn){ btn.textContent = 'Démarrer'; btn.classList.remove('pause'); }
+    if(btn){ btn.textContent = t('start'); btn.classList.remove('pause'); }
 }
 
 function initWheels(){
@@ -1398,7 +1395,7 @@ function resetTimer(){
     timerRunning = false;
     totalSeconds = lastPreset;
     updateTimerDisplay();
-    document.getElementById('timerStartBtn').textContent = 'Démarrer';
+    document.getElementById('timerStartBtn').textContent = t('start');
     document.getElementById('timerStartBtn').classList.remove('pause');
 }
 
@@ -1474,7 +1471,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     b.href = 'index.html';
     b.id = 'inviteBandeau';
     b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFF9E8;border-bottom:1px solid #F3D98A;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
-    b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
+    b.innerHTML = t('invite_banner');
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
     else { document.body.insertBefore(b, document.body.firstChild); }
