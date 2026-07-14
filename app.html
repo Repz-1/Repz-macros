@@ -994,7 +994,7 @@ function afficherMessageInvite() {
             </div>
             <div class="ring-side">
                 <div class="rs-lab">Objectif</div>
-                <div class="rs-val" id="goalKcal" onclick="editGoalKcal()" role="button" title="Modifier l'objectif">4000</div>
+                <div class="rs-val" id="goalKcal" onclick="editGoalKcal()" role="button" title="Modifier l'objectif">2000</div>
             </div>
         </div>
 
@@ -1189,7 +1189,12 @@ function afficherMessageInvite() {
 <!-- MODAL CALCULATEUR -->
 <div class="modal-overlay" id="calcModal">
     <div class="modal">
-        <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg> Calculer mes calories</h3>
+        <div id="onbWelcome" style="display:none; text-align:center; margin-bottom:18px;">
+            <div style="font-size:15px;font-weight:800;letter-spacing:1px;color:#181818;margin-bottom:10px;">BEL<span style="color:#F7B500;">FIT</span></div>
+            <h2 style="font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px;">Bienvenue 👋</h2>
+            <p style="font-size:14px;color:#6b7280;line-height:1.5;">Commençons par calculer ton objectif personnalisé. Ça prend 30 secondes.</p>
+        </div>
+        <h3 class="modal-h3-ic" id="calcTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg> Calculer mes calories</h3>
         <p class="calc-intro">Réponds à ces questions pour une estimation personnalisée.</p>
         <div class="calc-sec">Informations personnelles</div>
         <div class="tdee-grid">
@@ -1235,7 +1240,7 @@ function afficherMessageInvite() {
             </div>
             <button class="tdee-apply-btn" onclick="applyCalc()">Appliquer comme objectif</button>
         </div>
-        <div class="modal-btns">
+        <div class="modal-btns" id="calcCloseRow">
             <button class="modal-cancel" onclick="closeCalcModal()">Fermer</button>
         </div>
     </div>
@@ -2341,7 +2346,7 @@ const DB = {
 };
 
 // ===== ÉTAT =====
-let goal = { kcal:4000, weight:97, protRatio:2.2 };
+let goal = { kcal:2000, weight:70, protRatio:2 };
 let recipes = [];
 let nextRid = 1;
 let history = [];
@@ -2377,7 +2382,7 @@ function restaureDepuisCloud(u){
     try{
         if(!u || !window.firebase || !firebase.firestore) return;
         firebase.firestore().collection('users').doc(u.uid).get().then(doc=>{
-            if(!doc.exists || !doc.data().appData){ pushAppDataToCloud(); return; }
+            if(!doc.exists || !doc.data().appData){ pushAppDataToCloud(); maybeOnboarding(); return; }
             const d = JSON.parse(doc.data().appData);
             // Restaurer seulement si CET appareil n'a pas encore de données utilisateur réelles
             const histVide  = !Array.isArray(history) || history.length === 0;
@@ -2394,10 +2399,12 @@ function restaureDepuisCloud(u){
                 save();
                 renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
                 console.log('Données restaurées depuis le cloud');
+                localStorage.setItem('repz_onboarded','1');
             } else {
                 pushAppDataToCloud();
+                maybeOnboarding();
             }
-        }).catch(e=>console.warn('cloud restore', e));
+        }).catch(e=>{ console.warn('cloud restore', e); maybeOnboarding(); });
     }catch(e){}
 }
 
@@ -3199,9 +3206,44 @@ function applyCalc(){
     goal.protRatio = lastCalc.protRatio;
     save();
     renderTotals();
+    localStorage.setItem('repz_onboarded','1');   // objectif défini -> onboarding terminé
+    sortirModeOnboarding();
     const btn = document.querySelector('#calcModal .tdee-apply-btn');
     if(btn){ const o=btn.textContent; btn.textContent='✓ Objectif appliqué !'; btn.style.background='#DFA004';
         setTimeout(()=>{ btn.textContent=o; btn.style.background=''; closeCalcModal(); }, 1200); }
+}
+
+// ===== ONBOARDING : calculateur au tout premier lancement d'un compte neuf =====
+let onboardingActif = false;
+function entrerModeOnboarding(){
+    onboardingActif = true;
+    const w=document.getElementById('onbWelcome'); if(w) w.style.display='block';
+    const t=document.getElementById('calcTitle'); if(t) t.style.display='none';
+    const c=document.getElementById('calcCloseRow'); if(c) c.style.display='none';
+    const intro=document.querySelector('#calcModal .calc-intro'); if(intro) intro.style.display='none';
+    document.getElementById('calcModal').classList.add('show');
+}
+function sortirModeOnboarding(){
+    onboardingActif = false;
+    const w=document.getElementById('onbWelcome'); if(w) w.style.display='none';
+    const t=document.getElementById('calcTitle'); if(t) t.style.display='';
+    const c=document.getElementById('calcCloseRow'); if(c) c.style.display='';
+    const intro=document.querySelector('#calcModal .calc-intro'); if(intro) intro.style.display='';
+}
+function maybeOnboarding(){
+    try{
+        if(localStorage.getItem('repz_onboarded')==='1') return;
+        if(estInviteRepz()) return;                       // les invités explorent librement
+        if(!window.firebase || !firebase.auth || !firebase.auth().currentUser) return; // seulement connecté
+        const histVide  = !Array.isArray(history) || history.length===0;
+        const poidsVide = !Array.isArray(weightLog) || weightLog.length===0;
+        const repasVides = !recipes.some(r=>r.ings && r.ings.length>0);
+        if(histVide && poidsVide && repasVides){
+            entrerModeOnboarding();
+        } else {
+            localStorage.setItem('repz_onboarded','1');   // déjà des données : pas d'onboarding
+        }
+    }catch(e){}
 }
 
 
