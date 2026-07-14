@@ -484,6 +484,36 @@ body.search-open .fab-row { display:none; }
 .eat-warn { display:inline-flex; align-items:center; gap:4px; background:#FEF3E2; color:#b45309; font-size:11px; font-weight:700; padding:3px 9px; border-radius:12px; margin-top:4px; }
 .eat-note { font-size:13px; color:#db2777; font-weight:700; text-align:center; padding:14px; }
 .recipe-modal { max-height:82vh; overflow-y:auto; }
+/* ===== AJOUT VOCAL ===== */
+.vocal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:400; align-items:flex-end; justify-content:center; }
+.vocal-overlay.show { display:flex; }
+.vocal-modal { background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:520px; max-height:86vh; overflow-y:auto; }
+.vm-title { font-size:19px; font-weight:800; margin-bottom:4px; }
+.vm-sub { font-size:13.5px; color:#6b7280; font-weight:500; margin-bottom:16px; line-height:1.5; }
+.vm-mic { display:flex; flex-direction:column; align-items:center; gap:12px; padding:8px 0 16px; }
+.vm-mic-btn { width:76px; height:76px; border-radius:50%; border:none; background:#F7B500; color:#181818; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 10px 26px rgba(247,181,0,.35); }
+.vm-mic-btn svg { width:32px; height:32px; stroke:#181818; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.vm-mic-btn.ecoute { animation:vmPulse 1.2s ease-in-out infinite; background:#DE2F14; }
+.vm-mic-btn.ecoute svg { stroke:#fff; }
+@keyframes vmPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.vm-live { min-height:22px; font-size:14.5px; font-weight:600; color:#374151; text-align:center; }
+.vm-input { width:100%; padding:13px 14px; border:1.5px solid #E6E6E6; border-radius:14px; font-size:15px; font-family:inherit; margin-bottom:10px; }
+.vm-input:focus { outline:none; border-color:#F7B500; }
+.vm-analyser { width:100%; background:#181818; color:#fff; border:none; border-radius:14px; padding:14px; font-size:15px; font-weight:700; font-family:inherit; cursor:pointer; }
+.vm-props { margin:14px 0 4px; }
+.vm-prop { display:flex; align-items:center; gap:10px; padding:11px 0; border-top:1px solid #f0efe9; }
+.vm-prop-name { flex:1; min-width:0; font-size:14.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vm-prop-kcal { font-size:12px; color:#8a6400; font-weight:700; }
+.vm-prop input { width:64px; padding:8px; border:1.5px solid #E6E6E6; border-radius:10px; font-size:14px; text-align:center; font-family:inherit; }
+.vm-prop .vm-unit { font-size:12.5px; color:#6b7280; width:34px; }
+.vm-prop-del { background:none; border:none; color:#cfcfcf; font-size:18px; cursor:pointer; padding:2px 6px; }
+.vm-inconnu { font-size:13px; color:#b45309; background:#FEF3E2; border-radius:10px; padding:9px 12px; margin-top:8px; font-weight:600; }
+.vm-dest { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 14px; }
+.vm-dest button { padding:9px 14px; border:1.5px solid #E6E6E6; border-radius:20px; background:#fff; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; color:#181818; }
+.vm-dest button.on { background:#FFF4CC; border-color:#F7B500; color:#8a6400; }
+.vm-confirm { width:100%; background:#F7B500; color:#181818; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; font-family:inherit; cursor:pointer; box-shadow:0 8px 20px rgba(247,181,0,.3); }
+.vm-close { width:100%; background:none; border:none; color:#9ca3af; font-size:14px; font-weight:600; padding:12px; margin-top:4px; font-family:inherit; cursor:pointer; }
+
 .rm-macros { font-size:13px; font-weight:800; color:#DFA004; margin:2px 0 4px; }
 .rm-sec { font-size:11.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#a8a297; margin:16px 0 8px; }
 .rm-ings { list-style:none; padding:0; margin:0; }
@@ -983,6 +1013,7 @@ function afficherMessageInvite() {
         <button class="qa-btn" onclick="openWeightModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span><span class="qa-lb">Poids</span></button>
         <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8 7h8M8 11h2M12 11h.01M15 11h.01M8 15h2M12 15h.01M15 15h.01M8 18h4"/></svg></span><span class="qa-lb">Calculateur</span></button>
         <button class="qa-btn" onclick="allerCourses()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.5 11.5a1.5 1.5 0 001.5 1.2h7.5a1.5 1.5 0 001.5-1.2L21 8H6.2"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></span><span class="qa-lb">Courses</span></button>
+        <button class="qa-btn" onclick="ouvrirVocal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg></span><span class="qa-lb">Vocal</span></button>
     </div>
 
     <!-- NOTE : POIDS DU JOUR -->
@@ -2852,7 +2883,7 @@ function filterIngredients(rid,query){
     const mots = q.split(/\s+/).filter(m=>m.length>0);
     const matches=Object.keys(DB).filter(name=>{
         const t=searchTextOf(name);
-        return mots.every(mot=>t.includes(mot));
+        return mots.every(mot=>t.includes(mot) || (mot.endsWith('s') && t.includes(mot.slice(0,-1))));
     }).sort();
     const createBtn = `<div class="search-create" onclick="openFoodCreator(${rid})"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Créer un aliment</div>`;
     if(matches.length===0){
@@ -4235,6 +4266,194 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     x0 = null; axis = null;
   }, {passive:true, capture:true});
 })();
+</script>
+
+<!-- MODALE AJOUT VOCAL -->
+<div class="vocal-overlay" id="vocalOverlay" onclick="if(event.target.id==='vocalOverlay')fermerVocal()">
+  <div class="vocal-modal">
+    <div class="vm-title">🎤 Ajout vocal</div>
+    <div class="vm-sub" id="vmSub">Dis ce que tu as mangé ou bu, par exemple : « 70 g d'avoine, une dose de whey et une banane ».</div>
+    <div class="vm-mic" id="vmMicZone">
+      <button class="vm-mic-btn" id="vmMicBtn" onclick="basculerEcoute()"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg></button>
+      <div class="vm-live" id="vmLive"></div>
+    </div>
+    <input type="text" class="vm-input" id="vmInput" placeholder="Ou écris / dicte ici…">
+    <button class="vm-analyser" onclick="analyserVocal()">Analyser</button>
+    <div class="vm-props" id="vmProps"></div>
+    <div id="vmInconnus"></div>
+    <div class="vm-dest" id="vmDest"></div>
+    <button class="vm-confirm" id="vmConfirm" style="display:none" onclick="confirmerVocal()">Ajouter au repas</button>
+    <button class="vm-close" onclick="fermerVocal()">Fermer</button>
+  </div>
+</div>
+
+<script>
+/* ===== AJOUT VOCAL : écoute, analyse, confirmation ===== */
+let vocalRec = null, vocalEcoute = false, vocalProps = [], vocalDestId = null;
+
+function ouvrirVocal(){
+    if(inviteBloque()) return;
+    if(!repzAcces()){ window.location.href = 'plans.html'; return; }
+    vocalProps = []; vocalDestId = null;
+    document.getElementById('vmProps').innerHTML = '';
+    document.getElementById('vmInconnus').innerHTML = '';
+    document.getElementById('vmDest').innerHTML = '';
+    document.getElementById('vmConfirm').style.display = 'none';
+    document.getElementById('vmInput').value = '';
+    document.getElementById('vmLive').textContent = '';
+    // Web Speech dispo ? Sinon (iPhone/Safari) : mode dictée clavier
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR){
+        document.getElementById('vmMicZone').style.display = 'none';
+        document.getElementById('vmSub').textContent = "Écris ta liste ci-dessous — astuce : utilise le micro de ton clavier pour la dicter.";
+    } else {
+        document.getElementById('vmMicZone').style.display = 'flex';
+    }
+    document.getElementById('vocalOverlay').classList.add('show');
+}
+function fermerVocal(){
+    arreterEcoute();
+    document.getElementById('vocalOverlay').classList.remove('show');
+}
+function basculerEcoute(){
+    if(vocalEcoute){ arreterEcoute(); return; }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR) return;
+    vocalRec = new SR();
+    vocalRec.lang = 'fr-FR';
+    vocalRec.interimResults = true;
+    vocalRec.continuous = true;
+    let final = '';
+    vocalRec.onresult = (e)=>{
+        let interim = '';
+        for(let i = e.resultIndex; i < e.results.length; i++){
+            if(e.results[i].isFinal) final += e.results[i][0].transcript;
+            else interim += e.results[i][0].transcript;
+        }
+        document.getElementById('vmLive').textContent = final + interim;
+        document.getElementById('vmInput').value = (final + interim).trim();
+    };
+    vocalRec.onend = ()=>{ vocalEcoute = false; document.getElementById('vmMicBtn').classList.remove('ecoute'); };
+    vocalRec.onerror = ()=>{ vocalEcoute = false; document.getElementById('vmMicBtn').classList.remove('ecoute'); };
+    vocalRec.start();
+    vocalEcoute = true;
+    document.getElementById('vmMicBtn').classList.add('ecoute');
+    document.getElementById('vmLive').textContent = 'Je t\'écoute…';
+}
+function arreterEcoute(){
+    if(vocalRec){ try{ vocalRec.stop(); }catch(e){} vocalRec = null; }
+    vocalEcoute = false;
+    const b = document.getElementById('vmMicBtn'); if(b) b.classList.remove('ecoute');
+}
+
+// ----- Parseur : texte libre -> [{name, portion, estUnite}] -----
+const VOCAL_NOMBRES = { 'un':1,'une':1,'deux':2,'trois':3,'quatre':4,'cinq':5,'six':6,'sept':7,'huit':8,'neuf':9,'dix':10,'demi':0.5,'demie':0.5 };
+const VOCAL_MESURES = { 'dose':30,'doses':30,'scoop':30,'scoops':30,'cuillere':15,'cuilleres':15,'poignee':30,'poignees':30 };
+const VOCAL_STOP = ['de','d','du','des','le','la','les','un','une','et','avec','puis','à','a','au','aux'];
+
+function analyserVocal(){
+    arreterEcoute();
+    const txt = document.getElementById('vmInput').value.trim();
+    if(!txt) return;
+    const segments = txt.toLowerCase().split(/,| et | puis | avec | \+ /).map(x=>x.trim()).filter(x=>x);
+    vocalProps = [];
+    const inconnus = [];
+    segments.forEach(seg=>{
+        let qte = null, mesureG = null;
+        let mots = normalize(seg).replace(/'/g,' ').split(/\s+/).filter(m=>m);
+        // Quantité chiffrée : "70 g", "200g", "1.5"
+        const reste = [];
+        for(let i=0;i<mots.length;i++){
+            const m = mots[i];
+            const num = m.match(/^(\d+[.,]?\d*)(g|gr|grammes?|ml|cl)?$/);
+            if(num && qte===null){
+                qte = parseFloat(num[1].replace(',','.'));
+                if(num[2]==='cl') qte *= 10;
+                continue;
+            }
+            if(VOCAL_NOMBRES[m]!==undefined && qte===null){ qte = VOCAL_NOMBRES[m]; continue; }
+            if(m==='g'||m==='gr'||m==='ml'||m==='grammes'||m==='gramme') continue;
+            if(VOCAL_MESURES[m]!==undefined){ mesureG = VOCAL_MESURES[m]; continue; }
+            reste.push(m);
+        }
+        const motsAliment = reste.filter(m=>!VOCAL_STOP.includes(m));
+        if(!motsAliment.length) return;
+        // Matching dans la DB (noms + alias)
+        const cible = motsAliment.join(' ');
+        const candidats = Object.keys(DB).filter(name=>{
+            const t = searchTextOf(name);
+            return motsAliment.every(mot=>t.includes(mot) || (mot.endsWith('s') && t.includes(mot.slice(0,-1))));
+        });
+        if(!candidats.length){ inconnus.push(seg); return; }
+        // Meilleur candidat : commence pareil > nom le plus court
+        candidats.sort((a,b)=>{
+            const na = normalize(a), nb = normalize(b);
+            const sa = na.startsWith(cible)?0:1, sb = nb.startsWith(cible)?0:1;
+            return sa-sb || na.length-nb.length;
+        });
+        const name = candidats[0];
+        const estUnite = !!DB[name].unit;
+        let portion;
+        if(estUnite){ portion = qte!==null ? qte : 1; }                       // "3 oeufs", "une banane"
+        else if(mesureG!==null){ portion = (qte!==null?qte:1) * mesureG; }    // "une dose de whey" -> 30g
+        else { portion = qte!==null ? qte : 100; }                            // "70 g d'avoine" / défaut 100g
+        vocalProps.push({ name:name, portion:Math.round(portion*10)/10, estUnite:estUnite, incertain:(qte===null&&mesureG===null&&!estUnite) });
+    });
+    renderVocalProps(inconnus);
+}
+
+function renderVocalProps(inconnus){
+    const box = document.getElementById('vmProps');
+    if(!vocalProps.length){
+        box.innerHTML = '<div class="vm-inconnu">Je n\'ai reconnu aucun aliment — reformule ou écris-le.</div>';
+    } else {
+        box.innerHTML = vocalProps.map((p,i)=>{
+            const m = macrosOf({name:p.name, portion:p.portion});
+            const unite = p.estUnite ? (DB[p.name].unitLabel||'u') : 'g';
+            return `<div class="vm-prop">
+                <div style="flex:1;min-width:0">
+                    <div class="vm-prop-name">${p.name}${p.incertain?' <span style="color:#b45309">·&nbsp;à vérifier</span>':''}</div>
+                    <div class="vm-prop-kcal" id="vmk-${i}">≈ ${m.kcal.toFixed(0)} kcal</div>
+                </div>
+                <input type="number" value="${p.portion}" oninput="majVocalQte(${i},this.value)">
+                <span class="vm-unit">${unite}</span>
+                <button class="vm-prop-del" onclick="vocalProps.splice(${i},1);renderVocalProps([])">✕</button>
+            </div>`;
+        }).join('');
+    }
+    document.getElementById('vmInconnus').innerHTML = (inconnus&&inconnus.length)
+        ? `<div class="vm-inconnu">⚠ Non reconnu : ${inconnus.join(' · ')}</div>` : '';
+    // Destination : repas existants
+    const dest = document.getElementById('vmDest');
+    if(vocalProps.length){
+        if(vocalDestId===null && recipes.length) vocalDestId = recipes[0].id;
+        dest.innerHTML = recipes.map(r=>
+            `<button class="${r.id===vocalDestId?'on':''}" onclick="vocalDestId=${r.id};renderVocalProps([])">${r.name}</button>`
+        ).join('');
+        document.getElementById('vmConfirm').style.display = 'block';
+    } else {
+        dest.innerHTML = '';
+        document.getElementById('vmConfirm').style.display = 'none';
+    }
+}
+function majVocalQte(i,val){
+    const p = vocalProps[i]; if(!p) return;
+    p.portion = parseFloat(val)||0;
+    const m = macrosOf({name:p.name, portion:p.portion});
+    const k = document.getElementById('vmk-'+i); if(k) k.textContent = '≈ ' + m.kcal.toFixed(0) + ' kcal';
+}
+function confirmerVocal(){
+    const rc = recipes.find(r=>r.id===vocalDestId) || recipes[0];
+    if(!rc || !vocalProps.length) return;
+    vocalProps.forEach(p=>{
+        if(!DB[p.name] || p.portion<=0) return;
+        const nid = Math.max(0,...rc.ings.map(i=>i.id))+1;
+        rc.ings.push({id:nid, name:p.name, portion:p.portion});
+    });
+    renderRecipes(); save();
+    fermerVocal();
+    openMeals.add(rc.id); renderRecipes();
+}
 </script>
 </body>
 </html>
