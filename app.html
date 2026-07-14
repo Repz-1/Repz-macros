@@ -2757,11 +2757,11 @@ function renderTotals(){
     if(remNum && remLabel){
         if(resteTotal >= 0){
             remNum.textContent = resteTotal.toFixed(0);
-            remLabel.textContent = t('kcal_left');
+            remLabel.textContent = window.t('kcal_left');
             if(remBig) remBig.className = 'dt-remaining-big';
         } else {
             remNum.textContent = Math.abs(resteTotal).toFixed(0);
-            remLabel.textContent = t('kcal_over');
+            remLabel.textContent = window.t('kcal_over');
             if(remBig) remBig.className = 'dt-remaining-big over';
         }
     }
@@ -2774,11 +2774,11 @@ function renderTotals(){
     if(srNum && srLabel){
         if(resteTotal >= 0){
             srNum.textContent = resteTotal.toFixed(0);
-            srLabel.textContent = t('kcal_left');
+            srLabel.textContent = window.t('kcal_left');
             if(srBar) srBar.className = 'sticky-remaining';
         } else {
             srNum.textContent = Math.abs(resteTotal).toFixed(0);
-            srLabel.textContent = t('kcal_over');
+            srLabel.textContent = window.t('kcal_over');
             if(srBar) srBar.className = 'sticky-remaining over';
         }
     }
@@ -3272,7 +3272,7 @@ function applyTdee(){
 function saveDay(){
     if(inviteBloque()) return;
     const t=dayTotals();
-    if(t.kcal<=0){ alert(t('js_empty_day')); return; }
+    if(t.kcal<=0){ alert(window.t('js_empty_day')); return; }
     // Modale de confirmation (l'enregistrement vide l'écran, irréversible)
     document.getElementById('confirmSaveOverlay').classList.add('show');
 }
@@ -3708,11 +3708,11 @@ function toggleEat(){
         const reste = goal.kcal - t.kcal;
         const intro = document.getElementById('eatIntro');
         if(reste > 50){
-            intro.innerHTML = t('eat_left',{n:reste.toFixed(0)});
+            intro.innerHTML = window.t('eat_left',{n:reste.toFixed(0)});
         } else if(reste < -50){
-            intro.innerHTML = t('eat_over',{n:Math.abs(reste).toFixed(0)});
+            intro.innerHTML = window.t('eat_over',{n:Math.abs(reste).toFixed(0)});
         } else {
-            intro.innerHTML = t('eat_almost');
+            intro.innerHTML = window.t('eat_almost');
         }
         document.getElementById('eatIdeas').innerHTML='';
     }
@@ -3742,7 +3742,7 @@ function showEatIdeas(cat){
     const ideas = EAT_IDEAS[cat] || [];
     const box = document.getElementById('eatIdeas');
     if(reste <= 50){
-        box.innerHTML = '<div class="eat-note">'+t('eat_done')+'</div>';
+        box.innerHTML = '<div class="eat-note">'+window.t('eat_done')+'</div>';
         return;
     }
     // Cible = un repas normal (plafonné), pas toutes les calories restantes
