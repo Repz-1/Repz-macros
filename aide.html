@@ -10,6 +10,8 @@
 <meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Aide</title>
 <link rel="manifest" href="manifest.json">
+<script src="i18n-strings.js?v=3"></script>
+<script src="i18n.js?v=3"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
@@ -71,10 +73,10 @@ const auth = firebase.auth();
 
 <div class="container">
     <a href="parametres.html" class="back-btn">←</a>
-    <div class="page-title">Obtenir de l'aide</div>
-    <div class="page-sub">Les réponses aux questions les plus fréquentes. Besoin de plus ? Écris-nous via la bulle en bas à droite.</div>
+    <div class="page-title" data-i18n="ai_title">Obtenir de l'aide</div>
+    <div class="page-sub" data-i18n="ai_sub">Les réponses aux questions les plus fréquentes. Besoin de plus ? Écris-nous via la bulle en bas à droite.</div>
 
-    <div class="sec-label">Questions fréquentes</div>
+    <div class="sec-label" data-i18n="ai_faq">Questions fréquentes</div>
     <div class="faq-card" id="faqCard"></div>
 </div>
 
@@ -84,13 +86,13 @@ const auth = firebase.auth();
 </button>
 <div class="chat-panel" id="chatPanel">
     <div class="cp-head">
-        <h3>Écris-nous 💬</h3>
-        <p>Ton coach BELFIT te répond sous 24–48h par e-mail.</p>
+        <h3><span data-i18n="ai_write">Écris-nous</span> 💬</h3>
+        <p data-i18n="ai_reply">Ton coach BELFIT te répond sous 24–48h par e-mail.</p>
     </div>
     <div class="cp-body">
-        <textarea id="chatMsg" placeholder="Décris ta question ou ton problème…"></textarea>
-        <button class="cp-send" onclick="envoyerMessage()">Envoyer au coach</button>
-        <div class="cp-ok" id="chatOk">Message envoyé ✓ Réponse sous 24–48h.</div>
+        <textarea id="chatMsg" data-i18n-ph="ai_ph" placeholder="Décris ta question ou ton problème…"></textarea>
+        <button class="cp-send" onclick="envoyerMessage()" data-i18n="ai_send">Envoyer au coach</button>
+        <div class="cp-ok" id="chatOk" data-i18n="ai_ok">Message envoyé ✓ Réponse sous 24–48h.</div>
     </div>
 </div>
 
@@ -101,6 +103,11 @@ const EMAILJS_SERVICE_ID  = 'service_kpiz7rc';
 const EMAILJS_TEMPLATE_ID = 'template_ah0jhvr';
 
 // ===== FAQ =====
+function trf(str){
+    if(BELFIT_I18N.getLang() === 'fr') return str;
+    const m = (window.BELFIT_STRINGS[BELFIT_I18N.getLang()] || {}).__ai || {};
+    return m[str] || str;
+}
 const FAQ = [
     { q:"C'est quoi BELFIT ?", a:"BELFIT est une application belge de nutrition et d'entraînement avec un vrai coach humain. Tu suis ton alimentation et tes séances dans l'app, et ton coach construit ton programme personnalisé." },
     { q:"Comment fonctionne le programme personnalisé ?", a:"En Premium, tu remplis un questionnaire détaillé (objectif, préférences, allergies, rythme de vie). Ton coach l'analyse et te livre ton programme personnalisé sous 24 à 48h par e-mail. Pas d'algorithme automatique : un vrai coach travaille sur ton dossier." },
@@ -114,11 +121,15 @@ const FAQ = [
     { q:"L'app fonctionne-t-elle hors ligne ?", a:"Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium." },
     { q:"Comment vous contacter ?", a:"Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h." }
 ];
-document.getElementById('faqCard').innerHTML = FAQ.map((f,i)=>`
+function renderFaq(){
+    document.getElementById('faqCard').innerHTML = FAQ.map((f,i)=>`
     <div class="faq-item" id="faq${i}">
-        <button class="faq-q" onclick="toggleFaq(${i})"><span>${f.q}</span><span class="fq-arr">▾</span></button>
-        <div class="faq-a">${f.a}</div>
+        <button class="faq-q" onclick="toggleFaq(${i})"><span>${trf(f.q)}</span><span class="fq-arr">▾</span></button>
+        <div class="faq-a">${trf(f.a)}</div>
     </div>`).join('');
+}
+renderFaq();
+window.addEventListener('langchange', renderFaq);
 function toggleFaq(i){
     const el = document.getElementById('faq'+i);
     const dejaOuvert = el.classList.contains('open');
@@ -159,7 +170,7 @@ let typeDemande = 'Message assistance';
 })();
 function envoyerMessage(){
     const msg = document.getElementById('chatMsg').value.trim();
-    if(!msg){ alert('Écris ton message d\'abord.'); return; }
+    if(!msg){ alert(t('ai_write_first')); return; }
     const user = auth.currentUser;
     const email = user && user.email ? user.email : '';
     const params = {

@@ -9,6 +9,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f7efd9">
 <link rel="manifest" href="manifest.json">
+<script src="i18n-strings.js?v=3"></script>
+<script src="i18n.js?v=3"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Confidentialité & conditions</title>
@@ -36,24 +38,24 @@ a { color:#8F6200; font-weight:700; }
 <body>
 <div class="container">
     <a href="parametres.html" class="back-btn">←</a>
-    <h1>Politique de confidentialité & conditions d'utilisation</h1>
-    <div class="maj">Version 1 · Dernière mise à jour : juillet 2026<br>BELFIT — Belgique · Contact : <a href="mailto:contact@belfit.be">contact@belfit.be</a></div>
+    <h1 data-i18n="cf_title">Politique de confidentialité & conditions d'utilisation</h1>
+    <div class="maj" data-i18n-html="cf_maj">Version 1 · Dernière mise à jour : juillet 2026<br>BELFIT — Belgique · Contact : <a href="mailto:contact@belfit.be">contact@belfit.be</a></div>
 
-    <div class="warn">Ce document explique de façon claire comment BELFIT traite tes données, dans le respect du Règlement général sur la protection des données (RGPD) et du droit belge. Il vaut information au sens des articles 13 et 14 du RGPD.</div>
+    <div class="warn" data-i18n="cf_intro">Ce document explique de façon claire comment BELFIT traite tes données, dans le respect du Règlement général sur la protection des données (RGPD) et du droit belge. Il vaut information au sens des articles 13 et 14 du RGPD.</div>
 
     <div class="toc">
-        <a href="#p1">Partie A — Politique de confidentialité</a>
-        <a href="#p2">Partie B — Conditions d'utilisation</a>
+        <a href="#p1" data-i18n="cf_toc_a">Partie A — Politique de confidentialité</a>
+        <a href="#p2" data-i18n="cf_toc_b">Partie B — Conditions d'utilisation</a>
     </div>
 
     <!-- ============ PARTIE A ============ -->
     <div class="card" id="p1">
-    <h2 style="margin-top:0">Partie A — Politique de confidentialité</h2>
+    <h2 style="margin-top:0" data-i18n="cf_a_title">Partie A — Politique de confidentialité</h2>
 
-    <h3>1. Responsable du traitement</h3>
+    <div data-i18n-html="cf_a1"><h3>1. Responsable du traitement</h3>
     <p>BELFIT est une application belge de coaching en nutrition et en entraînement. Le responsable du traitement de tes données personnelles est BELFIT, établi en Belgique, joignable à <a href="mailto:contact@belfit.be">contact@belfit.be</a>. Pour toute question relative à tes données, utilise cette même adresse.</p>
 
-    <h3>2. Données que nous traitons</h3>
+    </div><div data-i18n-html="cf_a2"><h3>2. Données que nous traitons</h3>
     <ul>
         <li><strong>Identité & compte</strong> : prénom, adresse e-mail, mot de passe (chiffré par Firebase, jamais accessible en clair).</li>
         <li><strong>Caractéristiques</strong> : date de naissance, sexe, taille, niveau d'activité.</li>
@@ -65,10 +67,10 @@ a { color:#8F6200; font-weight:700; }
     </ul>
     <p>La majorité de ces données te concernant (journal, pesées, aliments personnalisés) est stockée <strong>localement sur ton appareil</strong> et ne transite pas par nos serveurs.</p>
 
-    <h3>3. Origine des données</h3>
+    </div><div data-i18n-html="cf_a3"><h3>3. Origine des données</h3>
     <p>Nous obtenons ces données directement de toi (inscription, questionnaire, saisies dans l'app). Si tu te connectes via un service tiers (par ex. Google), certaines informations de base (nom, e-mail) peuvent nous être transmises par ce service selon les autorisations que tu accordes.</p>
 
-    <h3>4. Finalités & bases légales</h3>
+    </div><div data-i18n-html="cf_a4"><h3>4. Finalités & bases légales</h3>
     <ul>
         <li><strong>Créer et gérer ton compte, te fournir l'app</strong> — base : exécution du contrat.</li>
         <li><strong>Construire et ajuster ton programme personnalisé</strong> (questionnaire, demandes d'ajustement traitées par ton coach) — base : exécution du contrat et, pour les données de santé, ton consentement explicite.</li>
@@ -78,10 +80,10 @@ a { color:#8F6200; font-weight:700; }
         <li><strong>Améliorer l'app à partir de données agrégées/anonymisées</strong> — base : intérêt légitime.</li>
     </ul>
 
-    <h3>5. Traitement des données de santé</h3>
+    </div><div data-i18n-html="cf_a5"><h3>5. Traitement des données de santé</h3>
     <p>Le poids, les mensurations, les objectifs, les allergies et les pathologies déclarées sont des données concernant la santé, considérées comme sensibles par le RGPD. Elles ne sont traitées qu'avec <strong>ton consentement explicite</strong>, donné au moment où tu remplis le questionnaire ou renseignes ces informations. Elles servent uniquement à personnaliser ton suivi et tes recommandations. Tu peux retirer ce consentement à tout moment (voir tes droits, point 10).</p>
 
-    <h3>6. Destinataires & sous-traitants</h3>
+    </div><div data-i18n-html="cf_a6"><h3>6. Destinataires & sous-traitants</h3>
     <p>Seules les personnes de BELFIT qui en ont besoin accèdent à tes données. Nous faisons appel à des sous-traitants, liés par contrat au sens de l'article 28 du RGPD :</p>
     <ul>
         <li><strong>Google Firebase</strong> — authentification et base de données (statut Premium).</li>
@@ -91,16 +93,16 @@ a { color:#8F6200; font-weight:700; }
     </ul>
     <p>Nous ne vendons jamais tes données et ne les partageons pas à des fins publicitaires tierces. Une transmission n'a lieu que si la loi l'exige ou avec ton consentement préalable.</p>
 
-    <h3>7. Transferts hors de l'Union européenne</h3>
+    </div><div data-i18n-html="cf_a7"><h3>7. Transferts hors de l'Union européenne</h3>
     <p>Certains de nos sous-traitants (par ex. Google, Lemon Squeezy) peuvent traiter des données en dehors de l'Espace économique européen. Le cas échéant, ces transferts sont encadrés par des garanties appropriées : décision d'adéquation de la Commission européenne, cadre « EU-U.S. Data Privacy Framework » ou clauses contractuelles types (SCC) approuvées par la Commission.</p>
 
-    <h3>8. Absence de décision automatisée</h3>
+    </div><div data-i18n-html="cf_a8"><h3>8. Absence de décision automatisée</h3>
     <p>Ton programme est établi par un coach humain. Nous ne prenons pas de décision produisant des effets juridiques à ton égard sur la seule base d'un traitement automatisé au sens de l'article 22 du RGPD.</p>
 
-    <h3>9. Durée de conservation</h3>
+    </div><div data-i18n-html="cf_a9"><h3>9. Durée de conservation</h3>
     <p>Nous conservons tes données de compte tant que ton compte est actif. En cas d'inactivité prolongée ou si tu supprimes ton compte, nous supprimons ou anonymisons tes données, sauf obligation légale de conservation (par ex. comptabilité). Les données stockées localement sur ton appareil restent sous ton contrôle : tu peux les effacer à tout moment via ton navigateur.</p>
 
-    <h3>10. Tes droits</h3>
+    </div><div data-i18n-html="cf_a10"><h3>10. Tes droits</h3>
     <ul>
         <li>Être informé du traitement de tes données ;</li>
         <li>Accéder à une copie de tes données ;</li>
@@ -114,19 +116,19 @@ a { color:#8F6200; font-weight:700; }
     </ul>
     <p>Pour exercer tes droits : <a href="mailto:contact@belfit.be">contact@belfit.be</a>. La suppression du compte et le retrait des consentements se font aussi depuis Paramètres. Autorité compétente en Belgique : Autorité de protection des données (APD), <a href="https://www.autoriteprotectiondonnees.be">autoriteprotectiondonnees.be</a>.</p>
 
-    <h3>11. Mineurs</h3>
+    </div><div data-i18n-html="cf_a11"><h3>11. Mineurs</h3>
     <p>BELFIT n'est pas destiné aux personnes de moins de 13 ans (âge du consentement numérique en Belgique). Si tu es mineur, l'accord d'un parent ou tuteur peut être requis. Si nous apprenons qu'un enfant sous cet âge nous a communiqué des données sans autorisation, nous les supprimons.</p>
-    </div>
+    </div></div>
 
     <!-- ============ PARTIE B ============ -->
     <div class="card" id="p2" style="margin-top:22px">
-    <h2 style="margin-top:0">Partie B — Conditions d'utilisation</h2>
-    <p>En créant un compte ou en utilisant BELFIT, tu acceptes ces conditions. Si tu ne les acceptes pas, n'utilise pas le service.</p>
+    <h2 style="margin-top:0" data-i18n="cf_b_title">Partie B — Conditions d'utilisation</h2>
+    <p data-i18n="cf_b_intro">En créant un compte ou en utilisant BELFIT, tu acceptes ces conditions. Si tu ne les acceptes pas, n'utilise pas le service.</p>
 
-    <h3>1. Objet du service</h3>
+    <div data-i18n-html="cf_b1"><h3>1. Objet du service</h3>
     <p>BELFIT t'aide à suivre ton alimentation, ton hydratation, ton poids et tes entraînements, et te met en relation avec un coach qui construit ton programme personnalisé. Le service est destiné à un usage personnel et non commercial.</p>
 
-    <h3>2. Ton compte</h3>
+    </div><div data-i18n-html="cf_b2"><h3>2. Ton compte</h3>
     <ul>
         <li>Tes identifiants sont personnels et ne peuvent être ni transférés ni utilisés par un tiers.</li>
         <li>Tu es responsable des activités réalisées depuis ton compte et de la confidentialité de ton mot de passe.</li>
@@ -134,10 +136,10 @@ a { color:#8F6200; font-weight:700; }
         <li>En cas d'usage suspect de ton compte, préviens-nous à contact@belfit.be.</li>
     </ul>
 
-    <h3>3. Santé & information nutritionnelle</h3>
-    <p id="sante">Tu es responsable de ta santé. BELFIT n'est pas un service médical et ne fournit ni diagnostic ni avis médical. Le service a une vocation de bien-être et de forme physique. <strong>Consulte un médecin avant de démarrer un régime ou un programme d'entraînement</strong>, en cas de pathologie, de grossesse, ou si tu ressens une douleur ou une gêne. Les valeurs nutritionnelles de la base d'aliments sont fournies à titre indicatif et peuvent comporter des imprécisions ; BELFIT ne garantit aucun résultat de poids, de forme ou de santé.</p>
+    </div><h3 data-i18n="cf_b3_h">3. Santé & information nutritionnelle</h3>
+    <p id="sante" data-i18n-html="cf_b3_p">Tu es responsable de ta santé. BELFIT n'est pas un service médical et ne fournit ni diagnostic ni avis médical. Le service a une vocation de bien-être et de forme physique. <strong>Consulte un médecin avant de démarrer un régime ou un programme d'entraînement</strong>, en cas de pathologie, de grossesse, ou si tu ressens une douleur ou une gêne. Les valeurs nutritionnelles de la base d'aliments sont fournies à titre indicatif et peuvent comporter des imprécisions ; BELFIT ne garantit aucun résultat de poids, de forme ou de santé.</p>
 
-    <h3>4. Abonnement Premium</h3>
+    <div data-i18n-html="cf_b4"><h3>4. Abonnement Premium</h3>
     <ul>
         <li>L'abonnement (1, 3 ou 12 mois) est payé d'avance via notre partenaire Lemon Squeezy.</li>
         <li>Tu peux résilier à tout moment ; ton accès reste actif jusqu'à la fin de la période déjà payée. La gestion et la résiliation se font via le lien reçu dans ton e-mail de confirmation d'achat, ou en nous écrivant.</li>
@@ -145,26 +147,26 @@ a { color:#8F6200; font-weight:700; }
         <li>Le programme personnalisé est livré sous 24 à 48h ouvrées après réception du questionnaire complet.</li>
     </ul>
 
-    <h3>5. Utilisation acceptable</h3>
+    </div><div data-i18n-html="cf_b5"><h3>5. Utilisation acceptable</h3>
     <p>Tu t'engages à utiliser le service conformément à la loi, sans nuire à BELFIT ou à autrui, sans y diffuser de contenu illicite, haineux, diffamatoire ou portant atteinte aux droits d'autrui, et sans y mener d'activité commerciale ou publicitaire.</p>
 
-    <h3>6. Propriété intellectuelle</h3>
+    </div><div data-i18n-html="cf_b6"><h3>6. Propriété intellectuelle</h3>
     <p>L'application, ses programmes, sa base d'aliments, ses textes, son logo et sa marque sont la propriété de BELFIT et sont réservés à ton usage personnel. Les contenus que tu crées (aliments, notes) restent tiens ; tu accordes à BELFIT une licence limitée nécessaire au fonctionnement du service.</p>
 
-    <h3>7. Limitation de responsabilité</h3>
+    </div><div data-i18n-html="cf_b7"><h3>7. Limitation de responsabilité</h3>
     <p>Le service est fourni « en l'état », sans garantie d'absence d'interruption ou d'erreur. Dans les limites permises par la loi, BELFIT n'est pas responsable des dommages indirects, et sa responsabilité pour dommages directs est limitée au montant des sommes que tu as payées au cours des douze derniers mois. Cette clause ne limite pas la responsabilité en cas de faute lourde, de dol ou d'atteinte aux droits que la loi rend impératifs (notamment en matière de consommation).</p>
 
-    <h3>8. Modifications & résiliation</h3>
+    </div><div data-i18n-html="cf_b8"><h3>8. Modifications & résiliation</h3>
     <p>BELFIT peut faire évoluer ces conditions ; la version en vigueur est celle affichée dans l'app, et les changements importants te seront signalés. Un manquement grave à ces conditions peut entraîner la clôture de ton compte.</p>
 
-    <h3>9. Droit applicable</h3>
+    </div><div data-i18n-html="cf_b9"><h3>9. Droit applicable</h3>
     <p>Ces conditions et l'utilisation du service sont régies par le droit belge. Tout litige relève des tribunaux compétents de Belgique, sans préjudice des règles protectrices applicables aux consommateurs.</p>
 
-    <h3>10. Contact</h3>
+    </div><div data-i18n-html="cf_b10"><h3>10. Contact</h3>
     <p>Pour toute question, réclamation ou assistance : <a href="mailto:contact@belfit.be">contact@belfit.be</a>.</p>
-    </div>
+    </div></div>
 
-    <div class="warn" style="margin-top:22px">Ce document a été rédigé sur mesure pour BELFIT mais n'a pas valeur d'avis juridique. Avant le lancement commercial, fais-le relire par un juriste ou un DPO pour valider sa conformité complète à ta situation exacte.</div>
+    <div class="warn" style="margin-top:22px" data-i18n="cf_footer">Ce document a été rédigé sur mesure pour BELFIT mais n'a pas valeur d'avis juridique. Avant le lancement commercial, fais-le relire par un juriste ou un DPO pour valider sa conformité complète à ta situation exacte.</div>
 </div>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 </body>
