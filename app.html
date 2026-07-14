@@ -511,6 +511,10 @@ body.search-open .fab-row { display:none; }
 .vm-dest { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 14px; }
 .vm-dest button { padding:9px 14px; border:1.5px solid #E6E6E6; border-radius:20px; background:#fff; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; color:#181818; }
 .vm-dest button.on { background:#FFF4CC; border-color:#F7B500; color:#8a6400; }
+.vm-new { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:0 0 14px; }
+.vm-new-lb { font-size:12.5px; font-weight:700; color:#9ca3af; }
+.vm-new button { padding:9px 13px; border:1.5px dashed #d9d4c8; border-radius:20px; background:#fff; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; color:#181818; }
+.vm-new button:active { background:#FFF4CC; border-color:#F7B500; }
 .vm-confirm { width:100%; background:#F7B500; color:#181818; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; font-family:inherit; cursor:pointer; box-shadow:0 8px 20px rgba(247,181,0,.3); }
 .vm-close { width:100%; background:none; border:none; color:#9ca3af; font-size:14px; font-weight:600; padding:12px; margin-top:4px; font-family:inherit; cursor:pointer; }
 
@@ -4282,6 +4286,12 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     <div class="vm-props" id="vmProps"></div>
     <div id="vmInconnus"></div>
     <div class="vm-dest" id="vmDest"></div>
+    <div class="vm-new" id="vmNew" style="display:none">
+        <span class="vm-new-lb">Ou crée :</span>
+        <button onclick="creerDepuisVocal('repas')">🍴 Repas</button>
+        <button onclick="creerDepuisVocal('collation')">🥨 Collation</button>
+        <button onclick="creerDepuisVocal('boisson')">🥤 Boisson</button>
+    </div>
     <button class="vm-confirm" id="vmConfirm" style="display:none" onclick="confirmerVocal()">Ajouter au repas</button>
     <button class="vm-close" onclick="fermerVocal()">Fermer</button>
   </div>
@@ -4443,9 +4453,11 @@ function renderVocalProps(inconnus){
         dest.innerHTML = recipes.map(r=>
             `<button class="${r.id===vocalDestId?'on':''}" onclick="vocalDestId=${r.id};renderVocalProps([])">${r.name}</button>`
         ).join('');
+        document.getElementById('vmNew').style.display = 'flex';
         document.getElementById('vmConfirm').style.display = 'block';
     } else {
         dest.innerHTML = '';
+        document.getElementById('vmNew').style.display = 'none';
         document.getElementById('vmConfirm').style.display = 'none';
     }
 }
@@ -4454,6 +4466,12 @@ function majVocalQte(i,val){
     p.portion = parseFloat(val)||0;
     const m = macrosOf({name:p.name, portion:p.portion});
     const k = document.getElementById('vmk-'+i); if(k) k.textContent = '≈ ' + m.kcal.toFixed(0) + ' kcal';
+}
+function creerDepuisVocal(typeKey){
+    addRecipe(null, typeKey);                     // crée "Repas N" / "Collation N" / "Boisson N"
+    const nouveau = recipes[recipes.length - 1];
+    vocalDestId = nouveau.id;                     // le sélectionner comme destination
+    renderVocalProps([]);
 }
 function confirmerVocal(){
     const rc = recipes.find(r=>r.id===vocalDestId) || recipes[0];
