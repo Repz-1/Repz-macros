@@ -131,3 +131,133 @@ window.BELFIT_STRINGS = {
     show_password: "Wachtwoord tonen"
   }
 };
+
+/* ===== Navigation (shell) ===== */
+Object.assign(window.BELFIT_STRINGS.fr, {
+  nav_journal:"Journal", nav_train:"S'entraîner", nav_stats:"Stats", nav_premium:"Premium",
+  copy:"Copier", copied:"Copié ✓", save:"Enregistrer", saved:"Enregistré ✓", cancel:"Annuler"
+});
+Object.assign(window.BELFIT_STRINGS.en, {
+  nav_journal:"Journal", nav_train:"Train", nav_stats:"Stats", nav_premium:"Premium",
+  copy:"Copy", copied:"Copied ✓", save:"Save", saved:"Saved ✓", cancel:"Cancel"
+});
+Object.assign(window.BELFIT_STRINGS.nl, {
+  nav_journal:"Dagboek", nav_train:"Trainen", nav_stats:"Stats", nav_premium:"Premium",
+  copy:"Kopiëren", copied:"Gekopieerd ✓", save:"Opslaan", saved:"Opgeslagen ✓", cancel:"Annuleren"
+});
+
+/* ===== Paramètres ===== */
+Object.assign(window.BELFIT_STRINGS.fr, {
+  set_title:"Paramètres", set_sec_account:"Compte",
+  set_account:"Paramètres du compte", set_account_sub:"E-mail, prénom, mot de passe",
+  set_sub:"Gérer l'abonnement", set_sub_sub:"Formules, avantages Premium",
+  set_lang:"Langue de l'application", set_lang_sub:"Choisis ta langue préférée",
+  set_sec_notif:"Notifications",
+  set_notif_weigh:"Rappel de pesée", set_notif_weigh_sub:"La note dans le journal si tu ne t'es pas pesé",
+  set_notif_coach:"E-mails du coach", set_notif_coach_sub:"Programme, ajustements, suivi",
+  set_notif_note:"Les notifications push (rappels sur ton écran même app fermée) arriveront avec l'application native.",
+  set_sec_track:"Suivi automatique",
+  set_hc_sub:"Synchroniser pas, poids et séances automatiquement", set_soon:"BIENTÔT",
+  set_hc_note:"Santé Connect est le hub santé d'Android : il permet aux applis (Samsung Health, Fitbit…) de partager leurs données entre elles. Cette synchronisation sera disponible avec l'application native BELFIT.",
+  set_sec_social:"Social",
+  set_invite:"Invite des amis", set_invite_sub:"1 mois offert quand ton filleul s'abonne",
+  set_ref_code:"Ton code",
+  set_sec_contact:"Contact",
+  set_write:"Nous écrire", set_write_sub:"Directement depuis l'app — réponse rapide",
+  set_suggest:"Suggérer une amélioration", set_suggest_sub:"Une idée pour l'app ? On t'écoute",
+  set_sec_docs:"Documents", set_privacy:"Politique de confidentialité & conditions d'utilisation",
+  set_sec_help:"Assistance", set_help:"Obtenir de l'aide", set_help_sub:"FAQ et contact",
+  set_ver:"v1.0 · Startup belge 🇧🇪", set_logout:"SE DÉCONNECTER",
+  acc_email:"E-mail", acc_firstname:"Prénom", acc_password:"Mot de passe",
+  acc_units:"Système d'unités", acc_units_v:"Européen (kg, cm)",
+  acc_change_pwd:"Changer mon mot de passe", acc_delete:"Supprimer le compte",
+  acc_pwd_sent:"Un e-mail de réinitialisation vient d'être envoyé à ton adresse. Ouvre-le pour choisir un nouveau mot de passe.",
+  del_title:"Supprimer ton compte ?",
+  del_body:"Cette action est définitive : ton compte, ton accès Premium et tes données seront supprimés. Tes données locales (journal, pesées) resteront sur cet appareil tant que tu ne les effaces pas.",
+  del_yes:"Oui, supprimer définitivement",
+  js_enter_firstname:"Entre un prénom",
+  js_login_pwd:"Connecte-toi pour changer ton mot de passe.",
+  js_mail_fail:"Impossible d'envoyer l'e-mail pour le moment. Réessaie plus tard.",
+  js_login_del:"Connecte-toi pour supprimer ton compte.",
+  js_acc_deleted:"Ton compte a été supprimé.",
+  js_reauth:"Par sécurité, reconnecte-toi puis réessaie la suppression (ta session est trop ancienne).",
+  js_del_fail:"Impossible de supprimer le compte pour le moment. Réessaie plus tard.",
+  js_invite_msg:"Je suis sur BELFIT 🇧🇪 — coaching nutrition & training avec un vrai coach. Rejoins-moi : {link} — avec mon lien, on gagne tous les deux un avantage sur l'abonnement 💪",
+  js_invite_copied:"Message d'invitation copié ! Colle-le où tu veux."
+});
+Object.assign(window.BELFIT_STRINGS.en, {
+  set_title:"Settings", set_sec_account:"Account",
+  set_account:"Account settings", set_account_sub:"Email, first name, password",
+  set_sub:"Manage subscription", set_sub_sub:"Plans, Premium benefits",
+  set_lang:"App language", set_lang_sub:"Choose your preferred language",
+  set_sec_notif:"Notifications",
+  set_notif_weigh:"Weigh-in reminder", set_notif_weigh_sub:"The note in your journal if you haven't weighed in",
+  set_notif_coach:"Coach emails", set_notif_coach_sub:"Program, adjustments, follow-up",
+  set_notif_note:"Push notifications (reminders on your screen even with the app closed) will arrive with the native app.",
+  set_sec_track:"Automatic tracking",
+  set_hc_sub:"Sync steps, weight and workouts automatically", set_soon:"SOON",
+  set_hc_note:"Health Connect is Android's health hub: it lets apps (Samsung Health, Fitbit…) share their data with each other. This sync will be available with the native BELFIT app.",
+  set_sec_social:"Social",
+  set_invite:"Invite friends", set_invite_sub:"1 free month when your referral subscribes",
+  set_ref_code:"Your code",
+  set_sec_contact:"Contact",
+  set_write:"Write to us", set_write_sub:"Straight from the app — fast reply",
+  set_suggest:"Suggest an improvement", set_suggest_sub:"Got an idea for the app? We're listening",
+  set_sec_docs:"Documents", set_privacy:"Privacy policy & terms of use",
+  set_sec_help:"Support", set_help:"Get help", set_help_sub:"FAQ and contact",
+  set_ver:"v1.0 · Belgian startup 🇧🇪", set_logout:"LOG OUT",
+  acc_email:"Email", acc_firstname:"First name", acc_password:"Password",
+  acc_units:"Unit system", acc_units_v:"European (kg, cm)",
+  acc_change_pwd:"Change my password", acc_delete:"Delete account",
+  acc_pwd_sent:"A reset email has just been sent to your address. Open it to choose a new password.",
+  del_title:"Delete your account?",
+  del_body:"This action is permanent: your account, Premium access and data will be deleted. Your local data (journal, weigh-ins) will stay on this device until you erase it.",
+  del_yes:"Yes, delete permanently",
+  js_enter_firstname:"Enter a first name",
+  js_login_pwd:"Log in to change your password.",
+  js_mail_fail:"Couldn't send the email right now. Try again later.",
+  js_login_del:"Log in to delete your account.",
+  js_acc_deleted:"Your account has been deleted.",
+  js_reauth:"For security, log in again then retry the deletion (your session is too old).",
+  js_del_fail:"Couldn't delete the account right now. Try again later.",
+  js_invite_msg:"I'm on BELFIT 🇧🇪 — nutrition & training coaching with a real coach. Join me: {link} — with my link, we both get a subscription perk 💪",
+  js_invite_copied:"Invitation message copied! Paste it anywhere."
+});
+Object.assign(window.BELFIT_STRINGS.nl, {
+  set_title:"Instellingen", set_sec_account:"Account",
+  set_account:"Accountinstellingen", set_account_sub:"E-mail, voornaam, wachtwoord",
+  set_sub:"Abonnement beheren", set_sub_sub:"Formules, Premium-voordelen",
+  set_lang:"Taal van de app", set_lang_sub:"Kies je voorkeurstaal",
+  set_sec_notif:"Meldingen",
+  set_notif_weigh:"Weegherinnering", set_notif_weigh_sub:"De melding in je dagboek als je je niet gewogen hebt",
+  set_notif_coach:"E-mails van de coach", set_notif_coach_sub:"Programma, aanpassingen, opvolging",
+  set_notif_note:"Pushmeldingen (herinneringen op je scherm, ook met gesloten app) komen met de native app.",
+  set_sec_track:"Automatische tracking",
+  set_hc_sub:"Stappen, gewicht en trainingen automatisch synchroniseren", set_soon:"BINNENKORT",
+  set_hc_note:"Health Connect is de gezondheidshub van Android: apps (Samsung Health, Fitbit…) kunnen er hun gegevens mee delen. Deze synchronisatie komt met de native BELFIT-app.",
+  set_sec_social:"Sociaal",
+  set_invite:"Nodig vrienden uit", set_invite_sub:"1 maand gratis wanneer je vriend zich abonneert",
+  set_ref_code:"Jouw code",
+  set_sec_contact:"Contact",
+  set_write:"Schrijf ons", set_write_sub:"Rechtstreeks vanuit de app — snel antwoord",
+  set_suggest:"Stel een verbetering voor", set_suggest_sub:"Een idee voor de app? We luisteren",
+  set_sec_docs:"Documenten", set_privacy:"Privacybeleid & gebruiksvoorwaarden",
+  set_sec_help:"Ondersteuning", set_help:"Hulp krijgen", set_help_sub:"FAQ en contact",
+  set_ver:"v1.0 · Belgische startup 🇧🇪", set_logout:"AFMELDEN",
+  acc_email:"E-mail", acc_firstname:"Voornaam", acc_password:"Wachtwoord",
+  acc_units:"Eenhedensysteem", acc_units_v:"Europees (kg, cm)",
+  acc_change_pwd:"Mijn wachtwoord wijzigen", acc_delete:"Account verwijderen",
+  acc_pwd_sent:"Er is zonet een reset-e-mail naar je adres gestuurd. Open hem om een nieuw wachtwoord te kiezen.",
+  del_title:"Je account verwijderen?",
+  del_body:"Deze actie is definitief: je account, je Premium-toegang en je gegevens worden verwijderd. Je lokale gegevens (dagboek, wegingen) blijven op dit toestel tot je ze wist.",
+  del_yes:"Ja, definitief verwijderen",
+  js_enter_firstname:"Geef een voornaam in",
+  js_login_pwd:"Meld je aan om je wachtwoord te wijzigen.",
+  js_mail_fail:"E-mail kon nu niet verzonden worden. Probeer later opnieuw.",
+  js_login_del:"Meld je aan om je account te verwijderen.",
+  js_acc_deleted:"Je account is verwijderd.",
+  js_reauth:"Meld je uit veiligheid opnieuw aan en probeer de verwijdering dan opnieuw (je sessie is te oud).",
+  js_del_fail:"Account kon nu niet verwijderd worden. Probeer later opnieuw.",
+  js_invite_msg:"Ik zit op BELFIT 🇧🇪 — voedings- & trainingscoaching met een echte coach. Doe mee: {link} — met mijn link krijgen we allebei een voordeel op het abonnement 💪",
+  js_invite_copied:"Uitnodigingsbericht gekopieerd! Plak het waar je wil."
+});

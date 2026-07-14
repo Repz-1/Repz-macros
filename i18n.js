@@ -60,6 +60,18 @@
     applyDom();
   });
 
+  // Sync inter-pages / iframes : si la langue change ailleurs, on suit
+  try {
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'repz_lang' && e.newValue && LANGS.indexOf(e.newValue) !== -1 && e.newValue !== current) {
+        current = e.newValue;
+        document.documentElement.setAttribute('lang', current);
+        applyDom();
+        try { window.dispatchEvent(new CustomEvent('langchange', { detail: { lang: current } })); } catch (err) {}
+      }
+    });
+  } catch (e) {}
+
   global.BELFIT_I18N = {
     t: t, setLang: setLang, getLang: getLang, langChoisie: langChoisie,
     applyDom: applyDom, LANGS: LANGS, LANG_LABELS: LANG_LABELS, detectLang: detectLang

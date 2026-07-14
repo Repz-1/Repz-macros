@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script src="i18n-strings.js?v=1"></script>
-<script src="i18n.js?v=1"></script>
+<script src="i18n-strings.js?v=2"></script>
+<script src="i18n.js?v=2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -123,26 +123,26 @@ auth.onAuthStateChanged((user) => {
 
 <div class="container">
     <a href="profil.html" class="back-btn">←</a>
-    <div class="page-title">Paramètres</div>
+    <div class="page-title" data-i18n="set_title">Paramètres</div>
 
     <!-- COMPTE -->
-    <div class="sec-label">Compte</div>
+    <div class="sec-label" data-i18n="set_sec_account">Compte</div>
     <div class="menu-card">
         <button class="menu-row" onclick="ouvrirPanel('panelCompte')">
-            <span class="mr-txt">Paramètres du compte<span class="mr-sub">E-mail, prénom, mot de passe</span></span>
+            <span class="mr-txt"><span data-i18n="set_account">Paramètres du compte</span><span class="mr-sub" data-i18n="set_account_sub">E-mail, prénom, mot de passe</span></span>
             <span class="mr-chev">›</span>
         </button>
         <a class="menu-row" href="main.html#3">
-            <span class="mr-txt">Gérer l'abonnement<span class="mr-sub">Formules, avantages Premium</span></span>
+            <span class="mr-txt"><span data-i18n="set_sub">Gérer l'abonnement</span><span class="mr-sub" data-i18n="set_sub_sub">Formules, avantages Premium</span></span>
             <span class="mr-chev">›</span>
         </a>
     </div>
 
     <!-- LANGUE -->
-    <div class="sec-label">Langue</div>
+    <div class="sec-label" data-i18n="settings_language">Langue</div>
     <div class="menu-card">
         <div class="menu-row" style="cursor:default">
-            <span class="mr-txt">Langue de l'application<span class="mr-sub">Choisis ta langue préférée</span></span>
+            <span class="mr-txt"><span data-i18n="set_lang">Langue de l'application</span><span class="mr-sub" data-i18n="set_lang_sub">Choisis ta langue préférée</span></span>
             <div class="lang-seg" id="langSeg">
                 <button data-l="fr" onclick="choisirLangueParam('fr')">FR</button>
                 <button data-l="nl" onclick="choisirLangueParam('nl')">NL</button>
@@ -152,70 +152,70 @@ auth.onAuthStateChanged((user) => {
     </div>
 
     <!-- NOTIFICATIONS -->
-    <div class="sec-label">Notifications</div>
+    <div class="sec-label" data-i18n="set_sec_notif">Notifications</div>
     <div class="menu-card">
         <div class="menu-row" style="cursor:default">
-            <span class="mr-txt">Rappel de pesée<span class="mr-sub">La note dans le journal si tu ne t'es pas pesé</span></span>
+            <span class="mr-txt"><span data-i18n="set_notif_weigh">Rappel de pesée</span><span class="mr-sub" data-i18n="set_notif_weigh_sub">La note dans le journal si tu ne t'es pas pesé</span></span>
             <label class="toggle"><input type="checkbox" id="notifPesee" onchange="sauverNotifs()"><span class="tg"></span></label>
         </div>
         <div class="menu-row" style="cursor:default">
-            <span class="mr-txt">E-mails du coach<span class="mr-sub">Programme, ajustements, suivi</span></span>
+            <span class="mr-txt"><span data-i18n="set_notif_coach">E-mails du coach</span><span class="mr-sub" data-i18n="set_notif_coach_sub">Programme, ajustements, suivi</span></span>
             <label class="toggle"><input type="checkbox" id="notifCoach" onchange="sauverNotifs()"><span class="tg"></span></label>
         </div>
-        <div class="note">Les notifications push (rappels sur ton écran même app fermée) arriveront avec l'application native.</div>
+        <div class="note" data-i18n="set_notif_note">Les notifications push (rappels sur ton écran même app fermée) arriveront avec l'application native.</div>
     </div>
 
     <!-- SUIVI AUTOMATIQUE -->
-    <div class="sec-label">Suivi automatique</div>
+    <div class="sec-label" data-i18n="set_sec_track">Suivi automatique</div>
     <div class="menu-card">
         <div class="menu-row" style="cursor:default">
-            <span class="mr-txt">Santé Connect / Samsung Health<span class="mr-sub">Synchroniser pas, poids et séances automatiquement</span></span>
-            <span class="badge-soon">BIENTÔT</span>
+            <span class="mr-txt">Santé Connect / Samsung Health<span class="mr-sub" data-i18n="set_hc_sub">Synchroniser pas, poids et séances automatiquement</span></span>
+            <span class="badge-soon" data-i18n="set_soon">BIENTÔT</span>
         </div>
-        <div class="note">Santé Connect est le hub santé d'Android : il permet aux applis (Samsung Health, Fitbit…) de partager leurs données entre elles. Cette synchronisation sera disponible avec l'application native BELFIT.</div>
+        <div class="note" data-i18n="set_hc_note">Santé Connect est le hub santé d'Android : il permet aux applis (Samsung Health, Fitbit…) de partager leurs données entre elles. Cette synchronisation sera disponible avec l'application native BELFIT.</div>
     </div>
 
     <!-- SOCIAL -->
-    <div class="sec-label">Social</div>
+    <div class="sec-label" data-i18n="set_sec_social">Social</div>
     <div class="menu-card">
         <button class="menu-row" onclick="inviterAmis()">
-            <span class="mr-txt">Invite des amis<span class="mr-sub">1 mois offert quand ton filleul s'abonne</span></span>
+            <span class="mr-txt"><span data-i18n="set_invite">Invite des amis</span><span class="mr-sub" data-i18n="set_invite_sub">1 mois offert quand ton filleul s'abonne</span></span>
             <span class="mr-chev">›</span>
         </button>
         <div class="ref-row" id="refRow" style="display:none">
-            <span class="ref-lbl">Ton code</span>
+            <span class="ref-lbl" data-i18n="set_ref_code">Ton code</span>
             <span class="ref-code" id="monCodeRef">—</span>
-            <button class="ref-copy" onclick="copierCodeRef()">Copier</button>
+            <button class="ref-copy" onclick="copierCodeRef()" data-i18n="copy">Copier</button>
         </div>
     </div>
 
     <!-- CONTACT -->
-    <div class="sec-label">Contact</div>
+    <div class="sec-label" data-i18n="set_sec_contact">Contact</div>
     <div class="menu-card">
         <a class="menu-row" href="aide.html?chat=question">
-            <span class="mr-txt">Nous écrire<span class="mr-sub">Directement depuis l'app — réponse rapide</span></span>
+            <span class="mr-txt"><span data-i18n="set_write">Nous écrire</span><span class="mr-sub" data-i18n="set_write_sub">Directement depuis l'app — réponse rapide</span></span>
             <span class="mr-chev">›</span>
         </a>
         <a class="menu-row" href="aide.html?chat=suggestion">
-            <span class="mr-txt">Suggérer une amélioration<span class="mr-sub">Une idée pour l'app ? On t'écoute</span></span>
+            <span class="mr-txt"><span data-i18n="set_suggest">Suggérer une amélioration</span><span class="mr-sub" data-i18n="set_suggest_sub">Une idée pour l'app ? On t'écoute</span></span>
             <span class="mr-chev">›</span>
         </a>
     </div>
 
     <!-- DOCUMENTS -->
-    <div class="sec-label">Documents</div>
+    <div class="sec-label" data-i18n="set_sec_docs">Documents</div>
     <div class="menu-card">
         <a class="menu-row" href="confidentialite.html">
-            <span class="mr-txt">Politique de confidentialité & conditions d'utilisation</span>
+            <span class="mr-txt" data-i18n="set_privacy">Politique de confidentialité & conditions d'utilisation</span>
             <span class="mr-chev">›</span>
         </a>
     </div>
 
     <!-- ASSISTANCE -->
-    <div class="sec-label">Assistance</div>
+    <div class="sec-label" data-i18n="set_sec_help">Assistance</div>
     <div class="menu-card">
         <a class="menu-row" href="aide.html" style="color:var(--em-dark)">
-            <span class="mr-txt">Obtenir de l'aide<span class="mr-sub">FAQ et contact</span></span>
+            <span class="mr-txt"><span data-i18n="set_help">Obtenir de l'aide</span><span class="mr-sub" data-i18n="set_help_sub">FAQ et contact</span></span>
             <span class="mr-chev">›</span>
         </a>
     </div>
@@ -223,8 +223,8 @@ auth.onAuthStateChanged((user) => {
     <!-- PIED -->
     <div class="foot">
         <div class="f-logo">BEL<span>FIT</span></div>
-        <div class="f-ver">v1.0 · Startup belge 🇧🇪</div>
-        <button class="logout-btn" onclick="logout()">SE DÉCONNECTER</button>
+        <div class="f-ver" data-i18n="set_ver">v1.0 · Startup belge 🇧🇪</div>
+        <button class="logout-btn" onclick="logout()" data-i18n="set_logout">SE DÉCONNECTER</button>
     </div>
 </div>
 
@@ -233,33 +233,33 @@ auth.onAuthStateChanged((user) => {
     <div class="panel-inner">
         <div class="panel-top">
             <button class="back-btn" onclick="fermerPanel('panelCompte')" style="border:none">←</button>
-            <div class="panel-title">Paramètres du compte</div>
+            <div class="panel-title" data-i18n="set_account">Paramètres du compte</div>
         </div>
 
         <div class="menu-card">
-            <div class="acc-row"><span class="ar-l">E-mail</span><span class="ar-v" id="accEmail">—</span></div>
-            <div class="acc-row"><span class="ar-l">Prénom</span><input type="text" id="accPrenom"></div>
-            <div class="acc-row"><span class="ar-l">Mot de passe</span><span class="ar-v">••••••••</span></div>
-            <div class="acc-row"><span class="ar-l">Système d'unités</span><span class="ar-v">Européen (kg, cm)</span></div>
+            <div class="acc-row"><span class="ar-l" data-i18n="acc_email">E-mail</span><span class="ar-v" id="accEmail">—</span></div>
+            <div class="acc-row"><span class="ar-l" data-i18n="acc_firstname">Prénom</span><input type="text" id="accPrenom"></div>
+            <div class="acc-row"><span class="ar-l" data-i18n="acc_password">Mot de passe</span><span class="ar-v">••••••••</span></div>
+            <div class="acc-row"><span class="ar-l" data-i18n="acc_units">Système d'unités</span><span class="ar-v" data-i18n="acc_units_v">Européen (kg, cm)</span></div>
         </div>
-        <button class="save-btn" onclick="sauverCompte()">Enregistrer</button>
-        <div class="saved-toast" id="toastCompte">Enregistré ✓</div>
+        <button class="save-btn" onclick="sauverCompte()" data-i18n="save">Enregistrer</button>
+        <div class="saved-toast" id="toastCompte" data-i18n="saved">Enregistré ✓</div>
 
         <div class="menu-card" style="margin-top:18px">
-            <button class="acc-action" onclick="changerMdp()">Changer mon mot de passe</button>
-            <button class="acc-action danger" onclick="ouvrirOverlay('delModal')">Supprimer le compte</button>
+            <button class="acc-action" onclick="changerMdp()" data-i18n="acc_change_pwd">Changer mon mot de passe</button>
+            <button class="acc-action danger" onclick="ouvrirOverlay('delModal')" data-i18n="acc_delete">Supprimer le compte</button>
         </div>
-        <div class="note" id="mdpNote" style="display:none">Un e-mail de réinitialisation vient d'être envoyé à ton adresse. Ouvre-le pour choisir un nouveau mot de passe.</div>
+        <div class="note" id="mdpNote" style="display:none" data-i18n="acc_pwd_sent">Un e-mail de réinitialisation vient d'être envoyé à ton adresse. Ouvre-le pour choisir un nouveau mot de passe.</div>
     </div>
 </div>
 
 <!-- ===== MODALE SUPPRESSION ===== -->
 <div class="modal-overlay" id="delModal" onclick="if(event.target===this)fermerOverlay('delModal')">
     <div class="modal">
-        <h3>Supprimer ton compte ?</h3>
-        <p>Cette action est définitive : ton compte, ton accès Premium et tes données seront supprimés. Tes données locales (journal, pesées) resteront sur cet appareil tant que tu ne les effaces pas.</p>
-        <button class="m-danger" onclick="supprimerCompte()">Oui, supprimer définitivement</button>
-        <button class="m-sec" onclick="fermerOverlay('delModal')">Annuler</button>
+        <h3 data-i18n="del_title">Supprimer ton compte ?</h3>
+        <p data-i18n="del_body">Cette action est définitive : ton compte, ton accès Premium et tes données seront supprimés. Tes données locales (journal, pesées) resteront sur cet appareil tant que tu ne les effaces pas.</p>
+        <button class="m-danger" onclick="supprimerCompte()" data-i18n="del_yes">Oui, supprimer définitivement</button>
+        <button class="m-sec" onclick="fermerOverlay('delModal')" data-i18n="cancel">Annuler</button>
     </div>
 </div>
 
@@ -299,7 +299,7 @@ function remplirCompte(user){
 function sauverCompte(){
     const user = auth.currentUser;
     const prenom = document.getElementById('accPrenom').value.trim();
-    if(!prenom){ alert('Entre un prénom'); return; }
+    if(!prenom){ alert(t('js_enter_firstname')); return; }
     localStorage.setItem('repz_firstName', prenom);
     // Synchroniser avec le profil local
     try{
@@ -315,25 +315,25 @@ function sauverCompte(){
 }
 function changerMdp(){
     const user = auth.currentUser;
-    if(!user || !user.email){ alert('Connecte-toi pour changer ton mot de passe.'); return; }
+    if(!user || !user.email){ alert(t('js_login_pwd')); return; }
     auth.sendPasswordResetEmail(user.email)
         .then(()=>{ document.getElementById('mdpNote').style.display='block'; })
-        .catch(()=>{ alert("Impossible d'envoyer l'e-mail pour le moment. Réessaie plus tard."); });
+        .catch(()=>{ alert(t('js_mail_fail')); });
 }
 function supprimerCompte(){
     const user = auth.currentUser;
-    if(!user){ alert('Connecte-toi pour supprimer ton compte.'); return; }
+    if(!user){ alert(t('js_login_del')); return; }
     user.delete().then(()=>{
         localStorage.removeItem('repz_premium');
         sessionStorage.removeItem('repz_premSynced');
-        alert('Ton compte a été supprimé.');
+        alert(t('js_acc_deleted'));
         window.location.href = 'index.html';
     }).catch((e)=>{
         fermerOverlay('delModal');
         if(e && e.code === 'auth/requires-recent-login'){
-            alert("Par sécurité, reconnecte-toi puis réessaie la suppression (ta session est trop ancienne).");
+            alert(t('js_reauth'));
         } else {
-            alert("Impossible de supprimer le compte pour le moment. Réessaie plus tard.");
+            alert(t('js_del_fail'));
         }
     });
 }
@@ -366,7 +366,7 @@ function copierCodeRef(){
     if(navigator.clipboard){
         navigator.clipboard.writeText(lien);
         const btn = document.querySelector('.ref-copy');
-        if(btn){ btn.textContent = 'Copié ✓'; setTimeout(()=>{ btn.textContent = 'Copier'; }, 1800); }
+        if(btn){ btn.textContent = t('copied'); setTimeout(()=>{ btn.textContent = t('copy'); }, 1800); }
     }
 }
 
@@ -375,12 +375,12 @@ function inviterAmis(){
     const lien = monCodeParrainage
         ? 'https://www.belfit.be/?ref=' + monCodeParrainage
         : 'https://www.belfit.be/';
-    const texte = "Je suis sur BELFIT 🇧🇪 — coaching nutrition & training avec un vrai coach. Rejoins-moi : " + lien + " — avec mon lien, on gagne tous les deux un avantage sur l'abonnement 💪";
+    const texte = t('js_invite_msg', { link: lien });
     if(navigator.share){
         navigator.share({ title:'BELFIT', text:texte }).catch(()=>{});
     } else if(navigator.clipboard){
         navigator.clipboard.writeText(texte);
-        alert("Message d'invitation copié ! Colle-le où tu veux.");
+        alert(t('js_invite_copied'));
     }
 }
 
