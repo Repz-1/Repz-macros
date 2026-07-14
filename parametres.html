@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="i18n-strings.js?v=1"></script>
+<script src="i18n.js?v=1"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}.lang-seg{ display:flex; gap:5px; background:#f1efe9; border-radius:11px; padding:4px; }
+.lang-seg button{ border:none; background:transparent; font-family:inherit; font-size:13px; font-weight:800; color:#8a857c; padding:7px 12px; border-radius:8px; cursor:pointer; letter-spacing:.02em; }
+.lang-seg button.on{ background:#181818; color:#fff; }
+</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#f7efd9">
@@ -131,6 +136,19 @@ auth.onAuthStateChanged((user) => {
             <span class="mr-txt">Gérer l'abonnement<span class="mr-sub">Formules, avantages Premium</span></span>
             <span class="mr-chev">›</span>
         </a>
+    </div>
+
+    <!-- LANGUE -->
+    <div class="sec-label">Langue</div>
+    <div class="menu-card">
+        <div class="menu-row" style="cursor:default">
+            <span class="mr-txt">Langue de l'application<span class="mr-sub">Choisis ta langue préférée</span></span>
+            <div class="lang-seg" id="langSeg">
+                <button data-l="fr" onclick="choisirLangueParam('fr')">FR</button>
+                <button data-l="nl" onclick="choisirLangueParam('nl')">NL</button>
+                <button data-l="en" onclick="choisirLangueParam('en')">EN</button>
+            </div>
+        </div>
     </div>
 
     <!-- NOTIFICATIONS -->
@@ -376,5 +394,16 @@ function logout(){
 }
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
+<script>
+function majLangSeg(){
+  var l = (window.BELFIT_I18N ? BELFIT_I18N.getLang() : 'fr');
+  document.querySelectorAll('#langSeg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-l')===l); });
+}
+function choisirLangueParam(l){
+  if(window.BELFIT_I18N){ BELFIT_I18N.setLang(l); }
+  majLangSeg();
+}
+document.addEventListener('DOMContentLoaded', majLangSeg);
+</script>
 </body>
 </html>
