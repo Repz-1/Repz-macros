@@ -596,10 +596,11 @@ function ouvrirPaiement(lien){
         enregistrerConsentement();
         // Transmettre l'uid Firebase à LemonSqueezy (le webhook en a besoin pour activer le bon compte)
         let url = lienPaiement;
+        // Pays de facturation prérempli : Belgique
+        url += (url.indexOf('?') === -1 ? '?' : '&') + 'checkout[billing_address][country]=BE';
         const usr = (window.firebase && firebase.auth) ? firebase.auth().currentUser : null;
         if(usr && usr.uid){
-            const sep = url.indexOf('?') === -1 ? '?' : '&';
-            url += sep + 'checkout[custom][uid]=' + encodeURIComponent(usr.uid);
+            url += '&checkout[custom][uid]=' + encodeURIComponent(usr.uid);
             if(usr.email){ url += '&checkout[email]=' + encodeURIComponent(usr.email); }
         }
         // Paiement TOUJOURS en plein écran (jamais dans le panneau du shell)
