@@ -2564,6 +2564,8 @@ function renderRecipes(){
     const sy = window.scrollY; // préserver la position de défilement
     c.innerHTML='';
     recipes.forEach(rc=>{
+      try {
+        rc.ings = rc.ings || [];
         const t = recipeTotals(rc);
         const ft = { kcal:t.kcal*(rc.mult||1), prot:t.prot*(rc.mult||1), carbs:t.carbs*(rc.mult||1), lip:t.lip*(rc.mult||1) };
         const card = document.createElement('div');
@@ -2613,6 +2615,9 @@ function renderRecipes(){
         h += `</div>`; // meal-body
         card.innerHTML = h;
         c.appendChild(card);
+      } catch(err){
+        console.error('Repas illisible, ignoré :', rc && rc.name, err);
+      }
     });
 
     renderTotals();
