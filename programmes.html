@@ -9,6 +9,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f7efd9">
 <link rel="manifest" href="manifest.json">
+<script src="i18n-strings.js?v=3"></script>
+<script src="i18n.js?v=3"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Programmes</title>
@@ -175,16 +177,16 @@ function logout(){
 
 <div class="topbar-app">
     <a href="main.html#0" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
-    <a href="main.html#3" class="premium-pill">✨ Premium</a>
+    <a href="main.html#3" class="premium-pill">✨ <span data-i18n="nav_premium">Premium</span></a>
 </div>
 
 <!-- ÉCRAN 1 : CATÉGORIES (accueil) -->
 <div class="screen active" id="screenCats">
     <div class="top">
         <a href="main.html#1" class="back-btn">←</a>
-        <h1>Tous les programmes</h1>
+        <h1 data-i18n="pg_title">Tous les programmes</h1>
     </div>
-    <p class="intro-txt">Parcours la bibliothèque complète par objectif.</p>
+    <p class="intro-txt" data-i18n="pg_intro">Parcours la bibliothèque complète par objectif.</p>
     <div class="cat-list" id="catList"></div>
 </div>
 
@@ -380,14 +382,27 @@ PROGRAMMES.masse.push(PROGRAMMES.forme.find(p => p.id === 'deb-full-3j'));
 
 const SESSION_EXOS = {"masse-3j-0": ["pecs:0", "pecs:1", "pecs:2", "triceps:0", "triceps:1", "triceps:2"], "masse-3j-1": ["dos:1", "dos:0", "dos:2", "dos:3", "biceps:0", "biceps:2"], "masse-3j-2": ["jambes:0", "jambes:1", "jambes:3", "jambes:5", "epaules:0", "epaules:1"], "masse-4j-0": ["pecs:0", "pecs:1", "pecs:5", "pecs:2", "pecs:4"], "masse-4j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "dos:4"], "masse-4j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4"], "masse-4j-3": ["epaules:0", "epaules:1", "epaules:3", "biceps:0", "triceps:0", "triceps:1"], "masse-5j-0": ["pecs:0", "pecs:1", "pecs:5", "pecs:2", "pecs:4"], "masse-5j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "dos:6"], "masse-5j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "masse-5j-3": ["epaules:0", "epaules:1", "epaules:4", "epaules:3", "epaules:5"], "masse-5j-4": ["biceps:0", "biceps:1", "biceps:2", "triceps:0", "triceps:1", "triceps:3"], "deb-full-3j-0": ["pecs:0", "dos:1", "jambes:0", "epaules:0", "abdos:1"], "deb-full-3j-1": ["pecs:3", "dos:2", "jambes:1", "biceps:0", "abdos:0"], "deb-full-3j-2": ["pecs:1", "dos:0", "jambes:2", "triceps:1", "abdos:3"], "deb-2j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "deb-2j-1": ["jambes:0", "jambes:1", "jambes:3", "abdos:1", "abdos:0"], "seche-full-3j-0": ["jambes:0", "pecs:3", "dos:2", "epaules:1", "abdos:2", "jambes:2", "abdos:1"], "seche-full-3j-1": ["jambes:1", "pecs:0", "dos:1", "triceps:1", "abdos:3", "jambes:5", "abdos:0"], "seche-full-3j-2": ["jambes:2", "pecs:1", "dos:0", "biceps:0", "abdos:3", "jambes:3", "abdos:2"], "seche-circuit-4j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1", "pecs:3"], "seche-circuit-4j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5", "abdos:1"], "seche-circuit-4j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-circuit-4j-3": ["cardio:6", "cardio:0", "abdos:0", "abdos:1", "abdos:3"], "salle-ppl-3j-0": ["pecs:0", "pecs:1", "epaules:0", "epaules:1", "triceps:1", "triceps:0"], "salle-ppl-3j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "biceps:0", "biceps:2"], "salle-ppl-3j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "salle-half-4j-0": ["pecs:0", "dos:1", "epaules:0", "biceps:0", "triceps:0", "abdos:1"], "salle-half-4j-1": ["jambes:0", "jambes:1", "jambes:3", "jambes:4", "jambes:5", "abdos:0"], "salle-half-4j-2": ["pecs:1", "dos:0", "epaules:1", "biceps:2", "triceps:1", "abdos:3"], "salle-half-4j-3": ["jambes:2", "jambes:1", "jambes:6", "jambes:4", "jambes:5", "abdos:2"], "salle-ppl-6j-0": ["pecs:0", "pecs:1", "epaules:0", "epaules:1", "triceps:0", "triceps:1"], "salle-ppl-6j-1": ["dos:0", "dos:1", "dos:2", "dos:3", "biceps:0", "biceps:2"], "salle-ppl-6j-2": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "salle-ppl-6j-3": ["pecs:5", "pecs:2", "epaules:2", "epaules:4", "triceps:3", "triceps:4"], "salle-ppl-6j-4": ["dos:6", "dos:4", "dos:0", "dos:3", "biceps:1", "biceps:3"], "salle-ppl-6j-5": ["jambes:0", "jambes:6", "jambes:2", "jambes:3", "jambes:4", "jambes:5"], "masse-2j-0": ["pecs:0", "pecs:1", "dos:0", "dos:1", "epaules:0", "biceps:0", "triceps:0"], "masse-2j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5", "abdos:1"], "seche-2j-0": ["jambes:0", "pecs:3", "dos:2", "epaules:1", "abdos:6", "abdos:1"], "seche-2j-1": ["jambes:1", "pecs:0", "dos:1", "triceps:1", "abdos:3", "abdos:0"], "seche-5j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "seche-5j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5"], "seche-5j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-5j-3": ["cardio:6", "cardio:0", "abdos:1", "abdos:0", "abdos:3"], "seche-5j-4": ["cardio:2", "jambes:8", "cardio:0", "abdos:1", "abdos:7"], "seche-6j-0": ["pecs:0", "dos:2", "epaules:1", "biceps:0", "triceps:1"], "seche-6j-1": ["jambes:0", "jambes:1", "jambes:2", "jambes:3", "jambes:5"], "seche-6j-2": ["pecs:3", "dos:0", "jambes:0", "epaules:0", "biceps:2", "abdos:0"], "seche-6j-3": ["cardio:4", "cardio:6", "abdos:0", "abdos:1", "abdos:3"], "seche-6j-4": ["cardio:2", "jambes:8", "pecs:11", "cardio:0", "abdos:8"], "seche-6j-5": ["abdos:1", "abdos:7", "etirements:8", "etirements:9", "etirements:0"]};
 
-let currentCat = null;
+let currentCat = null, currentProg = null;
+
+// ===== Traduction des données FR à la volée =====
+function trd(str){ // correspondance exacte (descriptions, catégories, tags, niveaux)
+    if(BELFIT_I18N.getLang() === 'fr') return str;
+    const m = (window.BELFIT_STRINGS[BELFIT_I18N.getLang()] || {}).__pg || {};
+    return m[str] || str;
+}
+function trp(str){ // remplacement de segments (noms de programmes, titres de séances)
+    if(BELFIT_I18N.getLang() === 'fr') return str;
+    const pairs = (window.BELFIT_STRINGS[BELFIT_I18N.getLang()] || {}).__pgPairs || [];
+    pairs.forEach(p => { str = str.split(p[0]).join(p[1]); });
+    return str;
+}
 
 // ===== WIZARD =====
 function renderCats(){
     document.getElementById('catList').innerHTML = CATEGORIES.map(c =>
         `<div class="cat-card" onclick="showProgs('${c.key}')">
             <div class="cat-emoji">${c.emoji}</div>
-            <div class="cat-info"><div class="cat-name">${c.name}</div><div class="cat-sub">${c.sub}</div></div>
+            <div class="cat-info"><div class="cat-name">${trd(c.name)}</div><div class="cat-sub">${trd(c.sub)}</div></div>
         </div>`
     ).join('');
 }
@@ -404,13 +419,13 @@ let progState = null;
 function carteProg(p){
     const showNiv = progState.sel === 'Tous' || progState.niveauxPresents.length === 1;
     return `<div class="prog-card" onclick="showSeances('${progState.catKey}','${p.id}')">
-                ${p.tag ? `<span class="prog-badge reco">⭐ ${p.tag}</span>` : ''}<span class="prog-badge">${p.badge}</span>${p.lieu ? `<span class="prog-badge lieu">🏋️ ${p.lieu}</span>` : ''}
-                <div class="prog-name">${p.name}</div>
-                <div class="prog-desc">${p.desc}</div>
+                ${p.tag ? `<span class="prog-badge reco">⭐ ${trd(p.tag)}</span>` : ''}<span class="prog-badge">${trp(p.badge)}</span>${p.lieu ? `<span class="prog-badge lieu">🏋️ ${p.lieu}</span>` : ''}
+                <div class="prog-name">${trp(p.name)}</div>
+                <div class="prog-desc">${trd(p.desc)}</div>
                 <div class="prog-stats">
-                    <span><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/></svg><b>${p.duree}</b></span>
-                    ${showNiv ? `<span><svg viewBox="0 0 24 24"><path d="M5 20v-6M12 20V8M19 20V4"/></svg><b>${p.niveau}</b></span>` : ''}
-                    <span><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg><b>${p.seances.length} séances</b></span>
+                    <span><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/></svg><b>${trp(p.duree)}</b></span>
+                    ${showNiv ? `<span><svg viewBox="0 0 24 24"><path d="M5 20v-6M12 20V8M19 20V4"/></svg><b>${trd(p.niveau)}</b></span>` : ''}
+                    <span><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg><b>${p.seances.length} ${t('pg_sessions')}</b></span>
                 </div>
             </div>`;
 }
@@ -421,7 +436,7 @@ function renderProgList(){
     const niveauxAff = (sel === 'Tous') ? niveauxPresents : [sel];
     const showHeaders = niveauxAff.length > 1;
     c.innerHTML = niveauxAff.map(niv =>
-        (showHeaders ? `<div class="niveau-sep">${niv}</div>` : '') +
+        (showHeaders ? `<div class="niveau-sep">${trd(niv)}</div>` : '') +
         parNiveau[niv].map(carteProg).join('')
     ).join('');
     document.querySelectorAll('.niv-pill').forEach(b => b.classList.toggle('active', b.dataset.niv === sel));
@@ -436,13 +451,13 @@ function selectNiveau(niv){
 function showProgs(catKey){
     currentCat = catKey;
     const cat = CATEGORIES.find(c => c.key === catKey);
-    document.getElementById('progTitle').textContent = cat.name;
+    document.getElementById('progTitle').textContent = trd(cat.name);
     const progs = PROGRAMMES[catKey] || [];
     const filterEl = document.getElementById('nivFilter');
     const c = document.getElementById('progList');
     if(progs.length === 0){
         filterEl.innerHTML = ''; filterEl.style.display = 'none';
-        c.innerHTML = `<div class="soon-note">Les programmes "${cat.name}" arrivent bientôt.<br>La catégorie Prise de masse est déjà disponible en exemple.</div>`;
+        c.innerHTML = `<div class="soon-note">${t('pg_soon',{cat:trd(cat.name)})}</div>`;
     } else {
         const ordre = ['Débutant','Intermédiaire','Confirmé'];
         const parNiveau = {};
@@ -450,7 +465,7 @@ function showProgs(catKey){
         const niveauxPresents = ordre.filter(n => parNiveau[n] && parNiveau[n].length);
         progState = { catKey, parNiveau, niveauxPresents, sel: niveauxPresents[0] };
         if(niveauxPresents.length > 1){
-            filterEl.innerHTML = niveauxPresents.map(o => `<button class="niv-pill" data-niv="${o}" onclick="selectNiveau('${o}')">${o}</button>`).join('');
+            filterEl.innerHTML = niveauxPresents.map(o => `<button class="niv-pill" data-niv="${o}" onclick="selectNiveau('${o}')">${trd(o)}</button>`).join('');
             filterEl.style.display = 'flex';
         } else {
             filterEl.innerHTML = ''; filterEl.style.display = 'none';
@@ -466,15 +481,16 @@ function showProgs(catKey){
 function showSeances(catKey, progId){
     const prog = (PROGRAMMES[catKey] || []).find(p => p.id === progId);
     if(!prog) return;
+    currentProg = progId;
     // Déterminer le filtre matériel selon le programme
     let filtre = 'tout';
-    document.getElementById('seanceTitle').textContent = prog.name;
-    document.getElementById('seanceIntro').textContent = `${prog.duree} · niveau ${prog.niveau}. Choisis une séance pour voir les exercices.`;
+    document.getElementById('seanceTitle').textContent = trp(prog.name);
+    document.getElementById('seanceIntro').textContent = `${trp(prog.duree)} · ${t('pg_level')} ${trd(prog.niveau)}. ${t('pg_pick_session')}`;
     document.getElementById('seanceList').innerHTML = prog.seances.map((s,i) => {
         const seanceId = progId + '-' + i;
-        return `<div class="seance-card" onclick="window.location.href='ma-seance.html?v=21&s=${encodeURIComponent(seanceId)}&t=${encodeURIComponent(s.titre)}&f=${filtre}'">
+        return `<div class="seance-card" onclick="window.location.href='ma-seance.html?v=21&s=${encodeURIComponent(seanceId)}&t=${encodeURIComponent(trp(s.titre))}&f=${filtre}'">
             <div class="seance-num">J${i+1}</div>
-            <div class="seance-info"><div class="seance-title">${s.titre}</div><div class="seance-sub">${s.sub}</div></div>
+            <div class="seance-info"><div class="seance-title">${trp(s.titre)}</div><div class="seance-sub">${trp(s.sub)}</div></div>
         </div>`;
     }).join('');
     document.getElementById('screenProgs').classList.remove('active');
@@ -484,6 +500,15 @@ function showSeances(catKey, progId){
 }
 
 renderCats();
+
+window.addEventListener('langchange', function(){
+    renderCats();
+    if(document.getElementById('screenSeances').classList.contains('active') && currentCat && currentProg){
+        showSeances(currentCat, currentProg);
+    } else if(document.getElementById('screenProgs').classList.contains('active') && currentCat){
+        showProgs(currentCat);
+    }
+});
 
 // Si on arrive depuis le test avec un programme recommandé, l'ouvrir directement
 (function openFromTest(){

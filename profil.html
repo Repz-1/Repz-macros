@@ -10,6 +10,8 @@
 <meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Profil</title>
 <link rel="manifest" href="manifest.json">
+<script src="i18n-strings.js?v=3"></script>
+<script src="i18n.js?v=3"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
@@ -165,7 +167,7 @@ auth.onAuthStateChanged((user) => {
         <a href="main.html#0" class="back-btn">←</a>
         <a href="parametres.html" class="back-btn" aria-label="Paramètres"><svg viewBox="0 0 24 24" style="width:20px;height:20px" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1.03 1.56V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1.11-1.56 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.56-1.03H3a2 2 0 110-4h.09a1.7 1.7 0 001.56-1.11 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34h.01A1.7 1.7 0 0010 4.09V4a2 2 0 114 0v.09a1.7 1.7 0 001.03 1.56h.01a1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87v.01a1.7 1.7 0 001.56 1.03H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1.02z"/></svg></a>
     </div>
-    <div class="page-title">Profil</div>
+    <div class="page-title" data-i18n="pf_title">Profil</div>
 
     <!-- EN-TÊTE -->
     <div class="profile-card">
@@ -178,41 +180,41 @@ auth.onAuthStateChanged((user) => {
         <div class="p-name" id="pName">—</div>
         <div class="p-age" id="pAge"></div>
         <div class="p-facts">
-            <div class="p-fact"><span class="pf-l">Poids actuel</span><span class="pf-v" id="fPoids">—</span></div>
-            <div class="p-fact"><span class="pf-l">Objectif</span><span class="pf-v" id="fObjectif">—</span></div>
-            <div class="p-fact"><span class="pf-l">Calories cibles</span><span class="pf-v" id="fKcal">—</span></div>
+            <div class="p-fact"><span class="pf-l" data-i18n="pf_weight">Poids actuel</span><span class="pf-v" id="fPoids">—</span></div>
+            <div class="p-fact"><span class="pf-l" data-i18n="pf_goal">Objectif</span><span class="pf-v" id="fObjectif">—</span></div>
+            <div class="p-fact"><span class="pf-l" data-i18n="pf_kcal">Calories cibles</span><span class="pf-v" id="fKcal">—</span></div>
         </div>
     </div>
 
     <!-- EMAIL NON VÉRIFIÉ -->
     <div class="mail-card" id="mailCard">
-        <h3>Valide ton adresse e-mail</h3>
-        <p>Pour sécuriser ton compte BELFIT et recevoir ton programme, confirme ton adresse via le lien envoyé par e-mail.</p>
-        <button class="mail-btn" id="mailBtn" onclick="renvoyerMail()">Renvoyer l'e-mail</button>
-        <div class="mail-ok" id="mailOk">E-mail envoyé ✓ Vérifie ta boîte de réception (et tes spams).</div>
+        <h3 data-i18n="pf_mail_title">Valide ton adresse e-mail</h3>
+        <p data-i18n="pf_mail_p">Pour sécuriser ton compte BELFIT et recevoir ton programme, confirme ton adresse via le lien envoyé par e-mail.</p>
+        <button class="mail-btn" id="mailBtn" onclick="renvoyerMail()" data-i18n="pf_mail_btn">Renvoyer l'e-mail</button>
+        <div class="mail-ok" id="mailOk" data-i18n="pf_mail_ok">E-mail envoyé ✓ Vérifie ta boîte de réception (et tes spams).</div>
     </div>
 
     <!-- PERSONNALISATION -->
-    <div class="sec-label">Personnalisation</div>
+    <div class="sec-label" data-i18n="pf_custom">Personnalisation</div>
     <div class="menu-card">
         <button class="menu-row" onclick="ouvrirPanel('panelInfos')">
             <span class="mr-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></span>
-            <span class="mr-txt">Mes informations</span>
+            <span class="mr-txt" data-i18n="pf_infos">Mes informations</span>
             <span class="mr-chev">›</span>
         </button>
         <button class="menu-row" id="rowMacros" onclick="tapAjustement('macros')">
             <span class="mr-ic" id="icMacros"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.5 4"/></svg></span>
-            <span class="mr-txt">Répartition des macros<span class="mr-sub" id="subMacros">Protéines, glucides, lipides</span></span>
+            <span class="mr-txt"><span data-i18n="pf_macros">Répartition des macros</span><span class="mr-sub" id="subMacros">Protéines, glucides, lipides</span></span>
             <span class="mr-chev">›</span>
         </button>
         <button class="menu-row" id="rowKcal" onclick="tapAjustement('kcal')">
             <span class="mr-ic" id="icKcal"><svg viewBox="0 0 24 24"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg></span>
-            <span class="mr-txt">Ajustement des calories<span class="mr-sub" id="subKcal"></span></span>
+            <span class="mr-txt"><span data-i18n="pf_adj_kcal">Ajustement des calories</span><span class="mr-sub" id="subKcal"></span></span>
             <span class="mr-chev">›</span>
         </button>
         <button class="menu-row" onclick="ouvrirPanel('panelPrefs')">
             <span class="mr-ic"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg></span>
-            <span class="mr-txt">Besoins et préférences alimentaires<span class="mr-sub" id="subPrefs"></span></span>
+            <span class="mr-txt"><span data-i18n="pf_prefs">Besoins et préférences alimentaires</span><span class="mr-sub" id="subPrefs"></span></span>
             <span class="mr-chev">›</span>
         </button>
     </div>
@@ -223,39 +225,39 @@ auth.onAuthStateChanged((user) => {
     <div class="panel-inner">
         <div class="panel-top">
             <button class="back-btn" onclick="fermerPanel('panelInfos')" style="border:none;cursor:pointer">←</button>
-            <div class="panel-title">Mes informations</div>
+            <div class="panel-title" data-i18n="pf_infos">Mes informations</div>
         </div>
 
-        <div class="sec-label">Ton objectif</div>
+        <div class="sec-label" data-i18n="pf_your_goal">Ton objectif</div>
         <div class="edit-card">
-            <div class="edit-row"><label>Objectif</label>
+            <div class="edit-row"><label data-i18n="pf_goal">Objectif</label>
                 <select id="inObjectif">
-                    <option>Prendre du poids</option>
-                    <option>Perdre du poids</option>
-                    <option>Maintien</option>
+                    <option value="Prendre du poids" data-i18n="pf_gain">Prendre du poids</option>
+                    <option value="Perdre du poids" data-i18n="pf_lose">Perdre du poids</option>
+                    <option value="Maintien" data-i18n="pf_maintain">Maintien</option>
                 </select>
             </div>
-            <div class="edit-row"><label>Objectif de poids (kg)</label><input type="number" id="inObjPoids" inputmode="decimal" step="0.5"></div>
+            <div class="edit-row"><label data-i18n="pf_goal_weight">Objectif de poids (kg)</label><input type="number" id="inObjPoids" inputmode="decimal" step="0.5"></div>
         </div>
 
-        <div class="sec-label">Détails</div>
+        <div class="sec-label" data-i18n="pf_details">Détails</div>
         <div class="edit-card">
-            <div class="edit-row"><label>Prénom</label><input type="text" id="inPrenom"></div>
-            <div class="edit-row"><label>Poids actuel (kg)</label><input type="number" id="inPoids" inputmode="decimal" step="0.1"></div>
-            <div class="edit-row"><label>Taille (cm)</label><input type="number" id="inTaille" inputmode="numeric"></div>
-            <div class="edit-row"><label>Date de naissance</label><input type="date" id="inNaissance"></div>
-            <div class="edit-row"><label>Sexe</label>
-                <select id="inSexe"><option>Homme</option><option>Femme</option></select>
+            <div class="edit-row"><label data-i18n="pf_firstname">Prénom</label><input type="text" id="inPrenom"></div>
+            <div class="edit-row"><label data-i18n="pf_weight_kg">Poids actuel (kg)</label><input type="number" id="inPoids" inputmode="decimal" step="0.1"></div>
+            <div class="edit-row"><label data-i18n="pf_height_cm">Taille (cm)</label><input type="number" id="inTaille" inputmode="numeric"></div>
+            <div class="edit-row"><label data-i18n="pf_birth">Date de naissance</label><input type="date" id="inNaissance"></div>
+            <div class="edit-row"><label data-i18n="pf_sex">Sexe</label>
+                <select id="inSexe"><option value="Homme" data-i18n="q_sex_m">Homme</option><option value="Femme" data-i18n="q_sex_f">Femme</option></select>
             </div>
-            <div class="edit-row"><label>Niveau d'activité</label>
+            <div class="edit-row"><label data-i18n="pf_activity">Niveau d'activité</label>
                 <select id="inActivite">
-                    <option>Sédentaire</option><option>Léger</option><option>Modéré</option><option>Actif</option><option>Très actif</option>
+                    <option value="Sédentaire" data-i18n="pf_act1">Sédentaire</option><option value="Léger" data-i18n="pf_act2">Léger</option><option value="Modéré" data-i18n="pf_act3">Modéré</option><option value="Actif" data-i18n="pf_act4">Actif</option><option value="Très actif" data-i18n="pf_act5">Très actif</option>
                 </select>
             </div>
         </div>
 
-        <button class="save-btn" onclick="sauverInfos()">Enregistrer</button>
-        <div class="saved-toast" id="toastInfos">Enregistré ✓</div>
+        <button class="save-btn" onclick="sauverInfos()" data-i18n="save">Enregistrer</button>
+        <div class="saved-toast" id="toastInfos" data-i18n="saved">Enregistré ✓</div>
     </div>
 </div>
 
@@ -264,37 +266,37 @@ auth.onAuthStateChanged((user) => {
     <div class="panel-inner">
         <div class="panel-top">
             <button class="back-btn" onclick="fermerPanel('panelPrefs')" style="border:none;cursor:pointer">←</button>
-            <div class="panel-title">Besoins et préférences</div>
+            <div class="panel-title" data-i18n="pf_prefs_short">Besoins et préférences</div>
         </div>
 
-        <div class="sec-label">Préférence alimentaire</div>
+        <div class="sec-label" data-i18n="pf_pref_food">Préférence alimentaire</div>
         <div class="edit-card"><div class="pref-opts" id="prefOpts"></div></div>
 
-        <div class="sec-label">Allergies & intolérances</div>
+        <div class="sec-label" data-i18n="pf_allerg">Allergies & intolérances</div>
         <div class="edit-card"><div class="chips" id="allergChips"></div></div>
 
-        <button class="save-btn" onclick="sauverPrefs()">Enregistrer</button>
-        <div class="saved-toast" id="toastPrefs">Enregistré ✓</div>
+        <button class="save-btn" onclick="sauverPrefs()" data-i18n="save">Enregistrer</button>
+        <div class="saved-toast" id="toastPrefs" data-i18n="saved">Enregistré ✓</div>
     </div>
 </div>
 
 <!-- ===== MODALE PREMIUM (verrouillé) ===== -->
 <div class="modal-overlay" id="lockModal" onclick="if(event.target===this)fermerOverlay('lockModal')">
     <div class="modal">
-        <h3>Fonction Premium</h3>
-        <p>L'ajustement personnalisé des macros et des calories est réalisé avec ton coach BELFIT. Il est réservé aux membres Premium.</p>
-        <a href="main.html#3" class="m-main">Découvrir Premium</a>
-        <button class="m-sec" onclick="fermerOverlay('lockModal')">Plus tard</button>
+        <h3 data-i18n="pf_lock_title">Fonction Premium</h3>
+        <p data-i18n="pf_lock_p">L'ajustement personnalisé des macros et des calories est réalisé avec ton coach BELFIT. Il est réservé aux membres Premium.</p>
+        <a href="main.html#3" class="m-main" data-i18n="pf_lock_cta">Découvrir Premium</a>
+        <button class="m-sec" onclick="fermerOverlay('lockModal')" data-i18n="pf_later">Plus tard</button>
     </div>
 </div>
 
 <!-- ===== MODALE AJUSTEMENT (premium) ===== -->
 <div class="modal-overlay" id="adjModal" onclick="if(event.target===this)fermerOverlay('adjModal')">
     <div class="modal">
-        <h3 id="adjTitle">Demander un ajustement</h3>
+        <h3 id="adjTitle" data-i18n="pf_adj_ask">Demander un ajustement</h3>
         <p id="adjText"></p>
-        <button class="m-main" id="adjSend" onclick="envoyerAjustement()">Envoyer ma demande au coach</button>
-        <button class="m-sec" onclick="fermerOverlay('adjModal')">Annuler</button>
+        <button class="m-main" id="adjSend" onclick="envoyerAjustement()" data-i18n="pf_adj_send">Envoyer ma demande au coach</button>
+        <button class="m-sec" onclick="fermerOverlay('adjModal')" data-i18n="cancel">Annuler</button>
     </div>
 </div>
 
@@ -302,24 +304,29 @@ auth.onAuthStateChanged((user) => {
 <nav class="bottom-nav">
     <a href="main.html#0" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
-        <span>Journal</span>
+        <span data-i18n="nav_journal">Journal</span>
     </a>
     <a href="main.html#1" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
-        <span>S'entraîner</span>
+        <span data-i18n="nav_train">S'entraîner</span>
     </a>
     <a href="main.html#2" class="bn-item">
         <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
-        <span>Stats</span>
+        <span data-i18n="nav_stats">Stats</span>
     </a>
     <a href="main.html#3" class="bn-item bn-premium" id="bnPremium">
         <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
-        <span>Premium</span>
+        <span data-i18n="nav_premium">Premium</span>
     </a>
 </nav>
 
 <script>
 // ===== DONNÉES =====
+function trq(str){
+    if(BELFIT_I18N.getLang() === 'fr') return str;
+    const m = (window.BELFIT_STRINGS[BELFIT_I18N.getLang()] || {}).__q || {};
+    return m[str] || str;
+}
 function estPremium(){ return localStorage.getItem('repz_premium') === '1'; }
 function estInviteRepz(){ return localStorage.getItem('repz_invite') === '1'; }
 
@@ -359,14 +366,14 @@ function majNomFirebase(user){
     }
 }
 function rafraichirEnTete(){
-    const prenom = profil.prenom || localStorage.getItem('repz_firstName') || 'Mon profil';
+    const prenom = profil.prenom || localStorage.getItem('repz_firstName') || t('pf_my_profile');
     document.getElementById('pName').textContent = prenom;
     const age = calculerAge(profil.naissance);
-    document.getElementById('pAge').textContent = age ? (age + ' ans') : '';
+    document.getElementById('pAge').textContent = age ? (age + ' ' + t('q_years')) : '';
     const dernierPoids = (weightLog.length ? weightLog[weightLog.length-1].weight : null) || goal.weight || profil.poids;
     document.getElementById('fPoids').textContent = dernierPoids ? (dernierPoids + ' kg') : '—';
-    document.getElementById('fObjectif').textContent = profil.objectif || '—';
-    document.getElementById('fKcal').textContent = goal.kcal ? (goal.kcal + ' kcal/jour') : '—';
+    document.getElementById('fObjectif').textContent = profil.objectif ? trq(profil.objectif) : '—';
+    document.getElementById('fKcal').textContent = goal.kcal ? (goal.kcal + ' ' + t('pf_kcal_day')) : '—';
 }
 
 // ===== AVATAR =====
@@ -385,7 +392,7 @@ function chargerAvatar(input){
             const sx = (img.width - min)/2, sy = (img.height - min)/2;
             ctx.drawImage(img, sx, sy, min, min, 0, 0, S, S);
             const data = c.toDataURL('image/jpeg', 0.82);
-            try{ localStorage.setItem('repz_avatar', data); }catch(err){ alert("Photo trop lourde, réessaie avec une image plus petite."); return; }
+            try{ localStorage.setItem('repz_avatar', data); }catch(err){ alert(t('pf_photo_heavy')); return; }
             afficherAvatar();
         };
         img.src = e.target.result;
@@ -454,12 +461,12 @@ function rafraichirAjustements(){
         document.getElementById('icKcal').classList.add('locked');
         document.getElementById('icMacros').innerHTML = lockSvg;
         document.getElementById('icKcal').innerHTML = lockSvg;
-        document.getElementById('subMacros').textContent = 'Réservé aux membres Premium';
-        document.getElementById('subKcal').textContent = 'Réservé aux membres Premium';
+        document.getElementById('subMacros').textContent = t('pf_premium_only');
+        document.getElementById('subKcal').textContent = t('pf_premium_only');
     } else {
-        document.getElementById('subMacros').textContent = q.macros + ' ajustement' + (q.macros>1?'s':'') + ' restant' + (q.macros>1?'s':'') + ' ce mois-ci';
+        document.getElementById('subMacros').textContent = t(q.macros>1?'pf_adj_left_pl':'pf_adj_left',{n:q.macros});
         document.getElementById('subMacros').classList.add('quota');
-        document.getElementById('subKcal').textContent = q.kcal + ' ajustement' + (q.kcal>1?'s':'') + ' restant' + (q.kcal>1?'s':'') + ' ce mois-ci';
+        document.getElementById('subKcal').textContent = t(q.kcal>1?'pf_adj_left_pl':'pf_adj_left',{n:q.kcal});
         document.getElementById('subKcal').classList.add('quota');
     }
 }
@@ -469,13 +476,13 @@ function tapAjustement(type){
     const q = lireQuota();
     adjType = type;
     const reste = q[type];
-    const nom = type === 'macros' ? 'répartition des macros' : 'calories cibles';
-    document.getElementById('adjTitle').textContent = type === 'macros' ? 'Ajuster mes macros' : 'Ajuster mes calories';
+    const nom = type === 'macros' ? t('pf_nm_macros') : t('pf_nm_kcal');
+    document.getElementById('adjTitle').textContent = type === 'macros' ? t('pf_adj_t_macros') : t('pf_adj_t_kcal');
     if(reste <= 0){
-        document.getElementById('adjText').textContent = "Tu as utilisé tes " + QUOTA_MENSUEL + " ajustements du mois pour la " + nom + ". Ton quota se renouvelle le mois prochain.";
+        document.getElementById('adjText').textContent = t('pf_adj_used',{n:QUOTA_MENSUEL, nom:nom});
         document.getElementById('adjSend').style.display = 'none';
     } else {
-        document.getElementById('adjText').textContent = "Ta demande d'ajustement de " + nom + " sera envoyée à ton coach BELFIT, qui te répondra sous 24–48h. Il te reste " + reste + " ajustement" + (reste>1?'s':'') + " ce mois-ci.";
+        document.getElementById('adjText').textContent = t(reste>1?'pf_adj_confirm_pl':'pf_adj_confirm',{nom:nom, n:reste});
         document.getElementById('adjSend').style.display = 'block';
     }
     ouvrirOverlay('adjModal');
@@ -510,7 +517,7 @@ function envoyerAjustement(){
     if(EMAILJS_PUBLIC_KEY !== 'A_REMPLACER' && EMAILJS_TEMPLATE_ID !== 'A_REMPLACER' && window.emailjs){
         emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
-            .then(()=>{ alert('Demande envoyée à ton coach ✓ Réponse sous 24–48h.'); })
+            .then(()=>{ alert(t('pf_adj_sent')); })
             .catch(()=>{ ajustementMailto(nom, email); });
     } else {
         ajustementMailto(nom, email);
@@ -538,13 +545,13 @@ let allergSel = new Set(profil.allergies && profil.allergies.length ? profil.all
 
 function renderPrefs(){
     document.getElementById('prefOpts').innerHTML = PREFS.map(p =>
-        `<div class="pref-opt${prefSel===p?' on':''}" onclick="choisirPref('${p.replace(/'/g,"\\'")}')"><span>${p}</span><span class="po-check">✓</span></div>`
+        `<div class="pref-opt${prefSel===p?' on':''}" onclick="choisirPref('${p.replace(/'/g,"\\'")}')"><span>${trq(p)}</span><span class="po-check">✓</span></div>`
     ).join('');
 }
 function choisirPref(p){ prefSel = p; renderPrefs(); }
 function renderAllerg(){
     document.getElementById('allergChips').innerHTML = ALLERG.map(a =>
-        `<div class="chip${allergSel.has(a)?' on':''}" onclick="toggleAllerg('${a.replace(/'/g,"\\'")}')">${a}</div>`
+        `<div class="chip${allergSel.has(a)?' on':''}" onclick="toggleAllerg('${a.replace(/'/g,"\\'")}')">${trq(a)}</div>`
     ).join('');
 }
 function toggleAllerg(a){
@@ -567,9 +574,9 @@ function sauverPrefs(){
 function rafraichirSubPrefs(){
     const a = (profil.allergies||[]).filter(x=>x!=='Aucune');
     const morceaux = [];
-    if(profil.preference && profil.preference !== 'Je mange de tout') morceaux.push(profil.preference);
-    if(a.length) morceaux.push(a.length + ' allergie' + (a.length>1?'s':''));
-    document.getElementById('subPrefs').textContent = morceaux.length ? morceaux.join(' · ') : 'Allergies, régime alimentaire';
+    if(profil.preference && profil.preference !== 'Je mange de tout') morceaux.push(trq(profil.preference));
+    if(a.length) morceaux.push(a.length + ' ' + t(a.length>1?'pf_allergies_w':'pf_allergy_w'));
+    document.getElementById('subPrefs').textContent = morceaux.length ? morceaux.join(' · ') : t('pf_prefs_sub');
 }
 
 // ===== EMAIL =====
@@ -587,10 +594,14 @@ function renvoyerMail(){
     }).catch((e)=>{
         btn.disabled = false;
         alert(e && e.code === 'auth/too-many-requests'
-            ? "Trop de demandes — attends quelques minutes avant de réessayer."
-            : "Impossible d'envoyer l'e-mail pour le moment. Réessaie plus tard.");
+            ? t('pf_mail_too_many')
+            : t('pf_mail_err'));
     });
 }
+
+window.addEventListener('langchange', function(){
+    rafraichirEnTete(); renderPrefs(); renderAllerg(); rafraichirSubPrefs(); rafraichirAjustements();
+});
 
 // ===== INIT =====
 afficherAvatar();

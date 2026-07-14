@@ -32,6 +32,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f7efd9">
 <link rel="manifest" href="manifest.json">
+<script src="i18n-strings.js?v=3"></script>
+<script src="i18n.js?v=3"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>BELFIT — Questionnaire Nutrition</title>
@@ -189,178 +191,178 @@ function logout() {
 
 <!-- 1. SEXE -->
 <div class="q-step active" data-q="sexe">
-    <div class="q-title">Tu es… ?</div>
+    <div class="q-title" data-i18n="q_sex">Tu es… ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'sexe','Homme')"><span class="option-label">Homme</span></div>
-        <div class="option" onclick="pick(this,'sexe','Femme')"><span class="option-label">Femme</span></div>
-        <div class="option" onclick="pick(this,'sexe','Autre')"><span class="option-label">Autre</span></div>
-        <div class="option" onclick="pick(this,'sexe','Je préfère ne pas répondre')"><span class="option-label">Je préfère ne pas répondre</span></div>
+        <div class="option" onclick="pick(this,'sexe','Homme')"><span class="option-label" data-i18n="q_sex_m">Homme</span></div>
+        <div class="option" onclick="pick(this,'sexe','Femme')"><span class="option-label" data-i18n="q_sex_f">Femme</span></div>
+        <div class="option" onclick="pick(this,'sexe','Autre')"><span class="option-label" data-i18n="q_sex_o">Autre</span></div>
+        <div class="option" onclick="pick(this,'sexe','Je préfère ne pas répondre')"><span class="option-label" data-i18n="q_sex_na">Je préfère ne pas répondre</span></div>
     </div>
 </div>
 
 <!-- 1b. GROSSESSE (si Femme) -->
 <div class="q-step" data-q="grossesse">
-    <div class="q-title">Es-tu enceinte<br>ou allaites-tu ?</div>
+    <div class="q-title" data-i18n-html="q_preg">Es-tu enceinte<br>ou allaites-tu ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'grossesse','Non')"><span class="option-label">Non</span></div>
-        <div class="option" onclick="pick(this,'grossesse','Enceinte')"><span class="option-label">Je suis enceinte</span></div>
-        <div class="option" onclick="pick(this,'grossesse','Allaitement')"><span class="option-label">J'allaite</span></div>
+        <div class="option" onclick="pick(this,'grossesse','Non')"><span class="option-label" data-i18n="q_no">Non</span></div>
+        <div class="option" onclick="pick(this,'grossesse','Enceinte')"><span class="option-label" data-i18n="q_preg_yes">Je suis enceinte</span></div>
+        <div class="option" onclick="pick(this,'grossesse','Allaitement')"><span class="option-label" data-i18n="q_preg_bf">J'allaite</span></div>
     </div>
-    <div class="q-note">Ton coach adaptera les recommandations. En cas de grossesse, l'avis de ton médecin reste prioritaire.</div>
+    <div class="q-note" data-i18n="q_preg_note">Ton coach adaptera les recommandations. En cas de grossesse, l'avis de ton médecin reste prioritaire.</div>
 </div>
 
 <!-- 2. ÂGE -->
 <div class="q-step" data-q="age">
-    <div class="q-title">Ton âge ?</div>
-    <div class="num-wrap"><input type="number" class="num-input" id="inAge" inputmode="numeric" min="16" max="99" placeholder="25"><span class="num-unit">ans</span></div>
-    <div class="q-btns"><button class="btn-next" onclick="nextNum('age','inAge',16,99)">Continuer</button></div>
+    <div class="q-title" data-i18n="q_age">Ton âge ?</div>
+    <div class="num-wrap"><input type="number" class="num-input" id="inAge" inputmode="numeric" min="16" max="99" placeholder="25"><span class="num-unit" data-i18n="q_years">ans</span></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('age','inAge',16,99)" data-i18n="q_continue">Continuer</button></div>
 </div>
 
 <!-- 3. TAILLE -->
 <div class="q-step" data-q="taille">
-    <div class="q-title">Ta taille ?</div>
+    <div class="q-title" data-i18n="q_height">Ta taille ?</div>
     <div class="num-wrap"><input type="number" class="num-input" id="inTaille" inputmode="numeric" min="120" max="230" placeholder="180"><span class="num-unit">cm</span></div>
-    <div class="q-btns"><button class="btn-next" onclick="nextNum('taille','inTaille',120,230)">Continuer</button></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('taille','inTaille',120,230)" data-i18n="q_continue">Continuer</button></div>
 </div>
 
 <!-- 4. POIDS -->
 <div class="q-step" data-q="poids">
-    <div class="q-title">Ton poids actuel ?</div>
+    <div class="q-title" data-i18n="q_weight">Ton poids actuel ?</div>
     <div class="num-wrap"><input type="number" class="num-input" id="inPoids" inputmode="decimal" step="0.1" min="35" max="250" placeholder="80"><span class="num-unit">kg</span></div>
-    <div class="q-btns"><button class="btn-next" onclick="nextNum('poids','inPoids',35,250)">Continuer</button></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('poids','inPoids',35,250)" data-i18n="q_continue">Continuer</button></div>
 </div>
 
 <!-- 5. TRAVAIL -->
 <div class="q-step" data-q="travail">
-    <div class="q-title">Ton type de travail ?</div>
+    <div class="q-title" data-i18n="q_work">Ton type de travail ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'travail','Bureau (activité réduite)')"><span class="option-label">Travail de bureau<br><span class="option-hint">assis la plupart du temps · activité réduite</span></span></div>
-        <div class="option" onclick="pick(this,'travail','Activité moyenne')"><span class="option-label">Activité moyenne<br><span class="option-hint">debout, déplacements réguliers</span></span></div>
-        <div class="option" onclick="pick(this,'travail','Activité élevée')"><span class="option-label">Activité élevée<br><span class="option-hint">physique (chantier, livraison, horeca…)</span></span></div>
+        <div class="option" onclick="pick(this,'travail','Bureau (activité réduite)')"><span class="option-label"><span data-i18n="q_work1">Travail de bureau</span><br><span class="option-hint" data-i18n="q_work1h">assis la plupart du temps · activité réduite</span></span></div>
+        <div class="option" onclick="pick(this,'travail','Activité moyenne')"><span class="option-label"><span data-i18n="q_work2">Activité moyenne</span><br><span class="option-hint" data-i18n="q_work2h">debout, déplacements réguliers</span></span></div>
+        <div class="option" onclick="pick(this,'travail','Activité élevée')"><span class="option-label"><span data-i18n="q_work3">Activité élevée</span><br><span class="option-hint" data-i18n="q_work3h">physique (chantier, livraison, horeca…)</span></span></div>
     </div>
 </div>
 
 <!-- 6. HEURES -->
 <div class="q-step" data-q="heures">
-    <div class="q-title">Combien d'heures<br>par jour ?</div>
+    <div class="q-title" data-i18n-html="q_hours">Combien d'heures<br>par jour ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'heures','Moins de 6 h')"><span class="option-label">Moins de 6 h</span></div>
-        <div class="option" onclick="pick(this,'heures','6 à 8 h')"><span class="option-label">6 à 8 h</span></div>
-        <div class="option" onclick="pick(this,'heures','9 à 10 h')"><span class="option-label">9 à 10 h</span></div>
-        <div class="option" onclick="pick(this,'heures','Plus de 10 h')"><span class="option-label">Plus de 10 h</span></div>
+        <div class="option" onclick="pick(this,'heures','Moins de 6 h')"><span class="option-label" data-i18n="q_h1">Moins de 6 h</span></div>
+        <div class="option" onclick="pick(this,'heures','6 à 8 h')"><span class="option-label" data-i18n="q_h2">6 à 8 h</span></div>
+        <div class="option" onclick="pick(this,'heures','9 à 10 h')"><span class="option-label" data-i18n="q_h3">9 à 10 h</span></div>
+        <div class="option" onclick="pick(this,'heures','Plus de 10 h')"><span class="option-label" data-i18n="q_h4">Plus de 10 h</span></div>
     </div>
 </div>
 
 <!-- 7. TEMPS LIBRE -->
 <div class="q-step" data-q="libre">
-    <div class="q-title">Ton activité pendant<br>ton temps libre ?</div>
+    <div class="q-title" data-i18n-html="q_free">Ton activité pendant<br>ton temps libre ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'libre','Plutôt calme')"><span class="option-label">Plutôt calme<br><span class="option-hint">canapé, écrans, lecture</span></span></div>
-        <div class="option" onclick="pick(this,'libre','Modérée')"><span class="option-label">Modérée<br><span class="option-hint">marche, sorties, tâches ménagères</span></span></div>
-        <div class="option" onclick="pick(this,'libre','Active (sport 2-4x/sem)')"><span class="option-label">Active<br><span class="option-hint">sport 2-4 fois / semaine</span></span></div>
-        <div class="option" onclick="pick(this,'libre','Très active (5x+/sem)')"><span class="option-label">Très active<br><span class="option-hint">sport 5+ fois / semaine ou intensif</span></span></div>
+        <div class="option" onclick="pick(this,'libre','Plutôt calme')"><span class="option-label"><span data-i18n="q_free1">Plutôt calme</span><br><span class="option-hint" data-i18n="q_free1h">canapé, écrans, lecture</span></span></div>
+        <div class="option" onclick="pick(this,'libre','Modérée')"><span class="option-label"><span data-i18n="q_free2">Modérée</span><br><span class="option-hint" data-i18n="q_free2h">marche, sorties, tâches ménagères</span></span></div>
+        <div class="option" onclick="pick(this,'libre','Active (sport 2-4x/sem)')"><span class="option-label"><span data-i18n="q_free3">Active</span><br><span class="option-hint" data-i18n="q_free3h">sport 2-4 fois / semaine</span></span></div>
+        <div class="option" onclick="pick(this,'libre','Très active (5x+/sem)')"><span class="option-label"><span data-i18n="q_free4">Très active</span><br><span class="option-hint" data-i18n="q_free4h">sport 5+ fois / semaine ou intensif</span></span></div>
     </div>
 </div>
 
 <!-- 8. POIDS CIBLE -->
 <div class="q-step" data-q="cible">
-    <div class="q-title">Ton poids cible ?</div>
-    <div class="q-sub">Au-dessus de ton poids actuel = prise de masse, en dessous = perte.</div>
+    <div class="q-title" data-i18n="q_target">Ton poids cible ?</div>
+    <div class="q-sub" data-i18n="q_target_sub">Au-dessus de ton poids actuel = prise de masse, en dessous = perte.</div>
     <div class="num-wrap"><input type="number" class="num-input" id="inCible" inputmode="decimal" step="0.1" min="35" max="250" placeholder="85"><span class="num-unit">kg</span></div>
-    <div class="q-btns"><button class="btn-next" onclick="nextNum('cible','inCible',35,250)">Continuer</button></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextNum('cible','inCible',35,250)" data-i18n="q_continue">Continuer</button></div>
 </div>
 
 <!-- 9. RÉGIME -->
 <div class="q-step" data-q="regime">
-    <div class="q-title">Suis-tu une alimentation<br>particulière ?</div>
+    <div class="q-title" data-i18n-html="q_diet">Suis-tu une alimentation<br>particulière ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'regime','Je mange de tout')"><span class="option-label">Non, je mange de tout</span></div>
-        <div class="option" onclick="pick(this,'regime','Végétarien')"><span class="option-label">Végétarien</span></div>
-        <div class="option" onclick="pick(this,'regime','Végan')"><span class="option-label">Végan</span></div>
-        <div class="option" onclick="pick(this,'regime','Pescétarien')"><span class="option-label">Pescétarien</span></div>
+        <div class="option" onclick="pick(this,'regime','Je mange de tout')"><span class="option-label" data-i18n="q_diet1">Non, je mange de tout</span></div>
+        <div class="option" onclick="pick(this,'regime','Végétarien')"><span class="option-label" data-i18n="q_diet2">Végétarien</span></div>
+        <div class="option" onclick="pick(this,'regime','Végan')"><span class="option-label" data-i18n="q_diet3">Végan</span></div>
+        <div class="option" onclick="pick(this,'regime','Pescétarien')"><span class="option-label" data-i18n="q_diet4">Pescétarien</span></div>
     </div>
 </div>
 
 <!-- 9b. RESTRICTIONS ALIMENTAIRES (multi) -->
 <div class="q-step" data-q="restrictions">
-    <div class="q-title">As-tu des restrictions<br>alimentaires ?</div>
-    <div class="q-sub">Sélectionne toutes les réponses qui s'appliquent.</div>
+    <div class="q-title" data-i18n-html="q_restric">As-tu des restrictions<br>alimentaires ?</div>
+    <div class="q-sub" data-i18n="q_restric_sub">Sélectionne toutes les réponses qui s'appliquent.</div>
     <div class="chips" id="restricChips"></div>
-    <div class="q-btns"><button class="btn-next" onclick="nextRestric()">Continuer</button></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextRestric()" data-i18n="q_continue">Continuer</button></div>
 </div>
 
 <!-- 10. ALLERGIES (multi) -->
 <div class="q-step" data-q="allergies">
-    <div class="q-title">Allergies ou<br>intolérances ?</div>
-    <div class="q-sub">Tu peux en sélectionner plusieurs.</div>
+    <div class="q-title" data-i18n-html="q_allerg">Allergies ou<br>intolérances ?</div>
+    <div class="q-sub" data-i18n="q_allerg_sub">Tu peux en sélectionner plusieurs.</div>
     <div class="chips" id="allergChips"></div>
-    <div class="q-btns"><button class="btn-next" onclick="nextAllergies()">Continuer</button></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextAllergies()" data-i18n="q_continue">Continuer</button></div>
 </div>
 
 <!-- 11. PATHOLOGIE -->
 <div class="q-step" data-q="patho">
-    <div class="q-title">Un suivi médical<br>ou une pathologie ?</div>
+    <div class="q-title" data-i18n-html="q_patho">Un suivi médical<br>ou une pathologie ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'patho','Aucune')"><span class="option-label">Non, aucune</span></div>
-        <div class="option" onclick="pick(this,'patho','Diabète')"><span class="option-label">Diabète</span></div>
-        <div class="option" onclick="pick(this,'patho','Thyroïde')"><span class="option-label">Thyroïde</span></div>
-        <div class="option" onclick="pick(this,'patho','Autre')"><span class="option-label">Autre</span></div>
+        <div class="option" onclick="pick(this,'patho','Aucune')"><span class="option-label" data-i18n="q_patho1">Non, aucune</span></div>
+        <div class="option" onclick="pick(this,'patho','Diabète')"><span class="option-label" data-i18n="q_patho2">Diabète</span></div>
+        <div class="option" onclick="pick(this,'patho','Thyroïde')"><span class="option-label" data-i18n="q_patho3">Thyroïde</span></div>
+        <div class="option" onclick="pick(this,'patho','Autre')"><span class="option-label" data-i18n="q_sex_o">Autre</span></div>
     </div>
-    <div class="q-note">Cette info aide ton coach à adapter le programme. Elle ne remplace pas un avis médical.</div>
+    <div class="q-note" data-i18n="q_patho_note">Cette info aide ton coach à adapter le programme. Elle ne remplace pas un avis médical.</div>
 </div>
 
 <!-- 12. ALIMENTS DÉTESTÉS -->
 <div class="q-step" data-q="degoute">
-    <div class="q-title">Des aliments que tu<br>détestes ou évites ?</div>
-    <div class="q-sub">Optionnel — ton coach ne les mettra pas dans ton programme.</div>
-    <input type="text" class="txt-input" id="inDegoute" placeholder="Ex : brocoli, poisson, fromage…">
-    <div class="q-btns"><button class="btn-next" onclick="nextText('degoute','inDegoute')">Continuer</button></div>
+    <div class="q-title" data-i18n-html="q_hate">Des aliments que tu<br>détestes ou évites ?</div>
+    <div class="q-sub" data-i18n="q_hate_sub">Optionnel — ton coach ne les mettra pas dans ton programme.</div>
+    <input type="text" class="txt-input" id="inDegoute" data-i18n-ph="q_hate_ph" placeholder="Ex : brocoli, poisson, fromage…">
+    <div class="q-btns"><button class="btn-next" onclick="nextText('degoute','inDegoute')" data-i18n="q_continue">Continuer</button></div>
 </div>
 
 <!-- 13. REPAS / JOUR -->
 <div class="q-step" data-q="repas">
-    <div class="q-title">Combien de repas<br>par jour ?</div>
+    <div class="q-title" data-i18n-html="q_meals">Combien de repas<br>par jour ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'repas','2 repas')"><span class="option-label">2 repas</span></div>
-        <div class="option" onclick="pick(this,'repas','3 repas')"><span class="option-label">3 repas</span></div>
-        <div class="option" onclick="pick(this,'repas','4 repas')"><span class="option-label">4 repas</span></div>
-        <div class="option" onclick="pick(this,'repas','5 repas ou plus')"><span class="option-label">5 repas ou plus</span></div>
+        <div class="option" onclick="pick(this,'repas','2 repas')"><span class="option-label" data-i18n="q_meals2">2 repas</span></div>
+        <div class="option" onclick="pick(this,'repas','3 repas')"><span class="option-label" data-i18n="q_meals3">3 repas</span></div>
+        <div class="option" onclick="pick(this,'repas','4 repas')"><span class="option-label" data-i18n="q_meals4">4 repas</span></div>
+        <div class="option" onclick="pick(this,'repas','5 repas ou plus')"><span class="option-label" data-i18n="q_meals5">5 repas ou plus</span></div>
     </div>
 </div>
 
 <!-- 14. TEMPS CUISINE -->
 <div class="q-step" data-q="cuisine">
-    <div class="q-title">Ton temps en cuisine ?</div>
+    <div class="q-title" data-i18n="q_cook">Ton temps en cuisine ?</div>
     <div class="options">
-        <div class="option" onclick="pick(this,'cuisine','Rapide (moins de 15 min)')"><span class="option-label">Le moins possible<br><span class="option-hint">repas simples et rapides (≤ 15 min)</span></span></div>
-        <div class="option" onclick="pick(this,'cuisine','Normal (15-30 min)')"><span class="option-label">Normal<br><span class="option-hint">15-30 min par repas</span></span></div>
-        <div class="option" onclick="pick(this,'cuisine','J\'aime cuisiner')"><span class="option-label">J'aime cuisiner<br><span class="option-hint">le temps n'est pas un souci</span></span></div>
+        <div class="option" onclick="pick(this,'cuisine','Rapide (moins de 15 min)')"><span class="option-label"><span data-i18n="q_cook1">Le moins possible</span><br><span class="option-hint" data-i18n="q_cook1h">repas simples et rapides (≤ 15 min)</span></span></div>
+        <div class="option" onclick="pick(this,'cuisine','Normal (15-30 min)')"><span class="option-label"><span data-i18n="q_cook2">Normal</span><br><span class="option-hint" data-i18n="q_cook2h">15-30 min par repas</span></span></div>
+        <div class="option" onclick="pick(this,'cuisine','J\'aime cuisiner')"><span class="option-label"><span data-i18n="q_cook3">J'aime cuisiner</span><br><span class="option-hint" data-i18n="q_cook3h">le temps n'est pas un souci</span></span></div>
     </div>
 </div>
 
 <!-- 15. EMAIL -->
 <div class="q-step" data-q="email">
-    <div class="q-title">Où envoyer<br>ton programme ?</div>
-    <div class="q-sub">Ton coach t'enverra ton programme personnalisé à cette adresse.</div>
+    <div class="q-title" data-i18n-html="q_email">Où envoyer<br>ton programme ?</div>
+    <div class="q-sub" data-i18n="q_email_sub">Ton coach t'enverra ton programme personnalisé à cette adresse.</div>
     <input type="email" class="txt-input email-input" id="inEmail" inputmode="email" placeholder="ton@email.com">
-    <div class="q-btns"><button class="btn-next" onclick="nextEmail()">Envoyer à mon coach</button></div>
+    <div class="q-btns"><button class="btn-next" onclick="nextEmail()" data-i18n="q_send">Envoyer à mon coach</button></div>
 </div>
 
 <!-- MERCI -->
 <div class="q-step" data-q="merci">
     <div class="merci">
         <div class="merci-ic">✅</div>
-        <h2>C'est envoyé !</h2>
-        <p>Ton coach BELFIT prépare ton programme alimentaire sur mesure. Tu le recevras à <span class="m-mail" id="merciMail">ton adresse</span> sous <b>24 à 48 h</b>.</p>
+        <h2 data-i18n="q_done_title">C'est envoyé !</h2>
+        <p><span data-i18n="q_done_p1">Ton coach BELFIT prépare ton programme alimentaire sur mesure. Tu le recevras à</span> <span class="m-mail" id="merciMail">ton adresse</span> <span data-i18n-html="q_done_p2">sous <b>24 à 48 h</b>.</span></p>
         <div class="merci-steps">
-            <div><b>1.</b><span>Ton coach analyse ton profil (corps, travail, objectif, préférences)</span></div>
-            <div><b>2.</b><span>Il construit ton plan : calories, macros et repas adaptés</span></div>
-            <div><b>3.</b><span>Tu le reçois par email et tu l'appliques à ton journal</span></div>
+            <div><b>1.</b><span data-i18n="q_step1">Ton coach analyse ton profil (corps, travail, objectif, préférences)</span></div>
+            <div><b>2.</b><span data-i18n="q_step2">Il construit ton plan : calories, macros et repas adaptés</span></div>
+            <div><b>3.</b><span data-i18n="q_step3">Tu le reçois par email et tu l'appliques à ton journal</span></div>
         </div>
         <div class="res-btns">
-            <a href="main.html#0" class="btn-apply">Retour au journal</a>
+            <a href="main.html#0" class="btn-apply" data-i18n="q_back_journal">Retour au journal</a>
         </div>
-        <p class="disclaimer">BELFIT ne remplace pas un avis médical. En cas de grossesse, d'allaitement ou de pathologie, consulte un professionnel de santé avant de modifier ton alimentation.</p>
+        <p class="disclaimer" data-i18n="q_disclaimer">BELFIT ne remplace pas un avis médical. En cas de grossesse, d'allaitement ou de pathologie, consulte un professionnel de santé avant de modifier ton alimentation.</p>
     </div>
 </div>
 
@@ -396,11 +398,11 @@ function showStep(i){
     const total = nbQuestions();
     if(STEPS[i] === 'merci'){
         document.getElementById('progressFill').style.width = '100%';
-        document.getElementById('progressTxt').textContent = 'Terminé !';
+        document.getElementById('progressTxt').textContent = t('q_finished');
     } else {
         const n = numOf(i);
         document.getElementById('progressFill').style.width = (n / total * 100) + '%';
-        document.getElementById('progressTxt').textContent = `Question ${n} / ${total}`;
+        document.getElementById('progressTxt').textContent = `${t('q_question')} ${n} / ${total}`;
     }
     window.scrollTo(0,0);
     const inp = document.querySelector(`.q-step[data-q="${STEPS[i]}"] .num-input, .q-step[data-q="${STEPS[i]}"] .txt-input`);
@@ -436,12 +438,21 @@ function nextText(q, inputId){
     showStep(stepIdx + 1);
 }
 
+function trq(str){
+    if(BELFIT_I18N.getLang() === 'fr') return str;
+    const m = (window.BELFIT_STRINGS[BELFIT_I18N.getLang()] || {}).__q || {};
+    return m[str] || str;
+}
+window.addEventListener('langchange', function(){
+    renderAllerg(); renderRestric(); showStep(stepIdx);
+});
+
 /* Allergies multi-select */
 const ALLERG = ['Aucune','Gluten','Lactose','Œufs','Fruits à coque','Arachide','Poisson / fruits de mer','Soja'];
 let allergSel = new Set(['Aucune']);
 function renderAllerg(){
     document.getElementById('allergChips').innerHTML = ALLERG.map(a =>
-        `<div class="chip${allergSel.has(a) ? ' on' : ''}" onclick="toggleAllerg('${a.replace(/'/g,"\\'")}')">${a}</div>`
+        `<div class="chip${allergSel.has(a) ? ' on' : ''}" onclick="toggleAllerg('${a.replace(/'/g,"\\'")}')">${trq(a)}</div>`
     ).join('');
 }
 function toggleAllerg(a){
@@ -463,7 +474,7 @@ const RESTRIC = ['Aucune','Halal','Casher','Autre'];
 let restricSel = new Set(['Aucune']);
 function renderRestric(){
     document.getElementById('restricChips').innerHTML = RESTRIC.map(a =>
-        `<div class="chip${restricSel.has(a) ? ' on' : ''}" onclick="toggleRestric('${a.replace(/'/g,"\\'")}')">${a}</div>`
+        `<div class="chip${restricSel.has(a) ? ' on' : ''}" onclick="toggleRestric('${a.replace(/'/g,"\\'")}')">${trq(a)}</div>`
     ).join('');
 }
 function toggleRestric(a){
