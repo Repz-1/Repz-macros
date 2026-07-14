@@ -887,6 +887,7 @@ body.search-open .fab-row { display:none; }
 
 <!-- AUTH CHECK + FIREBASE -->
 <script src="i18n-strings.js?v=3"></script>
+<script src="foods-i18n.js?v=1"></script>
 <script src="i18n.js?v=3"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
@@ -2706,7 +2707,7 @@ function renderRecipes(){
                 ? `1 ${base.unitLabel} = ${(base.kcal*base.unit/100).toFixed(0)} kcal`
                 : `100g = ${base.kcal||0} kcal`;
             h += `<div class="ing-row">
-                <div class="ing-info"><div class="ing-name">${ing.name}</div><div class="ing-base">${baseInfo}</div></div>
+                <div class="ing-info"><div class="ing-name">${trFood(ing.name)}</div><div class="ing-base">${baseInfo}</div></div>
                 <div class="ing-input"><input type="number" value="${ing.portion}" oninput="updatePortion(${rc.id},${ing.id},this.value)"><span class="ing-unit">${unitLabel}</span></div>
                 <div class="ing-macros" id="m-${rc.id}-${ing.id}">
                     <div class="ing-kcal">${m.kcal.toFixed(0)} kcal</div>
@@ -2894,6 +2895,9 @@ function searchTextOf(name){
     const n = normalize(name);
     let extra = '';
     for(const k in SEARCH_ALIAS){ if(n.includes(normalize(k))) extra += ' ' + normalize(SEARCH_ALIAS[k]); }
+    // Traductions EN/NL : un user NL tape "kip" et trouve "Poulet"
+    const tr = (window.BELFIT_FOODS || {})[name];
+    if(tr){ if(tr.en) extra += ' ' + normalize(tr.en); if(tr.nl) extra += ' ' + normalize(tr.nl); }
     SEARCH_TEXT_CACHE[name] = n + extra;
     return SEARCH_TEXT_CACHE[name];
 }
@@ -2916,7 +2920,7 @@ function filterIngredients(rid,query){
     }
     box.innerHTML=matches.map(name=>
         `<div class="search-item" onclick="addIngredient(${rid},'${name.replace(/'/g,"\\'")}')">
-            <span>${name}</span><span class="si-kcal">${DB[name].kcal} kcal/100g</span>
+            <span>${trFood(name)}</span><span class="si-kcal">${DB[name].kcal} kcal/100g</span>
         </div>`
     ).join('') + createBtn;
     box.classList.add('show'); document.body.classList.add('search-open');
@@ -4503,7 +4507,7 @@ function renderVocalProps(inconnus){
             const unite = p.estUnite ? (DB[p.name].unitLabel||'u') : 'g';
             return `<div class="vm-prop">
                 <div style="flex:1;min-width:0">
-                    <div class="vm-prop-name">${p.name}${p.incertain?' <span style="color:#b45309">·&nbsp;à vérifier</span>':''}</div>
+                    <div class="vm-prop-name">${trFood(p.name)}${p.incertain?' <span style="color:#b45309">·&nbsp;à vérifier</span>':''}</div>
                     <div class="vm-prop-kcal" id="vmk-${i}">≈ ${m.kcal.toFixed(0)} kcal</div>
                 </div>
                 <input type="number" value="${p.portion}" oninput="majVocalQte(${i},this.value)">
@@ -4556,6 +4560,8 @@ function confirmerVocal(){
 
 window.addEventListener('langchange', function(){
     try{ if(typeof renderDate==='function') renderDate(); }catch(e){}
+    try{ if(typeof renderRecipes==='function') renderRecipes(); }catch(e){}
+    try{ if(typeof renderTotals==='function') renderTotals(); }catch(e){}
     try{ if(typeof render==='function') render(); }catch(e){}
 });
 </script>

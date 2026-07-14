@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <script src="i18n-strings.js?v=3"></script>
+<script src="foods-i18n.js?v=1"></script>
 <script src="i18n.js?v=3"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -264,7 +265,7 @@ function renderListe(){
             html += `<div class="c-item${it.done?' done':''}">
                 <div class="c-check" onclick="toggle(${idx})">✓</div>
                 <div class="c-body">
-                    <div class="c-name">${it.name}</div>
+                    <div class="c-name">${(window.trFood?trFood(it.name):it.name)}</div>
                     <div class="c-qty">${it.manuel ? t('co_added') : fmtQty(it)}</div>
                 </div>
                 <button class="c-del" onclick="supprimer(${idx})">×</button>

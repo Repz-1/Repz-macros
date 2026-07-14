@@ -76,5 +76,15 @@
     t: t, setLang: setLang, getLang: getLang, langChoisie: langChoisie,
     applyDom: applyDom, LANGS: LANGS, LANG_LABELS: LANG_LABELS, detectLang: detectLang
   };
+  // Traduction d'un nom d'aliment de la base (FR = clé canonique, repli FR)
+  function trFood(name) {
+    if (current === 'fr') return name;
+    var db = global.BELFIT_FOODS || {};
+    var e = db[name];
+    return (e && e[current]) ? e[current] : name;
+  }
+  global.trFood = trFood;
+  global.BELFIT_I18N.trFood = trFood;
+
   global.t = t; // raccourci
 })(window);
