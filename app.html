@@ -2394,7 +2394,7 @@ function restaureDepuisCloud(u){
                 if(Array.isArray(d.recipes) && d.recipes.some(r=>r.ings&&r.ings.length)) recipes = d.recipes;
                 if(d.nextRid) nextRid = d.nextRid;
                 if(d.customFoods) localStorage.setItem('repz_customFoods', JSON.stringify(d.customFoods));
-                ensureFixedMeals();
+                ensureFixedMeals(); migrateMealNames();
                 save();
                 renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
                 console.log('Données restaurées depuis le cloud');
@@ -2442,7 +2442,7 @@ function load(){
             recipes = [];
             nextRid = 1;
         }
-        ensureFixedMeals();
+        ensureFixedMeals(); migrateMealNames();
     } catch(e){}
 }
 
@@ -2468,6 +2468,44 @@ const TYPE_SVG = {
     recette: `<svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 12.5a3.5 3.5 0 01-.5-7 4.5 4.5 0 018.6-1.4A4 4 0 1117.5 12.5"/><path d="M6.5 12.5V19a1.5 1.5 0 001.5 1.5h8a1.5 1.5 0 001.5-1.5v-6.5"/><path d="M10 16.5h4"/></svg>`
 };
 const TYPE_LABEL = { get repas(){return t('type_meal');}, get collation(){return t('type_snack');}, get boisson(){return t('type_drink');}, get recette(){return t('type_recipe');} };
+
+// ===== NOM DE REPAS : neutre en stockage, traduit à l'affichage =====
+// name vide => nom par défaut selon la langue courante ; name rempli => nom custom figé.
+function mealDisplayName(rc){
+    if(rc && rc.name && String(rc.name).trim()) return rc.name;
+    if(rc && rc.fixed) return window.t('meal_'+rc.fixedKey);
+    var tk = (rc && rc.typeKey) || 'repas';
+    return (TYPE_LABEL[tk] || window.t('type_meal')) + ' ' + ((rc && rc.defNum) || 1);
+}
+function escAttr(str){ return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+// Migration : convertit les anciens noms gravés (toutes langues) en repas neutres.
+function migrateMealNames(){
+    if(!Array.isArray(recipes)) return;
+    var S = window.BELFIT_STRINGS || {}, langs = ['fr','en','nl'];
+    var fixedDef = {};
+    ['pdej','dej','diner','snack'].forEach(function(k){
+        fixedDef[k] = langs.map(function(l){ return (S[l]&&S[l]['meal_'+k])||''; }).filter(Boolean);
+    });
+    var typeKeyMap = {repas:'type_meal',collation:'type_snack',boisson:'type_drink',recette:'type_recipe'};
+    var typeLbl = {};
+    Object.keys(typeKeyMap).forEach(function(tk){
+        typeLbl[tk] = langs.map(function(l){ return (S[l]&&S[l][typeKeyMap[tk]])||''; }).filter(Boolean);
+    });
+    recipes.forEach(function(rc){
+        if(rc.fixed){
+            if(rc.name && rc.fixedKey && fixedDef[rc.fixedKey] && fixedDef[rc.fixedKey].indexOf(String(rc.name).trim())>=0) rc.name='';
+            return;
+        }
+        if(!rc.name) return;
+        var nm = String(rc.name).trim();
+        var m = nm.match(/^(.*?)[\s\u00a0]+(\d+)$/);
+        if(!m) return;
+        var base = m[1].trim(), num = parseInt(m[2],10);
+        for(var tk in typeLbl){
+            if(typeLbl[tk].indexOf(base) >= 0){ rc.typeKey = rc.typeKey || tk; rc.defNum = num; rc.name=''; break; }
+        }
+    });
+}
 function ensureFixedMeals(){
     // Migration : anciens repas fixes reconnus par nom -> clé stable
     recipes.forEach(r=>{
@@ -2478,7 +2516,7 @@ function ensureFixedMeals(){
     });
     FIXED_MEALS.forEach(f=>{
         if(!recipes.some(r=>r.fixedKey===f.key)){
-            recipes.push({id:nextRid++, name:f.nom, mult:1, ings:[], fixed:true, fixedKey:f.key});
+            recipes.push({id:nextRid++, name:'', mult:1, ings:[], fixed:true, fixedKey:f.key});
         }
     });
     const ord = FIXED_MEALS.map(f=>f.key);
@@ -2689,7 +2727,7 @@ function renderRecipes(){
         const rightTxt = hasFood
             ? `<span class="mh-kcal">${ft.kcal.toFixed(0)} kcal</span>`
             : (rc.fixed ? `<span class="mh-range">${mealRange(rc.fixedKey)}</span>` : `<span class="mh-range">Vide</span>`);
-        const nameHtml = `<div class="mh-name-row"><input class="mh-name-input" value="${rc.name}" readonly onchange="renameRecipe(${rc.id},this.value)" onblur="this.setAttribute('readonly','');this.classList.remove('edit')"><button class="mh-edit" onclick="event.stopPropagation();activerRenommage(this)" title="Renommer"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div>`;
+        const nameHtml = `<div class="mh-name-row"><input class="mh-name-input" value="${escAttr(mealDisplayName(rc))}" readonly onchange="renameRecipe(${rc.id},this.value)" onblur="this.setAttribute('readonly','');this.classList.remove('edit')"><button class="mh-edit" onclick="event.stopPropagation();activerRenommage(this)" title="Renommer"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div>`;
 
         let h = `<div class="meal-head" onclick="toggleMeal(${rc.id})">
             <div class="mh-emo">${emoji}</div>
@@ -3101,14 +3139,20 @@ function activerRenommage(btn){
     inp.focus();
     inp.select();
 }
-function renameRecipe(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.name=val; save();} }
+function renameRecipe(rid,val){
+    const rc=recipes.find(r=>r.id===rid); if(!rc) return;
+    var v=(val||'').trim();
+    var defaut = mealDisplayName(Object.assign({}, rc, {name:''}));
+    rc.name = (v==='' || v===defaut) ? '' : v;
+    save(); renderRecipes();
+}
 function updateMult(rid,val){ const rc=recipes.find(r=>r.id===rid); if(rc){rc.mult=parseInt(val)||1; renderRecipes(); save();} }
 function addRecipe(name, typeKey){
     if(inviteBloque()) return;
     const t = typeKey || 'repas';
     const newId = nextRid++;
     const numero = recipes.filter(r=>!r.fixed && (r.typeKey||'repas')===t).length + 1;
-    recipes.push({id:newId, name: name || (TYPE_LABEL[t]+' '+numero), mult:1, ings:[], typeKey:t});
+    recipes.push({id:newId, name:(name||''), defNum:numero, mult:1, ings:[], typeKey:t});
     openMeals.add(newId);
     renderRecipes();
     // Auto-scroll vers la nouvelle recette
@@ -3286,7 +3330,7 @@ function confirmerSaveDay(){
     const existing=history.findIndex(h=>h.iso===iso);
     // Instantané des repas consommés (pour revoir le détail jusqu'à 3 jours)
     const repas = recipes.filter(r=>r.ings.length>0).map(r=>({
-        name: r.name,
+        name: mealDisplayName(r),
         mult: r.mult,
         ings: r.ings.map(i=>({n:i.name, p:i.portion, u:(DB[i.name]&&DB[i.name].unit)?'u':'g'}))
     }));
@@ -4523,7 +4567,7 @@ function renderVocalProps(inconnus){
     if(vocalProps.length){
         if(vocalDestId===null && recipes.length) vocalDestId = recipes[0].id;
         dest.innerHTML = recipes.map(r=>
-            `<button class="${r.id===vocalDestId?'on':''}" onclick="vocalDestId=${r.id};renderVocalProps([])">${r.name}</button>`
+            `<button class="${r.id===vocalDestId?'on':''}" onclick="vocalDestId=${r.id};renderVocalProps([])">${mealDisplayName(r)}</button>`
         ).join('');
         document.getElementById('vmNew').style.display = 'flex';
         document.getElementById('vmConfirm').style.display = 'block';

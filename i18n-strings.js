@@ -1476,3 +1476,8 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   cf_b10: "<h3>10. Contact</h3>\n    <p>Voor elke vraag, klacht of support: <a href=\"mailto:contact@belfit.be\">contact@belfit.be</a>.</p>",
   cf_footer: "Dit document werd specifiek voor BELFIT opgesteld maar geldt niet als juridisch advies. Laat het voor de commerciële lancering nalezen door een jurist of DPO om de volledige conformiteit met je exacte situatie te valideren."
 });
+
+/* ===== Noms des repas fixes (traduits à l'affichage, non gravés) ===== */
+Object.assign(window.BELFIT_STRINGS.fr, { meal_pdej:"Petit déjeuner", meal_dej:"Déjeuner", meal_diner:"Dîner", meal_snack:"Snacks" });
+Object.assign(window.BELFIT_STRINGS.en, { meal_pdej:"Breakfast", meal_dej:"Lunch", meal_diner:"Dinner", meal_snack:"Snacks" });
+Object.assign(window.BELFIT_STRINGS.nl, { meal_pdej:"Ontbijt", meal_dej:"Lunch", meal_diner:"Avondeten", meal_snack:"Snacks" });
