@@ -311,7 +311,7 @@ auth.onAuthStateChanged((user) => {
     else if(estInvite){ authVerifie = true; }
     else if(!authVerifie){
         setTimeout(() => {
-            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){ window.location.href = 'index.html'; }
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1' && window.self === window.top){ window.location.href = 'index.html'; }
         }, 1200);
     }
 });
@@ -322,7 +322,7 @@ function logout() {
     localStorage.removeItem('repz_invite');
     localStorage.removeItem('repz_inviteDebut');
     sessionStorage.removeItem('repz_premSynced');
-    auth.signOut().finally(() => { window.location.href = 'index.html'; });
+    auth.signOut().finally(() => { (window.top||window).location.href = 'index.html'; });
 }
 </script>
 

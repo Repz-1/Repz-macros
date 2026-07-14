@@ -866,7 +866,7 @@ body.search-open .fab-row { display:none; }
         <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:26px;">
             Suis tes repas et tes macros.<br>Ça prend 10 secondes.
         </p>
-        <a href="index.html" style="display:block; background:#F7B500; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
+        <a href="index.html#register" style="display:block; background:#F7B500; color:#181818; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
             Créer mon compte
         </a>
         <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;">
@@ -926,7 +926,7 @@ auth.onAuthStateChanged((user) => {
     } else if(!authVerifie) {
         // Firebase peut renvoyer null avant d'avoir fini : on attend avant de rediriger
         setTimeout(() => {
-            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1' && window.self === window.top){
                 window.location.href = 'index.html';
             }
         }, 1200);
@@ -939,7 +939,7 @@ function logout() {
     localStorage.removeItem('repz_invite');
     localStorage.removeItem('repz_inviteDebut');
     sessionStorage.removeItem('repz_premSynced');
-    auth.signOut().finally(() => { window.location.href = 'index.html'; });
+    auth.signOut().finally(() => { (window.top||window).location.href = 'index.html'; });
 }
 
 function afficherMessageInvite() {
@@ -2376,23 +2376,27 @@ function pushAppDataToCloud(){
 function restaureDepuisCloud(u){
     try{
         if(!u || !window.firebase || !firebase.firestore) return;
-        // On ne restaure QUE si l'appareil est vierge (pas d'objectif local personnalisé)
-        const localGoal = localStorage.getItem('repz_goal');
-        const localHist = localStorage.getItem('repz_history');
-        if(localGoal || localHist) { pushAppDataToCloud(); return; }
         firebase.firestore().collection('users').doc(u.uid).get().then(doc=>{
-            if(!doc.exists || !doc.data().appData) return;
+            if(!doc.exists || !doc.data().appData){ pushAppDataToCloud(); return; }
             const d = JSON.parse(doc.data().appData);
-            if(d.goal) goal = d.goal;
-            if(d.weightLog) weightLog = d.weightLog;
-            if(d.history) history = d.history;
-            if(Array.isArray(d.recipes) && d.recipes.length) { recipes = d.recipes; }
-            if(d.nextRid) nextRid = d.nextRid;
-            if(d.customFoods) localStorage.setItem('repz_customFoods', JSON.stringify(d.customFoods));
-            ensureFixedMeals();
-            save();
-            renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
-            console.log('Données restaurées depuis le cloud');
+            // Restaurer seulement si CET appareil n'a pas encore de données utilisateur réelles
+            const histVide  = !Array.isArray(history) || history.length === 0;
+            const poidsVide = !Array.isArray(weightLog) || weightLog.length === 0;
+            const repasVides = !recipes.some(r => r.ings && r.ings.length > 0);
+            if(histVide && poidsVide && repasVides){
+                if(d.goal) goal = d.goal;
+                if(d.weightLog) weightLog = d.weightLog;
+                if(d.history) history = d.history;
+                if(Array.isArray(d.recipes) && d.recipes.some(r=>r.ings&&r.ings.length)) recipes = d.recipes;
+                if(d.nextRid) nextRid = d.nextRid;
+                if(d.customFoods) localStorage.setItem('repz_customFoods', JSON.stringify(d.customFoods));
+                ensureFixedMeals();
+                save();
+                renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
+                console.log('Données restaurées depuis le cloud');
+            } else {
+                pushAppDataToCloud();
+            }
         }).catch(e=>console.warn('cloud restore', e));
     }catch(e){}
 }
@@ -4164,7 +4168,7 @@ function murCompte(){
         + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#F7B500;">FIT</span></div>'
         + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
         + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
-        + '<a href="index.html" style="display:block;background:#F7B500;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
+        + '<a href="index.html#register" style="display:block;background:#F7B500;color:#181818;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
         + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">Continuer à explorer</button>'
         + '</div>';
     document.body.appendChild(o);

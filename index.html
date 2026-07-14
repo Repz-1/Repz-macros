@@ -77,6 +77,11 @@ body {
     width:100%; padding:12px; border:1.5px solid var(--line); border-radius:12px;
     font-size:15px; font-family:inherit;
 }
+.pw-wrap { position:relative; }
+.pw-wrap .input { padding-right:46px; }
+.pw-eye { position:absolute; top:50%; right:6px; transform:translateY(-50%); width:36px; height:36px; border:none; background:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#9ca3af; padding:0; }
+.pw-eye svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.pw-eye:active { color:#181818; }
 
 .input:focus {
     outline:none; border-color:var(--orange); background:#FFFBEF;
@@ -195,7 +200,7 @@ body {
 
         <div class="form-group">
             <label class="label">Mot de passe</label>
-            <input type="password" class="input" id="loginPassword" placeholder="••••••••" required>
+            <div class="pw-wrap"><input type="password" class="input" id="loginPassword" placeholder="••••••••" required><button type="button" class="pw-eye" onclick="togglePw('loginPassword',this)" aria-label="Afficher le mot de passe"><svg class="eye-open" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         </div>
 
         <button type="submit" class="btn btn-primary">Se connecter</button>
@@ -227,14 +232,14 @@ body {
 
         <div class="form-group">
             <label class="label">Mot de passe</label>
-            <input type="password" class="input" id="registerPassword" placeholder="••••••••" required oninput="checkPwStrength()">
+            <div class="pw-wrap"><input type="password" class="input" id="registerPassword" placeholder="••••••••" required oninput="checkPwStrength()"><button type="button" class="pw-eye" onclick="togglePw('registerPassword',this)" aria-label="Afficher le mot de passe"><svg class="eye-open" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
             <div class="pw-meter" id="pwMeter"><div class="pw-bar" id="pwBar"></div></div>
             <div class="pw-hint" id="pwHint">8 caractères min, avec majuscule, minuscule, chiffre et symbole.</div>
         </div>
 
         <div class="form-group">
             <label class="label">Confirmer mot de passe</label>
-            <input type="password" class="input" id="registerPasswordConfirm" placeholder="••••••••" required>
+            <div class="pw-wrap"><input type="password" class="input" id="registerPasswordConfirm" placeholder="••••••••" required><button type="button" class="pw-eye" onclick="togglePw('registerPasswordConfirm',this)" aria-label="Afficher le mot de passe"><svg class="eye-open" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         </div>
 
         <div class="form-group">
@@ -546,5 +551,22 @@ document.getElementById('recoveryForm').addEventListener('submit', async (e) => 
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 <script>/*repzSplashFailsafe*/setTimeout(function(){var s=document.getElementById('repzSplash');if(s)s.remove();},4000);</script>
+<script>
+function togglePw(id, btn){
+    const inp = document.getElementById(id);
+    if(!inp) return;
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.innerHTML = show
+      ? '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>'
+      : '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+// Ouvrir directement l'inscription si on arrive via index.html#register
+(function(){
+    if((location.hash||'').toLowerCase() === '#register' && typeof toggleForm === 'function'){
+        toggleForm('register');
+    }
+})();
+</script>
 </body>
 </html>

@@ -468,7 +468,7 @@ function logout() {
     localStorage.removeItem('repz_invite');
     localStorage.removeItem('repz_inviteDebut');
     sessionStorage.removeItem('repz_premSynced');
-    auth.signOut().finally(() => { window.location.href = 'index.html'; });
+    auth.signOut().finally(() => { (window.top||window).location.href = 'index.html'; });
 }
 </script>
 

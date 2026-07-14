@@ -259,7 +259,7 @@ auth.onAuthStateChanged((user) => {
         // Première réponse null : peut-être que Firebase n'a pas fini.
         // On attend un court instant, et on ne redirige que si toujours pas connecté.
         setTimeout(() => {
-            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1' && window.self === window.top){
                 window.location.href = 'index.html';
             }
         }, 1200);
