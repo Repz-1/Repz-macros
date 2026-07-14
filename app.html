@@ -862,34 +862,32 @@ body.search-open .fab-row { display:none; }
 <div id="messageInvite" style="display:none; position:fixed; inset:0; z-index:90000; background:#f3f4f6; align-items:center; justify-content:center; padding:24px;">
     <div style="max-width:340px; text-align:center; background:#fff; border-radius:22px; padding:36px 26px; box-shadow:0 12px 40px rgba(0,0,0,.12);">
         <div style="font-size:46px; margin-bottom:16px;">🥗</div>
-        <h2 style="font-size:22px; font-weight:800; margin-bottom:8px; color:#1a1a1a;">Crée ton compte</h2>
+        <h2 style="font-size:22px; font-weight:800; margin-bottom:8px; color:#1a1a1a;" data-i18n="guest_create_title">Crée ton compte</h2>
         <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:26px;">
-            Suis tes repas et tes macros.<br>Ça prend 10 secondes.
+            <span data-i18n-html="guest_create_sub">Suis tes repas et tes macros.<br>Ça prend 10 secondes.</span>
         </p>
-        <a href="index.html#register" style="display:block; background:#F7B500; color:#181818; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;">
-            Créer mon compte
-        </a>
-        <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;">
-            Me connecter
-        </a>
+        <a href="index.html#register" style="display:block; background:#F7B500; color:#181818; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;" data-i18n="guest_create_btn">Créer mon compte</a>
+        <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;" data-i18n="guest_login_btn">Me connecter</a>
     </div>
 </div>
 
 <!-- MODALE SCANNER CODE-BARRES -->
 <div class="scan-modal" id="scanModal">
     <div class="scan-box">
-        <h3>📷 Scanner un produit</h3>
+        <h3 data-i18n="scan_title">📷 Scanner un produit</h3>
         <div id="scanReader"></div>
         <div class="scan-status" id="scanStatus"></div>
         <div class="scan-manual">
-            <input type="text" id="scanManualCode" placeholder="Ou tape le code-barres" inputmode="numeric">
-            <button onclick="scanLookupManual()">Chercher</button>
+            <input type="text" id="scanManualCode" data-i18n-ph="scan_ph" placeholder="Ou tape le code-barres" inputmode="numeric">
+            <button onclick="scanLookupManual()" data-i18n="scan_search">Chercher</button>
         </div>
-        <button class="scan-close" onclick="closeScanner()">Fermer</button>
+        <button class="scan-close" onclick="closeScanner()" data-i18n="close">Fermer</button>
     </div>
 </div>
 
 <!-- AUTH CHECK + FIREBASE -->
+<script src="i18n-strings.js?v=2"></script>
+<script src="i18n.js?v=2"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
@@ -960,7 +958,7 @@ function afficherMessageInvite() {
 <div class="sticky-remaining" id="stickyRemaining">
     <div class="sr-text">
         <span class="sr-num" id="srNum">0</span>
-        <span class="sr-label" id="srLabel">kcal restantes</span>
+        <span class="sr-label" id="srLabel" data-i18n="kcal_left">kcal restantes</span>
     </div>
     <div class="sr-bar"><div class="sr-bar-fill" id="srBarFill"></div></div>
 </div>
@@ -976,7 +974,7 @@ function afficherMessageInvite() {
 
         <div class="ring-wrap">
             <div class="ring-side">
-                <div class="rs-lab">Consommées</div>
+                <div class="rs-lab" data-i18n="consumed">Consommées</div>
                 <div class="rs-val" id="goalConsumed">0</div>
             </div>
             <div class="ring-center">
@@ -989,58 +987,58 @@ function afficherMessageInvite() {
                 </svg>
                 <div class="ring-txt">
                     <div class="dt-remaining-big"><span class="rt-num" id="dtRemNum">0</span></div>
-                    <div class="rt-sub" id="dtRemLabel">kcal restantes</div>
+                    <div class="rt-sub" id="dtRemLabel" data-i18n="kcal_left">kcal restantes</div>
                 </div>
             </div>
             <div class="ring-side">
-                <div class="rs-lab">Objectif</div>
+                <div class="rs-lab" data-i18n="goal">Objectif</div>
                 <div class="rs-val" id="goalKcal" onclick="editGoalKcal()" role="button" title="Modifier l'objectif">2000</div>
             </div>
         </div>
 
         <div class="nutri-macros">
             <div class="mcard">
-                <div class="m-name">Protéines</div>
+                <div class="m-name" data-i18n="protein">Protéines</div>
                 <div class="m-val"><span id="gmProt">0g</span> <span class="m-tg" id="gmProtTarget">/ 194g</span></div>
                 <div class="mbar"><span id="gmProtBar" style="width:0%;background:#1f1f1f"></span></div>
             </div>
             <div class="mcard">
-                <div class="m-name">Glucides</div>
+                <div class="m-name" data-i18n="carbs">Glucides</div>
                 <div class="m-val"><span id="gmCarbs">0g</span> <span class="m-tg" id="gmCarbsTarget">/ 500g</span></div>
                 <div class="mbar"><span id="gmCarbsBar" style="width:0%;background:#F5A800"></span></div>
             </div>
             <div class="mcard">
-                <div class="m-name">Lipides</div>
+                <div class="m-name" data-i18n="fat">Lipides</div>
                 <div class="m-val"><span id="gmLip">0g</span> <span class="m-tg" id="gmLipTarget">/ 90g</span></div>
                 <div class="mbar"><span id="gmLipBar" style="width:0%;background:#DE2F14"></span></div>
             </div>
         </div>
 
         <div class="progress-track" style="display:none"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        <button class="save-day-btn" onclick="saveDay()">Commencer une nouvelle journée</button>
+        <button class="save-day-btn" onclick="saveDay()" data-i18n="new_day">Commencer une nouvelle journée</button>
     </div>
 
     <!-- Actions rapides -->
     <div class="quick-actions">
-        <button class="qa-btn" onclick="openWeightModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span><span class="qa-lb">Poids</span></button>
-        <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8 7h8M8 11h2M12 11h.01M15 11h.01M8 15h2M12 15h.01M15 15h.01M8 18h4"/></svg></span><span class="qa-lb">Calculateur</span></button>
-        <button class="qa-btn" onclick="allerCourses()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.5 11.5a1.5 1.5 0 001.5 1.2h7.5a1.5 1.5 0 001.5-1.2L21 8H6.2"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></span><span class="qa-lb">Courses</span></button>
-        <button class="qa-btn" onclick="ouvrirVocal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg></span><span class="qa-lb">Vocal</span></button>
+        <button class="qa-btn" onclick="openWeightModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg></span><span class="qa-lb" data-i18n="qa_weight">Poids</span></button>
+        <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8 7h8M8 11h2M12 11h.01M15 11h.01M8 15h2M12 15h.01M15 15h.01M8 18h4"/></svg></span><span class="qa-lb" data-i18n="qa_calc">Calculateur</span></button>
+        <button class="qa-btn" onclick="allerCourses()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.5 11.5a1.5 1.5 0 001.5 1.2h7.5a1.5 1.5 0 001.5-1.2L21 8H6.2"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></span><span class="qa-lb" data-i18n="qa_shop">Courses</span></button>
+        <button class="qa-btn" onclick="ouvrirVocal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg></span><span class="qa-lb" data-i18n="qa_voice">Vocal</span></button>
     </div>
 
     <!-- NOTE : POIDS DU JOUR -->
     <div class="weight-note" id="weightNote" style="display:none" onclick="openWeightModal()">
         <span class="wn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2M7 5h10M7 5l-3 7a3 3 0 0 0 6 0L7 5zM17 5l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 5v16"/></svg></span>
         <span class="wn-txt">
-            <span class="wn-title">Pense à te peser aujourd'hui</span>
+            <span class="wn-title" data-i18n="weigh_note">Pense à te peser aujourd'hui</span>
         </span>
-        <span class="wn-cta">Ajouter →</span>
+        <span class="wn-cta" data-i18n="weigh_add">Ajouter →</span>
     </div>
 
     <!-- QUOI MANGER ? -->
     <div class="eat-card">
         <button class="eat-toggle" onclick="toggleEat()">
-            <span class="eat-lbl"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> Idées recettes</span>
+            <span class="eat-lbl"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> <span data-i18n="eat_title">Idées recettes</span></span>
             <span style="display:flex;align-items:center;gap:8px;">
                 <span id="eatLock" style="font-size:13px;">🔒</span>
                 <span id="eatArrow">▾</span>
@@ -1049,10 +1047,10 @@ function afficherMessageInvite() {
         <div id="eatBody" class="eat-body">
             <div class="eat-intro" id="eatIntro"></div>
             <div class="eat-cats">
-                <button class="eat-cat" onclick="showEatIdeas('sain')">Sain & léger</button>
-                <button class="eat-cat" onclick="showEatIdeas('rapide')">Rapide</button>
-                <button class="eat-cat" onclick="showEatIdeas('plaisir')">Plaisir</button>
-                <button class="eat-cat" onclick="showEatIdeas('vege')">Végé</button>
+                <button class="eat-cat" onclick="showEatIdeas('sain')" data-i18n="eat_healthy">Sain & léger</button>
+                <button class="eat-cat" onclick="showEatIdeas('rapide')" data-i18n="eat_quick">Rapide</button>
+                <button class="eat-cat" onclick="showEatIdeas('plaisir')" data-i18n="eat_treat">Plaisir</button>
+                <button class="eat-cat" onclick="showEatIdeas('vege')" data-i18n="eat_veggie">Végé</button>
             </div>
             <div id="eatIdeas" class="eat-ideas"></div>
         </div>
@@ -1070,10 +1068,10 @@ function afficherMessageInvite() {
 <!-- MODAL DÉTAIL JOUR -->
 <div class="modal-overlay" id="dayModal" onclick="if(event.target===this){this.classList.remove('show');fermerNavJour();}">
     <div class="modal">
-        <h3 id="dayModalTitle">Détail</h3>
+        <h3 id="dayModalTitle" data-i18n="detail">Détail</h3>
         <div id="dayModalBody"></div>
         <div class="modal-btns">
-            <button class="modal-cancel" onclick="closeDayModal()">Fermer</button>
+            <button class="modal-cancel" onclick="closeDayModal()" data-i18n="close">Fermer</button>
         </div>
     </div>
 </div>
@@ -1086,21 +1084,21 @@ function afficherMessageInvite() {
     </button>
     <button class="fab" onclick="openMealTypeSheet()" aria-label="Ajouter un repas">
         <span class="fab-plus">＋</span>
-        <span class="fab-label">Ajouter</span>
+        <span class="fab-label" data-i18n="add">Ajouter</span>
     </button>
 </div>
 
 <!-- SHEET CHOIX TYPE -->
 <div class="mtype-sheet" id="mtypeSheet" onclick="if(event.target===this)closeMealTypeSheet()">
     <div class="mtype-box">
-        <div class="mtype-title">Qu'est-ce que tu ajoutes ?</div>
+        <div class="mtype-title" data-i18n="mtype_title">Qu'est-ce que tu ajoutes ?</div>
         <div class="mtype-grid">
-            <button class="mtype-opt" onclick="choisirTypeRepas('repas')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F7B500" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg></span>Repas</button>
-            <button class="mtype-opt" onclick="choisirTypeRepas('collation')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0012 3z"/><path d="M9 18h6M10 21h4"/></svg></span>Collation</button>
-            <button class="mtype-opt" onclick="choisirTypeRepas('boisson')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 17a1.8 1.8 0 01-1.8 1.6H9.3a1.8 1.8 0 01-1.8-1.6L6 3z"/><path d="M6.6 10h10.8"/><path d="M17.5 3.5L19 2"/></svg></span>Boisson</button>
-            <button class="mtype-opt" onclick="choisirTypeRepas('recette')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 12.5a3.5 3.5 0 01-.5-7 4.5 4.5 0 018.6-1.4A4 4 0 1117.5 12.5"/><path d="M6.5 12.5V19a1.5 1.5 0 001.5 1.5h8a1.5 1.5 0 001.5-1.5v-6.5"/><path d="M10 16.5h4"/></svg></span>Recette</button>
+            <button class="mtype-opt" onclick="choisirTypeRepas('repas')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F7B500" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg></span><span data-i18n="type_meal">Repas</span></button>
+            <button class="mtype-opt" onclick="choisirTypeRepas('collation')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0012 3z"/><path d="M9 18h6M10 21h4"/></svg></span><span data-i18n="type_snack">Collation</span></button>
+            <button class="mtype-opt" onclick="choisirTypeRepas('boisson')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 17a1.8 1.8 0 01-1.8 1.6H9.3a1.8 1.8 0 01-1.8-1.6L6 3z"/><path d="M6.6 10h10.8"/><path d="M17.5 3.5L19 2"/></svg></span><span data-i18n="type_drink">Boisson</span></button>
+            <button class="mtype-opt" onclick="choisirTypeRepas('recette')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 12.5a3.5 3.5 0 01-.5-7 4.5 4.5 0 018.6-1.4A4 4 0 1117.5 12.5"/><path d="M6.5 12.5V19a1.5 1.5 0 001.5 1.5h8a1.5 1.5 0 001.5-1.5v-6.5"/><path d="M10 16.5h4"/></svg></span><span data-i18n="type_recipe">Recette</span></button>
         </div>
-        <button class="mtype-cancel" onclick="closeMealTypeSheet()">Annuler</button>
+        <button class="mtype-cancel" onclick="closeMealTypeSheet()" data-i18n="cancel">Annuler</button>
     </div>
 </div>
 
@@ -1108,8 +1106,8 @@ function afficherMessageInvite() {
 <!-- MODALE COMPTEUR D'EAU -->
 <div class="water-modal" id="waterModal">
     <div class="water-box">
-        <h3>💧 Hydratation</h3>
-        <div class="wb-sub">Bouteille de 1,5 L · appuie pour remplir</div>
+        <h3 data-i18n="water_title">💧 Hydratation</h3>
+        <div class="wb-sub" data-i18n="water_sub">Bouteille de 1,5 L · appuie pour remplir</div>
 
         <div class="bottle" id="bottleTap" onclick="addWater()">
             <div class="bottle-cap"></div>
@@ -1119,16 +1117,16 @@ function afficherMessageInvite() {
                 <div class="bottle-pct" id="bottlePct">0%</div>
             </div>
         </div>
-        <div class="water-tap-hint">👆 1 appui = 75 ml (20 appuis = 1,5 L)</div>
+        <div class="water-tap-hint" data-i18n="water_hint">👆 1 appui = 75 ml (20 appuis = 1,5 L)</div>
 
         <div class="water-total">
             <div class="wt-v" id="waterTotalVal">0 L</div>
-            <div class="wt-l">bu aujourd'hui</div>
+            <div class="wt-l" data-i18n="water_today">bu aujourd'hui</div>
         </div>
 
         <div class="water-actions">
-            <button class="wa-reset" onclick="resetWaterToday()">Réinitialiser</button>
-            <button class="wa-close" onclick="closeWater()">Fermer</button>
+            <button class="wa-reset" onclick="resetWaterToday()" data-i18n="reset">Réinitialiser</button>
+            <button class="wa-close" onclick="closeWater()" data-i18n="close">Fermer</button>
         </div>
     </div>
 </div>
@@ -1139,13 +1137,13 @@ function afficherMessageInvite() {
     <div class="modal recipe-modal">
         <h3 id="rmTitle"></h3>
         <div class="rm-macros" id="rmMacros"></div>
-        <div class="rm-sec">Ingrédients</div>
+        <div class="rm-sec" data-i18n="ingredients">Ingrédients</div>
         <ul class="rm-ings" id="rmIngs"></ul>
-        <div class="rm-sec">Préparation</div>
+        <div class="rm-sec" data-i18n="preparation">Préparation</div>
         <ol class="rm-steps" id="rmSteps"></ol>
         <div class="rm-tip" id="rmTip"></div>
         <div class="modal-btns">
-            <button class="modal-save" onclick="document.getElementById('recipeModal').classList.remove('show')">Fermer</button>
+            <button class="modal-save" onclick="document.getElementById('recipeModal').classList.remove('show')" data-i18n="close">Fermer</button>
         </div>
     </div>
 </div>
@@ -1153,13 +1151,13 @@ function afficherMessageInvite() {
 <!-- MODAL POIDS -->
 <div class="modal-overlay" id="weightModal">
     <div class="modal">
-        <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg> Mon poids du jour</h3>
-        <label>Poids (kg)</label>
+        <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg> <span data-i18n="wm_title">Mon poids du jour</span></h3>
+        <label data-i18n="weight_kg">Poids (kg)</label>
         <input type="number" id="wmInput" step="0.1" placeholder="kg" inputmode="decimal">
         <div class="wm-last" id="wmLast" style="display:none"></div>
         <div class="modal-btns">
-            <button class="modal-cancel" onclick="closeWeightModal()">Annuler</button>
-            <button class="modal-save" onclick="saveWeightNutri()">Enregistrer</button>
+            <button class="modal-cancel" onclick="closeWeightModal()" data-i18n="cancel">Annuler</button>
+            <button class="modal-save" onclick="saveWeightNutri()" data-i18n="save">Enregistrer</button>
         </div>
     </div>
 </div>
@@ -1167,21 +1165,21 @@ function afficherMessageInvite() {
 <!-- MODAL CRÉER UN ALIMENT -->
 <div class="modal-overlay" id="foodModal">
     <div class="modal">
-        <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Créer un aliment</h3>
-        <label>Nom de l'aliment</label>
-        <input type="text" id="fmNom" placeholder="Ex : Pain protéiné maison">
-        <label>Calories (pour 100 g)</label>
+        <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> <span data-i18n="fm_title">Créer un aliment</span></h3>
+        <label data-i18n="fm_name">Nom de l'aliment</label>
+        <input type="text" id="fmNom" data-i18n-ph="fm_name_ph" placeholder="Ex : Pain protéiné maison">
+        <label data-i18n="fm_kcal">Calories (pour 100 g)</label>
         <input type="number" id="fmKcal" inputmode="decimal" placeholder="kcal / 100 g">
-        <label>Protéines (g / 100 g)</label>
+        <label data-i18n="fm_prot">Protéines (g / 100 g)</label>
         <input type="number" id="fmProt" inputmode="decimal" placeholder="g">
-        <label>Glucides (g / 100 g)</label>
+        <label data-i18n="fm_carbs">Glucides (g / 100 g)</label>
         <input type="number" id="fmCarbs" inputmode="decimal" placeholder="g">
-        <label>Lipides (g / 100 g)</label>
+        <label data-i18n="fm_fat">Lipides (g / 100 g)</label>
         <input type="number" id="fmLip" inputmode="decimal" placeholder="g">
         <div id="fmErr" style="display:none;color:#dc2626;font-size:12.5px;margin-top:8px;"></div>
         <div class="modal-btns">
-            <button class="modal-cancel" onclick="closeFoodModal()">Annuler</button>
-            <button class="modal-save" onclick="saveNewFood()">Enregistrer</button>
+            <button class="modal-cancel" onclick="closeFoodModal()" data-i18n="cancel">Annuler</button>
+            <button class="modal-save" onclick="saveNewFood()" data-i18n="save">Enregistrer</button>
         </div>
     </div>
 </div>
@@ -1191,57 +1189,57 @@ function afficherMessageInvite() {
     <div class="modal">
         <div id="onbWelcome" style="display:none; text-align:center; margin-bottom:18px;">
             <div style="font-size:15px;font-weight:800;letter-spacing:1px;color:#181818;margin-bottom:10px;">BEL<span style="color:#F7B500;">FIT</span></div>
-            <h2 style="font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px;">Bienvenue 👋</h2>
-            <p style="font-size:14px;color:#6b7280;line-height:1.5;">Commençons par calculer ton objectif personnalisé. Ça prend 30 secondes.</p>
+            <h2 style="font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px;" data-i18n="onb_welcome">Bienvenue 👋</h2>
+            <p style="font-size:14px;color:#6b7280;line-height:1.5;" data-i18n="onb_sub">Commençons par calculer ton objectif personnalisé. Ça prend 30 secondes.</p>
         </div>
-        <h3 class="modal-h3-ic" id="calcTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg> Calculer mes calories</h3>
-        <p class="calc-intro">Réponds à ces questions pour une estimation personnalisée.</p>
-        <div class="calc-sec">Informations personnelles</div>
+        <h3 class="modal-h3-ic" id="calcTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A2.5 2.5 0 0 0 12 12a2.5 2.5 0 0 0 1.5-4.5C15 9 16 11 16 13a4 4 0 0 1-8 0c0-3 2-4 4-10z"/></svg> <span data-i18n="calc_title">Calculer mes calories</span></h3>
+        <p class="calc-intro" data-i18n="calc_intro">Réponds à ces questions pour une estimation personnalisée.</p>
+        <div class="calc-sec" data-i18n="calc_sec_info">Informations personnelles</div>
         <div class="tdee-grid">
-            <div class="tdee-field"><label>Sexe</label><select id="cSex"><option value="h">Homme</option><option value="f">Femme</option></select></div>
-            <div class="tdee-field"><label>Âge</label><input type="number" id="cAge" value="25"></div>
-            <div class="tdee-field"><label>Poids (kg)</label><input type="number" id="cWeight" value="75"></div>
-            <div class="tdee-field"><label>Taille (cm)</label><input type="number" id="cHeight" value="175"></div>
+            <div class="tdee-field"><label data-i18n="sex">Sexe</label><select id="cSex"><option value="h" data-i18n="male">Homme</option><option value="f" data-i18n="female">Femme</option></select></div>
+            <div class="tdee-field"><label data-i18n="age">Âge</label><input type="number" id="cAge" value="25"></div>
+            <div class="tdee-field"><label data-i18n="weight_kg">Poids (kg)</label><input type="number" id="cWeight" value="75"></div>
+            <div class="tdee-field"><label data-i18n="height_cm">Taille (cm)</label><input type="number" id="cHeight" value="175"></div>
         </div>
-        <label>Masse grasse (%) — optionnel, plus précis</label>
-        <input type="number" id="cBodyFat" placeholder="ex. 15 (laisse vide si inconnu)">
-        <div class="calc-sec">Activité physique</div>
-        <label>Activité quotidienne (hors sport)</label>
+        <label data-i18n="bodyfat">Masse grasse (%) — optionnel, plus précis</label>
+        <input type="number" id="cBodyFat" data-i18n-ph="bodyfat_ph" placeholder="ex. 15 (laisse vide si inconnu)">
+        <div class="calc-sec" data-i18n="calc_sec_act">Activité physique</div>
+        <label data-i18n="calc_daily">Activité quotidienne (hors sport)</label>
         <select id="cDaily">
-            <option value="1.2">Sédentaire (bureau, peu de marche)</option>
-            <option value="1.3" selected>Légère (un peu debout/marche)</option>
-            <option value="1.45">Active (souvent debout, marche ++)</option>
-            <option value="1.6">Très physique (travail manuel)</option>
+            <option value="1.2" data-i18n="act_sed">Sédentaire (bureau, peu de marche)</option>
+            <option value="1.3" selected data-i18n="act_light">Légère (un peu debout/marche)</option>
+            <option value="1.45" data-i18n="act_active">Active (souvent debout, marche ++)</option>
+            <option value="1.6" data-i18n="act_hard">Très physique (travail manuel)</option>
         </select>
         <div class="tdee-grid">
-            <div class="tdee-field"><label>Séances sport / sem.</label><input type="number" id="cTrainDays" value="4" min="0" max="14"></div>
-            <div class="tdee-field"><label>Intensité</label><select id="cTrainInt"><option value="0.02">Légère</option><option value="0.03" selected>Modérée</option><option value="0.04">Intense</option></select></div>
+            <div class="tdee-field"><label data-i18n="calc_sessions">Séances sport / sem.</label><input type="number" id="cTrainDays" value="4" min="0" max="14"></div>
+            <div class="tdee-field"><label data-i18n="intensity">Intensité</label><select id="cTrainInt"><option value="0.02" data-i18n="int_light">Légère</option><option value="0.03" selected data-i18n="int_mod">Modérée</option><option value="0.04" data-i18n="int_hard">Intense</option></select></div>
         </div>
-        <div class="calc-sec">Ton objectif</div>
-        <label>Objectif</label>
+        <div class="calc-sec" data-i18n="calc_sec_goal">Ton objectif</div>
+        <label data-i18n="goal">Objectif</label>
         <select id="cGoal">
-            <option value="-500">Sèche agressive (-500 kcal)</option>
-            <option value="-300">Sèche modérée (-300 kcal)</option>
-            <option value="0" selected>Maintien</option>
-            <option value="300">Prise propre (+300 kcal)</option>
-            <option value="500">Prise de masse (+500 kcal)</option>
+            <option value="-500" data-i18n="goal_cut2">Sèche agressive (-500 kcal)</option>
+            <option value="-300" data-i18n="goal_cut1">Sèche modérée (-300 kcal)</option>
+            <option value="0" selected data-i18n="goal_maint">Maintien</option>
+            <option value="300" data-i18n="goal_bulk1">Prise propre (+300 kcal)</option>
+            <option value="500" data-i18n="goal_bulk2">Prise de masse (+500 kcal)</option>
         </select>
-        <button class="tdee-calc-btn" onclick="calcCalories()">Calculer</button>
+        <button class="tdee-calc-btn" onclick="calcCalories()" data-i18n="calc_btn">Calculer</button>
         <div id="calcResult" class="tdee-result" style="display:none;">
             <div class="tdee-res-main">
-                <div class="tdee-res-line"><span>Métabolisme de base</span><span id="cResBmr">–</span></div>
-                <div class="tdee-res-line"><span>Dépense totale (TDEE)</span><span id="cResTdee">–</span></div>
-                <div class="tdee-res-line tdee-res-target"><span>Objectif calorique</span><span id="cResTarget">–</span></div>
+                <div class="tdee-res-line"><span data-i18n="bmr">Métabolisme de base</span><span id="cResBmr">–</span></div>
+                <div class="tdee-res-line"><span data-i18n="tdee">Dépense totale (TDEE)</span><span id="cResTdee">–</span></div>
+                <div class="tdee-res-line tdee-res-target"><span data-i18n="cal_goal">Objectif calorique</span><span id="cResTarget">–</span></div>
             </div>
             <div class="tdee-macros">
-                <div class="tdee-macro"><div class="tm-label">Protéines</div><div class="tm-val" id="cResProt">–</div></div>
-                <div class="tdee-macro"><div class="tm-label">Glucides</div><div class="tm-val" id="cResCarbs">–</div></div>
-                <div class="tdee-macro"><div class="tm-label">Lipides</div><div class="tm-val" id="cResLip">–</div></div>
+                <div class="tdee-macro"><div class="tm-label" data-i18n="protein">Protéines</div><div class="tm-val" id="cResProt">–</div></div>
+                <div class="tdee-macro"><div class="tm-label" data-i18n="carbs">Glucides</div><div class="tm-val" id="cResCarbs">–</div></div>
+                <div class="tdee-macro"><div class="tm-label" data-i18n="fat">Lipides</div><div class="tm-val" id="cResLip">–</div></div>
             </div>
-            <button class="tdee-apply-btn" onclick="applyCalc()">Appliquer comme objectif</button>
+            <button class="tdee-apply-btn" onclick="applyCalc()" data-i18n="apply_goal">Appliquer comme objectif</button>
         </div>
         <div class="modal-btns" id="calcCloseRow">
-            <button class="modal-cancel" onclick="closeCalcModal()">Fermer</button>
+            <button class="modal-cancel" onclick="closeCalcModal()" data-i18n="close">Fermer</button>
         </div>
     </div>
 </div>
@@ -2468,7 +2466,7 @@ const TYPE_SVG = {
     boisson: `<svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 17a1.8 1.8 0 01-1.8 1.6H9.3a1.8 1.8 0 01-1.8-1.6L6 3z"/><path d="M6.6 10h10.8"/><path d="M17.5 3.5L19 2"/></svg>`,
     recette: `<svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 12.5a3.5 3.5 0 01-.5-7 4.5 4.5 0 018.6-1.4A4 4 0 1117.5 12.5"/><path d="M6.5 12.5V19a1.5 1.5 0 001.5 1.5h8a1.5 1.5 0 001.5-1.5v-6.5"/><path d="M10 16.5h4"/></svg>`
 };
-const TYPE_LABEL = { repas:'Repas', collation:'Collation', boisson:'Boisson', recette:'Recette' };
+const TYPE_LABEL = { get repas(){return t('type_meal');}, get collation(){return t('type_snack');}, get boisson(){return t('type_drink');}, get recette(){return t('type_recipe');} };
 function ensureFixedMeals(){
     // Migration : anciens repas fixes reconnus par nom -> clé stable
     recipes.forEach(r=>{
@@ -2578,9 +2576,9 @@ function dayTotals(){
 // ===== DATE =====
 function renderDate(){
     const d = new Date();
-    const mois = ['JANV.','FÉVR.','MARS','AVR.','MAI','JUIN','JUIL.','AOÛT','SEPT.','OCT.','NOV.','DÉC.'];
+    const mois = t('months_short').split('|');
     const el = document.getElementById('dateBanner');
-    if(el) el.textContent = "AUJOURD'HUI, " + d.getDate() + " " + mois[d.getMonth()];
+    if(el) el.textContent = t('today_caps') + ", " + d.getDate() + " " + mois[d.getMonth()];
 }
 
 // ===== RENDER RECETTES =====
@@ -2758,11 +2756,11 @@ function renderTotals(){
     if(remNum && remLabel){
         if(resteTotal >= 0){
             remNum.textContent = resteTotal.toFixed(0);
-            remLabel.textContent = 'kcal restantes';
+            remLabel.textContent = t('kcal_left');
             if(remBig) remBig.className = 'dt-remaining-big';
         } else {
             remNum.textContent = Math.abs(resteTotal).toFixed(0);
-            remLabel.textContent = 'kcal en trop';
+            remLabel.textContent = t('kcal_over');
             if(remBig) remBig.className = 'dt-remaining-big over';
         }
     }
@@ -2775,11 +2773,11 @@ function renderTotals(){
     if(srNum && srLabel){
         if(resteTotal >= 0){
             srNum.textContent = resteTotal.toFixed(0);
-            srLabel.textContent = 'kcal restantes';
+            srLabel.textContent = t('kcal_left');
             if(srBar) srBar.className = 'sticky-remaining';
         } else {
             srNum.textContent = Math.abs(resteTotal).toFixed(0);
-            srLabel.textContent = 'kcal en trop';
+            srLabel.textContent = t('kcal_over');
             if(srBar) srBar.className = 'sticky-remaining over';
         }
     }
@@ -2912,7 +2910,7 @@ function filterIngredients(rid,query){
     }).sort();
     const createBtn = `<div class="search-create" onclick="openFoodCreator(${rid})"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Créer un aliment</div>`;
     if(matches.length===0){
-        box.innerHTML='<div class="search-none">Aucun ingrédient trouvé</div>' + createBtn;
+        box.innerHTML='<div class="search-none">'+t('search_none')+'</div>' + createBtn;
         box.classList.add('show'); document.body.classList.add('search-open');
         return;
     }
@@ -2957,8 +2955,8 @@ function saveNewFood(){
     const carbs= parseFloat(document.getElementById('fmCarbs').value)||0;
     const lip  = parseFloat(document.getElementById('fmLip').value)||0;
     const err  = document.getElementById('fmErr');
-    if(!nom){ err.textContent='Donne un nom à ton aliment.'; err.style.display='block'; return; }
-    if(isNaN(kcal)||kcal<0){ err.textContent='Indique les calories pour 100 g.'; err.style.display='block'; return; }
+    if(!nom){ err.textContent=t('fm_err_name'); err.style.display='block'; return; }
+    if(isNaN(kcal)||kcal<0){ err.textContent=t('fm_err_kcal'); err.style.display='block'; return; }
     const food = { kcal:Math.round(kcal), prot:Math.round(prot*10)/10, carbs:Math.round(carbs*10)/10, lip:Math.round(lip*10)/10 };
     DB[nom] = food;
     try{
@@ -3133,14 +3131,14 @@ function openWeightModal(){
     el.value = '';
     el.placeholder = 'kg';
     const wl = document.getElementById('wmLast');
-    if(wl){ if(last){ wl.innerHTML = 'Poids précédent : <b>'+last+' kg</b>'; wl.style.display='block'; } else { wl.style.display='none'; } }
+    if(wl){ if(last){ wl.innerHTML = t('prev_weight') + ' : <b>'+last+' kg</b>'; wl.style.display='block'; } else { wl.style.display='none'; } }
     document.getElementById('weightModal').classList.add('show');
 }
 function closeWeightModal(){ document.getElementById('weightModal').classList.remove('show'); }
 function saveWeightNutri(){
     if(inviteBloque()) return;
     const val = parseFloat(document.getElementById('wmInput').value);
-    if(!val || val<=0){ alert('Entre un poids valide'); return; }
+    if(!val || val<=0){ alert(t('js_weight_invalid')); return; }
     const iso = new Date().toISOString().slice(0,10);
     const date = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
     const i = weightLog.findIndex(w=>w.iso===iso);
@@ -3209,7 +3207,7 @@ function applyCalc(){
     localStorage.setItem('repz_onboarded','1');   // objectif défini -> onboarding terminé
     sortirModeOnboarding();
     const btn = document.querySelector('#calcModal .tdee-apply-btn');
-    if(btn){ const o=btn.textContent; btn.textContent='✓ Objectif appliqué !'; btn.style.background='#DFA004';
+    if(btn){ const o=btn.textContent; btn.textContent=t('goal_applied'); btn.style.background='#DFA004';
         setTimeout(()=>{ btn.textContent=o; btn.style.background=''; closeCalcModal(); }, 1200); }
 }
 
@@ -3261,7 +3259,7 @@ function applyTdee(){
     // Petit feedback visuel
     const btn=document.querySelector('.tdee-apply-btn');
     const orig=btn.textContent;
-    btn.textContent=' Objectif appliqué !';
+    btn.textContent=t('goal_applied');
     btn.style.background='#DFA004';
     setTimeout(()=>{ btn.textContent=orig; btn.style.background=''; }, 1800);
 }
@@ -3270,7 +3268,7 @@ function applyTdee(){
 function saveDay(){
     if(inviteBloque()) return;
     const t=dayTotals();
-    if(t.kcal<=0){ alert('Ajoute des aliments avant d\'enregistrer la journée.'); return; }
+    if(t.kcal<=0){ alert(t('js_empty_day')); return; }
     // Modale de confirmation (l'enregistrement vide l'écran, irréversible)
     document.getElementById('confirmSaveOverlay').classList.add('show');
 }
@@ -3421,7 +3419,7 @@ function navJour(dir){
     if(h){ openDayModal(iso); }
     else {
         document.getElementById('dayModalTitle').textContent = ' ' + navLabel(dayOffset);
-        document.getElementById('dayModalBody').innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:26px 10px;">Aucune journée enregistrée à cette date.<br><span style="font-size:12px;">Pense à « Commencer une nouvelle journée » pour archiver tes repas.</span></div>';
+        document.getElementById('dayModalBody').innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:26px 10px;">'+t('js_no_day')+'</div>';
         document.getElementById('dayModal').classList.add('show');
     }
     animerJour(dir);
@@ -3458,7 +3456,7 @@ function animerJour(dir){
     }, {passive:true});
 })();
 
-function fermerNavJour(){ dayOffset = 0; const dnl = document.getElementById('dnLabel'); if(dnl) dnl.textContent = "Aujourd'hui"; const dnn = document.getElementById('dnNext'); if(dnn) dnn.disabled = true; }
+function fermerNavJour(){ dayOffset = 0; const dnl = document.getElementById('dnLabel'); if(dnl) dnl.textContent = t('today'); const dnn = document.getElementById('dnNext'); if(dnn) dnn.disabled = true; }
 
 function openDayModal(iso){
     const h=history.find(x=>x.iso===iso); if(!h) return;
@@ -3546,7 +3544,7 @@ function importData(input){
     reader.onload=e=>{
         try {
             const data=JSON.parse(e.target.result);
-            if(!confirm('Remplacer toutes tes données actuelles par cette sauvegarde ?\n\n Tes données actuelles seront écrasées.')) return;
+            if(!confirm(t('js_restore_confirm'))) return;
             if(data.goal) goal=data.goal;
             if(data.recipes) recipes=data.recipes;
             if(data.history) history=data.history;
@@ -3554,8 +3552,8 @@ function importData(input){
             if(data.nextRid) nextRid=data.nextRid;
             save();
             renderDate(); renderRecipes(); renderTotals(); renderHistory(); renderWeight();
-            alert(' Données restaurées !');
-        } catch(err){ alert(' Fichier invalide. Vérifie que c\'est bien une sauvegarde BELFIT.'); }
+            alert(t('js_restored'));
+        } catch(err){ alert(t('js_bad_file')); }
         input.value='';
     };
     reader.readAsText(file);
@@ -3706,11 +3704,11 @@ function toggleEat(){
         const reste = goal.kcal - t.kcal;
         const intro = document.getElementById('eatIntro');
         if(reste > 50){
-            intro.innerHTML = `Il te reste <b>${reste.toFixed(0)} kcal</b>. Choisis une envie :`;
+            intro.innerHTML = t('eat_left',{n:reste.toFixed(0)});
         } else if(reste < -50){
-            intro.innerHTML = `Tu as déjà atteint ton objectif (dépassé de ${Math.abs(reste).toFixed(0)} kcal).`;
+            intro.innerHTML = t('eat_over',{n:Math.abs(reste).toFixed(0)});
         } else {
-            intro.innerHTML = `Objectif quasiment atteint ! `;
+            intro.innerHTML = t('eat_almost');
         }
         document.getElementById('eatIdeas').innerHTML='';
     }
@@ -3740,7 +3738,7 @@ function showEatIdeas(cat){
     const ideas = EAT_IDEAS[cat] || [];
     const box = document.getElementById('eatIdeas');
     if(reste <= 50){
-        box.innerHTML = '<div class="eat-note">Tu as déjà atteint ton objectif du jour.</div>';
+        box.innerHTML = '<div class="eat-note">'+t('eat_done')+'</div>';
         return;
     }
     // Cible = un repas normal (plafonné), pas toutes les calories restantes
@@ -3774,7 +3772,7 @@ let lastIdeas = [];
 function openIdeaRecipe(i){
     const d = lastIdeas[i]; if(!d) return;
     document.getElementById('rmTitle').textContent = d.nom;
-    document.getElementById('rmMacros').textContent = '≈ ' + d.kcal + ' kcal · ' + d.prot + ' g de protéines';
+    document.getElementById('rmMacros').textContent = '≈ ' + d.kcal + ' kcal · ' + d.prot + ' ' + t('g_protein');
     document.getElementById('rmIngs').innerHTML = d.portion.split(' · ').map(x => '<li>' + x + '</li>').join('');
     const p = IDEA_PREP[d.nom];
     document.getElementById('rmSteps').innerHTML = p ? p.steps.map(x => '<li>' + x + '</li>').join('') : '<li>Assemble les ingrédients selon tes préférences.</li>';
@@ -3847,7 +3845,7 @@ function editGoalKcal(){
     const v = prompt('Ton objectif calorique quotidien (kcal) :', goal.kcal);
     if(v === null) return;
     const n = parseInt(v, 10);
-    if(!n || n < 800 || n > 10000){ alert('Entre une valeur entre 800 et 10 000 kcal.'); return; }
+    if(!n || n < 800 || n > 10000){ alert(t('js_goal_range')); return; }
     goal.kcal = n;
     save();
     renderTotals();
@@ -3880,10 +3878,10 @@ function editGoalKcal(){
 <div class="cp-premium-overlay" id="confirmSaveOverlay" onclick="if(event.target.id==='confirmSaveOverlay')this.classList.remove('show')">
     <div class="cp-premium-modal">
         <div style="font-size:42px;margin-bottom:10px">📋</div>
-        <h3 style="font-size:19px;font-weight:800;margin-bottom:10px">Enregistrer ta journée ?</h3>
-        <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px">Tes repas du jour vont être enregistrés dans ton historique et l'écran repartira à zéro.<br><br><b style="color:#1a1a1a;">Une fois enregistrée, ta journée ne pourra plus être modifiée.</b></p>
-        <button onclick="confirmerSaveDay()" style="display:block;width:100%;background:#10b981;color:#fff;border:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px;cursor:pointer;">Oui, enregistrer</button>
-        <button onclick="document.getElementById('confirmSaveOverlay').classList.remove('show')" style="background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px">Annuler</button>
+        <h3 style="font-size:19px;font-weight:800;margin-bottom:10px" data-i18n="sd_title">Enregistrer ta journée ?</h3>
+        <p style="font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:20px"><span data-i18n-html="sd_body">Tes repas du jour vont être enregistrés dans ton historique et l'écran repartira à zéro.<br><br><b style="color:#1a1a1a;">Une fois enregistrée, ta journée ne pourra plus être modifiée.</b></span></p>
+        <button onclick="confirmerSaveDay()" style="display:block;width:100%;background:#10b981;color:#fff;border:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px;cursor:pointer;" data-i18n="sd_yes">Oui, enregistrer</button>
+        <button onclick="document.getElementById('confirmSaveOverlay').classList.remove('show')" style="background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px" data-i18n="cancel">Annuler</button>
     </div>
 </div>
 
@@ -3896,83 +3894,83 @@ function editGoalKcal(){
     <div class="cp-body">
         <!-- Étape 1 : Sexe -->
         <div class="cp-step active" data-step="1">
-            <div class="cp-q">Tu es ?</div>
-            <div class="cp-hint">Pour un calcul juste de ton métabolisme.</div>
+            <div class="cp-q" data-i18n="cp_sex_q">Tu es ?</div>
+            <div class="cp-hint" data-i18n="cp_sex_hint">Pour un calcul juste de ton métabolisme.</div>
             <div class="cp-options">
-                <button class="cp-opt" onclick="cpChoix('sexe','h',this)"><span class="cp-opt-emoji">👨</span><span class="cp-opt-txt"><span class="cp-opt-title">Homme</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('sexe','f',this)"><span class="cp-opt-emoji">👩</span><span class="cp-opt-txt"><span class="cp-opt-title">Femme</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('sexe','h',this)"><span class="cp-opt-emoji">👨</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="male">Homme</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('sexe','f',this)"><span class="cp-opt-emoji">👩</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="female">Femme</span></span></button>
             </div>
         </div>
         <!-- Étape 2 : Mensurations -->
         <div class="cp-step" data-step="2">
-            <div class="cp-q">Tes mensurations</div>
-            <div class="cp-hint">Ces valeurs servent à calculer ton métabolisme.</div>
+            <div class="cp-q" data-i18n="cp_meas_q">Tes mensurations</div>
+            <div class="cp-hint" data-i18n="cp_meas_hint">Ces valeurs servent à calculer ton métabolisme.</div>
             <div class="cp-inputs">
-                <div class="cp-input-row"><label>Âge</label><input type="number" id="cpAge" placeholder="ans" inputmode="numeric"></div>
-                <div class="cp-input-row"><label>Poids (kg)</label><input type="number" id="cpWeight" placeholder="kg" inputmode="decimal"></div>
-                <div class="cp-input-row"><label>Taille (cm)</label><input type="number" id="cpHeight" placeholder="cm" inputmode="numeric"></div>
+                <div class="cp-input-row"><label data-i18n="age">Âge</label><input type="number" id="cpAge" placeholder="ans" inputmode="numeric"></div>
+                <div class="cp-input-row"><label data-i18n="weight_kg">Poids (kg)</label><input type="number" id="cpWeight" placeholder="kg" inputmode="decimal"></div>
+                <div class="cp-input-row"><label data-i18n="height_cm">Taille (cm)</label><input type="number" id="cpHeight" placeholder="cm" inputmode="numeric"></div>
             </div>
         </div>
         <!-- Étape 3 : Travail / quotidien -->
         <div class="cp-step" data-step="3">
-            <div class="cp-q">Ton quotidien / ton travail ?</div>
-            <div class="cp-hint">À quel point tu bouges dans une journée normale (hors sport).</div>
+            <div class="cp-q" data-i18n="cp_work_q">Ton quotidien / ton travail ?</div>
+            <div class="cp-hint" data-i18n="cp_work_hint">À quel point tu bouges dans une journée normale (hors sport).</div>
             <div class="cp-options">
-                <button class="cp-opt" onclick="cpChoix('travail',1.2,this)"><span class="cp-opt-emoji">🪑</span><span class="cp-opt-txt"><span class="cp-opt-title">Assis toute la journée</span><span class="cp-opt-sub">Bureau, chauffeur, télétravail…</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('travail',1.35,this)"><span class="cp-opt-emoji">🚶</span><span class="cp-opt-txt"><span class="cp-opt-title">Debout, un peu de marche</span><span class="cp-opt-sub">Vendeur, prof, bureau actif…</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('travail',1.5,this)"><span class="cp-opt-emoji">🏃</span><span class="cp-opt-txt"><span class="cp-opt-title">Actif physiquement</span><span class="cp-opt-sub">Serveur, aide-soignant, ouvrier léger…</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('travail',1.65,this)"><span class="cp-opt-emoji">💪</span><span class="cp-opt-txt"><span class="cp-opt-title">Travail physique intense</span><span class="cp-opt-sub">Maçon, déménageur, agriculteur…</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('travail',1.2,this)"><span class="cp-opt-emoji">🪑</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="cp_w1">Assis toute la journée</span><span class="cp-opt-sub" data-i18n="cp_w1s">Bureau, chauffeur, télétravail…</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('travail',1.35,this)"><span class="cp-opt-emoji">🚶</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="cp_w2">Debout, un peu de marche</span><span class="cp-opt-sub" data-i18n="cp_w2s">Vendeur, prof, bureau actif…</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('travail',1.5,this)"><span class="cp-opt-emoji">🏃</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="cp_w3">Actif physiquement</span><span class="cp-opt-sub" data-i18n="cp_w3s">Serveur, aide-soignant, ouvrier léger…</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('travail',1.65,this)"><span class="cp-opt-emoji">💪</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="cp_w4">Travail physique intense</span><span class="cp-opt-sub" data-i18n="cp_w4s">Maçon, déménageur, agriculteur…</span></span></button>
             </div>
         </div>
         <!-- Étape 4 : Sport -->
         <div class="cp-step" data-step="4">
-            <div class="cp-q">Ton sport ?</div>
-            <div class="cp-hint">Combien de séances d'entraînement par semaine.</div>
+            <div class="cp-q" data-i18n="cp_sport_q">Ton sport ?</div>
+            <div class="cp-hint" data-i18n="cp_sport_hint">Combien de séances d'entraînement par semaine.</div>
             <div class="cp-options">
-                <button class="cp-opt" onclick="cpChoix('sport',0,this)"><span class="cp-opt-emoji">😌</span><span class="cp-opt-txt"><span class="cp-opt-title">Peu ou pas de sport</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('sport',0.1,this)"><span class="cp-opt-emoji">🙂</span><span class="cp-opt-txt"><span class="cp-opt-title">1 à 3 séances / semaine</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('sport',0.2,this)"><span class="cp-opt-emoji">😃</span><span class="cp-opt-txt"><span class="cp-opt-title">4 à 5 séances / semaine</span></span></button>
-                <button class="cp-opt" onclick="cpChoix('sport',0.3,this)"><span class="cp-opt-emoji">🔥</span><span class="cp-opt-txt"><span class="cp-opt-title">6 à 7 séances / semaine</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('sport',0,this)"><span class="cp-opt-emoji">😌</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="cp_s0">Peu ou pas de sport</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('sport',0.1,this)"><span class="cp-opt-emoji">🙂</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="cp_s1">1 à 3 séances / semaine</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('sport',0.2,this)"><span class="cp-opt-emoji">😃</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="cp_s2">4 à 5 séances / semaine</span></span></button>
+                <button class="cp-opt" onclick="cpChoix('sport',0.3,this)"><span class="cp-opt-emoji">🔥</span><span class="cp-opt-txt"><span class="cp-opt-title" data-i18n="cp_s3">6 à 7 séances / semaine</span></span></button>
             </div>
         </div>
         <!-- Étape 5 : Objectif (poids cible + rythme) -->
         <div class="cp-step" data-step="5">
-            <div class="cp-q">Ton objectif ?</div>
-            <div class="cp-hint">Choisis ton poids cible, puis le rythme qui te convient.</div>
+            <div class="cp-q" data-i18n="cp_goal_q">Ton objectif ?</div>
+            <div class="cp-hint" data-i18n="cp_goal_hint">Choisis ton poids cible, puis le rythme qui te convient.</div>
             <div class="cp-slider-card">
-                <div class="cp-slider-lab">Poids cible</div>
+                <div class="cp-slider-lab" data-i18n="cp_target">Poids cible</div>
                 <div class="cp-slider-val"><span id="cpCibleVal">–</span> kg <span class="cp-slider-delta" id="cpCibleDelta"></span></div>
                 <input type="range" class="cp-range" id="cpCible" step="0.5" oninput="cpMajObjectif()">
             </div>
             <div class="cp-slider-card" id="cpRythmeCard">
-                <div class="cp-slider-lab">Rythme</div>
-                <div class="cp-slider-val"><span id="cpRythmeVal">0.3</span> kg / semaine</div>
+                <div class="cp-slider-lab" data-i18n="cp_pace">Rythme</div>
+                <div class="cp-slider-val"><span id="cpRythmeVal">0.3</span> <span data-i18n="cp_kg_week">kg / semaine</span></div>
                 <input type="range" class="cp-range" id="cpRythme" min="0.1" max="1" step="0.05" value="0.3" oninput="cpMajObjectif()">
                 <div class="cp-timeline" id="cpTimeline"></div>
             </div>
-            <div class="cp-maintien-note" id="cpMaintienNote" style="display:none;">⚖️ Poids cible = poids actuel → on calcule ton <b>maintien</b>.</div>
+            <div class="cp-maintien-note" id="cpMaintienNote" style="display:none;"><span data-i18n-html="cp_maint_note">⚖️ Poids cible = poids actuel → on calcule ton <b>maintien</b>.</span></div>
         </div>
         <!-- Étape 6 : Résultat -->
         <div class="cp-step" data-step="6">
             <div class="cp-result-big">
                 <div class="cp-result-num" id="cpResNum">–</div>
-                <div class="cp-result-lbl">kcal par jour pour ton objectif</div>
+                <div class="cp-result-lbl" data-i18n="cp_res_lbl">kcal par jour pour ton objectif</div>
             </div>
             <div class="cp-result-lines">
-                <div class="cp-result-line"><span>Métabolisme de base</span><span id="cpResBmr">–</span></div>
-                <div class="cp-result-line"><span>Maintien (avec ton activité)</span><span id="cpResTdee">–</span></div>
-                <div class="cp-result-line" id="cpResObjLine" style="display:none;"><span>Ton objectif</span><span id="cpResObj">–</span></div>
+                <div class="cp-result-line"><span data-i18n="bmr">Métabolisme de base</span><span id="cpResBmr">–</span></div>
+                <div class="cp-result-line"><span data-i18n="cp_maint_act">Maintien (avec ton activité)</span><span id="cpResTdee">–</span></div>
+                <div class="cp-result-line" id="cpResObjLine" style="display:none;"><span data-i18n="cp_your_goal">Ton objectif</span><span id="cpResObj">–</span></div>
             </div>
             <div class="cp-result-macros">
-                <div class="cp-macro"><div class="m-l">Protéines</div><div class="m-v" id="cpResProt">–</div></div>
-                <div class="cp-macro"><div class="m-l">Glucides</div><div class="m-v" id="cpResCarbs">–</div></div>
-                <div class="cp-macro"><div class="m-l">Lipides</div><div class="m-v" id="cpResLip">–</div></div>
+                <div class="cp-macro"><div class="m-l" data-i18n="protein">Protéines</div><div class="m-v" id="cpResProt">–</div></div>
+                <div class="cp-macro"><div class="m-l" data-i18n="carbs">Glucides</div><div class="m-v" id="cpResCarbs">–</div></div>
+                <div class="cp-macro"><div class="m-l" data-i18n="fat">Lipides</div><div class="m-v" id="cpResLip">–</div></div>
             </div>
         </div>
     </div>
     <div class="cp-footer">
-        <button class="cp-next" id="cpNextBtn" onclick="cpNext()">Continuer</button>
-        <button class="cp-back" id="cpBackBtn" onclick="cpBack()" style="display:none">← Retour</button>
+        <button class="cp-next" id="cpNextBtn" onclick="cpNext()" data-i18n="continue">Continuer</button>
+        <button class="cp-back" id="cpBackBtn" onclick="cpBack()" style="display:none" data-i18n="back">← Retour</button>
     </div>
 </div>
 
@@ -4001,13 +3999,13 @@ function cpShowStep(){
     document.getElementById('cpBackBtn').style.display = cpStep > 1 && cpStep < 6 ? 'block' : 'none';
     const nextBtn = document.getElementById('cpNextBtn');
     if(cpStep === 6){
-        nextBtn.textContent = 'Appliquer ce résultat';
+        nextBtn.textContent = t('cp_apply');
         nextBtn.onclick = cpAppliquer;
     } else if(cpStep === 2){
-        nextBtn.textContent = 'Continuer';
+        nextBtn.textContent = t('continue');
         nextBtn.onclick = cpNext;
     } else {
-        nextBtn.textContent = 'Continuer';
+        nextBtn.textContent = t('continue');
         nextBtn.onclick = cpNext;
     }
 }
@@ -4029,7 +4027,7 @@ function cpNext(){
         const age = parseFloat(document.getElementById('cpAge').value);
         const w = parseFloat(document.getElementById('cpWeight').value);
         const h = parseFloat(document.getElementById('cpHeight').value);
-        if(!age || !w || !h){ alert('Remplis ton âge, ton poids et ta taille.'); return; }
+        if(!age || !w || !h){ alert(t('js_fill_info')); return; }
         cpData.age = age; cpData.weight = w; cpData.height = h;
     }
     if(cpStep === 3 && cpData.travail === null) return;
@@ -4222,7 +4220,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     b.href = 'index.html';
     b.id = 'inviteBandeau';
     b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFFBEF;border-bottom:1px solid #F3E2A8;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
-    b.innerHTML = '👀 Mode découverte — <span style="text-decoration:underline;">crée ton compte gratuit pour utiliser BELFIT</span>';
+    b.innerHTML = t('invite_banner');
     const topbar = document.querySelector('.topbar-app, .topbar');
     if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
     else { document.body.insertBefore(b, document.body.firstChild); }
@@ -4331,8 +4329,8 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
 <!-- MODALE AJOUT VOCAL -->
 <div class="vocal-overlay" id="vocalOverlay" onclick="if(event.target.id==='vocalOverlay')fermerVocal()">
   <div class="vocal-modal">
-    <div class="vm-title">Ajout vocal</div>
-    <div class="vm-sub" id="vmSub">Dis ce que tu as mangé ou bu, naturellement :</div>
+    <div class="vm-title" data-i18n="vm_title">Ajout vocal</div>
+    <div class="vm-sub" id="vmSub" data-i18n="vm_sub">Dis ce que tu as mangé ou bu, naturellement :</div>
     <div class="vm-ex">
         <button onclick="document.getElementById('vmInput').value=this.textContent">250 g de poulet et 150 g de riz</button>
         <button onclick="document.getElementById('vmInput').value=this.textContent">2 œufs, une banane et un café</button>
@@ -4342,20 +4340,20 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
       <button class="vm-mic-btn" id="vmMicBtn" onclick="basculerEcoute()"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg></button>
       <div class="vm-live" id="vmLive"></div>
     </div>
-    <input type="text" class="vm-input" id="vmInput" placeholder="Décris ton repas…">
-    <button class="vm-analyser" onclick="analyserVocal()">Analyser</button>
+    <input type="text" class="vm-input" id="vmInput" data-i18n-ph="vm_ph" placeholder="Décris ton repas…">
+    <button class="vm-analyser" onclick="analyserVocal()" data-i18n="vm_analyze">Analyser</button>
     <div class="vm-props" id="vmProps"></div>
     <div id="vmInconnus"></div>
     <div class="vm-dest" id="vmDest"></div>
     <div class="vm-new" id="vmNew" style="display:none">
-        <span class="vm-new-lb">Ou crée :</span>
+        <span class="vm-new-lb" data-i18n="vm_or_create">Ou crée :</span>
         <button onclick="creerDepuisVocal('repas')">🍴 Repas</button>
         <button onclick="creerDepuisVocal('collation')">🥨 Collation</button>
         <button onclick="creerDepuisVocal('boisson')">🥤 Boisson</button>
         <button onclick="creerDepuisVocal('recette')">👨‍🍳 Recette</button>
     </div>
-    <button class="vm-confirm" id="vmConfirm" style="display:none" onclick="confirmerVocal()">Ajouter au repas</button>
-    <button class="vm-close" onclick="fermerVocal()">Fermer</button>
+    <button class="vm-confirm" id="vmConfirm" style="display:none" onclick="confirmerVocal()" data-i18n="vm_add">Ajouter au repas</button>
+    <button class="vm-close" onclick="fermerVocal()" data-i18n="close">Fermer</button>
   </div>
 </div>
 
@@ -4377,7 +4375,7 @@ function ouvrirVocal(){
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if(!SR){
         document.getElementById('vmMicZone').style.display = 'none';
-        document.getElementById('vmSub').textContent = "Écris ta liste ci-dessous — astuce : utilise le micro de ton clavier pour la dicter.";
+        document.getElementById('vmSub').textContent = t('vm_ios_hint');
     } else {
         document.getElementById('vmMicZone').style.display = 'flex';
     }
@@ -4408,7 +4406,7 @@ function basculerEcoute(){
     vocalRec.start();
     vocalEcoute = true;
     document.getElementById('vmMicBtn').classList.add('ecoute');
-    document.getElementById('vmLive').textContent = 'Je t\'écoute…';
+    document.getElementById('vmLive').textContent = t('vm_listening');
 }
 function arreterEcoute(){
     if(vocalRec){ try{ vocalRec.stop(); }catch(e){} vocalRec = null; }
@@ -4498,7 +4496,7 @@ function analyserVocal(){
 function renderVocalProps(inconnus){
     const box = document.getElementById('vmProps');
     if(!vocalProps.length){
-        box.innerHTML = '<div class="vm-inconnu">Je n\'ai reconnu aucun aliment — reformule ou écris-le.</div>';
+        box.innerHTML = '<div class="vm-inconnu">'+t('vm_none')+'</div>';
     } else {
         box.innerHTML = vocalProps.map((p,i)=>{
             const m = macrosOf({name:p.name, portion:p.portion});
@@ -4555,6 +4553,11 @@ function confirmerVocal(){
     fermerVocal();
     openMeals.add(rc.id); renderRecipes();
 }
+
+window.addEventListener('langchange', function(){
+    try{ if(typeof renderDate==='function') renderDate(); }catch(e){}
+    try{ if(typeof render==='function') render(); }catch(e){}
+});
 </script>
 </body>
 </html>
