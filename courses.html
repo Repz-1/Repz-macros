@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
+<script src="i18n-strings.js?v=3"></script>
+<script src="i18n.js?v=3"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v5.png">
@@ -98,22 +100,22 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 <div class="container">
     <div class="top">
         <a href="main.html#0" class="back-btn">←</a>
-        <div class="title">Mes courses</div>
+        <div class="title" data-i18n="co_title">Mes courses</div>
     </div>
-    <div class="subtitle">Générée depuis les repas de ton journal.</div>
+    <div class="subtitle" data-i18n="co_sub">Générée depuis les repas de ton journal.</div>
 
     <!-- PRÉPARATION -->
     <div class="prep">
-        <h3>🛒 Préparer mes courses</h3>
+        <h3>🛒 <span data-i18n="co_prep_title">Préparer mes courses</span></h3>
         <div class="prep-row">
-            <div class="prep-lbl">Pour combien de jours ?</div>
+            <div class="prep-lbl" data-i18n="co_days_q">Pour combien de jours ?</div>
             <div class="seg" id="segJours"></div>
         </div>
         <div class="prep-row">
-            <div class="prep-lbl">Pour combien de personnes ?</div>
+            <div class="prep-lbl" data-i18n="co_people_q">Pour combien de personnes ?</div>
             <div class="seg" id="segPers"></div>
         </div>
-        <button class="gen-btn" onclick="generer()">Générer ma liste</button>
+        <button class="gen-btn" onclick="generer()" data-i18n="co_generate">Générer ma liste</button>
         <div class="prep-note" id="prepNote"></div>
     </div>
 
@@ -122,38 +124,38 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 
     <!-- AJOUT MANUEL -->
     <div class="add-row">
-        <input type="text" id="addInput" placeholder="Ajouter un produit…" onkeydown="if(event.key==='Enter')ajouterManuel()">
+        <input type="text" id="addInput" data-i18n-ph="co_add_ph" placeholder="Ajouter un produit…" onkeydown="if(event.key==='Enter')ajouterManuel()">
         <button onclick="ajouterManuel()">＋</button>
     </div>
 
     <!-- ACTIONS -->
     <div class="actions">
-        <button class="act-share" onclick="partager()"><span class="as-ic"><svg viewBox="0 0 24 24"><path d="M12 3v13"/><path d="M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></span>Partager ma liste</button>
-        <button class="act-reset" onclick="toutDecocher()">Tout décocher</button>
+        <button class="act-share" onclick="partager()"><span class="as-ic"><svg viewBox="0 0 24 24"><path d="M12 3v13"/><path d="M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></span><span data-i18n="co_share_btn">Partager ma liste</span></button>
+        <button class="act-reset" onclick="toutDecocher()" data-i18n="co_uncheck">Tout décocher</button>
     </div>
 </div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-    <a href="main.html#0" class="bn-item"><svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg><span>Journal</span></a>
-    <a href="main.html#1" class="bn-item"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg><span>S'entraîner</span></a>
-    <a href="main.html#2" class="bn-item"><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg><span>Stats</span></a>
-    <a href="main.html#3" class="bn-item"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg><span>Premium</span></a>
+    <a href="main.html#0" class="bn-item"><svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg><span data-i18n="nav_journal">Journal</span></a>
+    <a href="main.html#1" class="bn-item"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg><span data-i18n="nav_train">S'entraîner</span></a>
+    <a href="main.html#2" class="bn-item"><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg><span data-i18n="nav_stats">Stats</span></a>
+    <a href="main.html#3" class="bn-item"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg><span data-i18n="nav_premium">Premium</span></a>
 </nav>
 
 <script>
 // ===== Config rayons (ordre + emoji + libellé) =====
 const RAYONS = [
-    {k:'viandes',   emo:'🥩', nom:'Viandes'},
-    {k:'poissons',  emo:'🐟', nom:'Poissons'},
-    {k:'oeufs',     emo:'🥚', nom:'Œufs'},
-    {k:'legumes',   emo:'🥦', nom:'Fruits & légumes'},
-    {k:'feculents', emo:'🍚', nom:'Féculents'},
-    {k:'laitiers',  emo:'🥛', nom:'Produits laitiers'},
-    {k:'epicerie',  emo:'🥜', nom:'Épicerie'},
-    {k:'boissons',  emo:'🥤', nom:'Boissons'},
-    {k:'autres',    emo:'📦', nom:'Autres'}
-];
+    {k:'viandes',   emo:'🥩'},
+    {k:'poissons',  emo:'🐟'},
+    {k:'oeufs',     emo:'🥚'},
+    {k:'legumes',   emo:'🥦'},
+    {k:'feculents', emo:'🍚'},
+    {k:'laitiers',  emo:'🥛'},
+    {k:'epicerie',  emo:'🥜'},
+    {k:'boissons',  emo:'🥤'},
+    {k:'autres',    emo:'📦'}
+].map(r => Object.defineProperty(r, 'nom', { get(){ return t('ray_'+r.k); } }));
 
 let base = [];          // items "1 jour" venant du journal : {name, qty, unit, unitLabel, cat}
 let baseNjours = 1;      // nombre de journées ayant servi à la moyenne
@@ -173,7 +175,7 @@ let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}
     renderSegs();
     renderSegs();
     const pn = document.getElementById('prepNote');
-    if(pn && baseNjours > 1){ pn.textContent = '✨ Quantités basées sur la moyenne de tes ' + baseNjours + ' dernières journées.'; pn.style.display = 'block'; }
+    if(pn && baseNjours > 1){ pn.textContent = '✨ ' + t('co_avg_note',{n:baseNjours}); pn.style.display = 'block'; }
     if(base.length){ generer(); }        // auto-génération à chaque ouverture, depuis le journal
     else if(state){ renderListe(); }     // pas de base mais des ajouts manuels sauvegardés
     else { renderVide(); }
@@ -181,7 +183,7 @@ let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}
 
 function renderSegs(){
     document.getElementById('segJours').innerHTML = [3,5,7].map(j =>
-        `<button class="${j===jours?'on':''}" onclick="setJours(${j})">${j} jours</button>`).join('');
+        `<button class="${j===jours?'on':''}" onclick="setJours(${j})">${j} ${t('co_days')}</button>`).join('');
     document.getElementById('segPers').innerHTML = [1,2,3,4].map(p =>
         `<button class="${p===pers?'on':''}" onclick="setPers(${p})">${p===4?'4+':p}</button>`).join('');
 }
@@ -239,7 +241,7 @@ function sauver(){ if(state) localStorage.setItem('repz_courses', JSON.stringify
 function fmtQty(it){
     if(it.unit === 'u'){
         const n = Math.round(it.qty);
-        return n + ' ' + (it.unitLabel && it.unitLabel !== 'u' ? it.unitLabel + (n>1?'s':'') : (n>1?'unités':'unité'));
+        return n + ' ' + (it.unitLabel && it.unitLabel !== 'u' ? it.unitLabel + (n>1?'s':'') : t(n>1?'co_units':'co_unit'));
     }
     const g = Math.round(it.qty);
     if(g >= 1000){ return (g/1000).toFixed(g%1000===0?0:2).replace('.',',') + ' kg'; }
@@ -263,7 +265,7 @@ function renderListe(){
                 <div class="c-check" onclick="toggle(${idx})">✓</div>
                 <div class="c-body">
                     <div class="c-name">${it.name}</div>
-                    <div class="c-qty">${it.manuel ? 'ajouté' : fmtQty(it)}</div>
+                    <div class="c-qty">${it.manuel ? t('co_added') : fmtQty(it)}</div>
                 </div>
                 <button class="c-del" onclick="supprimer(${idx})">×</button>
             </div>`;
@@ -275,7 +277,7 @@ function renderListe(){
 
 function renderVide(){
     document.getElementById('liste').innerHTML =
-        `<div class="empty"><span style="display:block;font-size:44px;margin-bottom:10px">🛒</span>Ta liste est vide.<br>Ajoute des aliments dans ton journal, puis reviens ici.</div>`;
+        `<div class="empty"><span style="display:block;font-size:44px;margin-bottom:10px">🛒</span>${t('co_empty')}</div>`;
 }
 
 function toggle(i){ if(state.items[i]){ state.items[i].done = !state.items[i].done; sauver(); renderListe(); } }
@@ -295,17 +297,25 @@ function ajouterManuel(){
 function toutDecocher(){ if(state){ state.items.forEach(i => i.done=false); sauver(); renderListe(); } }
 
 function partager(){
-    if(!state || !state.items.length){ alert('Ta liste est vide.'); return; }
-    let txt = '🛒 Ma liste de courses BelFit\n(' + jours + ' jours · ' + pers + (pers>1?' personnes':' personne') + ')\n';
+    if(!state || !state.items.length){ alert(t('co_empty_alert')); return; }
+    let txt = '🛒 ' + t('co_share_title') + '\n(' + jours + ' ' + t('co_days') + ' · ' + pers + ' ' + t(pers>1?'co_people':'co_person') + ')\n';
     RAYONS.forEach(r => {
         const items = state.items.filter(i => i.cat === r.k);
         if(!items.length) return;
         txt += '\n' + r.emo + ' ' + r.nom + '\n';
         items.forEach(it => { txt += '• ' + it.name + (it.manuel ? '' : ' — ' + fmtQty(it)) + '\n'; });
     });
-    if(navigator.share){ navigator.share({ title:'Ma liste de courses', text:txt }).catch(()=>{}); }
-    else if(navigator.clipboard){ navigator.clipboard.writeText(txt); alert('Liste copiée !'); }
+    if(navigator.share){ navigator.share({ title:t('co_share_title'), text:txt }).catch(()=>{}); }
+    else if(navigator.clipboard){ navigator.clipboard.writeText(txt); alert(t('co_copied')); }
 }
+</script>
+<script>
+window.addEventListener('langchange', function(){
+    renderSegs();
+    var pn = document.getElementById('prepNote');
+    if(pn && baseNjours > 1){ pn.textContent = '✨ ' + t('co_avg_note',{n:baseNjours}); }
+    if(state && state.items.length){ renderListe(); } else { renderVide(); }
+});
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
 </body>
