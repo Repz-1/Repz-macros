@@ -2755,15 +2755,46 @@ function normalize(str){
         .replace(/\s+/g,' ')                             // espaces multiples ->un seul
         .trim();
 }
+// Alias de recherche : mots génériques associés automatiquement aux aliments
+const SEARCH_ALIAS = {
+    'gouda':'fromage', 'emmental':'fromage', 'cheddar':'fromage', 'mozzar':'fromage',
+    'feta':'fromage', 'parmesan':'fromage', 'comte':'fromage', 'brie':'fromage',
+    'camembert':'fromage', 'chevre':'fromage', 'raclette':'fromage', 'gruyere':'fromage',
+    'ricotta':'fromage', 'maasdam':'fromage', 'bleu d':'fromage', 'roquefort':'fromage',
+    'boursin':'fromage', 'babybel':'fromage', 'kiri':'fromage', 'vache qui rit':'fromage',
+    'poulet':'viande volaille', 'dinde':'viande volaille', 'canard':'viande volaille',
+    'boeuf':'viande', 'steak':'viande', 'veau':'viande', 'porc':'viande', 'agneau':'viande',
+    'jambon':'viande charcuterie', 'lardon':'viande charcuterie', 'saucisse':'viande charcuterie', 'chorizo':'charcuterie',
+    'saumon':'poisson', 'thon':'poisson', 'cabillaud':'poisson', 'colin':'poisson',
+    'merlu':'poisson', 'sardine':'poisson', 'maquereau':'poisson', 'truite':'poisson',
+    'crevette':'fruits de mer', 'moule':'fruits de mer',
+    'avoine':'cereales flocons', 'riz':'feculent', 'pates':'feculent pate', 'quinoa':'feculent',
+    'patate':'feculent pomme de terre', 'pomme de terre':'feculent patate',
+    'lait':'boisson laitier', 'yaourt':'laitier yogourt', 'skyr':'laitier yaourt', 'fromage blanc':'laitier',
+    'cacahuete':'arachide beurre', 'amande':'oleagineux noix', 'noix':'oleagineux', 'pecan':'oleagineux noix',
+    'whey':'proteine poudre shaker', 'oeuf':'proteine',
+    'pain':'boulangerie', 'wrap':'boulangerie tortilla', 'biscotte':'boulangerie'
+};
+let SEARCH_TEXT_CACHE = null;
+function searchTextOf(name){
+    if(!SEARCH_TEXT_CACHE) SEARCH_TEXT_CACHE = {};
+    if(SEARCH_TEXT_CACHE[name]) return SEARCH_TEXT_CACHE[name];
+    const n = normalize(name);
+    let extra = '';
+    for(const k in SEARCH_ALIAS){ if(n.includes(normalize(k))) extra += ' ' + normalize(SEARCH_ALIAS[k]); }
+    SEARCH_TEXT_CACHE[name] = n + extra;
+    return SEARCH_TEXT_CACHE[name];
+}
+
 function filterIngredients(rid,query){
     const box=document.getElementById(`results-${rid}`);
     if(!box) return;
     const q=normalize(query.trim());
-    // Recherche multi-mots : chaque mot tapé doit être présent dans le nom
+    // Recherche multi-mots : chaque mot tapé doit matcher le nom OU ses alias (ex. "fromage gouda")
     const mots = q.split(/\s+/).filter(m=>m.length>0);
     const matches=Object.keys(DB).filter(name=>{
-        const n=normalize(name);
-        return mots.every(mot=>n.includes(mot));
+        const t=searchTextOf(name);
+        return mots.every(mot=>t.includes(mot));
     }).sort();
     const createBtn = `<div class="search-create" onclick="openFoodCreator(${rid})"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Créer un aliment</div>`;
     if(matches.length===0){
