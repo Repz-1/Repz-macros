@@ -475,7 +475,8 @@ body.search-open .fab-row { display:none; }
 .eat-prot { font-weight:700; }
 .eat-prot.ok { color:#8F6200; }
 .eat-prot.over { color:#b45309; font-size:11px; }
-.eat-idea.eat-over { opacity:.55; }
+.eat-idea.eat-over { opacity:1; }
+.eat-warn { display:inline-flex; align-items:center; gap:4px; background:#FEF3E2; color:#b45309; font-size:11px; font-weight:700; padding:3px 9px; border-radius:12px; margin-top:4px; }
 .eat-note { font-size:13px; color:#db2777; font-weight:700; text-align:center; padding:14px; }
 .recipe-modal { max-height:82vh; overflow-y:auto; }
 .rm-macros { font-size:13px; font-weight:800; color:#DFA004; margin:2px 0 4px; }
@@ -3613,13 +3614,12 @@ function showEatIdeas(cat){
     evaluees.sort((a,b)=> (b.fit - a.fit) || (a.protA - b.protA));
     lastIdeas = evaluees.map(i => ({ nom:i.nom, kcal:i.kcalA, prot:i.protA, portion:i.portion }));
     box.innerHTML = evaluees.map((idea,ix)=>{
-        const protTag = idea.fit
-            ? `<span class="eat-prot ok">${idea.protA} g prot</span>`
-            : `<span class="eat-prot over">${idea.protA} g prot — dépasse ce qu'il te reste (${Math.round(resteProt)} g)</span>`;
-        return `<div class="eat-idea${idea.fit ? '' : ' eat-over'}" onclick="openIdeaRecipe(${ix})">
+        const warn = idea.fit ? '' : `<div class="eat-warn">⚠ Dépasse tes protéines restantes (${Math.round(resteProt)} g)</div>`;
+        return `<div class="eat-idea" onclick="openIdeaRecipe(${ix})">
             <div class="eat-idea-name">${idea.nom}</div>
             <div class="eat-idea-ex">${idea.portion}</div>
-            <div class="eat-idea-kcal">≈ ${idea.kcalA} kcal · ${protTag}</div>
+            <div class="eat-idea-kcal">≈ ${idea.kcalA} kcal · <span class="eat-prot ok">${idea.protA} g prot</span></div>
+            ${warn}
             <span class="eat-open">Voir la recette →</span>
         </div>`;
     }).join('');
