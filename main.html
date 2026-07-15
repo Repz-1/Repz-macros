@@ -59,9 +59,10 @@ html, body { height:100%; overflow:hidden; background:#F8F8F8; font-family:'Manr
 
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;transition:opacity .25s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
-#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
+#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;transition:transform .25s ease;}
+#repzSplash.hide .sp-sym{transform:scale(1.06);}
 #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
 @keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
 </style>
@@ -79,11 +80,27 @@ html, body { height:100%; overflow:hidden; background:#F8F8F8; font-family:'Manr
   var tc=document.querySelector('meta[name="theme-color"]');
   var old=tc?tc.getAttribute('content'):null;
   if(tc) tc.setAttribute('content','#0a0a0a');
-  setTimeout(function(){
-    s.classList.add('hide');
-    if(tc&&old) tc.setAttribute('content',old);
-    setTimeout(function(){ if(s)s.remove(); },550);
-  }, 1800);
+  var t0=Date.now(), MIN=500, done=false;
+  function hide(){
+    if(done) return; done=true;
+    var wait=Math.max(0, MIN-(Date.now()-t0));
+    setTimeout(function(){
+      s.classList.add('hide');
+      if(tc&&old) tc.setAttribute('content',old);
+      setTimeout(function(){ if(s)s.remove(); },300);
+    }, wait);
+  }
+  /* Se cache quand l'iframe du Journal a fini de charger (plus de flash blanc) */
+  document.addEventListener('DOMContentLoaded', function(){
+    var f0=document.getElementById('f0');
+    if(!f0){ hide(); return; }
+    try{
+      if(f0.contentDocument && f0.contentDocument.readyState==='complete' && f0.contentWindow.location.href!=='about:blank'){ hide(); return; }
+    }catch(e){}
+    f0.addEventListener('load', hide);
+  });
+  /* Filet de sécurité : jamais plus de 4s */
+  setTimeout(hide, 4000);
 })();
 </script>
 
