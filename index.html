@@ -6,6 +6,8 @@
 <script>if(window.self!==window.top){try{window.top.location=window.location.href;}catch(e){}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com">
+<link rel="prefetch" href="main.html">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
@@ -148,20 +150,15 @@ body {
 <body>
 <!-- SPLASH BELFIT -->
 <style>
-#repzSplash{position:fixed;inset:0;z-index:99999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;transition:opacity .25s ease;}
 #repzSplash.hide{opacity:0;pointer-events:none;}
-#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
+#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;}
 #repzSplash .sp-txt{position:absolute;bottom:7%;left:50%;transform:translateX(-50%);width:230px;max-width:66%;height:auto;}
-@keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-#repzSplash .sp-bar{position:absolute;top:calc(50% + 130px);left:50%;transform:translateX(-50%);width:190px;max-width:56%;height:6px;background:rgba(255,255,255,.14);border-radius:6px;overflow:hidden;}
-#repzSplash .sp-fill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#FFC400,#F07818,#DE2F14);animation:spLoad 2.3s cubic-bezier(.25,.6,.35,1) forwards;}
-@keyframes spLoad{0%{width:0}18%{width:31%}42%{width:52%}60%{width:64%}78%{width:83%}100%{width:100%}}
 
 </style>
 <div id="repzSplash">
   <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
   <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
-  <div class="sp-bar"><div class="sp-fill"></div></div>
 </div>
 <script>
 (function(){
@@ -171,7 +168,15 @@ body {
   var origColor = tc ? tc.getAttribute('content') : null;
   var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){} if(seen){ s.remove(); return; }
   if(tc) tc.setAttribute('content','#0a0a0a');
-  setTimeout(function(){ s.classList.add('hide'); if(tc&&origColor) tc.setAttribute('content',origColor); setTimeout(function(){ if(s)s.remove(); },550); }, 2600);
+  /* Le splash reste affiche jusqu'a la decision auth (redirect main.html ou formulaire).
+     masquerSplash() est appelee quand le formulaire s'affiche. Filet de securite : 6s. */
+  window.masquerSplash=function(){
+    if(!s) return;
+    s.classList.add('hide');
+    if(tc&&origColor) tc.setAttribute('content',origColor);
+    setTimeout(function(){ if(s){s.remove(); s=null;} },300);
+  };
+  setTimeout(function(){ if(window.masquerSplash) window.masquerSplash(); }, 6000);
 })();
 </script>
 
@@ -323,6 +328,7 @@ auth.onAuthStateChanged((user) => {
         // Écran de choix de langue au 1er démarrage — seulement si personne n'est connecté
         try{ if(window.BELFIT_I18N && !BELFIT_I18N.langChoisie() && typeof ouvrirChoixLangue==='function'){ ouvrirChoixLangue(); } }catch(e){}
         document.getElementById('authContainer').style.visibility = 'visible';
+        if(window.masquerSplash) window.masquerSplash();
     }
 });
 
