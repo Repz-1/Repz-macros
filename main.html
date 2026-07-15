@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#F8F8F8">
+<meta name="theme-color" content="#0a0a0a">
 <title>BelFit</title>
 <link rel="manifest" href="manifest.json?v=2">
 <meta name="mobile-web-app-capable" content="yes">
@@ -75,11 +75,10 @@ html, body { height:100%; overflow:hidden; background:#F8F8F8; font-family:'Manr
   var s=document.getElementById('repzSplash');
   if(!s) return;
   var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){}
-  if(seen){ s.remove(); return; }
+  if(seen){ s.remove(); if(tc) tc.setAttribute('content',old); return; }
   try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
   var tc=document.querySelector('meta[name="theme-color"]');
-  var old=tc?tc.getAttribute('content'):null;
-  if(tc) tc.setAttribute('content','#0a0a0a');
+  var old='#F8F8F8'; /* couleur claire de la page, restauree quand le splash part */
   var t0=Date.now(), MIN=500, done=false;
   function hide(){
     if(done) return; done=true;

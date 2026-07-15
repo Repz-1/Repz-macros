@@ -12,7 +12,7 @@
 <style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f7efd9">
+<meta name="theme-color" content="#0a0a0a">
 <link rel="manifest" href="manifest.json?v=2">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -165,9 +165,9 @@ body {
   var s=document.getElementById('repzSplash');
   if(!s) return;
   var tc=document.querySelector('meta[name="theme-color"]');
-  var origColor = tc ? tc.getAttribute('content') : null;
-  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){} if(seen){ s.remove(); return; }
-  if(tc) tc.setAttribute('content','#0a0a0a');
+  var origColor = '#f7efd9'; /* couleur claire de la page, restauree quand le splash part */
+  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){}
+  if(seen){ s.remove(); if(tc) tc.setAttribute('content',origColor); return; }
   /* Le splash reste affiche jusqu'a la decision auth (redirect main.html ou formulaire).
      masquerSplash() est appelee quand le formulaire s'affiche. Filet de securite : 6s. */
   window.masquerSplash=function(){
