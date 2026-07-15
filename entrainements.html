@@ -1018,13 +1018,9 @@ function renderWlog(){
     }
     cal += '</div>';
     if(window.wlogLegende){
-        // Seulement les muscles réellement présents sur le mois affiché (tous si mois vide)
-        const utilises = [];
-        Object.keys(log).forEach(iso => {
-            if(iso.slice(0, 7) !== prefixeMois) return;
-            (log[iso] || []).forEach(v => { if(WL_COLORS[v] && !utilises.includes(v)) utilises.push(v); });
-        });
-        const src = utilises.length ? MUSCLE_GROUPS.filter(g => utilises.includes(g.k)) : MUSCLE_GROUPS.filter(g => WL_COLORS[g.k]);
+        // Legende complete : tous les groupes, pas seulement ceux du mois
+        // (sinon l'utilisateur croit que Dos/Cardio/Abdos n'existent pas)
+        const src = MUSCLE_GROUPS.filter(g => WL_COLORS[g.k]);
         cal += '<div class="wlog-legende">'
             + src.map(g => `<span><i class="dot" style="background:${WL_COLORS[g.k]}"></i>${g.n}</span>`).join('')
             + '<span><i class="dot repos"></i>'+t('mus_repos')+'</span><span><i class="dot today"></i>'+t('today')+'</span></div>';
