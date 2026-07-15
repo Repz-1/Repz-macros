@@ -1097,7 +1097,6 @@ function afficherMessageInvite() {
             <button class="mtype-opt" onclick="choisirTypeRepas('repas')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F7B500" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg></span><span data-i18n="type_meal">Repas</span></button>
             <button class="mtype-opt" onclick="choisirTypeRepas('collation')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0012 3z"/><path d="M9 18h6M10 21h4"/></svg></span><span data-i18n="type_snack">Collation</span></button>
             <button class="mtype-opt" onclick="choisirTypeRepas('boisson')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 17a1.8 1.8 0 01-1.8 1.6H9.3a1.8 1.8 0 01-1.8-1.6L6 3z"/><path d="M6.6 10h10.8"/><path d="M17.5 3.5L19 2"/></svg></span><span data-i18n="type_drink">Boisson</span></button>
-            <button class="mtype-opt" onclick="choisirTypeRepas('recette')"><span class="mt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 12.5a3.5 3.5 0 01-.5-7 4.5 4.5 0 018.6-1.4A4 4 0 1117.5 12.5"/><path d="M6.5 12.5V19a1.5 1.5 0 001.5 1.5h8a1.5 1.5 0 001.5-1.5v-6.5"/><path d="M10 16.5h4"/></svg></span><span data-i18n="type_recipe">Recette</span></button>
         </div>
         <button class="mtype-cancel" onclick="closeMealTypeSheet()" data-i18n="cancel">Annuler</button>
     </div>
@@ -2922,6 +2921,15 @@ function updatePortion(rid,iid,val){
     const m=macrosOf(ing);
     const el=document.getElementById(`m-${rid}-${iid}`);
     if(el) el.innerHTML=`<div class="ing-kcal">${m.kcal.toFixed(0)} kcal</div><div class="ing-sub">${m.prot.toFixed(0)}P · ${m.carbs.toFixed(0)}C · ${m.lip.toFixed(0)}L</div>`;
+    // En-tete de la carte + ligne de total : sinon ils restent figes sur l'ancienne quantite
+    const card=document.querySelector(`.meal-card[data-id="${rid}"]`);
+    if(card){
+        const t=recipeTotals(rc), mu=rc.mult||1;
+        const hk=card.querySelector('.mh-kcal');
+        if(hk) hk.textContent=`${(t.kcal*mu).toFixed(0)} kcal`;
+        const rt=card.querySelector('.recipe-total');
+        if(rt) rt.textContent=` ${(t.kcal*mu).toFixed(0)} kcal | ${(t.prot*mu).toFixed(1)}P | ${(t.carbs*mu).toFixed(1)}C | ${(t.lip*mu).toFixed(1)}L`;
+    }
     renderTotals();
     save();
 }
