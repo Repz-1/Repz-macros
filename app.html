@@ -4443,7 +4443,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
 
 <script>
 /* ===== AJOUT VOCAL : écoute, analyse, confirmation ===== */
-let vocalRec = null, vocalEcoute = false, vocalProps = [], vocalDestId = null, vocalFinal = '';
+let vocalRec = null, vocalEcoute = false, vocalProps = [], vocalDestId = null, vocalFinal = '', vocalArretVoulu = false;
 
 function ouvrirVocal(){
     if(inviteBloque()) return;
@@ -4455,6 +4455,7 @@ function ouvrirVocal(){
     document.getElementById('vmConfirm').style.display = 'none';
     document.getElementById('vmInput').value = '';
     document.getElementById('vmLive').textContent = '';
+    vocalFinal = ''; vocalArretVoulu = false;
     // Web Speech dispo ? Sinon (iPhone/Safari) : mode dictée clavier
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if(!SR){
@@ -4470,29 +4471,53 @@ function fermerVocal(){
     document.getElementById('vocalOverlay').classList.remove('show');
 }
 function basculerEcoute(){
-    if(vocalEcoute){ arreterEcoute(); return; }
+    if(vocalEcoute){ vocalArretVoulu = true; arreterEcoute(); return; }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if(!SR) return;
+    vocalArretVoulu = false;
+    demarrerRec(SR);
+}
+function demarrerRec(SR){
     vocalRec = new SR();
     vocalRec.lang = 'fr-FR';
     vocalRec.interimResults = true;
     vocalRec.continuous = true;
     vocalRec.onresult = (e)=>{
-        // Android duplique les résultats si on accumule : on reconstruit tout à chaque fois
-        let txt = '';
-        for(let i = 0; i < e.results.length; i++){ txt += e.results[i][0].transcript + ' '; }
-        txt = txt.replace(/\s+/g,' ').trim();
-        document.getElementById('vmLive').textContent = txt;
-        document.getElementById('vmInput').value = txt;
+        // Seuls les segments FINALISES sont accumules (via resultIndex).
+        // L'interim est affiche mais jamais stocke -> plus de cascade de repetitions.
+        let interim = '';
+        for(let i = e.resultIndex; i < e.results.length; i++){
+            const seg = e.results[i][0].transcript;
+            if(e.results[i].isFinal){ vocalFinal += seg + ' '; }
+            else { interim += seg; }
+        }
+        const affiche = (vocalFinal + interim).replace(/\s+/g,' ').trim();
+        document.getElementById('vmLive').textContent = affiche || t('vm_listening');
+        document.getElementById('vmInput').value = affiche;
     };
-    vocalRec.onend = ()=>{ vocalEcoute = false; document.getElementById('vmMicBtn').classList.remove('ecoute'); };
-    vocalRec.onerror = ()=>{ vocalEcoute = false; document.getElementById('vmMicBtn').classList.remove('ecoute'); };
-    vocalRec.start();
+    vocalRec.onend = ()=>{
+        // Android coupe apres ~5s de silence. Si l'utilisateur n'a pas arrete lui-meme,
+        // on relance automatiquement pour une ecoute continue reelle.
+        if(!vocalArretVoulu && vocalEcoute){
+            try{ vocalRec.start(); return; }catch(e){}
+        }
+        vocalEcoute = false;
+        const b = document.getElementById('vmMicBtn'); if(b) b.classList.remove('ecoute');
+    };
+    vocalRec.onerror = (ev)=>{
+        // 'no-speech' / 'aborted' : on laisse le onend gerer le redemarrage eventuel.
+        if(ev.error === 'not-allowed' || ev.error === 'service-not-allowed'){
+            vocalArretVoulu = true;
+            document.getElementById('vmLive').textContent = t('vm_mic_denied') || 'Micro refuse';
+        }
+    };
+    try{ vocalRec.start(); }catch(e){}
     vocalEcoute = true;
     document.getElementById('vmMicBtn').classList.add('ecoute');
-    document.getElementById('vmLive').textContent = t('vm_listening');
+    if(!vocalFinal) document.getElementById('vmLive').textContent = t('vm_listening');
 }
 function arreterEcoute(){
+    vocalArretVoulu = true;
     if(vocalRec){ try{ vocalRec.stop(); }catch(e){} vocalRec = null; }
     vocalEcoute = false;
     const b = document.getElementById('vmMicBtn'); if(b) b.classList.remove('ecoute');
