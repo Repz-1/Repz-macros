@@ -712,6 +712,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
 </button>
 <script>
 let timerInterval=null, timerRunning=false, totalSeconds=90, lastPreset=90, timerEndAt=null;
+let molettesVerrou=false; /* true = scroll programmatique en cours, on ignore les onChange */
 function saveTimerState(){
     try{ localStorage.setItem('belfit_chrono', JSON.stringify({
         running: timerRunning,
@@ -796,9 +797,9 @@ function updateWheelSel(el){
     el.querySelectorAll('.wheel-item').forEach((it,idx)=>it.classList.toggle('sel',idx===i));
 }
 function appliquerMolettes(){
-    /* Si un chrono tourne, l'ouverture repositionne les molettes et NE DOIT PAS
-       ecraser le decompte en cours. On ignore tant qu'il tourne. */
-    if(timerRunning) return;
+    /* Ignore si (a) un repositionnement programmatique est en cours, ou
+       (b) un chrono tourne. Seule une vraie manip utilisateur applique les molettes. */
+    if(molettesVerrou || timerRunning) return;
     totalSeconds=wheelMinVal*60+wheelSecVal; lastPreset=totalSeconds;
     clearInterval(timerInterval); timerRunning=false; saveTimerState();
     updateTimerDisplay();
@@ -807,8 +808,10 @@ function appliquerMolettes(){
 function initWheels(){
     const minutes=Array.from({length:61},(_,i)=>i);
     const secondes=Array.from({length:12},(_,i)=>i*5);
+    molettesVerrou = true;
     buildWheel(document.getElementById('wheelMin'),minutes,wheelMinVal,v=>{wheelMinVal=v;appliquerMolettes();});
     buildWheel(document.getElementById('wheelSec'),secondes,wheelSecVal,v=>{wheelSecVal=v;appliquerMolettes();});
+    setTimeout(()=>{ molettesVerrou=false; }, 500);
 }
 function resetTimer(){
     clearInterval(timerInterval); timerRunning=false;
@@ -822,10 +825,14 @@ function toggleTimer(){
     document.body.classList.toggle('timer-open',isOpen);
     if(isOpen){
         const wMin=document.getElementById('wheelMin'), wSec=document.getElementById('wheelSec');
-        // Molettes calees sur le preset courant (coherent avec un chrono en cours)
+        // Molettes calees sur le preset courant, verrou pose pendant le scroll programmatique
+        molettesVerrou = true;
         wheelMinVal=Math.floor(lastPreset/60); wheelSecVal=lastPreset%60;
         setTimeout(()=>{ wMin.scrollTop=wheelMinVal*50; updateWheelSel(wMin); },60);
-        setTimeout(()=>{ wSec.scrollTop=(wheelSecVal/5)*50; updateWheelSel(wSec); },60);
+        setTimeout(()=>{ wSec.scrollTop=(wheelSecVal/5)*50; updateWheelSel(wSec);
+            /* le scroll declenche des events async : on leve le verrou bien apres */
+            setTimeout(()=>{ molettesVerrou=false; }, 400);
+        },60);
     }
 }
 function closeTimer(){
