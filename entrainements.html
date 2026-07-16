@@ -360,6 +360,8 @@ body.timer-open .water-fab{display:none;}
 @keyframes timerPop{from{transform:translateY(calc(-50% + 24px));opacity:0;}to{transform:translateY(-50%);opacity:1;}}
 .timer-display{text-align:center;margin-bottom:20px;}
 .timer-big{font-size:56px;font-weight:800;color:var(--orange);font-family:'Monaco','Courier';letter-spacing:2px;transition:color .3s;}
+.timer-big.t-approche{color:#E8930C;animation:breath 2s ease-in-out infinite;}
+@keyframes breath{0%,100%{transform:scale(1);}50%{transform:scale(1.035);}}
 .timer-big.t-warn{color:#F07818;}
 .timer-big.t-crit{color:#DE2F14;}
 .timer-big.tick{animation:tickPulse .45s ease-out;}
@@ -723,12 +725,17 @@ function updateTimerDisplay(){
     const min=Math.floor(totalSeconds/60), sec=totalSeconds%60;
     const d=document.getElementById('timerDisplay');
     d.textContent=(min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
-    /* Montee en intensite a l'approche de zero */
+    /* Montee en intensite en 3 actes : 30s respiration, 10s battement, 5s sprint */
+    d.classList.toggle('t-approche', timerRunning && totalSeconds<=30 && totalSeconds>10);
     d.classList.toggle('t-warn', timerRunning && totalSeconds<=10 && totalSeconds>5);
     d.classList.toggle('t-crit', timerRunning && totalSeconds<=5 && totalSeconds>0);
     if(timerRunning && totalSeconds<=10 && totalSeconds>0){
         d.classList.remove('tick'); void d.offsetWidth; d.classList.add('tick');
         if(totalSeconds<=5 && navigator.vibrate){ try{ navigator.vibrate(35); }catch(e){} }
+    }
+    /* Vibrations reperes a l'entree de chaque acte */
+    if(timerRunning && (totalSeconds===30 || totalSeconds===10) && navigator.vibrate){
+        try{ navigator.vibrate(25); }catch(e){}
     }
     updateChronoFab();
 }
