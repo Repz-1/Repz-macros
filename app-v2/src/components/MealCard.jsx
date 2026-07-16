@@ -1,56 +1,102 @@
-import { ingredients, totaux, setPortion } from '../store/journal.js';
+import { useState } from 'preact/hooks';
+import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
+import {
+  totauxRepas, setPortion, ajouterIngredient,
+  supprimerIngredient, supprimerRepas, basculerRepas,
+} from '../store/journal.js';
 
-// ============================================================
-// MealCard — version demo.
-// Remarque LE point crucial : ce composant ne "met a jour" rien.
-// Il DECRIT l'ecran a partir des signaux. Quand un signal change,
-// Preact redessine tout seul les zones concernees.
-// updatePortion & ses 4 mises a jour manuelles n'existent plus.
-// ============================================================
+const EMOJIS = { repas: '🍽️', collation: '🍎', boisson: '🥤' };
 
-const S = {
-  card:  { background:'#fff', borderRadius:'24px', padding:'20px', maxWidth:'420px', margin:'24px auto', boxShadow:'0 2px 12px rgba(0,0,0,.06)' },
-  titre: { fontWeight:800, fontSize:'22px', margin:'0 0 4px' },
-  kcal:  { color:'#8a8a8a', fontWeight:600, margin:'0 0 16px' },
-  ligne: { display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 0', borderBottom:'1px solid #f0f0f0' },
-  input: { width:'64px', padding:'8px', borderRadius:'10px', border:'1px solid #e5e5e5', fontFamily:'inherit', fontWeight:600, textAlign:'center' },
-  total: { marginTop:'14px', padding:'10px 14px', background:'#FFF7E0', borderRadius:'12px', color:'#9a7b00', fontWeight:600, fontSize:'14px' }
-};
-
-export function MealCard() {
-  const t = totaux.value;
+function LigneIngredient({ repasId, ing }) {
+  const d = DB[ing.name] || {};
+  const m = macrosOf(ing);
   return (
-    <div style={S.card}>
-      <h2 style={S.titre}>Boisson 1</h2>
-      <p style={S.kcal}>{t.kcal.toFixed(0)} kcal</p>
-
-      {ingredients.value.map(ing => {
-        const f = ing.portion / 100;
-        return (
-          <div style={S.ligne} key={ing.id}>
-            <div>
-              <div style={{fontWeight:600}}>{ing.nom}</div>
-              <div style={{fontSize:'12px',color:'#aaa'}}>100g = {ing.kcal100} kcal</div>
-            </div>
-            <input
-              style={S.input}
-              type="number"
-              value={ing.portion}
-              onInput={e => setPortion(ing.id, e.currentTarget.value)}
-            />
-            <div style={{textAlign:'right'}}>
-              <div style={{fontWeight:800}}>{(ing.kcal100*f).toFixed(0)} kcal</div>
-              <div style={{fontSize:'12px',color:'#aaa'}}>
-                {(ing.prot100*f).toFixed(0)}P · {(ing.carbs100*f).toFixed(0)}C · {(ing.lip100*f).toFixed(0)}L
-              </div>
-            </div>
-          </div>
-        );
-      })}
-
-      <div style={S.total}>
-        {t.kcal.toFixed(0)} kcal | {t.prot.toFixed(1)}P | {t.carbs.toFixed(1)}C | {t.lip.toFixed(1)}L
+    <div class="ligne-ing">
+      <div class="infos">
+        <div class="nom">{ing.name}</div>
+        <div class="ref">100g = {d.kcal ?? '?'} kcal</div>
       </div>
+      <input
+        type="number"
+        value={ing.portion}
+        onInput={e => setPortion(repasId, ing.id, e.currentTarget.value)}
+      />
+      <span class="unite">g</span>
+      <div class="macros">
+        <div class="k">{m.kcal.toFixed(0)} kcal</div>
+        <div class="d">{m.prot.toFixed(0)}P · {m.carbs.toFixed(0)}C · {m.lip.toFixed(0)}L</div>
+      </div>
+      <button class="suppr" onClick={() => supprimerIngredient(repasId, ing.id)}>✕</button>
+    </div>
+  );
+}
+
+function Recherche({ repasId }) {
+  const [q, setQ] = useState('');
+  const resultats = q.length < 2 ? [] :
+    NOMS_ALIMENTS.filter(n => n.toLowerCase().includes(q.toLowerCase())).slice(0, 8);
+
+  const choisir = (nom) => {
+    const d = DB[nom];
+    // Aliment "a la piece" (burger, oeuf...) : portion par defaut = 1 piece
+    ajouterIngredient(repasId, nom, d.unit || 100);
+    setQ('');
+  };
+
+  return (
+    <div class="recherche">
+      <input
+        placeholder="Ajouter un aliment…"
+        value={q}
+        onInput={e => setQ(e.currentTarget.value)}
+      />
+      {resultats.length > 0 && (
+        <div class="resultats">
+          {resultats.map(nom => (
+            <button key={nom} onClick={() => choisir(nom)}>
+              <span>{nom}</span>
+              <span class="kc">{DB[nom].kcal} kcal/100g</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function MealCard({ r }) {
+  const t = totauxRepas(r);
+  const vide = r.ings.length === 0;
+
+  return (
+    <div class="carte">
+      <div class="carte-tete" onClick={() => basculerRepas(r.id)}>
+        <div class="carte-emoji">{EMOJIS[r.type] || '🍽️'}</div>
+        <div class="carte-titre">
+          <h3>{r.nom}</h3>
+          <p>{vide ? 'Vide' : `${t.kcal.toFixed(0)} kcal`}</p>
+        </div>
+        <button
+          class="carte-suppr"
+          onClick={e => { e.stopPropagation(); supprimerRepas(r.id); }}
+          title="Supprimer"
+        >✕</button>
+        <span class={`carte-chevron ${r.ouvert ? 'ouvert' : ''}`}>▼</span>
+      </div>
+
+      {r.ouvert && (
+        <div>
+          {r.ings.map(ing => (
+            <LigneIngredient key={ing.id} repasId={r.id} ing={ing} />
+          ))}
+          <Recherche repasId={r.id} />
+          {!vide && (
+            <div class="total-repas">
+              {t.kcal.toFixed(0)} kcal | {t.prot.toFixed(1)}P | {t.carbs.toFixed(1)}C | {t.lip.toFixed(1)}L
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
