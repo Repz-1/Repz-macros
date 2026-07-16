@@ -85,3 +85,25 @@ button{cursor:pointer}
 .obj-form label{font-size:13px;font-weight:700;color:#6a6558}
 .obj-form input{width:100%;padding:10px;border:1px solid #e8e4d8;border-radius:10px;font-weight:700;margin-top:4px}
 .obj-valider{grid-column:1 / -1;background:#F7B500;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:15px}
+
+/* ---- Calculateur TDEE ---- */
+.modale-calc{max-height:88vh;overflow-y:auto}
+.calc-grille{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.calc-grille label{font-size:12.5px;font-weight:700;color:#6a6558;display:flex;flex-direction:column;gap:5px}
+.calc-grille label.pleine{grid-column:1 / -1}
+.calc-grille .opt{color:#b5b0a4;font-weight:500}
+.calc-grille input,.calc-grille select{padding:11px;border:1px solid #e8e4d8;border-radius:11px;font-weight:700;font-size:15px;font-family:inherit;background:#fff}
+.calc-res{background:#faf9f5;border-radius:14px;padding:6px 14px;margin-bottom:12px}
+.calc-res-ligne{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;color:#6a6558;font-weight:600}
+.calc-res-ligne span:last-child{color:#181818;font-weight:800}
+.calc-res-ligne.cible{border-top:1px solid #eee;margin-top:2px}
+.calc-res-ligne.cible span{font-size:16px}
+.calc-res-ligne.cible span:last-child{color:#F7B500}
+.calc-macros{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.cm{background:#FFFBEF;border-radius:12px;padding:12px;text-align:center}
+.cm-v{font-weight:800;font-size:17px;color:#B98A00}
+.cm-l{font-size:12px;color:#8a8a8a;font-weight:600;margin-top:2px}
+.calc-appliquer{width:100%;background:#F7B500;border:none;border-radius:14px;padding:14px;font-weight:800;font-size:15px}
+
+.calc-lien{display:block;width:100%;margin:0 0 14px;padding:12px;background:#fff;border:1px solid #e9e4d6;border-radius:16px;color:#6a6558;font-weight:700;font-size:14.5px;font-family:inherit}
+.calc-lien:active{background:#faf9f5}
