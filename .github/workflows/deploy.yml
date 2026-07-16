@@ -24,6 +24,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: app-v2/package-lock.json
+      # Build du chantier v2 (Preact/Vite) -> dossier v2/ servi sur belfit.be/v2/
+      - run: npm ci
+        working-directory: app-v2
+      - run: npm run build
+        working-directory: app-v2
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:

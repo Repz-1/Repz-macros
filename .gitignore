@@ -1,0 +1,4 @@
+# Chantier app-v2
+app-v2/node_modules/
+# Sortie de build (fabriquee par GitHub Actions, jamais commitee)
+v2/
