@@ -2,7 +2,7 @@ import { useState } from 'preact/hooks';
 import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
 import {
   totauxRepas, setPortion, ajouterIngredient,
-  supprimerIngredient, supprimerRepas, basculerRepas,
+  supprimerIngredient, supprimerRepas, basculerRepas, renommerRepas,
 } from '../store/journal.js';
 
 const EMOJIS = { repas: '🍽️', collation: '🍎', boisson: '🥤' };
@@ -14,7 +14,11 @@ function LigneIngredient({ repasId, ing }) {
     <div class="ligne-ing">
       <div class="infos">
         <div class="nom">{ing.name}</div>
-        <div class="ref">100g = {d.kcal ?? '?'} kcal</div>
+        <div class="ref">
+          {d.unit
+            ? `≈ ${(ing.portion / d.unit).toFixed(1).replace('.0', '')} ${d.unitLabel || 'pièce'}${ing.portion / d.unit >= 2 ? 's' : ''} · ${d.kcal} kcal/100g`
+            : `100g = ${d.kcal ?? '?'} kcal`}
+        </div>
       </div>
       <input
         type="number"
@@ -67,13 +71,26 @@ function Recherche({ repasId }) {
 export function MealCard({ r }) {
   const t = totauxRepas(r);
   const vide = r.ings.length === 0;
+  const [edite, setEdite] = useState(false);
 
   return (
     <div class="carte">
-      <div class="carte-tete" onClick={() => basculerRepas(r.id)}>
+      <div class="carte-tete" onClick={() => !edite && basculerRepas(r.id)}>
         <div class="carte-emoji">{EMOJIS[r.type] || '🍽️'}</div>
         <div class="carte-titre">
-          <h3>{r.nom}</h3>
+          {edite ? (
+            <input
+              class="titre-edit"
+              value={r.nom}
+              onClick={e => e.stopPropagation()}
+              onInput={e => renommerRepas(r.id, e.currentTarget.value)}
+              onBlur={() => setEdite(false)}
+              onKeyDown={e => e.key === 'Enter' && setEdite(false)}
+              autoFocus
+            />
+          ) : (
+            <h3 onClick={e => { e.stopPropagation(); setEdite(true); }} title="Renommer">{r.nom} <span class="crayon">✎</span></h3>
+          )}
           <p>{vide ? 'Vide' : `${t.kcal.toFixed(0)} kcal`}</p>
         </div>
         <button

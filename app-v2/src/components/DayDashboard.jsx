@@ -1,4 +1,5 @@
 import { objectifs, totauxJour, kcalRestantes } from '../store/journal.js';
+import { ObjectifsForm } from './ObjectifsForm.jsx';
 
 // Le tableau de bord ne recoit rien : il LIT les signaux.
 // Toute modification n'importe ou dans l'app le met a jour seul.
@@ -27,6 +28,7 @@ export function DayDashboard() {
         {macro('Glucides', t.carbs, o.carbs)}
         {macro('Lipides', t.lip, o.lip)}
       </div>
+      <ObjectifsForm />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { macrosOf } from '../data/aliments.js';
 const CLE_STOCKAGE = 'belfit_v2_journal';
 
 const DEFAUTS = {
+  eau: 0, // litres bus aujourd'hui
   objectifs: { kcal: 4300, prot: 217, carbs: 538, lip: 96 },
   repas: [
     { id: 1, nom: 'Petit déjeuner', type: 'repas', ings: [], ouvert: false },
@@ -33,10 +34,11 @@ const etat = charger();
 
 export const repas = signal(etat.repas);
 export const objectifs = signal(etat.objectifs);
+export const eau = signal(etat.eau || 0);
 
 // Sauvegarde automatique : des qu'un signal change, on persiste.
 effect(() => {
-  const instantane = { repas: repas.value, objectifs: objectifs.value };
+  const instantane = { repas: repas.value, objectifs: objectifs.value, eau: eau.value };
   try { localStorage.setItem(CLE_STOCKAGE, JSON.stringify(instantane)); } catch (e) {}
 });
 
@@ -118,4 +120,13 @@ export function basculerRepas(repasId) {
 
 export function nouvelleJournee() {
   repas.value = structuredClone(DEFAUTS.repas);
+  eau.value = 0;
+}
+
+export function ajouterEau(litres) {
+  eau.value = Math.max(0, Math.round((eau.value + litres) * 100) / 100);
+}
+
+export function setObjectifs(nouveaux) {
+  objectifs.value = { ...objectifs.value, ...nouveaux };
 }

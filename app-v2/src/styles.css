@@ -68,3 +68,20 @@ button{cursor:pointer}
 
 /* ---- Nouvelle journee ---- */
 .nouvelle-journee{display:block;margin:4px auto 0;background:none;border:none;color:#8a8a8a;font-weight:600;font-size:14px;padding:10px}
+
+/* ---- Renommage inline ---- */
+.carte-titre h3 .crayon{font-size:13px;color:#c9c4b8;font-weight:400}
+.titre-edit{font-size:18px;font-weight:800;padding:6px 10px;border:1px solid #F7B500;border-radius:10px;width:100%;max-width:240px}
+
+/* ---- Eau ---- */
+.eau{display:flex;align-items:center;gap:10px;background:#EAF6FD;border-radius:18px;padding:12px 16px;margin-bottom:14px}
+.eau .goutte{font-size:22px}
+.eau .val{font-weight:800;font-size:17px;color:#1878b0;flex:1}
+.eau button{border:none;background:#fff;border-radius:10px;padding:8px 14px;font-weight:800;color:#1878b0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+/* ---- Objectifs ---- */
+.obj-lien{background:none;border:none;color:#8a8a8a;font-size:12.5px;font-weight:600;padding:4px 0 0;text-decoration:underline}
+.obj-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.obj-form label{font-size:13px;font-weight:700;color:#6a6558}
+.obj-form input{width:100%;padding:10px;border:1px solid #e8e4d8;border-radius:10px;font-weight:700;margin-top:4px}
+.obj-valider{grid-column:1 / -1;background:#F7B500;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:15px}

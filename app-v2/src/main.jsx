@@ -3,6 +3,7 @@ import { useState } from 'preact/hooks';
 import './styles.css';
 import { repas, nouvelleJournee } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
+import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
 
@@ -12,6 +13,7 @@ function App() {
   return (
     <div class="conteneur">
       <DayDashboard />
+      <WaterTracker />
       <button
         class="nouvelle-journee"
         onClick={() => { if (confirm('Commencer une nouvelle journée ?')) nouvelleJournee(); }}
