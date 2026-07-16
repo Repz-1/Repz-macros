@@ -711,13 +711,13 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     <span class="chrono-fab-time" id="chronoFabTime"></span>
 </button>
 <script>
-let timerInterval=null, timerRunning=false, totalSeconds=90, lastPreset=90;
+let timerInterval=null, timerRunning=false, totalSeconds=90, lastPreset=90, timerEndAt=null;
 function saveTimerState(){
     try{ localStorage.setItem('belfit_chrono', JSON.stringify({
         running: timerRunning,
-        total: totalSeconds,
-        preset: lastPreset,
-        at: Date.now()
+        endAt: timerEndAt,      /* source de verite du temps : un horodatage, pas un compteur */
+        total: totalSeconds,    /* utile a l'etat pause */
+        preset: lastPreset
     })); }catch(e){}
 }
 let wheelMinVal=1, wheelSecVal=30;
@@ -742,23 +742,37 @@ function updateTimerDisplay(){
 function signalFinTimer(){
     if(navigator.vibrate){ try{ navigator.vibrate([150,80,150]); }catch(e){} }
 }
+function finirTimer(){
+    clearInterval(timerInterval); timerRunning=false; timerEndAt=null;
+    totalSeconds=lastPreset; updateTimerDisplay();
+    const btn=document.getElementById('timerStartBtn');
+    if(btn) btn.textContent=t('start');
+    updateChronoFab(); saveTimerState();
+    signalFinTimer();
+    if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
+}
+function tickTimer(){
+    /* Le temps restant est CALCULE depuis l'horodatage de fin, jamais decremente :
+       le throttling Android en arriere-plan ne peut plus fausser le chrono */
+    const restant = Math.max(0, Math.round((timerEndAt - Date.now()) / 1000));
+    if(restant !== totalSeconds){ totalSeconds = restant; updateTimerDisplay(); saveTimerState(); }
+    if(restant <= 0) finirTimer();
+}
+function lancerIntervalle(){
+    clearInterval(timerInterval);
+    timerInterval = setInterval(tickTimer, 250); /* 4x/s : rattrape vite apres un retour d'arriere-plan */
+}
 function startTimer(){
     const btn=document.getElementById('timerStartBtn');
     if(timerRunning){
-        clearInterval(timerInterval); timerRunning=false;
-        btn.textContent=t('resume'); updateChronoFab(); saveTimerState(); return;
+        /* pause : on fige le restant et on lache l'horodatage */
+        totalSeconds = Math.max(0, Math.round((timerEndAt - Date.now()) / 1000));
+        clearInterval(timerInterval); timerRunning=false; timerEndAt=null;
+        btn.textContent=t('resume'); updateTimerDisplay(); saveTimerState(); return;
     }
-    timerRunning=true; btn.textContent=t('pause'); saveTimerState();
-    timerInterval=setInterval(()=>{
-        if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); saveTimerState(); }
-        else{
-            clearInterval(timerInterval); timerRunning=false;
-            totalSeconds=lastPreset; updateTimerDisplay();
-            btn.textContent=t('start'); updateChronoFab(); saveTimerState();
-            signalFinTimer();
-            if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
-        }
-    },1000);
+    timerRunning=true; timerEndAt = Date.now() + totalSeconds*1000;
+    btn.textContent=t('pause'); saveTimerState();
+    lancerIntervalle();
     updateChronoFab();
 }
 function buildWheel(el, values, selected, onChange){
@@ -782,6 +796,9 @@ function updateWheelSel(el){
     el.querySelectorAll('.wheel-item').forEach((it,idx)=>it.classList.toggle('sel',idx===i));
 }
 function appliquerMolettes(){
+    /* Si un chrono tourne, l'ouverture repositionne les molettes et NE DOIT PAS
+       ecraser le decompte en cours. On ignore tant qu'il tourne. */
+    if(timerRunning) return;
     totalSeconds=wheelMinVal*60+wheelSecVal; lastPreset=totalSeconds;
     clearInterval(timerInterval); timerRunning=false; saveTimerState();
     updateTimerDisplay();
@@ -805,6 +822,8 @@ function toggleTimer(){
     document.body.classList.toggle('timer-open',isOpen);
     if(isOpen){
         const wMin=document.getElementById('wheelMin'), wSec=document.getElementById('wheelSec');
+        // Molettes calees sur le preset courant (coherent avec un chrono en cours)
+        wheelMinVal=Math.floor(lastPreset/60); wheelSecVal=lastPreset%60;
         setTimeout(()=>{ wMin.scrollTop=wheelMinVal*50; updateWheelSel(wMin); },60);
         setTimeout(()=>{ wSec.scrollTop=(wheelSecVal/5)*50; updateWheelSel(wSec); },60);
     }
@@ -880,28 +899,20 @@ function closeTimer(){
         const st = JSON.parse(localStorage.getItem('belfit_chrono') || 'null');
         if(!st) return;
         lastPreset = st.preset || 90;
-        if(st.running){
-            const ecoule = Math.floor((Date.now() - st.at) / 1000);
-            const restant = (st.total || 0) - ecoule;
+        if(st.running && st.endAt){
+            const restant = Math.round((st.endAt - Date.now()) / 1000);
             if(restant > 0){
-                totalSeconds = restant;
+                /* le chrono tournait et n'est pas fini : reprise exacte */
+                totalSeconds = restant; timerEndAt = st.endAt; timerRunning = true;
                 updateTimerDisplay();
-                // relancer automatiquement le décompte
-                timerRunning = true;
                 const btn = document.getElementById('timerStartBtn');
                 if(btn) btn.textContent = t('pause');
-                timerInterval = setInterval(()=>{
-                    if(totalSeconds>0){ totalSeconds--; updateTimerDisplay(); saveTimerState(); }
-                    else{
-                        clearInterval(timerInterval); timerRunning=false;
-                        totalSeconds=lastPreset; updateTimerDisplay();
-                        if(btn) btn.textContent=t('start'); updateChronoFab(); saveTimerState();
-                        signalFinTimer();
-                        if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
-                    }
-                },1000);
+                lancerIntervalle();
             } else {
-                totalSeconds = lastPreset; updateTimerDisplay(); saveTimerState();
+                /* expire pendant l'absence : on le DIT au lieu de reset en silence */
+                totalSeconds = lastPreset; timerEndAt = null;
+                updateTimerDisplay(); saveTimerState();
+                signalFinTimer();
             }
         } else {
             totalSeconds = st.total ?? lastPreset;
@@ -920,6 +931,10 @@ function updateChronoFab(){
         fab.classList.toggle('crit', totalSeconds<=5 && totalSeconds>0);
     } else { t.textContent=''; fab.classList.remove('running','crit'); }
 }
+/* Retour au premier plan : recalage immediat du temps (aucune derive possible) */
+document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState==='visible' && timerRunning && timerEndAt) tickTimer();
+});
 initWheels(); updateTimerDisplay();
 </script>
 <script>
