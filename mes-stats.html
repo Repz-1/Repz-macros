@@ -4,7 +4,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}.weight-add-btn{display:block;width:100%;margin-top:14px;padding:12px;background:#fff;border:1.5px solid #F7B500;border-radius:12px;color:#B98A00;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;transition:background .15s;}
+.weight-add-btn:active{background:#FFF9E6;}
+</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#f7efd9">
@@ -312,6 +314,7 @@ function logout(){
         <div class="card-sub" id="weightSub" data-i18n="st_weight_sub">Tes dernières pesées</div>
         <div id="weightSummary"></div>
         <div id="weightChart"></div>
+        <button class="weight-add-btn" onclick="ouvrirPeseeeDepuisStats()" data-i18n="st_weight_add">+ Ajouter / modifier mon poids</button>
     </div>
 
     <!-- CALORIES -->
@@ -355,6 +358,10 @@ function logout(){
 
 <script>
 // ===== DONNÉES (mêmes clés que app.html) =====
+function ouvrirPeseeeDepuisStats(){
+    // Stats est une iframe : on demande au shell d'aller au journal et d'ouvrir la modale
+    try{ window.parent.postMessage({ belfitAction:'openWeight' }, '*'); }catch(e){}
+}
 let weightLog = [];
 let history = [];
 try { const w = localStorage.getItem('repz_weightLog'); if(w) weightLog = JSON.parse(w); } catch(e){}

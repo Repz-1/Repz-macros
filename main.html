@@ -165,6 +165,12 @@ window.addEventListener('resize', ()=> applyX(false));
 window.addEventListener('message', (e)=>{
     const d = e.data || {};
     if(typeof d.belfitTab === 'number'){ goTo(d.belfitTab); return; }
+    if(d.belfitAction === 'openWeight'){
+        goTo(0);
+        // laisser le journal s'afficher puis ouvrir la modale de pesee
+        setTimeout(()=>{ try{ document.getElementById('f0').contentWindow.openWeightModal(); }catch(err){} }, 300);
+        return;
+    }
     if(!d.bfS) return;
     if(d.bfS === 'move'){
         // borner aux extrémités (résistance)
