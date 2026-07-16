@@ -359,7 +359,14 @@ body {
 body.timer-open .water-fab{display:none;}
 @keyframes timerPop{from{transform:translateY(calc(-50% + 24px));opacity:0;}to{transform:translateY(-50%);opacity:1;}}
 .timer-display{text-align:center;margin-bottom:20px;}
-.timer-big{font-size:56px;font-weight:800;color:var(--orange);font-family:'Monaco','Courier';letter-spacing:2px;}
+.timer-big{font-size:56px;font-weight:800;color:var(--orange);font-family:'Monaco','Courier';letter-spacing:2px;transition:color .3s;}
+.timer-big.t-warn{color:#F07818;}
+.timer-big.t-crit{color:#DE2F14;}
+.timer-big.tick{animation:tickPulse .45s ease-out;}
+@keyframes tickPulse{0%{transform:scale(1);}30%{transform:scale(1.12);}100%{transform:scale(1);}}
+.chrono-fab.crit{background:#DE2F14;color:#fff;box-shadow:0 8px 22px rgba(222,47,20,.55);animation:fabPulse 1s ease-in-out infinite;}
+.chrono-fab.crit .chrono-fab-time{color:#fff;}
+@keyframes fabPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
 .timer-label{font-size:13px;color:#9ca3af;margin-top:8px;}
 .timer-controls{display:flex;gap:10px;justify-content:center;}
 .timer-btn{flex:1;max-width:100px;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
@@ -714,8 +721,19 @@ function saveTimerState(){
 let wheelMinVal=1, wheelSecVal=30;
 function updateTimerDisplay(){
     const min=Math.floor(totalSeconds/60), sec=totalSeconds%60;
-    document.getElementById('timerDisplay').textContent=(min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
+    const d=document.getElementById('timerDisplay');
+    d.textContent=(min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
+    /* Montee en intensite a l'approche de zero */
+    d.classList.toggle('t-warn', timerRunning && totalSeconds<=10 && totalSeconds>5);
+    d.classList.toggle('t-crit', timerRunning && totalSeconds<=5 && totalSeconds>0);
+    if(timerRunning && totalSeconds<=10 && totalSeconds>0){
+        d.classList.remove('tick'); void d.offsetWidth; d.classList.add('tick');
+        if(totalSeconds<=5 && navigator.vibrate){ try{ navigator.vibrate(35); }catch(e){} }
+    }
     updateChronoFab();
+}
+function signalFinTimer(){
+    if(navigator.vibrate){ try{ navigator.vibrate([150,80,150]); }catch(e){} }
 }
 function startTimer(){
     const btn=document.getElementById('timerStartBtn');
@@ -730,6 +748,7 @@ function startTimer(){
             clearInterval(timerInterval); timerRunning=false;
             totalSeconds=lastPreset; updateTimerDisplay();
             btn.textContent=t('start'); updateChronoFab(); saveTimerState();
+            signalFinTimer();
             if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
         }
     },1000);
@@ -870,6 +889,7 @@ function closeTimer(){
                         clearInterval(timerInterval); timerRunning=false;
                         totalSeconds=lastPreset; updateTimerDisplay();
                         if(btn) btn.textContent=t('start'); updateChronoFab(); saveTimerState();
+                        signalFinTimer();
                         if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
                     }
                 },1000);
@@ -890,7 +910,8 @@ function updateChronoFab(){
         const min=Math.floor(totalSeconds/60), sec=totalSeconds%60;
         t.textContent=(min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
         fab.classList.add('running');
-    } else { t.textContent=''; fab.classList.remove('running'); }
+        fab.classList.toggle('crit', totalSeconds<=5 && totalSeconds>0);
+    } else { t.textContent=''; fab.classList.remove('running','crit'); }
 }
 initWheels(); updateTimerDisplay();
 </script>
