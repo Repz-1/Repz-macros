@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks';
 import './styles.css';
 import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
-import { repas, nouvelleJournee } from './store/journal.js';
+import { repas, nouvelleJournee, donneesPretes } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard } from './components/MealCard.jsx';
@@ -21,6 +21,9 @@ function App() {
   }
   if (!utilisateur.value) {
     return <LoginScreen />;
+  }
+  if (!donneesPretes.value) {
+    return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>Chargement de ton journal…</div>;
   }
 
   return (
