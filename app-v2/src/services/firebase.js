@@ -1,0 +1,62 @@
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth, onAuthStateChanged,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
+} from 'firebase/auth';
+import { signal } from '@preact/signals';
+
+// ============================================================
+// FIREBASE v2 — SDK modulaire (leger, tree-shakable).
+// MEME projet et MEMES comptes que le site actuel : un utilisateur
+// existant se connecte avec ses identifiants habituels.
+// ============================================================
+
+const app = initializeApp({
+  apiKey: 'AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I',
+  authDomain: 'repz-baf60.firebaseapp.com',
+  projectId: 'repz-baf60',
+  storageBucket: 'repz-baf60.firebasestorage.app',
+  messagingSenderId: '403252293048',
+  appId: '1:403252293048:web:e7db6aed4ba92f0ebfb34d',
+});
+
+export const auth = getAuth(app);
+
+// --- Signaux d'etat : toute l'app peut reagir a la connexion ---
+// utilisateur : null = deconnecte, objet = connecte
+// authPrete   : false tant que Firebase n'a pas repondu (evite le flash ecran login)
+export const utilisateur = signal(null);
+export const authPrete = signal(false);
+
+onAuthStateChanged(auth, (u) => {
+  utilisateur.value = u;
+  authPrete.value = true;
+});
+
+// --- Actions ---
+export async function connexion(email, mdp) {
+  return signInWithEmailAndPassword(auth, email, mdp);
+}
+
+export async function inscription(email, mdp) {
+  return createUserWithEmailAndPassword(auth, email, mdp);
+}
+
+export async function deconnexion() {
+  return signOut(auth);
+}
+
+// Messages d'erreur en francais
+export function messageErreurAuth(code) {
+  const messages = {
+    'auth/invalid-email': 'Adresse e-mail invalide',
+    'auth/user-not-found': 'Aucun compte avec cet e-mail',
+    'auth/wrong-password': 'Mot de passe incorrect',
+    'auth/invalid-credential': 'E-mail ou mot de passe incorrect',
+    'auth/email-already-in-use': 'Un compte existe déjà avec cet e-mail',
+    'auth/weak-password': 'Mot de passe trop court (6 caractères min.)',
+    'auth/too-many-requests': 'Trop de tentatives, réessaie dans un moment',
+    'auth/network-request-failed': 'Pas de connexion internet',
+  };
+  return messages[code] || 'Erreur de connexion, réessaie';
+}

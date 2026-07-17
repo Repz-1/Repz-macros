@@ -107,3 +107,20 @@ button{cursor:pointer}
 
 .calc-lien{display:block;width:100%;margin:0 0 14px;padding:12px;background:#fff;border:1px solid #e9e4d6;border-radius:16px;color:#6a6558;font-weight:700;font-size:14.5px;font-family:inherit}
 .calc-lien:active{background:#faf9f5}
+
+/* ---- Ecran de connexion ---- */
+.login-ecran{max-width:360px;margin:0 auto;padding:56px 20px;display:flex;flex-direction:column;align-items:center}
+.login-logo{width:88px;height:88px;border-radius:22px;margin-bottom:20px}
+.login-titre{font-size:24px;font-weight:800;margin:0 0 24px;text-align:center}
+.login-form{width:100%;display:flex;flex-direction:column;gap:12px}
+.login-form input{padding:15px 16px;border:1px solid #e8e4d8;border-radius:14px;font-size:15px;font-family:inherit;background:#fff}
+.login-form input:focus{outline:none;border-color:#F7B500}
+.login-erreur{background:#FDECEA;color:#B3261E;border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
+.login-btn{background:#F7B500;border:none;border-radius:14px;padding:15px;font-weight:800;font-size:15.5px;margin-top:4px}
+.login-btn:disabled{opacity:.6}
+.login-bascule{background:none;border:none;color:#8a8a8a;font-weight:600;font-size:14px;margin-top:20px;text-decoration:underline}
+
+/* ---- En-tete connecte ---- */
+.entete-user{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.entete-user .qui{font-size:13px;color:#8a8a8a;font-weight:600}
+.entete-user button{background:none;border:none;color:#b5b0a4;font-size:12.5px;font-weight:700;text-decoration:underline}
