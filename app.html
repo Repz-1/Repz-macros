@@ -886,7 +886,7 @@ body.search-open .fab-row { display:none; }
 </div>
 
 <!-- AUTH CHECK + FIREBASE -->
-<script src="i18n-strings.js?v=5"></script>
+<script src="i18n-strings.js?v=6"></script>
 <script src="foods-i18n.js?v=1"></script>
 <script src="i18n.js?v=4"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -4455,26 +4455,100 @@ function ouvrirVocal(){
     document.getElementById('vmInput').value = '';
     document.getElementById('vmLive').textContent = '';
     vocalFinal = ''; vocalArretVoulu = false;
-    // Web Speech dispo ? Sinon (iPhone/Safari) : mode dictée clavier
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(!SR){
-        document.getElementById('vmMicZone').style.display = 'none';
-        document.getElementById('vmSub').textContent = t('vm_ios_hint');
-    } else {
-        document.getElementById('vmMicZone').style.display = 'flex';
-    }
+    // Mode serveur (MediaRecorder) : marche sur tous les appareils, y compris iPhone.
+    // On affiche donc toujours le micro. Fallback Web Speech seulement si pas de MediaRecorder.
+    document.getElementById('vmMicZone').style.display = 'flex';
     document.getElementById('vocalOverlay').classList.add('show');
 }
 function fermerVocal(){
     arreterEcoute();
     document.getElementById('vocalOverlay').classList.remove('show');
 }
+// ===== VOCAL SERVEUR (Premium) : MediaRecorder -> Cloud Function -> Gemini =====
+const VOCAL_API = 'https://europe-west1-repz-baf60.cloudfunctions.net/transcrireVocal';
+let vocalMediaRec = null, vocalChunks = [], vocalStream = null;
+
 function basculerEcoute(){
+    // Si un enregistrement serveur est en cours -> on l'arrete (declenche l'envoi)
+    if(vocalEcoute && vocalMediaRec){ arreterEnregistrement(); return; }
+    // Sinon : privilegier le mode serveur (fiable partout) si MediaRecorder dispo
+    if(window.MediaRecorder && navigator.mediaDevices){
+        demarrerEnregistrement();
+        return;
+    }
+    // Fallback : Web Speech navigateur (vieux appareils)
     if(vocalEcoute){ vocalArretVoulu = true; arreterEcoute(); return; }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if(!SR) return;
     vocalArretVoulu = false;
     demarrerRec(SR);
+}
+
+async function demarrerEnregistrement(){
+    try{
+        vocalStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    }catch(e){
+        document.getElementById('vmLive').textContent = t('vm_mic_denied') || 'Micro refusé';
+        return;
+    }
+    vocalChunks = [];
+    // Choisir un format supporte
+    let mime = 'audio/webm';
+    if(!MediaRecorder.isTypeSupported(mime)){
+        mime = MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '';
+    }
+    vocalMediaRec = mime ? new MediaRecorder(vocalStream, { mimeType:mime }) : new MediaRecorder(vocalStream);
+    vocalMediaRec.ondataavailable = (ev)=>{ if(ev.data.size>0) vocalChunks.push(ev.data); };
+    vocalMediaRec.onstop = ()=>{ envoyerAudioVocal(vocalMediaRec.mimeType || mime || 'audio/webm'); };
+    vocalMediaRec.start();
+    vocalEcoute = true;
+    document.getElementById('vmMicBtn').classList.add('ecoute');
+    document.getElementById('vmLive').textContent = t('vm_listening') || 'Je t\'écoute…';
+}
+
+function arreterEnregistrement(){
+    document.getElementById('vmLive').textContent = t('vm_analyzing') || 'Analyse en cours…';
+    try{ if(vocalMediaRec && vocalMediaRec.state !== 'inactive') vocalMediaRec.stop(); }catch(e){}
+    if(vocalStream){ vocalStream.getTracks().forEach(tr=>tr.stop()); vocalStream = null; }
+    vocalEcoute = false;
+    document.getElementById('vmMicBtn').classList.remove('ecoute');
+}
+
+async function envoyerAudioVocal(mimeType){
+    if(!vocalChunks.length){ document.getElementById('vmLive').textContent = ''; return; }
+    const blob = new Blob(vocalChunks, { type:mimeType });
+    // Blob -> base64
+    const base64 = await new Promise((res)=>{
+        const r = new FileReader();
+        r.onloadend = ()=> res(String(r.result).split(',')[1] || '');
+        r.readAsDataURL(blob);
+    });
+    // Token Firebase (la fonction verifie auth + premium cote serveur)
+    let token = '';
+    try{ const u = firebase.auth().currentUser; if(u) token = await u.getIdToken(); }catch(e){}
+    if(!token){ document.getElementById('vmLive').textContent = t('vm_need_login') || 'Connecte-toi pour le vocal'; return; }
+    try{
+        const rep = await fetch(VOCAL_API, {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
+            body: JSON.stringify({ audioBase64:base64, mimeType:mimeType })
+        });
+        if(rep.status === 403){ document.getElementById('vmLive').textContent = t('vm_premium_only') || 'Fonction Premium'; return; }
+        if(!rep.ok){ document.getElementById('vmLive').textContent = t('vm_error') || 'Erreur, réessaie'; return; }
+        const data = await rep.json();
+        const aliments = Array.isArray(data.aliments) ? data.aliments : [];
+        if(!aliments.length){ document.getElementById('vmLive').textContent = t('vm_nothing') || 'Rien compris, réessaie'; return; }
+        // Reconstituer une phrase que le parseur existant gère parfaitement
+        const phrase = aliments.map(a=>{
+            const u = a.unite === 'piece' ? '' : (a.unite || 'g');
+            return `${a.quantite}${u} de ${a.aliment}`;
+        }).join(' et ');
+        document.getElementById('vmInput').value = phrase;
+        document.getElementById('vmLive').textContent = phrase;
+        analyserVocal();
+    }catch(e){
+        document.getElementById('vmLive').textContent = t('vm_error') || 'Erreur, réessaie';
+    }
 }
 function demarrerRec(SR){
     vocalRec = new SR();
