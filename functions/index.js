@@ -95,3 +95,101 @@ exports.lemonWebhook = onRequest(
     }
   }
 );
+
+
+// ============================================================
+// TRANSCRIPTION VOCALE (Premium) — audio -> JSON aliments via Gemini.
+// Le navigateur enregistre l'audio (MediaRecorder), l'envoie ici en base64,
+// Gemini transcrit ET structure en une seule etape. Plus fiable et coherent
+// que le Web Speech API navigateur.
+// Cle API Gemini stockee en secret : firebase functions:secrets:set GEMINI_API_KEY
+// ============================================================
+const GEMINI_API_KEY = defineSecret("GEMINI_API_KEY");
+
+exports.transcrireVocal = onRequest(
+  {secrets: [GEMINI_API_KEY], region: "europe-west1", cors: true, timeoutSeconds: 60},
+  async (req, res) => {
+    // CORS
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+    if (req.method !== "POST") { res.status(405).json({error: "method"}); return; }
+
+    try {
+      // 1) Verifier que l'utilisateur est connecte ET Premium (gating serveur)
+      const authHeader = req.get("Authorization") || "";
+      const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+      if (!token) { res.status(401).json({error: "no_auth"}); return; }
+
+      let uid;
+      try {
+        const decoded = await admin.auth().verifyIdToken(token);
+        uid = decoded.uid;
+      } catch (e) {
+        res.status(401).json({error: "bad_token"}); return;
+      }
+
+      const userDoc = await db.collection("users").doc(uid).get();
+      const estPremium = userDoc.exists && userDoc.data().premium === true;
+      if (!estPremium) { res.status(403).json({error: "not_premium"}); return; }
+
+      // 2) Recuperer l'audio (base64) et son type
+      const {audioBase64, mimeType} = req.body || {};
+      if (!audioBase64) { res.status(400).json({error: "no_audio"}); return; }
+
+      // 3) Appel Gemini : audio -> JSON structure
+      const prompt = `Tu analyses un enregistrement audio en francais ou l'utilisateur decrit ce qu'il a mange ou bu.
+Transcris puis extrais chaque aliment avec sa quantite. Reponds UNIQUEMENT avec un tableau JSON valide, sans texte autour, sans backticks.
+Format exact : [{"aliment":"nom en francais","quantite":nombre,"unite":"g"|"ml"|"piece"}]
+Regles :
+- Convertis en grammes/ml quand c'est possible (ex: "une dose de whey"=30g, "un bol de riz"=200g, "un oeuf"=60g, "une banane"=120g).
+- Si l'unite est une piece indenombrable, mets "piece" et quantite = nombre de pieces.
+- Ignore les mots de liaison. Si rien d'exploitable, renvoie [].
+- Noms d'aliments simples et courants (ex: "poulet", "riz", "avoine", "banane").`;
+
+      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY.value();
+      const geminiBody = {
+        contents: [{
+          parts: [
+            {text: prompt},
+            {inline_data: {mime_type: mimeType || "audio/webm", data: audioBase64}},
+          ],
+        }],
+        generationConfig: {temperature: 0.1, responseMimeType: "application/json"},
+      };
+
+      const gRes = await fetch(geminiUrl, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(geminiBody),
+      });
+
+      if (!gRes.ok) {
+        const errTxt = await gRes.text();
+        console.error("Gemini error", gRes.status, errTxt.slice(0, 300));
+        res.status(502).json({error: "gemini_failed"}); return;
+      }
+
+      const gData = await gRes.json();
+      const texte = gData.candidates &&
+        gData.candidates[0] &&
+        gData.candidates[0].content &&
+        gData.candidates[0].content.parts[0].text || "[]";
+
+      let aliments;
+      try {
+        aliments = JSON.parse(texte);
+        if (!Array.isArray(aliments)) aliments = [];
+      } catch (e) {
+        console.warn("JSON parse fail", texte.slice(0, 200));
+        aliments = [];
+      }
+
+      res.status(200).json({aliments});
+    } catch (err) {
+      console.error("transcrireVocal error", err);
+      res.status(500).json({error: "server"});
+    }
+  }
+);
