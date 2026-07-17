@@ -25,15 +25,30 @@ exports.lemonWebhook = onRequest(
 
       // 1) Vérifier la signature (HMAC-SHA256 du corps brut)
       const secret = LEMON_WEBHOOK_SECRET.value();
-      const signature = req.get("X-Signature") || "";
+      const signature = (req.get("X-Signature") || "").trim();
+
+      // rawBody = octets bruts exacts recus (indispensable pour le HMAC).
+      // Fallback si absent : re-serialiser (moins fiable mais evite un crash).
+      const raw = req.rawBody || Buffer.from(JSON.stringify(req.body || {}), "utf8");
+
       const digest = crypto.createHmac("sha256", secret)
-        .update(req.rawBody)
+        .update(raw)
         .digest("hex");
 
       const a = Buffer.from(digest, "utf8");
       const b = Buffer.from(signature, "utf8");
-      if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
-        console.warn("Signature invalide");
+      const valide = a.length === b.length && crypto.timingSafeEqual(a, b);
+
+      if (!valide) {
+        // Diagnostic (visible dans les logs Firebase) : compare les empreintes
+        // SANS jamais logguer le secret lui-meme.
+        console.warn("Signature invalide", JSON.stringify({
+          digestCalcule: digest.slice(0, 12) + "...",
+          signatureRecue: signature.slice(0, 12) + "...",
+          rawBodyPresent: !!req.rawBody,
+          rawBodyLen: raw.length,
+          secretLen: secret ? secret.length : 0,
+        }));
         res.status(401).send("Invalid signature");
         return;
       }
