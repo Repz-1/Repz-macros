@@ -13,6 +13,7 @@ import { MuscleCalendar } from './components/MuscleCalendar.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
 import { SeanceTracker } from './components/SeanceTracker.jsx';
 import { Programmes } from './components/Programmes.jsx';
+import { Stats } from './components/Stats.jsx';
 
 function App() {
   const [modale, setModale] = useState(false);
@@ -48,6 +49,7 @@ function App() {
 
       <MuscleCalendar />
       <RestTimer />
+      <Stats />
       <Programmes />
       <SeanceTracker />
 
