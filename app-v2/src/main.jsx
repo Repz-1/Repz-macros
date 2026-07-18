@@ -19,13 +19,16 @@ import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { PremiumPage } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
+import { VocalModal } from './components/VocalModal.jsx';
 
 function OngletJournal() {
   const [modale, setModale] = useState(false);
   const [calc, setCalc] = useState(false);
+  const [vocal, setVocal] = useState(false);
   return (
     <>
       <DayDashboard />
+      <button class="qa-vocal" onClick={() => setVocal(true)}>🎤 Ajout vocal <i class="pro-mini-inline">✦</i></button>
       <button class="calc-lien" onClick={() => setCalc(true)}>🧮 {t('calc_besoins')}</button>
       <WaterTracker />
       <IdeesRepas />
@@ -39,6 +42,7 @@ function OngletJournal() {
       <button class="fab" onClick={() => setModale(true)}>+ {t('ajouter')}</button>
       <AddMealModal montre={modale} fermer={() => setModale(false)} />
       <TdeeCalculator montre={calc} fermer={() => setCalc(false)} />
+      {vocal && <VocalModal fermer={() => setVocal(false)} />}
     </>
   );
 }

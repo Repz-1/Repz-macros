@@ -272,3 +272,15 @@ button{cursor:pointer}
 .lang-choix{display:flex;gap:2px;background:#f0ede4;border-radius:8px;padding:2px}
 .lang-choix button{background:none;border:none;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:800;color:#b5b0a4;font-family:inherit;text-decoration:none}
 .lang-choix button.actif{background:#fff;color:#181818}
+
+/* ---- Vocal ---- */
+.vocal-aide{text-align:center;color:#b5b0a4;font-size:13px;font-weight:600;margin:0 0 18px}
+.vocal-micro{display:block;margin:0 auto 14px;width:82px;height:82px;border-radius:50%;border:none;background:#F7B500;font-size:34px;box-shadow:0 6px 20px rgba(247,181,0,.4)}
+.vocal-micro.actif{background:#DE2F14;animation:pulseMic 1.2s ease-in-out infinite}
+@keyframes pulseMic{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.vocal-micro:disabled{opacity:.5}
+.vocal-msg{text-align:center;font-weight:700;font-size:14px;color:#6a6558;min-height:20px;margin-bottom:8px}
+.vocal-prop{display:flex;justify-content:space-between;padding:11px;border:1px solid #f0ede4;border-radius:11px;margin-bottom:7px;font-size:14px;font-weight:600}
+.vocal-prop .inconnu{color:#b5b0a4;text-decoration:line-through}
+.qa-vocal{width:100%;padding:13px;border:1px solid #e9e4d6;border-radius:16px;background:#fff;font-weight:700;font-size:14.5px;font-family:inherit;margin-bottom:14px;position:relative}
+.pro-mini-inline{background:#F7B500;color:#5A3E00;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;font-style:normal;margin-left:4px}
