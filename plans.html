@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#191919">
 <link rel="manifest" href="manifest.json">
-<script src="i18n-strings.js?v=12"></script>
+<script src="i18n-strings.js?v=13"></script>
 <script src="i18n.js?v=4"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -195,6 +195,46 @@ body {
 .faq-item.open .faq-a { display:block; }
 .faq-toggle { font-size:20px; transition:transform .2s; }
 .faq-item.open .faq-toggle { transform:rotate(180deg); }
+
+/* ===== CATEGORIES DE LA FAQ ===== */
+.faq-cat { background:var(--card); border-radius:14px; margin-bottom:12px; overflow:hidden; }
+.faq-cat-q {
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding:15px 14px; font-size:15px; font-weight:800; color:var(--text); cursor:pointer;
+}
+.fc-right { display:flex; align-items:center; gap:10px; flex:none; }
+.fc-nb {
+    font-style:normal; font-size:11.5px; font-weight:800; color:#8F6200;
+    background:#FFF6DC; border-radius:20px; padding:3px 9px; min-width:22px; text-align:center;
+}
+.faq-cat .faq-cat-q .faq-toggle { font-size:15px; color:#c4bcae; }
+.faq-cat.open > .faq-cat-q .faq-toggle { transform:rotate(180deg); }
+.faq-cat-body { display:none; padding:0 10px 8px; }
+.faq-cat.open .faq-cat-body { display:block; }
+.faq-cat-body .faq-item { margin-bottom:8px; }
+.faq-cat-body .faq-q { background:#FBFAF7; font-size:13.5px; font-weight:700; }
+
+/* ===== POSER UNE QUESTION ===== */
+.ask-card {
+    background:linear-gradient(135deg,#FFFBEF,#FBEFC7);
+    border:1.5px solid #F3E2A8; border-radius:20px;
+    padding:22px 18px; text-align:center; margin-top:24px;
+    box-shadow:0 6px 18px rgba(247,181,0,.12);
+}
+.ask-card .ask-ic {
+    width:46px; height:46px; margin:0 auto 12px; border-radius:50%;
+    background:#F7B500; color:#181818;
+    display:flex; align-items:center; justify-content:center;
+}
+.ask-card .ask-ic svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.ask-card h3 { font-size:16.5px; font-weight:800; color:#7a5600; margin-bottom:5px; text-align:center; }
+.ask-card p { font-size:13.5px; color:#8F6200; line-height:1.55; margin-bottom:15px; }
+.ask-card .ask-btn {
+    display:block; background:#181818; color:#fff; border:none; border-radius:12px;
+    padding:13px 26px; font-size:14.5px; font-weight:800;
+    font-family:inherit; cursor:pointer; text-decoration:none;
+}
+.ask-card .ask-btn:active { transform:scale(.98); }
 
 
 /* Topbar harmonisée */
@@ -446,18 +486,14 @@ function logout() {
 <!-- FAQ -->
 <div class="faq">
     <h3 data-i18n="pl_faq">Questions fréquentes</h3>
-    
-    <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-            <span data-i18n="pl_q1">Puis-je changer de plan ?</span>
-            <span class="faq-toggle">▼</span>
-        </div>
-        <div class="faq-a">
-            <span data-i18n="pl_a1">Oui, tu peux passer du Standard au Premium à tout moment. Aucun engagement.</span>
-        </div>
-    </div>
 
-    <div class="faq-item">
+    <div class="faq-cat" id="plcat-prog">
+        <div class="faq-cat-q" onclick="togglePlanCat('prog')">
+            <span data-i18n="pl_cat_prog">Le programme sur mesure</span>
+            <span class="fc-right"><i class="fc-nb">4</i><span class="faq-toggle">▼</span></span>
+        </div>
+        <div class="faq-cat-body">
+<div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
             <span data-i18n="pl_q2">Combien de temps pour un programme ?</span>
             <span class="faq-toggle">▼</span>
@@ -466,8 +502,7 @@ function logout() {
             <span data-i18n="pl_a2">Tu réponds à un questionnaire de 2 minutes. Ton coach BelFit analyse tes réponses et prépare ton programme sur mesure (calories + macros), puis te l'envoie sous 24 à 48h. Tu n'as plus qu'à saisir tes objectifs dans l'appli (Profil → objectifs) et à suivre ton plan.</span>
         </div>
     </div>
-
-    <div class="faq-item">
+<div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
             <span data-i18n="pl_q3">Qu'inclut le programme sur mesure ?</span>
             <span class="faq-toggle">▼</span>
@@ -476,8 +511,7 @@ function logout() {
             <span data-i18n="pl_a3">Programme alimentaire personnalisé selon tes objectifs, tes préférences, tes allergies et ton mode de vie.</span>
         </div>
     </div>
-
-    <div class="faq-item">
+<div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
             <span data-i18n="pl_q4">Comment ça marche ?</span>
             <span class="faq-toggle">▼</span>
@@ -486,8 +520,34 @@ function logout() {
             <span data-i18n-html="pl_a4">1. Paiement Premium<br>2. Questionnaire rapide (2 min)<br>3. Ton coach BelFit analyse tes réponses<br>4. Tu reçois ton programme sous 24-48h<br>5. Tu saisis tes objectifs dans l'appli et c'est parti</span>
         </div>
     </div>
+<div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+            <span data-i18n="pl_q8">Les programmes sont-ils adaptés aux débutants ?</span>
+            <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-a">
+            <span data-i18n="pl_a8">Oui. Que tu débutes ou non, BelFit adapte les calories, les macros et l'entraînement à ton niveau et à ton objectif.</span>
+        </div>
+    </div>
+        </div>
+    </div>
 
-    <div class="faq-item">
+    <div class="faq-cat" id="plcat-abo">
+        <div class="faq-cat-q" onclick="togglePlanCat('abo')">
+            <span data-i18n="pl_cat_abo">Abonnement et paiement</span>
+            <span class="fc-right"><i class="fc-nb">2</i><span class="faq-toggle">▼</span></span>
+        </div>
+        <div class="faq-cat-body">
+<div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+            <span data-i18n="pl_q1">Puis-je changer de plan ?</span>
+            <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-a">
+            <span data-i18n="pl_a1">Oui, tu peux passer du Standard au Premium à tout moment. Aucun engagement.</span>
+        </div>
+    </div>
+<div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
             <span data-i18n="pl_q5">Puis-je annuler quand je veux ?</span>
             <span class="faq-toggle">▼</span>
@@ -496,8 +556,16 @@ function logout() {
             <span data-i18n="pl_a5">Oui. L'abonnement peut être annulé à tout moment, sans frais ni engagement.</span>
         </div>
     </div>
+        </div>
+    </div>
 
-    <div class="faq-item">
+    <div class="faq-cat" id="plcat-app">
+        <div class="faq-cat-q" onclick="togglePlanCat('app')">
+            <span data-i18n="pl_cat_app">L'application</span>
+            <span class="fc-right"><i class="fc-nb">2</i><span class="faq-toggle">▼</span></span>
+        </div>
+        <div class="faq-cat-body">
+<div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
             <span data-i18n="pl_q6">Mes données sont-elles conservées ?</span>
             <span class="faq-toggle">▼</span>
@@ -506,8 +574,7 @@ function logout() {
             <span data-i18n="pl_a6">Oui. Ton journal, ton poids et tes stats sont liés à ton compte et restent disponibles à ta reconnexion, sur tous tes appareils.</span>
         </div>
     </div>
-
-    <div class="faq-item">
+<div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
             <span data-i18n="pl_q7">Puis-je utiliser BelFit hors connexion ?</span>
             <span class="faq-toggle">▼</span>
@@ -516,15 +583,16 @@ function logout() {
             <span data-i18n="pl_a7">En partie : le journal et tes séances fonctionnent même sans réseau, et tout se synchronise dès que la connexion revient.</span>
         </div>
     </div>
+        </div>
+    </div>
 
-    <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-            <span data-i18n="pl_q8">Les programmes sont-ils adaptés aux débutants ?</span>
-            <span class="faq-toggle">▼</span>
+    <div class="ask-card">
+        <div class="ask-ic">
+            <svg viewBox="0 0 24 24"><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9.5"/></svg>
         </div>
-        <div class="faq-a">
-            <span data-i18n="pl_a8">Oui. Que tu débutes ou non, BelFit adapte les calories, les macros et l'entraînement à ton niveau et à ton objectif.</span>
-        </div>
+        <h3 data-i18n="pl_ask_title">Une question pour l'équipe BELFIT ?</h3>
+        <p data-i18n="pl_ask_sub">Ta question n'est pas dans la liste ? Écris-nous, on te répond sous 24 à 48h.</p>
+        <a class="ask-btn" href="aide.html?v=2&amp;chat=question" data-i18n="pl_ask_btn">Poser ma question</a>
     </div>
 </div>
 
@@ -556,6 +624,22 @@ function logout() {
 </div>
 
 <script>
+
+// Une seule categorie ouverte a la fois : la page reste courte.
+function togglePlanCat(k){
+    var el = document.getElementById('plcat-' + k);
+    if(!el) return;
+    var dejaOuvert = el.classList.contains('open');
+    document.querySelectorAll('.faq-cat').forEach(function(x){ x.classList.remove('open'); });
+    document.querySelectorAll('.faq-item').forEach(function(x){ x.classList.remove('open'); });
+    if(!dejaOuvert){
+        el.classList.add('open');
+        setTimeout(function(){
+            try { el.scrollIntoView({block:'nearest', behavior:'smooth'}); } catch(e){}
+        }, 180);
+    }
+}
+
 function toggleFaq(element){
     element.parentElement.classList.toggle('open');
 }

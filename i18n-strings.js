@@ -1604,3 +1604,30 @@ Object.assign(window.BELFIT_STRINGS.en, {
 Object.assign(window.BELFIT_STRINGS.nl, {
   st_edit_muscles: 'Wijzigen'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  pl_cat_prog: 'Le programme sur mesure',
+  pl_cat_abo: 'Abonnement et paiement',
+  pl_cat_app: 'L\'application',
+  pl_ask_title: 'Une question pour l\'équipe BELFIT ?',
+  pl_ask_sub: 'Ta question n\'est pas dans la liste ? Écris-nous, on te répond sous 24 à 48h.',
+  pl_ask_btn: 'Poser ma question'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  pl_cat_prog: 'Your tailored program',
+  pl_cat_abo: 'Subscription and payment',
+  pl_cat_app: 'The app',
+  pl_ask_title: 'A question for the BELFIT team?',
+  pl_ask_sub: 'Can\'t find your question? Write to us, we reply within 24 to 48h.',
+  pl_ask_btn: 'Ask my question'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  pl_cat_prog: 'Je programma op maat',
+  pl_cat_abo: 'Abonnement en betaling',
+  pl_cat_app: 'De app',
+  pl_ask_title: 'Een vraag voor het BELFIT-team?',
+  pl_ask_sub: 'Staat je vraag er niet bij? Schrijf ons, we antwoorden binnen 24 tot 48u.',
+  pl_ask_btn: 'Mijn vraag stellen'
+});
