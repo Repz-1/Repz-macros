@@ -216,3 +216,29 @@ button{cursor:pointer}
 .scan-manuel input{flex:1;padding:12px 14px;border:1px solid #e8e4d8;border-radius:12px;font-family:inherit;font-weight:600;font-size:14px}
 .scan-manuel button{padding:12px 18px;border:none;border-radius:12px;background:#181818;color:#fff;font-weight:800;font-family:inherit}
 .ing-scan{width:40px;border:1px solid #e8e4d8;border-radius:12px;background:#fff;font-size:17px;margin-left:6px}
+
+/* ---- Navigation du bas ---- */
+.nav-bas{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid #ece8dc;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:70}
+.nav-bas button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px;color:#b5b0a4;font-family:inherit}
+.nav-bas button svg{width:23px;height:23px}
+.nav-bas button span{font-size:11px;font-weight:700}
+.nav-bas button.actif{color:#181818}
+.nav-bas button.actif svg{stroke-width:2.1}
+.conteneur{padding-bottom:110px}
+
+/* ---- Page Premium ---- */
+.prem-liste{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+.prem-liste li{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:#3f3f3f}
+.prem-liste li span{width:19px;height:19px;border-radius:50%;background:#FFF3D0;color:#B98A00;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prem-formule{text-align:center;position:relative}
+.prem-tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#F7B500;color:#5A3E00;font-size:10px;font-weight:800;padding:3px 10px;border-radius:8px;white-space:nowrap}
+.prem-nom{font-weight:800;font-size:16px;color:#6a6558}
+.prem-prix{font-weight:800;font-size:32px;margin:4px 0 2px}
+.prem-sub{font-size:12.5px;color:#b5b0a4;font-weight:600;margin-bottom:14px}
+.prem-btn{width:100%;padding:14px;border:none;border-radius:14px;background:#F7B500;font-weight:800;font-size:15px;font-family:inherit}
+.prem-actif{text-align:center;padding:32px 20px}
+.prem-badge-grand{display:inline-block;background:#F7B500;color:#5A3E00;font-size:14px;font-weight:800;padding:6px 16px;border-radius:10px;margin-bottom:14px}
+.prem-actif h3{margin:0 0 8px;font-size:21px;font-weight:800}
+.prem-actif p{margin:0;color:#6a6558;font-size:14px;line-height:1.5}
+.ing-scan{position:relative}
+.pro-mini{position:absolute;top:-5px;right:-5px;background:#F7B500;color:#5A3E00;font-size:8px;font-weight:800;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal}

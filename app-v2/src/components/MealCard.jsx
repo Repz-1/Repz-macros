@@ -1,6 +1,8 @@
 import { useState } from 'preact/hooks';
 import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
+import { estPremium } from './PremiumPage.jsx';
+import { ongletActif } from './BottomNav.jsx';
 import {
   totauxRepas, setPortion, ajouterIngredient,
   supprimerIngredient, supprimerRepas, basculerRepas, renommerRepas,
@@ -59,7 +61,11 @@ function Recherche({ repasId }) {
           value={q}
           onInput={e => setQ(e.currentTarget.value)}
         />
-        <button class="ing-scan" onClick={() => setScan(true)} title="Scanner">▮▯▮</button>
+        <button
+          class="ing-scan"
+          onClick={() => { if (estPremium.value) setScan(true); else ongletActif.value = 'premium'; }}
+          title="Scanner un code-barres"
+        >▮▯▮{!estPremium.value && <i class="pro-mini">✦</i>}</button>
       </div>
       {resultats.length > 0 && (
         <div class="resultats">
