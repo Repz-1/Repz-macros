@@ -339,12 +339,6 @@ function logout(){
         <div id="repartWrap"></div>
     </div>
 
-    <!-- RECORDS PERSONNELS -->
-    <div class="stat-card acc-violet">
-        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 01-10 0V4z"/><path d="M7 6H4a2 2 0 002 4h1"/><path d="M17 6h3a2 2 0 01-2 4h-1"/></svg><span data-i18n="st_records">Records personnels</span></h2>
-        <div class="card-sub" data-i18n="st_records_sub">Tes meilleures charges, tous exercices confondus</div>
-        <div id="recordsWrap"></div>
-    </div>
 
     <!-- INVITATION PREMIUM (bienveillante) -->
     <div class="premium-invite" id="premiumInvite">
@@ -699,7 +693,6 @@ function bodyMapSVG(compte, max){
 
 renderScore();
 renderRepartition();
-renderRecords();
 renderWeight();
 renderKcal();
 
@@ -929,7 +922,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
 })();
 
 window.addEventListener('langchange', function(){
-    try{ renderScore(); renderWeight(); renderKcal(); renderRepartition(); renderRecords(); renderExoProg(); }catch(e){}
+    try{ renderScore(); renderWeight(); renderKcal(); renderRepartition(); renderExoProg(); }catch(e){}
 });
 </script>
 </body>
