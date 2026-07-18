@@ -1,70 +1,75 @@
-import { objectifs, totauxJour, kcalRestantes } from '../store/journal.js';
+import { objectifs, totauxJour, kcalRestantes, nouvelleJournee } from '../store/journal.js';
 import { ObjectifsForm } from './ObjectifsForm.jsx';
-import { nouvelleJournee } from '../store/journal.js';
 import { t, langue } from '../i18n/index.js';
 
-const MOIS_COURT = {
-  fr: ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'],
-  en: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-  nl: ['jan.','feb.','mrt.','apr.','mei','jun.','jul.','aug.','sep.','okt.','nov.','dec.'],
+const MOIS = {
+  fr: ['JANV.','FÉVR.','MARS','AVR.','MAI','JUIN','JUIL.','AOÛT','SEPT.','OCT.','NOV.','DÉC.'],
+  en: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
+  nl: ['JAN.','FEB.','MRT.','APR.','MEI','JUN.','JUL.','AUG.','SEP.','OKT.','NOV.','DEC.'],
 };
 
 export function DayDashboard() {
   const tot = totauxJour.value;
   const o = objectifs.value;
-  const pct = Math.min(100, (tot.kcal / o.kcal) * 100);
   const d = new Date();
-  const mois = (MOIS_COURT[langue.value] || MOIS_COURT.fr)[d.getMonth()];
+  const mois = (MOIS[langue.value] || MOIS.fr)[d.getMonth()];
 
-  // Jauge 3/4 de cercle
-  const R = 78, C = 2 * Math.PI * R, arc = 0.75;
-  const rempli = C * arc * (pct / 100);
+  // Anneau : rayon 82, arc de 371 (identique a l'app actuelle)
+  const ARC = 371, TOTAL = 515.2;
+  const pct = Math.min(1, o.kcal ? tot.kcal / o.kcal : 0);
+  const rempli = ARC * pct;
+  const depasse = tot.kcal > o.kcal;
 
-  // Code couleur des macros : depasse = rouge, proche = or, sinon noir
   const macro = (nom, val, max) => {
     const p = max ? (val / max) * 100 : 0;
-    const couleur = p > 105 ? '#DE2F14' : p >= 95 ? '#181818' : '#F7B500';
+    const couleur = p > 105 ? '#DE2F14' : p >= 95 ? '#1f1f1f' : '#F7B500';
     return (
-      <div class="tb-macro">
-        <div class="nom">{nom}</div>
-        <div class="val"><b style={{ color: p > 105 ? '#DE2F14' : '#B98A00' }}>{val.toFixed(0)}g</b> / {max}g</div>
-        <div class="tb-mini"><div style={{ width: `${Math.min(100, p)}%`, background: couleur }} /></div>
+      <div class="mcard">
+        <div class="m-name">{nom}</div>
+        <div class="m-val"><span>{val.toFixed(0)}g</span> <span class="m-tg">/ {max}g</span></div>
+        <div class="mbar"><span style={{ width: `${Math.min(100, p)}%`, background: couleur }} /></div>
       </div>
     );
   };
 
   return (
-    <div class="tableau-bord">
-      <div class="tb-date">{t('aujourdhui')}, {d.getDate()} {mois}</div>
+    <div class="nutri-card">
+      <div class="nutri-datebar">
+        <span class="ndb-cal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+        </span>
+        <span class="ndb-date">{t('aujourdhui')}, {d.getDate()} {mois}</span>
+      </div>
 
-      <div class="tb-rangee">
-        <div class="tb-cote">
-          <i>{t('consommees')}</i>
-          <span>{tot.kcal.toFixed(0)}</span>
+      <div class="ring-wrap">
+        <div class="ring-side">
+          <div class="rs-lab">{t('consommees')}</div>
+          <div class="rs-val">{tot.kcal.toFixed(0)}</div>
         </div>
 
-        <div class="tb-jauge">
-          <svg viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r={R} class="tb-piste"
-              stroke-dasharray={`${C * arc} ${C}`} transform="rotate(135 100 100)" />
-            <circle cx="100" cy="100" r={R} class="tb-remplie"
-              stroke-dasharray={`${rempli} ${C}`} transform="rotate(135 100 100)" />
+        <div class="ring-center">
+          <svg width="184" height="184" viewBox="0 0 190 190">
+            <circle cx="95" cy="95" r="82" fill="none" stroke="#dcecdf" stroke-width="13"
+              stroke-linecap="round" stroke-dasharray="371 144.2" transform="rotate(140 95 95)" />
+            <circle cx="95" cy="95" r="82" fill="none" stroke={depasse ? '#DE2F14' : '#10B981'} stroke-width="13"
+              stroke-linecap="round" stroke-dasharray={`${rempli} ${TOTAL}`} transform="rotate(140 95 95)"
+              style="transition:stroke-dasharray .4s ease, stroke .3s;" />
           </svg>
-          <div class="tb-centre">
-            <div class="tb-nombre">{kcalRestantes.value.toFixed(0)}</div>
-            <div class="tb-label">{t('kcal_restantes')}</div>
+          <div class="ring-txt">
+            <div class={`dt-remaining-big ${depasse ? 'over' : ''}`}>
+              <span class="rt-num">{kcalRestantes.value.toFixed(0)}</span>
+            </div>
+            <div class="rt-sub">{t('kcal_restantes')}</div>
           </div>
         </div>
 
-        <div class="tb-cote">
-          <i>{t('objectif')}</i>
-          <span>{o.kcal}</span>
+        <div class="ring-side">
+          <div class="rs-lab">{t('objectif')}</div>
+          <div class="rs-val">{o.kcal}</div>
         </div>
       </div>
 
-      <div class="tb-sep" />
-
-      <div class="tb-macros">
+      <div class="nutri-macros">
         {macro(t('proteines'), tot.prot, o.prot)}
         {macro(t('glucides'), tot.carbs, o.carbs)}
         {macro(t('lipides'), tot.lip, o.lip)}
