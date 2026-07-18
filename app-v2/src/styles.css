@@ -7,7 +7,7 @@ button{cursor:pointer}
 .conteneur{max-width:480px;margin:0 auto;padding:16px 16px 96px}
 
 /* ---- Dashboard du jour ---- */
-.tableau-bord{background:#fff;border:1px solid #e9f3ec;border-radius:24px;padding:20px;margin-bottom:16px}
+.tableau-bord{background:#fff;border:1px solid #e9f3ec;border-radius:24px;padding:16px 18px 14px;margin-bottom:14px}
 .tb-kcal{display:flex;align-items:baseline;gap:8px}
 .tb-kcal .gros{font-size:40px;font-weight:800;color:#F7B500}
 .tb-kcal .label{color:#8a8a8a;font-weight:600}
@@ -56,7 +56,7 @@ button{cursor:pointer}
 .total-repas{margin-top:12px;padding:10px 14px;background:#FFF9E6;border-radius:12px;color:#9a7b00;font-weight:700;font-size:13.5px}
 
 /* ---- Bouton Ajouter + modale ---- */
-.fab{position:fixed;right:18px;bottom:86px;background:#F7B500;color:#181818;border:none;border-radius:999px;padding:16px 22px;font-size:16px;font-weight:800;box-shadow:0 6px 20px rgba(247,181,0,.45);z-index:40}
+.fab{position:fixed;right:16px;bottom:80px;width:56px;height:56px;background:#F7B500;color:#181818;border:none;border-radius:50%;font-size:28px;font-weight:800;line-height:1;box-shadow:0 6px 20px rgba(247,181,0,.45);z-index:40;display:flex;align-items:center;justify-content:center}
 .voile{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
 .voile.montre{opacity:1;pointer-events:auto}
 .modale{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:22px 18px 30px;transform:translateY(100%);transition:transform .25s ease;z-index:60}
@@ -224,7 +224,7 @@ button{cursor:pointer}
 .nav-bas button span{font-size:11px;font-weight:700}
 .nav-bas button.actif{color:#181818}
 .nav-bas button.actif svg{stroke-width:2.1}
-.conteneur{padding-bottom:150px}
+.conteneur{padding-bottom:120px}
 
 /* ---- Page Premium ---- */
 .prem-liste{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
@@ -304,16 +304,16 @@ button{cursor:pointer}
 .bandeau-invite button{background:#F7B500;border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:800;font-family:inherit;color:#5A3E00;text-decoration:none}
 
 /* ---- Jauge circulaire (repere BelFit) ---- */
-.tb-jauge{position:relative;width:100%;max-width:240px;margin:0 auto 6px;aspect-ratio:1}
+.tb-jauge{position:relative;width:100%;max-width:186px;margin:0 auto 2px;aspect-ratio:1}
 .tb-jauge svg{width:100%;height:100%;transform:rotate(0deg)}
-.tb-piste{fill:none;stroke:#EDE8DA;stroke-width:13;stroke-linecap:round}
-.tb-remplie{fill:none;stroke:url(#gradOr);stroke-width:13;stroke-linecap:round;transition:stroke-dasharray .45s ease}
+.tb-piste{fill:none;stroke:#EDE8DA;stroke-width:11;stroke-linecap:round}
+.tb-remplie{fill:none;stroke:url(#gradOr);stroke-width:11;stroke-linecap:round;transition:stroke-dasharray .45s ease}
 .tb-centre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-.tb-nombre{font-size:46px;font-weight:800;line-height:1;color:#181818}
-.tb-label{font-size:13px;color:#8a8a8a;font-weight:600;margin-top:4px}
-.tb-cotes{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:space-between;padding:0 4px}
+.tb-nombre{font-size:38px;font-weight:800;line-height:1;color:#181818}
+.tb-label{font-size:12px;color:#8a8a8a;font-weight:600;margin-top:4px}
+.tb-cotes{position:relative;display:flex;left:0;right:0;margin:-6px 0 10px;display:flex;justify-content:space-between;padding:0 4px}
 .tb-cotes div{display:flex;flex-direction:column;align-items:center}
-.tb-cotes span{font-weight:800;font-size:15px}
+.tb-cotes span{font-weight:800;font-size:14px}
 .tb-cotes i{font-size:10.5px;color:#b5b0a4;font-weight:600;font-style:normal}
 
 /* ---- Eau compacte ---- */
@@ -330,3 +330,5 @@ button{cursor:pointer}
 .qa-ic svg{width:20px;height:20px}
 .qa-lb{font-size:12.5px;font-weight:700;color:#181818}
 .qa-pro{position:absolute;top:7px;right:9px;background:#F7B500;color:#5A3E00;font-size:8px;font-weight:800;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal}
+
+.qa-rangee.qa-2{grid-template-columns:repeat(2,1fr)}

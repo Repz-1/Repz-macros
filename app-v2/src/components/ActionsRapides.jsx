@@ -19,14 +19,10 @@ export function ActionsRapides({ ouvrirCalc }) {
 
   return (
     <>
-      <div class="qa-rangee">
+      <div class="qa-rangee qa-2">
         <Action
           ic={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h3M8 15h3M15 11v6"/></svg>}
           label={t('calc_besoins_court')} onClick={ouvrirCalc}
-        />
-        <Action
-          ic={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 002 1.6h7.7a2 2 0 002-1.6L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>}
-          label={t('nav_courses')} onClick={() => { ongletActif.value = 'courses'; }}
         />
         <Action
           ic={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>}

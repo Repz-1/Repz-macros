@@ -39,7 +39,7 @@ function OngletJournal() {
         onClick={() => { if (confirm(t('nouvelle_journee') + ' ?')) nouvelleJournee(); }}
       >⟳ {t('nouvelle_journee')}</button>
 
-      <button class="fab" onClick={() => setModale(true)}>+ {t('ajouter')}</button>
+      <button class="fab" onClick={() => setModale(true)}>+</button>
       <AddMealModal montre={modale} fermer={() => setModale(false)} />
       <TdeeCalculator montre={calc} fermer={() => setCalc(false)} />
     </>
