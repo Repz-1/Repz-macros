@@ -11,6 +11,7 @@ import { AddMealModal } from './components/AddMealModal.jsx';
 import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { MuscleCalendar } from './components/MuscleCalendar.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
+import { SeanceTracker } from './components/SeanceTracker.jsx';
 
 function App() {
   const [modale, setModale] = useState(false);
@@ -46,6 +47,7 @@ function App() {
 
       <MuscleCalendar />
       <RestTimer />
+      <SeanceTracker />
 
       <button class="fab" onClick={() => setModale(true)}>+ Ajouter</button>
       <AddMealModal montre={modale} fermer={() => setModale(false)} />
