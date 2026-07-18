@@ -1481,3 +1481,27 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 Object.assign(window.BELFIT_STRINGS.fr, { meal_pdej:"Petit déjeuner", meal_dej:"Déjeuner", meal_diner:"Dîner", meal_snack:"Snacks" });
 Object.assign(window.BELFIT_STRINGS.en, { meal_pdej:"Breakfast", meal_dej:"Lunch", meal_diner:"Dinner", meal_snack:"Snacks" });
 Object.assign(window.BELFIT_STRINGS.nl, { meal_pdej:"Ontbijt", meal_dej:"Lunch", meal_diner:"Avondeten", meal_snack:"Snacks" });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  done: 'Terminé',
+  mb_empty: 'Cherchez un aliment à ajouter',
+  mb_food: 'aliment',
+  mb_foods: 'aliments',
+  mb_prot: 'prot.'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  done: 'Done',
+  mb_empty: 'Search for a food to add',
+  mb_food: 'food',
+  mb_foods: 'foods',
+  mb_prot: 'prot.'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  done: 'Klaar',
+  mb_empty: 'Zoek een voedingsmiddel om toe te voegen',
+  mb_food: 'product',
+  mb_foods: 'producten',
+  mb_prot: 'eiw.'
+});

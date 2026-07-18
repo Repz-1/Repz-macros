@@ -282,6 +282,35 @@ h1 { font-size:26px; font-weight:700; text-align:center; }
 }
 .fab-row > button { pointer-events:auto; }
 body.search-open .fab-row { display:none; }
+
+/* ===== BARRE DE SAISIE : reste au-dessus du clavier pendant l'ajout d'aliments ===== */
+.meal-bar {
+    position:fixed; left:0; right:0;
+    top:calc(var(--vv-top, 0px) + var(--vv-h, 100vh));
+    transform:translateY(-100%);
+    display:none; align-items:center; gap:12px;
+    padding:11px 14px calc(11px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.97);
+    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    border-top:1px solid #E9E7E0;
+    box-shadow:0 -8px 22px rgba(60,50,40,.10);
+    z-index:120;
+}
+body.search-open .meal-bar { display:flex; }
+.meal-bar-info { flex:1; min-width:0; }
+.meal-bar-name {
+    font-size:13.5px; font-weight:800; color:#191919;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.meal-bar-sub { font-size:11.5px; font-weight:600; color:#8a8580; margin-top:2px; }
+.meal-bar-sub b { color:#8F6200; }
+.meal-bar-done {
+    flex:none; border:none; cursor:pointer; font-family:inherit;
+    background:#181818; color:#fff;
+    font-size:13.5px; font-weight:800;
+    padding:11px 20px; border-radius:11px;
+}
+.meal-bar-done:active { transform:scale(.96); background:#000; }
 .fab {
     display:flex; align-items:center; gap:5px;
     background:#F7B500; color:#181818; border:none;
@@ -908,7 +937,7 @@ body.search-open .fab-row { display:none; }
 </div>
 
 <!-- AUTH CHECK + FIREBASE -->
-<script src="i18n-strings.js?v=7"></script>
+<script src="i18n-strings.js?v=8"></script>
 <script src="foods-i18n.js?v=1"></script>
 <script src="i18n.js?v=4"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -1170,6 +1199,15 @@ function afficherMessageInvite() {
 </div>
 
 <!-- MODAL POIDS -->
+<!-- BARRE DE SAISIE D'UN REPAS (au-dessus du clavier) -->
+<div class="meal-bar" id="mealBar">
+    <div class="meal-bar-info">
+        <div class="meal-bar-name" id="mealBarName"></div>
+        <div class="meal-bar-sub" id="mealBarSub"></div>
+    </div>
+    <button class="meal-bar-done" onclick="terminerSaisieRepas()" data-i18n="done">Termine</button>
+</div>
+
 <div class="modal-overlay" id="weightModal">
     <div class="modal">
         <h3 class="modal-h3-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15"/></svg> <span data-i18n="wm_title">Mon poids du jour</span></h3>
@@ -3011,6 +3049,7 @@ function filterIngredients(rid,query){
     if(matches.length===0){
         box.innerHTML='<div class="search-none">'+t('search_none')+'</div>' + createBtn;
         box.classList.add('show'); document.body.classList.add('search-open');
+        majBarreRepas(rid);
         return;
     }
     box.innerHTML=matches.map(name=>
@@ -3019,6 +3058,7 @@ function filterIngredients(rid,query){
         </div>`
     ).join('') + createBtn;
     box.classList.add('show'); document.body.classList.add('search-open');
+    majBarreRepas(rid);
 }
 function addIngredient(rid,name){
     if(inviteBloque()) return;
@@ -3032,6 +3072,49 @@ function addIngredient(rid,name){
     // Garder la main dans le champ de recherche (clavier ouvert, pas de saut)
     const inp = document.getElementById('search-'+rid);
     if(inp){ inp.value=''; inp.focus({preventScroll:true}); }
+    majBarreRepas(rid);
+}
+
+// ===== BARRE DE SAISIE D'UN REPAS =====
+// Reste visible au-dessus du clavier pendant qu'on ajoute des aliments :
+// affiche le repas en cours, son total en direct, et un bouton pour cloturer.
+var __ridSaisie = null;
+
+function majBarreRepas(rid){
+    if(rid != null) __ridSaisie = rid;
+    var rc = recipes.find(function(r){ return r.id === __ridSaisie; });
+    if(!rc) return;
+    var tot = recipeTotals(rc);
+    var m = rc.mult || 1;
+    var n = rc.ings.length;
+    var nom = document.getElementById('mealBarName');
+    var sub = document.getElementById('mealBarSub');
+    if(nom) nom.textContent = mealDisplayName(rc);
+    if(sub){
+        if(n === 0){
+            sub.textContent = window.t('mb_empty');
+        } else {
+            sub.innerHTML = n + ' ' + window.t(n > 1 ? 'mb_foods' : 'mb_food')
+                + ' &middot; <b>' + Math.round(tot.kcal * m) + ' kcal</b>'
+                + ' &middot; ' + Math.round(tot.prot * m) + ' g ' + window.t('mb_prot');
+        }
+    }
+}
+
+function terminerSaisieRepas(){
+    var rid = __ridSaisie;
+    document.querySelectorAll('.search-results').forEach(function(b){ b.classList.remove('show'); });
+    document.body.classList.remove('search-open');
+    var inp = document.getElementById('search-' + rid);
+    if(inp){ inp.value = ''; inp.blur(); }
+    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    // Ramener la carte du repas dans la vue une fois le clavier referme
+    setTimeout(function(){
+        var carte = document.getElementById('recipe-' + rid) ||
+                    (inp && inp.closest ? inp.closest('.recipe-card') : null);
+        if(carte){ try { carte.scrollIntoView({ block:'center', behavior:'smooth' }); } catch(e){} }
+    }, 260);
+    __ridSaisie = null;
 }
 
 // ===== ZONE VISIBLE REELLE (le clavier reduit la fenetre) =====
