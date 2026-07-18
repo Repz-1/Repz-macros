@@ -1340,7 +1340,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
     "L'app fonctionne-t-elle hors ligne ?":"Does the app work offline?",
     "Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium.":"The journal and your local data remain accessible, but a connection is needed to log in, scan products and sync your Premium status.",
     "Comment vous contacter ?":"How do I contact you?",
-    "Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"Via the chat bubble at the bottom right of this page, or by email at contact@belfit.be. Reply within 24–48h."
+    "Avec le bouton « Poser ma question » en bas de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"With the « Ask my question » button at the bottom of this page, or by email at contact@belfit.be. Reply within 24–48h."
   }
 });
 Object.assign(window.BELFIT_STRINGS.nl, {
@@ -1372,7 +1372,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
     "L'app fonctionne-t-elle hors ligne ?":"Werkt de app offline?",
     "Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium.":"Het dagboek en je lokale gegevens blijven toegankelijk, maar een verbinding is nodig om in te loggen, producten te scannen en je Premium-status te synchroniseren.",
     "Comment vous contacter ?":"Hoe kan ik jullie contacteren?",
-    "Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"Via de chatbel rechtsonder op deze pagina, of per e-mail naar contact@belfit.be. Antwoord binnen 24–48u."
+    "Avec le bouton « Poser ma question » en bas de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"Met de knop « Mijn vraag stellen » onderaan deze pagina, of per e-mail naar contact@belfit.be. Antwoord binnen 24–48u."
   }
 });
 

@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Aide</title>
 <link rel="manifest" href="manifest.json">
-<script src="i18n-strings.js?v=14"></script>
+<script src="i18n-strings.js?v=15"></script>
 <script src="i18n.js?v=4"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -91,9 +91,6 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 .ask-card .ask-btn:active { transform:scale(.98); }
 
 /* Bulle de contact */
-.chat-fab { position:fixed; bottom:22px; right:18px; z-index:120; width:58px; height:58px; border-radius:50%; border:none; background:var(--em); color:#fff; box-shadow:0 8px 22px rgba(247,181,0,.4); cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.chat-fab svg { width:27px; height:27px; stroke:#fff; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
-.chat-fab:active { transform:scale(.94); }
 .chat-panel { display:none; position:fixed; bottom:92px; right:16px; left:16px; max-width:400px; margin-left:auto; z-index:121; background:#fff; border-radius:20px; box-shadow:0 16px 44px rgba(15,23,42,.24); overflow:hidden; }
 .chat-panel.show { display:block; animation:cpUp .2s ease-out; }
 @keyframes cpUp { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
@@ -143,10 +140,7 @@ const auth = firebase.auth();
     </div>
 </div>
 
-<!-- BULLE DE CONTACT -->
-<button class="chat-fab" onclick="toggleChat()" aria-label="Nous contacter">
-    <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H5l-2 2V12a8 8 0 018-8h2a8 8 0 018 8z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>
-</button>
+<!-- Formulaire de contact, ouvert par le bouton « Poser ma question » -->
 <div class="chat-panel" id="chatPanel">
     <div class="cp-head">
         <h3><span data-i18n="ai_write">Une question pour l'équipe BELFIT ?</span></h3>
@@ -192,7 +186,7 @@ const FAQ = [
     { q:"Comment annuler mon abonnement ?", c:"premium", a:"Ton abonnement est géré par notre partenaire de paiement Lemon Squeezy : utilise le lien de gestion reçu dans ton e-mail de confirmation d'achat, ou écris-nous via la bulle de contact et on s'en occupe." },
     { q:"J'ai un code promo, où l'utiliser ?", c:"premium", a:"Sur la page Premium au moment de choisir ta formule. Si tu as un souci avec un code, contacte-nous via la bulle. <a class=\"faq-go\" href=\"main.html?aller=premium\">Voir les formules</a>" },
     { q:"L'app fonctionne-t-elle hors ligne ?", c:"app", a:"Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium." },
-    { q:"Comment vous contacter ?", c:"general", a:"Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h." }
+    { q:"Comment vous contacter ?", c:"general", a:"Avec le bouton « Poser ma question » en bas de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h." }
 ];
 function renderFaq(){
     document.getElementById('faqCard').innerHTML = CATEGORIES.map(cat=>{
