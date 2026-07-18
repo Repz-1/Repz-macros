@@ -104,3 +104,16 @@ function App() {
 }
 
 render(<App />, document.getElementById('app'));
+
+// Retrait du splash une fois l'interface peinte (min 400ms pour eviter le clignotement)
+(function retirerSplash(){
+  const s = document.getElementById('splash');
+  if (!s) return;
+  const partir = () => {
+    s.classList.add('parti');
+    setTimeout(() => s.remove(), 300);
+    const tc = document.querySelector('meta[name="theme-color"]');
+    if (tc) tc.setAttribute('content', '#F8F8F8');
+  };
+  setTimeout(partir, 400);
+})();

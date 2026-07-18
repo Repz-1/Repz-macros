@@ -8,6 +8,21 @@ export default defineConfig({
   base: '/v2/',
   build: {
     outDir: '../v2',
-    emptyOutDir: true
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        // Firebase dans son propre morceau : le coeur de l'app se charge
+        // et s'affiche sans attendre le SDK (gain sur le premier rendu)
+        manualChunks: {
+          // Auth = necessaire au premier ecran. Firestore = seulement apres
+          // connexion. Scanner = a la demande. Trois morceaux distincts pour
+          // que le premier rendu ne telecharge que le minimum.
+          'fb-auth': ['firebase/app', 'firebase/auth'],
+          'fb-store': ['firebase/firestore'],
+          scanner: ['html5-qrcode'],
+        },
+      },
+    },
   }
 });

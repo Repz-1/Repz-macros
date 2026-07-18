@@ -1,0 +1,16 @@
+{
+  "id": "/v2/",
+  "name": "BelFit",
+  "short_name": "BelFit",
+  "start_url": "/v2/",
+  "scope": "/v2/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "/icon-192-v7.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512-v7.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512-v7.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
