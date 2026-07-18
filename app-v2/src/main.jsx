@@ -20,31 +20,30 @@ import { PremiumPage } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
 import { VocalBouton } from './components/VocalModal.jsx';
-import { VocalModal } from './components/VocalModal.jsx';
 
 function OngletJournal() {
   const [modale, setModale] = useState(false);
   const [calc, setCalc] = useState(false);
-  const [vocal, setVocal] = useState(false);
   return (
     <>
       <DayDashboard />
-      <button class="qa-vocal" onClick={() => setVocal(true)}>🎤 Ajout vocal <i class="pro-mini-inline">✦</i></button>
-      <button class="calc-lien" onClick={() => setCalc(true)}>{t('calc_besoins')}</button>
       <WaterTracker />
+
+      {/* Le coeur de l'usage quotidien en premier : les repas */}
+      {repas.value.map(r => <MealCard key={r.id} r={r} />)}
+
+      {/* Outils ensuite */}
       <VocalBouton />
       <IdeesRepas />
+      <button class="calc-lien" onClick={() => setCalc(true)}>{t('calc_besoins')}</button>
       <button
         class="nouvelle-journee"
-        onClick={() => { if (confirm('Commencer une nouvelle journée ?')) nouvelleJournee(); }}
+        onClick={() => { if (confirm(t('nouvelle_journee') + ' ?')) nouvelleJournee(); }}
       >⟳ {t('nouvelle_journee')}</button>
-
-      {repas.value.map(r => <MealCard key={r.id} r={r} />)}
 
       <button class="fab" onClick={() => setModale(true)}>+ {t('ajouter')}</button>
       <AddMealModal montre={modale} fermer={() => setModale(false)} />
       <TdeeCalculator montre={calc} fermer={() => setCalc(false)} />
-      {vocal && <VocalModal fermer={() => setVocal(false)} />}
     </>
   );
 }
