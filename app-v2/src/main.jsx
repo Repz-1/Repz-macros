@@ -19,7 +19,7 @@ import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { PremiumPage } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
-import { VocalBouton } from './components/VocalModal.jsx';
+import { ActionsRapides } from './components/ActionsRapides.jsx';
 
 function OngletJournal() {
   const [modale, setModale] = useState(false);
@@ -27,15 +27,13 @@ function OngletJournal() {
   return (
     <>
       <DayDashboard />
+      <ActionsRapides ouvrirCalc={() => setCalc(true)} />
       <WaterTracker />
 
-      {/* Le coeur de l'usage quotidien en premier : les repas */}
+      {/* Le coeur de l'usage quotidien : les repas */}
       {repas.value.map(r => <MealCard key={r.id} r={r} />)}
 
-      {/* Outils ensuite */}
-      <VocalBouton />
       <IdeesRepas />
-      <button class="calc-lien" onClick={() => setCalc(true)}>{t('calc_besoins')}</button>
       <button
         class="nouvelle-journee"
         onClick={() => { if (confirm(t('nouvelle_journee') + ' ?')) nouvelleJournee(); }}

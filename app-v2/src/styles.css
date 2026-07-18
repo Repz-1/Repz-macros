@@ -321,3 +321,12 @@ button{cursor:pointer}
 .eau .goutte{font-size:18px}
 .eau .val{font-size:15px}
 .eau button{padding:6px 11px;font-size:13px}
+
+/* ---- Rangee d'actions rapides (comme l'app actuelle) ---- */
+.qa-rangee{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.qa-btn{position:relative;background:none;border:none;border-right:1px solid #f2efe6;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-family:inherit}
+.qa-btn:last-child{border-right:none}
+.qa-ic{width:38px;height:38px;border-radius:12px;background:#FBF3DC;display:flex;align-items:center;justify-content:center;color:#3f3f3f}
+.qa-ic svg{width:20px;height:20px}
+.qa-lb{font-size:12.5px;font-weight:700;color:#181818}
+.qa-pro{position:absolute;top:7px;right:9px;background:#F7B500;color:#5A3E00;font-size:8px;font-weight:800;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal}
