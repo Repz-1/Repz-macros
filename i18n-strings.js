@@ -1631,3 +1631,21 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   pl_ask_sub: 'Staat je vraag er niet bij? Schrijf ons, we antwoorden binnen 24 tot 48u.',
   pl_ask_btn: 'Mijn vraag stellen'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  pl_ask_title: 'Une question avant de te lancer ?',
+  pl_ask_sub: 'Retrouve toutes les réponses dans notre aide, ou écris directement à l\'équipe BELFIT.',
+  pl_ask_btn: 'Voir les questions fréquentes'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  pl_ask_title: 'A question before you start?',
+  pl_ask_sub: 'Find every answer in our help section, or write directly to the BELFIT team.',
+  pl_ask_btn: 'See frequently asked questions'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  pl_ask_title: 'Nog een vraag voor je begint?',
+  pl_ask_sub: 'Vind alle antwoorden in onze hulppagina, of schrijf rechtstreeks naar het BELFIT-team.',
+  pl_ask_btn: 'Bekijk de veelgestelde vragen'
+});
