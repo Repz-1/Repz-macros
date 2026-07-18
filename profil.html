@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Profil</title>
 <link rel="manifest" href="manifest.json">
-<script src="i18n-strings.js?v=23"></script>
+<script src="i18n-strings.js?v=24"></script>
 <script src="i18n.js?v=4"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -340,14 +340,49 @@ try{ weightLog = JSON.parse(localStorage.getItem('repz_weightLog')||'[]'); }catc
 function sauverProfil(){ localStorage.setItem('repz_profile', JSON.stringify(profil)); }
 
 // ===== QUOTA D'AJUSTEMENTS (Premium) =====
-const QUOTA_MENSUEL = 2; // ajustements par mois et par type (macros / calories)
+// Le quota depend de la formule : 2 par mois et par type en mensuel,
+// 4 en annuel. La formule est ecrite par le webhook Lemon Squeezy
+// dans users/{uid}.formule.
+const QUOTA_PAR_FORMULE = { mensuel: 2, annuel: 4 };
+let QUOTA_MENSUEL = QUOTA_PAR_FORMULE.mensuel;
+
 function moisCourant(){ return new Date().toISOString().slice(0,7); }
+
+/** Relit la formule et ajuste le quota du mois en cours si besoin. */
+function appliquerFormule(formule){
+    const nouveau = QUOTA_PAR_FORMULE[formule] || QUOTA_PAR_FORMULE.mensuel;
+    if(nouveau === QUOTA_MENSUEL) return;
+    const ancien = QUOTA_MENSUEL;
+    QUOTA_MENSUEL = nouveau;
+    // Passage a une formule plus genereuse en cours de mois :
+    // on cree les ajustements supplementaires immediatement.
+    if(nouveau > ancien){
+        const q = lireQuota();
+        const bonus = nouveau - ancien;
+        q.macros = Math.min(nouveau, (q.macros || 0) + bonus);
+        q.kcal   = Math.min(nouveau, (q.kcal   || 0) + bonus);
+        ecrireQuota(q);
+    }
+    try { if(typeof rafraichirAjustements === 'function') rafraichirAjustements(); } catch(e){}
+}
+
 function lireQuota(){
     let q = {};
     try{ q = JSON.parse(localStorage.getItem('repz_adjust')||'{}'); }catch(e){ q = {}; }
     if(q.mois !== moisCourant()){ q = { mois:moisCourant(), macros:QUOTA_MENSUEL, kcal:QUOTA_MENSUEL }; ecrireQuota(q); }
     return q;
 }
+
+// La formule vient de Firestore, ecrite par le webhook au moment du paiement.
+try {
+    firebase.auth().onAuthStateChanged(async (u) => {
+        if(!u) return;
+        try {
+            const doc = await firebase.firestore().collection('users').doc(u.uid).get();
+            if(doc.exists && doc.data().formule) appliquerFormule(doc.data().formule);
+        } catch(e){}
+    });
+} catch(e){}
 function ecrireQuota(q){ localStorage.setItem('repz_adjust', JSON.stringify(q)); }
 
 // ===== EN-TÊTE =====

@@ -78,16 +78,28 @@ exports.lemonWebhook = onRequest(
         return;
       }
 
-      // 4) Écrire sur le compte
-      await db.collection("users").doc(uid).set({
+      // 4) Identifier la formule : le quota d'ajustements en depend
+      //    (2 par mois en mensuel, 4 en annuel).
+      const libelle = [
+        attr.variant_name, attr.product_name, attr.first_order_item &&
+        attr.first_order_item.variant_name,
+      ].filter(Boolean).join(" ").toLowerCase();
+      let formule = null;
+      if (/annuel|annual|yearly|year|jaar/.test(libelle)) formule = "annuel";
+      else if (/mensuel|monthly|month|maand/.test(libelle)) formule = "mensuel";
+
+      // 5) Écrire sur le compte
+      const maj = {
         premium: premium,
         source: "lemonsqueezy",
         lsStatus: status,
         lsEvent: event,
         updatedAt: Date.now(),
-      }, {merge: true});
+      };
+      if (formule) maj.formule = formule;
+      await db.collection("users").doc(uid).set(maj, {merge: true});
 
-      console.log("Premium maj:", uid, premium, event, status);
+      console.log("Premium maj:", uid, premium, event, status, formule);
       res.status(200).send("ok");
     } catch (e) {
       console.error("Erreur webhook:", e);
