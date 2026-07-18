@@ -944,7 +944,7 @@ body.search-open .meal-bar { display:flex; }
 </div>
 
 <!-- AUTH CHECK + FIREBASE -->
-<script src="i18n-strings.js?v=20"></script>
+<script src="i18n-strings.js?v=21"></script>
 <script src="foods-i18n.js?v=1"></script>
 <script src="i18n.js?v=4"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -3904,7 +3904,7 @@ const EAT_IDEAS = {
 
 // Calcule kcal/prot exactes d'une idée pour un ratio donné, avec quantités arrondies (5g / unités entières)
 function ideaCompute(ings, ratio){
-    let kcal=0, prot=0; const parts=[];
+    let kcal=0, prot=0, carbs=0, lip=0; const parts=[];
     ings.forEach(it=>{
         const base = DB[it.n]; if(!base) return;
         let q, grams, label;
@@ -3919,9 +3919,11 @@ function ideaCompute(ings, ratio){
         }
         const r = grams/100;
         kcal += base.kcal*r; prot += base.prot*r;
+        carbs += (base.carbs||0)*r; lip += (base.lip||0)*r;
         parts.push(label);
     });
-    return { kcal: Math.round(kcal), prot: Math.round(prot), txt: parts.join(' · ') };
+    return { kcal: Math.round(kcal), prot: Math.round(prot),
+             carbs: Math.round(carbs), lip: Math.round(lip), txt: parts.join(' · ') };
 }
 
 function repzAcces(){
@@ -3979,6 +3981,13 @@ function showEatIdeas(cat){
     const reste = Math.max(0, goal.kcal - t.kcal);
     const protTarget = Math.round(goal.weight * goal.protRatio);
     const resteProt = Math.max(0, protTarget - t.prot);
+    // Une suggestion doit tenir compte des TROIS macros, pas seulement
+    // des calories et des proteines : proposer du gras a quelqu'un deja
+    // en exces de lipides est un contresens.
+    // null = l'utilisateur n'a pas fixe d'objectif pour cette macro :
+    // on ne peut alors rien lui reprocher, donc aucune alerte.
+    const resteCarbs = goal.carbs > 0 ? (goal.carbs - t.carbs) : null;
+    const resteLip   = goal.lip   > 0 ? (goal.lip   - t.lip)   : null;
     const ideas = EAT_IDEAS[cat] || [];
     const box = document.getElementById('eatIdeas');
     if(reste <= 50){
@@ -3993,13 +4002,28 @@ function showEatIdeas(cat){
         const base = ideaCompute(idea.ings, 1);
         const ratio = Math.max(0.75, Math.min(1.4, cible / base.kcal));
         const calc = ideaCompute(idea.ings, ratio);
-        return { ...idea, kcalA: calc.kcal, protA: calc.prot, portion: calc.txt, fit: calc.prot <= resteProt + 8 };
+        // Marge de tolerance : 8 g pour les proteines, 10 g pour le reste.
+        const okProt  = calc.prot  <= resteProt  + 8;
+        const okCarbs = (resteCarbs === null) ? true : (resteCarbs > 0 && calc.carbs <= resteCarbs + 10);
+        const okLip   = (resteLip   === null) ? true : (resteLip   > 0 && calc.lip   <= resteLip   + 10);
+        const alertes = [];
+        if(!okLip)   alertes.push({ m:'lip',   reste: Math.max(0, Math.round(resteLip)) });
+        if(!okCarbs) alertes.push({ m:'carbs', reste: Math.max(0, Math.round(resteCarbs)) });
+        if(!okProt)  alertes.push({ m:'prot',  reste: Math.round(resteProt) });
+        return { ...idea, kcalA: calc.kcal, protA: calc.prot, carbsA: calc.carbs, lipA: calc.lip,
+                 portion: calc.txt, fit: alertes.length === 0, alertes: alertes };
     });
-    // Les plats qui respectent tes protéines restantes d'abord
-    evaluees.sort((a,b)=> (b.fit - a.fit) || (a.protA - b.protA));
+    // D'abord les plats qui rentrent dans toutes tes macros restantes,
+    // puis ceux qui debordent le moins.
+    evaluees.sort((a,b)=> (b.fit - a.fit) || (a.alertes.length - b.alertes.length) || (a.lipA - b.lipA));
     lastIdeas = evaluees.map(i => ({ nom:i.nom, kcal:i.kcalA, prot:i.protA, portion:i.portion }));
     box.innerHTML = evaluees.map((idea,ix)=>{
-        const warn = idea.fit ? '' : `<div class="eat-warn">⚠ Dépasse tes protéines restantes (${Math.round(resteProt)} g)</div>`;
+        const NOM_MACRO = { prot: window.t('macro_prot'), carbs: window.t('macro_carbs'), lip: window.t('macro_lip') };
+        const warn = idea.fit ? '' : `<div class="eat-warn">\u26A0 ` +
+            idea.alertes.map(a => a.reste <= 0
+                ? window.t('eat_over_none').replace('{m}', NOM_MACRO[a.m])
+                : window.t('eat_over').replace('{m}', NOM_MACRO[a.m]).replace('{n}', a.reste)
+            ).join(' \u00B7 ') + `</div>`;
         return `<div class="eat-idea" onclick="openIdeaRecipe(${ix})">
             <div class="eat-idea-name">${idea.nom}</div>
             <div class="eat-idea-ex">${idea.portion}</div>
