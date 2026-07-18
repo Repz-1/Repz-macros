@@ -284,3 +284,12 @@ button{cursor:pointer}
 .vocal-prop .inconnu{color:#b5b0a4;text-decoration:line-through}
 .qa-vocal{width:100%;padding:13px;border:1px solid #e9e4d6;border-radius:16px;background:#fff;font-weight:700;font-size:14.5px;font-family:inherit;margin-bottom:14px;position:relative}
 .pro-mini-inline{background:#F7B500;color:#5A3E00;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;font-style:normal;margin-left:4px}
+
+/* ---- Vocal ---- */
+.vocal-lien{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 14px;padding:12px;background:#fff;border:1px solid #e9e4d6;border-radius:16px;color:#6a6558;font-weight:700;font-size:14.5px;font-family:inherit}
+.vocal-zone{text-align:center;padding:14px 0 6px}
+.vocal-mic{width:84px;height:84px;border-radius:50%;border:none;background:#F7B500;font-size:34px;box-shadow:0 6px 20px rgba(247,181,0,.4)}
+.vocal-mic.actif{background:#DE2F14;animation:pulseMic 1.2s ease-in-out infinite}
+.vocal-mic:disabled{opacity:.55}
+@keyframes pulseMic{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.vocal-msg{margin-top:14px;font-weight:700;font-size:14px;color:#6a6558;min-height:20px}

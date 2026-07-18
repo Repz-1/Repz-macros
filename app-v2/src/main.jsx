@@ -19,6 +19,7 @@ import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { PremiumPage } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
+import { VocalBouton } from './components/VocalModal.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
 
 function OngletJournal() {
@@ -31,6 +32,7 @@ function OngletJournal() {
       <button class="qa-vocal" onClick={() => setVocal(true)}>🎤 Ajout vocal <i class="pro-mini-inline">✦</i></button>
       <button class="calc-lien" onClick={() => setCalc(true)}>🧮 {t('calc_besoins')}</button>
       <WaterTracker />
+      <VocalBouton />
       <IdeesRepas />
       <button
         class="nouvelle-journee"
