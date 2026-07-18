@@ -4520,9 +4520,47 @@ function arreterEnregistrement(){
     document.getElementById('vmMicBtn').classList.remove('ecoute');
 }
 
+/* Gemini n'accepte pas le WebM : on convertit en WAV 16 kHz mono,
+   format universellement supporte et leger a transmettre. */
+function encoderWav(samples, sampleRate){
+    const buf = new ArrayBuffer(44 + samples.length*2);
+    const v = new DataView(buf);
+    const txt = (o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+    txt(0,'RIFF'); v.setUint32(4, 36+samples.length*2, true); txt(8,'WAVE');
+    txt(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,sampleRate,true); v.setUint32(28,sampleRate*2,true);
+    v.setUint16(32,2,true); v.setUint16(34,16,true);
+    txt(36,'data'); v.setUint32(40, samples.length*2, true);
+    let o=44;
+    for(let i=0;i<samples.length;i++,o+=2){
+        const s = Math.max(-1, Math.min(1, samples[i]));
+        v.setInt16(o, s<0 ? s*0x8000 : s*0x7FFF, true);
+    }
+    return new Blob([buf], { type:'audio/wav' });
+}
+
+async function blobVersWav(blob){
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const audioBuf = await ctx.decodeAudioData(await blob.arrayBuffer());
+    const cible = 16000;
+    const canal = audioBuf.getChannelData(0);
+    const ratio = audioBuf.sampleRate / cible;
+    const n = Math.floor(canal.length / ratio);
+    const out = new Float32Array(n);
+    for(let i=0;i<n;i++) out[i] = canal[Math.floor(i*ratio)];
+    try{ ctx.close(); }catch(e){}
+    return encoderWav(out, cible);
+}
+
 async function envoyerAudioVocal(mimeType){
     if(!vocalChunks.length){ document.getElementById('vmLive').textContent = ''; return; }
-    const blob = new Blob(vocalChunks, { type:mimeType });
+    let blob = new Blob(vocalChunks, { type:mimeType });
+    let typeEnvoye = 'audio/wav';
+    try{
+        blob = await blobVersWav(blob);
+    }catch(e){
+        typeEnvoye = (mimeType||'audio/webm').split(';')[0]; // secours : type brut nettoye
+    }
     // Blob -> base64
     const base64 = await new Promise((res)=>{
         const r = new FileReader();
@@ -4537,7 +4575,7 @@ async function envoyerAudioVocal(mimeType){
         const rep = await fetch(VOCAL_API, {
             method:'POST',
             headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
-            body: JSON.stringify({ audioBase64:base64, mimeType:mimeType })
+            body: JSON.stringify({ audioBase64:base64, mimeType:typeEnvoye })
         });
         if(rep.status === 403){ document.getElementById('vmLive').textContent = t('vm_premium_only') || 'Fonction Premium'; return; }
         if(!rep.ok){ document.getElementById('vmLive').textContent = t('vm_error') || 'Erreur, réessaie'; return; }

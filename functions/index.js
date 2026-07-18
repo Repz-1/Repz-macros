@@ -148,12 +148,16 @@ Regles :
 - Ignore les mots de liaison. Si rien d'exploitable, renvoie [].
 - Noms d'aliments simples et courants (ex: "poulet", "riz", "avoine", "banane").`;
 
+      // Gemini n'accepte pas les parametres de codec ("audio/webm;codecs=opus")
+      const typeAudio = String(mimeType || "audio/wav").split(";")[0].trim();
+      console.log("transcrireVocal", JSON.stringify({uid, typeAudio, tailleKo: Math.round(audioBase64.length * 0.75 / 1024)}));
+
       const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY.value();
       const geminiBody = {
         contents: [{
           parts: [
             {text: prompt},
-            {inline_data: {mime_type: mimeType || "audio/webm", data: audioBase64}},
+            {inline_data: {mime_type: typeAudio, data: audioBase64}},
           ],
         }],
         generationConfig: {temperature: 0.1, responseMimeType: "application/json"},
@@ -184,6 +188,9 @@ Regles :
       } catch (e) {
         console.warn("JSON parse fail", texte.slice(0, 200));
         aliments = [];
+      }
+      if (!aliments.length) {
+        console.warn("Aucun aliment extrait. Reponse Gemini:", texte.slice(0, 300));
       }
 
       res.status(200).json({aliments});
