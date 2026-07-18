@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import { weightLog, histoJours, tendancePoids, seancesParMois, ajouterPesee } from '../store/stats.js';
 import { objectifs } from '../store/journal.js';
+import { t } from '../i18n/index.js';
 
 function MiniGraphe({ points, couleur, unite, format }) {
   if (!points.length) return <div class="stat-vide">Pas encore de données</div>;
@@ -36,31 +37,31 @@ export function Stats() {
 
   return (
     <div class="carte">
-      <h3 style={{ margin: '0 0 14px', fontSize: '19px', fontWeight: 800 }}>Statistiques</h3>
+      <h3 style={{ margin: '0 0 14px', fontSize: '19px', fontWeight: 800 }}>{t('stats_titre')}</h3>
 
       <div class="stat-cartes">
         <div class="stat-mini">
           <div class="sm-v">{weightLog.value.length ? weightLog.value[weightLog.value.length - 1].kg + ' kg' : '—'}</div>
-          <div class="sm-l">Poids actuel</div>
+          <div class="sm-l">{t('poids_actuel')}</div>
         </div>
         <div class="stat-mini">
           <div class="sm-v" style={{ color: tend === null ? '#181818' : tend <= 0 ? '#10B981' : '#F07818' }}>
             {tend === null ? '—' : (tend > 0 ? '+' : '') + tend + ' kg'}
           </div>
-          <div class="sm-l">Évolution</div>
+          <div class="sm-l">{t('evolution')}</div>
         </div>
         <div class="stat-mini">
           <div class="sm-v">{mois[moisCourant] || 0}</div>
-          <div class="sm-l">Séances ce mois</div>
+          <div class="sm-l">{t('seances_mois')}</div>
         </div>
       </div>
 
       <div class="stat-bloc">
-        <div class="stat-titre">Évolution du poids</div>
+        <div class="stat-titre">{t('evol_poids')}</div>
         <MiniGraphe points={poids} couleur="linear-gradient(180deg,#181818,#4a4a4a)" unite=" kg" />
         <form onSubmit={peser} class="stat-pesee">
-          <input type="number" step="0.1" placeholder="Mon poids du jour (kg)" value={kg} onInput={e => setKg(e.currentTarget.value)} />
-          <button type="submit">Enregistrer</button>
+          <input type="number" step="0.1" placeholder={t("poids_jour")} value={kg} onInput={e => setKg(e.currentTarget.value)} />
+          <button type="submit">{t('enregistrer')}</button>
         </form>
       </div>
 

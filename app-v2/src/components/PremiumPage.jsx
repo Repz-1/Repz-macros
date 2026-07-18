@@ -2,6 +2,7 @@ import { signal, effect } from '@preact/signals';
 import { utilisateur } from '../services/firebase.js';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApps } from 'firebase/app';
+import { t } from '../i18n/index.js';
 
 // Statut Premium lu depuis Firestore (ecrit par le webhook LemonSqueezy)
 export const estPremium = signal(false);
@@ -49,8 +50,8 @@ export function PremiumPage() {
     return (
       <div class="carte prem-actif">
         <div class="prem-badge-grand">✦ PRO</div>
-        <h3>Tu es Premium</h3>
-        <p>Toutes les fonctionnalités sont débloquées. Merci de soutenir BelFit 💪</p>
+        <h3>{t('tu_es_premium')}</h3>
+        <p>{t('premium_merci')}</p>
       </div>
     );
   }
@@ -73,7 +74,7 @@ export function PremiumPage() {
           <div class="prem-nom">{f.nom}</div>
           <div class="prem-prix">{f.prix}</div>
           <div class="prem-sub">{f.sub}</div>
-          <button class="prem-btn" onClick={() => ouvrir(f.lien)}>Choisir cette formule</button>
+          <button class="prem-btn" onClick={() => ouvrir(f.lien)}>{t('choisir_formule')}</button>
         </div>
       ))}
     </div>

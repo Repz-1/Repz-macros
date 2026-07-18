@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { GROUPES, muscleLog, basculerMuscle } from '../store/entrainement.js';
+import { t } from '../i18n/index.js';
 
 const iso = (d) => d.toISOString().slice(0, 10);
 const MOIS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -76,7 +77,7 @@ export function MuscleCalendar() {
                 );
               })}
             </div>
-            <button class="calc-appliquer" onClick={() => setJourOuvert(null)}>Valider</button>
+            <button class="calc-appliquer" onClick={() => setJourOuvert(null)}>{t('valider')}</button>
           </div>
         </>
       )}

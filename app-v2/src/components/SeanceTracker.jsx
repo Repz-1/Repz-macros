@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { signal, effect } from '@preact/signals';
 import { utilisateur } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
+import { t } from '../i18n/index.js';
 
 // ============================================================
 // SUIVI DE SEANCE v2 — journal d'exercices du jour.
@@ -67,7 +68,7 @@ export function SeanceTracker() {
 
   return (
     <div class="carte">
-      <h3 style={{ margin: '0 0 12px', fontSize: '19px', fontWeight: 800 }}>Séance du jour 🏋️</h3>
+      <h3 style={{ margin: '0 0 12px', fontSize: '19px', fontWeight: 800 }}>{t('seance_jour')} 🏋️</h3>
 
       {exos.map((x, i) => (
         <div class="seance-exo" key={i}>
@@ -89,7 +90,7 @@ export function SeanceTracker() {
       ))}
 
       <form onSubmit={ajouterExo} class="seance-add-exo">
-        <input placeholder="Ajouter un exercice…" value={nomEx} onInput={e => setNomEx(e.currentTarget.value)} />
+        <input placeholder={t("ajouter_exercice")} value={nomEx} onInput={e => setNomEx(e.currentTarget.value)} />
         <button type="submit">+</button>
       </form>
     </div>

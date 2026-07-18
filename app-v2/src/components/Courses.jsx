@@ -7,6 +7,7 @@ import { utilisateur } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
+import { t } from '../i18n/index.js';
 
 // Liste de courses : etat coche + items manuels, synchronises cloud
 export const courses = signal({ jours: 5, pers: 1, coches: {}, manuels: [] });
@@ -56,7 +57,7 @@ export function Courses() {
   if (!estPremium.value) {
     return (
       <div class="carte idees-verrou" onClick={() => { ongletActif.value = 'premium'; }}>
-        <div class="idees-tete"><span>🛒 Liste de courses</span><i class="pro-inline">✦ PRO</i></div>
+        <div class="idees-tete"><span>🛒 {t('liste_courses')}</span><i class="pro-inline">✦ PRO</i></div>
         <p>Ta liste générée automatiquement depuis ton journal, classée par rayon.</p>
       </div>
     );
@@ -83,20 +84,20 @@ export function Courses() {
   return (
     <div>
       <div class="carte">
-        <div class="idees-tete"><span>🛒 Liste de courses</span></div>
+        <div class="idees-tete"><span>🛒 {t('liste_courses')}</span></div>
         <p class="idees-intro">
-          {tous.length ? `${restants} article${restants > 1 ? 's' : ''} à acheter` : 'Ajoute des aliments à ton journal pour générer ta liste.'}
+          {tous.length ? `${restants} article${restants > 1 ? 's' : ''} à acheter` : t('liste_vide')}
         </p>
         <div class="crs-reglages">
-          <label>Jours
+          <label>{t('jours')}
             <input type="number" min="1" value={c.jours} onInput={e => maj({ jours: Math.max(1, +e.currentTarget.value || 1) })} />
           </label>
-          <label>Personnes
+          <label>{t('personnes')}
             <input type="number" min="1" value={c.pers} onInput={e => maj({ pers: Math.max(1, +e.currentTarget.value || 1) })} />
           </label>
         </div>
         <form onSubmit={ajouterManuel} class="seance-add-exo">
-          <input placeholder="Ajouter un article…" value={ajout} onInput={e => setAjout(e.currentTarget.value)} />
+          <input placeholder={t("ajouter_article")} value={ajout} onInput={e => setAjout(e.currentTarget.value)} />
           <button type="submit">+</button>
         </form>
       </div>

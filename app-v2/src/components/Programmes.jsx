@@ -3,6 +3,7 @@ import { signal, effect } from '@preact/signals';
 import { PROGRAMMES, CATEGORIES } from '../data/programmes.js';
 import { utilisateur } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
+import { t } from '../i18n/index.js';
 
 // Programme actif de l'utilisateur (sync cloud comme le reste)
 export const programmeActif = signal(null);
@@ -34,7 +35,7 @@ export function Programmes() {
 
   return (
     <div class="carte">
-      <h3 style={{ margin: '0 0 12px', fontSize: '19px', fontWeight: 800 }}>Programmes</h3>
+      <h3 style={{ margin: '0 0 12px', fontSize: '19px', fontWeight: 800 }}>{t('programmes')}</h3>
 
       <div class="prog-onglets">
         {CATEGORIES.map(c => (

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { t } from '../i18n/index.js';
 
 // ============================================================
 // CHRONO DE REPOS v2 — le temps restant est CALCULE depuis un
@@ -69,7 +70,7 @@ export function RestTimer() {
         ))}
       </div>
       <button class="chrono-go" onClick={enCours ? arreter : demarrer}>
-        {enCours ? 'Arrêter' : 'Démarrer'}
+        {enCours ? t('arreter') : t('demarrer')}
       </button>
     </div>
   );

@@ -1,12 +1,13 @@
 import { objectifs, totauxJour, kcalRestantes } from '../store/journal.js';
 import { ObjectifsForm } from './ObjectifsForm.jsx';
+import { t } from '../i18n/index.js';
 
 // Le tableau de bord ne recoit rien : il LIT les signaux.
 // Toute modification n'importe ou dans l'app le met a jour seul.
 export function DayDashboard() {
-  const t = totauxJour.value;
+  const tot = totauxJour.value;
   const o = objectifs.value;
-  const pct = Math.min(100, (t.kcal / o.kcal) * 100);
+  const pct = Math.min(100, (tot.kcal / o.kcal) * 100);
 
   const macro = (nom, val, max) => (
     <div class="tb-macro">
@@ -20,13 +21,13 @@ export function DayDashboard() {
     <div class="tableau-bord">
       <div class="tb-kcal">
         <span class="gros">{kcalRestantes.value.toFixed(0)}</span>
-        <span class="label">kcal restantes</span>
+        <span class="label">{t('kcal_restantes')}</span>
       </div>
       <div class="tb-barre"><div style={{ width: `${pct}%` }} /></div>
       <div class="tb-macros">
-        {macro('Protéines', t.prot, o.prot)}
-        {macro('Glucides', t.carbs, o.carbs)}
-        {macro('Lipides', t.lip, o.lip)}
+        {macro(t('proteines'), tot.prot, o.prot)}
+        {macro(t('glucides'), tot.carbs, o.carbs)}
+        {macro(t('lipides'), tot.lip, o.lip)}
       </div>
       <ObjectifsForm />
     </div>

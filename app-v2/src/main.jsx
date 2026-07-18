@@ -15,6 +15,7 @@ import { SeanceTracker } from './components/SeanceTracker.jsx';
 import { Programmes } from './components/Programmes.jsx';
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif } from './components/BottomNav.jsx';
+import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { PremiumPage } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
@@ -25,17 +26,17 @@ function OngletJournal() {
   return (
     <>
       <DayDashboard />
-      <button class="calc-lien" onClick={() => setCalc(true)}>🧮 Calculer mes besoins</button>
+      <button class="calc-lien" onClick={() => setCalc(true)}>🧮 {t('calc_besoins')}</button>
       <WaterTracker />
       <IdeesRepas />
       <button
         class="nouvelle-journee"
         onClick={() => { if (confirm('Commencer une nouvelle journée ?')) nouvelleJournee(); }}
-      >⟳ Commencer une nouvelle journée</button>
+      >⟳ {t('nouvelle_journee')}</button>
 
       {repas.value.map(r => <MealCard key={r.id} r={r} />)}
 
-      <button class="fab" onClick={() => setModale(true)}>+ Ajouter</button>
+      <button class="fab" onClick={() => setModale(true)}>+ {t('ajouter')}</button>
       <AddMealModal montre={modale} fermer={() => setModale(false)} />
       <TdeeCalculator montre={calc} fermer={() => setCalc(false)} />
     </>
@@ -61,7 +62,7 @@ function App() {
     return <LoginScreen />;
   }
   if (!donneesPretes.value) {
-    return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>Chargement de ton journal…</div>;
+    return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;
   }
 
   const onglet = ongletActif.value;
@@ -70,7 +71,14 @@ function App() {
       <div class="conteneur">
         <div class="entete-user">
           <span class="qui">{utilisateur.value.email}</span>
-          <button onClick={() => deconnexion()}>Déconnexion</button>
+          <div class="entete-actions">
+            <div class="lang-choix">
+              {LANGUES.map(l => (
+                <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
+              ))}
+            </div>
+            <button onClick={() => deconnexion()}>{t('deconnexion')}</button>
+          </div>
         </div>
         {onglet === 'journal' && <OngletJournal />}
         {onglet === 'entrainer' && <OngletEntrainer />}

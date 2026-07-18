@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { connexion, inscription, messageErreurAuth } from '../services/firebase.js';
+import { t } from '../i18n/index.js';
 
 // Ecran de connexion / inscription — sobre, palette BelFit.
 export function LoginScreen() {
@@ -27,22 +28,22 @@ export function LoginScreen() {
     <div class="login-ecran">
       <img src="/belfit-logo-b.png" alt="BelFit" class="login-logo" />
       <h1 class="login-titre">
-        {mode === 'connexion' ? 'Content de te revoir' : 'Crée ton compte'}
+        {mode === 'connexion' ? t('revoir') : t('creer_compte')}
       </h1>
 
       <form onSubmit={valider} class="login-form">
         <input
-          type="email" placeholder="Adresse e-mail" value={email}
+          type="email" placeholder={t("email")} value={email}
           onInput={e => setEmail(e.currentTarget.value)} required autocomplete="email"
         />
         <input
-          type="password" placeholder="Mot de passe" value={mdp}
+          type="password" placeholder={t("mdp")} value={mdp}
           onInput={e => setMdp(e.currentTarget.value)} required
           autocomplete={mode === 'connexion' ? 'current-password' : 'new-password'}
         />
         {erreur && <div class="login-erreur">{erreur}</div>}
         <button type="submit" class="login-btn" disabled={chargement}>
-          {chargement ? '…' : (mode === 'connexion' ? 'Se connecter' : 'Créer mon compte')}
+          {chargement ? '…' : (mode === 'connexion' ? t('connexion') : t('inscription'))}
         </button>
       </form>
 
@@ -50,7 +51,7 @@ export function LoginScreen() {
         class="login-bascule"
         onClick={() => { setMode(mode === 'connexion' ? 'inscription' : 'connexion'); setErreur(''); }}
       >
-        {mode === 'connexion' ? "Pas encore de compte ? S'inscrire" : 'Déjà un compte ? Se connecter'}
+        {mode === 'connexion' ? t('pas_compte') : t('deja_compte')}
       </button>
     </div>
   );

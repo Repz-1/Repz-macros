@@ -3,6 +3,7 @@ import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
+import { t } from '../i18n/index.js';
 import {
   totauxRepas, setPortion, ajouterIngredient,
   supprimerIngredient, supprimerRepas, basculerRepas, renommerRepas,
@@ -57,7 +58,7 @@ function Recherche({ repasId }) {
       <div style={{display:'flex',gap:'6px'}}>
         <input
           style={{flex:1}}
-          placeholder="Ajouter un aliment…"
+          placeholder={t("ajouter_aliment")}
           value={q}
           onInput={e => setQ(e.currentTarget.value)}
         />
@@ -105,7 +106,7 @@ export function MealCard({ r }) {
           ) : (
             <h3 onClick={e => { e.stopPropagation(); setEdite(true); }} title="Renommer">{r.nom} <span class="crayon">✎</span></h3>
           )}
-          <p>{vide ? 'Vide' : `${t.kcal.toFixed(0)} kcal`}</p>
+          <p>{vide ? t('vide') : `${t.kcal.toFixed(0)} kcal`}</p>
         </div>
         <button
           class="carte-suppr"

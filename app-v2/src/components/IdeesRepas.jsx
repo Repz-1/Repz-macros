@@ -4,6 +4,7 @@ import { DB } from '../data/aliments.js';
 import { repas, ajouterIngredient, objectifs, totauxJour } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
+import { t } from '../i18n/index.js';
 
 // Macros d'une idee = somme reelle de ses aliments (base DB)
 function macrosIdee(idee) {
@@ -26,7 +27,7 @@ export function IdeesRepas() {
   if (!estPremium.value) {
     return (
       <div class="carte idees-verrou" onClick={() => { ongletActif.value = 'premium'; }}>
-        <div class="idees-tete"><span>💡 Idées repas</span><i class="pro-inline">✦ PRO</i></div>
+        <div class="idees-tete"><span>💡 {t('idees_repas')}</span><i class="pro-inline">✦ PRO</i></div>
         <p>Des idées de repas calibrées sur tes macros restantes.</p>
       </div>
     );
@@ -47,7 +48,7 @@ export function IdeesRepas() {
 
   return (
     <div class="carte">
-      <div class="idees-tete"><span>💡 Idées repas</span></div>
+      <div class="idees-tete"><span>💡 {t('idees_repas')}</span></div>
       <p class="idees-intro">
         {reste > 50 ? `Il te reste ${reste} kcal aujourd'hui.`
           : reste < -50 ? `Tu as dépassé de ${Math.abs(reste)} kcal.`
