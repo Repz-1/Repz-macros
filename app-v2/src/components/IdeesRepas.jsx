@@ -8,14 +8,14 @@ import { t } from '../i18n/index.js';
 
 // Macros d'une idee = somme reelle de ses aliments (base DB)
 function macrosIdee(idee) {
-  return idee.ings.reduce((t, i) => {
+  return idee.ings.reduce((acc, i) => {
     const d = DB[i.n];
-    if (!d) return t;
+    if (!d) return acc;
     const g = d.unit ? i.q * d.unit : i.q; // aliment a l'unite -> q = nb de pieces
     const f = g / 100;
     return {
-      kcal: t.kcal + d.kcal * f, prot: t.prot + d.prot * f,
-      carbs: t.carbs + d.carbs * f, lip: t.lip + d.lip * f, g,
+      kcal: acc.kcal + d.kcal * f, prot: acc.prot + d.prot * f,
+      carbs: acc.carbs + d.carbs * f, lip: acc.lip + d.lip * f, g,
     };
   }, { kcal: 0, prot: 0, carbs: 0, lip: 0 });
 }

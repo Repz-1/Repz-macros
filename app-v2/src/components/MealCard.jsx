@@ -84,7 +84,7 @@ function Recherche({ repasId }) {
 }
 
 export function MealCard({ r }) {
-  const t = totauxRepas(r);
+  const tot = totauxRepas(r);
   const vide = r.ings.length === 0;
   const [edite, setEdite] = useState(false);
 
@@ -106,7 +106,7 @@ export function MealCard({ r }) {
           ) : (
             <h3 onClick={e => { e.stopPropagation(); setEdite(true); }} title="Renommer">{r.nom} <span class="crayon">✎</span></h3>
           )}
-          <p>{vide ? t('vide') : `${t.kcal.toFixed(0)} kcal`}</p>
+          <p>{vide ? t('vide') : `${tot.kcal.toFixed(0)} kcal`}</p>
         </div>
         <button
           class="carte-suppr"
@@ -124,7 +124,7 @@ export function MealCard({ r }) {
           <Recherche repasId={r.id} />
           {!vide && (
             <div class="total-repas">
-              {t.kcal.toFixed(0)} kcal | {t.prot.toFixed(1)}P | {t.carbs.toFixed(1)}C | {t.lip.toFixed(1)}L
+              {tot.kcal.toFixed(0)} kcal | {tot.prot.toFixed(1)}P | {tot.carbs.toFixed(1)}C | {tot.lip.toFixed(1)}L
             </div>
           )}
         </div>
