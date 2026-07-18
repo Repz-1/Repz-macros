@@ -956,7 +956,7 @@ body.search-open .meal-bar { display:flex; }
 </div>
 
 <!-- AUTH CHECK + FIREBASE -->
-<script src="i18n-strings.js?v=22"></script>
+<script src="i18n-strings.js?v=23"></script>
 <script src="foods-i18n.js?v=1"></script>
 <script src="i18n.js?v=4"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -4083,8 +4083,8 @@ function showEatIdeas(cat){
         const info = idea.reduite ? `<div class="eat-adapt">\u2713 ${window.t('eat_adapted')}</div>` : '';
         const warn = idea.fit ? info : `<div class="eat-warn">\u26A0 ` +
             idea.alertes.map(a => a.reste <= 0
-                ? window.t('eat_over_none').replace('{m}', NOM_MACRO[a.m])
-                : window.t('eat_over').replace('{m}', NOM_MACRO[a.m]).replace('{n}', a.reste)
+                ? window.t('eat_over_none', { m: NOM_MACRO[a.m] })
+                : window.t('eat_macro_over', { m: NOM_MACRO[a.m], n: a.reste })
             ).join(' \u00B7 ') + `</div>`;
         return `<div class="eat-idea" onclick="openIdeaRecipe(${ix})">
             <div class="eat-idea-name">${idea.nom}</div>

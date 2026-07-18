@@ -1738,7 +1738,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   macro_prot: 'protéines',
   macro_carbs: 'glucides',
   macro_lip: 'lipides',
-  eat_over: 'Dépasse tes {m} restants ({n} g)',
+  eat_macro_over: 'Dépasse tes {m} restants ({n} g)',
   eat_over_none: 'Tu es déjà au-delà de tes {m} du jour'
 });
 
@@ -1746,7 +1746,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   macro_prot: 'protein',
   macro_carbs: 'carbs',
   macro_lip: 'fat',
-  eat_over: 'Exceeds your remaining {m} ({n} g)',
+  eat_macro_over: 'Exceeds your remaining {m} ({n} g)',
   eat_over_none: 'You are already over your {m} for today'
 });
 
@@ -1754,7 +1754,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   macro_prot: 'eiwitten',
   macro_carbs: 'koolhydraten',
   macro_lip: 'vetten',
-  eat_over: 'Overschrijdt je resterende {m} ({n} g)',
+  eat_macro_over: 'Overschrijdt je resterende {m} ({n} g)',
   eat_over_none: 'Je zit vandaag al boven je {m}'
 });
 
