@@ -200,3 +200,203 @@ Regles :
     }
   }
 );
+
+// ============================================================
+// PSEUDONYMES DE CONNEXION
+//
+// L'utilisateur peut se connecter avec son email OU son pseudo.
+// Contrainte : Firebase Auth n'accepte que l'email. Il faut donc
+// resoudre pseudo -> compte cote serveur.
+//
+// Choix de conception : la table des pseudos n'est JAMAIS lisible
+// par le client. Sans cela, n'importe qui pourrait aspirer la liste
+// des adresses email des utilisateurs (RGPD, donnees de sante).
+// La verification du mot de passe se fait ici, et le client ne
+// recoit qu'un jeton de connexion — l'email ne sort jamais.
+// ============================================================
+
+const {defineSecret: _defSecret} = require("firebase-functions/params");
+// Cle Web de l'API Firebase, utilisee pour verifier le mot de passe.
+// A definir via : firebase functions:secrets:set FIREBASE_WEB_API_KEY
+const FIREBASE_WEB_API_KEY = _defSecret("FIREBASE_WEB_API_KEY");
+
+const PSEUDO_MIN = 3;
+const PSEUDO_MAX = 20;
+const PSEUDO_MOTIF = /^[a-z0-9_.-]+$/;
+// Pseudos interdits : usurpation d'identite de la marque ou du support.
+const PSEUDO_RESERVES = new Set([
+  "admin", "administrateur", "belfit", "coach", "contact", "support",
+  "moderateur", "moderator", "root", "system", "systeme", "info",
+  "help", "aide", "staff", "equipe", "team", "officiel", "official",
+]);
+
+/** Normalise un pseudo : minuscules, sans espaces superflus. */
+function normaliserPseudo(brut) {
+  return String(brut || "").trim().toLowerCase();
+}
+
+/** Verifie la forme d'un pseudo. Retourne null si valide, sinon un code d'erreur. */
+function validerPseudo(pseudo) {
+  if (pseudo.length < PSEUDO_MIN) return "trop_court";
+  if (pseudo.length > PSEUDO_MAX) return "trop_long";
+  if (!PSEUDO_MOTIF.test(pseudo)) return "caracteres";
+  if (PSEUDO_RESERVES.has(pseudo)) return "reserve";
+  return null;
+}
+
+/** Reponse CORS commune : seul le site BELFIT peut appeler ces fonctions. */
+function appliquerCors(req, res) {
+  const origines = [
+    "https://belfit.be",
+    "https://www.belfit.be",
+    "https://repz-1.github.io",
+  ];
+  const origine = req.headers.origin;
+  if (origines.includes(origine)) {
+    res.set("Access-Control-Allow-Origin", origine);
+  }
+  res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") {
+    res.status(204).send("");
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Indique si un pseudo est disponible.
+ * Ne revele aucune donnee personnelle : uniquement libre / pris.
+ */
+exports.pseudoDisponible = onRequest(
+  {region: "europe-west1", cors: false},
+  async (req, res) => {
+    if (appliquerCors(req, res)) return;
+    try {
+      const pseudo = normaliserPseudo(req.body && req.body.pseudo);
+      const probleme = validerPseudo(pseudo);
+      if (probleme) {
+        res.status(200).json({disponible: false, raison: probleme});
+        return;
+      }
+      const snap = await db.collection("usernames").doc(pseudo).get();
+      res.status(200).json({disponible: !snap.exists});
+    } catch (err) {
+      console.error("pseudoDisponible", err);
+      res.status(500).json({error: "server"});
+    }
+  },
+);
+
+/**
+ * Reserve un pseudo pour l'utilisateur qui vient de creer son compte.
+ * L'ecriture est transactionnelle : deux inscriptions simultanees avec
+ * le meme pseudo ne peuvent pas aboutir toutes les deux.
+ */
+exports.reserverPseudo = onRequest(
+  {region: "europe-west1", cors: false},
+  async (req, res) => {
+    if (appliquerCors(req, res)) return;
+    try {
+      const jeton = (req.headers.authorization || "").replace(/^Bearer\s+/i, "");
+      if (!jeton) {
+        res.status(401).json({error: "non_authentifie"});
+        return;
+      }
+      const decode = await admin.auth().verifyIdToken(jeton);
+      const uid = decode.uid;
+
+      const pseudo = normaliserPseudo(req.body && req.body.pseudo);
+      const probleme = validerPseudo(pseudo);
+      if (probleme) {
+        res.status(400).json({error: probleme});
+        return;
+      }
+
+      const refPseudo = db.collection("usernames").doc(pseudo);
+      const refUser = db.collection("users").doc(uid);
+
+      await db.runTransaction(async (tx) => {
+        const existant = await tx.get(refPseudo);
+        if (existant.exists && existant.data().uid !== uid) {
+          throw new Error("pris");
+        }
+        // Un utilisateur ne peut detenir qu'un seul pseudo :
+        // l'ancien est libere si besoin.
+        const snapUser = await tx.get(refUser);
+        const ancien = snapUser.exists ? snapUser.data().pseudo : null;
+        if (ancien && ancien !== pseudo) {
+          tx.delete(db.collection("usernames").doc(ancien));
+        }
+        tx.set(refPseudo, {uid, cree: new Date().toISOString()});
+        tx.set(refUser, {pseudo}, {merge: true});
+      });
+
+      res.status(200).json({ok: true, pseudo});
+    } catch (err) {
+      if (err && err.message === "pris") {
+        res.status(409).json({error: "pris"});
+        return;
+      }
+      console.error("reserverPseudo", err);
+      res.status(500).json({error: "server"});
+    }
+  },
+);
+
+/**
+ * Connexion par pseudo.
+ * Le mot de passe est verifie ici, cote serveur. En cas de succes,
+ * le client recoit un jeton de connexion — jamais l'adresse email.
+ */
+exports.connexionParPseudo = onRequest(
+  {secrets: [FIREBASE_WEB_API_KEY], region: "europe-west1", cors: false},
+  async (req, res) => {
+    if (appliquerCors(req, res)) return;
+    try {
+      const pseudo = normaliserPseudo(req.body && req.body.pseudo);
+      const motDePasse = String((req.body && req.body.motDePasse) || "");
+      if (!pseudo || !motDePasse) {
+        res.status(400).json({error: "identifiants"});
+        return;
+      }
+
+      const snap = await db.collection("usernames").doc(pseudo).get();
+      if (!snap.exists) {
+        // Meme reponse que pour un mot de passe faux : ne pas reveler
+        // quels pseudos existent.
+        res.status(401).json({error: "identifiants"});
+        return;
+      }
+
+      const uid = snap.data().uid;
+      const utilisateur = await admin.auth().getUser(uid);
+
+      // Verification du mot de passe via l'API Identity Toolkit.
+      const reponse = await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" +
+          FIREBASE_WEB_API_KEY.value(),
+        {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            email: utilisateur.email,
+            password: motDePasse,
+            returnSecureToken: false,
+          }),
+        },
+      );
+
+      if (!reponse.ok) {
+        res.status(401).json({error: "identifiants"});
+        return;
+      }
+
+      const jeton = await admin.auth().createCustomToken(uid);
+      res.status(200).json({jeton});
+    } catch (err) {
+      console.error("connexionParPseudo", err);
+      res.status(500).json({error: "server"});
+    }
+  },
+);

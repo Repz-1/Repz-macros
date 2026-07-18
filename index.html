@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script src="i18n-strings.js?v=8"></script>
+<script src="i18n-strings.js?v=9"></script>
 <script src="i18n.js?v=4"></script>
 <script>if(window.self!==window.top){try{window.top.location=window.location.href;}catch(e){}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -201,8 +201,9 @@ body {
         <div class="loading" id="loginLoading" data-i18n="loading_login">Connexion en cours...</div>
         
         <div class="form-group">
-            <label class="label" data-i18n="login_email">Email</label>
-            <input type="email" class="input" id="loginEmail" placeholder="ton@email.com" required>
+            <label class="label" data-i18n="login_identifiant">Email ou nom d'utilisateur</label>
+            <input type="text" class="input" id="loginEmail" placeholder="ton@email.com"
+                   autocomplete="username" autocapitalize="none" spellcheck="false" required>
         </div>
 
         <div class="form-group">
@@ -235,6 +236,14 @@ body {
         <div class="form-group">
             <label class="label" data-i18n="register_email">Email</label>
             <input type="email" class="input" id="registerEmail" placeholder="ton@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label class="label" data-i18n="register_pseudo">Nom d'utilisateur</label>
+            <input type="text" class="input" id="registerPseudo" placeholder="ex : raci_fit"
+                   autocomplete="username" autocapitalize="none" spellcheck="false"
+                   minlength="3" maxlength="20" required oninput="verifierPseudo()">
+            <div class="field-hint" id="pseudoHint" data-i18n="register_pseudo_hint">3 a 20 caracteres : lettres, chiffres, point, tiret ou underscore</div>
         </div>
 
         <div class="form-group">
@@ -345,6 +354,79 @@ function toggleForm(formName) {
     document.querySelectorAll('.error, .success, .loading').forEach(e => e.classList.remove('show'));
 }
 
+// ===== NOM D'UTILISATEUR =====
+// La table des pseudos n'est pas lisible par le client : tout passe par
+// des Cloud Functions, pour ne jamais exposer les adresses email.
+const API_BELFIT = 'https://europe-west1-repz-baf60.cloudfunctions.net';
+
+let _timerPseudo = null;
+let _pseudoValide = false;
+
+function normPseudo(v){ return String(v||'').trim().toLowerCase(); }
+
+function verifierPseudo(){
+    const champ = document.getElementById('registerPseudo');
+    const hint  = document.getElementById('pseudoHint');
+    if(!champ || !hint) return;
+    const pseudo = normPseudo(champ.value);
+    _pseudoValide = false;
+    hint.style.color = '';
+
+    if(pseudo.length === 0){ hint.textContent = window.t('register_pseudo_hint'); return; }
+    if(pseudo.length < 3){ hint.textContent = window.t('pseudo_court'); hint.style.color='#dc2626'; return; }
+    if(!/^[a-z0-9_.-]+$/.test(pseudo)){ hint.textContent = window.t('pseudo_caracteres'); hint.style.color='#dc2626'; return; }
+
+    hint.textContent = window.t('pseudo_verif');
+    clearTimeout(_timerPseudo);
+    _timerPseudo = setTimeout(async () => {
+        try {
+            const r = await fetch(API_BELFIT + '/pseudoDisponible', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ pseudo })
+            });
+            const d = await r.json();
+            if(normPseudo(champ.value) !== pseudo) return; // l'utilisateur a continue a taper
+            if(d.disponible){
+                _pseudoValide = true;
+                hint.textContent = window.t('pseudo_libre');
+                hint.style.color = '#15803d';
+            } else {
+                hint.textContent = window.t(d.raison === 'reserve' ? 'pseudo_reserve' : 'pseudo_pris');
+                hint.style.color = '#dc2626';
+            }
+        } catch(e){
+            // Reseau indisponible : on laisse passer, le serveur tranchera a l'inscription.
+            _pseudoValide = true;
+            hint.textContent = window.t('register_pseudo_hint');
+        }
+    }, 450);
+}
+
+/** Reserve le pseudo une fois le compte cree. */
+async function reserverPseudo(user, pseudo){
+    const jeton = await user.getIdToken();
+    const r = await fetch(API_BELFIT + '/reserverPseudo', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + jeton },
+        body: JSON.stringify({ pseudo })
+    });
+    if(!r.ok){
+        const d = await r.json().catch(()=>({}));
+        throw new Error(d.error || 'pseudo');
+    }
+}
+
+/** Connexion par pseudo : le mot de passe est verifie cote serveur. */
+async function connexionPseudo(pseudo, motDePasse){
+    const r = await fetch(API_BELFIT + '/connexionParPseudo', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ pseudo, motDePasse })
+    });
+    if(!r.ok) throw { code:'auth/invalid-credential' };
+    const d = await r.json();
+    return auth.signInWithCustomToken(d.jeton);
+}
+
 // LOGIN
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -357,7 +439,10 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     loadingDiv.classList.add('show');
     
     try {
-        const cred = await auth.signInWithEmailAndPassword(email, password);
+        // Un identifiant sans arobase est traite comme un nom d'utilisateur.
+        const cred = email.includes('@')
+            ? await auth.signInWithEmailAndPassword(email.trim(), password)
+            : await connexionPseudo(normPseudo(email), password);
         // Récupérer le prénom du profil pour l'afficher
         if(cred && cred.user && cred.user.displayName){
             localStorage.setItem('repz_firstName', cred.user.displayName);
@@ -436,6 +521,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     e.preventDefault();
     const firstName = document.getElementById('registerFirstName').value.trim();
     const email = document.getElementById('registerEmail').value;
+    const pseudo = normPseudo((document.getElementById('registerPseudo')||{}).value);
     const password = document.getElementById('registerPassword').value;
     const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
     const errorDiv = document.getElementById('registerError');
@@ -465,6 +551,13 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         return;
     }
 
+    if(!_pseudoValide || pseudo.length < 3){
+        loadingDiv.classList.remove('show');
+        errorDiv.textContent = window.t('pseudo_invalide');
+        errorDiv.classList.add('show');
+        return;
+    }
+
     // RGPD : double vérification du consentement (le bouton est déjà bloqué sans la case)
     if(!document.getElementById('registerConsent').checked) {
         loadingDiv.classList.remove('show');
@@ -477,6 +570,17 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         const cred = await auth.createUserWithEmailAndPassword(email, password);
         // Enregistrer le prénom dans le profil Firebase + en local
         if(cred && cred.user){
+            // Le pseudo est reserve cote serveur (unicite garantie).
+            // En cas d'echec, le compte est supprime : pas de compte orphelin.
+            try {
+                await reserverPseudo(cred.user, pseudo);
+            } catch(ePseudo){
+                try { await cred.user.delete(); } catch(e2){}
+                loadingDiv.classList.remove('show');
+                errorDiv.textContent = window.t(ePseudo.message === 'pris' ? 'pseudo_pris' : 'pseudo_invalide');
+                errorDiv.classList.add('show');
+                return;
+            }
             await cred.user.updateProfile({ displayName: firstName });
             // RGPD : preuve du consentement (horodatage + version de la politique)
             try {

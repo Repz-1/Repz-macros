@@ -7,7 +7,23 @@ service cloud.firestore {
     // Phase 2 (lancement) : durcir en interdisant l'écriture de "premium"
     //   côté client (seule la Cloud Function, en admin, l'écrira).
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read: if request.auth != null && request.auth.uid == uid;
+      // Le pseudo n'est modifiable que par la Cloud Function (accès admin),
+      // afin que l'unicité reste garantie et qu'un pseudo ne soit pas volé.
+      // À la création, le document ne peut pas contenir de pseudo.
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && !("pseudo" in request.resource.data.keys());
+      // À la mise à jour, le champ pseudo doit rester inchangé.
+      allow update: if request.auth != null && request.auth.uid == uid
+                    && !("pseudo" in request.resource.data.diff(resource.data).affectedKeys());
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Table des pseudonymes : totalement fermée au client.
+    // Elle relie un pseudo à un compte ; la rendre lisible permettrait
+    // d'énumérer les utilisateurs. Seules les Cloud Functions y accèdent.
+    match /usernames/{pseudo} {
+      allow read, write: if false;
     }
   }
 }

@@ -1505,3 +1505,42 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   mb_foods: 'producten',
   mb_prot: 'eiw.'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  register_pseudo: 'Nom d\'utilisateur',
+  register_pseudo_hint: '3 à 20 caractères : lettres, chiffres, point, tiret ou _',
+  login_identifiant: 'Email ou nom d\'utilisateur',
+  pseudo_verif: 'Vérification…',
+  pseudo_libre: '✓ Disponible',
+  pseudo_pris: 'Ce nom est déjà pris',
+  pseudo_reserve: 'Ce nom est réservé',
+  pseudo_court: 'Trop court : 3 caractères minimum',
+  pseudo_caracteres: 'Lettres, chiffres, point, tiret ou _ uniquement',
+  pseudo_invalide: 'Choisis un nom d\'utilisateur valide et disponible'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  register_pseudo: 'Username',
+  register_pseudo_hint: '3 to 20 characters: letters, numbers, dot, dash or _',
+  login_identifiant: 'Email or username',
+  pseudo_verif: 'Checking…',
+  pseudo_libre: '✓ Available',
+  pseudo_pris: 'This username is taken',
+  pseudo_reserve: 'This username is reserved',
+  pseudo_court: 'Too short: 3 characters minimum',
+  pseudo_caracteres: 'Letters, numbers, dot, dash or _ only',
+  pseudo_invalide: 'Choose a valid and available username'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  register_pseudo: 'Gebruikersnaam',
+  register_pseudo_hint: '3 tot 20 tekens: letters, cijfers, punt, streepje of _',
+  login_identifiant: 'E-mail of gebruikersnaam',
+  pseudo_verif: 'Controleren…',
+  pseudo_libre: '✓ Beschikbaar',
+  pseudo_pris: 'Deze naam is al in gebruik',
+  pseudo_reserve: 'Deze naam is gereserveerd',
+  pseudo_court: 'Te kort: minimaal 3 tekens',
+  pseudo_caracteres: 'Alleen letters, cijfers, punt, streepje of _',
+  pseudo_invalide: 'Kies een geldige en beschikbare gebruikersnaam'
+});
