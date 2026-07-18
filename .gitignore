@@ -2,3 +2,10 @@
 app-v2/node_modules/
 # Sortie de build (fabriquee par GitHub Actions, jamais commitee)
 v2/
+
+# Cles de signature Android : ne JAMAIS versionner
+android/*.jks
+android/*.keystore
+android/android-keystore.jks
+android/app/
+android/build/

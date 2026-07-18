@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "be.belfit.app",
+      "sha256_cert_fingerprints": [
+        "A_REMPLACER_PAR_EMPREINTE_CLE_UPLOAD",
+        "A_REMPLACER_PAR_EMPREINTE_CLE_PLAY"
+      ]
+    }
+  }
+]

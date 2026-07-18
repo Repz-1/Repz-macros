@@ -1,0 +1,64 @@
+{
+  "packageId": "be.belfit.app",
+  "host": "belfit.be",
+  "name": "BELFIT",
+  "launcherName": "BELFIT",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#0a0a0a",
+  "themeColorDark": "#0a0a0a",
+  "navigationColor": "#0a0a0a",
+  "navigationColorDark": "#0a0a0a",
+  "navigationDividerColor": "#0a0a0a",
+  "navigationDividerColorDark": "#0a0a0a",
+  "backgroundColor": "#0a0a0a",
+  "enableNotifications": true,
+  "startUrl": "/index.html",
+  "iconUrl": "https://belfit.be/icon-512-v7.png",
+  "maskableIconUrl": "https://belfit.be/icon-maskable-512-v7.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android-keystore.jks",
+    "alias": "belfit"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "Mon journal",
+      "short_name": "Journal",
+      "url": "/main.html#0",
+      "chosenIconUrl": "https://belfit.be/icon-192-v7.png"
+    },
+    {
+      "name": "M'entrainer",
+      "short_name": "Training",
+      "url": "/main.html#1",
+      "chosenIconUrl": "https://belfit.be/icon-192-v7.png"
+    },
+    {
+      "name": "Mes stats",
+      "short_name": "Stats",
+      "url": "/main.html#2",
+      "chosenIconUrl": "https://belfit.be/icon-192-v7.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://belfit.be/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "playBilling": {
+      "enabled": true
+    }
+  },
+  "alphaDependencies": {
+    "enabled": true
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://belfit.be/",
+  "minSdkVersion": 23,
+  "appVersion": "1.0.0",
+  "orientationLock": true
+}

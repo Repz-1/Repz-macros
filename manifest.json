@@ -27,5 +27,53 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "lang": "fr-BE",
+  "dir": "ltr",
+  "description": "BELFIT : suivi nutritionnel et programmes d'entrainement. Journal alimentaire avec base de 1000 aliments, scan de code-barres, programmes personnalises, suivi de charges et statistiques de progression.",
+  "categories": [
+    "health",
+    "fitness",
+    "lifestyle"
+  ],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Mon journal",
+      "short_name": "Journal",
+      "url": "./main.html#0",
+      "icons": [
+        {
+          "src": "icon-192-v7.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "M'entrainer",
+      "short_name": "Training",
+      "url": "./main.html#1",
+      "icons": [
+        {
+          "src": "icon-192-v7.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Mes stats",
+      "short_name": "Stats",
+      "url": "./main.html#2",
+      "icons": [
+        {
+          "src": "icon-192-v7.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
