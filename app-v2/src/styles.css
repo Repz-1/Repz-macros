@@ -141,3 +141,17 @@ button{cursor:pointer}
 .cal-legende .auj-ic{background:transparent;box-shadow:inset 0 0 0 2px #F7B500}
 .cal-choix{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
 .cal-choix button{padding:12px 6px;border:1.5px solid #e8e4d8;border-radius:12px;background:#fff;font-weight:700;font-size:13.5px;font-family:inherit}
+
+/* ---- Chrono de repos ---- */
+.chrono{text-align:center}
+.chrono-aff{font-size:54px;font-weight:800;letter-spacing:2px;color:#F7B500;font-variant-numeric:tabular-nums;transition:color .3s;margin:6px 0 14px}
+.chrono-aff.t-approche{color:#E8930C;animation:breathe 2s ease-in-out infinite}
+.chrono-aff.t-warn{color:#F07818;animation:tickp .45s ease-out}
+.chrono-aff.t-crit{color:#DE2F14;animation:tickp .45s ease-out}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes tickp{0%{transform:scale(1)}30%{transform:scale(1.1)}100%{transform:scale(1)}}
+.chrono-presets{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.chrono-presets button{padding:9px 16px;border:1.5px solid #e8e4d8;border-radius:11px;background:#fff;font-weight:800;font-size:14px;font-family:inherit}
+.chrono-presets button.actif{background:#181818;border-color:#181818;color:#fff}
+.chrono-presets button:disabled{opacity:.45}
+.chrono-go{width:100%;background:#F7B500;border:none;border-radius:14px;padding:14px;font-weight:800;font-size:15.5px;font-family:inherit}

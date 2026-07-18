@@ -10,6 +10,7 @@ import { MealCard } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
 import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { MuscleCalendar } from './components/MuscleCalendar.jsx';
+import { RestTimer } from './components/RestTimer.jsx';
 
 function App() {
   const [modale, setModale] = useState(false);
@@ -44,6 +45,7 @@ function App() {
       {repas.value.map(r => <MealCard key={r.id} r={r} />)}
 
       <MuscleCalendar />
+      <RestTimer />
 
       <button class="fab" onClick={() => setModale(true)}>+ Ajouter</button>
       <AddMealModal montre={modale} fermer={() => setModale(false)} />
