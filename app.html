@@ -305,12 +305,19 @@ body.search-open .meal-bar { display:flex; }
 .meal-bar-sub { font-size:11.5px; font-weight:600; color:#8a8580; margin-top:2px; }
 .meal-bar-sub b { color:#8F6200; }
 .meal-bar-done {
-    flex:none; border:none; cursor:pointer; font-family:inherit;
-    background:#181818; color:#fff;
+    flex:none; cursor:pointer; font-family:inherit;
     font-size:13.5px; font-weight:800;
     padding:11px 20px; border-radius:11px;
+    transition:background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+    /* Etat par defaut : rien a valider encore, le bouton reste discret */
+    background:transparent; color:#8a8580; border:1.5px solid #E3DFD5;
 }
-.meal-bar-done:active { transform:scale(.96); background:#000; }
+/* Des qu'un aliment est ajoute, l'action devient l'action principale */
+.meal-bar-done.actif {
+    background:#F7B500; color:#181818; border-color:#F7B500;
+    box-shadow:0 4px 14px rgba(247,181,0,.32);
+}
+.meal-bar-done:active { transform:scale(.96); }
 .fab {
     display:flex; align-items:center; gap:5px;
     background:#F7B500; color:#181818; border:none;
@@ -1205,7 +1212,7 @@ function afficherMessageInvite() {
         <div class="meal-bar-name" id="mealBarName"></div>
         <div class="meal-bar-sub" id="mealBarSub"></div>
     </div>
-    <button class="meal-bar-done" onclick="terminerSaisieRepas()" data-i18n="done">Termine</button>
+    <button class="meal-bar-done" onclick="terminerSaisieRepas()">Fermer</button>
 </div>
 
 <div class="modal-overlay" id="weightModal">
@@ -3089,7 +3096,12 @@ function majBarreRepas(rid){
     var n = rc.ings.length;
     var nom = document.getElementById('mealBarName');
     var sub = document.getElementById('mealBarSub');
+    var btn = document.querySelector('.meal-bar-done');
     if(nom) nom.textContent = mealDisplayName(rc);
+    if(btn){
+        btn.classList.toggle('actif', n > 0);
+        btn.textContent = window.t(n > 0 ? 'done' : 'close');
+    }
     if(sub){
         if(n === 0){
             sub.textContent = window.t('mb_empty');
