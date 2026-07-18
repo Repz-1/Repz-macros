@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "smoke": "node smoke.mjs"
   },
   "dependencies": {
     "@preact/signals": "^1.3.0",

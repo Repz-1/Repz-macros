@@ -133,21 +133,21 @@ export const STRINGS_V1 = {
 };
 
 /* ===== Navigation (shell) ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   nav_journal:"Journal", nav_train:"S'entraîner", nav_stats:"Stats", nav_premium:"Premium",
   copy:"Copier", copied:"Copié ✓", save:"Enregistrer", saved:"Enregistré ✓", cancel:"Annuler"
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   nav_journal:"Journal", nav_train:"Train", nav_stats:"Stats", nav_premium:"Premium",
   copy:"Copy", copied:"Copied ✓", save:"Save", saved:"Saved ✓", cancel:"Cancel"
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   nav_journal:"Dagboek", nav_train:"Trainen", nav_stats:"Stats", nav_premium:"Premium",
   copy:"Kopiëren", copied:"Gekopieerd ✓", save:"Opslaan", saved:"Opgeslagen ✓", cancel:"Annuleren"
 });
 
 /* ===== Paramètres ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   set_title:"Paramètres", set_sec_account:"Compte",
   set_account:"Paramètres du compte", set_account_sub:"E-mail, prénom, mot de passe",
   set_sub:"Gérer l'abonnement", set_sub_sub:"Formules, avantages Premium",
@@ -185,7 +185,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   js_invite_msg:"Je suis sur BELFIT 🇧🇪 — coaching nutrition & training avec un vrai coach. Rejoins-moi : {link} — avec mon lien, on gagne tous les deux un avantage sur l'abonnement 💪",
   js_invite_copied:"Message d'invitation copié ! Colle-le où tu veux."
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   set_title:"Settings", set_sec_account:"Account",
   set_account:"Account settings", set_account_sub:"Email, first name, password",
   set_sub:"Manage subscription", set_sub_sub:"Plans, Premium benefits",
@@ -223,7 +223,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   js_invite_msg:"I'm on BELFIT 🇧🇪 — nutrition & training coaching with a real coach. Join me: {link} — with my link, we both get a subscription perk 💪",
   js_invite_copied:"Invitation message copied! Paste it anywhere."
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   set_title:"Instellingen", set_sec_account:"Account",
   set_account:"Accountinstellingen", set_account_sub:"E-mail, voornaam, wachtwoord",
   set_sub:"Abonnement beheren", set_sub_sub:"Formules, Premium-voordelen",
@@ -263,7 +263,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Journal (app.html) ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   close:"Fermer", add:"Ajouter", reset:"Réinitialiser", continue:"Continuer", back:"← Retour",
   detail:"Détail", goal:"Objectif", consumed:"Consommées",
   protein:"Protéines", carbs:"Glucides", fat:"Lipides",
@@ -334,7 +334,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   js_bad_file:" Fichier invalide. Vérifie que c'est bien une sauvegarde BELFIT.",
   js_no_day:'Aucune journée enregistrée à cette date.<br><span style="font-size:12px;">Pense à « Commencer une nouvelle journée » pour archiver tes repas.</span>'
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   close:"Close", add:"Add", reset:"Reset", continue:"Continue", back:"← Back",
   detail:"Details", goal:"Goal", consumed:"Consumed",
   protein:"Protein", carbs:"Carbs", fat:"Fat",
@@ -405,7 +405,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   js_bad_file:" Invalid file. Check that it's a BELFIT backup.",
   js_no_day:'No day saved on this date.<br><span style="font-size:12px;">Remember to "Start a new day" to archive your meals.</span>'
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   close:"Sluiten", add:"Toevoegen", reset:"Resetten", continue:"Doorgaan", back:"← Terug",
   detail:"Detail", goal:"Doel", consumed:"Gegeten",
   protein:"Eiwitten", carbs:"Koolhydraten", fat:"Vetten",
@@ -478,7 +478,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Entraînements + Stats ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   open:"Ouvrir", collapse:"Réduire", clear:"Effacer", later:"Plus tard",
   start:"Démarrer", pause:"Pause", resume:"Reprendre", timer:"Chronomètre",
   support_unlock:"Soutenir BELFIT & débloquer",
@@ -535,7 +535,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   st_balanced:"Bel équilibre, tous tes grands groupes sont à jour cette semaine.",
   st_record:"Record", st_since_start:"Depuis le début", st_sessions_tracked:"Séances suivies"
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   open:"Open", collapse:"Collapse", clear:"Clear", later:"Later",
   start:"Start", pause:"Pause", resume:"Resume", timer:"Timer",
   support_unlock:"Support BELFIT & unlock",
@@ -592,7 +592,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   st_balanced:"Nice balance, all your major groups are up to date this week.",
   st_record:"Record", st_since_start:"Since the start", st_sessions_tracked:"Workouts tracked"
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   open:"Openen", collapse:"Inklappen", clear:"Wissen", later:"Later",
   start:"Starten", pause:"Pauze", resume:"Hervatten", timer:"Chronometer",
   support_unlock:"Steun BELFIT & ontgrendel",
@@ -651,7 +651,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Ma séance ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   ms_title:"Choisir mes exercices", ms_hint:"Touche un exercice pour l'ajouter.",
   ms_selected:"exercices sélectionnés", ms_go:"Ma séance →", ms_session:"Ma séance",
   ms_exercise:"exercice", ms_exercises:"exercices", ms_exercises_cap:"Exercices",
@@ -673,7 +673,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   ms_in:"en", ms_bravo:"Bravo {name} !", ms_duration:"Durée", ms_total_lifted:"Soulevés au total",
   ms_new_record:"Nouveau record"
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   ms_title:"Choose my exercises", ms_hint:"Tap an exercise to add it.",
   ms_selected:"exercises selected", ms_go:"My workout →", ms_session:"My workout",
   ms_exercise:"exercise", ms_exercises:"exercises", ms_exercises_cap:"Exercises",
@@ -695,7 +695,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   ms_in:"in", ms_bravo:"Well done {name}!", ms_duration:"Duration", ms_total_lifted:"Total lifted",
   ms_new_record:"New record"
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   ms_title:"Mijn oefeningen kiezen", ms_hint:"Tik op een oefening om ze toe te voegen.",
   ms_selected:"oefeningen geselecteerd", ms_go:"Mijn training →", ms_session:"Mijn training",
   ms_exercise:"oefening", ms_exercises:"oefeningen", ms_exercises_cap:"Oefeningen",
@@ -719,7 +719,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Liste de courses ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   co_title:"Mes courses",
   co_sub:"Générée depuis les repas de ton journal.",
   co_prep_title:"Préparer mes courses",
@@ -742,7 +742,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   ray_laitiers:"Produits laitiers", ray_epicerie:"Épicerie",
   ray_boissons:"Boissons", ray_autres:"Autres"
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   co_title:"My groceries",
   co_sub:"Generated from the meals in your journal.",
   co_prep_title:"Prepare my groceries",
@@ -765,7 +765,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   ray_laitiers:"Dairy", ray_epicerie:"Grocery",
   ray_boissons:"Drinks", ray_autres:"Other"
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   co_title:"Mijn boodschappen",
   co_sub:"Gegenereerd uit de maaltijden van je dagboek.",
   co_prep_title:"Mijn boodschappen voorbereiden",
@@ -790,7 +790,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Bibliothèque de programmes ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   pg_title:"Tous les programmes",
   pg_intro:"Parcours la bibliothèque complète par objectif.",
   pg_sessions:"séances",
@@ -798,7 +798,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   pg_pick_session:"Choisis une séance pour voir les exercices.",
   pg_soon:"Les programmes \"{cat}\" arrivent bientôt.<br>La catégorie Prise de masse est déjà disponible en exemple."
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   pg_title:"All programs",
   pg_intro:"Browse the full library by goal.",
   pg_sessions:"sessions",
@@ -842,7 +842,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
     ["exercices","exercises"],["séances","sessions"]
   ]
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   pg_title:"Alle programma's",
   pg_intro:"Doorblader de volledige bibliotheek per doel.",
   pg_sessions:"sessies",
@@ -888,7 +888,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Questionnaire Premium ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   q_question:"Question", q_finished:"Terminé !", q_continue:"Continuer",
   q_sex:"Tu es… ?", q_sex_m:"Homme", q_sex_f:"Femme", q_sex_o:"Autre", q_sex_na:"Je préfère ne pas répondre",
   q_no:"Non",
@@ -933,7 +933,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   q_back_journal:"Retour au journal",
   q_disclaimer:"BELFIT ne remplace pas un avis médical. En cas de grossesse, d'allaitement ou de pathologie, consulte un professionnel de santé avant de modifier ton alimentation."
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   q_question:"Question", q_finished:"Done!", q_continue:"Continue",
   q_sex:"You are… ?", q_sex_m:"Male", q_sex_f:"Female", q_sex_o:"Other", q_sex_na:"I'd rather not say",
   q_no:"No",
@@ -983,7 +983,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
     "Halal":"Halal","Casher":"Kosher","Autre":"Other"
   }
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   q_question:"Vraag", q_finished:"Klaar!", q_continue:"Doorgaan",
   q_sex:"Je bent… ?", q_sex_m:"Man", q_sex_f:"Vrouw", q_sex_o:"Anders", q_sex_na:"Zeg ik liever niet",
   q_no:"Nee",
@@ -1035,7 +1035,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Profil ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   pf_title:"Profil", pf_weight:"Poids actuel", pf_goal:"Objectif", pf_kcal:"Calories cibles",
   pf_kcal_day:"kcal/jour", pf_my_profile:"Mon profil",
   pf_mail_title:"Valide ton adresse e-mail",
@@ -1067,7 +1067,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   pf_photo_heavy:"Photo trop lourde, réessaie avec une image plus petite.",
   pf_allergy_w:"allergie", pf_allergies_w:"allergies", pf_prefs_sub:"Allergies, régime alimentaire"
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   pf_title:"Profile", pf_weight:"Current weight", pf_goal:"Goal", pf_kcal:"Target calories",
   pf_kcal_day:"kcal/day", pf_my_profile:"My profile",
   pf_mail_title:"Verify your email address",
@@ -1099,7 +1099,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   pf_photo_heavy:"Photo too large, try again with a smaller image.",
   pf_allergy_w:"allergy", pf_allergies_w:"allergies", pf_prefs_sub:"Allergies, diet"
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   pf_title:"Profiel", pf_weight:"Huidig gewicht", pf_goal:"Doel", pf_kcal:"Streefcalorieën",
   pf_kcal_day:"kcal/dag", pf_my_profile:"Mijn profiel",
   pf_mail_title:"Bevestig je e-mailadres",
@@ -1133,7 +1133,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* Valeurs FR affichées traduites (préférences, allergènes, objectifs, activité) */
-Object.assign(window.BELFIT_STRINGS.en.__q, {
+Object.assign(STRINGS_V1.en.__q, {
   "Je mange de tout":"I eat everything","Végétarien":"Vegetarian","Végan":"Vegan",
   "Pesco-végétarien":"Pescatarian","Sans porc":"No pork",
   "Prendre du poids":"Gain weight","Perdre du poids":"Lose weight","Maintien":"Maintain",
@@ -1144,7 +1144,7 @@ Object.assign(window.BELFIT_STRINGS.en.__q, {
   "Pomme":"Apple","Pêche":"Peach","Tomate":"Tomato","Maïs":"Corn","Chocolat / cacao":"Chocolate / cocoa",
   "Miel":"Honey","Levure":"Yeast","Ail":"Garlic","Oignon":"Onion","FODMAP":"FODMAP","Histamine":"Histamine"
 });
-Object.assign(window.BELFIT_STRINGS.nl.__q, {
+Object.assign(STRINGS_V1.nl.__q, {
   "Je mange de tout":"Ik eet alles","Végétarien":"Vegetarisch","Végan":"Veganistisch",
   "Pesco-végétarien":"Pescotarisch","Sans porc":"Zonder varkensvlees",
   "Prendre du poids":"Aankomen","Perdre du poids":"Afvallen","Maintien":"Onderhoud",
@@ -1157,7 +1157,7 @@ Object.assign(window.BELFIT_STRINGS.nl.__q, {
 });
 
 /* ===== Plans / Premium ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   pl_hero_h1:"Ton coach nutrition,<br>dans ta poche.",
   pl_hero_p:"Calories, macros et plan sur mesure — comme un diététicien, sans y penser.",
   pl_from:"dès", pl_per_mo:"/mois", pl_see_plans:"Voir les formules",
@@ -1205,7 +1205,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   pl_pay_go:"Continuer vers le paiement", pl_promo:"J'ai un code promo", pl_promo_ph:"Ton code",
   pl_promo_first:"Entre un code d'abord.", pl_promo_ok:"Premium débloqué !", pl_promo_bad:"Ce code n'est pas valide."
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   pl_hero_h1:"Your nutrition coach,<br>in your pocket.",
   pl_hero_p:"Calories, macros and a tailor-made plan — like a dietitian, without thinking about it.",
   pl_from:"from", pl_per_mo:"/month", pl_see_plans:"See plans",
@@ -1253,7 +1253,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   pl_pay_go:"Continue to payment", pl_promo:"I have a promo code", pl_promo_ph:"Your code",
   pl_promo_first:"Enter a code first.", pl_promo_ok:"Premium unlocked!", pl_promo_bad:"This code isn't valid."
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   pl_hero_h1:"Je voedingscoach,<br>in je broekzak.",
   pl_hero_p:"Calorieën, macro's en een plan op maat — als een diëtist, zonder erbij na te denken.",
   pl_from:"vanaf", pl_per_mo:"/maand", pl_see_plans:"Bekijk formules",
@@ -1303,7 +1303,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Aide ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   ai_title:"Obtenir de l'aide",
   ai_sub:"Les réponses aux questions les plus fréquentes. Besoin de plus ? Écris-nous via la bulle en bas à droite.",
   ai_faq:"Questions fréquentes",
@@ -1311,7 +1311,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   ai_ph:"Décris ta question ou ton problème…", ai_send:"Envoyer au coach",
   ai_ok:"Message envoyé ✓ Réponse sous 24–48h.", ai_write_first:"Écris ton message d'abord."
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   ai_title:"Get help",
   ai_sub:"Answers to the most common questions. Need more? Write to us via the bubble at the bottom right.",
   ai_faq:"Frequently asked questions",
@@ -1343,7 +1343,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
     "Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"Via the chat bubble at the bottom right of this page, or by email at contact@belfit.be. Reply within 24–48h."
   }
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   ai_title:"Hulp krijgen",
   ai_sub:"Antwoorden op de meest gestelde vragen. Meer nodig? Schrijf ons via de bel rechtsonder.",
   ai_faq:"Veelgestelde vragen",
@@ -1377,7 +1377,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Confidentialité & conditions ===== */
-Object.assign(window.BELFIT_STRINGS.fr, {
+Object.assign(STRINGS_V1.fr, {
   cf_title: "Politique de confidentialité & conditions d'utilisation",
   cf_maj: "Version 1 · Dernière mise à jour : juillet 2026<br>BELFIT — Belgique · Contact : <a href=\"mailto:contact@belfit.be\">contact@belfit.be</a>",
   cf_intro: "Ce document explique de façon claire comment BELFIT traite tes données, dans le respect du Règlement général sur la protection des données (RGPD) et du droit belge. Il vaut information au sens des articles 13 et 14 du RGPD.",
@@ -1410,7 +1410,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
   cf_b10: "<h3>10. Contact</h3>\n    <p>Pour toute question, réclamation ou assistance : <a href=\"mailto:contact@belfit.be\">contact@belfit.be</a>.</p>",
   cf_footer: "Ce document a été rédigé sur mesure pour BELFIT mais n'a pas valeur d'avis juridique. Avant le lancement commercial, fais-le relire par un juriste ou un DPO pour valider sa conformité complète à ta situation exacte."
 });
-Object.assign(window.BELFIT_STRINGS.en, {
+Object.assign(STRINGS_V1.en, {
   cf_title: "Privacy policy & terms of use",
   cf_maj: "Version 1 · Last updated: July 2026<br>BELFIT — Belgium · Contact: <a href=\"mailto:contact@belfit.be\">contact@belfit.be</a>",
   cf_intro: "This document clearly explains how BELFIT processes your data, in compliance with the General Data Protection Regulation (GDPR) and Belgian law. It constitutes information within the meaning of Articles 13 and 14 of the GDPR.",
@@ -1443,7 +1443,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
   cf_b10: "<h3>10. Contact</h3>\n    <p>For any question, complaint or support: <a href=\"mailto:contact@belfit.be\">contact@belfit.be</a>.</p>",
   cf_footer: "This document was written specifically for BELFIT but does not constitute legal advice. Before commercial launch, have it reviewed by a lawyer or DPO to validate its full compliance with your exact situation."
 });
-Object.assign(window.BELFIT_STRINGS.nl, {
+Object.assign(STRINGS_V1.nl, {
   cf_title: "Privacybeleid & gebruiksvoorwaarden",
   cf_maj: "Versie 1 · Laatst bijgewerkt: juli 2026<br>BELFIT — België · Contact: <a href=\"mailto:contact@belfit.be\">contact@belfit.be</a>",
   cf_intro: "Dit document legt duidelijk uit hoe BELFIT je gegevens verwerkt, conform de Algemene Verordening Gegevensbescherming (AVG) en het Belgische recht. Het geldt als informatie in de zin van de artikelen 13 en 14 van de AVG.",
@@ -1478,6 +1478,6 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Noms des repas fixes (traduits à l'affichage, non gravés) ===== */
-Object.assign(window.BELFIT_STRINGS.fr, { meal_pdej:"Petit déjeuner", meal_dej:"Déjeuner", meal_diner:"Dîner", meal_snack:"Snacks" });
-Object.assign(window.BELFIT_STRINGS.en, { meal_pdej:"Breakfast", meal_dej:"Lunch", meal_diner:"Dinner", meal_snack:"Snacks" });
-Object.assign(window.BELFIT_STRINGS.nl, { meal_pdej:"Ontbijt", meal_dej:"Lunch", meal_diner:"Avondeten", meal_snack:"Snacks" });
+Object.assign(STRINGS_V1.fr, { meal_pdej:"Petit déjeuner", meal_dej:"Déjeuner", meal_diner:"Dîner", meal_snack:"Snacks" });
+Object.assign(STRINGS_V1.en, { meal_pdej:"Breakfast", meal_dej:"Lunch", meal_diner:"Dinner", meal_snack:"Snacks" });
+Object.assign(STRINGS_V1.nl, { meal_pdej:"Ontbijt", meal_dej:"Lunch", meal_diner:"Avondeten", meal_snack:"Snacks" });
