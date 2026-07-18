@@ -4408,9 +4408,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const bp = document.getElementById('bnPremium');
         if(bp){ bp.classList.add('is-premium'); }
     }
-    // Arrivée depuis « Ajouter mon poids » (Stats) : ouvrir directement la pesée
-    if(new URLSearchParams(location.search).get('poids') === '1'){
+    // Liens directs : l'aide et les stats peuvent ouvrir une action precise.
+    const _params = new URLSearchParams(location.search);
+    if(_params.get('poids') === '1'){
         setTimeout(() => { try { openWeightModal(); } catch(e){} }, 350);
+    }
+    if(_params.get('vocal') === '1'){
+        setTimeout(() => { try { ouvrirVocal(); } catch(e){} }, 350);
+    }
+    if(_params.get('scan') === '1'){
+        // Le scan appartient a un repas : on ouvre celui du moment,
+        // sinon le premier de la journee.
+        setTimeout(() => {
+            try {
+                const rc = (recipes && recipes.length) ? recipes[0] : null;
+                if(rc) openScanner(rc.id);
+            } catch(e){}
+        }, 400);
+    }
+    if(_params.get('courses') === '1'){
+        setTimeout(() => { (window.top || window).location.href = 'courses.html'; }, 250);
     }
 });
 </script>

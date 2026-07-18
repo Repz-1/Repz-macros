@@ -200,6 +200,38 @@ window.addEventListener('message', (e)=>{
     const h = parseInt((location.hash || '').replace('#',''), 10);
     if(!isNaN(h) && h >= 0 && h <= 3){ idx = h; chargerFrame(h); }
 })();
+
+// ===== LIENS DIRECTS =====
+// Permet d'envoyer l'utilisateur droit au bon endroit depuis l'aide :
+// main.html?aller=poids ouvre le Journal ET la fenetre de pesee.
+// Sans cela, une reponse de la FAQ ne peut qu'expliquer un chemin.
+(function(){
+    const DESTINATIONS = {
+        poids:    { onglet: 0, url: 'app.html?poids=1' },
+        scan:     { onglet: 0, url: 'app.html?scan=1' },
+        vocal:    { onglet: 0, url: 'app.html?vocal=1' },
+        courses:  { onglet: 0, url: 'app.html?courses=1' },
+        journal:  { onglet: 0 },
+        entrainer:{ onglet: 1 },
+        stats:    { onglet: 2 },
+        premium:  { onglet: 3 },
+    };
+    const cle = new URLSearchParams(location.search).get('aller');
+    if(!cle || !DESTINATIONS[cle]) return;
+    const dest = DESTINATIONS[cle];
+    idx = dest.onglet;
+    const frame = document.getElementById('f' + dest.onglet);
+    if(frame && dest.url){
+        frame.src = dest.url;
+        frame.removeAttribute('data-src');
+    } else {
+        chargerFrame(dest.onglet);
+    }
+    applyX(false);
+    majNav();
+    // L'adresse est nettoyee : un rafraichissement ne rouvre pas la fenetre.
+    history.replaceState(null, '', 'main.html#' + dest.onglet);
+})();
 applyX(false);
 majNav();
 </script>
