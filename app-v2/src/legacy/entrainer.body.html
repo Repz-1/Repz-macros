@@ -1,0 +1,890 @@
+
+<!-- SPLASH BELFIT -->
+<style>
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash.hide{opacity:0;pointer-events:none;}
+#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
+#repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
+@keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+
+</style>
+<div id="repzSplash">
+  <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
+  <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
+</div>
+<script>
+(function(){
+  var s=document.getElementById('repzSplash');
+  if(!s) return;
+  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){} if(seen){ s.remove(); return; }
+  try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
+  setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
+})();
+</script>
+
+
+
+<!-- MESSAGE INVITÉ -->
+<div id="messageInvite" style="display:none; position:fixed; inset:0; z-index:90000; background:#f3f4f6; align-items:center; justify-content:center; padding:24px;">
+    <div style="max-width:340px; text-align:center; background:#fff; border-radius:22px; padding:36px 26px; box-shadow:0 12px 40px rgba(0,0,0,.12);">
+        <div style="font-size:46px; margin-bottom:16px;">💪</div>
+        <h2 style="font-size:22px; font-weight:800; margin-bottom:8px; color:#1a1a1a;" data-i18n="guest_create_title">Crée ton compte</h2>
+        <p style="font-size:15px; color:#6b7280; line-height:1.5; margin-bottom:26px;">
+            <span data-i18n-html="tr_guest_sub">Accède à tous tes programmes.<br>Ça prend 10 secondes.</span>
+        </p>
+        <a href="index.html" style="display:block; background:#DFA004; color:#fff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:14px; margin-bottom:8px;" data-i18n="guest_create_btn">Créer mon compte</a>
+        <a href="index.html" style="display:block; color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; padding:10px;" data-i18n="guest_login_btn">Me connecter</a>
+    </div>
+</div>
+
+<!-- AUTH CHECK + FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+let authVerifie = false;
+
+auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(user) {
+        authVerifie = true;
+        localStorage.removeItem('repz_invite');
+        localStorage.removeItem('repz_inviteDebut');
+        const msgU = document.getElementById('messageInvite');
+        if(msgU) msgU.style.display = 'none';
+    } else if(estInvite) {
+        // Invité : accès complet pendant l'essai découverte
+        // (le bandeau / mur de fin d'essai est géré par le script REPZ_INVITE)
+        authVerifie = true;
+    } else if(!authVerifie) {
+        setTimeout(() => {
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+                window.location.href = "index.html";
+            }
+        }, 1200);
+    }
+});
+function logout() {
+    // Déconnexion : on nettoie aussi le statut local (premium, invité)
+    localStorage.removeItem('repz_premium');
+    localStorage.removeItem('repz_invite');
+    localStorage.removeItem('repz_inviteDebut');
+    sessionStorage.removeItem('repz_premSynced');
+    auth.signOut().finally(() => { (window.top||window).location.href = 'index.html'; });
+}
+</script>
+
+<!-- EN-TÊTE COMMUN -->
+<style>
+.app-header { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; }
+.ah-logo { height:55px; width:auto; display:block; }
+.ah-actions { display:flex; align-items:center; gap:8px; }
+.ah-btn { width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
+.ah-btn svg { width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.ah-btn:active { background:rgba(247,181,0,.16); transform:scale(.94); }
+</style>
+<header class="app-header">
+    <img src="belfit-logo-header.png" class="ah-logo" alt="BELFIT">
+    <div class="ah-actions">
+        <a href="profil.html" class="ah-btn" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></a>
+        <a href="parametres.html" class="ah-btn" aria-label="Réglages"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></a>
+    </div>
+</header>
+
+<div class="intro">
+    <span class="intro-eyebrow">BelFit <em>Training</em></span>
+</div>
+
+<div class="choices">
+
+    <!-- Carte VEDETTE : programme intelligent (Premium) -->
+    <a href="test.html?v=7" class="choice ph featured locked" id="choiceTest" onclick="return checkPremium(event)" style="background-image:url('img/card-creer.jpg')">
+        <span class="lock-badge">🔒 Premium</span>
+        <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z"/></svg></span>
+        <span class="badge" data-i18n="tr_badge_custom">✨ Sur mesure</span>
+        <h3 data-i18n="tr_create_title">Créer mon programme</h3>
+        <p data-i18n="tr_create_sub">BelFit crée un programme personnalisé selon ton objectif, ton niveau et ton matériel.</p>
+        <span class="cta" data-i18n="tr_start">Commencer</span>
+    </a>
+
+    <!-- Séance libre (gratuit) -->
+    <a href="ma-seance.html?v=21" class="choice ph md" style="background-image:url('img/card-libre.jpg')">
+        <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></span>
+        <h3 data-i18n="tr_free_title">Séance libre</h3>
+        <p data-i18n="tr_free_sub">Compose toi-même ton entraînement, exercice par exercice.</p>
+        <span class="cta" data-i18n="tr_free_cta">Créer ma séance</span>
+    </a>
+
+    <!-- Mes programmes (Premium) -->
+    <a href="programmes.html?v=9" class="choice ph sm locked" id="choiceLib" onclick="return checkPremium(event)" style="background-image:url('img/card-programmes.jpg')">
+        <span class="lock-badge">🔒 Premium</span>
+        <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg></span>
+        <h3 data-i18n="tr_progs_title">Mes programmes</h3>
+        <p data-i18n="tr_progs_sub">Retrouve tous tes programmes enregistrés.</p>
+        <span class="cta" data-i18n="open">Ouvrir</span>
+    </a>
+
+</div>
+
+<!-- JOURNAL D'ENTRAÎNEMENT (carte au même style que les bulles du dessus) -->
+<div class="choice ph sm" style="margin-top:24px; background-image:url('img/card-journal.jpg')">
+    <div class="ch-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/><path d="M9 16l2 2 4-4"/></svg></div>
+    <h3 data-i18n="tr_log_title">Journal d'entraînement</h3>
+    <p data-i18n="tr_log_sub">Note les muscles travaillés, jour après jour.</p>
+    <button class="cta" id="wlogCta" onclick="toggleWlogDays(event)" data-i18n="open">Ouvrir</button>
+    <div class="wlog-list" id="wlogList"></div>
+</div>
+
+<!-- MODALE JOURNAL (sélection muscles) -->
+<div class="ml-overlay" id="mlOverlay" onclick="if(event.target.id==='mlOverlay')closeMuscleLog()">
+    <div class="ml-modal">
+        <h3 class="ml-date" id="mlDate">—</h3>
+        <div class="ml-stats" id="mlStats"></div>
+        <div class="ml-groups" id="mlGroups"></div>
+        <div class="ml-btns">
+            <button class="ml-clear" onclick="clearMuscleDay()" data-i18n="clear">Effacer</button>
+            <button class="ml-save" onclick="saveMuscleDay()" data-i18n="save">Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE PREMIUM BIENVEILLANTE -->
+<div class="premium-overlay" id="premiumOverlay" onclick="if(event.target.id==='premiumOverlay')fermerPremium()">
+    <div class="premium-modal">
+        <div class="pm-icon">💪</div>
+        <h3 data-i18n="tr_prem_title">Les programmes sont Premium</h3>
+        <p data-i18n-html="tr_prem_body">Les programmes structurés et sur mesure font partie de BELFIT Premium. En attendant, tu peux composer ta séance librement, c'est gratuit !<br><br>Ton soutien nous aide à faire grandir BELFIT 🙏</p>
+        <a href="plans.html?v=7" class="pm-btn" data-i18n="support_unlock">Soutenir BELFIT & débloquer</a>
+        <button class="pm-close" onclick="fermerPremium()" data-i18n="later">Plus tard</button>
+    </div>
+</div>
+
+<p class="note" data-i18n="tr_note">Tous les programmes incluent les exercices détaillés, le nombre de séries et de répétitions.</p>
+
+<div class="bottom-gradient"></div>
+
+<!-- BOUTON FLOTTANT EAU -->
+<script>
+// ===== VERROUILLAGE PREMIUM =====
+function repzAcces(){
+    return localStorage.getItem('repz_premium') === '1';
+}
+function estPremium(){ return repzAcces(); }
+
+function checkPremium(e){
+    if(estPremium()) return true; // accès autorisé
+    // Sinon : bloquer et montrer la modale bienveillante
+    e.preventDefault();
+    document.getElementById('premiumOverlay').classList.add('show');
+    return false;
+}
+function fermerPremium(){
+    document.getElementById('premiumOverlay').classList.remove('show');
+}
+
+// Si premium : enlever les cadenas et la bulle devient dorée
+document.addEventListener('DOMContentLoaded', () => {
+    if(estPremium()){
+        document.querySelectorAll('.lock-badge').forEach(b => b.style.display = 'none');
+        document.querySelectorAll('.choice.locked').forEach(c => c.classList.remove('locked'));
+        if(localStorage.getItem('repz_premium') === '1'){
+            const bp = document.getElementById('bnPremium');
+            if(bp){ bp.classList.add('is-premium'); }
+        }
+    }
+    // Si on a été redirigé depuis un programme verrouillé, montrer la modale
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('premium') === '1' && !estPremium()){
+        document.getElementById('premiumOverlay').classList.add('show');
+    }
+});
+</script>
+
+<script>
+// ===== SWIPE depuis le bord gauche pour revenir à l'accueil =====
+(function(){
+    let startX = 0, startY = 0, tracking = false;
+    const EDGE = 30, DIST = 80, MAX_VERT = 60;
+    document.addEventListener('touchstart', function(e){
+        const t = e.touches[0];
+        if(t.clientX <= EDGE){ startX = t.clientX; startY = t.clientY; tracking = true; }
+        else { tracking = false; }
+    }, {passive:true});
+    document.addEventListener('touchend', function(e){
+        if(!tracking) return;
+        tracking = false;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - startX;
+        const dy = Math.abs(t.clientY - startY);
+        if(dx >= DIST && dy <= MAX_VERT){ window.location.href = 'app.html'; }
+    }, {passive:true});
+})();
+</script>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="app.html" class="bn-item">
+        <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
+        <span>Journal</span>
+    </a>
+    <a href="entrainements.html" class="bn-item active">
+        <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
+        <span>S'entraîner</span>
+    </a>
+    <a href="mes-stats.html?v=23" class="bn-item">
+        <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
+        <span>Stats</span>
+    </a>
+    <a href="plans.html?v=7" class="bn-item bn-premium" id="bnPremium">
+        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
+        <span>Premium</span>
+    </a>
+</nav>
+
+
+<script>
+// ===== REPZ_INVITE : mode découverte (navigation seule) =====
+function estInviteRepz(){ return localStorage.getItem('repz_invite') === '1'; }
+function murCompte(){
+    if(document.getElementById('inviteMurAction')) {
+        document.getElementById('inviteMurAction').style.display = 'flex';
+        return;
+    }
+    const o = document.createElement('div');
+    o.id = 'inviteMurAction';
+    o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
+    o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
+        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#DFA004;">FIT</span></div>'
+        + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">'+t('wall_title')+'</h2>'
+        + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">'+t('wall_body')+'</p>'
+        + '<a href="index.html" style="display:block;background:#DFA004;color:#fff;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">'+t('wall_cta')+'</a>'
+        + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">'+t('wall_later')+'</button>'
+        + '</div>';
+    document.body.appendChild(o);
+}
+function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return true; }
+(function(){
+    if(!estInviteRepz()) return;
+    const b = document.createElement('a');
+    b.href = 'index.html';
+    b.id = 'inviteBandeau';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#F5F6F8;border-bottom:1px solid #F3DDA0;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.innerHTML = t('invite_banner');
+    const topbar = document.querySelector('.topbar-app, .topbar');
+    if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
+    else { document.body.insertBefore(b, document.body.firstChild); }
+})();
+</script>
+
+<!-- CHRONO -->
+<div class="timer-overlay" id="timerOverlay" onclick="closeTimer()"></div>
+<div class="timer-container" id="timerContainer">
+    <div class="timer-display">
+        <div class="timer-big" id="timerDisplay">01:30</div>
+        <div class="timer-label" data-i18n="timer">Chronomètre</div>
+    </div>
+    <div class="timer-wheels">
+        <div class="wheel-col">
+            <div class="wheel" id="wheelMin"></div>
+            <div class="wheel-unit">min</div>
+        </div>
+        <div class="wheel-sep">:</div>
+        <div class="wheel-col">
+            <div class="wheel" id="wheelSec"></div>
+            <div class="wheel-unit">sec</div>
+        </div>
+        <div class="wheel-highlight"></div>
+    </div>
+    <div class="timer-controls">
+        <button class="timer-btn start" id="timerStartBtn" onclick="startTimer()" data-i18n="start">Démarrer</button>
+        <button class="timer-btn reset" onclick="resetTimer()">Reset</button>
+        <button class="timer-btn reset" onclick="closeTimer()" data-i18n="close">Fermer</button>
+    </div>
+</div>
+<button class="chrono-fab" id="chronoFab" aria-label="Chronomètre">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 2h6"/></svg>
+    <span class="chrono-fab-time" id="chronoFabTime"></span>
+</button>
+<script>
+let timerInterval=null, timerRunning=false, totalSeconds=90, lastPreset=90, timerEndAt=null;
+let molettesVerrou=false; /* true = scroll programmatique en cours, on ignore les onChange */
+function saveTimerState(){
+    try{ localStorage.setItem('belfit_chrono', JSON.stringify({
+        running: timerRunning,
+        endAt: timerEndAt,      /* source de verite du temps : un horodatage, pas un compteur */
+        total: totalSeconds,    /* utile a l'etat pause */
+        preset: lastPreset
+    })); }catch(e){}
+}
+let wheelMinVal=1, wheelSecVal=30;
+function updateTimerDisplay(){
+    const min=Math.floor(totalSeconds/60), sec=totalSeconds%60;
+    const d=document.getElementById('timerDisplay');
+    d.textContent=(min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
+    /* Montee en intensite en 3 actes : 30s respiration, 10s battement, 5s sprint */
+    d.classList.toggle('t-approche', timerRunning && totalSeconds<=30 && totalSeconds>10);
+    d.classList.toggle('t-warn', timerRunning && totalSeconds<=10 && totalSeconds>5);
+    d.classList.toggle('t-crit', timerRunning && totalSeconds<=5 && totalSeconds>0);
+    if(timerRunning && totalSeconds<=10 && totalSeconds>0){
+        d.classList.remove('tick'); void d.offsetWidth; d.classList.add('tick');
+        if(totalSeconds<=5 && navigator.vibrate){ try{ navigator.vibrate(35); }catch(e){} }
+    }
+    /* Vibrations reperes a l'entree de chaque acte */
+    if(timerRunning && (totalSeconds===30 || totalSeconds===10) && navigator.vibrate){
+        try{ navigator.vibrate(25); }catch(e){}
+    }
+    updateChronoFab();
+}
+function signalFinTimer(){
+    if(navigator.vibrate){ try{ navigator.vibrate([150,80,150]); }catch(e){} }
+}
+function finirTimer(){
+    clearInterval(timerInterval); timerRunning=false; timerEndAt=null;
+    totalSeconds=lastPreset; updateTimerDisplay();
+    const btn=document.getElementById('timerStartBtn');
+    if(btn) btn.textContent=t('start');
+    updateChronoFab(); saveTimerState();
+    signalFinTimer();
+    if(window.Notification && Notification.permission==='granted'){ new Notification("C'est parti! 💪"); }
+}
+function tickTimer(){
+    /* Le temps restant est CALCULE depuis l'horodatage de fin, jamais decremente :
+       le throttling Android en arriere-plan ne peut plus fausser le chrono */
+    const restant = Math.max(0, Math.round((timerEndAt - Date.now()) / 1000));
+    if(restant !== totalSeconds){ totalSeconds = restant; updateTimerDisplay(); saveTimerState(); }
+    if(restant <= 0) finirTimer();
+}
+function lancerIntervalle(){
+    clearInterval(timerInterval);
+    timerInterval = setInterval(tickTimer, 250); /* 4x/s : rattrape vite apres un retour d'arriere-plan */
+}
+function startTimer(){
+    const btn=document.getElementById('timerStartBtn');
+    if(timerRunning){
+        /* pause : on fige le restant et on lache l'horodatage */
+        totalSeconds = Math.max(0, Math.round((timerEndAt - Date.now()) / 1000));
+        clearInterval(timerInterval); timerRunning=false; timerEndAt=null;
+        btn.textContent=t('resume'); updateTimerDisplay(); saveTimerState(); return;
+    }
+    timerRunning=true; timerEndAt = Date.now() + totalSeconds*1000;
+    btn.textContent=t('pause'); saveTimerState();
+    lancerIntervalle();
+    updateChronoFab();
+}
+function buildWheel(el, values, selected, onChange){
+    el.innerHTML='<div style="height:50px"></div>'+
+        values.map(v=>`<div class="wheel-item" data-val="${v}">${(v<10?'0':'')+v}</div>`).join('')+
+        '<div style="height:50px"></div>';
+    const idx=values.indexOf(selected);
+    setTimeout(()=>{ el.scrollTop=(idx<0?0:idx)*50; updateWheelSel(el); },50);
+    let scrollTimer=null;
+    el.addEventListener('scroll',()=>{
+        updateWheelSel(el);
+        clearTimeout(scrollTimer);
+        scrollTimer=setTimeout(()=>{
+            const i=Math.round(el.scrollTop/50);
+            onChange(values[Math.max(0,Math.min(values.length-1,i))]);
+        },120);
+    });
+}
+function updateWheelSel(el){
+    const i=Math.round(el.scrollTop/50);
+    el.querySelectorAll('.wheel-item').forEach((it,idx)=>it.classList.toggle('sel',idx===i));
+}
+function appliquerMolettes(){
+    /* Ignore si (a) un repositionnement programmatique est en cours, ou
+       (b) un chrono tourne. Seule une vraie manip utilisateur applique les molettes. */
+    if(molettesVerrou || timerRunning) return;
+    totalSeconds=wheelMinVal*60+wheelSecVal; lastPreset=totalSeconds;
+    clearInterval(timerInterval); timerRunning=false; saveTimerState();
+    updateTimerDisplay();
+    document.getElementById('timerStartBtn').textContent=t('start');
+}
+function initWheels(){
+    const minutes=Array.from({length:61},(_,i)=>i);
+    const secondes=Array.from({length:12},(_,i)=>i*5);
+    molettesVerrou = true;
+    buildWheel(document.getElementById('wheelMin'),minutes,wheelMinVal,v=>{wheelMinVal=v;appliquerMolettes();});
+    buildWheel(document.getElementById('wheelSec'),secondes,wheelSecVal,v=>{wheelSecVal=v;appliquerMolettes();});
+    setTimeout(()=>{ molettesVerrou=false; }, 500);
+}
+function resetTimer(){
+    clearInterval(timerInterval); timerRunning=false;
+    totalSeconds=lastPreset; updateTimerDisplay(); saveTimerState();
+    document.getElementById('timerStartBtn').textContent=t('start');
+}
+function toggleTimer(){
+    const c=document.getElementById('timerContainer'), o=document.getElementById('timerOverlay');
+    const isOpen=c.classList.toggle('show');
+    o.classList.toggle('show',isOpen);
+    document.body.classList.toggle('timer-open',isOpen);
+    if(isOpen){
+        const wMin=document.getElementById('wheelMin'), wSec=document.getElementById('wheelSec');
+        // Molettes calees sur le preset courant, verrou pose pendant le scroll programmatique
+        molettesVerrou = true;
+        wheelMinVal=Math.floor(lastPreset/60); wheelSecVal=lastPreset%60;
+        setTimeout(()=>{ wMin.scrollTop=wheelMinVal*50; updateWheelSel(wMin); },60);
+        setTimeout(()=>{ wSec.scrollTop=(wheelSecVal/5)*50; updateWheelSel(wSec);
+            /* le scroll declenche des events async : on leve le verrou bien apres */
+            setTimeout(()=>{ molettesVerrou=false; }, 400);
+        },60);
+    }
+}
+function closeTimer(){
+    document.getElementById('timerContainer').classList.remove('show');
+    document.getElementById('timerOverlay').classList.remove('show');
+    document.body.classList.remove('timer-open');
+}
+/* ===== Chrono déplaçable (glisse-le où tu veux, il s'en souvient) ===== */
+(function(){
+    const fab = document.getElementById('chronoFab');
+    if(!fab) return;
+    // Restaurer la position sauvegardée (aimantée au bord le plus proche)
+    try{
+        const p = JSON.parse(localStorage.getItem('belfit_chronoPos') || 'null');
+        if(p){
+            const w = fab.offsetWidth || 52;
+            const snapX = (p.x + w/2 < window.innerWidth/2) ? 16 : window.innerWidth - w - 16;
+            appliquerPos(snapX, p.y);
+        }
+    }catch(e){}
+    function appliquerPos(x, y){
+        const maxX = window.innerWidth - fab.offsetWidth - 4;
+        const maxY = window.innerHeight - fab.offsetHeight - 4;
+        x = Math.min(Math.max(4, x), maxX);
+        y = Math.min(Math.max(4, y), maxY);
+        fab.style.left = x + 'px';
+        fab.style.top = y + 'px';
+        fab.style.right = 'auto';
+        fab.style.bottom = 'auto';
+        return {x, y};
+    }
+    let startX=0, startY=0, origX=0, origY=0, dragging=false;
+    fab.addEventListener('touchstart', function(e){
+        const t = e.touches[0];
+        startX = t.clientX; startY = t.clientY;
+        const r = fab.getBoundingClientRect();
+        origX = r.left; origY = r.top;
+        dragging = false;
+    }, {passive:true});
+    fab.addEventListener('touchmove', function(e){
+        const t = e.touches[0];
+        const dx = t.clientX - startX, dy = t.clientY - startY;
+        if(!dragging && Math.hypot(dx, dy) > 10) dragging = true;
+        if(dragging){
+            e.preventDefault();
+            appliquerPos(origX + dx, origY + dy);
+        }
+    }, {passive:false});
+    fab.addEventListener('touchend', function(e){
+        if(dragging){
+            const r = fab.getBoundingClientRect();
+            // Aimanté au bord le plus proche (gauche ou droit), jamais au milieu
+            const snapX = (r.left + r.width/2 < window.innerWidth/2)
+                ? 16
+                : window.innerWidth - r.width - 16;
+            const p = appliquerPos(snapX, r.top);
+            fab.style.transition = 'left .22s ease, top .22s ease';
+            setTimeout(()=>{ fab.style.transition = ''; }, 250);
+            try{ localStorage.setItem('belfit_chronoPos', JSON.stringify(p)); }catch(err){}
+        } else {
+            toggleTimer(); // simple tap = ouvrir/fermer le chrono
+        }
+    });
+    // clic souris (au cas où, desktop)
+    fab.addEventListener('click', function(e){ if(e.detail && !('ontouchstart' in window)) toggleTimer(); });
+})();
+
+/* Restauration du chrono après avoir quitté la page */
+(function(){
+    try{
+        const st = JSON.parse(localStorage.getItem('belfit_chrono') || 'null');
+        if(!st) return;
+        lastPreset = st.preset || 90;
+        if(st.running && st.endAt){
+            const restant = Math.round((st.endAt - Date.now()) / 1000);
+            if(restant > 0){
+                /* le chrono tournait et n'est pas fini : reprise exacte */
+                totalSeconds = restant; timerEndAt = st.endAt; timerRunning = true;
+                updateTimerDisplay();
+                const btn = document.getElementById('timerStartBtn');
+                if(btn) btn.textContent = t('pause');
+                lancerIntervalle();
+            } else {
+                /* expire pendant l'absence : on le DIT au lieu de reset en silence */
+                totalSeconds = lastPreset; timerEndAt = null;
+                updateTimerDisplay(); saveTimerState();
+                signalFinTimer();
+            }
+        } else {
+            totalSeconds = st.total ?? lastPreset;
+            updateTimerDisplay();
+        }
+        updateChronoFab();
+    }catch(e){}
+})();
+
+function updateChronoFab(){
+    const t=document.getElementById('chronoFabTime'), fab=document.getElementById('chronoFab');
+    if(timerRunning){
+        const min=Math.floor(totalSeconds/60), sec=totalSeconds%60;
+        t.textContent=(min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
+        fab.classList.add('running');
+        fab.classList.toggle('crit', totalSeconds<=5 && totalSeconds>0);
+    } else { t.textContent=''; fab.classList.remove('running','crit'); }
+}
+/* Retour au premier plan : recalage immediat du temps (aucune derive possible) */
+document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState==='visible' && timerRunning && timerEndAt) tickTimer();
+});
+initWheels(); updateTimerDisplay();
+</script>
+<script>
+/* ===== SYNC PREMIUM depuis Firestore (source de vérité = le compte) ===== */
+(function(){
+  function syncPremium(u){
+    if(!u || !window.firebase || !firebase.firestore) return;
+    firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
+      var prem = doc.exists && doc.data().premium === true;
+      var had = localStorage.getItem('repz_premium') === '1';
+      if(prem){ localStorage.setItem('repz_premium','1'); }
+      else { localStorage.removeItem('repz_premium'); }
+      if(prem !== had && !sessionStorage.getItem('repz_premSynced')){
+        sessionStorage.setItem('repz_premSynced','1');
+        location.reload();
+      }
+    }).catch(function(e){ console.warn('premium sync', e); });
+  }
+  try{
+    if(window.firebase && firebase.auth){
+      firebase.auth().onAuthStateChanged(function(u){ if(u) syncPremium(u); });
+    }
+  }catch(e){}
+})();
+</script>
+<script>
+/* ===== JOURNAL D'ENTRAÎNEMENT (8 jours glissants, ancien → récent) ===== */
+const MUSCLE_KEYS = ['pecs','dos','epaules','biceps','triceps','jambes','abdos','cardio','repos'];
+const MUSCLE_GROUPS = MUSCLE_KEYS.map(k => ({ k, get n(){ return t('mus_'+k); } }));
+const WL_COLORS = {pecs:'#EF4444', dos:'#F97316', epaules:'#F7B500', biceps:'#10B981', triceps:'#06B6D4', jambes:'#3B82F6', abdos:'#8B5CF6', cardio:'#EC4899'};
+const WL_JOURS = t('days_short').split('|');
+const WL_JOURS_L = t('days_long').split('|');
+const WL_MOIS = t('months_min').split('|');
+const WL_MOIS_L = t('months_long').split('|');
+
+function wlDateDaysAgo(n){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - n); return d; }
+function wlIso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function todayISO(){ return wlIso(new Date()); }
+function wlIsoToDate(iso){ const p = iso.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
+function wlLabel(d){ return `${t('days_short').split('|')[d.getDay()]} ${d.getDate()} ${t('months_min').split('|')[d.getMonth()]}`; }
+function wlLabelLong(d){ return `${t('days_long').split('|')[d.getDay()]} ${d.getDate()} ${t('months_long').split('|')[d.getMonth()]}`; }
+function wlMuscleName(k){ const g = MUSCLE_GROUPS.find(x => x.k === k); return g ? g.n : k; }
+
+
+function fmtDuree(sec){
+    if(!sec || sec < 60) return sec ? sec + ' s' : null;
+    const m = Math.round(sec/60);
+    if(m < 60) return m + ' min';
+    return Math.floor(m/60) + 'h' + String(m%60).padStart(2,'0');
+}
+function loadMuscleLog(){ try { return JSON.parse(localStorage.getItem('repz_muscleLog') || '{}'); } catch(e){ return {}; } }
+function saveMuscleLog(o){ localStorage.setItem('repz_muscleLog', JSON.stringify(o)); }
+
+let wlogMoisOffset = 0; // 0 = mois courant, négatif = mois passés
+
+function renderWlog(){
+    const list = document.getElementById('wlogList');
+    if(!list) return;
+    const log = loadMuscleLog();
+    const today = wlDateDaysAgo(0);
+    const todayIso = wlIso(today);
+
+    // --- Calendrier du mois affiché ---
+    const ref = new Date(today.getFullYear(), today.getMonth() + wlogMoisOffset, 1);
+    const titre = t('months_long').split('|')[ref.getMonth()] + ' ' + ref.getFullYear();
+
+    // --- Résumé utile : séances du mois affiché + dernière séance notée ---
+    const prefixeMois = wlIso(ref).slice(0, 7);
+    let nbSeancesMois = 0;
+    let dernierIso = null;
+    Object.keys(log).forEach(iso => {
+        const vals = (log[iso] || []).filter(v => v !== 'repos');
+        if(!vals.length) return;
+        if(iso.slice(0, 7) === prefixeMois && iso <= todayIso) nbSeancesMois++;
+        if(iso <= todayIso && (!dernierIso || iso > dernierIso)) dernierIso = iso;
+    });
+    let sum = '<div class="wlog-sum">';
+    if(nbSeancesMois || dernierIso){
+        sum += `<span class="wlog-sum-pill">🏋️ ${nbSeancesMois} ${t(nbSeancesMois > 1 ? 'sessions' : 'session')} ${t('in_month')} ${t('months_long').split('|')[ref.getMonth()]}</span>`;
+        if(dernierIso){
+            const dm = (log[dernierIso] || []).filter(v => v !== 'repos').map(wlMuscleName);
+            let dmTxt = dm.slice(0, 2).join(', ');
+            if(dm.length > 2) dmTxt += ' +' + (dm.length - 2);
+            sum += `<span class="wlog-sum-pill">💪 ${t('last_session')} : ${dmTxt} · ${wlLabel(wlIsoToDate(dernierIso))}</span>`;
+        }
+    } else {
+        sum += '<span class="wlog-sum-pill">'+t('first_session_hint')+'</span>';
+    }
+    sum += '</div>';
+    let cal = `<div class="wlog-cal-head">
+        <button class="wlog-nav" onclick="event.stopPropagation();wlogMoisOffset--;renderWlog()">‹</button>
+        <div class="wlog-cal-titre">${titre}</div>
+        <div style="display:flex;gap:6px;">
+            <button class="wlog-nav info${window.wlogLegende ? ' actif' : ''}" onclick="event.stopPropagation();window.wlogLegende=!window.wlogLegende;renderWlog()">i</button>
+            <button class="wlog-nav${wlogMoisOffset === 0 ? ' off' : ''}" onclick="event.stopPropagation();if(wlogMoisOffset < 0){wlogMoisOffset++;renderWlog();}">›</button>
+        </div>
+    </div>`;
+    cal += '<div class="wlog-grid">' + t('days_min').split('|').map(j => `<div class="wlog-wd">${j}</div>`).join('');
+    const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
+    const decal = (new Date(ref.getFullYear(), ref.getMonth(), 1).getDay() + 6) % 7; // semaine qui démarre lundi
+    for(let i = 0; i < decal; i++) cal += '<div></div>';
+    for(let j = 1; j <= njours; j++){
+        const iso = wlIso(new Date(ref.getFullYear(), ref.getMonth(), j));
+        const vals = (log[iso] || []).filter(v => WL_COLORS[v] || v === 'repos');
+        const repos = vals.includes('repos');
+        const muscles = vals.filter(v => v !== 'repos');
+        const futur = iso > todayIso;
+        let cls = 'wlog-cell';
+        let style = '';
+        if(muscles.length === 1){
+            cls += ' seance';
+            style = ` style="background:${WL_COLORS[muscles[0]]}"`;
+        } else if(muscles.length > 1){
+            cls += ' seance';
+            // Deux couleurs max : au-delà, moitié/moitié + petit indicateur
+            style = ` style="background:conic-gradient(${WL_COLORS[muscles[0]]} 0% 50%, ${WL_COLORS[muscles[1]]} 50% 100%)"`;
+        } else if(repos){
+            cls += ' repos';
+        }
+        if(iso === todayIso) cls += ' today';
+        if(futur) cls += ' futur';
+        const plus = muscles.length > 2 ? '<i class="wlog-more">+</i>' : '';
+        cal += `<div class="${cls}"${futur ? '' : ` onclick="event.stopPropagation();openMuscleLog('${iso}')"`}${style}>${j}${plus}</div>`;
+    }
+    cal += '</div>';
+    if(window.wlogLegende){
+        // Legende complete : tous les groupes, pas seulement ceux du mois
+        // (sinon l'utilisateur croit que Dos/Cardio/Abdos n'existent pas)
+        const src = MUSCLE_GROUPS.filter(g => WL_COLORS[g.k]);
+        cal += '<div class="wlog-legende">'
+            + src.map(g => `<span><i class="dot" style="background:${WL_COLORS[g.k]}"></i>${g.n}</span>`).join('')
+            + '<span><i class="dot repos"></i>'+t('mus_repos')+'</span><span><i class="dot today"></i>'+t('today')+'</span></div>';
+    }
+
+    list.innerHTML = sum + cal;
+    list.classList.toggle('expanded', !!window.wlogOpen);
+    const cta = document.getElementById('wlogCta');
+    if(cta) cta.textContent = window.wlogOpen ? t('collapse') : t('open');
+}
+
+function toggleWlogDays(e){
+    e.stopPropagation(); e.preventDefault();
+    window.wlogOpen = !window.wlogOpen;
+    const list = document.getElementById('wlogList');
+    const cta = document.getElementById('wlogCta');
+    list.classList.toggle('expanded', window.wlogOpen);
+    if(cta) cta.textContent = window.wlogOpen ? t('collapse') : t('open');
+}
+
+
+let mlCurrentIso = null, mlSel = [];
+function openMuscleLog(iso){
+    if(typeof inviteBloque === "function" && inviteBloque()) return;
+    mlCurrentIso = iso;
+    mlSel = (loadMuscleLog()[iso] || []).slice();
+    document.getElementById('mlDate').textContent = wlLabelLong(wlIsoToDate(iso));
+    // Détail de la journée si une séance a été trackée ce jour-là
+    let statsHtml = '';
+    try {
+        const slog = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]').filter(s => s.iso === iso);
+        if(slog.length){
+            let duree = 0, nbExos = 0, tonnage = 0, nbSeries = 0;
+            slog.forEach(s => {
+                duree += s.duree || 0;
+                (s.exos || []).forEach(ex => {
+                    nbExos++;
+                    (ex.sets || []).forEach(sr => {
+                        nbSeries++;
+                        const w = parseFloat(sr.w), r = parseFloat(sr.r);
+                        if(w > 0 && r > 0) tonnage += w * r;
+                    });
+                });
+            });
+            const parts = [];
+            const dtxt = fmtDuree(duree);
+            if(dtxt && duree >= 60) parts.push('⏱ ' + dtxt);
+            if(nbSeries) parts.push(nbSeries + ' ' + t(nbSeries > 1 ? 'sets' : 'set'));
+            if(tonnage > 0) parts.push('🏋️ ' + Math.round(tonnage).toLocaleString('fr-BE') + ' kg');
+            if(parts.length) statsHtml = '<div class="ml-stats-ligne">' + parts.join(' · ') + '</div>';
+            // Liste des exercices : nom + nombre de séries
+            const lignes = [];
+            slog.forEach(s => (s.exos || []).forEach(ex => {
+                const n = (ex.sets || []).length;
+                lignes.push(`<div class="ml-exo"><span>${ex.nom}</span><b>${n} ${t(n > 1 ? 'sets' : 'set')}</b></div>`);
+            }));
+            if(lignes.length) statsHtml += lignes.join('');
+        }
+    } catch(e){}
+    const st = document.getElementById('mlStats');
+    st.innerHTML = statsHtml;
+    st.style.display = statsHtml ? 'block' : 'none';
+    renderMlGroups();
+    document.getElementById('mlOverlay').classList.add('show');
+}
+function renderMlGroups(){
+    document.getElementById('mlGroups').innerHTML = MUSCLE_GROUPS.map(g => {
+        const on = mlSel.includes(g.k);
+        return `<button class="ml-chip${on ? ' on' : ''}${g.k === 'repos' ? ' repos' : ''}" onclick="toggleMuscle('${g.k}')">${g.n}</button>`;
+    }).join('');
+}
+function toggleMuscle(k){
+    if(k === 'repos'){
+        mlSel = mlSel.includes('repos') ? [] : ['repos'];
+    } else {
+        mlSel = mlSel.filter(x => x !== 'repos');
+        mlSel = mlSel.includes(k) ? mlSel.filter(x => x !== k) : mlSel.concat(k);
+    }
+    renderMlGroups();
+}
+function saveMuscleDay(){
+    const log = loadMuscleLog();
+    if(mlSel.length === 0) delete log[mlCurrentIso];
+    else log[mlCurrentIso] = mlSel;
+    saveMuscleLog(log);
+    pushMuscleLogToCloud(log);
+    closeMuscleLog();
+    renderWlog();
+}
+function clearMuscleDay(){
+    const log = loadMuscleLog();
+    delete log[mlCurrentIso];
+    saveMuscleLog(log);
+    pushMuscleLogToCloud(log);
+    closeMuscleLog();
+    renderWlog();
+}
+function closeMuscleLog(){ document.getElementById('mlOverlay').classList.remove('show'); }
+
+/* ===== Synchro Firestore (le journal suit ton compte) ===== */
+function pushMuscleLogToCloud(obj){
+    try{
+        if(!window.firebase || !firebase.auth || !firebase.firestore) return;
+        const u = firebase.auth().currentUser;
+        if(!u) return;
+        const ref = firebase.firestore().collection('users').doc(u.uid);
+        ref.update({ muscleLog: obj }).catch(function(){ ref.set({ muscleLog: obj }, { merge:true }).catch(function(){}); });
+    }catch(e){}
+}
+function syncMuscleLogFromCloud(u){
+    try{
+        if(!u || !window.firebase || !firebase.firestore) return;
+        firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
+            const cloud = (doc.exists && doc.data().muscleLog) ? doc.data().muscleLog : {};
+            const merged = Object.assign({}, loadMuscleLog(), cloud); // cloud prioritaire en cas de conflit
+            const limite = wlIso(wlDateDaysAgo(7));
+            Object.keys(merged).forEach(function(k){ if(k < limite) delete merged[k]; });
+            saveMuscleLog(merged);
+            pushMuscleLogToCloud(merged); // consolide et nettoie les jours effacés
+            renderWlog();
+                }).catch(function(){});
+    }catch(e){}
+}
+try{
+    if(window.firebase && firebase.auth){
+        firebase.auth().onAuthStateChanged(function(u){ if(u) syncMuscleLogFromCloud(u); });
+    }
+}catch(e){}
+
+renderWlog();
+
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
+<script>/*repzSplashFailsafe*/setTimeout(function(){var s=document.getElementById('repzSplash');if(s)s.remove();},4000);</script>
+
+
+
+<script>
+/* ===== Mode embarqué (shell main.html) : nav cachée, gestes transmis, liens adaptés ===== */
+(function(){
+  if(window.self === window.top) return;   // page ouverte en direct : rien à faire
+  // Cacher la nav locale et le splash (le shell a sa propre nav)
+  var st = document.createElement('style');
+  st.textContent = '.bottom-nav{display:none!important}#repzSplash{display:none!important}';
+  document.head.appendChild(st);
+  var sp = document.getElementById('repzSplash'); if(sp) sp.remove();
+
+  // --- Liens : onglets -> demande de slide au shell ; autres pages -> fenêtre principale
+  var TABS = {'app.html':0,'entrainements.html':1,'mes-stats.html':2,'plans.html':3};
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a) return;
+    var href = a.getAttribute('href') || '';
+    if(/^(https?:|mailto:|tel:|#|javascript:)/i.test(href)) return;
+    var file = href.split('?')[0].split('#')[0].split('/').pop();
+    if(file in TABS){
+      e.preventDefault();
+      try{ parent.postMessage({belfitTab: TABS[file]}, '*'); }catch(_){ }
+    } else {
+      a.target = '_top';
+    }
+  }, true);
+
+  // --- Gestes : détecter l'axe ici, transmettre l'horizontal au shell
+  var x0=null, y0=null, axis=null;
+  // screenX/screenY : coordonnées ÉCRAN (stables même quand la page glisse sous le doigt)
+  // capture:true = on écoute AVANT les gestionnaires de la page (graphiques, etc.)
+  var t0 = 0, pts = [];
+  document.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1){ x0=null; return; }
+    x0 = e.touches[0].screenX; y0 = e.touches[0].screenY; axis = null; t0 = Date.now();
+    pts = [{t:t0, x:x0}];
+  }, {passive:true, capture:true});
+  document.addEventListener('touchmove', function(e){
+    if(x0 === null) return;
+    var dx = e.touches[0].screenX - x0, dy = e.touches[0].screenY - y0;
+    if(axis === null && (Math.abs(dx) > 14 || Math.abs(dy) > 14)){
+      axis = Math.abs(dx) > Math.abs(dy) * 1.2 ? 'h' : 'v';
+    }
+    if(axis === 'h'){
+      e.preventDefault();
+      e.stopPropagation();
+      var now = Date.now();
+      pts.push({t:now, x:e.touches[0].screenX});
+      while(pts.length > 2 && now - pts[0].t > 120) pts.shift();
+      try{ parent.postMessage({bfS:'move', dx:dx}, '*'); }catch(_){ }
+    }
+  }, {passive:false, capture:true});
+  document.addEventListener('touchend', function(e){
+    if(x0 === null) return;
+    if(axis === 'h'){
+      var xF = e.changedTouches[0].screenX, tF = Date.now();
+      var dx = xF - x0;
+      // Vélocité de FIN de geste : sur les ~90 dernières millisecondes seulement
+      var ref = pts[0];
+      for(var i = pts.length - 1; i >= 0; i--){ if(tF - pts[i].t >= 40){ ref = pts[i]; break; } }
+      var vx = (tF - ref.t) > 0 ? (xF - ref.x) / (tF - ref.t) : 0;
+      try{ parent.postMessage({bfS:'end', dx:dx, vx:vx}, '*'); }catch(_){ }
+    }
+    x0 = null; axis = null;
+  }, {passive:true, capture:true});
+  document.addEventListener('touchcancel', function(){
+    if(axis === 'h'){ try{ parent.postMessage({bfS:'cancel'}, '*'); }catch(_){ } }
+    x0 = null; axis = null;
+  }, {passive:true, capture:true});
+})();
+
+window.addEventListener('langchange', function(){
+    try{ if(typeof renderWlog==='function') renderWlog(); }catch(e){}
+});
+</script>

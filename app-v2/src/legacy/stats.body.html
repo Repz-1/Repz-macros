@@ -1,0 +1,712 @@
+
+<!-- SPLASH BELFIT -->
+<style>
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash.hide{opacity:0;pointer-events:none;}
+#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
+#repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
+@keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+
+</style>
+<div id="repzSplash">
+  <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
+  <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
+</div>
+<script>
+(function(){
+  var s=document.getElementById('repzSplash');
+  if(!s) return;
+  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){} if(seen){ s.remove(); return; }
+  try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
+  setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
+})();
+</script>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// On attend que Firebase ait VRAIMENT fini de vérifier avant de rediriger.
+// (onAuthStateChanged peut renvoyer null au début, avant d'avoir restauré la session)
+let authVerifie = false;
+auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(user){
+        authVerifie = true;
+        if(estInvite) localStorage.removeItem('repz_invite');
+    } else if(estInvite){
+        authVerifie = true;
+    } else if(!authVerifie){
+        // Première réponse null : peut-être que Firebase n'a pas fini.
+        // On attend un court instant, et on ne redirige que si toujours pas connecté.
+        setTimeout(() => {
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1' && window.self === window.top){
+                window.location.href = 'index.html';
+            }
+        }, 1200);
+    }
+});
+function logout(){
+    // Déconnexion : on nettoie aussi le statut local (premium, invité)
+    localStorage.removeItem('repz_premium');
+    localStorage.removeItem('repz_invite');
+    localStorage.removeItem('repz_inviteDebut');
+    sessionStorage.removeItem('repz_premSynced');
+    auth.signOut().finally(()=>{ window.location.href='index.html'; });
+}
+</script>
+
+<div class="container">
+    <style>
+    .app-header { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; }
+    .ah-logo { height:55px; width:auto; display:block; }
+    .ah-actions { display:flex; align-items:center; gap:8px; }
+    .ah-btn { width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
+    .ah-btn svg { width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .ah-btn:active { background:rgba(247,181,0,.16); transform:scale(.94); }
+    </style>
+    <header class="app-header">
+        <img src="belfit-logo-header.png" class="ah-logo" alt="BELFIT">
+        <div class="ah-actions">
+            <a href="profil.html" class="ah-btn" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></a>
+            <a href="parametres.html" class="ah-btn" aria-label="Réglages"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></a>
+        </div>
+    </header>
+    <div class="page-title" data-i18n="st_title">Mes stats</div>
+    <div class="page-sub" data-i18n="st_sub">Suis ta progression : poids, calories et régularité.</div>
+
+    <!-- NOTE DE PROGRESSION GLOBALE -->
+    <div class="score-card" id="scoreCard" style="display:none">
+        <div class="score-head"><div>
+            <div class="score-title" data-i18n="st_score_title">Progression globale · 7 jours</div>
+            <div class="score-val"><span id="scoreVal">–</span><small> %</small><span class="score-dot" id="scoreDot"></span></div>
+        </div></div>
+        <div class="score-note" id="scoreNote"></div>
+        <div class="score-rows" id="scoreRows"></div>
+    </div>
+
+    <!-- POIDS -->
+    <div class="stat-card acc-green">
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7 14l3-3 2.5 2L20 7"/></svg><span data-i18n="st_weight">Évolution du poids</span></h2>
+        <div class="card-sub" id="weightSub" data-i18n="st_weight_sub">Tes dernières pesées</div>
+        <div id="weightSummary"></div>
+        <div id="weightChart"></div>
+        <button class="weight-add-btn" onclick="ouvrirPeseeeDepuisStats()" data-i18n="st_weight_add">+ Ajouter / modifier mon poids</button>
+    </div>
+
+    <!-- CALORIES -->
+    <div class="stat-card acc-orange">
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M12 3C9 7 7 9 7 13a5 5 0 0010 0c0-2-1-3.6-2.5-5-.3 1.2-1 2-2 2.4C13 8 13 5.5 12 3z"/></svg><span data-i18n="st_kcal">Calories enregistrées</span></h2>
+        <div class="card-sub" id="kcalSub" data-i18n="st_kcal_sub">Tes journées récentes</div>
+        <div id="kcalSummary"></div>
+        <div id="kcalChart"></div>
+    </div>
+
+    <!-- PROGRESSION EXERCICES -->
+    <div class="stat-card acc-blue">
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></svg><span data-i18n="st_exo">Progression par exercice</span></h2>
+        <div class="card-sub" data-i18n="st_exo_sub">Ta charge sur la série la plus lourde, séance après séance</div>
+        <div id="exoProgWrap"></div>
+    </div>
+
+    <!-- RÉPARTITION MUSCULAIRE -->
+    <div class="stat-card acc-red">
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z"/></svg><span data-i18n="st_repart">Répartition musculaire</span></h2>
+        <div class="repart-periode" data-i18n="st_this_week">Cette semaine</div>
+        <div id="repartWrap"></div>
+    </div>
+
+    <!-- RECORDS PERSONNELS -->
+    <div class="stat-card acc-violet">
+        <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 01-10 0V4z"/><path d="M7 6H4a2 2 0 002 4h1"/><path d="M17 6h3a2 2 0 01-2 4h-1"/></svg><span data-i18n="st_records">Records personnels</span></h2>
+        <div class="card-sub" data-i18n="st_records_sub">Tes meilleures charges, tous exercices confondus</div>
+        <div id="recordsWrap"></div>
+    </div>
+
+    <!-- INVITATION PREMIUM (bienveillante) -->
+    <div class="premium-invite" id="premiumInvite">
+        <div class="pi-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg></div>
+        <h3 data-i18n="st_prem_title">Débloque tout ton historique</h3>
+        <p data-i18n-html="st_prem_body">Tu vois ici tes 7 derniers jours. Passe à BELFIT Premium pour suivre toute ta progression sur des semaines et des mois, avec tes moyennes et tes tendances.<br><br>Ton soutien nous aide à faire grandir BELFIT.</p>
+        <a href="plans.html?v=7" class="pi-btn" data-i18n="support_unlock">Soutenir BELFIT & débloquer</a>
+        <div class="locked-note" data-i18n="st_locked_note">Historique complet · Moyennes · Tendances</div>
+    </div>
+</div>
+
+<script>
+// ===== DONNÉES (mêmes clés que app.html) =====
+function ouvrirPeseeeDepuisStats(){
+    // Stats est une iframe : on demande au shell d'aller au journal et d'ouvrir la modale
+    try{ window.parent.postMessage({ belfitAction:'openWeight' }, '*'); }catch(e){}
+}
+let weightLog = [];
+let history = [];
+try { const w = localStorage.getItem('repz_weightLog'); if(w) weightLog = JSON.parse(w); } catch(e){}
+try { const h = localStorage.getItem('repz_history'); if(h) history = JSON.parse(h); } catch(e){}
+
+const estPremium = localStorage.getItem('repz_premium') === '1';
+const LIMITE_GRATUIT = 7; // jours visibles en gratuit
+
+// Bulle premium dorée si déjà premium
+if(estPremium){
+    const bp = document.getElementById('bnPremium');
+    if(bp){ bp.classList.add('is-premium'); bp.removeAttribute('href'); }
+    // Cacher l'invitation premium
+    const inv = document.getElementById('premiumInvite');
+    if(inv) inv.style.display = 'none';
+}
+
+// ===== POIDS =====
+function renderWeight(){
+    const chart = document.getElementById('weightChart');
+    const summary = document.getElementById('weightSummary');
+    const sub = document.getElementById('weightSub');
+    if(!weightLog.length){
+        chart.innerHTML = '<div class="chart-empty"><div>'+t('st_no_weight')+'<br><a class="ce-btn" href="app.html?poids=1">'+t('st_add_weight')+'</a></div></div>';
+        summary.innerHTML = '';
+        return;
+    }
+    // Trier par date croissante
+    let data = [...weightLog].sort((a,b)=> a.iso.localeCompare(b.iso));
+    // Limiter en gratuit
+    let total = data.length;
+    if(!estPremium && data.length > LIMITE_GRATUIT){
+        data = data.slice(-LIMITE_GRATUIT);
+        sub.textContent = t('st_last_weighins',{n:LIMITE_GRATUIT,total:total});
+    } else {
+        sub.textContent = data.length + ' ' + t(data.length>1?'weighins':'weighin');
+    }
+    // Résumé : poids actuel + variation
+    const actuel = parseFloat(data[data.length-1].weight);
+    const debut = parseFloat(data[0].weight);
+    const diff = (actuel - debut).toFixed(1);
+    const diffTxt = diff > 0 ? `+${diff}` : diff;
+    summary.innerHTML = `<div class="stat-summary">
+        <div class="stat-box"><div class="sb-val">${actuel} kg</div><div class="sb-lbl">${t('st_cur_weight')}</div></div>
+        <div class="stat-box"><div class="sb-val">${diffTxt} kg</div><div class="sb-lbl">${t('st_variation')}</div></div>
+    </div>`;
+    // Graphique
+    const poids = data.map(d=>parseFloat(d.weight));
+    const min = Math.min(...poids) - 1, max = Math.max(...poids) + 1;
+    chart.className = 'chart';
+    chart.innerHTML = data.map(d=>{
+        const p = parseFloat(d.weight);
+        const h = max>min ? ((p-min)/(max-min))*100 : 50;
+        const jour = d.date ? d.date.split(' ').slice(0,2).join(' ') : '';
+        return `<div class="chart-bar-wrap">
+            <div class="chart-val">${p}</div>
+            <div class="chart-bar weight" style="height:${Math.max(6,h)}%"></div>
+            <div class="chart-day">${jour}</div>
+        </div>`;
+    }).join('');
+}
+
+// ===== CALORIES =====
+function renderKcal(){
+    const chart = document.getElementById('kcalChart');
+    const summary = document.getElementById('kcalSummary');
+    const sub = document.getElementById('kcalSub');
+    if(!history.length){
+        chart.innerHTML = '<div class="chart-empty"><div>'+t('st_no_day')+'<br><a class="ce-btn" href="app.html?v=27">'+t('st_save_day')+'</a></div></div>';
+        summary.innerHTML = '';
+        return;
+    }
+    let data = [...history].sort((a,b)=> a.iso.localeCompare(b.iso));
+    let total = data.length;
+    if(!estPremium && data.length > LIMITE_GRATUIT){
+        data = data.slice(-LIMITE_GRATUIT);
+        sub.textContent = t('st_last_days',{n:LIMITE_GRATUIT,total:total});
+    } else {
+        sub.textContent = data.length + ' ' + t(data.length>1?'days':'day');
+    }
+    // Moyenne
+    const moy = Math.round(data.reduce((s,d)=>s+parseInt(d.kcal||0),0)/data.length);
+    const derniere = parseInt(data[data.length-1].kcal||0);
+    summary.innerHTML = `<div class="stat-summary">
+        <div class="stat-box"><div class="sb-val">${moy}</div><div class="sb-lbl">${t('st_avg_kcal')}</div></div>
+        <div class="stat-box"><div class="sb-val">${derniere}</div><div class="sb-lbl">${t('st_last_day')}</div></div>
+    </div>`;
+    const kcals = data.map(d=>parseInt(d.kcal||0));
+    const max = Math.max(...kcals) * 1.1;
+    chart.className = 'chart';
+    chart.innerHTML = data.map(d=>{
+        const k = parseInt(d.kcal||0);
+        const h = max>0 ? (k/max)*100 : 0;
+        const jour = d.date ? d.date.split(' ').slice(0,2).join(' ') : '';
+        return `<div class="chart-bar-wrap">
+            <div class="chart-val">${k}</div>
+            <div class="chart-bar kcalbar" style="height:${Math.max(6,h)}%"></div>
+            <div class="chart-day">${jour}</div>
+        </div>`;
+    }).join('');
+}
+
+// ===== DONNÉES COMPLÉMENTAIRES =====
+let sessionLog = [], muscleLog = {}, setLogAll = {};
+try { sessionLog = JSON.parse(localStorage.getItem('repz_sessionLog') || '[]'); } catch(e){}
+try { muscleLog = JSON.parse(localStorage.getItem('repz_muscleLog') || '{}'); } catch(e){}
+try { setLogAll = JSON.parse(localStorage.getItem('repz_setLog') || '{}'); } catch(e){}
+let goalStats = { kcal:0, weight:0 };
+try { const g = JSON.parse(localStorage.getItem('repz_goal') || 'null'); if(g) goalStats = g; } catch(e){}
+
+function isoNDaysAgo(n){ const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
+
+function jourActif(iso){
+    // Une journée compte si : kcal enregistrées, muscle noté (hors repos), séance faite ou pesée
+    if(history.some(e => e.iso === iso)) return true;
+    const m = muscleLog[iso];
+    if(m && m.length && !(m.length === 1 && m[0] === 'repos')) return true;
+    if(sessionLog.some(s => s.iso === iso)) return true;
+    if(weightLog.some(w => w.iso === iso)) return true;
+    return false;
+}
+function calcStreak(){
+    let streak = 0, i = 0;
+    // Aujourd'hui pas encore rempli ne casse pas la série
+    if(!jourActif(isoNDaysAgo(0))) i = 1;
+    while(i < 400 && jourActif(isoNDaysAgo(i))){ streak++; i++; }
+    return streak;
+}
+
+// ===== SCORES (7 derniers jours) =====
+function calcScores(){
+    const j7 = []; for(let i=0;i<7;i++) j7.push(isoNDaysAgo(i));
+
+    // Nutrition : journées enregistrées / 7
+    const nutriJours = j7.filter(iso => history.some(e => e.iso === iso)).length;
+    const nutrition = Math.round(nutriJours / 7 * 100);
+
+    // Entraînement : jours actifs muscu (journal hors repos OU séance) / objectif 4
+    const trainJours = j7.filter(iso => {
+        const m = muscleLog[iso];
+        return (m && m.length && !(m.length === 1 && m[0] === 'repos')) || sessionLog.some(s => s.iso === iso);
+    }).length;
+    const entrainement = Math.min(100, Math.round(trainJours / 4 * 100));
+
+    // Poids : pesées sur 14 jours + direction vers l'objectif
+    const p14 = weightLog.filter(w => w.iso >= isoNDaysAgo(14)).sort((a,b)=>a.iso.localeCompare(b.iso));
+    let poids;
+    if(p14.length === 0) poids = weightLog.length ? 40 : 0;
+    else if(p14.length === 1) poids = 60;
+    else {
+        const first = parseFloat(p14[0].weight), last = parseFloat(p14[p14.length-1].weight);
+        const cible = parseFloat(goalStats.weight || 0);
+        if(cible > 0){
+            poids = (Math.abs(last - cible) <= Math.abs(first - cible)) ? 100 : 65;
+        } else poids = 90;
+    }
+
+    // Régularité : jours actifs / 7
+    const actifs = j7.filter(jourActif).length;
+    const regularite = Math.round(actifs / 7 * 100);
+
+    return { nutrition, entrainement, poids, regularite };
+}
+
+function renderScore(){
+    const card = document.getElementById('scoreCard');
+    const s = calcScores();
+    const rien = !history.length && !weightLog.length && !sessionLog.length && !Object.keys(muscleLog).length;
+    if(rien){ card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    const global = Math.round((s.nutrition + s.entrainement + s.poids + s.regularite) / 4);
+    document.getElementById('scoreVal').textContent = global;
+    const dot = document.getElementById('scoreDot');
+    dot.style.background = global >= 70 ? '#10B981' : (global >= 40 ? '#F97316' : '#DC2626');
+    document.getElementById('scoreNote').textContent =
+        global >= 85 ? t('st_note_a') :
+        global >= 70 ? t('st_note_b') :
+        global >= 40 ? t('st_note_c') :
+        t('st_note_d');
+    const rows = [
+        [t('st_row_nutrition'), s.nutrition],
+        [t('st_row_training'), s.entrainement],
+        [t('st_row_weight'), s.poids],
+        [t('st_row_regularity'), s.regularite],
+    ];
+    document.getElementById('scoreRows').innerHTML = rows.map(r =>
+        `<div class="score-row"><div class="sr-lbl">${r[0]}</div><div class="sr-bar"><div class="sr-fill" style="width:${r[1]}%"></div></div><div class="sr-val">${r[1]}%</div></div>`
+    ).join('');
+}
+
+// ===== RECORDS PERSONNELS =====
+function renderRecords(){
+    const w = document.getElementById('recordsWrap');
+    const prs = [];
+    Object.keys(setLogAll).forEach(nom => {
+        let best = 0, reps = 0, dateBest = '';
+        setLogAll[nom].forEach(e => e.sets.forEach(s => {
+            const wgt = parseFloat(s.w);
+            if(!isNaN(wgt) && wgt > best){ best = wgt; reps = s.r || 0; dateBest = e.iso; }
+        }));
+        if(best > 0) prs.push({ nom, best, reps, dateBest });
+    });
+    if(!prs.length){
+        w.innerHTML = '<div class="chart-empty"><div>'+t('st_no_records')+'<br><a class="ce-btn" href="entrainements.html?v=17">'+t('st_start_session')+'</a></div></div>';
+        return;
+    }
+    prs.sort((a,b) => b.best - a.best);
+    let html = prs.slice(0,5).map((p,i) =>
+        `<div class="pr-row"><span class="pr-rank${i===0?' r1':''}">${i+1}</span><span class="pr-name">${p.nom}</span><span class="pr-val">${p.best} kg${p.reps ? ' × ' + p.reps : ''}</span></div>`
+    ).join('');
+    // Record le plus récent
+    const recent = [...prs].sort((a,b) => (b.dateBest||'').localeCompare(a.dateBest||''))[0];
+    if(recent && recent.dateBest){
+        const d = new Date(recent.dateBest + 'T00:00');
+        html += `<div class="pr-recent">Dernier record : <b>${recent.nom}</b> — ${recent.best} kg, le ${d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}</div>`;
+    }
+    w.innerHTML = html;
+}
+
+let repartPeriode = 'semaine';
+function setRepartPeriode(p, btn){
+    repartPeriode = p;
+    document.querySelectorAll('.rt-btn').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    renderRepartition();
+}
+function renderRepartition(){
+    const wrap = document.getElementById('repartWrap');
+    // Toujours la semaine en cours (lundi → aujourd'hui)
+    const auj = new Date();
+    const jourSem = (auj.getDay() + 6) % 7; // 0 = lundi
+    const lundi = new Date(auj); lundi.setDate(auj.getDate() - jourSem);
+    const depuis = lundi.toISOString().slice(0,10);
+    // Compter les muscles travaillés depuis lundi (journal muscles)
+    const compte = {};
+    Object.keys(muscleLog).forEach(iso => {
+        if(iso < depuis) return;
+        (muscleLog[iso] || []).forEach(m => {
+            if(m === 'repos') return;
+            compte[m] = (compte[m] || 0) + 1;
+        });
+    });
+    const groupes = [
+        {k:'pecs', c:'#EF4444'}, {k:'dos', c:'#F97316'},
+        {k:'epaules', c:'#F7B500'}, {k:'biceps', c:'#10B981'},
+        {k:'triceps', c:'#06B6D4'}, {k:'jambes', c:'#3B82F6'},
+        {k:'abdos', c:'#8B5CF6'}, {k:'cardio', c:'#EC4899'},
+    ].map(g => Object.defineProperty(g, 'n', { get(){ return t('mus_'+g.k); } }));
+    const total = Object.values(compte).reduce((a,b)=>a+b, 0);
+    if(!total){
+        wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG({}, 0)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>${t('st_not_worked')}</div></div><div class="repart-body"><div class="repart-vide">${t('st_repart_empty')}</div></div></div>`;
+        return;
+    }
+    const max = Math.max(...groupes.map(g => compte[g.k] || 0));
+    // Largeur : proportionnelle au max, mais un minimum visible dès 1 séance
+    const bars = groupes.filter(g => compte[g.k]).sort((a,b)=>(compte[b.k]||0)-(compte[a.k]||0)).map(g => {
+        const n = compte[g.k] || 0;
+        const w = Math.max(18, Math.round(n/max*100));
+        return `<div class="rep-row"><div class="rep-lbl">${g.n}</div><div class="rep-track"><div class="rep-fill" style="width:${w}%;background:${g.c}"></div></div><div class="rep-val">${n}</div></div>`;
+    }).join('');
+
+    // ALERTE : grands muscles pas travaillés depuis 6+ jours (vraie dernière date, toutes semaines)
+    const grands = ['pecs','dos','jambes','epaules'];
+    const aujIso = new Date().toISOString().slice(0,10);
+    function joursDepuis(k){
+        let dernier = null;
+        Object.keys(muscleLog).forEach(iso => {
+            if((muscleLog[iso]||[]).includes(k) && (!dernier || iso > dernier)) dernier = iso;
+        });
+        if(!dernier) return Infinity;
+        return Math.round((new Date(aujIso) - new Date(dernier)) / 86400000);
+    }
+    const negliges = grands.map(k => ({k, j: joursDepuis(k)})).filter(x => x.j > 6);
+    // Suggestion du jour : ce que tu as fait le même jour la semaine passée
+    const dSem = new Date(aujIso); dSem.setDate(dSem.getDate() - 7);
+    const isoSem = dSem.toISOString().slice(0, 10);
+    const memesJour = (muscleLog[isoSem] || []).filter(v => v !== 'repos').map(k => { const g = groupes.find(x => x.k === k); return g ? g.n.toLowerCase() : null; }).filter(Boolean);
+    const aujFait = (muscleLog[aujIso] || []).length > 0;
+    let note = '';
+    if(memesJour.length && !aujFait){
+        const jourNom = t('days_long').split('|')[new Date(aujIso).getDay()].toLowerCase();
+        const txt = t('st_suggestion',{muscles:memesJour.join(', '),day:jourNom});
+        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 9l12-2"/></svg>${txt}</div>`;
+    } else if(negliges.length){
+        const items = negliges.map(x => {
+            const nom = groupes.find(g=>g.k===x.k).n.toLowerCase();
+            return x.j === Infinity ? nom : `${nom} (${x.j} j)`;
+        });
+        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 9l12-2"/></svg>${t('st_next_hint')} ${items.join(', ')}.</div>`;
+    } else {
+        note = `<div class="repart-note"><svg class="rn-ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>${t('st_balanced')}</div>`;
+    }
+
+    wrap.innerHTML = `<div class="repart-layout"><div class="bodymap">${bodyMapSVG(compte, max)}<div class="bodymap-legend"><i style="background:#E9EBEF"></i>${t('st_not_worked')}</div></div><div class="repart-body">${bars}</div></div>${note}`;
+}
+
+function bodyMapSVG(compte, max){
+    // Chaque zone = la couleur de SON muscle (identique aux barres).
+    // L'opacité traduit l'intensité : pâle = peu, saturé = beaucoup.
+    const COL = {pecs:'#EF4444', dos:'#F97316', epaules:'#F7B500', biceps:'#10B981', triceps:'#06B6D4', jambes:'#3B82F6', abdos:'#8B5CF6'};
+    function col(k){
+        // Travaillé sur la période → couleur du muscle ; sinon gris
+        return (compte[k] > 0) ? (COL[k] || '#F7B500') : '#E9EBEF';
+    }
+    // Silhouette simplifiée vue de face — chaque zone = un groupe
+    return `<svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="16" r="11" class="bp"/>
+        <rect x="42" y="27" width="16" height="8" rx="3" class="bp"/>
+        <path class="bp" style="fill:${col('epaules')}" d="M30 37 q-8 1 -10 8 l4 6 q6 -6 12 -6z"/>
+        <path class="bp" style="fill:${col('epaules')}" d="M70 37 q8 1 10 8 l-4 6 q-6 -6 -12 -6z"/>
+        <path class="bp" style="fill:${col('pecs')}" d="M36 37 h28 q3 0 3 4 v10 q0 4 -4 4 h-26 q-4 0 -4 -4 v-10 q0 -4 3 -4z"/>
+        <path class="bp" style="fill:${col('abdos')}" d="M39 60 h22 q2 0 2 3 v20 q0 3 -3 3 h-20 q-3 0 -3 -3 v-20 q0 -3 2 -3z"/>
+        <path class="bp" style="fill:${col('biceps')}" d="M22 47 q-4 8 -4 18 l6 2 q2 -10 4 -16z"/>
+        <path class="bp" style="fill:${col('biceps')}" d="M78 47 q4 8 4 18 l-6 2 q-2 -10 -4 -16z"/>
+        <path class="bp" style="fill:${col('triceps')}" d="M17 66 q-2 8 -1 16 l6 -1 q0 -8 1 -14z"/>
+        <path class="bp" style="fill:${col('triceps')}" d="M83 66 q2 8 1 16 l-6 -1 q0 -8 -1 -14z"/>
+        <path class="bp" style="fill:${col('jambes')}" d="M40 89 h9 v40 q0 6 -5 6 q-5 0 -5 -6 z"/>
+        <path class="bp" style="fill:${col('jambes')}" d="M60 89 h-9 v40 q0 6 5 6 q5 0 5 -6 z"/>
+        <path class="bp" style="fill:${col('jambes')}" d="M39 137 h10 v34 q0 4 -5 4 q-5 0 -5 -4z"/>
+        <path class="bp" style="fill:${col('jambes')}" d="M61 137 h-10 v34 q0 4 5 4 q5 0 5 -4z"/>
+    </svg>`;
+}
+
+renderScore();
+renderRepartition();
+renderRecords();
+renderWeight();
+renderKcal();
+
+// ===== PROGRESSION PAR EXERCICE =====
+function getSetLog(){
+    try { return JSON.parse(localStorage.getItem('repz_setLog') || '{}'); } catch(e){ return {}; }
+}
+function topSet(sets){
+    // Meilleure charge de la séance (série la plus lourde)
+    let best = null;
+    sets.forEach(s => {
+        const w = (s.w === '' || s.w == null) ? null : parseFloat(s.w);
+        if(w != null && (best == null || w > best.w)) best = { w:w, r:s.r };
+    });
+    return best;
+}
+function renderExoProg(sel){
+    const wrap = document.getElementById('exoProgWrap');
+    const log = getSetLog();
+    // Ne garder que les exos avec au moins une charge chiffrée
+    const noms = Object.keys(log).filter(n =>
+        log[n].some(e => e.sets.some(s => s.w !== '' && s.w != null))
+    ).sort();
+
+    if(!noms.length){
+        wrap.innerHTML = '<div class="chart-empty"><div>'+t('st_no_sets')+'<br><a class="ce-btn" href="entrainements.html?v=17">'+t('st_start_session')+'</a></div></div>';
+        return;
+    }
+
+    const nom = (sel && noms.includes(sel)) ? sel : noms[0];
+    const hist = log[nom].filter(e => e.sets.some(s => s.w !== '' && s.w != null)).slice(-7);
+
+    // PR (charge max jamais soulevée sur cet exo)
+    let pr = 0, prReps = 0;
+    log[nom].forEach(e => e.sets.forEach(s => {
+        const w = parseFloat(s.w);
+        if(!isNaN(w) && w > pr){ pr = w; prReps = s.r || 0; }
+    }));
+    // Progression depuis la 1re séance chiffrée
+    const first = topSet(log[nom].find(e => topSet(e.sets)).sets);
+    const last = topSet(hist[hist.length-1].sets);
+    const delta = (first && last) ? (last.w - first.w) : 0;
+    const deltaStr = delta > 0 ? `+${delta} kg` : (delta < 0 ? `${delta} kg` : '—');
+
+    const options = noms.map(n => `<option value="${n}" ${n===nom?'selected':''}>${n}</option>`).join('');
+
+    const vals = hist.map(e => topSet(e.sets).w);
+    const max = Math.max(...vals), min = Math.min(...vals);
+    const span = max - min || 1;
+
+    const bars = hist.map(e => {
+        const t = topSet(e.sets);
+        const h = 25 + ((t.w - min) / span) * 75; // 25→100 % pour rester lisible
+        const d = new Date(e.iso + 'T00:00');
+        const jour = d.toLocaleDateString('fr-FR', {day:'numeric', month:'short'});
+        return `<div class="chart-bar-wrap">
+            <div class="chart-val">${t.w}</div>
+            <div class="chart-bar charge" style="height:${h}%"></div>
+            <div class="chart-day">${jour}</div>
+        </div>`;
+    }).join('');
+
+    wrap.innerHTML = `
+        <select class="exo-select" onchange="renderExoProg(this.value)">${options}</select>
+        <div class="exo-pr">
+            <div class="exo-pr-box"><div class="v">${pr} kg</div><div class="l">${t('st_record')}${prReps?` × ${prReps}`:''}</div></div>
+            <div class="exo-pr-box"><div class="v">${deltaStr}</div><div class="l">${t('st_since_start')}</div></div>
+            <div class="exo-pr-box"><div class="v">${hist.length}</div><div class="l">${t('st_sessions_tracked')}</div></div>
+        </div>
+        <div class="chart">${bars}</div>`;
+}
+renderExoProg();
+</script>
+
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="app.html?v=27" class="bn-item">
+        <svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg>
+        <span>Journal</span>
+    </a>
+    <a href="entrainements.html?v=17" class="bn-item">
+        <svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg>
+        <span>S'entraîner</span>
+    </a>
+    <a href="mes-stats.html?v=23" class="bn-item active">
+        <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
+        <span>Stats</span>
+    </a>
+    <a href="plans.html?v=7" class="bn-item bn-premium" id="bnPremium">
+        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg>
+        <span>Premium</span>
+    </a>
+</nav>
+
+
+<script>
+// ===== REPZ_INVITE : mode découverte (navigation seule) =====
+function estInviteRepz(){ return localStorage.getItem('repz_invite') === '1'; }
+function murCompte(){
+    if(document.getElementById('inviteMurAction')) {
+        document.getElementById('inviteMurAction').style.display = 'flex';
+        return;
+    }
+    const o = document.createElement('div');
+    o.id = 'inviteMurAction';
+    o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
+    o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
+        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#F7B500;">FIT</span></div>'
+        + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">'+t('wall_title')+'</h2>'
+        + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">'+t('wall_body')+'</p>'
+        + '<a href="index.html" style="display:block;background:#F7B500;color:#181818;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">'+t('wall_cta')+'</a>'
+        + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">'+t('wall_later')+'</button>'
+        + '</div>';
+    document.body.appendChild(o);
+}
+function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return true; }
+(function(){
+    if(!estInviteRepz()) return;
+    const b = document.createElement('a');
+    b.href = 'index.html';
+    b.id = 'inviteBandeau';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFF9E8;border-bottom:1px solid #F3D98A;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.innerHTML = t('invite_banner');
+    const topbar = document.querySelector('.topbar-app, .topbar');
+    if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
+    else { document.body.insertBefore(b, document.body.firstChild); }
+})();
+</script>
+
+<script>
+/* ===== SYNC PREMIUM depuis Firestore (source de vérité = le compte) ===== */
+(function(){
+  function syncPremium(u){
+    if(!u || !window.firebase || !firebase.firestore) return;
+    firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
+      var prem = doc.exists && doc.data().premium === true;
+      var had = localStorage.getItem('repz_premium') === '1';
+      if(prem){ localStorage.setItem('repz_premium','1'); }
+      else { localStorage.removeItem('repz_premium'); }
+      if(prem !== had && !sessionStorage.getItem('repz_premSynced')){
+        sessionStorage.setItem('repz_premSynced','1');
+        location.reload();
+      }
+    }).catch(function(e){ console.warn('premium sync', e); });
+  }
+  try{
+    if(window.firebase && firebase.auth){
+      firebase.auth().onAuthStateChanged(function(u){ if(u) syncPremium(u); });
+    }
+  }catch(e){}
+})();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
+<script>/*repzSplashFailsafe*/setTimeout(function(){var s=document.getElementById('repzSplash');if(s)s.remove();},4000);</script>
+
+
+
+<script>
+/* ===== Mode embarqué (shell main.html) : nav cachée, gestes transmis, liens adaptés ===== */
+(function(){
+  if(window.self === window.top) return;   // page ouverte en direct : rien à faire
+  // Cacher la nav locale et le splash (le shell a sa propre nav)
+  var st = document.createElement('style');
+  st.textContent = '.bottom-nav{display:none!important}#repzSplash{display:none!important}';
+  document.head.appendChild(st);
+  var sp = document.getElementById('repzSplash'); if(sp) sp.remove();
+
+  // --- Liens : onglets -> demande de slide au shell ; autres pages -> fenêtre principale
+  var TABS = {'app.html':0,'entrainements.html':1,'mes-stats.html':2,'plans.html':3};
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a) return;
+    var href = a.getAttribute('href') || '';
+    if(/^(https?:|mailto:|tel:|#|javascript:)/i.test(href)) return;
+    var file = href.split('?')[0].split('#')[0].split('/').pop();
+    if(file in TABS){
+      e.preventDefault();
+      try{ parent.postMessage({belfitTab: TABS[file]}, '*'); }catch(_){ }
+    } else {
+      a.target = '_top';
+    }
+  }, true);
+
+  // --- Gestes : détecter l'axe ici, transmettre l'horizontal au shell
+  var x0=null, y0=null, axis=null;
+  // screenX/screenY : coordonnées ÉCRAN (stables même quand la page glisse sous le doigt)
+  // capture:true = on écoute AVANT les gestionnaires de la page (graphiques, etc.)
+  var t0 = 0, pts = [];
+  document.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1){ x0=null; return; }
+    x0 = e.touches[0].screenX; y0 = e.touches[0].screenY; axis = null; t0 = Date.now();
+    pts = [{t:t0, x:x0}];
+  }, {passive:true, capture:true});
+  document.addEventListener('touchmove', function(e){
+    if(x0 === null) return;
+    var dx = e.touches[0].screenX - x0, dy = e.touches[0].screenY - y0;
+    if(axis === null && (Math.abs(dx) > 14 || Math.abs(dy) > 14)){
+      axis = Math.abs(dx) > Math.abs(dy) * 1.2 ? 'h' : 'v';
+    }
+    if(axis === 'h'){
+      e.preventDefault();
+      e.stopPropagation();
+      var now = Date.now();
+      pts.push({t:now, x:e.touches[0].screenX});
+      while(pts.length > 2 && now - pts[0].t > 120) pts.shift();
+      try{ parent.postMessage({bfS:'move', dx:dx}, '*'); }catch(_){ }
+    }
+  }, {passive:false, capture:true});
+  document.addEventListener('touchend', function(e){
+    if(x0 === null) return;
+    if(axis === 'h'){
+      var xF = e.changedTouches[0].screenX, tF = Date.now();
+      var dx = xF - x0;
+      // Vélocité de FIN de geste : sur les ~90 dernières millisecondes seulement
+      var ref = pts[0];
+      for(var i = pts.length - 1; i >= 0; i--){ if(tF - pts[i].t >= 40){ ref = pts[i]; break; } }
+      var vx = (tF - ref.t) > 0 ? (xF - ref.x) / (tF - ref.t) : 0;
+      try{ parent.postMessage({bfS:'end', dx:dx, vx:vx}, '*'); }catch(_){ }
+    }
+    x0 = null; axis = null;
+  }, {passive:true, capture:true});
+  document.addEventListener('touchcancel', function(){
+    if(axis === 'h'){ try{ parent.postMessage({bfS:'cancel'}, '*'); }catch(_){ } }
+    x0 = null; axis = null;
+  }, {passive:true, capture:true});
+})();
+
+window.addEventListener('langchange', function(){
+    try{ renderScore(); renderWeight(); renderKcal(); renderRepartition(); renderRecords(); renderExoProg(); }catch(e){}
+});
+</script>

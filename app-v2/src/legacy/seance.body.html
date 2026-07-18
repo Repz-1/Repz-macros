@@ -1,0 +1,1164 @@
+
+<!-- SPLASH BELFIT -->
+<style>
+#repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#repzSplash.hide{opacity:0;pointer-events:none;}
+#repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
+#repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
+@keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+
+</style>
+<div id="repzSplash">
+  <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
+  <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
+</div>
+<script>
+(function(){
+  var s=document.getElementById('repzSplash');
+  if(!s) return;
+  var seen=null; try{ seen=sessionStorage.getItem('repz_splash'); }catch(e){} if(seen){ s.remove(); return; }
+  try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
+  setTimeout(function(){ s.classList.add('hide'); setTimeout(function(){ if(s)s.remove(); },550); }, 1600);
+})();
+</script>
+
+
+<!-- AUTH CHECK + FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+let authVerifie = false;
+auth.onAuthStateChanged((user) => {
+    const estInvite = localStorage.getItem('repz_invite') === '1';
+    if(user) { authVerifie = true; localStorage.removeItem('repz_invite'); }
+    else if(estInvite) { authVerifie = true; }
+    else if(!authVerifie) {
+        // Firebase peut renvoyer null avant d'avoir fini : on attend avant de rediriger
+        setTimeout(() => {
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+                window.location.href = "index.html";
+            }
+        }, 1200);
+    }
+});
+function logout(){
+    // Déconnexion : on nettoie aussi le statut local (premium, invité)
+    localStorage.removeItem('repz_premium');
+    localStorage.removeItem('repz_invite');
+    localStorage.removeItem('repz_inviteDebut');
+    sessionStorage.removeItem('repz_premSynced');
+    auth.signOut().finally(()=>{ window.location.href='index.html'; });
+}
+</script>
+
+<!-- ÉCRAN 1 : SÉLECTION -->
+<div class="topbar-app">
+    <a href="main.html#0" class="topbar-home" aria-label="Accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5"/></svg></a>
+    <a href="main.html#3" class="premium-pill">✨ Premium</a>
+</div>
+<div class="screen active" id="screenSelect">
+    <div class="top">
+        <a href="main.html#1" class="back-btn" id="backBtnSelect">←</a>
+        <h1 data-i18n="ms_title">Choisir mes exercices</h1>
+    </div>
+    <div class="muscle-tabs" id="muscleTabs"></div>
+    <div class="filter-tabs" id="filterTabs"></div>
+    <p class="section-hint" data-i18n="ms_hint">Touche un exercice pour l'ajouter.</p>
+    <div class="ex-list" id="exList"></div>
+    <div class="session-bar hidden" id="sessionBar" onclick="goToSession()">
+        <span class="count"><span id="selCount">0</span> <span data-i18n="ms_selected">exercices sélectionnés</span></span>
+        <span class="go" data-i18n="ms_go">Ma séance →</span>
+    </div>
+</div>
+
+<!-- ÉCRAN 2 : MA SÉANCE -->
+<div class="screen" id="screenSession">
+    <div class="sess-hero">
+        <a href="#" class="sh-back" id="backBtnSession" onclick="goToSelect();return false;">←</a>
+        <h1 class="sh-title" id="sessionScreenTitle" data-i18n="ms_session">Ma séance</h1>
+        <div class="sh-meta" id="sessionMeta"></div>
+    </div>
+    <div class="session-progress">
+        <div class="sp-line">
+            <span><b id="doneCount">0</b><span class="sp-dim">/<span id="totalCount">0</span> <span data-i18n="ms_exercises">exercices</span></span></span>
+            <span class="sp-timer" id="sessionTimer">0:00</span>
+        </div>
+        <div class="bar"><div class="fill" id="progressFill"></div></div>
+    </div>
+    <button class="start-session-btn" id="startSessionBtn" onclick="demarrerDureeSeance()" data-i18n="tr_start">Commencer</button>
+    <div class="session-controls" id="sessionControls">
+        <button class="sc-pause" id="scPauseBtn" onclick="togglePauseSeance()" data-i18n="ms_pause">⏸ Pause</button>
+        <button class="sc-stop" onclick="terminerSeance()" data-i18n="ms_finish">Terminer la séance</button>
+    </div>
+    <div id="sessionList"></div>
+</div>
+
+<!-- MODALE CONFIRMATION ARRÊT SÉANCE -->
+<div class="congrats-overlay" id="stopOverlay">
+    <div class="congrats-card">
+        <div class="congrats-emoji">🤔</div>
+        <div class="congrats-title" data-i18n="ms_stop_title">Terminer maintenant ?</div>
+        <div class="congrats-text" id="stopText" data-i18n="ms_stop_text">Tu n'as pas encore coché tous les exercices.</div>
+        <button class="congrats-btn" onclick="confirmerArret()" data-i18n="ms_stop_yes">Oui, terminer</button>
+        <button class="sc-cancel" onclick="document.getElementById('stopOverlay').classList.remove('show')" data-i18n="ms_stop_no">Continuer la séance</button>
+    </div>
+</div>
+
+<!-- MODALE FÉLICITATIONS (séance terminée) -->
+<div class="congrats-overlay" id="congratsOverlay">
+    <div class="congrats-card">
+        <div class="congrats-emoji">🎉</div>
+        <div class="congrats-title" data-i18n="ms_done_title">Séance terminée !</div>
+        <div class="congrats-text" id="congratsText" data-i18n="ms_done_text">Bravo, tu as tout donné. Repos mérité 💪</div>
+        <div id="congratsStats"></div>
+        <button class="congrats-btn" onclick="window.location.href='main.html#0'" data-i18n="ms_back_journal">Retour au journal</button>
+    </div>
+</div>
+
+<!-- MODALE PHOTO -->
+<div class="modal-overlay" id="photoModal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-card">
+        <div class="modal-carousel">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide" id="slide0"><span class="slide-label" data-i18n="ms_pos_start">Position de départ</span></div>
+                <div class="carousel-slide" id="slide1"><span class="slide-label" data-i18n="ms_pos_end">Position finale</span></div>
+            </div>
+            <button class="carousel-arrow left" onclick="carouselMove(-1)">‹</button>
+            <button class="carousel-arrow right" onclick="carouselMove(1)">›</button>
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+        <div class="modal-body">
+            <h3 id="modalName"></h3>
+            <div class="modal-meta" id="modalMeta"></div>
+            <div class="modal-desc" id="modalDesc"></div>
+            <button class="modal-add" id="modalAdd" onclick="modalToggleSelect()" data-i18n="ms_add_session">Ajouter à ma séance</button>
+            <button class="modal-close" onclick="closeModal()" data-i18n="close">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const EXERCISES = {
+  pecs: [
+    {nom:'Développé couché', meta:'4 séries × 8-10 reps', desc:'Allongé sur le banc, descends la barre vers la poitrine puis pousse.', imgId:'Barbell_Bench_Press_-_Medium_Grip', lvl:1, mat:'barre'},
+    {nom:'Développé incliné haltères', meta:'3 séries × 10-12 reps', desc:'Banc incliné à 30°, pousse les haltères vers le haut.', imgId:'Incline_Dumbbell_Press', lvl:1, mat:'halteres'},
+    {nom:'Écarté à la poulie', meta:'3 séries × 12-15 reps', desc:'Bras semi-tendus, ramène les poignées devant toi.', imgId:'Cable_Crossover', lvl:1, mat:'machine'},
+    {nom:'Pompes', meta:'3 séries × max', desc:'Corps gainé, descends la poitrine au sol puis pousse.', imgId:'Pushups', lvl:1, mat:'rien'},
+    {nom:'Dips', meta:'3 séries × 10-12 reps', desc:'Aux barres parallèles, descends puis remonte en poussant.', imgId:'Dips_-_Chest_Version', lvl:2, mat:'machine'},
+    {nom:'Développé couché haltères', meta:'4 séries × 10 reps', desc:'Variante haltères pour plus d\'amplitude.', imgId:'Dumbbell_Bench_Press', lvl:1, mat:'halteres'},
+    {nom:'Écarté incliné haltères', meta:'3 séries × 12 reps', desc:'Banc incliné, ouvre puis ramène les haltères.', imgId:'Incline_Dumbbell_Flyes', lvl:1, mat:'halteres'},
+    {nom:'Pull-over', meta:'3 séries × 12-15 reps', desc:'Un haltère au-dessus de la tête, descends derrière puis remonte.', imgId:'Straight-Arm_Dumbbell_Pullover', lvl:2, mat:'halteres'},
+    {nom:'Pompes déclinées', meta:'3 séries × 12 reps', desc:'Pieds surélevés sur un banc, descends la poitrine puis pousse. Cible le haut des pecs.', imgId:'Push-Ups_With_Feet_Elevated', lvl:1, mat:'rien'},
+    {nom:'Pompes larges', meta:'3 séries × max', desc:'Mains plus larges que les épaules pour accentuer les pectoraux.', imgId:'Push-Up_Wide', lvl:1, mat:'rien'},
+    {nom:'Pompes inclinées', meta:'3 séries × 15 reps', desc:'Mains surélevées sur un support : variante plus accessible.', imgId:'Incline_Push-Up', lvl:1, mat:'rien'},
+    {nom:'Pompes sautées', meta:'4 séries × 8 reps', desc:'Pousse explosivement pour décoller les mains du sol. Pliométrie.', imgId:'Plyo_Push-up', lvl:1, mat:'rien'},
+  ],
+  dos: [
+    {nom:'Tractions', meta:'4 séries × max', desc:'Suspendu à la barre, tire-toi jusqu\'au menton.', imgId:'Pullups', lvl:1, mat:'traction'},
+    {nom:'Rowing barre', meta:'4 séries × 8-10 reps', desc:'Buste penché, tire la barre vers le nombril.', imgId:'Bent_Over_Barbell_Row', lvl:1, mat:'barre'},
+    {nom:'Tirage vertical', meta:'3 séries × 10-12 reps', desc:'À la poulie haute, tire la barre vers la poitrine.', imgId:'Wide-Grip_Lat_Pulldown', lvl:1, mat:'machine'},
+    {nom:'Rowing haltère', meta:'3 séries × 10 reps', desc:'Un genou sur le banc, tire l\'haltère vers la hanche.', imgId:'One-Arm_Dumbbell_Row', lvl:1, mat:'halteres'},
+    {nom:'Tirage horizontal', meta:'3 séries × 12 reps', desc:'Assis, tire la poignée vers le ventre.', imgId:'Seated_Cable_Rows', lvl:1, mat:'machine'},
+    {nom:'Soulevé de terre', meta:'4 séries × 6-8 reps', desc:'Dos droit, soulève la barre du sol en poussant les jambes.', imgId:'Barbell_Deadlift', lvl:2, mat:'barre'},
+    {nom:'Rowing T-bar', meta:'3 séries × 10 reps', desc:'Tire la barre en T vers la poitrine, dos gainé.', imgId:'T-Bar_Row_with_Handle', lvl:1, mat:'barre'},
+    {nom:'Tirage élastique', meta:'3 séries × 15-20 reps', desc:'Écarte la bande devant toi en serrant les omoplates.', imgId:'Band_Pull_Apart', lvl:1, mat:'halteres'},
+    {nom:'Tractions supination', meta:'4 séries × max', desc:'Prise mains vers toi, tire-toi jusqu’au menton. Sollicite aussi les biceps.', imgId:'Chin-Up', lvl:1, mat:'traction'},
+    {nom:'Tractions prise large', meta:'3 séries × max', desc:'Prise large, tire les coudes vers le bas pour cibler les grands dorsaux.', imgId:'Wide-Grip_Rear_Pull-Up', lvl:2, mat:'traction'},
+  ],
+  epaules: [
+    {nom:'Développé militaire', meta:'4 séries × 8-10 reps', desc:'Debout, pousse la barre au-dessus de la tête.', imgId:'Standing_Military_Press', lvl:1, mat:'barre'},
+    {nom:'Élévations latérales', meta:'4 séries × 12-15 reps', desc:'Monte les haltères sur les côtés jusqu\'à l\'horizontale.', imgId:'Side_Lateral_Raise', lvl:1, mat:'halteres'},
+    {nom:'Développé haltères', meta:'3 séries × 10-12 reps', desc:'Assis, pousse les haltères vers le haut.', imgId:'Seated_Dumbbell_Press', lvl:1, mat:'halteres'},
+    {nom:'Oiseau (rear delt)', meta:'3 séries × 15 reps', desc:'Buste penché, ouvre les bras vers l\'arrière.', imgId:'Seated_Bent-Over_Rear_Delt_Raise', lvl:2, mat:'halteres'},
+    {nom:'Élévations frontales', meta:'3 séries × 12 reps', desc:'Monte l\'haltère devant toi jusqu\'à l\'horizontale.', imgId:'Front_Dumbbell_Raise', lvl:1, mat:'halteres'},
+    {nom:'Face pull', meta:'3 séries × 15 reps', desc:'Tire la corde vers le visage, coudes hauts.', imgId:'Face_Pull', lvl:2, mat:'machine'},
+    {nom:'Pompes piquées', meta:'3 séries × 8-10 reps', desc:'Pieds surélevés, pousse comme un développé épaules avec ton poids de corps.', imgId:'Handstand_Push-Ups', lvl:3, mat:'rien'},
+    {nom:'Élévation latérale élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, lève les bras sur les côtés.', imgId:'Lateral_Raise_-_With_Bands', lvl:1, mat:'halteres'},
+    {nom:'Développé épaules élastique', meta:'3 séries × 12-15 reps', desc:'Bande sous les pieds, pousse au-dessus de la tête.', imgId:'Shoulder_Press_-_With_Bands', lvl:1, mat:'halteres'},
+  ],
+  biceps: [
+    {nom:'Curl barre', meta:'4 séries × 10 reps', desc:'Debout, fléchis les bras pour monter la barre.', imgId:'Barbell_Curl', lvl:1, mat:'barre'},
+    {nom:'Curl haltères', meta:'3 séries × 12 reps', desc:'Alterne la montée de chaque haltère.', imgId:'Dumbbell_Bicep_Curl', lvl:1, mat:'halteres'},
+    {nom:'Curl marteau', meta:'3 séries × 12 reps', desc:'Prise neutre, monte les haltères comme un marteau.', imgId:'Hammer_Curls', lvl:1, mat:'halteres'},
+    {nom:'Curl pupitre', meta:'3 séries × 10 reps', desc:'Bras calés sur le pupitre, fléchis lentement.', imgId:'Preacher_Curl', lvl:1, mat:'barre'},
+    {nom:'Curl concentré', meta:'3 séries × 12 reps', desc:'Assis, coude sur la cuisse, isole le biceps.', imgId:'Concentration_Curls', lvl:1, mat:'halteres'},
+    {nom:'Curl élastique', meta:'3 séries × 15 reps', desc:'Debout sur la bande, fléchis les bras pour le curl.', imgId:'Close-Grip_EZ-Bar_Curl_with_Band', lvl:1, mat:'halteres'},
+  ],
+  triceps: [
+    {nom:'Barre au front', meta:'4 séries × 10 reps', desc:'Allongé, descends la barre vers le front puis tends.', imgId:'Lying_Triceps_Press', lvl:2, mat:'barre'},
+    {nom:'Extension poulie', meta:'4 séries × 12-15 reps', desc:'Pousse la corde vers le bas en tendant les bras.', imgId:'Triceps_Pushdown', lvl:1, mat:'machine'},
+    {nom:'Dips entre bancs', meta:'3 séries × max', desc:'Mains sur le banc, descends puis pousse.', imgId:'Bench_Dips', lvl:1, mat:'rien'},
+    {nom:'Extension haltère nuque', meta:'3 séries × 12 reps', desc:'Un haltère derrière la tête, tends les bras.', imgId:'Seated_Triceps_Press', lvl:1, mat:'halteres'},
+    {nom:'Kickback', meta:'3 séries × 15 reps', desc:'Buste penché, tends le bras vers l\'arrière.', imgId:'Tricep_Dumbbell_Kickback', lvl:1, mat:'halteres'},
+    {nom:'Pompes diamant', meta:'3 séries × 12 reps', desc:'Mains jointes en losange sous la poitrine. Cible les triceps.', imgId:'Push-Ups_-_Close_Triceps_Position', lvl:2, mat:'rien'},
+    {nom:'Dips sur banc', meta:'3 séries × 15 reps', desc:'Mains sur un banc derrière toi, descends puis remonte par les triceps.', imgId:'Bench_Dips', lvl:1, mat:'rien'},
+  ],
+  jambes: [
+    {nom:'Squat', meta:'4 séries × 8-10 reps', desc:'Barre sur les épaules, descends en pliant les genoux.', imgId:'Barbell_Squat', lvl:1, mat:'barre'},
+    {nom:'Presse à cuisses', meta:'4 séries × 10-12 reps', desc:'Pousse la plateforme avec les jambes.', imgId:'Leg_Press', lvl:1, mat:'machine'},
+    {nom:'Fentes', meta:'3 séries × 12 reps/jambe', desc:'Un grand pas en avant, descends le genou arrière.', imgId:'Dumbbell_Lunges', lvl:1, mat:'rien'},
+    {nom:'Leg curl', meta:'3 séries × 12 reps', desc:'Allongé, fléchis les jambes pour travailler les ischios.', imgId:'Lying_Leg_Curls', lvl:1, mat:'machine'},
+    {nom:'Leg extension', meta:'3 séries × 15 reps', desc:'Assis, tends les jambes contre la résistance.', imgId:'Leg_Extensions', lvl:1, mat:'machine'},
+    {nom:'Mollets debout', meta:'4 séries × 15-20 reps', desc:'Monte sur la pointe des pieds avec charge.', imgId:'Standing_Calf_Raises', lvl:1, mat:'machine'},
+    {nom:'Soulevé de terre jambes tendues', meta:'3 séries × 10 reps', desc:'Descends la barre jambes quasi tendues, sens les ischios.', imgId:'Stiff-Legged_Barbell_Deadlift', lvl:2, mat:'barre'},
+    {nom:'Squat au poids du corps', meta:'4 séries × 20 reps', desc:'Descends en poussant les fesses en arrière, dos droit, puis remonte.', imgId:'Bodyweight_Squat', lvl:1, mat:'rien'},
+    {nom:'Squat sauté', meta:'4 séries × 15 reps', desc:'Squat puis saut explosif. Réception amortie.', imgId:'Freehand_Jump_Squat', lvl:2, mat:'rien'},
+    {nom:'Pont fessier', meta:'3 séries × 20 reps', desc:'Allongé, pousse les hanches vers le haut en serrant les fessiers.', imgId:'Butt_Lift_Bridge', lvl:1, mat:'rien'},
+    {nom:'Pont fessier unilatéral', meta:'3 séries × 12 /jambe', desc:'Une jambe tendue, monte les hanches avec l’autre jambe.', imgId:'Single_Leg_Glute_Bridge', lvl:1, mat:'rien'},
+    {nom:'Montées sur banc', meta:'3 séries × 12 /jambe', desc:'Monte sur un banc en poussant sur la jambe avant, genou opposé haut.', imgId:'Step-up_with_Knee_Raise', lvl:1, mat:'rien'},
+  ],
+  abdos: [
+    {nom:'Crunch', meta:'4 séries × 20 reps', desc:'Allongé, décolle les épaules en contractant les abdos.', imgId:'Crunches', lvl:1, mat:'rien'},
+    {nom:'Gainage planche', meta:'3 séries × 45 sec', desc:'Corps droit sur les avant-bras, gaine.', imgId:'Plank', lvl:1, mat:'rien'},
+    {nom:'Relevé de jambes', meta:'3 séries × 15 reps', desc:'Suspendu ou au sol, monte les jambes tendues.', imgId:'Hanging_Leg_Raise', lvl:3, mat:'rien'},
+    {nom:'Russian twist', meta:'3 séries × 20 reps', desc:'Assis, fais pivoter le buste de gauche à droite.', imgId:'Russian_Twist', lvl:2, mat:'rien'},
+    {nom:'Crunch vélo', meta:'3 séries × 20 reps', desc:'Pédale dans le vide en amenant coude vers genou opposé.', imgId:'Air_Bike', lvl:1, mat:'rien'},
+    {nom:'Crunch croisé', meta:'3 séries × 15 /côté', desc:'Amène le coude vers le genou opposé pour cibler les obliques.', imgId:'Cross-Body_Crunch', lvl:1, mat:'rien'},
+    {nom:'Relevé de bassin', meta:'3 séries × 15 reps', desc:'Genoux fléchis, décolle le bassin en contractant les abdos bas.', imgId:'Bent-Knee_Hip_Raise', lvl:1, mat:'rien'},
+    {nom:'Dead bug', meta:'3 séries × 12 /côté', desc:'Sur le dos, tends bras et jambe opposés sans creuser le dos.', imgId:'Dead_Bug', lvl:1, mat:'rien'},
+    {nom:'Battements de jambes', meta:'3 séries × 30 sec', desc:'Jambes tendues, battements verticaux rapides, bas du dos plaqué.', imgId:'Flutter_Kicks', lvl:1, mat:'rien'},
+  ],
+  etirements: [
+    {nom:'Étirement ischios', meta:'2 × 30 sec', desc:'Assis, une jambe tendue, penche le buste vers le pied sans arrondir le dos.', imgId:'90_90_Hamstring', lvl:1, mat:'rien'},
+    {nom:'Étirement quadriceps', meta:'2 × 30 sec /jambe', desc:'Debout, attrape la cheville et ramène le talon vers la fesse.', imgId:'All_Fours_Quad_Stretch', lvl:2, mat:'rien'},
+    {nom:'Étirement fessiers', meta:'2 × 30 sec /côté', desc:'Assis, cheville sur le genou opposé, penche-toi doucement en avant.', imgId:'Seated_Glute', lvl:3, mat:'rien'},
+    {nom:'Étirement mollets', meta:'2 × 30 sec /jambe', desc:'Mains au mur, jambe arrière tendue, talon au sol.', imgId:'Calf_Stretch_Hands_Against_Wall', lvl:1, mat:'rien'},
+    {nom:'Étirement adducteurs', meta:'2 × 30 sec', desc:'Assis, plantes de pieds jointes, laisse les genoux descendre.', imgId:'Adductor', lvl:2, mat:'rien'},
+    {nom:'Étirement pectoraux', meta:'2 × 30 sec', desc:'Bras contre un mur, tourne le buste à l’opposé pour ouvrir la poitrine.', imgId:'Chest_And_Front_Of_Shoulder_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement épaules', meta:'2 × 20 sec /bras', desc:'Bras tendu en travers de la poitrine, tire-le avec l’autre bras.', imgId:'Shoulder_Circles', lvl:1, mat:'rien'},
+    {nom:'Étirement dorsaux', meta:'2 × 30 sec', desc:'Bras au-dessus de la tête, attrape le poignet et penche sur le côté.', imgId:'One_Arm_Against_Wall', lvl:1, mat:'rien'},
+    {nom:'Posture de l’enfant', meta:'2 × 40 sec', desc:'À genoux, buste au sol, bras tendus devant. Relâche le bas du dos.', imgId:'Childs_Pose', lvl:1, mat:'rien'},
+    {nom:'Étirement chat-vache', meta:'2 × 30 sec', desc:'À quatre pattes, alterne dos rond et dos creux au rythme du souffle.', imgId:'Cat_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement triceps', meta:'2 × 20 sec /bras', desc:'Coude plié derrière la tête, pousse le coude avec l’autre main.', imgId:'Triceps_Stretch', lvl:1, mat:'rien'},
+    {nom:'Étirement genou-poitrine', meta:'2 × 30 sec /jambe', desc:'Allongé, ramène un genou vers la poitrine avec les mains.', imgId:'One_Knee_To_Chest', lvl:1, mat:'rien'},
+  ],
+  cardio: [
+    {nom:'Corde à sauter', meta:'10-15 min', desc:'Sauts réguliers, poignets qui tournent, réception sur l’avant du pied.', imgId:'Rope_Jumping', lvl:2, mat:'rien'},
+    {nom:'Course à pied', meta:'20-30 min', desc:'Allure modérée à soutenue selon ton objectif.', imgId:'Trail_Running_Walking', lvl:1, mat:'rien'},
+    {nom:'Skipping rapide', meta:'5 × 1 min', desc:'Montées de genoux rapides sur place, intense. 1 min effort / 1 min repos.', imgId:'Fast_Skipping', lvl:1, mat:'rien'},
+    {nom:'Vélo d’appartement', meta:'20-30 min', desc:'Résistance modérée, cadence régulière.', imgId:'Bicycling_Stationary', lvl:1, mat:'machine'},
+    {nom:'Tapis de course', meta:'20-30 min', desc:'Marche rapide ou course selon ton niveau.', imgId:'Running_Treadmill', lvl:1, mat:'machine'},
+    {nom:'Elliptique', meta:'20-30 min', desc:'Mouvement fluide, faible impact sur les articulations.', imgId:'Elliptical_Trainer', lvl:2, mat:'machine'},
+    {nom:'Rameur', meta:'15-20 min', desc:'Poussée jambes puis tirage bras. Gainage constant.', imgId:'Rowing_Stationary', lvl:2, mat:'machine'},
+  ]
+};
+
+
+const SESSION_EXOS = {"masse-3j-0":["pecs:0","pecs:1","pecs:2","triceps:0","triceps:1","triceps:2"],"masse-3j-1":["dos:1","dos:0","dos:2","dos:3","biceps:0","biceps:2"],"masse-3j-2":["jambes:0","jambes:1","jambes:3","jambes:5","epaules:0","epaules:1"],"masse-4j-0":["pecs:0","pecs:1","pecs:5","pecs:2","pecs:4"],"masse-4j-1":["dos:0","dos:1","dos:2","dos:3","dos:4"],"masse-4j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4"],"masse-4j-3":["epaules:0","epaules:1","epaules:3","biceps:0","triceps:0","triceps:1"],"masse-5j-0":["pecs:0","pecs:1","pecs:5","pecs:2","pecs:4"],"masse-5j-1":["dos:0","dos:1","dos:2","dos:3","dos:6"],"masse-5j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"masse-5j-3":["epaules:0","epaules:1","epaules:4","epaules:3","epaules:5"],"masse-5j-4":["biceps:0","biceps:1","biceps:2","triceps:0","triceps:1","triceps:3"],"deb-full-3j-0":["pecs:0","dos:1","jambes:0","epaules:0","abdos:1"],"deb-full-3j-1":["pecs:3","dos:2","jambes:1","biceps:0","abdos:0"],"deb-full-3j-2":["pecs:1","dos:0","jambes:2","triceps:1","abdos:3"],"deb-2j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"deb-2j-1":["jambes:0","jambes:1","jambes:3","abdos:1","abdos:0"],"seche-full-3j-0":["jambes:0","pecs:3","dos:2","epaules:1","abdos:2","jambes:2","abdos:1"],"seche-full-3j-1":["jambes:1","pecs:0","dos:1","triceps:1","abdos:3","jambes:5","abdos:0"],"seche-full-3j-2":["jambes:2","pecs:1","dos:0","biceps:0","abdos:3","jambes:3","abdos:2"],"seche-circuit-4j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1","pecs:3"],"seche-circuit-4j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5","abdos:1"],"seche-circuit-4j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-circuit-4j-3":["cardio:6","cardio:0","abdos:0","abdos:1","abdos:3"],"maison-halteres-3j-0":["pecs:5","epaules:2","biceps:1","triceps:3","abdos:1"],"maison-halteres-3j-1":["jambes:2","jambes:0","jambes:5","abdos:3","abdos:0"],"maison-halteres-3j-2":["pecs:5","dos:3","epaules:2","biceps:1","jambes:2","abdos:1"],"salle-ppl-3j-0":["pecs:0","pecs:1","epaules:0","epaules:1","triceps:1","triceps:0"],"salle-ppl-3j-1":["dos:0","dos:1","dos:2","dos:3","biceps:0","biceps:2"],"salle-ppl-3j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"salle-half-4j-0":["pecs:0","dos:1","epaules:0","biceps:0","triceps:0","abdos:1"],"salle-half-4j-1":["jambes:0","jambes:1","jambes:3","jambes:4","jambes:5","abdos:0"],"salle-half-4j-2":["pecs:1","dos:0","epaules:1","biceps:2","triceps:1","abdos:3"],"salle-half-4j-3":["jambes:2","jambes:1","jambes:6","jambes:4","jambes:5","abdos:2"],"salle-ppl-6j-0":["pecs:0","pecs:1","epaules:0","epaules:1","triceps:0","triceps:1"],"salle-ppl-6j-1":["dos:0","dos:1","dos:2","dos:3","biceps:0","biceps:2"],"salle-ppl-6j-2":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:4","jambes:5"],"salle-ppl-6j-3":["pecs:5","pecs:2","epaules:2","epaules:4","triceps:3","triceps:4"],"salle-ppl-6j-4":["dos:6","dos:4","dos:0","dos:3","biceps:1","biceps:3"],"salle-ppl-6j-5":["jambes:0","jambes:6","jambes:2","jambes:3","jambes:4","jambes:5"],"maison-pdc-2j-0":["pecs:3","dos:8","epaules:6","triceps:6","abdos:1"],"maison-pdc-2j-1":["jambes:7","jambes:2","jambes:9","jambes:11","abdos:4"],"maison-pdc-3j-0":["pecs:3","pecs:8","dos:0","triceps:6","epaules:6"],"maison-pdc-3j-1":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:5"],"maison-pdc-3j-2":["pecs:9","dos:8","jambes:8","abdos:1","abdos:5"],"maison-pdc-4j-0":["pecs:3","pecs:8","triceps:5","triceps:6","pecs:12"],"maison-pdc-4j-1":["jambes:7","jambes:2","jambes:10","jambes:11","jambes:8"],"maison-pdc-4j-2":["dos:0","dos:8","dos:9","epaules:6","abdos:1"],"maison-pdc-4j-3":["abdos:0","abdos:4","abdos:6","abdos:7","abdos:8"],"maison-pdc-5j-0":["pecs:3","pecs:8","pecs:9","triceps:5","triceps:6"],"maison-pdc-5j-1":["dos:0","dos:8","dos:9","epaules:6"],"maison-pdc-5j-2":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:8"],"maison-pdc-5j-3":["abdos:0","abdos:4","abdos:5","abdos:7","abdos:8"],"maison-pdc-5j-4":["pecs:3","jambes:7","dos:0","cardio:0","abdos:1"],"maison-pdc-6j-0":["pecs:3","pecs:8","pecs:9","triceps:5","triceps:6"],"maison-pdc-6j-1":["dos:0","dos:8","dos:9","abdos:1"],"maison-pdc-6j-2":["jambes:7","jambes:2","jambes:9","jambes:11","jambes:5"],"maison-pdc-6j-3":["epaules:6","abdos:4","abdos:5","abdos:6","abdos:3"],"maison-pdc-6j-4":["triceps:5","triceps:6","dos:8","pecs:12"],"maison-pdc-6j-5":["jambes:8","pecs:11","cardio:0","cardio:2","abdos:1"],"masse-2j-0":["pecs:0","pecs:1","dos:0","dos:1","epaules:0","biceps:0","triceps:0"],"masse-2j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5","abdos:1"],"seche-2j-0":["jambes:0","pecs:3","dos:2","epaules:1","abdos:6","abdos:1"],"seche-2j-1":["jambes:1","pecs:0","dos:1","triceps:1","abdos:3","abdos:0"],"seche-5j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"seche-5j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5"],"seche-5j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-5j-3":["cardio:6","cardio:0","abdos:1","abdos:0","abdos:3"],"seche-5j-4":["cardio:2","jambes:8","cardio:0","abdos:1","abdos:7"],"seche-6j-0":["pecs:0","dos:2","epaules:1","biceps:0","triceps:1"],"seche-6j-1":["jambes:0","jambes:1","jambes:2","jambes:3","jambes:5"],"seche-6j-2":["pecs:3","dos:0","jambes:0","epaules:0","biceps:2","abdos:0"],"seche-6j-3":["cardio:4","cardio:6","abdos:0","abdos:1","abdos:3"],"seche-6j-4":["cardio:2","jambes:8","pecs:11","cardio:0","abdos:8"],"seche-6j-5":["abdos:1","abdos:7","etirements:8","etirements:9","etirements:0"],"maison-halteres-2j-0":["pecs:5","epaules:2","biceps:1","triceps:3","abdos:1"],"maison-halteres-2j-1":["jambes:2","jambes:0","jambes:5","abdos:3","abdos:0"],"maison-halteres-4j-0":["pecs:5","epaules:2","triceps:3","abdos:1"],"maison-halteres-4j-1":["jambes:2","jambes:0","jambes:5","abdos:0"],"maison-halteres-4j-2":["dos:3","biceps:1","epaules:2","abdos:3"],"maison-halteres-4j-3":["jambes:0","jambes:2","jambes:5","abdos:2"],"maison-halteres-5j-0":["pecs:5","triceps:3","abdos:1"],"maison-halteres-5j-1":["dos:3","biceps:1","abdos:0"],"maison-halteres-5j-2":["jambes:2","jambes:0","jambes:5"],"maison-halteres-5j-3":["epaules:2","epaules:4","abdos:3","abdos:2"],"maison-halteres-5j-4":["pecs:5","dos:3","jambes:0","abdos:1"]};
+
+const MUSCLES = [
+  {key:'pecs', label:'Pecs'}, {key:'dos', label:'Dos'}, {key:'epaules', label:'Épaules'},
+  {key:'biceps', label:'Biceps'}, {key:'triceps', label:'Triceps'}, {key:'jambes', label:'Jambes'}, {key:'abdos', label:'Abdos'},
+  {key:'etirements', label:'Étirements'}, {key:'cardio', label:'Cardio'},
+];
+
+// Filtres matériel
+const FILTERS = [
+  {key:'tout', get label(){return t('flt_all');}, mats:null},
+  {key:'rien', get label(){return t('flt_bodyweight');}, mats:['rien','traction']},
+  {key:'halteres', get label(){return t('flt_dumbbells');}, mats:['rien','traction','halteres']},
+  {key:'salle', get label(){return t('flt_gym');}, mats:['rien','traction','halteres','barre','machine']},
+];
+let currentFilter = 'tout';
+
+function renderFilters(){
+  const c = document.getElementById('filterTabs');
+  c.innerHTML = FILTERS.map(f =>
+    `<button class="filter-tab ${f.key===currentFilter?'active':''}" onclick="switchFilter('${f.key}')">${f.label}</button>`
+  ).join('');
+}
+
+function switchFilter(key){
+  currentFilter = key;
+  renderFilters();
+  renderExercises();
+}
+
+function exoVisible(ex){
+  const f = FILTERS.find(x => x.key === currentFilter);
+  if(!f.mats) return true; // "Tout"
+  return f.mats.includes(ex.mat);
+}
+let currentMuscle = 0;
+let selected = {}; // {muscleKey: Set(index)}
+MUSCLES.forEach(m => selected[m.key] = new Set());
+
+function renderTabs(){
+  const c = document.getElementById('muscleTabs');
+  // Construire les onglets UNE seule fois (préserve le scroll manuel de l'utilisateur)
+  if(!c.dataset.built){
+    c.innerHTML = MUSCLES.map((m,i) =>
+      `<button class="muscle-tab" onclick="switchMuscle(${i})">${m.label}</button>`
+    ).join('');
+    c.dataset.built = '1';
+  }
+  // Basculer l'état actif sans reconstruire ni toucher au scroll
+  c.querySelectorAll('.muscle-tab').forEach((t,i) => t.classList.toggle('active', i===currentMuscle));
+}
+
+// Recentrer l'onglet actif : uniquement lors d'un vrai changement de muscle
+function centrerOngletActif(){
+  const c = document.getElementById('muscleTabs');
+  const active = c.querySelector('.muscle-tab.active');
+  if(active) active.scrollIntoView({inline:'center', behavior:'smooth', block:'nearest'});
+}
+
+function renderExercises(){
+  const mKey = MUSCLES[currentMuscle].key;
+  const list = EXERCISES[mKey] || [];
+  const c = document.getElementById('exList');
+  // Filtrer selon le matériel, mais garder l'index original
+  const visible = list.map((ex,i) => ({ex, i})).filter(o => exoVisible(o.ex));
+  if(visible.length === 0){
+    c.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:14px;padding:34px 20px;line-height:1.5;"><span style="display:block;font-size:44px;margin-bottom:10px">💪</span>'+t('ms_no_exo')+'</div>';
+    return;
+  }
+  c.innerHTML = visible.map(({ex,i}) => {
+    const sel = selected[mKey].has(i);
+    const bg = ex.imgId ? `style="background-image:url('${IMG_BASE}${ex.imgId}/0.jpg')"` : '';
+    const sets = (ex.meta||'').replace(/\s*×\s*/g,' • ');
+    return `<div class="ex-item ${sel?'selected':''}" id="ex-${mKey}-${i}">
+      <div class="ex-photo" ${bg} onclick="openModal('${mKey}',${i})"></div>
+      <div class="ex-info" onclick="openModal('${mKey}',${i})">
+        <div class="ex-name">${ex.nom}</div>
+        <div class="ex-equip">${equipLabel(ex.mat)}</div>
+        ${starsHtml(ex.lvl)}
+        <div class="ex-sets">${sets}</div>
+      </div>
+      <button class="ex-add" onclick="event.stopPropagation();toggleSelect('${mKey}',${i})" aria-label="Ajouter">${sel?'✓':'+'}</button>
+    </div>`;
+  }).join('');
+}
+
+function equipLabel(mat){
+  return ({barre:'Barre', halteres:'Haltères', machine:'Machine / poulie', poulie:'Poulie', rien:'Poids du corps', kettlebell:'Kettlebell', elastique:'Élastique'})[mat] || (mat ? mat.charAt(0).toUpperCase()+mat.slice(1) : '—');
+}
+function starsHtml(lvl){
+  lvl = lvl || 2;
+  const label = {1:'Débutant',2:'Intermédiaire',3:'Avancé'}[lvl];
+  let s = '';
+  for(let k=1;k<=3;k++) s += `<span class="${k<=lvl?'on':''}">★</span>`;
+  return `<div class="ex-stars">${s}<em>${label}</em></div>`;
+}
+
+function switchMuscle(i){
+  currentMuscle = (i + MUSCLES.length) % MUSCLES.length;
+  renderTabs(); renderExercises();
+  centrerOngletActif();
+}
+
+function toggleSelect(mKey, i){
+  if(selected[mKey].has(i)) selected[mKey].delete(i);
+  else selected[mKey].add(i);
+  const item = document.getElementById(`ex-${mKey}-${i}`);
+  item.classList.toggle('selected');
+  const btn = item.querySelector('.ex-add');
+  if(btn) btn.textContent = selected[mKey].has(i) ? '✓' : '+';
+  updateCount();
+}
+
+function updateCount(){
+  let total = 0;
+  MUSCLES.forEach(m => total += selected[m.key].size);
+  document.getElementById('selCount').textContent = total;
+  document.getElementById('sessionBar').classList.toggle('hidden', total===0);
+}
+
+function getSelectedRefs(){
+  const out = [];
+  MUSCLES.forEach(m => {
+    selected[m.key].forEach(i => out.push({mKey:m.key, i:i, ex:EXERCISES[m.key][i]}));
+  });
+  return out;
+}
+
+function getSelectedExercises(){
+  return getSelectedRefs().map(r => r.ex);
+}
+
+// Rendu de la liste d'exercices de la séance (avec bouton Alternative)
+function renderSessionList(){
+  const c = document.getElementById('sessionList');
+  if(!sessionExs.length){ c.innerHTML = '<div class="empty-session">'+t('ms_empty')+'</div>'; return; }
+  const NOMS_MUSCLES = {}; ['pecs','dos','epaules','biceps','triceps','jambes','abdos','etirements','cardio'].forEach(k => Object.defineProperty(NOMS_MUSCLES, k, { get(){ return t('mus_'+k); } }));
+  c.innerHTML = sessionExs.map((ex,i) => {
+    const last = getLastPerf(ex.nom);
+    const muscle = (sessionRefs[i] && NOMS_MUSCLES[sessionRefs[i].mKey]) || '';
+    const chips = (muscle ? `<span class="ex-chip">${muscle}</span>` : '')
+                + (last ? `<span class="ex-chip gold">${t('ms_last_abbr')} ${last}</span>` : '');
+    return `<div class="done-item" onclick="toggleDone(this)" style="flex-wrap:wrap">
+      <div class="done-photo" onclick="event.stopPropagation();openSessionPhoto(${i})"><img src="${IMG_BASE}${ex.imgId}/0.jpg" alt="${ex.nom}" loading="lazy" onerror="this.parentElement.classList.add('no-img')"></div>
+      <div class="done-info">
+        <div class="done-name">${ex.nom}</div>
+        <div class="done-meta">${ex.meta}</div>
+        ${chips ? `<div class="ex-chips">${chips}</div>` : ''}
+        <button class="done-alt" onclick="event.stopPropagation();swapExercise(${i})">⇄ ${t('ms_alt')}</button>
+        <button class="sets-btn" onclick="event.stopPropagation();toggleSets(${i}, this)">${t('ms_sets_btn')}</button>
+      </div>
+      <div class="done-check">✓</div>
+      <div class="sets-panel" id="setsPanel${i}" onclick="event.stopPropagation()">
+        ${last ? `<div class="sets-last">${t('ms_last_time')} : <b>${last}</b></div>` : ''}
+        <div id="setsRows${i}"></div>
+        <button class="set-add" onclick="addSet(${i})">＋ ${t('ms_add_set')}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== SUIVI DES SÉRIES (poids × reps) =====
+let sessionSets = []; // sessionSets[i] = [{w:'', r:''}, ...]
+
+function getSetLog(){
+  try { return JSON.parse(localStorage.getItem('repz_setLog') || '{}'); } catch(e){ return {}; }
+}
+function getLastPerf(nom){
+  const hist = getSetLog()[nom];
+  if(!hist || !hist.length) return null;
+  const sets = hist[hist.length-1].sets.filter(s => s.w !== '' || s.r !== '');
+  if(!sets.length) return null;
+  const w = sets[0].w;
+  const sameW = sets.every(s => s.w === w);
+  if(sameW && w !== '') return `${w} kg × ${sets.map(s => s.r || '?').join(' · ')}`;
+  return sets.map(s => `${s.w || '?'}kg×${s.r || '?'}`).join(' · ');
+}
+function toggleSets(i, btn){
+  const p = document.getElementById('setsPanel'+i);
+  if(!p) return;
+  if(btn) btn.classList.toggle('open', !p.classList.contains('open'));
+  if(!p.classList.contains('open') && (!sessionSets[i] || !sessionSets[i].length)){
+    // Première ouverture : autant de lignes que de séries prévues (ex. « 4 séries × 8-10 reps »)
+    let nb = 3;
+    const m = (sessionExs[i].meta || '').match(/(\d+)\s*série/i);
+    if(m) nb = Math.min(8, Math.max(1, parseInt(m[1])));
+    sessionSets[i] = Array.from({length: nb}, () => ({w:'', r:''}));
+    renderSets(i);
+  }
+  p.classList.toggle('open');
+}
+function renderSets(i){
+  const c = document.getElementById('setsRows'+i);
+  if(!c) return;
+  const hist = getSetLog()[sessionExs[i].nom];
+  const lastSets = (hist && hist.length) ? hist[hist.length-1].sets : [];
+  c.innerHTML = (sessionSets[i]||[]).map((s,j) => {
+    const ph = lastSets[j] || lastSets[lastSets.length-1] || {};
+    return `<div class="set-row">
+      <div class="set-num">${j+1}</div>
+      <input type="number" inputmode="decimal" step="0.5" min="0" placeholder="${ph.w !== undefined && ph.w !== '' ? ph.w : '××'}" value="${s.w}" oninput="sessionSets[${i}][${j}].w=this.value"><span class="set-unit">kg</span>
+      <span class="set-x">×</span>
+      <input type="number" inputmode="numeric" min="0" placeholder="${ph.r !== undefined && ph.r !== '' ? ph.r : '××'}" value="${s.r}" oninput="sessionSets[${i}][${j}].r=this.value"><span class="set-unit">reps</span>
+      <button class="set-del" onclick="delSet(${i},${j})">✕</button>
+    </div>`;
+  }).join('');
+}
+function addSet(i){
+  if(!sessionSets[i]) sessionSets[i] = [];
+  // Pré-remplir avec la série précédente saisie (enchaînement rapide)
+  const prev = sessionSets[i][sessionSets[i].length-1];
+  sessionSets[i].push({ w: prev && prev.w ? prev.w : '', r: '' });
+  renderSets(i);
+}
+function delSet(i,j){
+  sessionSets[i].splice(j,1);
+  renderSets(i);
+}
+function collecterSeries(){
+  // Retourne [{nom, sets:[{w,r}]}] pour les exos avec au moins une série remplie
+  const out = [];
+  sessionExs.forEach((ex,i) => {
+    const sets = (sessionSets[i]||[]).filter(s => s.w !== '' || s.r !== '')
+      .map(s => ({ w: s.w === '' ? '' : parseFloat(s.w), r: s.r === '' ? '' : parseInt(s.r) }));
+    if(sets.length) out.push({ nom: ex.nom, sets: sets });
+  });
+  return out;
+}
+function sauverSeries(exos){
+  if(!exos.length) return;
+  try {
+    const log = getSetLog();
+    const iso = new Date().toISOString().slice(0,10);
+    exos.forEach(e => {
+      if(!log[e.nom]) log[e.nom] = [];
+      log[e.nom].push({ iso: iso, sets: e.sets });
+      if(log[e.nom].length > 30) log[e.nom] = log[e.nom].slice(-30);
+    });
+    localStorage.setItem('repz_setLog', JSON.stringify(log));
+  } catch(e){}
+}
+
+// Remplacer un exercice par un autre du même muscle (avant de démarrer)
+function swapExercise(idx){
+  const ref = sessionRefs[idx];
+  if(!ref) return;
+  const list = EXERCISES[ref.mKey] || [];
+  if(list.length <= 1) return;
+  const used = new Set(sessionRefs.filter(r => r.mKey === ref.mKey).map(r => r.i));
+  let next = -1;
+  for(let step=1; step<=list.length; step++){
+    const cand = (ref.i + step) % list.length;
+    if(!used.has(cand)){ next = cand; break; }
+  }
+  if(next === -1) return; // aucune alternative disponible
+  sessionRefs[idx] = {mKey:ref.mKey, i:next, ex:list[next]};
+  sessionExs[idx] = list[next];
+  sessionSets[idx] = [];
+  renderSessionList();
+  if(!seanceDemarree){ document.getElementById('sessionList').classList.add('locked'); }
+}
+
+// Ouvrir directement la séance (mode libre : refs sélectionnées ; programme : refs imposées ordonnées)
+function goToSession(customRefs){
+    if(typeof inviteBloque === "function" && inviteBloque()) return;
+  const refs = customRefs || getSelectedRefs();
+  sessionRefs = refs;
+  sessionExs = refs.map(r => r.ex);
+  sessionSets = [];
+  renderSessionList();
+  document.getElementById('totalCount').textContent = sessionExs.length;
+  // Ligne méta : nb d'exercices + durée estimée (~9-12 min par exercice)
+  const meta = document.getElementById('sessionMeta');
+  if(meta){
+    const n = sessionExs.length;
+    if(n){
+      const mn = Math.round(n*9/5)*5, mx = Math.round(n*12/5)*5;
+      meta.textContent = `${n} ${t(n>1?'ms_exercises':'ms_exercise')} · ${mn}-${mx} min`;
+      meta.classList.add('show');
+    } else meta.classList.remove('show');
+  }
+  document.getElementById('doneCount').textContent = 0;
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('screenSelect').classList.remove('active');
+  document.getElementById('screenSession').classList.add('active');
+  // Afficher le chrono de repos (seulement pendant la séance)
+  document.getElementById('chronoFab').classList.add('visible');
+  if(!sessionStorage.getItem('chronoHintSeen')){
+    document.getElementById('chronoHint').classList.add('show');
+    sessionStorage.setItem('chronoHintSeen','1');
+    setTimeout(()=>{ const h=document.getElementById('chronoHint'); if(h) h.classList.remove('show'); }, 5000);
+  }
+  // Réinitialiser l'état "pas encore démarré" : le chrono attend le bouton Démarrer
+  reinitDureeSeance();
+  window.scrollTo(0,0);
+}
+
+// ===== CHRONO DURÉE DE SÉANCE =====
+let dureeInterval = null;
+let dureeDebut = null;
+let seanceDemarree = false;
+
+function reinitDureeSeance(){
+  // État "pas encore démarré" : chrono à 0:00, bouton Démarrer visible
+  seanceDemarree = false;
+  dureeDebut = null;
+  enPause = false; pauseDebut = null;
+  if(dureeInterval){ clearInterval(dureeInterval); dureeInterval = null; }
+  const el = document.getElementById('sessionTimer');
+  if(el){ el.textContent = '0:00'; el.classList.remove('paused'); }
+  const startBtn = document.getElementById('startSessionBtn');
+  if(startBtn){ startBtn.style.display = 'block'; }
+  const ctrl = document.getElementById('sessionControls');
+  if(ctrl) ctrl.classList.remove('visible');
+  const pb = document.getElementById('scPauseBtn');
+  if(pb){ pb.textContent = t('ms_pause'); pb.classList.remove('paused'); }
+  const list = document.getElementById('sessionList');
+  if(list) list.classList.add('locked'); // exercices grisés tant que pas démarré
+}
+
+function demarrerDureeSeance(){
+  if(seanceDemarree) return;
+  seanceDemarree = true;
+  dureeDebut = Date.now();
+  const el = document.getElementById('sessionTimer');
+  if(el) el.textContent = '0:00';
+  if(dureeInterval) clearInterval(dureeInterval);
+  dureeInterval = setInterval(()=>{
+    if(enPause) return; // gelé pendant la pause
+    const s = Math.floor((Date.now()-dureeDebut)/1000);
+    const min = Math.floor(s/60), sec = s%60;
+    if(el) el.textContent = min + ':' + String(sec).padStart(2,'0');
+  }, 1000);
+  // Cacher le bouton Démarrer, montrer les contrôles, débloquer les exercices
+  const startBtn = document.getElementById('startSessionBtn');
+  if(startBtn){ startBtn.style.display = 'none'; }
+  const ctrl = document.getElementById('sessionControls');
+  if(ctrl) ctrl.classList.add('visible');
+  const list = document.getElementById('sessionList');
+  if(list) list.classList.remove('locked');
+}
+
+// ===== PAUSE / REPRISE =====
+let enPause = false;
+let pauseDebut = null;
+
+function togglePauseSeance(){
+  if(!seanceDemarree) return;
+  const btn = document.getElementById('scPauseBtn');
+  const timer = document.getElementById('sessionTimer');
+  if(!enPause){
+    enPause = true;
+    pauseDebut = Date.now();
+    if(btn){ btn.textContent = t('ms_resume'); btn.classList.add('paused'); }
+    if(timer) timer.classList.add('paused');
+  } else {
+    // Reprise : on décale le départ pour exclure le temps de pause
+    dureeDebut += (Date.now() - pauseDebut);
+    enPause = false; pauseDebut = null;
+    if(btn){ btn.textContent = t('ms_pause'); btn.classList.remove('paused'); }
+    if(timer) timer.classList.remove('paused');
+  }
+}
+
+// ===== TERMINER LA SÉANCE =====
+function terminerSeance(){
+  const total = document.querySelectorAll('#sessionList .done-item').length;
+  const done = document.querySelectorAll('#sessionList .done-item.done').length;
+  if(done === total && total > 0){
+    montrerFelicitations();
+    return;
+  }
+  // Séance incomplète : demander confirmation
+  const txt = document.getElementById('stopText');
+  if(txt) txt.textContent = done > 0
+    ? `Tu as fait ${done} exercice${done>1?'s':''} sur ${total}. Ta séance sera quand même comptée 💪`
+    : `Tu n'as coché aucun exercice. La séance ne sera pas enregistrée.`;
+  document.getElementById('stopOverlay').classList.add('show');
+}
+
+function confirmerArret(){
+  document.getElementById('stopOverlay').classList.remove('show');
+  // Si en pause, intégrer le temps de pause avant le calcul de durée
+  if(enPause){ dureeDebut += (Date.now() - pauseDebut); enPause = false; pauseDebut = null; }
+  const done = document.querySelectorAll('#sessionList .done-item.done').length;
+  if(done > 0){
+    montrerFelicitations(); // enregistre la séance + affiche le récap
+  } else {
+    arreterDureeSeance();
+    window.location.href = 'main.html#0'; // rien fait : pas d'enregistrement
+  }
+}
+function arreterDureeSeance(){
+  if(dureeInterval){ clearInterval(dureeInterval); dureeInterval = null; }
+}
+function goToSelect(){
+  document.getElementById('screenSession').classList.remove('active');
+  document.getElementById('screenSelect').classList.add('active');
+  // Cacher le chrono hors séance
+  document.getElementById('chronoFab').classList.remove('visible');
+  document.getElementById('chronoHint').classList.remove('show');
+  window.scrollTo(0,0);
+}
+function toggleDone(el){
+  el.classList.toggle('done');
+  const total = document.querySelectorAll('#sessionList .done-item').length;
+  const done = document.querySelectorAll('#sessionList .done-item.done').length;
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('progressFill').style.width = (total? done/total*100:0)+'%';
+
+  // Tous les exercices terminés → féliciter l'utilisateur
+  if(total > 0 && done === total){
+    setTimeout(montrerFelicitations, 400);
+  }
+}
+
+let sessionEnregistree = false;
+function calculerBilan(exos){
+  let tonnage = 0;
+  const records = [];
+  const anciens = getSetLog();
+  exos.forEach(e => {
+    let bestAvant = 0;
+    (anciens[e.nom] || []).forEach(h => h.sets.forEach(s => {
+      const w = parseFloat(s.w); if(!isNaN(w) && w > bestAvant) bestAvant = w;
+    }));
+    e.sets.forEach(s => {
+      const w = parseFloat(s.w), r = parseInt(s.r);
+      if(!isNaN(w) && !isNaN(r)) tonnage += w * r;
+      if(!isNaN(w) && bestAvant > 0 && w > bestAvant && !records.includes(e.nom)) records.push(e.nom);
+    });
+  });
+  return { tonnage: Math.round(tonnage), records };
+}
+
+function lancerConfettis(){
+  const cols = ['#F7B500','#181818','#ffffff','#DFA004','#FFE28A'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    const taille = 6 + Math.random()*7;
+    c.style.cssText = `left:${Math.random()*100}vw; width:${taille}px; height:${taille*0.45}px;`
+      + `background:${cols[Math.floor(Math.random()*cols.length)]};`
+      + `animation-duration:${2 + Math.random()*2}s; animation-delay:${Math.random()*0.6}s;`
+      + `transform:rotate(${Math.random()*360}deg);`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+function montrerFelicitations(){
+  lancerConfettis();
+  arreterDureeSeance();
+  // Enregistrer la séance dans le journal (pour le dashboard et les stats)
+  if(!sessionEnregistree){
+    sessionEnregistree = true;
+    try {
+      let log = [];
+      const l = localStorage.getItem('repz_sessionLog');
+      if(l) log = JSON.parse(l);
+      const duree = dureeDebut ? Math.floor((Date.now()-dureeDebut)/1000) : 0;
+      const exos = collecterSeries();
+      // Bilan : tonnage total + records battus (comparés AVANT sauvegarde)
+      window.bilanSeance = calculerBilan(exos);
+      log.push({
+        iso: new Date().toISOString().slice(0,10),
+        ts: Date.now(),
+        duree: duree,
+        titre: (new URLSearchParams(window.location.search).get('t')) || t('tr_free_title'),
+        exos: exos
+      });
+      localStorage.setItem('repz_sessionLog', JSON.stringify(log));
+      sauverSeries(exos);
+    } catch(e){}
+  }
+  // Durée finale de la séance
+  let dureeStr = '';
+  if(dureeDebut){
+    const s = Math.floor((Date.now()-dureeDebut)/1000);
+    const min = Math.floor(s/60);
+    dureeStr = min > 0 ? ` ${t('ms_in')} ${min} min` : '';
+  }
+  const prenom = (localStorage.getItem('repz_firstName') || '').trim();
+  const messages = [t('ms_msg1'), t('ms_msg2'), t('ms_msg3'), t('ms_msg4')];
+  const msg = messages[Math.floor(Math.random()*messages.length)];
+  // Bilan chiffré : durée, tonnage, records
+  const statsEl = document.getElementById('congratsStats');
+  if(statsEl){
+    const b = window.bilanSeance || { tonnage:0, records:[] };
+    const min = dureeDebut ? Math.max(1, Math.round((Date.now()-dureeDebut)/60000)) : 0;
+    let sHtml = '<div class="cg-stats">';
+    if(min) sHtml += `<div class="cg-box"><div class="v">${min} min</div><div class="l">${t('ms_duration')}</div></div>`;
+    if(b.tonnage > 0) sHtml += `<div class="cg-box"><div class="v">${b.tonnage.toLocaleString('fr-FR')} kg</div><div class="l">${t('ms_total_lifted')}</div></div>`;
+    sHtml += `<div class="cg-box"><div class="v">${sessionExs.length}</div><div class="l">${t('ms_exercises_cap')}</div></div></div>`;
+    if(b.records && b.records.length){
+      sHtml += `<div class="cg-record">🏆 ${t('ms_new_record')} : ${b.records.join(', ')} !</div>`;
+    }
+    statsEl.innerHTML = sHtml;
+  }
+  const txt = document.getElementById('congratsText');
+  if(txt) txt.textContent = (prenom ? t('ms_bravo',{name:prenom})+' ' : '') + msg + (dureeStr ? ` (${dureeStr.trim()})` : '');
+  const overlay = document.getElementById('congratsOverlay');
+  if(overlay) overlay.classList.add('show');
+}
+
+let carouselIndex = 0;
+const CAROUSEL_COUNT = 2;
+const IMG_BASE = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
+function renderDots(){
+  const c = document.getElementById('carouselDots');
+  c.innerHTML = Array.from({length:CAROUSEL_COUNT}, (_,i) =>
+    `<div class="dot ${i===carouselIndex?'active':''}"></div>`).join('');
+}
+function carouselMove(dir){
+  carouselIndex = (carouselIndex + dir + CAROUSEL_COUNT) % CAROUSEL_COUNT;
+  document.getElementById('carouselTrack').style.transform = `translateX(-${carouselIndex*100}%)`;
+  renderDots();
+}
+
+let modalCtx = null; // {mKey, i} quand ouvert depuis la liste de choix
+function majModalAdd(){
+  const b = document.getElementById('modalAdd');
+  if(!modalCtx){ b.classList.remove('visible'); return; }
+  const sel = selected[modalCtx.mKey].has(modalCtx.i);
+  b.classList.add('visible');
+  b.classList.toggle('added', sel);
+  b.textContent = sel ? t('ms_in_session') : t('ms_add_session');
+}
+function modalToggleSelect(){
+  if(!modalCtx) return;
+  toggleSelect(modalCtx.mKey, modalCtx.i);
+  majModalAdd();
+}
+function openModal(mKey, i){
+  const ex = EXERCISES[mKey][i];
+  modalCtx = {mKey, i};
+  document.getElementById('modalName').textContent = ex.nom;
+  document.getElementById('modalMeta').textContent = ex.meta;
+  document.getElementById('modalDesc').textContent = ex.desc;
+  // Charger les 2 vraies photos depuis la base
+  const id = ex.imgId;
+  if(id){
+    document.getElementById('slide0').style.backgroundImage = `url('${IMG_BASE}${id}/0.jpg')`;
+    document.getElementById('slide1').style.backgroundImage = `url('${IMG_BASE}${id}/1.jpg')`;
+  } else {
+    document.getElementById('slide0').style.backgroundImage = 'none';
+    document.getElementById('slide1').style.backgroundImage = 'none';
+  }
+  // reset carrousel
+  carouselIndex = 0;
+  document.getElementById('carouselTrack').style.transform = 'translateX(0%)';
+  renderDots();
+  majModalAdd();
+  document.getElementById('photoModal').classList.add('show');
+}
+function closeModal(){ document.getElementById('photoModal').classList.remove('show'); }
+
+// Zoom photo depuis la liste de séance (réutilise la modale du carrousel)
+let sessionExs = [];
+let sessionRefs = [];
+function openSessionPhoto(i){
+  const ex = sessionExs[i];
+  if(!ex) return;
+  modalCtx = null;
+  document.getElementById('modalAdd').classList.remove('visible');
+  document.getElementById('modalName').textContent = ex.nom;
+  document.getElementById('modalMeta').textContent = ex.meta || '';
+  document.getElementById('modalDesc').textContent = ex.desc || '';
+  if(ex.imgId){
+    document.getElementById('slide0').style.backgroundImage = `url('${IMG_BASE}${ex.imgId}/0.jpg')`;
+    document.getElementById('slide1').style.backgroundImage = `url('${IMG_BASE}${ex.imgId}/1.jpg')`;
+  } else {
+    document.getElementById('slide0').style.backgroundImage = 'none';
+    document.getElementById('slide1').style.backgroundImage = 'none';
+  }
+  carouselIndex = 0;
+  document.getElementById('carouselTrack').style.transform = 'translateX(0%)';
+  renderDots();
+  document.getElementById('photoModal').classList.add('show');
+}
+
+// SWIPE entre muscles
+let touchStartX = 0;
+const selectScreen = document.getElementById('screenSelect');
+// Changement de muscle : uniquement en tapant les bulles (le swipe écran créait des conflits avec le défilement)
+
+// SWIPE sur le carrousel photo
+let carStartX = 0;
+const carTrack = document.getElementById('carouselTrack');
+carTrack.addEventListener('touchstart', e => { carStartX = e.changedTouches[0].screenX; }, {passive:true});
+carTrack.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].screenX - carStartX;
+  if(Math.abs(dx) > 40){ carouselMove(dx < 0 ? 1 : -1); }
+}, {passive:true});
+
+// INIT
+renderTabs();
+renderFilters();
+renderExercises();
+updateCount();
+
+// Pré-sélection depuis une séance de programme (?s=seanceId&t=titre&f=filtre)
+(function loadFromProgram(){
+  const params = new URLSearchParams(window.location.search);
+  const seanceId = params.get('s');
+  const titre = params.get('t');
+  const filtre = params.get('f');
+
+  // Un programme structuré (?s=) est réservé aux membres Premium.
+  // Le mode libre (sans ?s=) reste gratuit.
+  function repzAcces(){
+      return localStorage.getItem('repz_premium') === '1';
+  }
+  
+  if(seanceId && !repzAcces()){
+    window.location.href = 'main.html#1';
+    return;
+  }
+
+  // Bouton retour intelligent : depuis un programme → revenir à la fiche
+  // programme (page précédente) ; en mode libre → menu entraînement
+  if(seanceId){
+    const bb = document.getElementById('backBtnSelect');
+    if(bb){
+      bb.setAttribute('href', '#');
+      bb.onclick = function(e){ e.preventDefault(); history.back(); };
+    }
+  } else {
+    // Mode libre : on garde uniquement les onglets muscles (pas de filtres matériel)
+    const ft = document.getElementById('filterTabs');
+    if(ft) ft.style.display = 'none';
+  }
+
+  // Pré-activer un filtre matériel si fourni
+  if(filtre && FILTERS.find(x => x.key === filtre)){
+    currentFilter = filtre;
+    renderFilters();
+    renderExercises();
+  }
+
+  if(!seanceId || !SESSION_EXOS[seanceId]) return;
+
+  // Construire la séance IMPOSÉE dans l'ordre exact du programme
+  const refsBruts = SESSION_EXOS[seanceId]; // ex: ["pecs:0","triceps:1"]
+  const refs = [];
+  refsBruts.forEach(ref => {
+    const [mKey, idx] = ref.split(':');
+    const i = parseInt(idx);
+    if(EXERCISES[mKey] && EXERCISES[mKey][i]){
+      refs.push({mKey:mKey, i:i, ex:EXERCISES[mKey][i]});
+    }
+  });
+  if(refs.length === 0) return;
+
+  // Titre de la séance sur l'écran de séance
+  if(titre){
+    const st = document.getElementById('sessionScreenTitle');
+    if(st) st.textContent = decodeURIComponent(titre);
+  }
+
+  // Retour : depuis un programme, revenir à la fiche programme (pas au sélecteur vide)
+  const bbSession = document.getElementById('backBtnSession');
+  if(bbSession){ bbSession.onclick = function(e){ e.preventDefault(); history.back(); }; }
+
+  // Ouvrir DIRECTEMENT la séance imposée (pas le sélecteur muscle par muscle)
+  goToSession(refs);
+})();
+</script>
+
+<!-- TIMER ENTRE SÉRIES -->
+<div class="timer-overlay" id="timerOverlay" onclick="closeTimer()"></div>
+<div class="timer-container" id="timerContainer">
+    <div class="timer-display">
+        <div class="timer-big" id="timerDisplay">01:30</div>
+        <div class="timer-label" data-i18n="ms_rest_label">Repos entre les séries</div>
+    </div>
+    <div class="timer-wheels">
+        <div class="wheel-col">
+            <div class="wheel" id="wheelMin"></div>
+            <div class="wheel-unit">min</div>
+        </div>
+        <div class="wheel-sep">:</div>
+        <div class="wheel-col">
+            <div class="wheel" id="wheelSec"></div>
+            <div class="wheel-unit">sec</div>
+        </div>
+        <div class="wheel-highlight"></div>
+    </div>
+    <div class="timer-controls">
+        <button class="timer-btn start" id="timerStartBtn" onclick="startTimer()">Démarrer</button>
+        <button class="timer-btn reset" id="timerResetBtn" onclick="resetTimer()">Reset</button>
+        <button class="timer-btn reset" onclick="closeTimer()">Fermer</button>
+    </div>
+</div>
+
+<!-- BOUTON FLOTTANT CHRONO -->
+<button class="chrono-fab" id="chronoFab" onclick="toggleTimer()" aria-label="Chronomètre de repos">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 2h6"/></svg>
+    <span class="chrono-fab-time" id="chronoFabTime"></span>
+</button>
+
+<!-- MESSAGE D'INFO CHRONO (apparaît au début) -->
+<div class="chrono-hint" id="chronoHint">
+    <span data-i18n="ms_chrono_hint">⏱️ Un chronomètre de repos est dispo ici →</span> <button onclick="dismissChronoHint()">OK</button>
+</div>
+
+<script>
+// ===== TIMER ENTRE SÉRIES =====
+let timerInterval = null;
+let timerRunning = false;
+let totalSeconds = 90;
+
+function updateTimerDisplay(){
+    const min = Math.floor(totalSeconds / 60);
+    const sec = totalSeconds % 60;
+    document.getElementById('timerDisplay').textContent = 
+        (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
+    updateChronoFab();
+}
+
+function startTimer(){
+    if(timerRunning) return;
+    timerRunning = true;
+    document.getElementById('timerStartBtn').textContent = t('pause');
+    document.getElementById('timerStartBtn').classList.add('pause');
+    
+    timerInterval = setInterval(()=>{
+        if(totalSeconds > 0){
+            totalSeconds--;
+            updateTimerDisplay();
+        } else {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            document.getElementById('timerStartBtn').textContent = t('start');
+            document.getElementById('timerStartBtn').classList.remove('pause');
+            updateChronoFab();
+            // Alerte sonore
+            if(window.Notification && Notification.permission === 'granted'){
+                new Notification('C\'est parti! 💪');
+            }
+        }
+    }, 1000);
+}
+
+let lastPreset = 90; // temps choisi par défaut (1:30)
+
+// ===== MOLETTES DÉFILANTES =====
+let wheelMinVal = 1, wheelSecVal = 30;
+
+function buildWheel(el, values, selected, onChange){
+    // Padding haut/bas pour pouvoir centrer le 1er et dernier item
+    el.innerHTML = '<div style="height:50px"></div>' +
+        values.map(v => `<div class="wheel-item" data-val="${v}">${(v<10?'0':'')+v}</div>`).join('') +
+        '<div style="height:50px"></div>';
+    // Positionner sur la valeur sélectionnée (after layout)
+    const idx = values.indexOf(selected);
+    setTimeout(()=>{ el.scrollTop = (idx<0?0:idx) * 50; updateWheelSel(el); }, 50);
+    let scrollTimer = null;
+    el.addEventListener('scroll', ()=>{
+        updateWheelSel(el);
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(()=>{
+            const i = Math.round(el.scrollTop / 50);
+            const val = values[Math.max(0, Math.min(values.length-1, i))];
+            onChange(val);
+        }, 120);
+    });
+}
+
+function updateWheelSel(el){
+    const i = Math.round(el.scrollTop / 50);
+    el.querySelectorAll('.wheel-item').forEach((it, idx)=>{
+        it.classList.toggle('sel', idx === i);
+    });
+}
+
+function appliquerMolettes(){
+    totalSeconds = wheelMinVal * 60 + wheelSecVal;
+    lastPreset = totalSeconds;
+    clearInterval(timerInterval);
+    timerRunning = false;
+    updateTimerDisplay();
+    const btn = document.getElementById('timerStartBtn');
+    if(btn){ btn.textContent = t('start'); btn.classList.remove('pause'); }
+}
+
+function initWheels(){
+    const minutes = Array.from({length:11}, (_,i)=>i);       // 0 à 10 min
+    const secondes = Array.from({length:12}, (_,i)=>i*5);    // 0,5,10...55
+    buildWheel(document.getElementById('wheelMin'), minutes, wheelMinVal, v=>{ wheelMinVal=v; appliquerMolettes(); });
+    buildWheel(document.getElementById('wheelSec'), secondes, wheelSecVal, v=>{ wheelSecVal=v; appliquerMolettes(); });
+}
+
+function resetTimer(){
+    clearInterval(timerInterval);
+    timerRunning = false;
+    totalSeconds = lastPreset;
+    updateTimerDisplay();
+    document.getElementById('timerStartBtn').textContent = t('start');
+    document.getElementById('timerStartBtn').classList.remove('pause');
+}
+
+// ===== Chrono flottant =====
+function toggleTimer(){
+    const c = document.getElementById('timerContainer');
+    const o = document.getElementById('timerOverlay');
+    const isOpen = c.classList.toggle('show');
+    o.classList.toggle('show', isOpen);
+    dismissChronoHint();
+    // Repositionner les molettes maintenant que le conteneur est visible
+    if(isOpen){
+        const wMin = document.getElementById('wheelMin');
+        const wSec = document.getElementById('wheelSec');
+        if(wMin) setTimeout(()=>{ wMin.scrollTop = wheelMinVal * 50; updateWheelSel(wMin); }, 60);
+        if(wSec) setTimeout(()=>{ wSec.scrollTop = (wheelSecVal/5) * 50; updateWheelSel(wSec); }, 60);
+    }
+}
+function closeTimer(){
+    document.getElementById('timerContainer').classList.remove('show');
+    document.getElementById('timerOverlay').classList.remove('show');
+}
+function dismissChronoHint(){
+    document.getElementById('chronoHint').classList.remove('show');
+}
+
+// Met à jour le mini-temps sur le bouton flottant
+function updateChronoFab(){
+    const fab = document.getElementById('chronoFab');
+    const t = document.getElementById('chronoFabTime');
+    if(!fab || !t) return;
+    if(timerRunning){
+        const min = Math.floor(totalSeconds / 60);
+        const sec = totalSeconds % 60;
+        t.textContent = (min<10?'0':'')+min+':'+(sec<10?'0':'')+sec;
+        fab.classList.add('running');
+    } else {
+        t.textContent = '';
+        fab.classList.remove('running');
+    }
+}
+
+// Initialiser les molettes du chrono au chargement
+initWheels();
+updateTimerDisplay();
+</script>
+
+
+<script>
+// ===== REPZ_INVITE : mode découverte (navigation seule) =====
+function estInviteRepz(){ return localStorage.getItem('repz_invite') === '1'; }
+function murCompte(){
+    if(document.getElementById('inviteMurAction')) {
+        document.getElementById('inviteMurAction').style.display = 'flex';
+        return;
+    }
+    const o = document.createElement('div');
+    o.id = 'inviteMurAction';
+    o.style.cssText = 'position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:22px;';
+    o.innerHTML = '<div style="max-width:340px;width:100%;text-align:center;background:#ffffff;border-radius:24px;padding:30px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);">'
+        + '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:12px;color:#1a1a1a;">BEL<span style="color:#F7B500;">FIT</span></div>'
+        + '<h2 style="font-size:19px;font-weight:800;margin-bottom:8px;color:#1a1a1a;line-height:1.3;">Crée ton compte gratuit</h2>'
+        + '<p style="font-size:13.5px;color:#6b7280;line-height:1.55;margin-bottom:18px;">Tu es en mode découverte : tu peux explorer l\'appli librement. Pour l\'utiliser (journal, séances, poids), crée ton compte — c\'est gratuit et ça prend une minute.</p>'
+        + '<a href="index.html" style="display:block;background:#F7B500;color:#181818;text-decoration:none;padding:14px;border-radius:13px;font-size:15px;font-weight:800;margin-bottom:8px;">Créer mon compte gratuit</a>'
+        + '<button onclick="document.getElementById(\'inviteMurAction\').style.display=\'none\'" style="display:block;width:100%;background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;padding:8px;cursor:pointer;">Continuer à explorer</button>'
+        + '</div>';
+    document.body.appendChild(o);
+}
+function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return true; }
+(function(){
+    if(!estInviteRepz()) return;
+    const b = document.createElement('a');
+    b.href = 'index.html';
+    b.id = 'inviteBandeau';
+    b.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:6px;background:#FFF9E8;border-bottom:1px solid #F3D98A;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;';
+    b.innerHTML = t('invite_banner');
+    const topbar = document.querySelector('.topbar-app, .topbar');
+    if(topbar && topbar.parentNode){ topbar.parentNode.insertBefore(b, topbar.nextSibling); }
+    else { document.body.insertBefore(b, document.body.firstChild); }
+})();
+</script>
+
+<script>
+/* ===== SYNC PREMIUM depuis Firestore (source de vérité = le compte) ===== */
+(function(){
+  function syncPremium(u){
+    if(!u || !window.firebase || !firebase.firestore) return;
+    firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
+      var prem = doc.exists && doc.data().premium === true;
+      var had = localStorage.getItem('repz_premium') === '1';
+      if(prem){ localStorage.setItem('repz_premium','1'); }
+      else { localStorage.removeItem('repz_premium'); }
+      if(prem !== had && !sessionStorage.getItem('repz_premSynced')){
+        sessionStorage.setItem('repz_premSynced','1');
+        location.reload();
+      }
+    }).catch(function(e){ console.warn('premium sync', e); });
+  }
+  try{
+    if(window.firebase && firebase.auth){
+      firebase.auth().onAuthStateChanged(function(u){ if(u) syncPremium(u); });
+    }
+  }catch(e){}
+})();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
+<script>/*repzSplashFailsafe*/setTimeout(function(){var s=document.getElementById('repzSplash');if(s)s.remove();},4000);</script>

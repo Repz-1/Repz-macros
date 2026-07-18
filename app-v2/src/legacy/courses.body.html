@@ -1,0 +1,222 @@
+
+<div class="container">
+    <div class="top">
+        <a href="main.html#0" class="back-btn">←</a>
+        <div class="title" data-i18n="co_title">Mes courses</div>
+    </div>
+    <div class="subtitle" data-i18n="co_sub">Générée depuis les repas de ton journal.</div>
+
+    <!-- PRÉPARATION -->
+    <div class="prep">
+        <h3>🛒 <span data-i18n="co_prep_title">Préparer mes courses</span></h3>
+        <div class="prep-row">
+            <div class="prep-lbl" data-i18n="co_days_q">Pour combien de jours ?</div>
+            <div class="seg" id="segJours"></div>
+        </div>
+        <div class="prep-row">
+            <div class="prep-lbl" data-i18n="co_people_q">Pour combien de personnes ?</div>
+            <div class="seg" id="segPers"></div>
+        </div>
+        <button class="gen-btn" onclick="generer()" data-i18n="co_generate">Générer ma liste</button>
+        <div class="prep-note" id="prepNote"></div>
+    </div>
+
+    <!-- LISTE -->
+    <div id="liste"></div>
+
+    <!-- AJOUT MANUEL -->
+    <div class="add-row">
+        <input type="text" id="addInput" data-i18n-ph="co_add_ph" placeholder="Ajouter un produit…" onkeydown="if(event.key==='Enter')ajouterManuel()">
+        <button onclick="ajouterManuel()">＋</button>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+        <button class="act-share" onclick="partager()"><span class="as-ic"><svg viewBox="0 0 24 24"><path d="M12 3v13"/><path d="M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></span><span data-i18n="co_share_btn">Partager ma liste</span></button>
+        <button class="act-reset" onclick="toutDecocher()" data-i18n="co_uncheck">Tout décocher</button>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="main.html#0" class="bn-item"><svg viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M17 3c-1.5 0-3 2-3 5v4h3v9"/></svg><span data-i18n="nav_journal">Journal</span></a>
+    <a href="main.html#1" class="bn-item"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M6.5 12h11"/></svg><span data-i18n="nav_train">S'entraîner</span></a>
+    <a href="main.html#2" class="bn-item"><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg><span data-i18n="nav_stats">Stats</span></a>
+    <a href="main.html#3" class="bn-item"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg><span data-i18n="nav_premium">Premium</span></a>
+</nav>
+
+<script>
+// ===== Config rayons (ordre + emoji + libellé) =====
+const RAYONS = [
+    {k:'viandes',   emo:'🥩'},
+    {k:'poissons',  emo:'🐟'},
+    {k:'oeufs',     emo:'🥚'},
+    {k:'legumes',   emo:'🥦'},
+    {k:'feculents', emo:'🍚'},
+    {k:'laitiers',  emo:'🥛'},
+    {k:'epicerie',  emo:'🥜'},
+    {k:'boissons',  emo:'🥤'},
+    {k:'autres',    emo:'📦'}
+].map(r => Object.defineProperty(r, 'nom', { get(){ return t('ray_'+r.k); } }));
+
+let base = [];          // items "1 jour" venant du journal : {name, qty, unit, unitLabel, cat}
+let baseNjours = 1;      // nombre de journées ayant servi à la moyenne
+let jours = 5, pers = 1;
+let state = null;        // {jours, pers, items:[{name,qty,unit,cat,done,manuel}]}
+
+// ---- Chargement ----
+(function init(){
+    try {
+        const b = JSON.parse(localStorage.getItem('repz_coursesBase') || 'null');
+        if(b && b.items){ base = b.items; baseNjours = b.njours || 1; }
+    } catch(e){ base = []; }
+    try {
+        const s = JSON.parse(localStorage.getItem('repz_courses') || 'null');
+        if(s && s.items){ state = s; jours = s.jours || 5; pers = s.pers || 1; }
+    } catch(e){ state = null; }
+    renderSegs();
+    renderSegs();
+    const pn = document.getElementById('prepNote');
+    if(pn && baseNjours > 1){ pn.textContent = '✨ ' + t('co_avg_note',{n:baseNjours}); pn.style.display = 'block'; }
+    if(base.length){ generer(); }        // auto-génération à chaque ouverture, depuis le journal
+    else if(state){ renderListe(); }     // pas de base mais des ajouts manuels sauvegardés
+    else { renderVide(); }
+})();
+
+function renderSegs(){
+    document.getElementById('segJours').innerHTML = [3,5,7].map(j =>
+        `<button class="${j===jours?'on':''}" onclick="setJours(${j})">${j} ${t('co_days')}</button>`).join('');
+    document.getElementById('segPers').innerHTML = [1,2,3,4].map(p =>
+        `<button class="${p===pers?'on':''}" onclick="setPers(${p})">${p===4?'4+':p}</button>`).join('');
+}
+function setJours(j){ jours = j; renderSegs(); if(state && base.length) generer(); }
+function setPers(p){ pers = p; renderSegs(); if(state && base.length) generer(); }
+
+// ---- Génération depuis la base ----
+function nomCourse(n){
+    n = n || '';
+    const low = n.toLowerCase();
+    // Œufs : tout regrouper en "Œufs entiers L" (sans confondre avec bœuf)
+    if((low.indexOf('oeuf') >= 0 || low.indexOf('œuf') >= 0) && low.indexOf('boeuf') < 0 && low.indexOf('bœuf') < 0){
+        return 'Œufs entiers L';
+    }
+    // En courses on achète le produit cru, pas cuit
+    return n
+        .replace(/\bcuites\b/gi,'crues')
+        .replace(/\bcuits\b/gi,'crus')
+        .replace(/\bcuite\b/gi,'crue')
+        .replace(/\bcuit\b/gi,'cru');
+}
+function generer(){
+    if(!base.length){ renderVide(); return; }
+    // Mémoriser les cases déjà cochées (par nom) pour ne pas perdre la progression
+    const dejaCoches = {};
+    if(state && state.items){ state.items.forEach(i => { if(i.done) dejaCoches[i.name] = true; }); }
+    const items = base.map(it => ({
+        name: nomCourse(it.name),
+        qty: it.unit === 'u' ? Math.ceil(it.qty * jours * pers) : Math.round(it.qty * jours * pers),
+        unit: it.unit,
+        unitLabel: it.unitLabel,
+        cat: it.cat,
+        done: !!dejaCoches[it.name],
+        manuel: false
+    }));
+    // Fusionner les doublons de même nom + unité (ex. plusieurs formes d'œufs)
+    const fusion = [];
+    items.forEach(it => {
+        const ex = fusion.find(x => x.name === it.name && x.unit === it.unit && x.cat === it.cat);
+        if(ex){ ex.qty += it.qty; } else { fusion.push(it); }
+    });
+    items.length = 0; fusion.forEach(x => items.push(x));
+    // Conserver les produits ajoutés manuellement d'une génération précédente
+    if(state && state.items){
+        state.items.filter(i => i.manuel).forEach(i => items.push(i));
+    }
+    state = { jours, pers, items };
+    sauver();
+    renderListe();
+}
+
+function sauver(){ if(state) localStorage.setItem('repz_courses', JSON.stringify(state)); }
+
+// ---- Affichage quantité lisible ----
+function fmtQty(it){
+    if(it.unit === 'u'){
+        const n = Math.round(it.qty);
+        return n + ' ' + (it.unitLabel && it.unitLabel !== 'u' ? it.unitLabel + (n>1?'s':'') : t(n>1?'co_units':'co_unit'));
+    }
+    const g = Math.round(it.qty);
+    if(g >= 1000){ return (g/1000).toFixed(g%1000===0?0:2).replace('.',',') + ' kg'; }
+    return g + ' g';
+}
+
+function renderListe(){
+    const cont = document.getElementById('liste');
+    if(!state || !state.items.length){ renderVide(); return; }
+    let html = '';
+    RAYONS.forEach(r => {
+        const items = state.items.filter(i => i.cat === r.k);
+        if(!items.length) return;
+        const faits = items.filter(i => i.done).length;
+        html += `<div class="rayon">
+            <div class="rayon-head"><span class="emo">${r.emo}</span> ${r.nom} <span class="count-pill">${faits}/${items.length}</span></div>
+            <div class="rayon-card">`;
+        items.forEach(it => {
+            const idx = state.items.indexOf(it);
+            html += `<div class="c-item${it.done?' done':''}">
+                <div class="c-check" onclick="toggle(${idx})">✓</div>
+                <div class="c-body">
+                    <div class="c-name">${(window.trFood?trFood(it.name):it.name)}</div>
+                    <div class="c-qty">${it.manuel ? t('co_added') : fmtQty(it)}</div>
+                </div>
+                <button class="c-del" onclick="supprimer(${idx})">×</button>
+            </div>`;
+        });
+        html += `</div></div>`;
+    });
+    cont.innerHTML = html;
+}
+
+function renderVide(){
+    document.getElementById('liste').innerHTML =
+        `<div class="empty"><span style="display:block;font-size:44px;margin-bottom:10px">🛒</span>${t('co_empty')}</div>`;
+}
+
+function toggle(i){ if(state.items[i]){ state.items[i].done = !state.items[i].done; sauver(); renderListe(); } }
+function supprimer(i){ if(state.items[i]){ state.items.splice(i,1); sauver(); renderListe(); } }
+
+function ajouterManuel(){
+    const inp = document.getElementById('addInput');
+    const val = inp.value.trim();
+    if(!val) return;
+    if(!state) state = { jours, pers, items:[] };
+    state.items.push({ name: val, qty:0, unit:'u', unitLabel:'', cat:'autres', done:false, manuel:true });
+    inp.value = '';
+    sauver();
+    renderListe();
+}
+
+function toutDecocher(){ if(state){ state.items.forEach(i => i.done=false); sauver(); renderListe(); } }
+
+function partager(){
+    if(!state || !state.items.length){ alert(t('co_empty_alert')); return; }
+    let txt = '🛒 ' + t('co_share_title') + '\n(' + jours + ' ' + t('co_days') + ' · ' + pers + ' ' + t(pers>1?'co_people':'co_person') + ')\n';
+    RAYONS.forEach(r => {
+        const items = state.items.filter(i => i.cat === r.k);
+        if(!items.length) return;
+        txt += '\n' + r.emo + ' ' + r.nom + '\n';
+        items.forEach(it => { txt += '• ' + it.name + (it.manuel ? '' : ' — ' + fmtQty(it)) + '\n'; });
+    });
+    if(navigator.share){ navigator.share({ title:t('co_share_title'), text:txt }).catch(()=>{}); }
+    else if(navigator.clipboard){ navigator.clipboard.writeText(txt); alert(t('co_copied')); }
+}
+</script>
+<script>
+window.addEventListener('langchange', function(){
+    renderSegs();
+    var pn = document.getElementById('prepNote');
+    if(pn && baseNjours > 1){ pn.textContent = '✨ ' + t('co_avg_note',{n:baseNjours}); }
+    if(state && state.items.length){ renderListe(); } else { renderVide(); }
+});
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
