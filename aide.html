@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#f7efd9">
 <title>BELFIT — Aide</title>
 <link rel="manifest" href="manifest.json">
-<script src="i18n-strings.js?v=9"></script>
+<script src="i18n-strings.js?v=10"></script>
 <script src="i18n.js?v=4"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,6 +35,50 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 .faq-item.open .fq-arr { transform:rotate(180deg); }
 .faq-a { display:none; padding:0 16px 16px; font-size:14px; color:var(--dim); line-height:1.6; }
 .faq-item.open .faq-a { display:block; }
+
+/* ===== CATEGORIES DE LA FAQ ===== */
+.faq-cat { border-bottom:1px solid var(--line); }
+.faq-cat:last-child { border-bottom:none; }
+.faq-cat-q {
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    width:100%; background:none; border:none; text-align:left;
+    padding:17px 16px; font-size:15.5px; font-weight:800; color:var(--text);
+    cursor:pointer; font-family:inherit;
+}
+.faq-cat-q:active { background:#FAF8F3; }
+.fc-right { display:flex; align-items:center; gap:10px; flex:none; }
+.fc-nb {
+    font-style:normal; font-size:11.5px; font-weight:800; color:#8F6200;
+    background:#FFF6DC; border-radius:20px; padding:3px 9px; min-width:22px; text-align:center;
+}
+.faq-cat .fq-arr { color:#c4bcae; font-size:15px; transition:transform .2s; }
+.faq-cat.open > .faq-cat-q .fq-arr { transform:rotate(180deg); }
+.faq-cat-body { display:none; background:#FCFBF8; }
+.faq-cat.open .faq-cat-body { display:block; }
+.faq-cat-body .faq-q { font-weight:600; font-size:14.5px; padding:14px 16px 14px 22px; }
+.faq-cat-body .faq-a { padding:0 16px 15px 22px; }
+
+/* ===== POSER UNE QUESTION ===== */
+.ask-card {
+    background:linear-gradient(135deg,#FFFBEF,#FBEFC7);
+    border:1.5px solid #F3E2A8; border-radius:20px;
+    padding:20px 18px; text-align:center; margin-bottom:22px;
+    box-shadow:0 6px 18px rgba(247,181,0,.12);
+}
+.ask-card .ask-ic {
+    width:46px; height:46px; margin:0 auto 12px; border-radius:50%;
+    background:#F7B500; color:#181818;
+    display:flex; align-items:center; justify-content:center;
+}
+.ask-card .ask-ic svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.ask-card h3 { font-size:16.5px; font-weight:800; color:#7a5600; margin-bottom:5px; }
+.ask-card p { font-size:13.5px; color:#8F6200; line-height:1.55; margin-bottom:15px; }
+.ask-card .ask-btn {
+    background:#181818; color:#fff; border:none; border-radius:12px;
+    padding:13px 26px; font-size:14.5px; font-weight:800;
+    font-family:inherit; cursor:pointer; width:100%;
+}
+.ask-card .ask-btn:active { transform:scale(.98); }
 
 /* Bulle de contact */
 .chat-fab { position:fixed; bottom:22px; right:18px; z-index:120; width:58px; height:58px; border-radius:50%; border:none; background:var(--em); color:#fff; box-shadow:0 8px 22px rgba(247,181,0,.4); cursor:pointer; display:flex; align-items:center; justify-content:center; }
@@ -78,6 +122,15 @@ const auth = firebase.auth();
 
     <div class="sec-label" data-i18n="ai_faq">Questions fréquentes</div>
     <div class="faq-card" id="faqCard"></div>
+
+    <div class="ask-card">
+        <div class="ask-ic">
+            <svg viewBox="0 0 24 24"><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9.5"/></svg>
+        </div>
+        <h3 data-i18n="ai_ask_title">Ta question n'est pas là ?</h3>
+        <p data-i18n="ai_ask_sub">Pose-la directement à ton coach. Réponse par e-mail sous 24 à 48h.</p>
+        <button class="ask-btn" onclick="toggleChat()" data-i18n="ai_ask_btn">Poser ma question</button>
+    </div>
 </div>
 
 <!-- BULLE DE CONTACT -->
@@ -108,28 +161,60 @@ function trf(str){
     const m = (window.BELFIT_STRINGS[BELFIT_I18N.getLang()] || {}).__ai || {};
     return m[str] || str;
 }
+// Chaque question porte une categorie : la FAQ s'ouvre repliee par theme,
+// pour qu'on trouve sans lire les onze questions a la suite.
+const CATEGORIES = [
+    { k:'general',  label:"Découvrir BELFIT" },
+    { k:'premium',  label:"Premium et abonnement" },
+    { k:'app',      label:"Utiliser l'application" },
+    { k:'compte',   label:"Compte et données" },
+];
 const FAQ = [
-    { q:"C'est quoi BELFIT ?", a:"BELFIT est une application belge de nutrition et d'entraînement avec un vrai coach humain. Tu suis ton alimentation et tes séances dans l'app, et ton coach construit ton programme personnalisé." },
-    { q:"Comment fonctionne le programme personnalisé ?", a:"En Premium, tu remplis un questionnaire détaillé (objectif, préférences, allergies, rythme de vie). Ton coach l'analyse et te livre ton programme personnalisé sous 24 à 48h par e-mail. Pas d'algorithme automatique : un vrai coach travaille sur ton dossier." },
-    { q:"Que comprend l'abonnement Premium ?", a:"Le programme nutrition personnalisé par le coach, la bibliothèque de programmes d'entraînement, le calculateur avancé, les idées recettes adaptées à tes calories restantes, l'historique illimité et 2 ajustements de macros + 2 ajustements de calories par mois." },
-    { q:"Comment ajuster mes calories ou mes macros ?", a:"Profil → Répartition des macros ou Ajustement des calories. En Premium, tu disposes de 2 ajustements par mois pour chacun : ta demande part chez ton coach, qui adapte ton plan sous 24–48h." },
-    { q:"Comment scanner un produit ?", a:"Dans le journal, ouvre un repas puis utilise l'icône scan pour lire le code-barres. Le produit est ajouté au repas et sauvegardé définitivement dans ta base personnelle d'aliments." },
-    { q:"Comment enregistrer mon poids ?", a:"Dans le journal, bouton « Mon poids », ou via la note de rappel en haut de page si tu ne t'es pas encore pesé aujourd'hui. Ton évolution est visible dans Stats." },
-    { q:"Où sont stockées mes données ?", a:"Ton compte et ton statut Premium sont sécurisés chez Firebase (Google, serveurs européens). Ton journal, tes pesées et tes aliments personnalisés sont stockés sur ton appareil. Pense à ne pas effacer les données du navigateur sans exporter." },
-    { q:"Comment annuler mon abonnement ?", a:"Ton abonnement est géré par notre partenaire de paiement Lemon Squeezy : utilise le lien de gestion reçu dans ton e-mail de confirmation d'achat, ou écris-nous via la bulle de contact et on s'en occupe." },
-    { q:"J'ai un code promo, où l'utiliser ?", a:"Sur la page Premium au moment de choisir ta formule. Si tu as un souci avec un code, contacte-nous via la bulle." },
-    { q:"L'app fonctionne-t-elle hors ligne ?", a:"Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium." },
-    { q:"Comment vous contacter ?", a:"Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h." }
+    { q:"C'est quoi BELFIT ?", c:"general", a:"BELFIT est une application belge de nutrition et d'entraînement avec un vrai coach humain. Tu suis ton alimentation et tes séances dans l'app, et ton coach construit ton programme personnalisé." },
+    { q:"Comment fonctionne le programme personnalisé ?", c:"general", a:"En Premium, tu remplis un questionnaire détaillé (objectif, préférences, allergies, rythme de vie). Ton coach l'analyse et te livre ton programme personnalisé sous 24 à 48h par e-mail. Pas d'algorithme automatique : un vrai coach travaille sur ton dossier." },
+    { q:"Que comprend l'abonnement Premium ?", c:"premium", a:"Le programme nutrition personnalisé par le coach, la bibliothèque de programmes d'entraînement, le calculateur avancé, les idées recettes adaptées à tes calories restantes, l'historique illimité et 2 ajustements de macros + 2 ajustements de calories par mois." },
+    { q:"Comment ajuster mes calories ou mes macros ?", c:"app", a:"Profil → Répartition des macros ou Ajustement des calories. En Premium, tu disposes de 2 ajustements par mois pour chacun : ta demande part chez ton coach, qui adapte ton plan sous 24–48h." },
+    { q:"Comment scanner un produit ?", c:"app", a:"Dans le journal, ouvre un repas puis utilise l'icône scan pour lire le code-barres. Le produit est ajouté au repas et sauvegardé définitivement dans ta base personnelle d'aliments." },
+    { q:"Comment enregistrer mon poids ?", c:"app", a:"Dans le journal, bouton « Mon poids », ou via la note de rappel en haut de page si tu ne t'es pas encore pesé aujourd'hui. Ton évolution est visible dans Stats." },
+    { q:"Où sont stockées mes données ?", c:"compte", a:"Ton compte et ton statut Premium sont sécurisés chez Firebase (Google, serveurs européens). Ton journal, tes pesées et tes aliments personnalisés sont stockés sur ton appareil. Pense à ne pas effacer les données du navigateur sans exporter." },
+    { q:"Comment annuler mon abonnement ?", c:"premium", a:"Ton abonnement est géré par notre partenaire de paiement Lemon Squeezy : utilise le lien de gestion reçu dans ton e-mail de confirmation d'achat, ou écris-nous via la bulle de contact et on s'en occupe." },
+    { q:"J'ai un code promo, où l'utiliser ?", c:"premium", a:"Sur la page Premium au moment de choisir ta formule. Si tu as un souci avec un code, contacte-nous via la bulle." },
+    { q:"L'app fonctionne-t-elle hors ligne ?", c:"app", a:"Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium." },
+    { q:"Comment vous contacter ?", c:"general", a:"Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h." }
 ];
 function renderFaq(){
-    document.getElementById('faqCard').innerHTML = FAQ.map((f,i)=>`
-    <div class="faq-item" id="faq${i}">
-        <button class="faq-q" onclick="toggleFaq(${i})"><span>${trf(f.q)}</span><span class="fq-arr">▾</span></button>
-        <div class="faq-a">${trf(f.a)}</div>
-    </div>`).join('');
+    document.getElementById('faqCard').innerHTML = CATEGORIES.map(cat=>{
+        const questions = FAQ.map((f,i)=>({f,i})).filter(x=>x.f.c===cat.k);
+        if(!questions.length) return '';
+        return `
+    <div class="faq-cat" id="cat-${cat.k}">
+        <button class="faq-cat-q" onclick="toggleCat('${cat.k}')">
+            <span>${trf(cat.label)}</span>
+            <span class="fc-right"><i class="fc-nb">${questions.length}</i><span class="fq-arr">▾</span></span>
+        </button>
+        <div class="faq-cat-body">
+            ${questions.map(x=>`
+            <div class="faq-item" id="faq${x.i}">
+                <button class="faq-q" onclick="toggleFaq(${x.i})"><span>${trf(x.f.q)}</span><span class="fq-arr">▾</span></button>
+                <div class="faq-a">${trf(x.f.a)}</div>
+            </div>`).join('')}
+        </div>
+    </div>`;
+    }).join('');
 }
 renderFaq();
 window.addEventListener('langchange', renderFaq);
+function toggleCat(k){
+    const el = document.getElementById('cat-'+k);
+    if(!el) return;
+    const dejaOuvert = el.classList.contains('open');
+    document.querySelectorAll('.faq-cat').forEach(x=>x.classList.remove('open'));
+    document.querySelectorAll('.faq-item').forEach(x=>x.classList.remove('open'));
+    if(!dejaOuvert){
+        el.classList.add('open');
+        setTimeout(()=>{ try{ el.scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){} }, 180);
+    }
+}
 function toggleFaq(i){
     const el = document.getElementById('faq'+i);
     const dejaOuvert = el.classList.contains('open');

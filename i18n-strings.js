@@ -1544,3 +1544,21 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   pseudo_caracteres: 'Alleen letters, cijfers, punt, streepje of _',
   pseudo_invalide: 'Kies een geldige en beschikbare gebruikersnaam'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  ai_ask_title: 'Ta question n\'est pas là ?',
+  ai_ask_sub: 'Pose-la directement à ton coach. Réponse par e-mail sous 24 à 48h.',
+  ai_ask_btn: 'Poser ma question'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  ai_ask_title: 'Can\'t find your question?',
+  ai_ask_sub: 'Ask your coach directly. Reply by email within 24 to 48h.',
+  ai_ask_btn: 'Ask my question'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  ai_ask_title: 'Staat je vraag er niet bij?',
+  ai_ask_sub: 'Stel ze rechtstreeks aan je coach. Antwoord per e-mail binnen 24 tot 48u.',
+  ai_ask_btn: 'Mijn vraag stellen'
+});
