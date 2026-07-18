@@ -3,7 +3,7 @@ import { signal, effect } from '@preact/signals';
 import { rayonDe, RAYONS } from '../data/rayons.js';
 import { DB } from '../data/aliments.js';
 import { repas } from '../store/journal.js';
-import { utilisateur } from '../services/firebase.js';
+import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
@@ -14,12 +14,12 @@ export const courses = signal({ jours: 5, pers: 1, coches: {}, manuels: [] });
 let uidCo = null, pretCo = false;
 
 effect(() => {
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u) { uidCo = null; pretCo = false; return; }
-  if (u.uid === uidCo) return;
-  uidCo = u.uid; pretCo = false;
-  chargerDonnees(u.uid).then(d => {
-    if (uidCo !== u.uid) return;
+  if (u === uidCo) return;
+  uidCo = u; pretCo = false;
+  chargerDonnees(u).then(d => {
+    if (uidCo !== u) return;
     courses.value = (d && d.courses) || { jours: 5, pers: 1, coches: {}, manuels: [] };
     pretCo = true;
   });
@@ -27,9 +27,9 @@ effect(() => {
 
 effect(() => {
   const c = courses.value;
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u || !pretCo) return;
-  sauvegarder(u.uid, { courses: c });
+  sauvegarder(u, { courses: c });
 });
 
 // Base "1 jour" : agrege les aliments du journal du jour

@@ -3,7 +3,7 @@ import {
   getAuth, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
 } from 'firebase/auth';
-import { signal } from '@preact/signals';
+import { signal, computed } from '@preact/signals';
 
 // ============================================================
 // FIREBASE v2 — SDK modulaire (leger, tree-shakable).
@@ -27,6 +27,26 @@ export const auth = getAuth(app);
 // authPrete   : false tant que Firebase n'a pas repondu (evite le flash ecran login)
 export const utilisateur = signal(null);
 export const authPrete = signal(false);
+
+// Mode invite : essai sans compte. Les donnees restent LOCALES
+// (aucune sync cloud) jusqu'a la creation d'un vrai compte.
+const CLE_INVITE = 'belfit_v2_invite';
+export const invite = signal(localStorage.getItem(CLE_INVITE) === '1');
+
+export function entrerInvite() {
+  try { localStorage.setItem(CLE_INVITE, '1'); } catch (e) {}
+  invite.value = true;
+}
+export function quitterInvite() {
+  try { localStorage.removeItem(CLE_INVITE); } catch (e) {}
+  invite.value = false;
+}
+
+// Identite courante : uid du compte, '__invite__' si mode invite, sinon null.
+// Les stores s'y branchent : le meme code marche pour les deux cas.
+export const identite = computed(() =>
+  utilisateur.value ? utilisateur.value.uid : (invite.value ? '__invite__' : null)
+);
 
 onAuthStateChanged(auth, (u) => {
   utilisateur.value = u;

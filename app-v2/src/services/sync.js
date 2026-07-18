@@ -30,10 +30,14 @@ export function cleLocale(uid) {
   return `belfit_v2_journal_${uid}`;
 }
 
+// L'invite n'a pas de compte : pas de cloud, uniquement le local
+export const UID_INVITE = '__invite__';
+
 // ---- Lecture au demarrage : cloud d'abord, local en secours ----
 export async function chargerDonnees(uid) {
   const localBrut = localStorage.getItem(cleLocale(uid));
   const local = localBrut ? JSON.parse(localBrut) : null;
+  if (uid === UID_INVITE) { etatComplet = local ? { ...local } : {}; return local; }
   try {
     const snap = await getDoc(doc(db, 'users', uid));
     const cloud = snap.exists() && snap.data().v2Data ? snap.data().v2Data : null;
@@ -69,6 +73,7 @@ export function sauvegarder(uid, champsPartiels) {
   etatComplet = { ...etatComplet, ...champsPartiels };
   const instantane = { ...etatComplet, ts: Date.now() };
   try { localStorage.setItem(cleLocale(uid), JSON.stringify(instantane)); } catch (e) {}
+  if (uid === UID_INVITE) return; // pas de cloud pour un invite
   // Debounce : on n'envoie au cloud qu'apres 2s de calme (groupe les frappes)
   clearTimeout(timerEnvoi);
   timerEnvoi = setTimeout(() => {

@@ -1,6 +1,6 @@
 import { signal, computed, effect } from '@preact/signals';
 import { macrosOf } from '../data/aliments.js';
-import { utilisateur } from '../services/firebase.js';
+import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 
 // ============================================================
@@ -31,13 +31,13 @@ export const donneesPretes = signal(false);
 // on charge SES donnees (cloud d'abord, local en secours). ---
 let uidCharge = null;
 effect(() => {
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u) { uidCharge = null; donneesPretes.value = false; return; }
-  if (u.uid === uidCharge) return;
-  uidCharge = u.uid;
+  if (u === uidCharge) return;
+  uidCharge = u;
   donneesPretes.value = false;
-  chargerDonnees(u.uid).then(d => {
-    if (uidCharge !== u.uid) return; // changement de compte entre-temps
+  chargerDonnees(u).then(d => {
+    if (uidCharge !== u) return; // changement de compte entre-temps
     repas.value = d && d.repas ? d.repas : structuredClone(DEFAUTS.repas);
     objectifs.value = d && d.objectifs ? d.objectifs : structuredClone(DEFAUTS.objectifs);
     eau.value = d && typeof d.eau === 'number' ? d.eau : 0;
@@ -48,9 +48,9 @@ effect(() => {
 // --- Sauvegarde automatique par compte : local immediat + cloud differe. ---
 effect(() => {
   const instantane = { repas: repas.value, objectifs: objectifs.value, eau: eau.value };
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u || !donneesPretes.value) return; // ne pas ecraser avant le chargement
-  sauvegarder(u.uid, instantane);
+  sauvegarder(u, instantane);
 });
 
 // ---------- Derives ----------

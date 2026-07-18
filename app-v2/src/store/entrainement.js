@@ -1,5 +1,5 @@
 import { signal, effect } from '@preact/signals';
-import { utilisateur } from '../services/firebase.js';
+import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 
 // ============================================================
@@ -25,12 +25,12 @@ export const muscleLog = signal({});
 let uidM = null, pretM = false;
 
 effect(() => {
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u) { uidM = null; pretM = false; return; }
-  if (u.uid === uidM) return;
-  uidM = u.uid; pretM = false;
-  chargerDonnees(u.uid).then(d => {
-    if (uidM !== u.uid) return;
+  if (u === uidM) return;
+  uidM = u; pretM = false;
+  chargerDonnees(u).then(d => {
+    if (uidM !== u) return;
     muscleLog.value = (d && d.muscleLog) ? d.muscleLog : {};
     pretM = true;
   });
@@ -38,9 +38,9 @@ effect(() => {
 
 effect(() => {
   const log = muscleLog.value;
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u || !pretM) return;
-  sauvegarder(u.uid, { muscleLog: log });
+  sauvegarder(u, { muscleLog: log });
 });
 
 export function basculerMuscle(iso, k) {

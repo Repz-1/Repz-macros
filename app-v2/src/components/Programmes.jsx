@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { signal, effect } from '@preact/signals';
 import { PROGRAMMES, CATEGORIES } from '../data/programmes.js';
-import { utilisateur } from '../services/firebase.js';
+import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 import { t } from '../i18n/index.js';
 
@@ -10,12 +10,12 @@ export const programmeActif = signal(null);
 let uidP = null, pretP = false;
 
 effect(() => {
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u) { uidP = null; pretP = false; return; }
-  if (u.uid === uidP) return;
-  uidP = u.uid; pretP = false;
-  chargerDonnees(u.uid).then(d => {
-    if (uidP !== u.uid) return;
+  if (u === uidP) return;
+  uidP = u; pretP = false;
+  chargerDonnees(u).then(d => {
+    if (uidP !== u) return;
     programmeActif.value = (d && d.programmeActif) || null;
     pretP = true;
   });
@@ -23,9 +23,9 @@ effect(() => {
 
 effect(() => {
   const p = programmeActif.value;
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u || !pretP) return;
-  sauvegarder(u.uid, { programmeActif: p });
+  sauvegarder(u, { programmeActif: p });
 });
 
 export function Programmes() {

@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { signal, effect } from '@preact/signals';
-import { utilisateur } from '../services/firebase.js';
+import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 import { t } from '../i18n/index.js';
 
@@ -14,12 +14,12 @@ export const setLog = signal({});
 let uidS = null, pretS = false;
 
 effect(() => {
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u) { uidS = null; pretS = false; return; }
-  if (u.uid === uidS) return;
-  uidS = u.uid; pretS = false;
-  chargerDonnees(u.uid).then(d => {
-    if (uidS !== u.uid) return;
+  if (u === uidS) return;
+  uidS = u; pretS = false;
+  chargerDonnees(u).then(d => {
+    if (uidS !== u) return;
     setLog.value = (d && d.setLog) ? d.setLog : {};
     pretS = true;
   });
@@ -27,9 +27,9 @@ effect(() => {
 
 effect(() => {
   const log = setLog.value;
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u || !pretS) return;
-  sauvegarder(u.uid, { setLog: log });
+  sauvegarder(u, { setLog: log });
 });
 
 const isoAuj = () => new Date().toISOString().slice(0, 10);

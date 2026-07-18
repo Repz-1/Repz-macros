@@ -42,6 +42,9 @@ const T = {
     revoir: 'Content de te revoir', creer_compte: 'Crée ton compte',
     pas_compte: "Pas encore de compte ? S'inscrire", deja_compte: 'Déjà un compte ? Se connecter',
     chargement: 'Chargement de ton journal…',
+    essayer_sans_compte: "Essayer sans compte", invite_note: "Tes données resteront sur cet appareil.",
+    invite_bandeau: 'Mode invité — crée un compte pour sauvegarder', mode_invite: 'Mode invité', quitter: 'Quitter',
+
     jours: 'Jours', personnes: 'Personnes', ajouter_article: 'Ajouter un article…',
     liste_vide: 'Ajoute des aliments à ton journal pour générer ta liste.',
     premium_titre: 'Passe en Premium', premium_sous: 'Ton coaching BelFit complet, avec toutes les fonctionnalités.',
@@ -67,6 +70,9 @@ const T = {
     revoir: 'Welcome back', creer_compte: 'Create your account',
     pas_compte: 'No account yet? Sign up', deja_compte: 'Already registered? Sign in',
     chargement: 'Loading your journal…',
+    essayer_sans_compte: 'Try without an account', invite_note: 'Your data stays on this device.',
+    invite_bandeau: 'Guest mode — create an account to save', mode_invite: 'Guest mode', quitter: 'Exit',
+
     jours: 'Days', personnes: 'People', ajouter_article: 'Add an item…',
     liste_vide: 'Add foods to your journal to build your list.',
     premium_titre: 'Go Premium', premium_sous: 'Your full BelFit coaching, with every feature.',
@@ -92,6 +98,9 @@ const T = {
     revoir: 'Welkom terug', creer_compte: 'Maak je account',
     pas_compte: 'Nog geen account? Registreren', deja_compte: 'Al een account? Aanmelden',
     chargement: 'Je dagboek laden…',
+    essayer_sans_compte: 'Proberen zonder account', invite_note: 'Je gegevens blijven op dit toestel.',
+    invite_bandeau: 'Gastmodus — maak een account om op te slaan', mode_invite: 'Gastmodus', quitter: 'Sluiten',
+
     jours: 'Dagen', personnes: 'Personen', ajouter_article: 'Artikel toevoegen…',
     liste_vide: 'Voeg voeding toe aan je dagboek om je lijst te maken.',
     premium_titre: 'Word Premium', premium_sous: 'Je volledige BelFit-coaching, met alle functies.',

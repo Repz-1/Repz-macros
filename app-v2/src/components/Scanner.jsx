@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { signal, effect } from '@preact/signals';
-import { utilisateur } from '../services/firebase.js';
+import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 import { ajouterIngredient } from '../store/journal.js';
 
@@ -13,12 +13,12 @@ export const customFoods = signal({});
 let uidC = null, pretC = false;
 
 effect(() => {
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u) { uidC = null; pretC = false; return; }
-  if (u.uid === uidC) return;
-  uidC = u.uid; pretC = false;
-  chargerDonnees(u.uid).then(d => {
-    if (uidC !== u.uid) return;
+  if (u === uidC) return;
+  uidC = u; pretC = false;
+  chargerDonnees(u).then(d => {
+    if (uidC !== u) return;
     customFoods.value = (d && d.customFoods) || {};
     window.__customFoods = customFoods.value;
     pretC = true;
@@ -28,9 +28,9 @@ effect(() => {
 effect(() => {
   const c = customFoods.value;
   window.__customFoods = c;
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u || !pretC) return;
-  sauvegarder(u.uid, { customFoods: c });
+  sauvegarder(u, { customFoods: c });
 });
 
 async function chercherProduit(code) {

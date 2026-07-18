@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { connexion, inscription, messageErreurAuth } from '../services/firebase.js';
+import { connexion, inscription, messageErreurAuth, entrerInvite } from '../services/firebase.js';
 import { t } from '../i18n/index.js';
 
 // Ecran de connexion / inscription — sobre, palette BelFit.
@@ -53,6 +53,10 @@ export function LoginScreen() {
       >
         {mode === 'connexion' ? t('pas_compte') : t('deja_compte')}
       </button>
+
+      <div class="login-sep"><span>ou</span></div>
+      <button class="login-invite" onClick={entrerInvite}>{t('essayer_sans_compte')}</button>
+      <p class="login-invite-note">{t('invite_note')}</p>
     </div>
   );
 }

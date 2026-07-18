@@ -1,5 +1,5 @@
 import { signal, computed, effect } from '@preact/signals';
-import { utilisateur } from '../services/firebase.js';
+import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 import { muscleLog } from './entrainement.js';
 
@@ -14,12 +14,12 @@ export const histoJours = signal({});
 let uidSt = null, pretSt = false;
 
 effect(() => {
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u) { uidSt = null; pretSt = false; return; }
-  if (u.uid === uidSt) return;
-  uidSt = u.uid; pretSt = false;
-  chargerDonnees(u.uid).then(d => {
-    if (uidSt !== u.uid) return;
+  if (u === uidSt) return;
+  uidSt = u; pretSt = false;
+  chargerDonnees(u).then(d => {
+    if (uidSt !== u) return;
     weightLog.value = (d && d.weightLog) || [];
     histoJours.value = (d && d.histoJours) || {};
     pretSt = true;
@@ -28,9 +28,9 @@ effect(() => {
 
 effect(() => {
   const w = weightLog.value, h = histoJours.value;
-  const u = utilisateur.value;
+  const u = identite.value;
   if (!u || !pretSt) return;
-  sauvegarder(u.uid, { weightLog: w, histoJours: h });
+  sauvegarder(u, { weightLog: w, histoJours: h });
 });
 
 export function ajouterPesee(kg) {

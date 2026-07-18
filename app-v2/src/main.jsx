@@ -1,7 +1,7 @@
 import { render } from 'preact';
 import { useState } from 'preact/hooks';
 import './styles.css';
-import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
+import { utilisateur, authPrete, deconnexion, invite, quitterInvite } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { repas, nouvelleJournee, donneesPretes } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
@@ -64,7 +64,7 @@ function App() {
   if (!authPrete.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>…</div>;
   }
-  if (!utilisateur.value) {
+  if (!utilisateur.value && !invite.value) {
     return <LoginScreen />;
   }
   if (!donneesPretes.value) {
@@ -75,15 +75,21 @@ function App() {
   return (
     <>
       <div class="conteneur">
+        {invite.value && !utilisateur.value && (
+          <div class="bandeau-invite">
+            <span>{t('invite_bandeau')}</span>
+            <button onClick={quitterInvite}>{t('creer_compte')}</button>
+          </div>
+        )}
         <div class="entete-user">
-          <span class="qui">{utilisateur.value.email}</span>
+          <span class="qui">{utilisateur.value ? utilisateur.value.email : t('mode_invite')}</span>
           <div class="entete-actions">
             <div class="lang-choix">
               {LANGUES.map(l => (
                 <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
               ))}
             </div>
-            <button onClick={() => deconnexion()}>{t('deconnexion')}</button>
+            <button onClick={() => utilisateur.value ? deconnexion() : quitterInvite()}>{utilisateur.value ? t('deconnexion') : t('quitter')}</button>
           </div>
         </div>
         {onglet === 'journal' && <OngletJournal />}
