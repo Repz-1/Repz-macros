@@ -520,6 +520,7 @@ body.search-open .meal-bar { display:flex; }
 .eat-prot.ok { color:#8F6200; }
 .eat-prot.over { color:#b45309; font-size:11px; }
 .eat-idea.eat-over { opacity:1; }
+.eat-adapt { font-size:11.5px; font-weight:700; color:#15803d; margin-top:5px; }
 .eat-warn { display:inline-flex; align-items:center; gap:4px; background:#FEF3E2; color:#b45309; font-size:11px; font-weight:700; padding:3px 9px; border-radius:12px; margin-top:4px; }
 .eat-note { font-size:13px; color:#db2777; font-weight:700; text-align:center; padding:14px; }
 .recipe-modal { max-height:82vh; overflow-y:auto; }
@@ -951,7 +952,7 @@ body.search-open .meal-bar { display:flex; }
 </div>
 
 <!-- AUTH CHECK + FIREBASE -->
-<script src="i18n-strings.js?v=21"></script>
+<script src="i18n-strings.js?v=22"></script>
 <script src="foods-i18n.js?v=1"></script>
 <script src="i18n.js?v=4"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -4017,28 +4018,70 @@ function showEatIdeas(cat){
     const cible = Math.round(Math.max(200, Math.min(reste, 650)));
     // Ratio borné pour des portions réalistes, puis kcal/prot EXACTES recalculées
     // depuis les quantités arrondies (base d'aliments)
+    // On ne se contente pas d'avertir : on ADAPTE les grammages.
+    // Pour chaque recette on cherche la plus grande portion qui respecte
+    // encore les macros restantes. Une recette grasse voit donc sa portion
+    // reduite au lieu d'etre proposee telle quelle.
+    const RATIO_MIN = 0.35;   // en dessous, la portion n'a plus de sens
+    const RATIO_MAX = 1.4;
+    const MARGE = { prot: 8, carbs: 10, lip: 6 };
+
+    // Une macro deja depassee ne peut plus etre "respectee" : exiger
+    // l'impossible ecarterait meme une salade de poulet. Dans ce cas on
+    // demande simplement que la recette en apporte tres peu.
+    // Quand une macro est deja depassee, on tolere un apport modere plutot
+    // que rien : mieux vaut orienter vers un plat leger que ne rien proposer.
+    const PLANCHER = { prot: 30, carbs: 20, lip: 8 };
+    function limite(reste, marge, plancher){
+        if(reste === null) return Infinity;      // objectif non defini
+        return reste > 0 ? reste + marge : plancher;
+    }
+    function respecte(calc){
+        if(calc.prot  > limite(resteProt,  MARGE.prot,  PLANCHER.prot))  return false;
+        if(calc.carbs > limite(resteCarbs, MARGE.carbs, PLANCHER.carbs)) return false;
+        if(calc.lip   > limite(resteLip,   MARGE.lip,   PLANCHER.lip))   return false;
+        return true;
+    }
+
     const evaluees = ideas.map(idea=>{
         const base = ideaCompute(idea.ings, 1);
-        const ratio = Math.max(0.75, Math.min(1.4, cible / base.kcal));
-        const calc = ideaCompute(idea.ings, ratio);
-        // Marge de tolerance : 8 g pour les proteines, 10 g pour le reste.
-        const okProt  = calc.prot  <= resteProt  + 8;
-        const okCarbs = (resteCarbs === null) ? true : (resteCarbs > 0 && calc.carbs <= resteCarbs + 10);
-        const okLip   = (resteLip   === null) ? true : (resteLip   > 0 && calc.lip   <= resteLip   + 10);
+        let ratio = Math.max(RATIO_MIN, Math.min(RATIO_MAX, cible / base.kcal));
+        let calc = ideaCompute(idea.ings, ratio);
+        let reduite = false;
+
+        // Reduction progressive tant que la portion depasse une macro
+        while(!respecte(calc) && ratio > RATIO_MIN){
+            ratio = Math.max(RATIO_MIN, ratio - 0.1);
+            calc = ideaCompute(idea.ings, ratio);
+            reduite = true;
+        }
+
+        const rentre = respecte(calc);
         const alertes = [];
-        if(!okLip)   alertes.push({ m:'lip',   reste: Math.max(0, Math.round(resteLip)) });
-        if(!okCarbs) alertes.push({ m:'carbs', reste: Math.max(0, Math.round(resteCarbs)) });
-        if(!okProt)  alertes.push({ m:'prot',  reste: Math.round(resteProt) });
+        if(!rentre){
+            if(calc.lip   > limite(resteLip,   MARGE.lip,   PLANCHER.lip))   alertes.push({ m:'lip',   reste: Math.max(0, Math.round(resteLip   || 0)) });
+            if(calc.carbs > limite(resteCarbs, MARGE.carbs, PLANCHER.carbs)) alertes.push({ m:'carbs', reste: Math.max(0, Math.round(resteCarbs || 0)) });
+            if(calc.prot  > limite(resteProt,  MARGE.prot,  PLANCHER.prot))  alertes.push({ m:'prot',  reste: Math.max(0, Math.round(resteProt  || 0)) });
+        }
         return { ...idea, kcalA: calc.kcal, protA: calc.prot, carbsA: calc.carbs, lipA: calc.lip,
-                 portion: calc.txt, fit: alertes.length === 0, alertes: alertes };
+                 portion: calc.txt, fit: rentre, reduite: reduite && rentre, alertes: alertes };
     });
-    // D'abord les plats qui rentrent dans toutes tes macros restantes,
-    // puis ceux qui debordent le moins.
-    evaluees.sort((a,b)=> (b.fit - a.fit) || (a.alertes.length - b.alertes.length) || (a.lipA - b.lipA));
-    lastIdeas = evaluees.map(i => ({ nom:i.nom, kcal:i.kcalA, prot:i.protA, portion:i.portion }));
-    box.innerHTML = evaluees.map((idea,ix)=>{
+
+    // Les recettes qui ne rentrent pas MEME a portion minimale sont ecartees.
+    let retenues = evaluees.filter(i => i.fit);
+    if(retenues.length === 0){
+        // Rien ne passe : on garde les trois moins problematiques plutot
+        // que d'afficher une liste vide.
+        retenues = evaluees.sort((a,b)=> a.alertes.length - b.alertes.length || a.lipA - b.lipA).slice(0,3);
+    }
+    const evalueesFinal = retenues;
+    // Portions completes d'abord, portions reduites ensuite
+    evalueesFinal.sort((a,b)=> (a.reduite - b.reduite) || (b.protA - a.protA));
+    lastIdeas = evalueesFinal.map(i => ({ nom:i.nom, kcal:i.kcalA, prot:i.protA, portion:i.portion }));
+    box.innerHTML = evalueesFinal.map((idea,ix)=>{
         const NOM_MACRO = { prot: window.t('macro_prot'), carbs: window.t('macro_carbs'), lip: window.t('macro_lip') };
-        const warn = idea.fit ? '' : `<div class="eat-warn">\u26A0 ` +
+        const info = idea.reduite ? `<div class="eat-adapt">\u2713 ${window.t('eat_adapted')}</div>` : '';
+        const warn = idea.fit ? info : `<div class="eat-warn">\u26A0 ` +
             idea.alertes.map(a => a.reste <= 0
                 ? window.t('eat_over_none').replace('{m}', NOM_MACRO[a.m])
                 : window.t('eat_over').replace('{m}', NOM_MACRO[a.m]).replace('{n}', a.reste)

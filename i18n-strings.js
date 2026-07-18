@@ -1757,3 +1757,9 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   eat_over: 'Overschrijdt je resterende {m} ({n} g)',
   eat_over_none: 'Je zit vandaag al boven je {m}'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, { eat_adapted: 'Portion ajustée à ce qu\'il te reste' });
+
+Object.assign(window.BELFIT_STRINGS.en, { eat_adapted: 'Portion adjusted to what you have left' });
+
+Object.assign(window.BELFIT_STRINGS.nl, { eat_adapted: 'Portie aangepast aan wat je nog over hebt' });
