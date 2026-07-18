@@ -1127,7 +1127,7 @@ export const DB = {
 
 // Macros d'un ingredient {name, portion} a partir de la DB
 export function macrosOf(ing){
-    const d = DB[ing.name];
+    const d = DB[ing.name] || (window.__customFoods && window.__customFoods[ing.name]);
     if(!d) return { kcal:0, prot:0, carbs:0, lip:0 };
     const f = (parseFloat(ing.portion)||0) / 100;
     return { kcal:d.kcal*f, prot:d.prot*f, carbs:d.carbs*f, lip:d.lip*f };

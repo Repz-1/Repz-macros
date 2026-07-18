@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
+import { customFoods, Scanner } from './Scanner.jsx';
 import {
   totauxRepas, setPortion, ajouterIngredient,
   supprimerIngredient, supprimerRepas, basculerRepas, renommerRepas,
@@ -37,11 +38,13 @@ function LigneIngredient({ repasId, ing }) {
 
 function Recherche({ repasId }) {
   const [q, setQ] = useState('');
+  const [scan, setScan] = useState(false);
+  const noms = [...Object.keys(customFoods.value), ...NOMS_ALIMENTS];
   const resultats = q.length < 2 ? [] :
-    NOMS_ALIMENTS.filter(n => n.toLowerCase().includes(q.toLowerCase())).slice(0, 8);
+    noms.filter(n => n.toLowerCase().includes(q.toLowerCase())).slice(0, 8);
 
   const choisir = (nom) => {
-    const d = DB[nom];
+    const d = DB[nom] || customFoods.value[nom] || {};
     // Aliment "a la piece" (burger, oeuf...) : portion par defaut = 1 piece
     ajouterIngredient(repasId, nom, d.unit || 100);
     setQ('');
@@ -49,21 +52,26 @@ function Recherche({ repasId }) {
 
   return (
     <div class="recherche">
-      <input
-        placeholder="Ajouter un aliment…"
-        value={q}
-        onInput={e => setQ(e.currentTarget.value)}
-      />
+      <div style={{display:'flex',gap:'6px'}}>
+        <input
+          style={{flex:1}}
+          placeholder="Ajouter un aliment…"
+          value={q}
+          onInput={e => setQ(e.currentTarget.value)}
+        />
+        <button class="ing-scan" onClick={() => setScan(true)} title="Scanner">▮▯▮</button>
+      </div>
       {resultats.length > 0 && (
         <div class="resultats">
           {resultats.map(nom => (
             <button key={nom} onClick={() => choisir(nom)}>
               <span>{nom}</span>
-              <span class="kc">{DB[nom].kcal} kcal/100g</span>
+              <span class="kc">{(DB[nom] || customFoods.value[nom]).kcal} kcal/100g</span>
             </button>
           ))}
         </div>
       )}
+      {scan && <Scanner repasId={repasId} fermer={() => setScan(false)} />}
     </div>
   );
 }
