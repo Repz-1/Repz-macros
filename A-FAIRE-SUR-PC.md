@@ -79,8 +79,12 @@ firebase functions:secrets:set LEMON_WEBHOOK_SECRET
 firebase deploy --only functions:lemonWebhook
 ```
 
-4. Remplacer les URL de paiement dans `plans.html`
-5. **Faire un vrai achat avec ta carte**, vérifier que `premium: true`
+4. **Vérifier le nom des produits** : le webhook détecte la formule
+   (2 ou 4 ajustements par mois) en cherchant « mensuel/monthly » ou
+   « annuel/annual/yearly » dans le nom. Si les variantes s'appellent
+   autrement (« 1 mois », « 12 mois »), me le dire pour adapter la détection.
+5. Remplacer les URL de paiement dans `plans.html`
+6. **Faire un vrai achat avec ta carte**, vérifier que `premium: true`
    s'écrit bien dans `users/{uid}` sur Firestore, puis se rembourser
 
 ---
