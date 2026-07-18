@@ -17,13 +17,28 @@ export function DayDashboard() {
     </div>
   );
 
+  // Jauge circulaire : 270 degres, part en bas a gauche (repere BelFit)
+  const R = 78, C = 2 * Math.PI * R, arc = 0.75; // 3/4 de cercle
+  const rempli = C * arc * (pct / 100);
+
   return (
     <div class="tableau-bord">
-      <div class="tb-kcal">
-        <span class="gros">{kcalRestantes.value.toFixed(0)}</span>
-        <span class="label">{t('kcal_restantes')}</span>
+      <div class="tb-jauge">
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r={R} class="tb-piste"
+            stroke-dasharray={`${C * arc} ${C}`} transform="rotate(135 100 100)" />
+          <circle cx="100" cy="100" r={R} class="tb-remplie"
+            stroke-dasharray={`${rempli} ${C}`} transform="rotate(135 100 100)" />
+        </svg>
+        <div class="tb-centre">
+          <div class="tb-nombre">{kcalRestantes.value.toFixed(0)}</div>
+          <div class="tb-label">{t('kcal_restantes')}</div>
+        </div>
+        <div class="tb-cotes">
+          <div><span>{tot.kcal.toFixed(0)}</span><i>consommées</i></div>
+          <div><span>{o.kcal}</span><i>objectif</i></div>
+        </div>
       </div>
-      <div class="tb-barre"><div style={{ width: `${pct}%` }} /></div>
       <div class="tb-macros">
         {macro(t('proteines'), tot.prot, o.prot)}
         {macro(t('glucides'), tot.carbs, o.carbs)}

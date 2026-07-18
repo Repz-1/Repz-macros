@@ -224,7 +224,7 @@ button{cursor:pointer}
 .nav-bas button span{font-size:11px;font-weight:700}
 .nav-bas button.actif{color:#181818}
 .nav-bas button.actif svg{stroke-width:2.1}
-.conteneur{padding-bottom:110px}
+.conteneur{padding-bottom:150px}
 
 /* ---- Page Premium ---- */
 .prem-liste{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
@@ -302,3 +302,22 @@ button{cursor:pointer}
 .bandeau-invite{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#FFF7E0;border:1px solid #F3E2AE;border-radius:13px;padding:10px 13px;margin-bottom:12px}
 .bandeau-invite span{font-size:12.5px;font-weight:700;color:#8A6A00}
 .bandeau-invite button{background:#F7B500;border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:800;font-family:inherit;color:#5A3E00;text-decoration:none}
+
+/* ---- Jauge circulaire (repere BelFit) ---- */
+.tb-jauge{position:relative;width:100%;max-width:240px;margin:0 auto 6px;aspect-ratio:1}
+.tb-jauge svg{width:100%;height:100%;transform:rotate(0deg)}
+.tb-piste{fill:none;stroke:#EDE8DA;stroke-width:13;stroke-linecap:round}
+.tb-remplie{fill:none;stroke:url(#gradOr);stroke-width:13;stroke-linecap:round;transition:stroke-dasharray .45s ease}
+.tb-centre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.tb-nombre{font-size:46px;font-weight:800;line-height:1;color:#181818}
+.tb-label{font-size:13px;color:#8a8a8a;font-weight:600;margin-top:4px}
+.tb-cotes{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:space-between;padding:0 4px}
+.tb-cotes div{display:flex;flex-direction:column;align-items:center}
+.tb-cotes span{font-weight:800;font-size:15px}
+.tb-cotes i{font-size:10.5px;color:#b5b0a4;font-weight:600;font-style:normal}
+
+/* ---- Eau compacte ---- */
+.eau{gap:8px;padding:9px 12px;border-radius:14px}
+.eau .goutte{font-size:18px}
+.eau .val{font-size:15px}
+.eau button{padding:6px 11px;font-size:13px}
