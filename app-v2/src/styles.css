@@ -242,3 +242,17 @@ button{cursor:pointer}
 .prem-actif p{margin:0;color:#6a6558;font-size:14px;line-height:1.5}
 .ing-scan{position:relative}
 .pro-mini{position:absolute;top:-5px;right:-5px;background:#F7B500;color:#5A3E00;font-size:8px;font-weight:800;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal}
+
+/* ---- Idees repas ---- */
+.idees-tete{display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:17px;margin-bottom:6px}
+.pro-inline{background:#F7B500;color:#5A3E00;font-size:10px;font-weight:800;padding:3px 8px;border-radius:7px;font-style:normal}
+.idees-verrou p{margin:0;color:#8a8a8a;font-size:13.5px}
+.idees-intro{margin:0 0 12px;color:#6a6558;font-size:13.5px;font-weight:600}
+.idees-cats{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.idees-cats button{padding:8px 13px;border:1.5px solid #e8e4d8;border-radius:999px;background:#fff;font-weight:700;font-size:13px;font-family:inherit}
+.idees-cats button.actif{background:#181818;border-color:#181818;color:#fff}
+.idee{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #f0ede4;border-radius:12px;margin-bottom:7px}
+.idee-info{flex:1;min-width:0}
+.idee-nom{font-weight:700;font-size:14px}
+.idee-mac{font-size:11.5px;color:#b5b0a4;font-weight:600;margin-top:2px}
+.idee button{width:38px;height:38px;border:none;border-radius:11px;background:#F7B500;font-size:19px;font-weight:800;flex-shrink:0;font-family:inherit}

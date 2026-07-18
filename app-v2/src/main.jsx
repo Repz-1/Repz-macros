@@ -16,6 +16,7 @@ import { Programmes } from './components/Programmes.jsx';
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif } from './components/BottomNav.jsx';
 import { PremiumPage } from './components/PremiumPage.jsx';
+import { IdeesRepas } from './components/IdeesRepas.jsx';
 
 function OngletJournal() {
   const [modale, setModale] = useState(false);
@@ -25,6 +26,7 @@ function OngletJournal() {
       <DayDashboard />
       <button class="calc-lien" onClick={() => setCalc(true)}>🧮 Calculer mes besoins</button>
       <WaterTracker />
+      <IdeesRepas />
       <button
         class="nouvelle-journee"
         onClick={() => { if (confirm('Commencer une nouvelle journée ?')) nouvelleJournee(); }}
