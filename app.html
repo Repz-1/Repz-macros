@@ -490,8 +490,10 @@ body.search-open .fab-row { display:none; }
 /* ===== AJOUT VOCAL ===== */
 .vocal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:400; align-items:flex-end; justify-content:center; }
 .vocal-overlay.show { display:flex; }
-.vocal-modal { background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:520px; max-height:86vh; overflow-y:auto; }
-.vm-title { font-size:19px; font-weight:800; margin-bottom:4px; }
+.vocal-modal { position:relative; background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:520px; max-height:86vh; overflow-y:auto; }
+.vm-title { font-size:19px; font-weight:800; margin-bottom:4px; padding-right:40px; }
+.vm-x { position:absolute; top:14px; right:14px; width:34px; height:34px; border-radius:50%; border:none; background:#F2F0EA; color:#4b4b4b; font-size:17px; line-height:1; display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:inherit; z-index:2; }
+.vm-x:active { background:#E6E3DB; }
 .vm-sub { font-size:13.5px; color:#6b7280; font-weight:500; margin-bottom:10px; line-height:1.5; }
 .vm-ex { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:16px; }
 .vm-ex button { border:1px solid #ECE9E2; background:#FAF9F6; color:#6b6a66; font-size:12px; font-weight:600; padding:7px 12px; border-radius:16px; font-family:inherit; cursor:pointer; }
@@ -793,10 +795,14 @@ body.search-open .fab-row { display:none; }
 
 .scan-modal {
     position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:100000;
-    display:none; flex-direction:column; align-items:center; justify-content:center; padding:20px;
+    display:none; flex-direction:column; align-items:center; justify-content:center; padding:16px;
 }
 .scan-modal.show { display:flex; }
-.scan-box { background:#fff; border-radius:18px; padding:20px; max-width:420px; width:100%; }
+.scan-box { background:#fff; border-radius:18px; padding:20px; max-width:420px; width:100%; max-height:calc(100vh - 32px); max-height:calc(100dvh - 32px); overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:calc(20px + env(safe-area-inset-bottom)); }
+#scanReader { width:100%; aspect-ratio:4/3; background:#111; position:relative; }
+#scanReader video, #scanReader canvas { width:100%!important; height:100%!important; object-fit:cover; display:block; }
+#scanReader img { display:none!important; }
+#scanReader__dashboard_section_csr span, #scanReader__dashboard_section_csr button { font-family:inherit!important; font-size:13px!important; }
 .scan-box h3 { font-size:18px; font-weight:800; margin-bottom:12px; text-align:center; }
 #scanReader { border-radius:12px; overflow:hidden; margin-bottom:12px; }
 .scan-status { font-size:14px; text-align:center; padding:10px; border-radius:8px; margin-bottom:12px; display:none; }
@@ -1028,7 +1034,7 @@ function afficherMessageInvite() {
     <div class="quick-actions">
         <button class="qa-btn" onclick="openCalcModal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8 7h8M8 11h2M12 11h.01M15 11h.01M8 15h2M12 15h.01M15 15h.01M8 18h4"/></svg></span><span class="qa-lb" data-i18n="qa_calc">Calculateur</span></button>
         <button class="qa-btn" onclick="allerCourses()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.5 11.5a1.5 1.5 0 001.5 1.2h7.5a1.5 1.5 0 001.5-1.2L21 8H6.2"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></span><span class="qa-lb" data-i18n="qa_shop">Courses</span></button>
-        <button class="qa-btn" onclick="ouvrirVocal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg></span><span class="qa-lb" data-i18n="qa_voice">Vocal</span><span class="qa-pro">PRO</span></button>
+        <button class="qa-btn" onclick="ouvrirVocal()"><span class="qa-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="2.5" width="4" height="9.5" rx="2"/><path d="M6.5 11.5a5.5 5.5 0 0011 0"/><path d="M12 17v3.5"/><path d="M9 20.5h6"/></svg></span><span class="qa-lb" data-i18n="qa_voice">Vocal</span><span class="qa-pro">PRO</span></button>
     </div>
 
     <!-- NOTE : POIDS DU JOUR -->
@@ -3465,7 +3471,7 @@ function allerCourses(){
     }
     const base = genererCoursesBase();
     localStorage.setItem('repz_coursesBase', JSON.stringify({ items: base.items, njours: base.njours, ts: Date.now() }));
-    window.location.href = 'courses.html';
+    (window.top || window).location.href = 'courses.html';
 }
 
 // ===== SUIVI DU POIDS =====
@@ -4418,6 +4424,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
 <!-- MODALE AJOUT VOCAL -->
 <div class="vocal-overlay" id="vocalOverlay" onclick="if(event.target.id==='vocalOverlay')fermerVocal()">
   <div class="vocal-modal">
+    <button class="vm-x" onclick="fermerVocal()" aria-label="Fermer">✕</button>
     <div class="vm-title" data-i18n="vm_title">Ajout vocal</div>
     <div class="vm-sub" id="vmSub" data-i18n="vm_sub">Dis ce que tu as mangé ou bu, naturellement :</div>
     <div class="vm-ex">
@@ -4426,7 +4433,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
         <button onclick="document.getElementById('vmInput').value=this.textContent">70 g d'avoine et une dose de whey</button>
     </div>
     <div class="vm-mic" id="vmMicZone">
-      <button class="vm-mic-btn" id="vmMicBtn" onclick="basculerEcoute()"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg></button>
+      <button class="vm-mic-btn" id="vmMicBtn" onclick="basculerEcoute()"><svg viewBox="0 0 24 24"><rect x="10" y="2.5" width="4" height="9.5" rx="2"/><path d="M6.5 11.5a5.5 5.5 0 0011 0"/><path d="M12 17v3.5"/><path d="M9 20.5h6"/></svg></button>
       <div class="vm-live" id="vmLive"></div>
     </div>
     <input type="text" class="vm-input" id="vmInput" data-i18n-ph="vm_ph" placeholder="Décris ton repas…">
