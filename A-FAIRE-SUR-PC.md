@@ -85,6 +85,25 @@ firebase deploy --only functions:lemonWebhook
 
 ---
 
+## 4 bis. Quota d ajustements selon la formule
+
+**Reporte a plus tard.** Le code est ecrit mais inactif tant que le
+webhook n est pas redeploye : le quota reste a 2 par mois pour tous.
+
+Quand tu voudras l activer :
+
+1. Verifier que les produits Lemon Squeezy contiennent bien
+   « mensuel » ou « annuel » dans leur nom (sinon la detection echoue)
+2. Redeployer :
+
+```bash
+firebase deploy --only functions:lemonWebhook
+```
+
+Effet : 2 ajustements par mois et par type en mensuel, 4 en annuel.
+
+---
+
 ## 5. EmailJS — réparer l'envoi
 
 **Sans ça, les questions posées depuis l'aide n'arrivent jamais.**
