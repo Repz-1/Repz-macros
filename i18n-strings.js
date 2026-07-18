@@ -1649,3 +1649,66 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   pl_ask_sub: 'Vind alle antwoorden in onze hulppagina, of schrijf rechtstreeks naar het BELFIT-team.',
   pl_ask_btn: 'Bekijk de veelgestelde vragen'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  set_cancel: 'Résilier mon abonnement',
+  set_cancel_sub: 'Sans engagement, à tout moment',
+  rs_title: 'Résilier mon abonnement',
+  rs_intro: 'Avant que tu partes, une question : qu\'est-ce qui ne va pas ? Ça nous aide à améliorer BELFIT.',
+  rs_m_prix: 'C\'est trop cher pour moi',
+  rs_m_temps: 'Je n\'ai pas le temps en ce moment',
+  rs_m_fonction: 'Il manque une fonctionnalité',
+  rs_m_usage: 'Je n\'utilise pas assez l\'app',
+  rs_m_autre: 'Autre raison',
+  rs_precise_ph: 'Dis-nous en quelques mots…',
+  rs_confirm: 'Confirmer ma résiliation',
+  rs_note: 'Ton accès Premium reste actif jusqu\'à la fin de la période déjà payée.',
+  rs_o_prix_t: 'On peut faire un geste',
+  rs_o_prix_p: 'Si c\'est une question de budget, on te propose 50 % de réduction pendant 2 mois. Le temps de voir si BELFIT t\'apporte vraiment quelque chose.',
+  rs_o_prix_b: 'Profiter de -50 % pendant 2 mois',
+  rs_o_usage_t: 'Tes données sont déjà là',
+  rs_o_usage_p: 'Tout ce que tu as noté est conservé. Reprendre demande juste quelques minutes par jour — et c\'est souvent la régularité qui manque, pas la motivation.',
+  rs_o_usage_b: 'Je retente une semaine'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  set_cancel: 'Cancel my subscription',
+  set_cancel_sub: 'No commitment, anytime',
+  rs_title: 'Cancel my subscription',
+  rs_intro: 'Before you go, one question: what isn\'t working? It helps us improve BELFIT.',
+  rs_m_prix: 'It\'s too expensive for me',
+  rs_m_temps: 'I don\'t have time right now',
+  rs_m_fonction: 'A feature is missing',
+  rs_m_usage: 'I don\'t use the app enough',
+  rs_m_autre: 'Another reason',
+  rs_precise_ph: 'Tell us in a few words…',
+  rs_confirm: 'Confirm my cancellation',
+  rs_note: 'Your Premium access stays active until the end of the period already paid.',
+  rs_o_prix_t: 'We can meet you halfway',
+  rs_o_prix_p: 'If it\'s a budget question, here\'s 50% off for 2 months. Enough time to see whether BELFIT really works for you.',
+  rs_o_prix_b: 'Get 50% off for 2 months',
+  rs_o_usage_t: 'Your data is still here',
+  rs_o_usage_p: 'Everything you logged is kept. Picking it back up takes just a few minutes a day — and it\'s usually consistency that\'s missing, not motivation.',
+  rs_o_usage_b: 'I\'ll give it another week'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  set_cancel: 'Mijn abonnement opzeggen',
+  set_cancel_sub: 'Zonder verplichting, op elk moment',
+  rs_title: 'Mijn abonnement opzeggen',
+  rs_intro: 'Voor je gaat, één vraag: wat loopt er mis? Zo kunnen we BELFIT verbeteren.',
+  rs_m_prix: 'Het is te duur voor mij',
+  rs_m_temps: 'Ik heb er nu geen tijd voor',
+  rs_m_fonction: 'Er ontbreekt een functie',
+  rs_m_usage: 'Ik gebruik de app te weinig',
+  rs_m_autre: 'Andere reden',
+  rs_precise_ph: 'Vertel het ons in een paar woorden…',
+  rs_confirm: 'Mijn opzegging bevestigen',
+  rs_note: 'Je Premium-toegang blijft actief tot het einde van de reeds betaalde periode.',
+  rs_o_prix_t: 'We komen je tegemoet',
+  rs_o_prix_p: 'Is het een budgetkwestie? Dan geven we je 50 % korting gedurende 2 maanden. Genoeg tijd om te zien of BELFIT echt iets voor je doet.',
+  rs_o_prix_b: '50 % korting nemen, 2 maanden',
+  rs_o_usage_t: 'Je gegevens staan er nog',
+  rs_o_usage_p: 'Alles wat je hebt genoteerd blijft bewaard. Weer oppikken kost maar een paar minuten per dag — meestal ontbreekt de regelmaat, niet de motivatie.',
+  rs_o_usage_b: 'Ik probeer nog een week'
+});

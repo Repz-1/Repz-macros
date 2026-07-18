@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script src="i18n-strings.js?v=17"></script>
+<script src="i18n-strings.js?v=18"></script>
 <script src="i18n.js?v=4"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,6 +49,46 @@ body{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,s
 .toggle input:checked + .tg::after { transform:translateX(19px); }
 
 /* Sous-panneau */
+
+/* ===== RESILIATION ===== */
+.rs-intro { font-size:14.5px; color:#6b7280; line-height:1.6; margin:4px 4px 18px; }
+.rs-motifs { display:flex; flex-direction:column; gap:9px; margin-bottom:18px; }
+.rs-motif {
+    display:flex; align-items:center; gap:12px; width:100%;
+    background:var(--card); border:1.5px solid #e7e2d9; border-radius:14px;
+    padding:15px 16px; font-size:14.5px; font-weight:700; color:var(--text);
+    text-align:left; cursor:pointer; font-family:inherit;
+}
+.rs-motif::before {
+    content:''; flex:none; width:18px; height:18px; border-radius:50%;
+    border:2px solid #d6d0c4; box-sizing:border-box;
+}
+.rs-motif.on { border-color:#F7B500; background:#FFFBEF; }
+.rs-motif.on::before { border-color:#F7B500; background:#F7B500; box-shadow:inset 0 0 0 3px #FFFBEF; }
+.rs-offre {
+    background:linear-gradient(135deg,#FFFBEF,#FBEFC7);
+    border:1.5px solid #F3E2A8; border-radius:18px;
+    padding:18px 16px; margin-bottom:18px;
+}
+.rs-offre h4 { font-size:15.5px; font-weight:800; color:#7a5600; margin-bottom:6px; }
+.rs-offre p { font-size:13.5px; color:#8F6200; line-height:1.55; margin-bottom:14px; }
+.rs-offre .rs-accept {
+    width:100%; background:#181818; color:#F7B500; border:none; border-radius:12px;
+    padding:13px; font-size:14.5px; font-weight:800; font-family:inherit; cursor:pointer;
+}
+.rs-offre .rs-accept:active { transform:scale(.98); }
+.rs-champ textarea {
+    width:100%; border:1.5px solid #e7e2d9; border-radius:14px; padding:13px;
+    font-size:14.5px; font-family:inherit; resize:vertical; margin-bottom:18px;
+}
+.rs-champ textarea:focus { outline:none; border-color:#F7B500; }
+.rs-confirm {
+    width:100%; background:none; border:1.5px solid #e7e2d9; color:#8a8580;
+    border-radius:12px; padding:14px; font-size:14.5px; font-weight:700;
+    font-family:inherit; cursor:pointer;
+}
+.rs-confirm:active { background:#f5f2ec; }
+.rs-note { font-size:12.5px; color:#8a8580; text-align:center; margin-top:12px; line-height:1.5; }
 .panel { display:none; position:fixed; inset:0; z-index:900; background:var(--bg); overflow-y:auto; }
 .panel.show { display:block; }
 .panel-inner { max-width:900px; margin:0 auto; padding:16px 16px 60px; }
@@ -136,6 +176,10 @@ auth.onAuthStateChanged((user) => {
             <span class="mr-txt"><span data-i18n="set_sub">Gérer l'abonnement</span><span class="mr-sub" data-i18n="set_sub_sub">Formules, avantages Premium</span></span>
             <span class="mr-chev">›</span>
         </a>
+        <button class="menu-row" id="rowResilier" style="display:none" onclick="ouvrirPanel('panelResilier')">
+            <span class="mr-txt"><span data-i18n="set_cancel">Résilier mon abonnement</span><span class="mr-sub" data-i18n="set_cancel_sub">Sans engagement, à tout moment</span></span>
+            <span class="mr-chev">›</span>
+        </button>
     </div>
 
     <!-- LANGUE -->
@@ -229,6 +273,33 @@ auth.onAuthStateChanged((user) => {
 </div>
 
 <!-- ===== PANEL : PARAMÈTRES DU COMPTE ===== -->
+
+<!-- ===== RESILIATION =====
+     Un seul ecran : on demande le motif, on propose UNE contre-offre adaptee,
+     et le bouton de confirmation reste visible en permanence. La loi impose
+     que resilier ne soit pas plus complique que souscrire. -->
+<div class="panel" id="panelResilier">
+    <div class="panel-inner">
+        <div class="panel-top">
+            <button class="back-btn" onclick="fermerPanel('panelResilier')" style="border:none">←</button>
+            <div class="panel-title" data-i18n="rs_title">Résilier mon abonnement</div>
+        </div>
+
+        <p class="rs-intro" data-i18n="rs_intro">Avant que tu partes, une question : qu'est-ce qui ne va pas ? Ça nous aide à améliorer BELFIT.</p>
+
+        <div class="rs-motifs" id="rsMotifs"></div>
+
+        <div class="rs-offre" id="rsOffre" style="display:none"></div>
+
+        <div class="rs-champ" id="rsChamp" style="display:none">
+            <textarea id="rsTexte" rows="3" data-i18n-ph="rs_precise_ph" placeholder="Dis-nous en quelques mots…"></textarea>
+        </div>
+
+        <button class="rs-confirm" onclick="confirmerResiliation()" data-i18n="rs_confirm">Confirmer ma résiliation</button>
+        <p class="rs-note" data-i18n="rs_note">Ton accès Premium reste actif jusqu'à la fin de la période déjà payée.</p>
+    </div>
+</div>
+
 <div class="panel" id="panelCompte">
     <div class="panel-inner">
         <div class="panel-top">
@@ -288,6 +359,104 @@ window.addEventListener('popstate', function(){
     const list = document.querySelectorAll('.panel.show, .modal-overlay.show');
     if(list.length){ list[list.length-1].classList.remove('show'); }
 });
+
+// ===== RESILIATION =====
+// Objectif : comprendre pourquoi le client part, et lui proposer UNE
+// alternative pertinente. Le bouton de confirmation reste toujours
+// accessible : resilier ne doit pas etre plus difficile que souscrire.
+const RS_MOTIFS = [
+    { k:'prix',      cle:'rs_m_prix' },
+    { k:'temps',     cle:'rs_m_temps' },
+    { k:'fonction',  cle:'rs_m_fonction' },
+    { k:'usage',     cle:'rs_m_usage' },
+    { k:'autre',     cle:'rs_m_autre' },
+];
+// Code promo a creer dans Lemon Squeezy : -50 % sur 2 mois.
+const RS_CODE_REDUC = 'RESTE50';
+let rsMotifChoisi = null;
+
+function rendreMotifs(){
+    const box = document.getElementById('rsMotifs');
+    if(!box) return;
+    box.innerHTML = RS_MOTIFS.map(m =>
+        `<button class="rs-motif${rsMotifChoisi===m.k?' on':''}" onclick="choisirMotif('${m.k}')">${window.t(m.cle)}</button>`
+    ).join('');
+}
+
+function choisirMotif(k){
+    rsMotifChoisi = k;
+    rendreMotifs();
+
+    const offre = document.getElementById('rsOffre');
+    const champ = document.getElementById('rsChamp');
+    champ.style.display = (k === 'fonction' || k === 'autre') ? 'block' : 'none';
+
+    if(k === 'prix'){
+        offre.style.display = 'block';
+        offre.innerHTML = `<h4>${window.t('rs_o_prix_t')}</h4><p>${window.t('rs_o_prix_p')}</p>`
+            + `<button class="rs-accept" onclick="accepterOffre()">${window.t('rs_o_prix_b')}</button>`;
+    } else if(k === 'usage'){
+        offre.style.display = 'block';
+        offre.innerHTML = `<h4>${window.t('rs_o_usage_t')}</h4><p>${window.t('rs_o_usage_p')}</p>`
+            + `<button class="rs-accept" onclick="fermerPanel('panelResilier')">${window.t('rs_o_usage_b')}</button>`;
+    } else {
+        offre.style.display = 'none';
+        offre.innerHTML = '';
+    }
+}
+
+/** Enregistre le motif : c'est la donnee la plus utile de tout ce parcours. */
+async function enregistrerMotif(suite){
+    const texte = (document.getElementById('rsTexte') || {}).value || '';
+    try {
+        const u = firebase.auth().currentUser;
+        if(u){
+            await firebase.firestore().collection('users').doc(u.uid).set({
+                resiliation: {
+                    motif: rsMotifChoisi || 'non_precise',
+                    precision: texte.trim().slice(0, 500),
+                    suite: suite,
+                    date: new Date().toISOString()
+                }
+            }, { merge:true });
+        }
+    } catch(e){ /* ne doit jamais bloquer la resiliation */ }
+}
+
+async function accepterOffre(){
+    await enregistrerMotif('offre_acceptee');
+    // Le code de reduction est applique sur la page de paiement.
+    window.location.href = 'main.html?aller=premium&promo=' + RS_CODE_REDUC;
+}
+
+async function confirmerResiliation(){
+    if(!rsMotifChoisi){
+        // On demande le motif une fois, sans bloquer : un second clic passe.
+        rsMotifChoisi = 'non_precise';
+        rendreMotifs();
+        const box = document.getElementById('rsMotifs');
+        if(box) box.scrollIntoView({ block:'center', behavior:'smooth' });
+    }
+    await enregistrerMotif('resilie');
+    window.open('https://app.lemonsqueezy.com/my-orders', '_blank', 'noopener');
+}
+
+// La ligne n'apparait que pour un abonne.
+(function(){
+    try {
+        firebase.auth().onAuthStateChanged(async (u) => {
+            if(!u) return;
+            const doc = await firebase.firestore().collection('users').doc(u.uid).get();
+            if(doc.exists && doc.data().premium === true){
+                const row = document.getElementById('rowResilier');
+                if(row) row.style.display = 'flex';
+            }
+        });
+    } catch(e){}
+    rendreMotifs();
+    window.addEventListener('langchange', rendreMotifs);
+})();
+
 function ouvrirPanel(id){ ouvrirOverlay(id); window.scrollTo(0,0); }
 function fermerPanel(id){ fermerOverlay(id); }
 

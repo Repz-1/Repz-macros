@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#191919">
 <link rel="manifest" href="manifest.json">
-<script src="i18n-strings.js?v=17"></script>
+<script src="i18n-strings.js?v=18"></script>
 <script src="i18n.js?v=4"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -821,6 +821,24 @@ function continuerStandard(){
     x0 = null; axis = null;
   }, {passive:true, capture:true});
 })();
+
+// Code promo transmis depuis le parcours de resiliation : on le prerempli
+// pour que l'utilisateur n'ait rien a retaper.
+(function(){
+    try {
+        const code = sessionStorage.getItem('belfit_promo');
+        if(!code) return;
+        sessionStorage.removeItem('belfit_promo');
+        const champ = document.getElementById('promoInput');
+        if(champ){
+            champ.value = code;
+            setTimeout(function(){
+                try { champ.scrollIntoView({block:'center', behavior:'smooth'}); } catch(e){}
+            }, 400);
+        }
+    } catch(e){}
+})();
+
 </script>
 </body>
 </html>
