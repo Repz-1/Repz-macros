@@ -1,0 +1,21 @@
+
+---
+
+## Chantier en pause (juillet 2026)
+
+La migration vers Preact/Vite est **arretee**. Le code reste ici, mais :
+
+- il n'est plus construit a chaque push (retire de `.github/workflows/deploy.yml`)
+- le dossier `/v2/` deja construit reste en ligne, sans lien depuis l'app
+
+Etat au moment de l'arret : pages Journal, S'entrainer et Mes stats portees
+depuis la v1 (markup + CSS repris a l'identique, scopes dans `src/legacy/`).
+Restaient a porter : Premium, Programmes, Ma seance, Courses, Profil,
+Parametres, Questionnaire, Aide.
+
+Raison de l'arret : sur ~16 000 lignes de v1, seuls le CSS (17 %) et le HTML
+(16 %) se convertissent automatiquement. Les 67 % de JavaScript demandent une
+reecriture manuelle, pour un resultat visuellement identique a l'existant.
+Le cout ne justifiait pas le benefice.
+
+Pour reprendre : voir l'historique git du workflow de deploiement.

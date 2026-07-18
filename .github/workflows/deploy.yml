@@ -1,6 +1,11 @@
 name: Deploy BELFIT
-# Phase 0 de la migration : deploiement du site tel quel via Actions.
-# La Phase 1 remplacera l'upload direct par un build Vite (npm ci && npm run build, artifact = dist/).
+# Deploiement du site sur GitHub Pages.
+#
+# Le chantier v2 (Preact/Vite, dossier app-v2/) est EN PAUSE : son build a ete
+# retire de ce workflow. Le code reste dans le depot et le dossier v2/ deja
+# construit reste en ligne, mais plus rien n'est recompile a chaque push.
+# Pour le reprendre : reintroduire setup-node + npm ci + npm run build
+# (working-directory: app-v2), voir l'historique git.
 
 on:
   push:
@@ -24,16 +29,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: app-v2/package-lock.json
-      # Build du chantier v2 (Preact/Vite) -> dossier v2/ servi sur belfit.be/v2/
-      - run: npm ci
-        working-directory: app-v2
-      - run: npm run build
-        working-directory: app-v2
+
+      # Garde-fou : le JavaScript de chaque page doit etre syntaxiquement valide.
+      # Un push casse ne part pas en production.
+      - name: Verifier le JavaScript des pages
+        run: node tools/verif-js.js
+
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
