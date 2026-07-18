@@ -169,3 +169,24 @@ button{cursor:pointer}
 .seance-add-exo{display:flex;gap:8px;margin-top:12px}
 .seance-add-exo input{flex:1;padding:13px 15px;border:1px solid #e8e4d8;border-radius:13px;font-size:14.5px;font-family:inherit;background:#faf9f5}
 .seance-add-exo button{width:48px;border:none;border-radius:13px;background:#F7B500;font-size:20px;font-weight:800}
+
+/* ---- Programmes ---- */
+.prog-onglets{display:flex;gap:7px;margin-bottom:14px;overflow-x:auto}
+.prog-onglets button{padding:8px 14px;border:1.5px solid #e8e4d8;border-radius:999px;background:#fff;font-weight:700;font-size:13px;font-family:inherit;white-space:nowrap}
+.prog-onglets button.actif{background:#181818;border-color:#181818;color:#fff}
+.prog-carte{border:1px solid #f0ede4;border-radius:14px;margin-bottom:10px;overflow:hidden}
+.prog-carte.choisi{border-color:#F7B500;background:#FFFCF3}
+.prog-tete{display:flex;align-items:center;gap:10px;padding:13px}
+.prog-info{flex:1}
+.prog-tag{display:inline-block;background:#F7B500;color:#5A3E00;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:6px;margin-bottom:4px}
+.prog-nom{font-weight:800;font-size:15.5px}
+.prog-meta{font-size:12px;color:#b5b0a4;font-weight:600;margin-top:2px}
+.prog-chev{color:#c9c4b8;font-size:12px;transition:transform .2s}
+.prog-chev.ouv{transform:rotate(180deg)}
+.prog-detail{padding:0 13px 13px}
+.prog-desc{font-size:13.5px;color:#6a6558;line-height:1.5;margin:0 0 10px}
+.prog-seance{background:#faf9f5;border-radius:10px;padding:9px 12px;margin-bottom:6px}
+.prog-seance-t{font-weight:700;font-size:13.5px}
+.prog-seance-s{font-size:11.5px;color:#b5b0a4;font-weight:600;margin-top:1px}
+.prog-btn{width:100%;margin-top:8px;padding:12px;border:none;border-radius:12px;background:#181818;color:#fff;font-weight:800;font-size:14.5px;font-family:inherit}
+.prog-btn.actif{background:#F7B500;color:#5A3E00}
