@@ -1592,3 +1592,15 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   ai_send: 'Mijn vraag versturen',
   ai_sub: 'Antwoorden op de meest gestelde vragen. Staat die van jou er niet bij? Schrijf het BELFIT-team.'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  st_edit_muscles: 'Modifier'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  st_edit_muscles: 'Edit'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  st_edit_muscles: 'Wijzigen'
+});
