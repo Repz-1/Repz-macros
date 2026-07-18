@@ -9,6 +9,7 @@ import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
 import { TdeeCalculator } from './components/TdeeCalculator.jsx';
+import { MuscleCalendar } from './components/MuscleCalendar.jsx';
 
 function App() {
   const [modale, setModale] = useState(false);
@@ -41,6 +42,8 @@ function App() {
       >⟳ Commencer une nouvelle journée</button>
 
       {repas.value.map(r => <MealCard key={r.id} r={r} />)}
+
+      <MuscleCalendar />
 
       <button class="fab" onClick={() => setModale(true)}>+ Ajouter</button>
       <AddMealModal montre={modale} fermer={() => setModale(false)} />

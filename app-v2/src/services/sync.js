@@ -20,6 +20,10 @@ const db = getFirestore(getApps()[0]);
 enableIndexedDbPersistence(db).catch(() => {});
 
 let timerEnvoi = null;
+// Etat complet en memoire : les differents stores (journal, entrainement...)
+// sauvegardent chacun LEURS champs ; on fusionne ici pour ne jamais
+// ecraser les champs des autres.
+let etatComplet = {};
 
 export function cleLocale(uid) {
   return `belfit_v2_journal_${uid}`;
@@ -32,20 +36,27 @@ export async function chargerDonnees(uid) {
   try {
     const snap = await getDoc(doc(db, 'users', uid));
     const cloud = snap.exists() && snap.data().v2Data ? snap.data().v2Data : null;
+    let resultat;
     if (cloud && local) {
       // Conflit : le plus recent gagne
-      return (cloud.ts || 0) >= (local.ts || 0) ? cloud : local;
+      resultat = (cloud.ts || 0) >= (local.ts || 0) ? cloud : local;
+    } else {
+      resultat = cloud || local || null;
     }
-    return cloud || local || null;
+    etatComplet = resultat ? { ...resultat } : {};
+    return resultat;
   } catch (e) {
     // Hors-ligne ou erreur reseau -> copie locale
+    etatComplet = local ? { ...local } : {};
     return local || null;
   }
 }
 
 // ---- Ecriture : local immediat + cloud differe ----
-export function sauvegarder(uid, donnees) {
-  const instantane = { ...donnees, ts: Date.now() };
+export function sauvegarder(uid, champsPartiels) {
+  // Fusion : chaque store n'ecrit que ses champs, sans toucher aux autres
+  etatComplet = { ...etatComplet, ...champsPartiels };
+  const instantane = { ...etatComplet, ts: Date.now() };
   try { localStorage.setItem(cleLocale(uid), JSON.stringify(instantane)); } catch (e) {}
   // Debounce : on n'envoie au cloud qu'apres 2s de calme (groupe les frappes)
   clearTimeout(timerEnvoi);
