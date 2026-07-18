@@ -10,9 +10,9 @@ export function AddMealModal({ montre, fermer }) {
       <div class={`modale ${montre ? 'montre' : ''}`}>
         <h3>{t('quoi_ajouter')}</h3>
         <div class="types">
-          <button onClick={() => choisir('repas')}><span class="ic">🍽️</span>{t('repas')}</button>
-          <button onClick={() => choisir('collation')}><span class="ic">💡</span>{t('collation')}</button>
-          <button onClick={() => choisir('boisson')}><span class="ic">🥤</span>{t('boisson')}</button>
+          <button onClick={() => choisir('repas')}><span class="ic">🍲</span>{t('repas')}</button>
+          <button onClick={() => choisir('collation')}><span class="ic">🍏</span>{t('collation')}</button>
+          <button onClick={() => choisir('boisson')}><span class="ic">🥛</span>{t('boisson')}</button>
         </div>
       </div>
     </>

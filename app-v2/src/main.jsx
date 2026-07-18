@@ -30,7 +30,7 @@ function OngletJournal() {
     <>
       <DayDashboard />
       <button class="qa-vocal" onClick={() => setVocal(true)}>🎤 Ajout vocal <i class="pro-mini-inline">✦</i></button>
-      <button class="calc-lien" onClick={() => setCalc(true)}>🧮 {t('calc_besoins')}</button>
+      <button class="calc-lien" onClick={() => setCalc(true)}>{t('calc_besoins')}</button>
       <WaterTracker />
       <VocalBouton />
       <IdeesRepas />

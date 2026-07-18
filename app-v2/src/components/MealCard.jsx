@@ -9,7 +9,7 @@ import {
   supprimerIngredient, supprimerRepas, basculerRepas, renommerRepas,
 } from '../store/journal.js';
 
-const EMOJIS = { repas: '🍽️', collation: '🍎', boisson: '🥤' };
+const EMOJIS = { repas: '🍲', collation: '🍏', boisson: '🥛' };
 
 function LigneIngredient({ repasId, ing }) {
   const d = DB[ing.name] || {};
@@ -91,7 +91,7 @@ export function MealCard({ r }) {
   return (
     <div class="carte">
       <div class="carte-tete" onClick={() => !edite && basculerRepas(r.id)}>
-        <div class="carte-emoji">{EMOJIS[r.type] || '🍽️'}</div>
+        <div class="carte-emoji">{EMOJIS[r.type] || '🍲'}</div>
         <div class="carte-titre">
           {edite ? (
             <input
