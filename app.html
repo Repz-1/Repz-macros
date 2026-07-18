@@ -1137,12 +1137,11 @@ function afficherMessageInvite() {
 
 <!-- MODAL DÉTAIL JOUR -->
 <div class="modal-overlay" id="dayModal" onclick="if(event.target===this){this.classList.remove('show');fermerNavJour();}">
-    <div class="modal">
+    <div class="modal" style="position:relative">
+        <button class="modal-x" onclick="closeDayModal()" aria-label="Fermer">✕</button>
         <h3 id="dayModalTitle" data-i18n="detail">Détail</h3>
         <div id="dayModalBody"></div>
-        <div class="modal-btns">
-            <button class="modal-cancel" onclick="closeDayModal()" data-i18n="close">Fermer</button>
-        </div>
+        <div style="height:12px"></div>
     </div>
 </div>
 
@@ -1202,8 +1201,9 @@ function afficherMessageInvite() {
 
 <!-- MODAL OBJECTIF -->
 <!-- MODAL RECETTE -->
-<div class="modal-overlay" id="recipeModal">
-    <div class="modal recipe-modal">
+<div class="modal-overlay" id="recipeModal" onclick="if(event.target===this)this.classList.remove('show')">
+    <div class="modal recipe-modal" style="position:relative">
+        <button class="modal-x" onclick="document.getElementById('recipeModal').classList.remove('show')" aria-label="Fermer">✕</button>
         <h3 id="rmTitle"></h3>
         <div class="rm-macros" id="rmMacros"></div>
         <div class="rm-sec" data-i18n="ingredients">Ingrédients</div>
@@ -1211,9 +1211,7 @@ function afficherMessageInvite() {
         <div class="rm-sec" data-i18n="preparation">Préparation</div>
         <ol class="rm-steps" id="rmSteps"></ol>
         <div class="rm-tip" id="rmTip"></div>
-        <div class="modal-btns">
-            <button class="modal-save" onclick="document.getElementById('recipeModal').classList.remove('show')" data-i18n="close">Fermer</button>
-        </div>
+        <div style="height:12px"></div>
     </div>
 </div>
 
@@ -1317,9 +1315,7 @@ function afficherMessageInvite() {
             </div>
             <button class="tdee-apply-btn" onclick="applyCalc()" data-i18n="apply_goal">Appliquer comme objectif</button>
         </div>
-        <div class="modal-btns" id="calcCloseRow">
-            <button class="modal-cancel" onclick="closeCalcModal()" data-i18n="close">Fermer</button>
-        </div>
+        <div id="calcCloseRow" style="height:8px"></div>
     </div>
 </div>
 
@@ -4705,7 +4701,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
         <button onclick="creerDepuisVocal('recette')">👨‍🍳 Recette</button>
     </div>
     <button class="vm-confirm" id="vmConfirm" style="display:none" onclick="confirmerVocal()" data-i18n="vm_add">Ajouter au repas</button>
-    <button class="vm-close" onclick="fermerVocal()" data-i18n="close">Fermer</button>
+
   </div>
 </div>
 
