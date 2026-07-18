@@ -9,10 +9,10 @@ import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
 import { TdeeCalculator } from './components/TdeeCalculator.jsx';
-import { MuscleCalendar } from './components/MuscleCalendar.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
 import { SeanceTracker } from './components/SeanceTracker.jsx';
 import { Programmes } from './components/Programmes.jsx';
+import { Entrainer, vueEntrainer, retourEntrainer } from './components/Entrainer.jsx';
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
@@ -43,13 +43,18 @@ function OngletJournal() {
 }
 
 function OngletEntrainer() {
+  const vue = vueEntrainer.value;
+  // Meme navigation qu'en v1 : une vue a la fois, fleche retour en haut.
+  if (vue.nom === 'accueil') {
+    return (<><Entrainer /><RestTimer /></>);
+  }
   return (
-    <>
-      <MuscleCalendar />
+    <div class="pg-entrainer">
+      <button class="v2-retour" onClick={retourEntrainer} aria-label="Retour">←</button>
+      {vue.nom === 'seance' && <SeanceTracker />}
+      {vue.nom === 'programmes' && <Programmes />}
       <RestTimer />
-      <SeanceTracker />
-      <Programmes />
-    </>
+    </div>
   );
 }
 

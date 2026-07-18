@@ -340,3 +340,16 @@
 .pg-entrainer .ah-btn{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
 .pg-entrainer .ah-btn svg{ width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pg-entrainer .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
+
+/* --- styles inline du body v1 --- */
+.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-entrainer #repzSplash.hide{opacity:0;pointer-events:none;}
+.pg-entrainer #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
+.pg-entrainer #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
+@keyframes spPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.pg-entrainer .app-header{ display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; }
+.pg-entrainer .ah-logo{ height:55px; width:auto; display:block; }
+.pg-entrainer .ah-actions{ display:flex; align-items:center; gap:8px; }
+.pg-entrainer .ah-btn{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
+.pg-entrainer .ah-btn svg{ width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pg-entrainer .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }

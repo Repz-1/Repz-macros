@@ -1,3 +1,4 @@
+import { STRINGS_V1 } from '../legacy/strings.js';
 import { signal } from '@preact/signals';
 
 // ============================================================
@@ -123,7 +124,9 @@ const T = {
 
 export function t(cle) {
   const l = langue.value;
-  return (T[l] && T[l][cle]) || T.fr[cle] || cle;
+  // Les chaines v2 priment ; on retombe sur le dictionnaire complet de la v1.
+  return (T[l] && T[l][cle]) || (STRINGS_V1[l] && STRINGS_V1[l][cle])
+      || T.fr[cle] || (STRINGS_V1.fr && STRINGS_V1.fr[cle]) || cle;
 }
 
 export const LANGUES = [
