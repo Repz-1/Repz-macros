@@ -287,14 +287,14 @@ body.search-open .fab-row { display:none; }
 .meal-bar {
     position:fixed; left:0; right:0;
     top:calc(var(--vv-top, 0px) + var(--vv-h, 100vh));
-    transform:translateY(-100%);
+    transform:translateY(calc(-100% - var(--nav-offset, 0px)));
     display:none; align-items:center; gap:12px;
     padding:11px 14px calc(11px + env(safe-area-inset-bottom));
     background:rgba(255,255,255,.97);
     -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
     border-top:1px solid #E9E7E0;
     box-shadow:0 -8px 22px rgba(60,50,40,.10);
-    z-index:120;
+    z-index:400;
 }
 body.search-open .meal-bar { display:flex; }
 .meal-bar-info { flex:1; min-width:0; }
@@ -1010,7 +1010,7 @@ function afficherMessageInvite() {
 <div class="sticky-remaining" id="stickyRemaining">
     <div class="sr-text">
         <span class="sr-num" id="srNum">0</span>
-        <span class="sr-label" id="srLabel" data-i18n="kcal_left">kcal restantes</span>
+        <span class="sr-label" id="srLabel">kcal restantes</span>
     </div>
     <div class="sr-bar"><div class="sr-bar-fill" id="srBarFill"></div></div>
 </div>
@@ -1039,7 +1039,7 @@ function afficherMessageInvite() {
                 </svg>
                 <div class="ring-txt">
                     <div class="dt-remaining-big"><span class="rt-num" id="dtRemNum">0</span></div>
-                    <div class="rt-sub" id="dtRemLabel" data-i18n="kcal_left">kcal restantes</div>
+                    <div class="rt-sub" id="dtRemLabel">kcal restantes</div>
                 </div>
             </div>
             <div class="ring-side">
@@ -3131,6 +3131,16 @@ function terminerSaisieRepas(){
       root.style.setProperty('--vv-top', '0px');
     }
   }
+  function majDecalageNav(){
+    // Clavier ouvert => la zone visible est nettement plus courte que la fenetre.
+    // Clavier ferme => remonter la barre au-dessus de la navigation du bas.
+    var hFenetre = window.innerHeight || 0;
+    var hVisible = vv ? vv.height : hFenetre;
+    var clavierOuvert = (hFenetre - hVisible) > 120;
+    root.style.setProperty('--nav-offset', clavierOuvert ? '0px' : '74px');
+  }
+  var _maj = majViewport;
+  majViewport = function(){ _maj(); majDecalageNav(); };
   if(vv){
     vv.addEventListener('resize', majViewport);
     vv.addEventListener('scroll', majViewport);
