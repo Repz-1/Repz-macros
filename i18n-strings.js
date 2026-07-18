@@ -1712,3 +1712,24 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   rs_o_usage_p: 'Alles wat je hebt genoteerd blijft bewaard. Weer oppikken kost maar een paar minuten per dag — meestal ontbreekt de regelmaat, niet de motivatie.',
   rs_o_usage_b: 'Ik probeer nog een week'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  auth_google: 'Continuer avec Google',
+  auth_or_mail: 'ou avec un e-mail',
+  auth_google_err: 'La connexion Google n\'a pas abouti. Réessaie.',
+  auth_google_conflit: 'Un compte existe déjà avec cette adresse. Connecte-toi avec ton mot de passe.'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  auth_google: 'Continue with Google',
+  auth_or_mail: 'or with an email',
+  auth_google_err: 'Google sign-in did not complete. Please try again.',
+  auth_google_conflit: 'An account already exists with this address. Sign in with your password.'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  auth_google: 'Doorgaan met Google',
+  auth_or_mail: 'of met een e-mail',
+  auth_google_err: 'Aanmelden met Google is niet gelukt. Probeer opnieuw.',
+  auth_google_conflit: 'Er bestaat al een account met dit adres. Meld je aan met je wachtwoord.'
+});

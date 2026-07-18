@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script src="i18n-strings.js?v=19"></script>
+<script src="i18n-strings.js?v=20"></script>
 <script src="i18n.js?v=4"></script>
 <script>if(window.self!==window.top){try{window.top.location=window.location.href;}catch(e){}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9,7 +9,23 @@
 <link rel="preconnect" href="https://www.gstatic.com">
 <link rel="prefetch" href="main.html">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}</style>
+<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}
+/* ===== CONNEXION PAR GOOGLE ===== */
+.btn-social {
+    display:flex; align-items:center; justify-content:center; gap:11px;
+    width:100%; background:#fff; border:1.5px solid #e3ded4; border-radius:12px;
+    padding:13px; font-size:15px; font-weight:700; color:#1a1a1a;
+    font-family:inherit; cursor:pointer; margin-bottom:16px;
+}
+.btn-social:active { background:#f7f5f0; transform:scale(.99); }
+.auth-sep {
+    display:flex; align-items:center; gap:12px;
+    font-size:12.5px; color:#9a948a; font-weight:600; margin-bottom:16px;
+}
+.auth-sep::before, .auth-sep::after {
+    content:''; flex:1; height:1px; background:#e7e2d9;
+}
+</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0a">
@@ -198,6 +214,17 @@ body {
     <!-- FORM LOGIN -->
     <form class="auth-form active" id="loginForm">
         <div class="error" id="loginError"></div>
+        <button class="btn-social" type="button" onclick="connexionGoogle()">
+            <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 01-2.4 3.7v3h3.9c2.3-2.1 3.5-5.2 3.5-8.9z"/>
+                <path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.6-4.9H1.4v3.1A12 12 0 0012 24z"/>
+                <path fill="#FBBC05" d="M5.4 14.4a7.2 7.2 0 010-4.6V6.7H1.4a12 12 0 000 10.6l4-2.9z"/>
+                <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.4 6.7l4 3.1C6.3 6.9 8.9 4.8 12 4.8z"/>
+            </svg>
+            <span data-i18n="auth_google">Continuer avec Google</span>
+        </button>
+        <div class="auth-sep"><span data-i18n="auth_or_mail">ou avec un e-mail</span></div>
+
         <div class="loading" id="loginLoading" data-i18n="loading_login">Connexion en cours...</div>
         
         <div class="form-group">
@@ -225,6 +252,17 @@ body {
     <!-- FORM REGISTER -->
     <form class="auth-form" id="registerForm">
         <div class="error" id="registerError"></div>
+        <button class="btn-social" type="button" onclick="connexionGoogle()">
+            <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 01-2.4 3.7v3h3.9c2.3-2.1 3.5-5.2 3.5-8.9z"/>
+                <path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.6-4.9H1.4v3.1A12 12 0 0012 24z"/>
+                <path fill="#FBBC05" d="M5.4 14.4a7.2 7.2 0 010-4.6V6.7H1.4a12 12 0 000 10.6l4-2.9z"/>
+                <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.4 6.7l4 3.1C6.3 6.9 8.9 4.8 12 4.8z"/>
+            </svg>
+            <span data-i18n="auth_google">Continuer avec Google</span>
+        </button>
+        <div class="auth-sep"><span data-i18n="auth_or_mail">ou avec un e-mail</span></div>
+
         <div class="loading" id="registerLoading" data-i18n="loading_register">Création du compte...</div>
 
         <div class="form-group">
@@ -352,6 +390,42 @@ function toggleForm(formName) {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById(formName + 'Form').classList.add('active');
     document.querySelectorAll('.error, .success, .loading').forEach(e => e.classList.remove('show'));
+}
+
+// ===== CONNEXION PAR GOOGLE =====
+// Un compte Google n'a ni mot de passe ni pseudo : il se connecte
+// toujours par Google. On ne lui demande donc pas de nom d'utilisateur.
+async function connexionGoogle(){
+    const errorDiv = document.getElementById('loginError');
+    try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        const cred = await auth.signInWithPopup(provider);
+        const user = cred.user;
+
+        // Prenom pour l'accueil personnalise
+        const prenom = (user.displayName || '').split(' ')[0] || '';
+        if(prenom) localStorage.setItem('repz_firstName', prenom);
+
+        // Premiere connexion : on cree le document utilisateur
+        if(cred.additionalUserInfo && cred.additionalUserInfo.isNewUser){
+            try {
+                const suffixe = Math.floor(1000 + Math.random()*9000);
+                await firebase.firestore().collection('users').doc(user.uid).set({
+                    consentRGPD: { accepte:true, date:new Date().toISOString(), version:'2026-07', via:'google' },
+                    mon_code_parrainage: (prenom.toUpperCase().replace(/[^A-Z]/g,'').slice(0,10) || 'BELFIT') + '-' + suffixe
+                }, { merge:true });
+            } catch(e){ /* non bloquant */ }
+        }
+        window.location.href = 'main.html';
+    } catch(error){
+        if(error && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) return;
+        let message = window.t('auth_google_err');
+        if(error && error.code === 'auth/account-exists-with-different-credential'){
+            message = window.t('auth_google_conflit');
+        }
+        if(errorDiv){ errorDiv.textContent = message; errorDiv.classList.add('show'); }
+    }
 }
 
 // ===== NOM D'UTILISATEUR =====
