@@ -30,7 +30,18 @@
   // Service worker : ouverture instantanee depuis le cache
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('sw.js', { scope: '/v2/' }).catch(function(){});
+      navigator.serviceWorker.register('sw.js', { scope: '/v2/' }).then(function(reg){
+        // Nouvelle version detectee : on l'active et on recharge une seule fois
+        reg.addEventListener('updatefound', function(){
+          var sw = reg.installing;
+          if (!sw) return;
+          sw.addEventListener('statechange', function(){
+            if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+              if (!window.__bfRecharge) { window.__bfRecharge = true; window.location.reload(); }
+            }
+          });
+        });
+      }).catch(function(){});
     });
   }
 </script>
