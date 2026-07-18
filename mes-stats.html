@@ -666,6 +666,14 @@ function bodyMapSVG(compte, max){
         // Travaillé sur la période → couleur du muscle ; sinon gris
         return (compte[k] > 0) ? (COL[k] || '#F7B500') : '#E9EBEF';
     }
+    // Avant-bras et mains : ils n'ont pas de groupe propre dans l'app.
+    // On les rattache visuellement au bras, sinon le membre apparaît
+    // coupé en deux (haut coloré, bas gris), ce qui se lit comme une erreur.
+    function colBras(){
+        if(compte.biceps > 0) return COL.biceps;
+        if(compte.triceps > 0) return COL.triceps;
+        return '#E9EBEF';
+    }
     // Silhouette simplifiée vue de face — chaque zone = un groupe
     return `<svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="16" r="11" class="bp"/>
@@ -678,6 +686,10 @@ function bodyMapSVG(compte, max){
         <path class="bp" style="fill:${col('biceps')}" d="M78 47 q4 8 4 18 l-6 2 q-2 -10 -4 -16z"/>
         <path class="bp" style="fill:${col('triceps')}" d="M17 66 q-2 8 -1 16 l6 -1 q0 -8 1 -14z"/>
         <path class="bp" style="fill:${col('triceps')}" d="M83 66 q2 8 1 16 l-6 -1 q0 -8 -1 -14z"/>
+        <path class="bp" style="fill:${colBras()}" d="M15 83 q-2 8 -1 15 l6 -1 q0 -7 1 -13z"/>
+        <path class="bp" style="fill:${colBras()}" d="M85 83 q2 8 1 15 l-6 -1 q0 -7 -1 -13z"/>
+        <ellipse class="bp" style="fill:${colBras()}" cx="16.5" cy="102" rx="3.6" ry="5"/>
+        <ellipse class="bp" style="fill:${colBras()}" cx="83.5" cy="102" rx="3.6" ry="5"/>
         <path class="bp" style="fill:${col('jambes')}" d="M40 89 h9 v40 q0 6 -5 6 q-5 0 -5 -6 z"/>
         <path class="bp" style="fill:${col('jambes')}" d="M60 89 h-9 v40 q0 6 5 6 q5 0 5 -6 z"/>
         <path class="bp" style="fill:${col('jambes')}" d="M39 137 h10 v34 q0 4 -5 4 q-5 0 -5 -4z"/>
