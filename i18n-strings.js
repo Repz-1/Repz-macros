@@ -1562,3 +1562,33 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   ai_ask_sub: 'Stel ze rechtstreeks aan je coach. Antwoord per e-mail binnen 24 tot 48u.',
   ai_ask_btn: 'Mijn vraag stellen'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  ai_ask_title: 'Une question pour l\'équipe BELFIT ?',
+  ai_ask_sub: 'Ta question n\'est pas dans la liste ? Écris-nous, on te répond par e-mail sous 24 à 48h.',
+  ai_ask_btn: 'Poser ma question',
+  ai_write: 'Une question pour l\'équipe BELFIT ?',
+  ai_reply: 'L\'équipe te répond par e-mail sous 24–48h.',
+  ai_send: 'Envoyer ma question',
+  ai_sub: 'Les réponses aux questions les plus fréquentes. Ta question n\'y est pas ? Écris à l\'équipe BELFIT.'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  ai_ask_title: 'A question for the BELFIT team?',
+  ai_ask_sub: 'Can\'t find your question in the list? Write to us, we reply by email within 24 to 48h.',
+  ai_ask_btn: 'Ask my question',
+  ai_write: 'A question for the BELFIT team?',
+  ai_reply: 'The team replies by email within 24–48h.',
+  ai_send: 'Send my question',
+  ai_sub: 'Answers to the most common questions. Yours isn\'t here? Write to the BELFIT team.'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  ai_ask_title: 'Een vraag voor het BELFIT-team?',
+  ai_ask_sub: 'Staat je vraag niet in de lijst? Schrijf ons, we antwoorden per e-mail binnen 24 tot 48u.',
+  ai_ask_btn: 'Mijn vraag stellen',
+  ai_write: 'Een vraag voor het BELFIT-team?',
+  ai_reply: 'Het team antwoordt per e-mail binnen 24–48u.',
+  ai_send: 'Mijn vraag versturen',
+  ai_sub: 'Antwoorden op de meest gestelde vragen. Staat die van jou er niet bij? Schrijf het BELFIT-team.'
+});
