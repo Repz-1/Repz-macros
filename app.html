@@ -755,12 +755,23 @@ body.search-open .fab-row { display:none; }
 .history-del:active { color:#ef4444; }
 
 .modal-overlay {
-    display:none; position:fixed; inset:0; background:rgba(0,0,0,.5);
+    display:none; position:fixed; left:0; right:0;
+    top:var(--vv-top, 0px); height:var(--vv-h, 100%);
+    background:rgba(0,0,0,.5);
     align-items:center; justify-content:center; padding:20px; z-index:100;
 }
 .modal-overlay.show { display:flex; }
 .modal {
-    background:white; border-radius:20px; padding:20px; max-width:360px; width:100%; max-height:88vh; overflow-y:auto;
+    background:white; border-radius:20px; padding:20px 20px 0; max-width:360px; width:100%;
+    max-height:calc(var(--vv-h, 100vh) - 40px); overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    scroll-padding-bottom:80px;
+}
+/* Les boutons restent colles en bas de la modale : jamais masques par le clavier */
+.modal .modal-btns {
+    position:sticky; bottom:0; background:#fff; padding:14px 0 20px;
+    margin-top:18px; z-index:2;
+    box-shadow:0 -10px 14px -10px rgba(0,0,0,.10);
 }
 .modal h3 { margin-bottom:16px; font-size:17px; }
 .modal-tdee-sep { text-align:center; font-size:12px; color:#9ca3af; margin:20px 0 8px; }
@@ -3022,6 +3033,39 @@ function addIngredient(rid,name){
     const inp = document.getElementById('search-'+rid);
     if(inp){ inp.value=''; inp.focus({preventScroll:true}); }
 }
+
+// ===== ZONE VISIBLE REELLE (le clavier reduit la fenetre) =====
+// Sans cela, une modale centree sur 100vh voit ses boutons passer sous le clavier.
+(function(){
+  var vv = window.visualViewport;
+  var root = document.documentElement;
+  function majViewport(){
+    if(vv){
+      root.style.setProperty('--vv-h', vv.height + 'px');
+      root.style.setProperty('--vv-top', vv.offsetTop + 'px');
+    } else {
+      root.style.setProperty('--vv-h', window.innerHeight + 'px');
+      root.style.setProperty('--vv-top', '0px');
+    }
+  }
+  if(vv){
+    vv.addEventListener('resize', majViewport);
+    vv.addEventListener('scroll', majViewport);
+  }
+  window.addEventListener('resize', majViewport);
+  window.addEventListener('orientationchange', function(){ setTimeout(majViewport, 250); });
+  majViewport();
+
+  // Au focus d'un champ dans une modale, l'amener dans la zone visible
+  document.addEventListener('focusin', function(e){
+    var champ = e.target;
+    if(!champ || !champ.matches || !champ.matches('input, textarea, select')) return;
+    if(!champ.closest('.modal')) return;
+    setTimeout(function(){
+      try { champ.scrollIntoView({ block:'center', behavior:'smooth' }); } catch(err){}
+    }, 300);
+  });
+})();
 
 // ===== CRÉER UN ALIMENT PERSO =====
 let foodCreatorRid = null;
