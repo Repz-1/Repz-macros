@@ -1,6 +1,7 @@
 import { getFirestore, doc, getDoc, setDoc, enableIndexedDbPersistence } from 'firebase/firestore';
 import { auth } from './firebase.js';
 import { initializeApp, getApps } from 'firebase/app';
+import { migrerSiNecessaire } from './migration.js';
 
 // ============================================================
 // SYNC v2 — local-first.
@@ -42,6 +43,16 @@ export async function chargerDonnees(uid) {
       resultat = (cloud.ts || 0) >= (local.ts || 0) ? cloud : local;
     } else {
       resultat = cloud || local || null;
+    }
+    // Aucune donnee v2 : premier passage d'un utilisateur v1 -> on convertit
+    // ses donnees existantes (lecture seule sur v1, rien n'est efface).
+    if (!resultat) {
+      const migre = await migrerSiNecessaire(uid);
+      if (migre) {
+        resultat = migre;
+        try { localStorage.setItem(cleLocale(uid), JSON.stringify(migre)); } catch (e) {}
+        setDoc(doc(db, 'users', uid), { v2Data: migre }, { merge: true }).catch(() => {});
+      }
     }
     etatComplet = resultat ? { ...resultat } : {};
     return resultat;
