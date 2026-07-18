@@ -17,6 +17,7 @@ import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif } from './components/BottomNav.jsx';
 import { PremiumPage } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
+import { Courses } from './components/Courses.jsx';
 
 function OngletJournal() {
   const [modale, setModale] = useState(false);
@@ -74,6 +75,7 @@ function App() {
         {onglet === 'journal' && <OngletJournal />}
         {onglet === 'entrainer' && <OngletEntrainer />}
         {onglet === 'stats' && <Stats />}
+        {onglet === 'courses' && <Courses />}
         {onglet === 'premium' && <PremiumPage />}
       </div>
       <BottomNav />
