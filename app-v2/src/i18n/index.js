@@ -42,6 +42,8 @@ const T = {
     revoir: 'Content de te revoir', creer_compte: 'Crée ton compte',
     pas_compte: "Pas encore de compte ? S'inscrire", deja_compte: 'Déjà un compte ? Se connecter',
     chargement: 'Chargement de ton journal…',
+    aujourdhui: "Aujourd'hui", consommees: 'Consommées', objectif: 'Objectif',
+
     calc_besoins_court: 'Calculateur', vocal_court: 'Vocal',
 
     essayer_sans_compte: "Essayer sans compte", invite_note: "Tes données resteront sur cet appareil.",
@@ -72,6 +74,8 @@ const T = {
     revoir: 'Welcome back', creer_compte: 'Create your account',
     pas_compte: 'No account yet? Sign up', deja_compte: 'Already registered? Sign in',
     chargement: 'Loading your journal…',
+    aujourdhui: 'Today', consommees: 'Consumed', objectif: 'Target',
+
     calc_besoins_court: 'Calculator', vocal_court: 'Voice',
 
     essayer_sans_compte: 'Try without an account', invite_note: 'Your data stays on this device.',
@@ -102,6 +106,8 @@ const T = {
     revoir: 'Welkom terug', creer_compte: 'Maak je account',
     pas_compte: 'Nog geen account? Registreren', deja_compte: 'Al een account? Aanmelden',
     chargement: 'Je dagboek laden…',
+    aujourdhui: 'Vandaag', consommees: 'Verbruikt', objectif: 'Doel',
+
     calc_besoins_court: 'Calculator', vocal_court: 'Spraak',
 
     essayer_sans_compte: 'Proberen zonder account', invite_note: 'Je gegevens blijven op dit toestel.',

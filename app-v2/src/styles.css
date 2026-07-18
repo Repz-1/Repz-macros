@@ -332,3 +332,25 @@ button{cursor:pointer}
 .qa-pro{position:absolute;top:7px;right:9px;background:#F7B500;color:#5A3E00;font-size:8px;font-weight:800;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal}
 
 .qa-rangee.qa-2{grid-template-columns:repeat(2,1fr)}
+
+/* ---- Dashboard aligne sur l'app actuelle ---- */
+.tb-date{text-align:center;font-size:13.5px;font-weight:800;color:#8a8a8a;letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+.tb-rangee{display:flex;align-items:center;justify-content:center;gap:4px}
+.tb-cote{flex:1;text-align:center;min-width:0}
+.tb-cote i{display:block;font-size:12px;color:#9a9588;font-weight:600;font-style:normal;margin-bottom:2px}
+.tb-cote span{font-size:21px;font-weight:800}
+.tb-jauge{position:relative;width:172px;flex-shrink:0;aspect-ratio:1}
+.tb-remplie{stroke:#10B981 !important}
+.tb-nombre{font-size:36px}
+.tb-sep{height:1px;background:#f0ede4;margin:10px 0 12px}
+.tb-mini > div{transition:width .3s ease,background .3s ease}
+
+/* ---- En-tete (logo comme l'app actuelle) ---- */
+.entete{display:flex;align-items:center;gap:12px;padding:4px 0 14px}
+.entete-logo{width:40px;height:40px;border-radius:11px;flex-shrink:0}
+.entete .lang-choix{margin-left:auto}
+.entete-profil{background:none;border:none;color:#B98A00;padding:4px}
+.entete-profil svg{width:26px;height:26px}
+.profil-volet{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid #ece8dc;border-radius:14px;padding:11px 14px;margin-bottom:12px}
+.profil-volet span{font-size:13px;color:#8a8a8a;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profil-volet button{background:none;border:none;color:#DE2F14;font-weight:700;font-size:13px;font-family:inherit;text-decoration:underline;flex-shrink:0}
