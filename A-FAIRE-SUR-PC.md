@@ -108,7 +108,21 @@ Effet : 2 ajustements par mois et par type en mensuel, 4 en annuel.
 
 ---
 
-## 5. EmailJS — réparer l'envoi
+## 5. Vocal — redeployer la Cloud Function (URGENT, le vocal est en panne)
+
+**Cause : Google a arrete le modele gemini-2.0-flash le 1er juin 2026.**
+La fonction migre maintenant vers gemini-3.5-flash avec repli automatique.
+
+```bash
+firebase deploy --only functions:transcrireVocal
+```
+
+Test : ajout vocal dans l'app, dire « 100 grammes de riz ». La ligne de
+diagnostic affichera desormais le detail exact en cas de nouvel echec.
+
+---
+
+## 6. EmailJS — réparer l'envoi
 
 **Sans ça, les questions posées depuis l'aide n'arrivent jamais.**
 

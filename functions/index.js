@@ -164,7 +164,11 @@ Regles :
       const typeAudio = String(mimeType || "audio/wav").split(";")[0].trim();
       console.log("transcrireVocal", JSON.stringify({uid, typeAudio, tailleKo: Math.round(audioBase64.length * 0.75 / 1024)}));
 
-      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY.value();
+      // Google retire regulierement ses modeles (gemini-2.0-flash a ete
+      // coupe le 1er juin 2026, ce qui a casse le vocal en silence).
+      // On essaie donc une liste ordonnee : si un modele repond 404,
+      // on passe au suivant au lieu de tomber en panne.
+      const MODELES = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-2.5-flash"];
       const geminiBody = {
         contents: [{
           parts: [
@@ -175,16 +179,28 @@ Regles :
         generationConfig: {temperature: 0.1, responseMimeType: "application/json"},
       };
 
-      const gRes = await fetch(geminiUrl, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(geminiBody),
-      });
+      let gRes = null;
+      let dernierErr = "";
+      for (const modele of MODELES) {
+        const url = "https://generativelanguage.googleapis.com/v1beta/models/" +
+          modele + ":generateContent?key=" + GEMINI_API_KEY.value();
+        gRes = await fetch(url, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(geminiBody),
+        });
+        if (gRes.ok) { console.log("transcrireVocal modele:", modele); break; }
+        dernierErr = (await gRes.text()).slice(0, 300);
+        console.error("Gemini", modele, gRes.status, dernierErr);
+        if (gRes.status !== 404) break; // autre erreur : inutile d'essayer les suivants
+      }
 
-      if (!gRes.ok) {
-        const errTxt = await gRes.text();
-        console.error("Gemini error", gRes.status, errTxt.slice(0, 300));
-        res.status(502).json({error: "gemini_failed"}); return;
+      if (!gRes || !gRes.ok) {
+        // Le detail remonte jusqu'a l'ecran du telephone via le diagnostic.
+        let detail = "";
+        try { detail = (JSON.parse(dernierErr).error || {}).message || ""; } catch (e) { detail = dernierErr; }
+        res.status(502).json({error: "gemini_failed", detail: String(detail).slice(0, 160)});
+        return;
       }
 
       const gData = await gRes.json();

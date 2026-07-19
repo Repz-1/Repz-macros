@@ -4930,7 +4930,7 @@ async function envoyerAudioVocal(mimeType){
         }
         if(!rep.ok){
             let detail = '';
-            try { detail = (await rep.json()).error || ''; } catch(e){ detail = 'HTTP ' + rep.status; }
+            try { const j = await rep.json(); detail = (j.detail || j.error || ''); } catch(e){ detail = 'HTTP ' + rep.status; }
             document.getElementById('vmLive').textContent = window.t('vm_error');
             diagVocal(rep.status + ' ' + detail);
             return;
