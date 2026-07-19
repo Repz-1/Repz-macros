@@ -88,14 +88,20 @@ export function MealCard({ r }) {
   const vide = r.ings.length === 0;
   const [edite, setEdite] = useState(false);
 
+  // Trois zones : vignette, contenu, actions.
+  // Le crayon et le chevron sont regroupes dans la zone d'actions,
+  // centres sur la meme ligne : places separement, ils se retrouvaient
+  // l'un en haut, l'autre au milieu.
   return (
-    <div class="carte">
-      <div class="carte-tete" onClick={() => !edite && basculerRepas(r.id)}>
-        <div class="carte-emoji">{EMOJIS[r.type] || '🍲'}</div>
-        <div class="carte-titre">
+    <div class={'mc' + (r.ouvert ? ' mc--ouvert' : '')}>
+      <div class="mc-tete" onClick={() => !edite && basculerRepas(r.id)}>
+
+        <div class="mc-vignette">{EMOJIS[r.type] || '🍲'}</div>
+
+        <div class="mc-info">
           {edite ? (
             <input
-              class="titre-edit"
+              class="mc-titre-champ"
               value={r.nom}
               onClick={e => e.stopPropagation()}
               onInput={e => renommerRepas(r.id, e.currentTarget.value)}
@@ -104,16 +110,21 @@ export function MealCard({ r }) {
               autoFocus
             />
           ) : (
-            <h3 onClick={e => { e.stopPropagation(); setEdite(true); }} title="Renommer">{r.nom} <span class="crayon">✎</span></h3>
+            <h3 class="mc-titre">{r.nom}</h3>
           )}
-          <p>{vide ? t('vide') : `${tot.kcal.toFixed(0)} kcal`}</p>
+          <p class="mc-sous">{vide ? t('vide') : `${tot.kcal.toFixed(0)} kcal`}</p>
         </div>
-        <button
-          class="carte-suppr"
-          onClick={e => { e.stopPropagation(); supprimerRepas(r.id); }}
-          title="Supprimer"
-        >✕</button>
-        <span class={`carte-chevron ${r.ouvert ? 'ouvert' : ''}`}>▼</span>
+
+        <div class="mc-actions">
+          <button
+            class="mc-crayon"
+            onClick={e => { e.stopPropagation(); setEdite(true); }}
+            aria-label="Renommer"
+          >
+            <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z" /></svg>
+          </button>
+          <span class="mc-chevron" aria-hidden="true">▾</span>
+        </div>
       </div>
 
       {r.ouvert && (

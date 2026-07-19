@@ -1305,7 +1305,7 @@ Object.assign(STRINGS_V1.nl, {
 /* ===== Aide ===== */
 Object.assign(STRINGS_V1.fr, {
   ai_title:"Obtenir de l'aide",
-  ai_sub:"Les réponses aux questions les plus fréquentes. Besoin de plus ? Écris-nous via la bulle en bas à droite.",
+  ai_sub:"Les réponses aux questions les plus fréquentes. Ta question n'y est pas ? Écris à l'équipe BELFIT.",
   ai_faq:"Questions fréquentes",
   ai_write:"Écris-nous", ai_reply:"Ton coach BELFIT te répond sous 24–48h par e-mail.",
   ai_ph:"Décris ta question ou ton problème…", ai_send:"Envoyer au coach",
@@ -1324,9 +1324,9 @@ Object.assign(STRINGS_V1.en, {
     "Comment fonctionne le programme personnalisé ?":"How does the personalised program work?",
     "En Premium, tu remplis un questionnaire détaillé (objectif, préférences, allergies, rythme de vie). Ton coach l'analyse et te livre ton programme personnalisé sous 24 à 48h par e-mail. Pas d'algorithme automatique : un vrai coach travaille sur ton dossier.":"In Premium, you fill in a detailed questionnaire (goal, preferences, allergies, lifestyle). Your coach analyses it and delivers your personalised program within 24 to 48h by email. No automatic algorithm: a real coach works on your case.",
     "Que comprend l'abonnement Premium ?":"What's included in the Premium subscription?",
-    "Le programme nutrition personnalisé par le coach, la bibliothèque de programmes d'entraînement, le calculateur avancé, les idées recettes adaptées à tes calories restantes, l'historique illimité et 2 ajustements de macros + 2 ajustements de calories par mois.":"The coach's personalised nutrition program, the training program library, the advanced calculator, recipe ideas adapted to your remaining calories, unlimited history and 2 macro + 2 calorie adjustments per month.",
+    "Le programme nutrition personnalisé par le coach, la bibliothèque de programmes d'entraînement, le calculateur avancé, les idées recettes adaptées à tes calories restantes, l'historique illimité et des ajustements mensuels de macros et de calories par ton coach (2 de chaque en mensuel, 4 en annuel).":"The coach's personalised nutrition program, the training program library, the advanced calculator, recipe ideas adapted to your remaining calories, unlimited history and monthly macro and calorie adjustments by your coach (2 of each on the monthly plan, 4 on the annual plan).",
     "Comment ajuster mes calories ou mes macros ?":"How do I adjust my calories or macros?",
-    "Profil → Répartition des macros ou Ajustement des calories. En Premium, tu disposes de 2 ajustements par mois pour chacun : ta demande part chez ton coach, qui adapte ton plan sous 24–48h.":"Profile → Macro split or Calorie adjustment. In Premium, you get 2 adjustments per month for each: your request goes to your coach, who adapts your plan within 24–48h.",
+    "Profil → Répartition des macros ou Ajustement des calories. En Premium, ta demande part chez ton coach, qui adapte ton plan sous 24–48h. Tu disposes de 2 ajustements par mois pour chaque type (macros et calories) avec la formule mensuelle, et de 4 par mois avec la formule annuelle.":"Profile → Macro split or Calorie adjustment. In Premium, your request goes to your coach, who adapts your plan within 24–48h. You get 2 adjustments per month for each type (macros and calories) on the monthly plan, and 4 per month on the annual plan.",
     "Comment scanner un produit ?":"How do I scan a product?",
     "Dans le journal, ouvre un repas puis utilise l'icône scan pour lire le code-barres. Le produit est ajouté au repas et sauvegardé définitivement dans ta base personnelle d'aliments.":"In the journal, open a meal then use the scan icon to read the barcode. The product is added to the meal and saved permanently in your personal food database.",
     "Comment enregistrer mon poids ?":"How do I log my weight?",
@@ -1334,13 +1334,13 @@ Object.assign(STRINGS_V1.en, {
     "Où sont stockées mes données ?":"Where is my data stored?",
     "Ton compte et ton statut Premium sont sécurisés chez Firebase (Google, serveurs européens). Ton journal, tes pesées et tes aliments personnalisés sont stockés sur ton appareil. Pense à ne pas effacer les données du navigateur sans exporter.":"Your account and Premium status are secured with Firebase (Google, European servers). Your journal, weigh-ins and custom foods are stored on your device. Remember not to clear your browser data without exporting.",
     "Comment annuler mon abonnement ?":"How do I cancel my subscription?",
-    "Ton abonnement est géré par notre partenaire de paiement Lemon Squeezy : utilise le lien de gestion reçu dans ton e-mail de confirmation d'achat, ou écris-nous via la bulle de contact et on s'en occupe.":"Your subscription is managed by our payment partner Lemon Squeezy: use the management link received in your purchase confirmation email, or write to us via the contact bubble and we'll take care of it.",
+    "Tu peux résilier toi-même, à tout moment, en deux minutes : ouvre l'espace de gestion, saisis l'adresse e-mail utilisée pour l'achat, et tu recevras un lien de connexion. Tu y résilies en un clic. Ton accès Premium reste actif jusqu'à la fin de la période déjà payée. Si tu rencontres le moindre blocage, écris-nous et on s'en occupe.":"You can cancel yourself, at any time, in two minutes: open the management area, enter the email address used for the purchase, and you will receive a login link. Cancel there in one click. Your Premium access stays active until the end of the period already paid. If anything blocks you, write to us and we will handle it.",
     "J'ai un code promo, où l'utiliser ?":"I have a promo code, where do I use it?",
-    "Sur la page Premium au moment de choisir ta formule. Si tu as un souci avec un code, contacte-nous via la bulle.":"On the Premium page when choosing your plan. If you have an issue with a code, contact us via the bubble.",
+    "Sur la page Premium, au moment de choisir ta formule : saisis ton code dans le champ prévu juste avant le paiement. La réduction s'affiche immédiatement sur le montant.":"On the Premium page, when choosing your plan: enter your code in the field just before payment. The discount is applied to the amount straight away.",
     "L'app fonctionne-t-elle hors ligne ?":"Does the app work offline?",
     "Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium.":"The journal and your local data remain accessible, but a connection is needed to log in, scan products and sync your Premium status.",
     "Comment vous contacter ?":"How do I contact you?",
-    "Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"Via the chat bubble at the bottom right of this page, or by email at contact@belfit.be. Reply within 24–48h."
+    "Avec le bouton « Poser ma question » en bas de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"With the « Ask my question » button at the bottom of this page, or by email at contact@belfit.be. Reply within 24–48h."
   }
 });
 Object.assign(STRINGS_V1.nl, {
@@ -1356,9 +1356,9 @@ Object.assign(STRINGS_V1.nl, {
     "Comment fonctionne le programme personnalisé ?":"Hoe werkt het gepersonaliseerd programma?",
     "En Premium, tu remplis un questionnaire détaillé (objectif, préférences, allergies, rythme de vie). Ton coach l'analyse et te livre ton programme personnalisé sous 24 à 48h par e-mail. Pas d'algorithme automatique : un vrai coach travaille sur ton dossier.":"In Premium vul je een gedetailleerde vragenlijst in (doel, voorkeuren, allergieën, levensritme). Je coach analyseert ze en levert je gepersonaliseerd programma binnen 24 tot 48u per e-mail. Geen automatisch algoritme: een echte coach werkt aan je dossier.",
     "Que comprend l'abonnement Premium ?":"Wat omvat het Premium-abonnement?",
-    "Le programme nutrition personnalisé par le coach, la bibliothèque de programmes d'entraînement, le calculateur avancé, les idées recettes adaptées à tes calories restantes, l'historique illimité et 2 ajustements de macros + 2 ajustements de calories par mois.":"Het gepersonaliseerde voedingsprogramma van de coach, de bibliotheek met trainingsprogramma's, de geavanceerde berekenaar, recept-ideeën aangepast aan je resterende calorieën, onbeperkte geschiedenis en 2 macro- + 2 calorie-aanpassingen per maand.",
+    "Le programme nutrition personnalisé par le coach, la bibliothèque de programmes d'entraînement, le calculateur avancé, les idées recettes adaptées à tes calories restantes, l'historique illimité et des ajustements mensuels de macros et de calories par ton coach (2 de chaque en mensuel, 4 en annuel).":"Het gepersonaliseerde voedingsprogramma van de coach, de bibliotheek met trainingsprogramma's, de geavanceerde berekenaar, recept-ideeën aangepast aan je resterende calorieën, onbeperkte geschiedenis en maandelijkse macro- en calorie-aanpassingen door je coach (2 van elk met de maandformule, 4 met de jaarformule).",
     "Comment ajuster mes calories ou mes macros ?":"Hoe pas ik mijn calorieën of macro's aan?",
-    "Profil → Répartition des macros ou Ajustement des calories. En Premium, tu disposes de 2 ajustements par mois pour chacun : ta demande part chez ton coach, qui adapte ton plan sous 24–48h.":"Profiel → Macroverdeling of Calorie-aanpassing. In Premium heb je 2 aanpassingen per maand voor elk: je aanvraag gaat naar je coach, die je plan binnen 24–48u aanpast.",
+    "Profil → Répartition des macros ou Ajustement des calories. En Premium, ta demande part chez ton coach, qui adapte ton plan sous 24–48h. Tu disposes de 2 ajustements par mois pour chaque type (macros et calories) avec la formule mensuelle, et de 4 par mois avec la formule annuelle.":"Profiel → Macroverdeling of Calorie-aanpassing. In Premium gaat je aanvraag naar je coach, die je plan binnen 24–48u aanpast. Je krijgt 2 aanpassingen per maand voor elk type (macro's en calorieën) met de maandformule, en 4 per maand met de jaarformule.",
     "Comment scanner un produit ?":"Hoe scan ik een product?",
     "Dans le journal, ouvre un repas puis utilise l'icône scan pour lire le code-barres. Le produit est ajouté au repas et sauvegardé définitivement dans ta base personnelle d'aliments.":"Open in het dagboek een maaltijd en gebruik het scan-icoon om de barcode te lezen. Het product wordt aan de maaltijd toegevoegd en definitief opgeslagen in je persoonlijke voedingsdatabase.",
     "Comment enregistrer mon poids ?":"Hoe registreer ik mijn gewicht?",
@@ -1366,13 +1366,13 @@ Object.assign(STRINGS_V1.nl, {
     "Où sont stockées mes données ?":"Waar worden mijn gegevens bewaard?",
     "Ton compte et ton statut Premium sont sécurisés chez Firebase (Google, serveurs européens). Ton journal, tes pesées et tes aliments personnalisés sont stockés sur ton appareil. Pense à ne pas effacer les données du navigateur sans exporter.":"Je account en Premium-status zijn beveiligd bij Firebase (Google, Europese servers). Je dagboek, wegingen en persoonlijke voeding worden op je toestel bewaard. Denk eraan je browsergegevens niet te wissen zonder te exporteren.",
     "Comment annuler mon abonnement ?":"Hoe zeg ik mijn abonnement op?",
-    "Ton abonnement est géré par notre partenaire de paiement Lemon Squeezy : utilise le lien de gestion reçu dans ton e-mail de confirmation d'achat, ou écris-nous via la bulle de contact et on s'en occupe.":"Je abonnement wordt beheerd door onze betaalpartner Lemon Squeezy: gebruik de beheerlink die je in je aankoopbevestiging per e-mail kreeg, of schrijf ons via de contactbel en wij regelen het.",
+    "Tu peux résilier toi-même, à tout moment, en deux minutes : ouvre l'espace de gestion, saisis l'adresse e-mail utilisée pour l'achat, et tu recevras un lien de connexion. Tu y résilies en un clic. Ton accès Premium reste actif jusqu'à la fin de la période déjà payée. Si tu rencontres le moindre blocage, écris-nous et on s'en occupe.":"Je kunt zelf opzeggen, op elk moment, in twee minuten: open het beheerscherm, vul het e-mailadres in dat je bij de aankoop gebruikte en je ontvangt een inloglink. Daar zeg je op met één klik. Je Premium-toegang blijft actief tot het einde van de reeds betaalde periode. Loopt er iets mis, schrijf ons en wij regelen het.",
     "J'ai un code promo, où l'utiliser ?":"Ik heb een promocode, waar gebruik ik die?",
-    "Sur la page Premium au moment de choisir ta formule. Si tu as un souci avec un code, contacte-nous via la bulle.":"Op de Premium-pagina bij het kiezen van je formule. Heb je een probleem met een code, contacteer ons via de bel.",
+    "Sur la page Premium, au moment de choisir ta formule : saisis ton code dans le champ prévu juste avant le paiement. La réduction s'affiche immédiatement sur le montant.":"Op de Premium-pagina, bij het kiezen van je formule: vul je code in het veld vlak voor de betaling in. De korting wordt meteen op het bedrag toegepast.",
     "L'app fonctionne-t-elle hors ligne ?":"Werkt de app offline?",
     "Le journal et tes données locales restent accessibles, mais la connexion est nécessaire pour te connecter, scanner des produits et synchroniser ton statut Premium.":"Het dagboek en je lokale gegevens blijven toegankelijk, maar een verbinding is nodig om in te loggen, producten te scannen en je Premium-status te synchroniseren.",
     "Comment vous contacter ?":"Hoe kan ik jullie contacteren?",
-    "Via la bulle de conversation en bas à droite de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"Via de chatbel rechtsonder op deze pagina, of per e-mail naar contact@belfit.be. Antwoord binnen 24–48u."
+    "Avec le bouton « Poser ma question » en bas de cette page, ou par e-mail à contact@belfit.be. Réponse sous 24–48h.":"Met de knop « Mijn vraag stellen » onderaan deze pagina, of per e-mail naar contact@belfit.be. Antwoord binnen 24–48u."
   }
 });
 
@@ -1478,6 +1478,339 @@ Object.assign(STRINGS_V1.nl, {
 });
 
 /* ===== Noms des repas fixes (traduits à l'affichage, non gravés) ===== */
-Object.assign(STRINGS_V1.fr, { meal_pdej:"Petit déjeuner", meal_dej:"Déjeuner", meal_diner:"Dîner", meal_snack:"Snacks" });
+Object.assign(STRINGS_V1.fr, { meal_pdej:"Petit déjeuner", meal_dej:"Déjeuner", meal_diner:"Dîner", meal_snack:"Collations" });
 Object.assign(STRINGS_V1.en, { meal_pdej:"Breakfast", meal_dej:"Lunch", meal_diner:"Dinner", meal_snack:"Snacks" });
-Object.assign(STRINGS_V1.nl, { meal_pdej:"Ontbijt", meal_dej:"Lunch", meal_diner:"Avondeten", meal_snack:"Snacks" });
+Object.assign(STRINGS_V1.nl, { meal_pdej:"Ontbijt", meal_dej:"Lunch", meal_diner:"Avondeten", meal_snack:"Tussendoortjes" });
+
+Object.assign(STRINGS_V1.fr, {
+  done: 'Terminé',
+  mb_empty: 'Cherchez un aliment à ajouter',
+  mb_food: 'aliment',
+  mb_foods: 'aliments',
+  mb_prot: 'prot.'
+});
+
+Object.assign(STRINGS_V1.en, {
+  done: 'Done',
+  mb_empty: 'Search for a food to add',
+  mb_food: 'food',
+  mb_foods: 'foods',
+  mb_prot: 'prot.'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  done: 'Klaar',
+  mb_empty: 'Zoek een voedingsmiddel om toe te voegen',
+  mb_food: 'product',
+  mb_foods: 'producten',
+  mb_prot: 'eiw.'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  register_pseudo: 'Nom d\'utilisateur',
+  register_pseudo_hint: '3 à 20 caractères : lettres, chiffres, point, tiret ou _',
+  login_identifiant: 'Email ou nom d\'utilisateur',
+  pseudo_verif: 'Vérification…',
+  pseudo_libre: '✓ Disponible',
+  pseudo_pris: 'Ce nom est déjà pris',
+  pseudo_reserve: 'Ce nom est réservé',
+  pseudo_court: 'Trop court : 3 caractères minimum',
+  pseudo_caracteres: 'Lettres, chiffres, point, tiret ou _ uniquement',
+  pseudo_invalide: 'Choisis un nom d\'utilisateur valide et disponible'
+});
+
+Object.assign(STRINGS_V1.en, {
+  register_pseudo: 'Username',
+  register_pseudo_hint: '3 to 20 characters: letters, numbers, dot, dash or _',
+  login_identifiant: 'Email or username',
+  pseudo_verif: 'Checking…',
+  pseudo_libre: '✓ Available',
+  pseudo_pris: 'This username is taken',
+  pseudo_reserve: 'This username is reserved',
+  pseudo_court: 'Too short: 3 characters minimum',
+  pseudo_caracteres: 'Letters, numbers, dot, dash or _ only',
+  pseudo_invalide: 'Choose a valid and available username'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  register_pseudo: 'Gebruikersnaam',
+  register_pseudo_hint: '3 tot 20 tekens: letters, cijfers, punt, streepje of _',
+  login_identifiant: 'E-mail of gebruikersnaam',
+  pseudo_verif: 'Controleren…',
+  pseudo_libre: '✓ Beschikbaar',
+  pseudo_pris: 'Deze naam is al in gebruik',
+  pseudo_reserve: 'Deze naam is gereserveerd',
+  pseudo_court: 'Te kort: minimaal 3 tekens',
+  pseudo_caracteres: 'Alleen letters, cijfers, punt, streepje of _',
+  pseudo_invalide: 'Kies een geldige en beschikbare gebruikersnaam'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  ai_ask_title: 'Ta question n\'est pas là ?',
+  ai_ask_sub: 'Pose-la directement à ton coach. Réponse par e-mail sous 24 à 48h.',
+  ai_ask_btn: 'Poser ma question'
+});
+
+Object.assign(STRINGS_V1.en, {
+  ai_ask_title: 'Can\'t find your question?',
+  ai_ask_sub: 'Ask your coach directly. Reply by email within 24 to 48h.',
+  ai_ask_btn: 'Ask my question'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  ai_ask_title: 'Staat je vraag er niet bij?',
+  ai_ask_sub: 'Stel ze rechtstreeks aan je coach. Antwoord per e-mail binnen 24 tot 48u.',
+  ai_ask_btn: 'Mijn vraag stellen'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  ai_ask_title: 'Une question pour l\'équipe BELFIT ?',
+  ai_ask_sub: 'Ta question n\'est pas dans la liste ? Écris-nous, on te répond par e-mail sous 24 à 48h.',
+  ai_ask_btn: 'Poser ma question',
+  ai_write: 'Une question pour l\'équipe BELFIT ?',
+  ai_reply: 'L\'équipe te répond par e-mail sous 24–48h.',
+  ai_send: 'Envoyer ma question',
+  ai_sub: 'Les réponses aux questions les plus fréquentes. Ta question n\'y est pas ? Écris à l\'équipe BELFIT.'
+});
+
+Object.assign(STRINGS_V1.en, {
+  ai_ask_title: 'A question for the BELFIT team?',
+  ai_ask_sub: 'Can\'t find your question in the list? Write to us, we reply by email within 24 to 48h.',
+  ai_ask_btn: 'Ask my question',
+  ai_write: 'A question for the BELFIT team?',
+  ai_reply: 'The team replies by email within 24–48h.',
+  ai_send: 'Send my question',
+  ai_sub: 'Answers to the most common questions. Yours isn\'t here? Write to the BELFIT team.'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  ai_ask_title: 'Een vraag voor het BELFIT-team?',
+  ai_ask_sub: 'Staat je vraag niet in de lijst? Schrijf ons, we antwoorden per e-mail binnen 24 tot 48u.',
+  ai_ask_btn: 'Mijn vraag stellen',
+  ai_write: 'Een vraag voor het BELFIT-team?',
+  ai_reply: 'Het team antwoordt per e-mail binnen 24–48u.',
+  ai_send: 'Mijn vraag versturen',
+  ai_sub: 'Antwoorden op de meest gestelde vragen. Staat die van jou er niet bij? Schrijf het BELFIT-team.'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  st_edit_muscles: 'Modifier'
+});
+
+Object.assign(STRINGS_V1.en, {
+  st_edit_muscles: 'Edit'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  st_edit_muscles: 'Wijzigen'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  pl_cat_prog: 'Le programme sur mesure',
+  pl_cat_abo: 'Abonnement et paiement',
+  pl_cat_app: 'L\'application',
+  pl_ask_title: 'Une question pour l\'équipe BELFIT ?',
+  pl_ask_sub: 'Ta question n\'est pas dans la liste ? Écris-nous, on te répond sous 24 à 48h.',
+  pl_ask_btn: 'Poser ma question'
+});
+
+Object.assign(STRINGS_V1.en, {
+  pl_cat_prog: 'Your tailored program',
+  pl_cat_abo: 'Subscription and payment',
+  pl_cat_app: 'The app',
+  pl_ask_title: 'A question for the BELFIT team?',
+  pl_ask_sub: 'Can\'t find your question? Write to us, we reply within 24 to 48h.',
+  pl_ask_btn: 'Ask my question'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  pl_cat_prog: 'Je programma op maat',
+  pl_cat_abo: 'Abonnement en betaling',
+  pl_cat_app: 'De app',
+  pl_ask_title: 'Een vraag voor het BELFIT-team?',
+  pl_ask_sub: 'Staat je vraag er niet bij? Schrijf ons, we antwoorden binnen 24 tot 48u.',
+  pl_ask_btn: 'Mijn vraag stellen'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  pl_ask_title: 'Une question avant de te lancer ?',
+  pl_ask_sub: 'Retrouve toutes les réponses dans notre aide, ou écris directement à l\'équipe BELFIT.',
+  pl_ask_btn: 'Voir les questions fréquentes'
+});
+
+Object.assign(STRINGS_V1.en, {
+  pl_ask_title: 'A question before you start?',
+  pl_ask_sub: 'Find every answer in our help section, or write directly to the BELFIT team.',
+  pl_ask_btn: 'See frequently asked questions'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  pl_ask_title: 'Nog een vraag voor je begint?',
+  pl_ask_sub: 'Vind alle antwoorden in onze hulppagina, of schrijf rechtstreeks naar het BELFIT-team.',
+  pl_ask_btn: 'Bekijk de veelgestelde vragen'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  set_cancel: 'Résilier mon abonnement',
+  set_cancel_sub: 'Sans engagement, à tout moment',
+  rs_title: 'Résilier mon abonnement',
+  rs_intro: 'Avant que tu partes, une question : qu\'est-ce qui ne va pas ? Ça nous aide à améliorer BELFIT.',
+  rs_m_prix: 'C\'est trop cher pour moi',
+  rs_m_temps: 'Je n\'ai pas le temps en ce moment',
+  rs_m_fonction: 'Il manque une fonctionnalité',
+  rs_m_usage: 'Je n\'utilise pas assez l\'app',
+  rs_m_autre: 'Autre raison',
+  rs_precise_ph: 'Dis-nous en quelques mots…',
+  rs_confirm: 'Confirmer ma résiliation',
+  rs_note: 'Ton accès Premium reste actif jusqu\'à la fin de la période déjà payée.',
+  rs_o_prix_t: 'On peut faire un geste',
+  rs_o_prix_p: 'Si c\'est une question de budget, on te propose 50 % de réduction pendant 2 mois. Le temps de voir si BELFIT t\'apporte vraiment quelque chose.',
+  rs_o_prix_b: 'Profiter de -50 % pendant 2 mois',
+  rs_o_usage_t: 'Tes données sont déjà là',
+  rs_o_usage_p: 'Tout ce que tu as noté est conservé. Reprendre demande juste quelques minutes par jour — et c\'est souvent la régularité qui manque, pas la motivation.',
+  rs_o_usage_b: 'Je retente une semaine'
+});
+
+Object.assign(STRINGS_V1.en, {
+  set_cancel: 'Cancel my subscription',
+  set_cancel_sub: 'No commitment, anytime',
+  rs_title: 'Cancel my subscription',
+  rs_intro: 'Before you go, one question: what isn\'t working? It helps us improve BELFIT.',
+  rs_m_prix: 'It\'s too expensive for me',
+  rs_m_temps: 'I don\'t have time right now',
+  rs_m_fonction: 'A feature is missing',
+  rs_m_usage: 'I don\'t use the app enough',
+  rs_m_autre: 'Another reason',
+  rs_precise_ph: 'Tell us in a few words…',
+  rs_confirm: 'Confirm my cancellation',
+  rs_note: 'Your Premium access stays active until the end of the period already paid.',
+  rs_o_prix_t: 'We can meet you halfway',
+  rs_o_prix_p: 'If it\'s a budget question, here\'s 50% off for 2 months. Enough time to see whether BELFIT really works for you.',
+  rs_o_prix_b: 'Get 50% off for 2 months',
+  rs_o_usage_t: 'Your data is still here',
+  rs_o_usage_p: 'Everything you logged is kept. Picking it back up takes just a few minutes a day — and it\'s usually consistency that\'s missing, not motivation.',
+  rs_o_usage_b: 'I\'ll give it another week'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  set_cancel: 'Mijn abonnement opzeggen',
+  set_cancel_sub: 'Zonder verplichting, op elk moment',
+  rs_title: 'Mijn abonnement opzeggen',
+  rs_intro: 'Voor je gaat, één vraag: wat loopt er mis? Zo kunnen we BELFIT verbeteren.',
+  rs_m_prix: 'Het is te duur voor mij',
+  rs_m_temps: 'Ik heb er nu geen tijd voor',
+  rs_m_fonction: 'Er ontbreekt een functie',
+  rs_m_usage: 'Ik gebruik de app te weinig',
+  rs_m_autre: 'Andere reden',
+  rs_precise_ph: 'Vertel het ons in een paar woorden…',
+  rs_confirm: 'Mijn opzegging bevestigen',
+  rs_note: 'Je Premium-toegang blijft actief tot het einde van de reeds betaalde periode.',
+  rs_o_prix_t: 'We komen je tegemoet',
+  rs_o_prix_p: 'Is het een budgetkwestie? Dan geven we je 50 % korting gedurende 2 maanden. Genoeg tijd om te zien of BELFIT echt iets voor je doet.',
+  rs_o_prix_b: '50 % korting nemen, 2 maanden',
+  rs_o_usage_t: 'Je gegevens staan er nog',
+  rs_o_usage_p: 'Alles wat je hebt genoteerd blijft bewaard. Weer oppikken kost maar een paar minuten per dag — meestal ontbreekt de regelmaat, niet de motivatie.',
+  rs_o_usage_b: 'Ik probeer nog een week'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  auth_google: 'Continuer avec Google',
+  auth_or_mail: 'ou avec un e-mail',
+  auth_google_err: 'La connexion Google n\'a pas abouti. Réessaie.',
+  auth_google_conflit: 'Un compte existe déjà avec cette adresse. Connecte-toi avec ton mot de passe.'
+});
+
+Object.assign(STRINGS_V1.en, {
+  auth_google: 'Continue with Google',
+  auth_or_mail: 'or with an email',
+  auth_google_err: 'Google sign-in did not complete. Please try again.',
+  auth_google_conflit: 'An account already exists with this address. Sign in with your password.'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  auth_google: 'Doorgaan met Google',
+  auth_or_mail: 'of met een e-mail',
+  auth_google_err: 'Aanmelden met Google is niet gelukt. Probeer opnieuw.',
+  auth_google_conflit: 'Er bestaat al een account met dit adres. Meld je aan met je wachtwoord.'
+});
+
+Object.assign(STRINGS_V1.fr, {
+  macro_prot: 'protéines',
+  macro_carbs: 'glucides',
+  macro_lip: 'lipides',
+  eat_macro_over: 'Dépasse tes {m} restants ({n} g)',
+  eat_over_none: 'Tu es déjà au-delà de tes {m} du jour'
+});
+
+Object.assign(STRINGS_V1.en, {
+  macro_prot: 'protein',
+  macro_carbs: 'carbs',
+  macro_lip: 'fat',
+  eat_macro_over: 'Exceeds your remaining {m} ({n} g)',
+  eat_over_none: 'You are already over your {m} for today'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  macro_prot: 'eiwitten',
+  macro_carbs: 'koolhydraten',
+  macro_lip: 'vetten',
+  eat_macro_over: 'Overschrijdt je resterende {m} ({n} g)',
+  eat_over_none: 'Je zit vandaag al boven je {m}'
+});
+
+Object.assign(STRINGS_V1.fr, { eat_adapted: 'Portion ajustée à ce qu\'il te reste' });
+
+Object.assign(STRINGS_V1.en, { eat_adapted: 'Portion adjusted to what you have left' });
+
+Object.assign(STRINGS_V1.nl, { eat_adapted: 'Portie aangepast aan wat je nog over hebt' });
+
+Object.assign(STRINGS_V1.fr, {
+  vm_unavailable: 'Service vocal indisponible pour le moment',
+  vm_no_audio: 'Aucun son détecté — vérifie ton micro',
+  vm_need_login: 'Connecte-toi pour utiliser le vocal',
+  vm_premium_only: 'Fonction réservée au Premium',
+  vm_error: 'Une erreur est survenue, réessaie'
+});
+
+Object.assign(STRINGS_V1.en, {
+  vm_unavailable: 'Voice service unavailable right now',
+  vm_no_audio: 'No sound detected — check your microphone',
+  vm_need_login: 'Sign in to use voice input',
+  vm_premium_only: 'Premium feature',
+  vm_error: 'Something went wrong, try again'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  vm_unavailable: 'Spraakdienst momenteel niet beschikbaar',
+  vm_no_audio: 'Geen geluid gedetecteerd — controleer je microfoon',
+  vm_need_login: 'Meld je aan om spraakinvoer te gebruiken',
+  vm_premium_only: 'Premium-functie',
+  vm_error: 'Er ging iets mis, probeer opnieuw'
+});
+
+Object.assign(STRINGS_V1.fr, { vm_listening_tap: 'Je t\'écoute… Appuie à nouveau quand tu as fini' });
+
+Object.assign(STRINGS_V1.en, { vm_listening_tap: 'Listening… Tap again when you are done' });
+
+Object.assign(STRINGS_V1.nl, { vm_listening_tap: 'Ik luister… Tik opnieuw wanneer je klaar bent' });
+
+Object.assign(STRINGS_V1.fr, {
+  proteins: 'Protéines',
+  fats: 'Lipides',
+  kcal_reached: 'objectif atteint',
+  confirm_new_day: 'Commencer une nouvelle journée ? Les repas d\'aujourd\'hui seront archivés.'
+});
+
+Object.assign(STRINGS_V1.en, {
+  proteins: 'Protein',
+  fats: 'Fat',
+  kcal_reached: 'goal reached',
+  confirm_new_day: 'Start a new day? Today\'s meals will be archived.'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  proteins: 'Eiwitten',
+  fats: 'Vetten',
+  kcal_reached: 'doel bereikt',
+  confirm_new_day: 'Een nieuwe dag starten? De maaltijden van vandaag worden gearchiveerd.'
+});

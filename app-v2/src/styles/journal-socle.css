@@ -454,3 +454,69 @@
 .pg-journal .eat-zone { display: flex; justify-content: center; }
 .pg-journal .eat-zone-wrap { display: flex; flex-direction: column; gap: 12px; }
 .pg-journal .eat-panneau { animation: journalEntree 200ms ease both; }
+
+/* ============================================================
+   CARTE REPAS
+   Trois zones : vignette, contenu, actions.
+   Mesures relevees sur la reference.
+   ============================================================ */
+.pg-journal .mc {
+  position: relative;
+  background: var(--carte);
+  border: 1.5px solid #E7E2D9;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(60, 50, 40, .05);
+}
+.pg-journal .mc--ouvert { overflow: visible; z-index: 20; }
+
+.pg-journal .mc-tete {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; cursor: pointer;
+}
+
+/* --- Zone 1 : vignette --- */
+.pg-journal .mc-vignette {
+  width: 58px; height: 58px; border-radius: 16px;
+  background: #F2EFE9;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; flex-shrink: 0;
+}
+
+/* --- Zone 2 : contenu --- */
+.pg-journal .mc-info { flex: 1; min-width: 0; }
+.pg-journal .mc-titre {
+  font-size: 18px; font-weight: 800; color: var(--texte);
+  margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pg-journal .mc-titre-champ {
+  font-size: 18px; font-weight: 800; color: var(--texte);
+  border: none; background: #F1EFE9; border-radius: 6px;
+  width: 100%; padding: 0 4px; font-family: inherit;
+}
+.pg-journal .mc-titre-champ:focus { outline: none; }
+.pg-journal .mc-sous {
+  font-size: 13px; color: #8A8580; margin: 2px 0 0;
+}
+
+/* --- Zone 3 : actions ---
+   Crayon et chevron regroupes, centres sur la meme ligne. */
+.pg-journal .mc-actions {
+  flex: none;
+  display: flex; align-items: center; gap: 10px;
+}
+.pg-journal .mc-crayon {
+  background: none; border: none; padding: 4px; cursor: pointer;
+  color: #C2BDB2; display: flex;
+}
+.pg-journal .mc-crayon svg {
+  width: 15px; height: 15px;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .mc-crayon:active { color: var(--or); }
+
+.pg-journal .mc-chevron {
+  color: #B7B1A8; font-size: 18px; line-height: 1;
+  flex-shrink: 0; transition: transform 200ms ease;
+}
+.pg-journal .mc--ouvert .mc-chevron { transform: rotate(180deg); }

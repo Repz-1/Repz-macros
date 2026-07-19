@@ -1478,9 +1478,9 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 });
 
 /* ===== Noms des repas fixes (traduits à l'affichage, non gravés) ===== */
-Object.assign(window.BELFIT_STRINGS.fr, { meal_pdej:"Petit déjeuner", meal_dej:"Déjeuner", meal_diner:"Dîner", meal_snack:"Snacks" });
+Object.assign(window.BELFIT_STRINGS.fr, { meal_pdej:"Petit déjeuner", meal_dej:"Déjeuner", meal_diner:"Dîner", meal_snack:"Collations" });
 Object.assign(window.BELFIT_STRINGS.en, { meal_pdej:"Breakfast", meal_dej:"Lunch", meal_diner:"Dinner", meal_snack:"Snacks" });
-Object.assign(window.BELFIT_STRINGS.nl, { meal_pdej:"Ontbijt", meal_dej:"Lunch", meal_diner:"Avondeten", meal_snack:"Snacks" });
+Object.assign(window.BELFIT_STRINGS.nl, { meal_pdej:"Ontbijt", meal_dej:"Lunch", meal_diner:"Avondeten", meal_snack:"Tussendoortjes" });
 
 Object.assign(window.BELFIT_STRINGS.fr, {
   done: 'Terminé',
