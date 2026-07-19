@@ -7,7 +7,7 @@
  * le bump du nom de cache a chaque deploiement : l'installation du
  * nouveau SW retelecharge tout le noyau d'un bloc.
  */
-const CACHE = 'belfit-v137';
+const CACHE = 'belfit-v138';
 const CORE = ['./index.html','./main.html','./i18n.js','./i18n-strings.js','./app.html','./manifest.json','./icon-192-v7.png','./icon-512-v7.png','./belfit-logo-header.png'];
 
 self.addEventListener('install', e => {
@@ -26,6 +26,11 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return; // ne pas intercepter Firebase/CDN
+
+  // La v2 a son propre service worker et ses propres regles de cache.
+  // L'intercepter ici lui servait un HTML fige, qui pointait vers
+  // d'anciens fichiers : les mises a jour n'arrivaient jamais.
+  if (url.pathname.startsWith('/v2/')) return;
 
   // HTML : cache d'abord (affichage immediat), revalidation en arriere-plan
   if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
