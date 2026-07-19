@@ -1853,3 +1853,9 @@ Object.assign(window.BELFIT_STRINGS.fr, { eat_other: 'Une autre idée' });
 Object.assign(window.BELFIT_STRINGS.en, { eat_other: 'Another idea' });
 
 Object.assign(window.BELFIT_STRINGS.nl, { eat_other: 'Een ander idee' });
+
+Object.assign(window.BELFIT_STRINGS.fr, { eat_prev: 'Précédente', eat_next: 'Suivante' });
+
+Object.assign(window.BELFIT_STRINGS.en, { eat_prev: 'Previous', eat_next: 'Next' });
+
+Object.assign(window.BELFIT_STRINGS.nl, { eat_prev: 'Vorige', eat_next: 'Volgende' });

@@ -232,18 +232,22 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
             <span class="eat-open">{t('eat_see')}</span>
           </div>
 
-          {retenues.length > 1 && (
-            <div class="eat-suivante">
-              <button onClick={() => setIndex(index + 1)}>
-                <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
-                  <path d="M3 12a9 9 0 0115.5-6.2M21 12a9 9 0 01-15.5 6.2" />
-                  <path d="M18.5 3v3h-3M5.5 21v-3h3" />
-                </svg>
-                {t('eat_other')}
-              </button>
-              <span class="eat-compteur">{(index % retenues.length) + 1} / {retenues.length}</span>
-            </div>
-          )}
+          {retenues.length > 1 && (() => {
+            const pos = index % retenues.length;
+            return (
+              <div class="eat-nav">
+                <button
+                  onClick={() => setIndex(index - 1)}
+                  disabled={pos === 0}
+                >← {t('eat_prev')}</button>
+                <span class="eat-compteur">{pos + 1} / {retenues.length}</span>
+                <button
+                  onClick={() => setIndex(index + 1)}
+                  disabled={pos === retenues.length - 1}
+                >{t('eat_next')} →</button>
+              </div>
+            );
+          })()}
         </div>
         );
       })()}

@@ -1853,3 +1853,9 @@ Object.assign(STRINGS_V1.fr, { eat_other: 'Une autre idée' });
 Object.assign(STRINGS_V1.en, { eat_other: 'Another idea' });
 
 Object.assign(STRINGS_V1.nl, { eat_other: 'Een ander idee' });
+
+Object.assign(STRINGS_V1.fr, { eat_prev: 'Précédente', eat_next: 'Suivante' });
+
+Object.assign(STRINGS_V1.en, { eat_prev: 'Previous', eat_next: 'Next' });
+
+Object.assign(STRINGS_V1.nl, { eat_prev: 'Vorige', eat_next: 'Volgende' });

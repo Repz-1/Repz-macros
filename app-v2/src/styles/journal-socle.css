@@ -774,19 +774,24 @@
 /* Une seule suggestion, aucune zone de defilement interne :
    un scroll dans un scroll rendait la lecture confuse. */
 .pg-journal .eat-une { display: flex; flex-direction: column; gap: 10px; }
-.pg-journal .eat-suivante {
+/* Navigation explicite : deux libelles et la position. Une icone de
+   rafraichissement laissait croire a un rechargement, et on ne
+   pouvait pas revenir en arriere. */
+.pg-journal .eat-nav {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2px;
+  gap: 8px; padding: 2px;
 }
-.pg-journal .eat-suivante button {
-  display: inline-flex; align-items: center; gap: 7px;
+.pg-journal .eat-nav button {
   background: none; border: none; cursor: pointer; font-family: inherit;
   font-size: 13px; font-weight: 800; color: #BE185D;
-  padding: 8px 0;
+  padding: 8px 4px; white-space: nowrap;
+  transition: opacity var(--transition);
 }
-.pg-journal .eat-suivante button:active { opacity: .6; }
-.pg-journal .eat-suivante .ic { width: 15px; height: 15px; stroke-width: 2; }
-.pg-journal .eat-compteur { font-size: 12px; font-weight: 700; color: #B79AA8; }
+.pg-journal .eat-nav button:active { opacity: .6; }
+.pg-journal .eat-nav button:disabled { color: #D9C2CE; cursor: default; }
+.pg-journal .eat-compteur {
+  font-size: 12px; font-weight: 700; color: #B79AA8; flex: none;
+}
 
 .pg-journal .eat-idea {
   background: #FFFFFF;
