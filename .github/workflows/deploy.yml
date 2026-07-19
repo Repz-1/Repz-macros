@@ -32,8 +32,13 @@ jobs:
       - name: Verifier le JavaScript des pages
         run: node tools/verif-js.js
 
-      # Chantier v2 arrete (19 juillet 2026). Son build est retire du
-      # deploiement. Le code reste dans app-v2/ ; voir app-v2/README.md.
+      # Build de la v2 (Preact + Vite) -> dossier /v2
+      - name: Installer les dependances v2
+        working-directory: app-v2
+        run: npm ci
+      - name: Construire la v2
+        working-directory: app-v2
+        run: npm run build
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3

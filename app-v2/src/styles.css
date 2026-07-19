@@ -60,7 +60,6 @@ button{cursor:pointer}
 .total-repas{margin-top:12px;padding:10px 14px;background:#FFF9E6;border-radius:12px;color:#9a7b00;font-weight:700;font-size:13.5px}
 
 /* ---- Bouton Ajouter + modale ---- */
-.fab{position:fixed;right:16px;bottom:80px;width:56px;height:56px;background:#F7B500;color:#181818;border:none;border-radius:50%;font-size:28px;font-weight:800;line-height:1;box-shadow:0 6px 20px rgba(247,181,0,.45);z-index:40;display:flex;align-items:center;justify-content:center}
 .voile{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
 .voile.montre{opacity:1;pointer-events:auto}
 .modale{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;box-sizing:border-box;background:#fff;border-radius:24px 24px 0 0;padding:22px 18px 30px;transform:translateY(100%);transition:transform .25s ease;z-index:60}

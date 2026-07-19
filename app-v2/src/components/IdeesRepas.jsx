@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { signal } from '@preact/signals';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
 import { DB } from '../data/aliments.js';
 import { repas, ajouterIngredient, objectifs, totauxJour } from '../store/journal.js';
@@ -20,8 +21,13 @@ function macrosIdee(idee) {
   }, { kcal: 0, prot: 0, carbs: 0, lip: 0 });
 }
 
-export function IdeesRepas() {
-  const [ouvert, setOuvert] = useState(false);
+// Etat partage : la pilule est dans la rangee flottante, le panneau
+// reste dans le flux de la page.
+export const ideesOuvertes = signal(false);
+
+export function IdeesRepas({ pilulSeule, panneauSeul }) {
+  const ouvert = ideesOuvertes.value;
+  const setOuvert = (v) => { ideesOuvertes.value = v; };
   const [cat, setCat] = useState(null);
   const [ajoute, setAjoute] = useState(null);
 
@@ -38,9 +44,22 @@ export function IdeesRepas() {
     setTimeout(() => setAjoute(null), 1500);
   };
 
+  // Rangee flottante : la pilule seule.
+  if (pilulSeule) {
+    return (
+      <button class="eat-toggle" onClick={() => setOuvert(!ouvert)}>
+        <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
+          <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z" />
+        </svg>
+        <span>{t('eat_title')}</span>
+        <span class="eat-fleche">{ouvert ? '\u25B4' : '\u25BE'}</span>
+      </button>
+    );
+  }
+
   return (
     <div class="eat-zone-wrap">
-      <div class="eat-zone">
+      <div class="eat-zone" style={panneauSeul ? { display: 'none' } : null}>
         <button class="eat-toggle" onClick={() => setOuvert(!ouvert)}>
           <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
             <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z" />
