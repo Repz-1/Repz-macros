@@ -1841,3 +1841,9 @@ Object.assign(STRINGS_V1.fr, { eat_none_fit: 'Rien ne rentre dans tes macros res
 Object.assign(STRINGS_V1.en, { eat_none_fit: 'Nothing fits your remaining macros. Come back after your next session.' });
 
 Object.assign(STRINGS_V1.nl, { eat_none_fit: "Niets past binnen je resterende macro's. Kom terug na je volgende sessie." });
+
+Object.assign(STRINGS_V1.fr, { eat_see: 'Voir la recette →' });
+
+Object.assign(STRINGS_V1.en, { eat_see: 'See the recipe →' });
+
+Object.assign(STRINGS_V1.nl, { eat_see: 'Bekijk het recept →' });

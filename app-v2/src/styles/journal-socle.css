@@ -806,3 +806,52 @@
   display: block; text-align: right; margin-top: 8px;
   font-size: 12.5px; font-weight: 800; color: #DFA004;
 }
+
+/* ---------- Fiche recette ---------- */
+.rm-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(15, 23, 42, .45);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px 20px calc(20px + var(--hauteur-nav, 74px));
+}
+.rm-boite {
+  position: relative; width: 100%; max-width: 460px;
+  max-height: 82vh; overflow-y: auto;
+  background: #FFFFFF; border-radius: 22px;
+  padding: 22px 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
+}
+.rm-x {
+  position: sticky; top: 0; float: right; margin: -6px -6px 0 0;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: #F2F0EA; color: #4B4B4B;
+  font-size: 16px; line-height: 1; cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 6px #FFFFFF;
+}
+.rm-titre {
+  font-size: 19px; font-weight: 800; color: #191919;
+  margin: 0 44px 0 0; line-height: 1.25;
+}
+.rm-macros { font-size: 13px; font-weight: 800; color: #DFA004; margin: 6px 0 4px; }
+.rm-sec {
+  font-size: 11.5px; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; color: #A8A297; margin: 16px 0 8px;
+}
+.rm-ings { list-style: none; padding: 0; margin: 0; }
+.rm-ings li {
+  font-size: 14px; font-weight: 600; padding: 7px 0;
+  border-bottom: 1px solid #F1EDE4;
+}
+.rm-ings li:last-child { border-bottom: none; }
+.rm-steps { padding-left: 20px; margin: 0; }
+.rm-steps li {
+  font-size: 13.5px; font-weight: 600; color: #3D3A35;
+  padding: 5px 0; line-height: 1.45;
+}
+.rm-tip {
+  background: #FFF6DD; border-radius: 12px; padding: 11px 13px;
+  font-size: 13px; font-weight: 600; color: #7A5600;
+  margin-top: 14px; line-height: 1.45;
+}
+.rm-tip::before { content: '💡 '; }

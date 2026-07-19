@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
 import { DB } from '../data/aliments.js';
+import { IDEA_PREP } from '../data/preparations.js';
 import { repas, ajouterIngredient, objectifs, totauxJour } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
@@ -99,12 +100,41 @@ function adapter(idee, restes, cible) {
   return { ...calc, reduite };
 }
 
+
+/** Fiche detaillee d'une recette : ingredients peses et preparation. */
+function FicheRecette({ nom, portion, kcal, prot, fermer }) {
+  const prep = IDEA_PREP[nom];
+  return (
+    <div class="rm-overlay" onClick={e => { if (e.target === e.currentTarget) fermer(); }}>
+      <div class="rm-boite">
+        <button class="rm-x" onClick={fermer} aria-label="Fermer">✕</button>
+        <h3 class="rm-titre">{nom}</h3>
+        <div class="rm-macros">≈ {kcal} kcal · {prot} {t('g_protein')}</div>
+
+        <div class="rm-sec">{t('ingredients')}</div>
+        <ul class="rm-ings">
+          {portion.split(' · ').map((x, i) => <li key={i}>{x}</li>)}
+        </ul>
+
+        <div class="rm-sec">{t('preparation')}</div>
+        <ol class="rm-steps">
+          {(prep ? prep.steps : ['Assemble les ingrédients selon tes préférences.'])
+            .map((x, i) => <li key={i}>{x}</li>)}
+        </ol>
+
+        {prep && prep.tip && <div class="rm-tip">{prep.tip}</div>}
+      </div>
+    </div>
+  );
+}
+
 export const ideesOuvertes = signal(false);
 
 export function IdeesRepas({ pilulSeule, panneauSeul }) {
   const ouvert = ideesOuvertes.value;
   const setOuvert = (v) => { ideesOuvertes.value = v; };
   const [cat, setCat] = useState(null);
+  const [fiche, setFiche] = useState(null);
   const [ajoute, setAjoute] = useState(null);
 
   const reste = Math.round(objectifs.value.kcal - totauxJour.value.kcal);
@@ -188,20 +218,23 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
         <div class="eat-ideas">
           {retenues.map(({ idee, p }, i) => {
             return (
-              <div class="eat-idea" key={i} onClick={() => ajouter(idee)}>
+              <div class="eat-idea" key={i}
+                   onClick={() => setFiche({ nom: idee.nom, portion: p.texte, kcal: p.kcal, prot: p.prot })}>
                 <div class="eat-idea-name">{idee.nom}</div>
                 <div class="eat-idea-ex">{p.texte}</div>
                 <div class="eat-idea-kcal">
                   ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
                 </div>
                 {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
-                <span class="eat-open">{ajoute === idee.nom ? '✓ Ajouté' : 'Voir la recette →'}</span>
+                <span class="eat-open">{t('eat_see')}</span>
               </div>
             );
           })}
         </div>
         );
       })()}
+
+      {fiche && <FicheRecette {...fiche} fermer={() => setFiche(null)} />}
     </div>
       )}
     </div>
