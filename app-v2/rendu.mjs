@@ -1,0 +1,24 @@
+import { JSDOM } from 'jsdom';
+import fs from 'fs';
+const html = fs.readFileSync('../v2/index.html', 'utf8');
+const dom = new JSDOM(html, { url: 'https://belfit.be/v2/', pretendToBeVisual: true });
+const w = dom.window;
+globalThis.window = w; globalThis.document = w.document;
+globalThis.localStorage = w.localStorage; globalThis.HTMLElement = w.HTMLElement;
+globalThis.customElements = w.customElements; globalThis.location = w.location;
+globalThis.self = w; globalThis.requestAnimationFrame = w.requestAnimationFrame;
+globalThis.cancelAnimationFrame = w.cancelAnimationFrame;
+globalThis.MutationObserver = w.MutationObserver;
+globalThis.matchMedia = w.matchMedia || (() => ({ matches:false, addEventListener(){} }));
+globalThis.performance = w.performance;
+globalThis.fetch = async () => ({ ok:false, json: async()=>({}) });
+const erreurs = [];
+w.addEventListener('error', e => erreurs.push(e.message));
+const f = fs.readdirSync('../v2/assets').find(x => x.startsWith('index-') && x.endsWith('.js'));
+try { await import('../v2/assets/' + f); } catch(e) { console.log('EXCEPTION:', e.message); }
+await new Promise(r => setTimeout(r, 900));
+const app = w.document.getElementById('app');
+const t = app ? app.textContent : '';
+console.log('longueur rendu :', app ? app.innerHTML.length : 0);
+console.log('extrait texte  :', t.slice(0, 160).replace(/\s+/g,' '));
+console.log('erreurs        :', erreurs.length ? erreurs : 'aucune');

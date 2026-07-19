@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
 import { estPremium } from './PremiumPage.jsx';
@@ -14,6 +14,10 @@ const EMOJIS = { repas: '🍲', collation: '🍏', boisson: '🥛' };
 function LigneIngredient({ repasId, ing }) {
   const d = DB[ing.name] || customFoods.value[ing.name] || {};
   const m = macrosOf(ing);
+  const [saisie, setSaisie] = useState(String(ing.portion));
+
+  // La valeur peut changer ailleurs (vocal, scan) : on resynchronise.
+  useEffect(() => { setSaisie(String(ing.portion)); }, [ing.portion]);
 
   return (
     <div class="mc-ing">
@@ -28,9 +32,17 @@ function LigneIngredient({ repasId, ing }) {
 
       <div class="mc-ing-champ">
         <input
-          type="number"
-          value={ing.portion}
-          onInput={e => setPortion(repasId, ing.id, e.currentTarget.value)}
+          type="number" inputMode="decimal" min="0"
+          value={saisie}
+          onFocus={e => e.currentTarget.select()}
+          onInput={e => {
+            const v = e.currentTarget.value;
+            setSaisie(v);                       // champ vide autorise pendant la frappe
+            if (v !== '') setPortion(repasId, ing.id, v);
+          }}
+          onBlur={() => {
+            if (saisie === '') { setSaisie('0'); setPortion(repasId, ing.id, 0); }
+          }}
         />
       </div>
       <span class="mc-ing-unite">g</span>

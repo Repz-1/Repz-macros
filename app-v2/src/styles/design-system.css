@@ -75,6 +75,15 @@
 }
 
 /* ============================================================
+   REGLE DE SECURITE
+   Par defaut, un element de grille ou de flex ne peut pas
+   retrecir sous la largeur intrinseque de son contenu. Un champ
+   numerique en reclame une vingtaine de caracteres : sans cette
+   regle, il fait exploser sa colonne.
+   ============================================================ */
+input, select, textarea { min-width: 0; }
+
+/* ============================================================
    CARTE — composant de base, jamais recree ailleurs
    ============================================================ */
 .carte {

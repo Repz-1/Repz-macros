@@ -564,8 +564,9 @@
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
+.pg-journal .mc-ing-champ { min-width: 0; }
 .pg-journal .mc-ing-champ input {
-  width: 100%; padding: 6px 2px;
+  width: 100%; min-width: 0; padding: 6px 2px;
   border: 1.5px solid #E2E8F0; border-radius: 8px;
   background: #F8FAFC; color: #1A1A1A;
   font-size: 14px; font-weight: 700; text-align: center; font-family: inherit;
@@ -578,11 +579,12 @@
   font-size: 12px; font-weight: 500; color: #94A3B8;
 }
 
-.pg-journal .mc-ing-macros { text-align: right; line-height: 1.2; }
+.pg-journal .mc-ing-macros { text-align: right; line-height: 1.2; min-width: 0; }
 .pg-journal .mc-ing-kcal { font-size: 14px; font-weight: 800; color: #1A1A1A; white-space: nowrap; }
 .pg-journal .mc-ing-sub {
   font-size: 10px; font-weight: 500; color: #94A3B8;
   margin-top: 2px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
 }
 
 .pg-journal .mc-ing-del {
