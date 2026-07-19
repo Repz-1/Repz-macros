@@ -1763,3 +1763,27 @@ Object.assign(window.BELFIT_STRINGS.fr, { eat_adapted: 'Portion ajustée à ce q
 Object.assign(window.BELFIT_STRINGS.en, { eat_adapted: 'Portion adjusted to what you have left' });
 
 Object.assign(window.BELFIT_STRINGS.nl, { eat_adapted: 'Portie aangepast aan wat je nog over hebt' });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  vm_unavailable: 'Service vocal indisponible pour le moment',
+  vm_no_audio: 'Aucun son détecté — vérifie ton micro',
+  vm_need_login: 'Connecte-toi pour utiliser le vocal',
+  vm_premium_only: 'Fonction réservée au Premium',
+  vm_error: 'Une erreur est survenue, réessaie'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  vm_unavailable: 'Voice service unavailable right now',
+  vm_no_audio: 'No sound detected — check your microphone',
+  vm_need_login: 'Sign in to use voice input',
+  vm_premium_only: 'Premium feature',
+  vm_error: 'Something went wrong, try again'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  vm_unavailable: 'Spraakdienst momenteel niet beschikbaar',
+  vm_no_audio: 'Geen geluid gedetecteerd — controleer je microfoon',
+  vm_need_login: 'Meld je aan om spraakinvoer te gebruiken',
+  vm_premium_only: 'Premium-functie',
+  vm_error: 'Er ging iets mis, probeer opnieuw'
+});

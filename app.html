@@ -956,7 +956,7 @@ body.search-open .meal-bar { display:flex; }
 </div>
 
 <!-- AUTH CHECK + FIREBASE -->
-<script src="i18n-strings.js?v=24"></script>
+<script src="i18n-strings.js?v=25"></script>
 <script src="foods-i18n.js?v=1"></script>
 <script src="i18n.js?v=4"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -4752,6 +4752,7 @@ function basculerEcoute(){
 async function demarrerEnregistrement(){
     try{
         vocalStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+        console.log('[vocal] micro autorise');
     }catch(e){
         document.getElementById('vmLive').textContent = t('vm_mic_denied') || 'Micro refusé';
         return;
@@ -4812,13 +4813,17 @@ async function blobVersWav(blob){
 }
 
 async function envoyerAudioVocal(mimeType){
-    if(!vocalChunks.length){ document.getElementById('vmLive').textContent = ''; return; }
+    if(!vocalChunks.length){
+        document.getElementById('vmLive').textContent = window.t('vm_no_audio');
+        console.warn('[vocal] aucun son capte'); return;
+    }
     let blob = new Blob(vocalChunks, { type:mimeType });
     let typeEnvoye = 'audio/wav';
     try{
         blob = await blobVersWav(blob);
     }catch(e){
         typeEnvoye = (mimeType||'audio/webm').split(';')[0]; // secours : type brut nettoye
+        console.warn('[vocal] conversion WAV impossible, envoi brut :', typeEnvoye, e && e.message);
     }
     // Blob -> base64
     const base64 = await new Promise((res)=>{
@@ -4836,8 +4841,27 @@ async function envoyerAudioVocal(mimeType){
             headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
             body: JSON.stringify({ audioBase64:base64, mimeType:typeEnvoye })
         });
-        if(rep.status === 403){ document.getElementById('vmLive').textContent = t('vm_premium_only') || 'Fonction Premium'; return; }
-        if(!rep.ok){ document.getElementById('vmLive').textContent = t('vm_error') || 'Erreur, réessaie'; return; }
+        // Messages distincts : un message unique rend le probleme invisible
+        // et empeche de savoir ce qui bloque reellement.
+        if(rep.status === 401){
+            document.getElementById('vmLive').textContent = window.t('vm_need_login');
+            console.warn('[vocal] non authentifie'); return;
+        }
+        if(rep.status === 403){
+            document.getElementById('vmLive').textContent = window.t('vm_premium_only');
+            console.warn('[vocal] compte non Premium cote serveur'); return;
+        }
+        if(rep.status === 404){
+            document.getElementById('vmLive').textContent = window.t('vm_unavailable');
+            console.error('[vocal] Cloud Function absente : deployer transcrireVocal'); return;
+        }
+        if(!rep.ok){
+            let detail = '';
+            try { detail = (await rep.json()).error || ''; } catch(e){ detail = 'HTTP ' + rep.status; }
+            document.getElementById('vmLive').textContent = window.t('vm_error');
+            console.error('[vocal] erreur serveur :', rep.status, detail);
+            return;
+        }
         const data = await rep.json();
         const aliments = Array.isArray(data.aliments) ? data.aliments : [];
         if(!aliments.length){ document.getElementById('vmLive').textContent = t('vm_nothing') || 'Rien compris, réessaie'; return; }
