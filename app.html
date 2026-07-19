@@ -525,9 +525,16 @@ body.search-open .meal-bar { display:flex; }
 .eat-note { font-size:13px; color:#db2777; font-weight:700; text-align:center; padding:14px; }
 .recipe-modal { max-height:82vh; overflow-y:auto; }
 /* ===== AJOUT VOCAL ===== */
-.vocal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:400; align-items:flex-end; justify-content:center; }
+.vocal-overlay { display:none; position:fixed; left:0; right:0;
+  top:var(--vv-top, 0px); height:var(--vv-h, 100%);
+  background:rgba(0,0,0,.5); z-index:400; align-items:flex-end; justify-content:center;
+  /* La barre de navigation du shell recouvre le bas de l'ecran */
+  padding-bottom:74px; }
 .vocal-overlay.show { display:flex; }
-.vocal-modal { position:relative; background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:520px; max-height:86vh; overflow-y:auto; }
+.vocal-modal { position:relative; background:#fff; border-radius:22px 22px 0 0;
+  padding:22px 20px 24px; width:100%; max-width:520px;
+  max-height:calc(var(--vv-h, 100vh) - 90px); overflow-y:auto;
+  -webkit-overflow-scrolling:touch; }
 .vm-title { font-size:19px; font-weight:800; margin-bottom:4px; padding-right:40px; }
 .vm-x { position:absolute; top:14px; right:14px; width:34px; height:34px; border-radius:50%; border:none; background:#F2F0EA; color:#4b4b4b; font-size:17px; line-height:1; display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:inherit; z-index:2; }
 .vm-x:active { background:#E6E3DB; }
@@ -5007,6 +5014,13 @@ const VOCAL_MESURES = { 'dose':30,'doses':30,'scoop':30,'scoops':30,'cuillere':1
 const VOCAL_PIECES = { 'banane':120,'pomme':150,'poire':160,'orange':130,'clementine':50,'mandarine':60,'kiwi':75,'peche':150,'nectarine':140,'abricot':45,'fraise':12,'tomate':120,'avocat':140,'carotte':80,'oignon':90,'pomme de terre':170,'patate':170,'datte':8,'yaourt':125,'tranche':30,'galette':35,'biscotte':10,'wrap':60,'tortilla':60 };
 const VOCAL_STOP = ['de','d','du','des','le','la','les','un','une','et','avec','puis','à','a','au','aux'];
 
+function montrerResultatVocal(){
+    setTimeout(()=>{
+        const cible = document.getElementById('vmConfirm');
+        const bloc = (cible && cible.style.display !== 'none') ? cible : document.getElementById('vmInconnus');
+        if(bloc){ try{ bloc.scrollIntoView({ block:'nearest', behavior:'smooth' }); }catch(e){} }
+    }, 120);
+}
 function analyserVocal(){
     arreterEcoute();
     const txt = document.getElementById('vmInput').value.trim();
@@ -5077,6 +5091,7 @@ function analyserVocal(){
         vocalProps.push({ name:name, portion:Math.round(portion*10)/10, estUnite:estUnite, incertain:(qte===null&&mesureG===null&&!estUnite&&!poidsPiece) });
     });
     renderVocalProps(inconnus);
+    montrerResultatVocal();
 }
 
 function renderVocalProps(inconnus){
