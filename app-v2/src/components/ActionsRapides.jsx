@@ -1,40 +1,50 @@
-import { useState } from 'preact/hooks';
-import { t } from '../i18n/index.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
-import { VocalModal } from './VocalModal.jsx';
+import { t } from '../i18n/index.js';
 
-// Rangee compacte d'actions rapides — meme disposition que l'app actuelle
-// (une ligne, 3 actions), bien plus econome en hauteur que des boutons empiles.
-export function ActionsRapides({ ouvrirCalc }) {
-  const [vocal, setVocal] = useState(false);
+// ============================================================
+// ACTIONS RAPIDES
+// Une seule carte, trois colonnes de largeur egale separees par
+// un trait vertical. Aucun titre : la carte commence directement
+// par les boutons, comme sur la reference.
+// ============================================================
 
-  const Action = ({ ic, label, onClick, pro }) => (
-    <button class="qa-btn" onClick={onClick}>
-      <span class="qa-ic">{ic}</span>
-      <span class="qa-lb">{label}</span>
-      {pro && !estPremium.value && <i class="qa-pro">✦</i>}
-    </button>
-  );
-
+export function ActionsRapides({ ouvrirCalc, ouvrirScan, ouvrirVocal }) {
   return (
-    <>
-      <div class="qa-rangee">
-        <Action
-          ic={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h3M8 15h3M15 11v6"/></svg>}
-          label={t('calc_besoins_court')} onClick={ouvrirCalc}
-        />
-        <Action
-          ic={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 002 1.6h7.7a2 2 0 002-1.6L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>}
-          label={t('nav_courses')} onClick={() => { ongletActif.value = 'courses'; }}
-        />
-        <Action
-          ic={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>}
-          label={t('vocal_court')} pro
-          onClick={() => { if (estPremium.value) setVocal(true); else ongletActif.value = 'premium'; }}
-        />
-      </div>
-      {vocal && <VocalModal fermer={() => setVocal(false)} />}
-    </>
+    <div class="qa">
+      <button class="qa-btn" onClick={ouvrirCalc}>
+        <span class="qa-ic">
+          <svg viewBox="0 0 24 24" class="ic">
+            <rect x="5" y="2.5" width="14" height="19" rx="2.5" />
+            <rect x="8" y="5.5" width="8" height="3.5" rx="1" />
+            <circle cx="9" cy="13" r="1" /><circle cx="12" cy="13" r="1" /><circle cx="15" cy="13" r="1" />
+            <circle cx="9" cy="17" r="1" /><circle cx="12" cy="17" r="1" /><circle cx="15" cy="17" r="1" />
+          </svg>
+        </span>
+        <span class="qa-lb">{t('qa_calc')}</span>
+      </button>
+
+      <button class="qa-btn" onClick={() => { window.location.href = '../courses.html'; }}>
+        <span class="qa-ic">
+          <svg viewBox="0 0 24 24" class="ic">
+            <path d="M2.5 3h2.2l2.3 11.2a1.8 1.8 0 001.8 1.4h8.6a1.8 1.8 0 001.8-1.4L21 7H6" />
+            <circle cx="9.5" cy="20" r="1.4" /><circle cx="17" cy="20" r="1.4" />
+          </svg>
+        </span>
+        <span class="qa-lb">{t('qa_shop')}</span>
+      </button>
+
+      <button class="qa-btn" onClick={ouvrirVocal}>
+        {!estPremium.value && <span class="qa-pro">PRO</span>}
+        <span class="qa-ic">
+          <svg viewBox="0 0 24 24" class="ic">
+            <rect x="10" y="2.5" width="4" height="9.5" rx="2" />
+            <path d="M6.5 11.5a5.5 5.5 0 0011 0" />
+            <path d="M12 17v3.5" /><path d="M9 20.5h6" />
+          </svg>
+        </span>
+        <span class="qa-lb">{t('qa_voice')}</span>
+      </button>
+    </div>
   );
 }

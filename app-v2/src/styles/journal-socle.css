@@ -375,3 +375,50 @@
   .pg-journal .cal-macros { gap: 8px; }
   .pg-journal .cal-macro-val { font-size: 12px; }
 }
+
+/* ============================================================
+   ACTIONS RAPIDES
+   Mesures relevees sur la reference.
+   ============================================================ */
+.pg-journal .qa {
+  display: flex;
+  background: var(--carte);
+  border: 1px solid #ECE8DF;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(24, 24, 24, .04);
+}
+.pg-journal .qa-btn {
+  position: relative;
+  flex: 1;                        /* trois parts strictement egales */
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  background: none; border: none; padding: 14px 6px;
+  cursor: pointer; font-family: inherit;
+}
+/* Trait vertical entre les colonnes, jamais sur les bords exterieurs */
+.pg-journal .qa-btn + .qa-btn { border-left: 1px solid #ECE8DF; }
+.pg-journal .qa-btn:active { background: #F5F6F8; }
+
+.pg-journal .qa-ic {
+  width: 42px; height: 42px; border-radius: 14px;
+  background: #FFF4CC; color: #181818;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.pg-journal .qa-ic .ic {
+  width: 21px; height: 21px;
+  fill: none; stroke: currentColor; stroke-width: 1.6;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .qa-lb {
+  font-size: 12px; font-weight: 600; color: #4B4A47; letter-spacing: .01em;
+}
+
+/* Badge Premium : deborde legerement dans le coin superieur droit */
+.pg-journal .qa-pro {
+  position: absolute; top: 5px; right: 7px;
+  display: flex; align-items: center; gap: 2px;
+  background: var(--or); color: #5A3E00;
+  font-size: 8.5px; font-weight: 800; letter-spacing: .4px;
+  padding: 2px 6px; border-radius: 7px;
+}
+.pg-journal .qa-pro::before { content: '\2726'; font-size: 7.5px; line-height: 1; }
