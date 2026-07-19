@@ -1859,3 +1859,75 @@ Object.assign(STRINGS_V1.fr, { eat_prev: 'Précédente', eat_next: 'Suivante' })
 Object.assign(STRINGS_V1.en, { eat_prev: 'Previous', eat_next: 'Next' });
 
 Object.assign(STRINGS_V1.nl, { eat_prev: 'Vorige', eat_next: 'Volgende' });
+
+Object.assign(STRINGS_V1.fr, {
+  mp_titre: "Mes plats",
+  mp_nouveau: "Nouveau plat",
+  mp_modifier: "Modifier le plat",
+  mp_nom: "Nom du plat",
+  mp_nom_ph: "ex. Chili con carne",
+  mp_ingredients: "Ingrédients",
+  mp_aide_poids: "Indique le poids total que tu as cuisiné, pas la part que tu manges.",
+  mp_portions: "Nombre de portions",
+  mp_aide_portions: "En combien de fois vas-tu manger ce plat ? Laisse 1 si tu le manges en une seule fois.",
+  mp_plat_entier: "Le plat entier",
+  mp_une_portion: "Une portion",
+  mp_enregistrer: "Enregistrer le plat",
+  mp_supprimer: "Supprimer ce plat",
+  mp_rien: "Aucun plat enregistré. Crée-en un après avoir cuisiné : tu ne pèseras plus jamais les mêmes ingrédients.",
+  mp_portion_n: "portion",
+  mp_portions_n: "portions",
+  mp_par_portion: "par portion",
+  fav_titre: "Tes favoris",
+  fav_basculer: "Mettre en favori",
+  cp_combien: "Combien de portions ?",
+  cp_ajouter: "Ajouter au repas"
+});
+
+Object.assign(STRINGS_V1.en, {
+  mp_titre: "My dishes",
+  mp_nouveau: "New dish",
+  mp_modifier: "Edit dish",
+  mp_nom: "Dish name",
+  mp_nom_ph: "e.g. Chili con carne",
+  mp_ingredients: "Ingredients",
+  mp_aide_poids: "Enter the total weight you cooked, not the serving you eat.",
+  mp_portions: "Number of servings",
+  mp_aide_portions: "How many times will you eat this dish? Leave 1 if you eat it all at once.",
+  mp_plat_entier: "Whole dish",
+  mp_une_portion: "One serving",
+  mp_enregistrer: "Save dish",
+  mp_supprimer: "Delete this dish",
+  mp_rien: "No dish saved yet. Create one after cooking: you will never weigh the same ingredients twice.",
+  mp_portion_n: "serving",
+  mp_portions_n: "servings",
+  mp_par_portion: "per serving",
+  fav_titre: "Your favourites",
+  fav_basculer: "Add to favourites",
+  cp_combien: "How many servings?",
+  cp_ajouter: "Add to meal"
+});
+
+Object.assign(STRINGS_V1.nl, {
+  mp_titre: "Mijn gerechten",
+  mp_nouveau: "Nieuw gerecht",
+  mp_modifier: "Gerecht bewerken",
+  mp_nom: "Naam van het gerecht",
+  mp_nom_ph: "bv. Chili con carne",
+  mp_ingredients: "Ingrediënten",
+  mp_aide_poids: "Vul het totale gewicht in dat je hebt gekookt, niet je portie.",
+  mp_portions: "Aantal porties",
+  mp_aide_portions: "In hoeveel keer eet je dit gerecht? Laat 1 staan als je alles in één keer eet.",
+  mp_plat_entier: "Het hele gerecht",
+  mp_une_portion: "Eén portie",
+  mp_enregistrer: "Gerecht opslaan",
+  mp_supprimer: "Dit gerecht verwijderen",
+  mp_rien: "Nog geen gerecht opgeslagen. Maak er een na het koken: je weegt dezelfde ingrediënten nooit meer.",
+  mp_portion_n: "portie",
+  mp_portions_n: "porties",
+  mp_par_portion: "per portie",
+  fav_titre: "Je favorieten",
+  fav_basculer: "Aan favorieten toevoegen",
+  cp_combien: "Hoeveel porties?",
+  cp_ajouter: "Aan maaltijd toevoegen"
+});

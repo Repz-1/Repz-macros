@@ -137,6 +137,25 @@ export function ajouterIngredient(repasId, name, portion = 100) {
   );
 }
 
+/**
+ * Ajoute un plat enregistre a un repas, en portions.
+ * Chaque ingredient entre au prorata : le journal reste une liste
+ * d'aliments reels, donc les macros et la liste de courses restent
+ * justes sans traitement particulier.
+ */
+export function ajouterPlat(repasId, plat, nbPortions = 1) {
+  const part = nbPortions / Math.max(1, plat.portions || 1);
+  const lignes = (plat.ings || []).map(i => ({
+    id: ++prochainId,
+    name: i.name,
+    portion: Math.round((i.portion || 0) * part),
+    plat: plat.nom,           // trace l'origine, utile a l'affichage
+  }));
+  repas.value = repas.value.map(r =>
+    r.id !== repasId ? r : { ...r, ings: [...r.ings, ...lignes] }
+  );
+}
+
 export function supprimerIngredient(repasId, ingId) {
   repas.value = repas.value.map(r =>
     r.id !== repasId ? r : { ...r, ings: r.ings.filter(i => i.id !== ingId) }

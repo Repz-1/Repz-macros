@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
+import { favoris, estFavori, basculerFavori, plats, macrosPortion } from '../store/perso.js';
 import { MEAL_SVG, TYPE_SVG, MEAL_NEUTRAL_SVG } from '../data/illustrations.js';
 import {
-  totauxRepas, setPortion, ajouterIngredient,
+  totauxRepas, setPortion, ajouterIngredient, ajouterPlat,
   supprimerIngredient, supprimerRepas, basculerRepas, renommerRepas,
   fourchetteRepas,
 } from '../store/journal.js';
@@ -15,6 +17,35 @@ import {
 function illustration(r) {
   if (r.cle && MEAL_SVG[r.cle]) return MEAL_SVG[r.cle];
   return TYPE_SVG[r.type] || MEAL_NEUTRAL_SVG;
+}
+
+
+/** Combien de portions de ce plat ? Un seul chiffre a regler. */
+function ChoixPortions({ plat, fermer, valider }) {
+  const [n, setN] = useState(1);
+  const part = macrosPortion(plat);
+
+  return createPortal(
+    <div class="cp-overlay" onClick={e => { if (e.target === e.currentTarget) fermer(); }}>
+      <div class="cp-boite">
+        <h3>{plat.nom}</h3>
+        <p class="cp-sous">{t('cp_combien')}</p>
+
+        <div class="cp-compteur">
+          <button onClick={() => setN(Math.max(0.5, Math.round((n - 0.5) * 2) / 2))}>−</button>
+          <span>{n % 1 === 0 ? n : n.toFixed(1).replace('.', ',')}</span>
+          <button onClick={() => setN(n + 0.5)}>+</button>
+        </div>
+
+        <div class="cp-total">
+          {Math.round(part.kcal * n)} kcal · {Math.round(part.prot * n)} g prot
+        </div>
+
+        <button class="cp-valider" onClick={() => valider(n)}>{t('cp_ajouter')}</button>
+      </div>
+    </div>,
+    document.body
+  );
 }
 
 function LigneIngredient({ repasId, ing }) {
@@ -68,9 +99,24 @@ function LigneIngredient({ repasId, ing }) {
 function Recherche({ repasId }) {
   const [q, setQ] = useState('');
   const [scan, setScan] = useState(false);
+  const [platChoisi, setPlatChoisi] = useState(null);
+
   const noms = [...Object.keys(customFoods.value), ...NOMS_ALIMENTS];
-  const resultats = q.length < 2 ? [] :
-    noms.filter(n => n.toLowerCase().includes(q.toLowerCase())).slice(0, 8);
+  const terme = q.trim().toLowerCase();
+
+  // Les plats enregistres passent avant les aliments : ils sont plus
+  // specifiques et c'est souvent eux qu'on cherche.
+  const platsTrouves = terme.length >= 2
+    ? plats.value.filter(p => p.nom.toLowerCase().includes(terme)).slice(0, 4)
+    : [];
+
+  // Sans saisie, on propose les favoris : c'est ce qu'on encode tous les jours.
+  const resultats = terme.length < 2
+    ? favoris.value.filter(n => DB[n] || customFoods.value[n]).slice(0, 6)
+    : [
+        ...favoris.value.filter(n => n.toLowerCase().includes(terme)),
+        ...noms.filter(n => n.toLowerCase().includes(terme) && !estFavori(n)),
+      ].slice(0, 8);
 
   const choisir = (nom) => {
     const d = DB[nom] || customFoods.value[nom] || {};
@@ -99,15 +145,44 @@ function Recherche({ repasId }) {
         </button>
       </div>
 
-      {resultats.length > 0 && (
+      {(platsTrouves.length > 0 || resultats.length > 0) && (
         <div class="mc-resultats">
+          {terme.length < 2 && resultats.length > 0 && (
+            <div class="mc-res-titre">{t('fav_titre')}</div>
+          )}
+
+          {platsTrouves.map(p => {
+            const part = macrosPortion(p);
+            return (
+              <button class="mc-res-plat" key={'p' + p.id} onClick={() => setPlatChoisi(p)}>
+                <span class="mc-res-nom">🍲 {p.nom}</span>
+                <span class="kc">{Math.round(part.kcal)} kcal / {t('mp_portion_n')}</span>
+              </button>
+            );
+          })}
+
           {resultats.map(nom => (
-            <button key={nom} onClick={() => choisir(nom)}>
-              <span>{nom}</span>
-              <span class="kc">{(DB[nom] || customFoods.value[nom]).kcal} kcal/100g</span>
-            </button>
+            <div class="mc-res-ligne" key={nom}>
+              <button class="mc-res-choix" onClick={() => choisir(nom)}>
+                <span>{nom}</span>
+                <span class="kc">{(DB[nom] || customFoods.value[nom]).kcal} kcal/100g</span>
+              </button>
+              <button
+                class={'mc-res-fav' + (estFavori(nom) ? ' on' : '')}
+                onClick={e => { e.stopPropagation(); basculerFavori(nom); }}
+                aria-label={t('fav_basculer')}
+              >{estFavori(nom) ? '★' : '☆'}</button>
+            </div>
           ))}
         </div>
+      )}
+
+      {platChoisi && (
+        <ChoixPortions
+          plat={platChoisi}
+          fermer={() => setPlatChoisi(null)}
+          valider={(n) => { ajouterPlat(repasId, platChoisi, n); setPlatChoisi(null); setQ(''); }}
+        />
       )}
 
       {scan && <Scanner repasId={repasId} fermer={() => setScan(false)} />}

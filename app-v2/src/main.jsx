@@ -28,11 +28,13 @@ import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
 import { ActionsRapides } from './components/ActionsRapides.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
+import { MesPlats } from './components/MesPlats.jsx';
 
 function OngletJournal() {
   const [modale, setModale] = useState(false);
   const [calc, setCalc] = useState(false);
   const [vocal, setVocal] = useState(false);
+  const [mesPlats, setMesPlats] = useState(false);
   // Colonne unique, ordre de lecture descendant :
   // logo -> calories -> actions rapides -> idees recettes -> repas.
   // Seuls la navigation, le bouton d'ajout et l'hydratation sont fixes.
@@ -41,7 +43,7 @@ function OngletJournal() {
       <div class="colonne">
         <Logo />
         <DayDashboard />
-        <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} />
+        <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} ouvrirPlats={() => setMesPlats(true)} />
         <IdeesRepas />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
       </div>
@@ -57,6 +59,7 @@ function OngletJournal() {
       {modale && <AddMealModal montre={true} fermer={() => setModale(false)} />}
       {calc && <TdeeCalculator montre={true} fermer={() => setCalc(false)} />}
       {vocal && <VocalModal fermer={() => setVocal(false)} />}
+      {mesPlats && <MesPlats fermer={() => setMesPlats(false)} />}
     </div>
   );
 }
