@@ -1,6 +1,7 @@
 import { render } from 'preact';
 import { useState } from 'preact/hooks';
 import './styles.css';
+import './styles/journal-socle.css';
 import { utilisateur, authPrete, deconnexion, invite, quitterInvite } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { repas, nouvelleJournee, donneesPretes } from './store/journal.js';
@@ -24,21 +25,42 @@ import { ActionsRapides } from './components/ActionsRapides.jsx';
 function OngletJournal() {
   const [modale, setModale] = useState(false);
   const [calc, setCalc] = useState(false);
+  // Colonne unique, ordre de lecture descendant :
+  // logo -> calories -> actions rapides -> idees recettes -> repas.
+  // Seuls la navigation, le bouton d'ajout et l'hydratation sont fixes.
   return (
-    <>
-      <DayDashboard />
-      <ActionsRapides ouvrirCalc={() => setCalc(true)} />
-      <WaterTracker />
+    <div class="pg-journal">
+      <div class="colonne">
+        <Logo />
+        <DayDashboard />
+        <ActionsRapides ouvrirCalc={() => setCalc(true)} />
+        <IdeesRepas />
+        {repas.value.map(r => <MealCard key={r.id} r={r} />)}
+      </div>
 
-      {/* Le coeur de l'usage quotidien : les repas */}
-      {repas.value.map(r => <MealCard key={r.id} r={r} />)}
+      <div class="fixe-eau"><WaterTracker /></div>
+      <button class="fixe-ajout fab" onClick={() => setModale(true)} aria-label="Ajouter un repas">+</button>
 
-      <IdeesRepas />
-
-      <button class="fab" onClick={() => setModale(true)}>+</button>
       <AddMealModal montre={modale} fermer={() => setModale(false)} />
       <TdeeCalculator montre={calc} fermer={() => setCalc(false)} />
-    </>
+    </div>
+  );
+}
+
+/** En-tete : logo centre, profil et reglages a droite. */
+function Logo() {
+  return (
+    <header class="j-entete">
+      <img class="j-logo" src="../belfit-logo-header.png" alt="BELFIT" />
+      <div class="j-entete-actions">
+        <a class="j-btn-icone" href="../profil.html" aria-label="Profil">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" /><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" /></svg>
+        </a>
+        <a class="j-btn-icone" href="../parametres.html" aria-label="Réglages">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" /><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1.03 1.56V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1.11-1.56 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.56-1.03H3a2 2 0 110-4h.09a1.7 1.7 0 001.56-1.11 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34h.01A1.7 1.7 0 0010 4.09V4a2 2 0 114 0v.09a1.7 1.7 0 001.03 1.56h.01a1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87v.01a1.7 1.7 0 001.56 1.03H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1.02z" /></svg>
+        </a>
+      </div>
+    </header>
   );
 }
 

@@ -1,0 +1,229 @@
+/* ============================================================
+   BELFIT — SOCLE DE DESIGN, PAGE JOURNAL
+   ============================================================
+   Toutes les valeurs structurelles de la page vivent ici et
+   nulle part ailleurs. Un composant qui redefinit un rayon ou
+   une ombre en dur cree une incoherence : il doit lire un jeton.
+
+   Arbitrage entre la maquette et le CSS existant :
+   - fond, rayons, marges, espacements  -> valeurs de la maquette
+   - ombres, couleurs de marque         -> valeurs existantes
+   ============================================================ */
+
+.pg-journal {
+  /* ---------- Surfaces ---------- */
+  --fond: #FAF9F6;          /* creme tres leger, jamais blanc pur */
+  --carte: #FFFFFF;
+  --bordure: #EDE9E1;       /* gris chaud, 1px suffit sous une ombre douce */
+
+  /* ---------- Texte ---------- */
+  --texte: #1A1A1A;         /* titres uniquement */
+  --texte-2: #6B7280;       /* secondaire */
+  --texte-3: #9A948A;       /* descriptions, unites */
+
+  /* ---------- Couleurs fonctionnelles ----------
+     Chacune porte un sens unique dans la page. Une couleur
+     utilisee pour deux choses differentes brouille la lecture. */
+  --or: #F7B500;            /* action principale, Premium */
+  --or-fonce: #8F6200;      /* texte sur fond or clair */
+  --or-pale: #FFFBEF;
+  --proteines: #F97316;
+  --glucides: #F7B500;
+  --lipides: #EF4444;
+  --hydratation: #38BDF8;
+  --recettes-a: #A855F7;
+  --recettes-b: #EC4899;
+  --anneau: #10B981;
+  --alerte: #DC2626;
+
+  /* ---------- Geometrie ---------- */
+  --rayon-carte: 24px;      /* toutes les cartes, sans exception */
+  --rayon-bloc: 16px;       /* blocs internes d'une carte */
+  --rayon-puce: 12px;       /* boutons, puces, champs */
+  --marge-page: 20px;
+  --espace: 22px;           /* entre deux cartes */
+  --espace-court: 14px;     /* a l'interieur d'une carte */
+
+  /* ---------- Ombres ----------
+     Faible opacite, flou important, decalage faible :
+     la carte doit flotter, pas etre posee. */
+  --ombre: 0 4px 20px rgba(15, 23, 42, .06);
+  --ombre-relief: 0 8px 22px rgba(247, 181, 0, .10);
+
+  /* ---------- Mouvement ---------- */
+  --transition: 180ms cubic-bezier(.4, 0, .2, 1);
+
+  /* ---------- Reserve pour les elements fixes ---------- */
+  --hauteur-nav: 74px;
+
+  background: var(--fond);
+  color: var(--texte);
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   COLONNE UNIQUE
+   Un seul defilement vertical. Rien n'est fixe hormis la
+   navigation, le bouton d'ajout et le widget hydratation.
+   ============================================================ */
+.pg-journal .colonne {
+  width: 100%;
+  max-width: 640px;          /* au-dela, la ligne devient illisible */
+  margin: 0 auto;
+  padding: 14px var(--marge-page)
+           calc(var(--hauteur-nav) + 120px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace);
+}
+
+/* ============================================================
+   CARTE — element structurant de la page
+   ============================================================ */
+.pg-journal .carte {
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon-carte);
+  box-shadow: var(--ombre);
+  padding: 20px 18px;
+  overflow: hidden;
+}
+
+/* Variante mise en avant : releve par une ombre doree, pas par
+   une bordure epaisse ni une couleur de fond saturee. */
+.pg-journal .carte--relief {
+  background: linear-gradient(160deg, var(--or-pale) 0%, #FFFFFF 42%, #FFFFFF 100%);
+  box-shadow: var(--ombre-relief);
+  border-color: #F3E7C4;
+}
+
+/* Une carte cliquable s'enfonce legerement. Pas d'effet de survol
+   sur mobile : seul l'appui compte. */
+.pg-journal .carte--action {
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.pg-journal .carte--action:active {
+  transform: scale(.985);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, .05);
+}
+
+/* ============================================================
+   TYPOGRAPHIE
+   Une seule famille, quatre niveaux. Au-dela, la page perd
+   sa hierarchie.
+   ============================================================ */
+.pg-journal .t-titre    { font-size: 17px;   font-weight: 800; color: var(--texte); letter-spacing: -.01em; }
+.pg-journal .t-sous     { font-size: 14.5px; font-weight: 600; color: var(--texte-2); }
+.pg-journal .t-info     { font-size: 13.5px; font-weight: 500; color: var(--texte-2); }
+.pg-journal .t-desc     { font-size: 12.5px; font-weight: 500; color: var(--texte-3); line-height: 1.55; }
+.pg-journal .t-etiquette {
+  font-size: 11.5px; font-weight: 800; color: var(--texte-3);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.pg-journal .t-chiffre  { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+
+/* ============================================================
+   ELEMENTS FIXES
+   Les trois seuls elements qui ne defilent pas.
+   ============================================================ */
+.pg-journal .fixe-nav,
+.pg-journal .fixe-ajout,
+.pg-journal .fixe-eau { position: fixed; z-index: 60; }
+
+.pg-journal .fixe-ajout {
+  right: var(--marge-page);
+  bottom: calc(var(--hauteur-nav) + 18px + env(safe-area-inset-bottom));
+}
+.pg-journal .fixe-eau {
+  left: var(--marge-page);
+  bottom: calc(var(--hauteur-nav) + 18px + env(safe-area-inset-bottom));
+}
+
+/* ============================================================
+   ENTREE DE PAGE
+   Fondu court, montee de quelques pixels. Discret : on doit
+   sentir que la page arrive, pas la regarder arriver.
+   ============================================================ */
+@keyframes journalEntree {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.pg-journal .colonne > * {
+  animation: journalEntree 240ms cubic-bezier(.4, 0, .2, 1) both;
+}
+.pg-journal .colonne > *:nth-child(1) { animation-delay: 0ms; }
+.pg-journal .colonne > *:nth-child(2) { animation-delay: 40ms; }
+.pg-journal .colonne > *:nth-child(3) { animation-delay: 80ms; }
+.pg-journal .colonne > *:nth-child(4) { animation-delay: 120ms; }
+.pg-journal .colonne > *:nth-child(n+5) { animation-delay: 160ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-journal .colonne > *,
+  .pg-journal .carte--action { animation: none; transition: none; }
+}
+
+/* ============================================================
+   ADAPTATION AUX ECRANS
+   Aucune largeur fixe. Les valeurs se resserrent sur petit
+   ecran et s'aerent sur tablette.
+   ============================================================ */
+@media (max-width: 360px) {
+  .pg-journal { --marge-page: 16px; --espace: 18px; --rayon-carte: 20px; }
+  .pg-journal .carte { padding: 18px 15px; }
+  .pg-journal .t-chiffre { font-size: 26px; }
+}
+
+@media (min-width: 768px) {
+  .pg-journal { --marge-page: 28px; --espace: 26px; }
+  .pg-journal .carte { padding: 24px 22px; }
+  .pg-journal .fixe-ajout { right: max(var(--marge-page), calc((100vw - 640px) / 2)); }
+  .pg-journal .fixe-eau   { left:  max(var(--marge-page), calc((100vw - 640px) / 2)); }
+}
+
+/* ============================================================
+   EN-TETE
+   Logo centre optiquement, actions discretes a droite. Le logo
+   ne doit pas concurrencer la carte calories qui le suit.
+   ============================================================ */
+.pg-journal .j-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 0 4px;
+  min-height: 44px;
+}
+.pg-journal .j-logo {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+.pg-journal .j-entete-actions { display: flex; gap: 6px; }
+.pg-journal .j-btn-icone {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--or-fonce);
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.pg-journal .j-btn-icone:active { background: rgba(247, 181, 0, .12); }
+.pg-journal .j-btn-icone svg {
+  width: 23px; height: 23px;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ============================================================
+   BOUTON D'AJOUT FLOTTANT
+   ============================================================ */
+.pg-journal .fab {
+  width: 58px; height: 58px; border-radius: 50%;
+  border: none; cursor: pointer;
+  background: var(--or); color: #181818;
+  font-size: 30px; font-weight: 300; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px rgba(247, 181, 0, .38);
+  transition: transform var(--transition);
+}
+.pg-journal .fab:active { transform: scale(.94); }

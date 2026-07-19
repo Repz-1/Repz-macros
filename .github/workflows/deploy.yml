@@ -1,11 +1,4 @@
 name: Deploy BELFIT
-# Deploiement du site sur GitHub Pages.
-#
-# Le chantier v2 (Preact/Vite, dossier app-v2/) est EN PAUSE : son build a ete
-# retire de ce workflow. Le code reste dans le depot et le dossier v2/ deja
-# construit reste en ligne, mais plus rien n'est recompile a chaque push.
-# Pour le reprendre : reintroduire setup-node + npm ci + npm run build
-# (working-directory: app-v2), voir l'historique git.
 
 on:
   push:
@@ -34,10 +27,21 @@ jobs:
         with:
           node-version: 20
 
-      # Garde-fou : le JavaScript de chaque page doit etre syntaxiquement valide.
+      # Garde-fou : le JavaScript de chaque page doit etre valide.
       # Un push casse ne part pas en production.
       - name: Verifier le JavaScript des pages
         run: node tools/verif-js.js
+
+      # Build de la v2 (Preact + Vite) -> dossier /v2
+      - name: Installer les dependances v2
+        working-directory: app-v2
+        run: npm ci
+      - name: Construire la v2
+        working-directory: app-v2
+        run: npm run build
+      - name: Verifier que la v2 se peint reellement
+        working-directory: app-v2
+        run: npm install jsdom --no-save --silent && node smoke.mjs
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
