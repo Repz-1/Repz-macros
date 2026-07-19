@@ -1,3 +1,4 @@
+*, *::before, *::after { box-sizing: border-box; }
 /* Palette BELFIT : fond #F8F8F8, structure #181818, or #F7B500 (actions primaires uniquement) */
 *{box-sizing:border-box}
 html,body{margin:0;background:#F8F8F8;font-family:'Manrope',sans-serif;color:#181818}
@@ -59,7 +60,7 @@ button{cursor:pointer}
 .fab{position:fixed;right:16px;bottom:80px;width:56px;height:56px;background:#F7B500;color:#181818;border:none;border-radius:50%;font-size:28px;font-weight:800;line-height:1;box-shadow:0 6px 20px rgba(247,181,0,.45);z-index:40;display:flex;align-items:center;justify-content:center}
 .voile{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
 .voile.montre{opacity:1;pointer-events:auto}
-.modale{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:22px 18px 30px;transform:translateY(100%);transition:transform .25s ease;z-index:60}
+.modale{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;box-sizing:border-box;background:#fff;border-radius:24px 24px 0 0;padding:22px 18px 30px;transform:translateY(100%);transition:transform .25s ease;z-index:60}
 .modale.montre{transform:translateY(0)}
 .modale h3{margin:0 0 16px;font-size:20px;font-weight:800;text-align:center}
 .types{display:flex;gap:12px}
@@ -87,12 +88,12 @@ button{cursor:pointer}
 .obj-valider{grid-column:1 / -1;background:#F7B500;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:15px}
 
 /* ---- Calculateur TDEE ---- */
-.modale-calc{max-height:88vh;overflow-y:auto}
+.modale-calc{max-height:calc(100vh - 96px);max-height:calc(100dvh - 96px);overflow-y:auto;-webkit-overflow-scrolling:touch}
 .calc-grille{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.calc-grille label{font-size:12.5px;font-weight:700;color:#6a6558;display:flex;flex-direction:column;gap:5px}
+.calc-grille label{min-width:0;font-size:12.5px;font-weight:700;color:#6a6558;display:flex;flex-direction:column;gap:5px}
 .calc-grille label.pleine{grid-column:1 / -1}
 .calc-grille .opt{color:#b5b0a4;font-weight:500}
-.calc-grille input,.calc-grille select{padding:11px;border:1px solid #e8e4d8;border-radius:11px;font-weight:700;font-size:15px;font-family:inherit;background:#fff}
+.calc-grille input,.calc-grille select{width:100%;min-width:0;box-sizing:border-box;padding:11px;border:1px solid #e8e4d8;border-radius:11px;font-weight:700;font-size:15px;font-family:inherit;background:#fff}
 .calc-res{background:#faf9f5;border-radius:14px;padding:6px 14px;margin-bottom:12px}
 .calc-res-ligne{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;color:#6a6558;font-weight:600}
 .calc-res-ligne span:last-child{color:#181818;font-weight:800}

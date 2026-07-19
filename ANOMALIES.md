@@ -21,6 +21,12 @@ Statut : `observé` = relevé, non soumis · `soumis` = proposé à Raci ·
 | J6 | Colonne | Largeur plafonnée à 640 px en v2 contre 900 px en v1 : sur tablette, 900 px donne des lignes trop longues | **observé** |
 | J7 | Idées recettes | En v2, la pilule était remplacée par une carte verrouillée pour les comptes gratuits ; la capture montre la pilule normale | **validé** — pilule toujours visible, gating au dépliage |
 
+| J8 | Carte Calories | « Consommées » recouvert par le chiffre central sur écran étroit (anneau à largeur fixe) | **corrigé** — anneau flexible, chiffre adaptatif |
+| J9 | Calculateur | Champs « Âge » et « Taille » coupés à droite (pas de largeur imposée dans la grille) | **corrigé** — largeur 100 % et box-sizing global |
+| J10 | Boutons flottants | Recouvrent les actions rapides et le bas des modales | **observé** — audit final |
+| J11 | Haut de page | Espace vide important avant le logo | **observé** — audit final |
+| J12 | Barres de macros | Remplissage très petit aux faibles valeurs : la jauge se lit mal | **observé** |
+
 ---
 
 ## À vérifier sur les écrans suivants

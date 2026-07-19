@@ -220,13 +220,14 @@
 /* ---------- Corps : consommees | anneau | objectif ---------- */
 .pg-journal .cal-corps {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 4px; padding: 2px 0 6px;
+  gap: 2px; padding: 2px 0 6px;
 }
 
 /* Les deux cotes ont la MEME largeur : sans cela l'anneau se decale
    du centre optique des que les nombres changent de longueur. */
 .pg-journal .cal-cote {
-  flex: 1 1 0; min-width: 0; text-align: center;
+  flex: 1 1 0; min-width: 72px; text-align: center;
+  position: relative; z-index: 1;
 }
 .pg-journal .cal-cote-lb {
   font-size: 12.5px; font-weight: 600; color: #8A8580;
@@ -239,10 +240,11 @@
 
 /* ---------- Anneau ---------- */
 .pg-journal .cal-anneau {
-  position: relative; flex-shrink: 0;
-  width: 184px; height: 184px;
+  position: relative; flex: 0 1 184px;
+  width: 184px; max-width: 46vw;   /* laisse toujours de la place aux cotes */
+  aspect-ratio: 1;
 }
-.pg-journal .cal-anneau-svg { display: block; }
+.pg-journal .cal-anneau-svg { display: block; width: 100%; height: 100%; }
 .pg-journal .cal-anneau-trace {
   transition: stroke-dasharray 400ms ease, stroke 300ms ease;
 }
@@ -252,7 +254,8 @@
   gap: 2px;
 }
 .pg-journal .cal-num {
-  font-size: 48px; font-weight: 800; line-height: 1; color: #191919;
+  font-size: clamp(34px, 12.5vw, 48px);
+  font-weight: 800; line-height: 1; color: #191919;
   letter-spacing: -1.5px; font-variant-numeric: tabular-nums;
 }
 .pg-journal .cal-num--depasse { color: var(--alerte); }
@@ -315,9 +318,9 @@
 
 /* ---------- Petits ecrans ---------- */
 @media (max-width: 360px) {
-  .pg-journal .cal-anneau { width: 154px !important; height: 154px !important; }
-  .pg-journal .cal-num { font-size: 38px; }
   .pg-journal .cal-cote-val { font-size: 18px; }
+  .pg-journal .cal-cote-lb { font-size: 11.5px; }
+  .pg-journal .cal-cote { min-width: 64px; }
   .pg-journal .cal-macros { gap: 8px; }
   .pg-journal .cal-macro-val { font-size: 12px; }
 }
