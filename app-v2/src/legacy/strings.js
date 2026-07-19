@@ -1937,3 +1937,27 @@ Object.assign(STRINGS_V1.fr, { mp_court: 'Mes plats' });
 Object.assign(STRINGS_V1.en, { mp_court: 'Dishes' });
 
 Object.assign(STRINGS_V1.nl, { mp_court: 'Gerechten' });
+
+Object.assign(STRINGS_V1.fr, {
+  jours_court: "jours",
+  co_note: "Quantités basées sur la moyenne de tes {n} dernières journées.",
+  co_note_vide: "Ajoute des aliments à ton journal, puis reviens ici.",
+  co_restants: "{n} articles à acheter",
+  co_complete: "Liste complète, tout est coché."
+});
+
+Object.assign(STRINGS_V1.en, {
+  jours_court: "days",
+  co_note: "Quantities based on the average of your last {n} days.",
+  co_note_vide: "Add foods to your journal, then come back here.",
+  co_restants: "{n} items to buy",
+  co_complete: "All done, everything is checked."
+});
+
+Object.assign(STRINGS_V1.nl, {
+  jours_court: "dagen",
+  co_note: "Hoeveelheden op basis van het gemiddelde van je laatste {n} dagen.",
+  co_note_vide: "Voeg voeding toe aan je dagboek en kom hier terug.",
+  co_restants: "{n} artikelen te kopen",
+  co_complete: "Lijst compleet, alles is afgevinkt."
+});

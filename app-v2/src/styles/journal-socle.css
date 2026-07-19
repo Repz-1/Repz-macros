@@ -1125,3 +1125,128 @@
   font-size: 14px; color: #8A8580; line-height: 1.6;
   padding: 20px 4px; text-align: center;
 }
+
+/* ============================================================
+   MES COURSES
+   Mesures relevees sur la reference.
+   ============================================================ */
+.crs { padding: 4px 0 0; }
+
+.crs-entete { margin-bottom: 18px; }
+.crs-entete h2 { font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -.02em; }
+.crs-entete p { font-size: 14px; color: #8A8580; margin: 6px 0 0; }
+
+/* ---------- Preparation ---------- */
+.crs-prep {
+  background: #FFFFFF; border: 1px solid #EDE9E1; border-radius: 20px;
+  padding: 18px; margin-bottom: 18px;
+  box-shadow: 0 8px 24px rgba(24, 24, 24, .06);
+}
+.crs-prep h3 { font-size: 15px; font-weight: 800; margin: 0 0 14px; }
+.crs-prep-ligne { margin-bottom: 14px; }
+.crs-lbl { font-size: 13px; font-weight: 700; color: #6B7280; margin-bottom: 8px; }
+
+.crs-seg { display: flex; gap: 8px; flex-wrap: wrap; }
+.crs-seg button {
+  flex: 1; min-width: 60px; padding: 11px 8px;
+  border: 1.5px solid #E6E6E6; border-radius: 12px; background: #FFFFFF;
+  font-size: 14px; font-weight: 700; color: #191919;
+  font-family: inherit; cursor: pointer;
+}
+.crs-seg button.on { background: #FFF4CC; border-color: var(--or); color: #8A6400; }
+
+.crs-generer {
+  width: 100%; margin-top: 4px;
+  background: var(--or); color: #191919; border: none; border-radius: 14px;
+  padding: 15px; font-size: 15px; font-weight: 800;
+  font-family: inherit; cursor: pointer;
+  box-shadow: 0 8px 20px rgba(247, 181, 0, .3);
+}
+.crs-generer:active { transform: scale(.99); }
+.crs-generer:disabled { background: #EDE9E1; color: #B5B0A4; box-shadow: none; cursor: default; }
+.crs-note { font-size: 12px; font-weight: 600; color: #94A3B8; margin: 10px 0 0; line-height: 1.5; }
+
+/* ---------- Compteur global ---------- */
+.crs-compte {
+  font-size: 13px; font-weight: 700; color: #8A8580;
+  margin: 0 4px 14px;
+}
+
+/* ---------- Rayons ---------- */
+.crs-rayon { margin-bottom: 18px; }
+.crs-rayon-tete {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 15px; font-weight: 800; margin: 0 4px 9px;
+}
+.crs-emo { font-size: 19px; }
+.crs-nb {
+  font-style: normal; font-size: 12px; font-weight: 700;
+  color: #8A8580; margin-left: auto;
+}
+.crs-carte {
+  background: #FFFFFF; border: 1px solid #EDE9E1; border-radius: 18px;
+  overflow: hidden; box-shadow: 0 6px 18px rgba(24, 24, 24, .05);
+}
+.crs-item {
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 15px; border-bottom: 1px solid #EDE9E1;
+}
+.crs-item:last-child { border-bottom: none; }
+.crs-check {
+  width: 26px; height: 26px; flex: none; border-radius: 8px;
+  border: 2px solid #DCDCDC; background: none;
+  display: flex; align-items: center; justify-content: center;
+  color: #FFFFFF; font-size: 15px; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+}
+.crs-item.fait .crs-check { background: #10B981; border-color: #10B981; }
+.crs-body { flex: 1; min-width: 0; cursor: pointer; }
+.crs-nom {
+  font-size: 14.5px; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.crs-qty { font-size: 13px; font-weight: 700; color: #8A6400; margin-top: 1px; }
+.crs-item.fait .crs-nom { text-decoration: line-through; color: #B3B3B3; }
+.crs-item.fait .crs-qty { color: #C7C7C7; }
+.crs-del {
+  flex: none; background: none; border: none; color: #CFCFCF;
+  font-size: 20px; cursor: pointer; padding: 2px 4px; font-family: inherit;
+}
+.crs-del:active { color: #EF4444; }
+
+/* ---------- Ajout manuel ---------- */
+.crs-ajout { display: flex; gap: 8px; margin-top: 8px; }
+.crs-ajout input {
+  flex: 1; min-width: 0; padding: 13px 15px;
+  border: 1px solid #EDE9E1; border-radius: 14px; background: #FFFFFF;
+  font-size: 14.5px; font-family: inherit;
+}
+.crs-ajout input:focus { outline: none; border-color: var(--or); }
+.crs-ajout button {
+  flex: none; width: 52px; border: none; border-radius: 14px;
+  background: #191919; color: #FFFFFF;
+  font-size: 20px; font-family: inherit; cursor: pointer;
+}
+
+/* ---------- Actions ---------- */
+.crs-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.crs-partager {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; padding: 15px; border: none; border-radius: 14px;
+  background: #191919; color: #FFFFFF;
+  font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
+}
+.crs-partager .ic {
+  width: 18px; height: 18px;
+  fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.crs-decocher {
+  width: 100%; padding: 13px; border: none; background: none;
+  color: #8A8580; font-size: 14px; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+}
+.crs-vide {
+  font-size: 14px; color: #8A8580; text-align: center;
+  padding: 24px 4px; line-height: 1.6;
+}
