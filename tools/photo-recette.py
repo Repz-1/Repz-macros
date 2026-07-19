@@ -20,22 +20,62 @@ def nom_fichier(nom):
     return s + '.webp'
 
 
+def moyenne_coins(im, taille=40):
+    """Couleur dominante du decor, prise aux quatre coins."""
+    l, h = im.size
+    zones = [
+        im.crop((0, 0, taille, taille)),
+        im.crop((l - taille, 0, l, taille)),
+        im.crop((0, h - taille, taille, h)),
+        im.crop((l - taille, h - taille, l, h)),
+    ]
+    pixels = [p for z in zones for p in list(z.convert("RGB").getdata())]
+    n = len(pixels)
+    return tuple(sum(c[i] for c in pixels) // n for i in range(3))
+
+
+def fondre_bords(cadre, image, fond, largeur=24):
+    """Adoucit la jointure entre l'image et le fond ajoute."""
+    from PIL import ImageFilter
+    flou = cadre.filter(ImageFilter.GaussianBlur(radius=18))
+    masque = Image.new('L', cadre.size, 0)
+    x = (cadre.width - image.width) // 2
+    y = (cadre.height - image.height) // 2
+    # Zone a conserver nette : l'image d'origine, moins une bordure
+    from PIL import ImageDraw
+    d = ImageDraw.Draw(masque)
+    d.rectangle([x + largeur, y + largeur,
+                 x + image.width - largeur, y + image.height - largeur], fill=255)
+    masque = masque.filter(ImageFilter.GaussianBlur(radius=largeur))
+    return Image.composite(cadre, flou, masque)
+
+
 def preparer(source, nom_recette):
     im = Image.open(source).convert('RGB')
 
-    # Recadrage centre au ratio 3:2 : mieux vaut couper que deformer.
+    # L'assiette doit rester entiere : on n'ampute jamais l'image.
+    # Si le ratio ne correspond pas, on etend le fond au lieu de couper.
+    # Le decor etant un beton gris uni, l'ajout est invisible.
     l, h = im.size
     ratio_cible = CIBLE[0] / CIBLE[1]
-    if l / h > ratio_cible:
-        nouvelle_l = int(h * ratio_cible)
-        gauche = (l - nouvelle_l) // 2
-        im = im.crop((gauche, 0, gauche + nouvelle_l, h))
-    else:
-        nouvelle_h = int(l / ratio_cible)
-        haut = (h - nouvelle_h) // 2
-        im = im.crop((0, haut, l, haut + nouvelle_h))
+    ratio_source = l / h
 
-    im = im.resize(CIBLE, Image.LANCZOS)
+    if abs(ratio_source - ratio_cible) < 0.02:
+        im = im.resize(CIBLE, Image.LANCZOS)
+    else:
+        # Reduire pour que l'image tienne entierement dans le cadre
+        echelle = min(CIBLE[0] / l, CIBLE[1] / h)
+        nouvelle = im.resize((int(l * echelle), int(h * echelle)), Image.LANCZOS)
+
+        # Couleur de fond : moyenne des quatre coins, donc le decor
+        fond = moyenne_coins(nouvelle)
+        cadre = Image.new('RGB', CIBLE, fond)
+        cadre.paste(nouvelle, ((CIBLE[0] - nouvelle.width) // 2,
+                               (CIBLE[1] - nouvelle.height) // 2))
+
+        # Fondu des bords pour effacer la jointure
+        cadre = fondre_bords(cadre, nouvelle, fond)
+        im = cadre
 
     # Qualite descendante jusqu'a passer sous la limite de poids.
     cible = 'img/recettes/' + nom_fichier(nom_recette)
