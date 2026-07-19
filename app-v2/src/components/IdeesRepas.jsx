@@ -24,15 +24,29 @@ function macrosIdee(idee) {
 // Etat partage : la pilule est dans la rangee flottante, le panneau
 // reste dans le flux de la page.
 
-/** Quantites ajustees a ce qu'il reste dans la journee, comme sur
-    la reference : « 205g poulet · 275g patate douce · 205g brocoli ». */
-function portionAdaptee(idee, resteKcal) {
-  const base = macrosIdee(idee);
-  const cible = Math.max(250, Math.min(700, resteKcal > 0 ? resteKcal * 0.28 : 400));
-  const ratio = base.kcal > 0 ? Math.max(0.75, Math.min(1.4, cible / base.kcal)) : 1;
+// ============================================================
+// ADAPTATION DES RECETTES
+// Reprise de la logique de la v1 : la portion est reduite tant
+// qu'une macro deborde, et une recette qui ne rentre pas meme a
+// portion minimale est ecartee. Proposer du gras a quelqu'un deja
+// en exces de lipides est un contresens.
+// ============================================================
+const RATIO_MIN = 0.35;
+const RATIO_MAX = 1.4;
+const MARGE = { prot: 8, carbs: 10, lip: 6 };
+// Quand une macro est deja depassee, on tolere un apport modere
+// plutot que de ne rien proposer du tout.
+const PLANCHER = { prot: 30, carbs: 20, lip: 8 };
 
+function limite(reste, marge, plancher) {
+  if (reste === null) return Infinity;          // objectif non defini
+  return reste > 0 ? reste + marge : plancher;
+}
+
+/** Calcule les quantites d'une idee pour un ratio donne. */
+function quantites(idee, ratio) {
   const parts = [];
-  let kcal = 0, prot = 0;
+  let kcal = 0, prot = 0, carbs = 0, lip = 0;
   idee.ings.forEach(i => {
     const d = DB[i.n];
     if (!d) return;
@@ -47,12 +61,42 @@ function portionAdaptee(idee, resteKcal) {
       libelle = q + 'g ' + i.l;
     }
     const f = grammes / 100;
-    kcal += d.kcal * f;
-    prot += d.prot * f;
+    kcal += d.kcal * f; prot += d.prot * f;
+    carbs += (d.carbs || 0) * f; lip += (d.lip || 0) * f;
     parts.push(libelle);
   });
+  return {
+    texte: parts.join(' · '),
+    kcal: Math.round(kcal), prot: Math.round(prot),
+    carbs: Math.round(carbs), lip: Math.round(lip),
+  };
+}
 
-  return { texte: parts.join(' · '), kcal: Math.round(kcal), prot: Math.round(prot) };
+/**
+ * Adapte une idee aux macros restantes.
+ * Retourne null si elle ne rentre pas, meme a portion minimale.
+ */
+function adapter(idee, restes, cible) {
+  const respecte = (c) =>
+    c.prot  <= limite(restes.prot,  MARGE.prot,  PLANCHER.prot) &&
+    c.carbs <= limite(restes.carbs, MARGE.carbs, PLANCHER.carbs) &&
+    c.lip   <= limite(restes.lip,   MARGE.lip,   PLANCHER.lip);
+
+  const base = quantites(idee, 1);
+  let ratio = base.kcal > 0
+    ? Math.max(RATIO_MIN, Math.min(RATIO_MAX, cible / base.kcal))
+    : 1;
+  let calc = quantites(idee, ratio);
+  let reduite = false;
+
+  while (!respecte(calc) && ratio > RATIO_MIN) {
+    ratio = Math.max(RATIO_MIN, ratio - 0.1);
+    calc = quantites(idee, ratio);
+    reduite = true;
+  }
+
+  if (!respecte(calc)) return null;             // ecartee
+  return { ...calc, reduite };
 }
 
 export const ideesOuvertes = signal(false);
@@ -121,10 +165,28 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
         ))}
       </div>
 
-      {cat && (
+      {cat && (() => {
+        const obj = objectifs.value, tot = totauxJour.value;
+        const restes = {
+          prot:  obj.prot  > 0 ? obj.prot  - tot.prot  : null,
+          carbs: obj.carbs > 0 ? obj.carbs - tot.carbs : null,
+          lip:   obj.lip   > 0 ? obj.lip   - tot.lip   : null,
+        };
+        // Une portion vise environ un quart de ce qu'il reste sur la journee.
+        const cible = Math.max(250, Math.min(700, reste > 0 ? reste * 0.28 : 400));
+
+        const retenues = EAT_IDEAS[cat]
+          .map(idee => ({ idee, p: adapter(idee, restes, cible) }))
+          .filter(x => x.p !== null)
+          .sort((a, b) => (a.p.reduite - b.p.reduite) || (b.p.prot - a.p.prot));
+
+        if (!retenues.length) {
+          return <div class="eat-note">{t('eat_none_fit')}</div>;
+        }
+
+        return (
         <div class="eat-ideas">
-          {EAT_IDEAS[cat].map((idee, i) => {
-            const p = portionAdaptee(idee, reste);
+          {retenues.map(({ idee, p }, i) => {
             return (
               <div class="eat-idea" key={i} onClick={() => ajouter(idee)}>
                 <div class="eat-idea-name">{idee.nom}</div>
@@ -132,12 +194,14 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
                 <div class="eat-idea-kcal">
                   ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
                 </div>
+                {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
                 <span class="eat-open">{ajoute === idee.nom ? '✓ Ajouté' : 'Voir la recette →'}</span>
               </div>
             );
           })}
         </div>
-      )}
+        );
+      })()}
     </div>
       )}
     </div>

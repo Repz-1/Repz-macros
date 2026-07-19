@@ -1835,3 +1835,9 @@ Object.assign(STRINGS_V1.fr, { mc_reco: 'Recommandé' });
 Object.assign(STRINGS_V1.en, { mc_reco: 'Recommended' });
 
 Object.assign(STRINGS_V1.nl, { mc_reco: 'Aanbevolen' });
+
+Object.assign(STRINGS_V1.fr, { eat_none_fit: 'Rien ne rentre dans tes macros restantes. Reviens après ta prochaine séance.' });
+
+Object.assign(STRINGS_V1.en, { eat_none_fit: 'Nothing fits your remaining macros. Come back after your next session.' });
+
+Object.assign(STRINGS_V1.nl, { eat_none_fit: "Niets past binnen je resterende macro's. Kom terug na je volgende sessie." });

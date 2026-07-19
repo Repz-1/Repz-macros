@@ -1835,3 +1835,9 @@ Object.assign(window.BELFIT_STRINGS.fr, { mc_reco: 'Recommandé' });
 Object.assign(window.BELFIT_STRINGS.en, { mc_reco: 'Recommended' });
 
 Object.assign(window.BELFIT_STRINGS.nl, { mc_reco: 'Aanbevolen' });
+
+Object.assign(window.BELFIT_STRINGS.fr, { eat_none_fit: 'Rien ne rentre dans tes macros restantes. Reviens après ta prochaine séance.' });
+
+Object.assign(window.BELFIT_STRINGS.en, { eat_none_fit: 'Nothing fits your remaining macros. Come back after your next session.' });
+
+Object.assign(window.BELFIT_STRINGS.nl, { eat_none_fit: "Niets past binnen je resterende macro's. Kom terug na je volgende sessie." });
