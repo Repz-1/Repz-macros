@@ -72,6 +72,16 @@
    Un seul defilement vertical. Rien n'est fixe hormis la
    navigation, le bouton d'ajout et le widget hydratation.
    ============================================================ */
+/* Halo creme en haut de l'ecran : le fond n'est pas uniforme sur
+   la reference, il s'eclaircit derriere le header. */
+.pg-journal::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; height: 320px;
+  background: linear-gradient(180deg, #FBF0DC 0%, #FAF6EC 34%, var(--fond) 100%);
+  pointer-events: none; z-index: 0;
+}
+.pg-journal > * { position: relative; z-index: 1; }
+
 .pg-journal .colonne {
   width: 100%;
   max-width: 640px;          /* au-dela, la ligne devient illisible */
@@ -251,12 +261,12 @@
 /* ---------- Ligne date ---------- */
 .pg-journal .cal-date {
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  font-size: 12.5px; font-weight: 600; color: #57534E;
-  text-transform: uppercase; letter-spacing: .07em;
-  margin-bottom: 14px;
+  margin-bottom: 8px; padding-top: 2px;
+  font-size: 15px; font-weight: 800; letter-spacing: .06em;
+  color: #6B6660; text-transform: uppercase;
 }
 .pg-journal .cal-date-ic {
-  width: 16px; height: 16px; flex: none;
+  width: 17px; height: 17px; flex: none; color: #A8A297;
   fill: none; stroke: currentColor; stroke-width: 1.8;
   stroke-linecap: round; stroke-linejoin: round;
 }
@@ -273,20 +283,22 @@
   flex: 1 1 0; min-width: 0; text-align: center;
 }
 .pg-journal .cal-cote-lb {
-  font-size: 12.5px; font-weight: 600; color: var(--texte-3);
-  margin-bottom: 3px;
+  font-size: 12.5px; font-weight: 600; color: #8A8580;
 }
 .pg-journal .cal-cote-val {
-  font-size: 21px; font-weight: 800; color: var(--texte);
-  letter-spacing: -.02em;
+  font-size: 22px; font-weight: 800; color: #191919;
+  margin-top: 2px; letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;   /* les chiffres ne dansent pas */
 }
 
 /* ---------- Anneau ---------- */
-.pg-journal .cal-anneau { position: relative; flex: none; }
-.pg-journal .cal-anneau-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.pg-journal .cal-anneau {
+  position: relative; flex-shrink: 0;
+  width: 184px; height: 184px;
+}
+.pg-journal .cal-anneau-svg { display: block; }
 .pg-journal .cal-anneau-trace {
-  transition: stroke-dashoffset 700ms cubic-bezier(.22, .8, .28, 1), stroke 300ms ease;
+  transition: stroke-dasharray 400ms ease, stroke 300ms ease;
 }
 .pg-journal .cal-anneau-centre {
   position: absolute; inset: 0;
@@ -294,22 +306,24 @@
   gap: 2px;
 }
 .pg-journal .cal-num {
-  font-size: 46px; font-weight: 800; line-height: 1; color: var(--texte);
-  letter-spacing: -.035em; font-variant-numeric: tabular-nums;
+  font-size: 48px; font-weight: 800; line-height: 1; color: #191919;
+  letter-spacing: -1.5px; font-variant-numeric: tabular-nums;
 }
 .pg-journal .cal-num--depasse { color: var(--alerte); }
 .pg-journal .cal-num-lb {
-  font-size: 12px; font-weight: 600; color: var(--texte-3);
-  text-align: center; max-width: 110px; line-height: 1.3;
+  font-size: 12.5px; font-weight: 700; color: #8A8580;
+  margin-top: 5px; text-align: center; line-height: 1.3;
 }
 
 /* ---------- Separateur ---------- */
-.pg-journal .cal-trait { display: none; }
+.pg-journal .cal-trait {
+  height: 1px; background: #ECE8DF; margin: 18px 0 0;
+}
 
 /* ---------- Macros ---------- */
 .pg-journal .cal-macros {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-  margin-top: 18px; padding-top: 16px; border-top: 1px solid #ECE8DF;
+  margin-top: 16px;
 }
 .pg-journal .cal-macro { min-width: 0; }
 .pg-journal .cal-macro-nom {

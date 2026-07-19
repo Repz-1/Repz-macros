@@ -40,29 +40,28 @@ function useNombreAnime(cible, duree = 650) {
   return valeur;
 }
 
-/** Anneau de progression : trace fin, remplissage fluide. */
+/** Jauge ouverte, reprise a l'identique de la reference :
+    arc de 371 unites sur une circonference de 515.2, rayon 82,
+    trait de 13, pivote de 140 degres pour ouvrir vers le bas. */
 function Anneau({ ratio, depasse, enfant }) {
-  const TAILLE = 188;
-  const EPAISSEUR = 9;          // fin : un anneau epais alourdit la carte
-  const r = (TAILLE - EPAISSEUR) / 2;
-  const circonference = 2 * Math.PI * r;
+  const ARC = 371;
+  const CIRC = 515.2;
   const rempli = Math.min(1, Math.max(0, ratio));
 
   return (
-    <div class="cal-anneau" style={{ width: TAILLE, height: TAILLE }}>
-      <svg viewBox={`0 0 ${TAILLE} ${TAILLE}`} class="cal-anneau-svg">
+    <div class="cal-anneau">
+      <svg width="184" height="184" viewBox="0 0 190 190" class="cal-anneau-svg">
         <circle
-          cx={TAILLE / 2} cy={TAILLE / 2} r={r}
-          fill="none" stroke="#EFEDE6" stroke-width={EPAISSEUR}
+          cx="95" cy="95" r="82" fill="none" stroke="#DCECDF" stroke-width="13"
+          stroke-linecap="round" stroke-dasharray={`${ARC} 144.2`}
+          transform="rotate(140 95 95)"
         />
         <circle
-          cx={TAILLE / 2} cy={TAILLE / 2} r={r}
-          fill="none"
-          stroke={depasse ? 'var(--alerte)' : 'var(--anneau)'}
-          stroke-width={EPAISSEUR}
+          cx="95" cy="95" r="82" fill="none"
+          stroke={depasse ? '#F87171' : '#10B981'} stroke-width="13"
           stroke-linecap="round"
-          stroke-dasharray={circonference}
-          stroke-dashoffset={circonference * (1 - rempli)}
+          stroke-dasharray={`${(rempli * ARC).toFixed(1)} ${CIRC}`}
+          transform="rotate(140 95 95)"
           class="cal-anneau-trace"
         />
       </svg>
@@ -81,8 +80,8 @@ function Macro({ nom, valeur, cible, teinte }) {
     <div class="cal-macro">
       <div class="cal-macro-nom">{nom}</div>
       <div class="cal-macro-val">
-        <b style={depasse ? { color: 'var(--alerte)' } : null}>{affiche}</b>
-        <span> / {Math.round(cible)} g</span>
+        <b style={{ color: depasse ? 'var(--alerte)' : teinte }}>{affiche}g</b>
+        <span> / {Math.round(cible)}g</span>
       </div>
       <div class="cal-macro-piste">
         <div
