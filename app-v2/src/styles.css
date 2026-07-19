@@ -224,7 +224,9 @@ button{cursor:pointer}
 .ing-scan{width:40px;border:1px solid #e8e4d8;border-radius:12px;background:#fff;font-size:17px;margin-left:6px}
 
 /* ---- Navigation du bas ---- */
-.conteneur{padding-bottom:120px}
+/* Ne s'applique qu'aux onglets qui n'ont pas leurs propres marges :
+   .conteneur--nu (le Journal) les gere lui-meme. */
+.conteneur:not(.conteneur--nu){padding-bottom:120px}
 
 /* ---- Page Premium ---- */
 .prem-liste{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
