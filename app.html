@@ -4732,10 +4732,27 @@ function ouvrirVocal(){
     document.getElementById('vmMicZone').style.display = 'flex';
     document.getElementById('vocalOverlay').classList.add('show');
 }
+function libererMicro(){
+    try{ if(vocalMediaRec && vocalMediaRec.state !== 'inactive'){ vocalMediaRec.onstop = null; vocalMediaRec.stop(); } }catch(e){}
+    vocalMediaRec = null;
+    if(vocalStream){ try{ vocalStream.getTracks().forEach(tr=>tr.stop()); }catch(e){} vocalStream = null; }
+    arreterVuMetre();
+    vocalEcoute = false;
+    const b = document.getElementById('vmMicBtn'); if(b) b.classList.remove('ecoute');
+}
+
 function fermerVocal(){
-    arreterEcoute();
+    arreterEcoute();     // ancien mode Web Speech
+    libererMicro();      // mode serveur : flux micro + enregistreur
     document.getElementById('vocalOverlay').classList.remove('show');
 }
+
+// Meme garantie si l'app passe en arriere-plan ou si la page se ferme
+// pendant une ecoute : on ne garde JAMAIS le micro sans etre visible.
+document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden && vocalEcoute) fermerVocal();
+});
+window.addEventListener('pagehide', ()=>{ if(vocalStream) libererMicro(); });
 // ===== VOCAL SERVEUR (Premium) : MediaRecorder -> Cloud Function -> Gemini =====
 const VOCAL_API = 'https://europe-west1-repz-baf60.cloudfunctions.net/transcrireVocal';
 let vocalMediaRec = null, vocalChunks = [], vocalStream = null;
@@ -4780,7 +4797,11 @@ async function demarrerEnregistrement(){
     // Etre explicite : rien ne s'affiche pendant la dictee, l'analyse
     // se fait quand on appuie a nouveau. Sans cette phrase, l'utilisateur
     // croit que rien n'est detecte.
-    document.getElementById('vmLive').textContent = t('vm_listening_tap') || 'Je t\'écoute… Appuie à nouveau quand tu as fini';
+    (function(){
+        const lbl = t('vm_listening_tap');
+        document.getElementById('vmLive').textContent =
+            (lbl && lbl !== 'vm_listening_tap') ? lbl : "Je t'écoute… Appuie à nouveau quand tu as fini";
+    })();
     diagVocal('');
 }
 
