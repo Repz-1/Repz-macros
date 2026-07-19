@@ -168,7 +168,7 @@ auth.onAuthStateChanged((user) => {
 });
 
 function logout() {
-    auth.signOut().then(() => {
+    (localStorage.removeItem('repz_session'), auth.signOut()).then(() => {
         window.location.href = 'index.html';
     });
 }

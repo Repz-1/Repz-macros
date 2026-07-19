@@ -400,7 +400,7 @@ function logout(){
     localStorage.removeItem('repz_invite');
     localStorage.removeItem('repz_inviteDebut');
     sessionStorage.removeItem('repz_premSynced');
-    auth.signOut().finally(()=>{ window.location.href='index.html'; });
+    (localStorage.removeItem('repz_session'), auth.signOut()).finally(()=>{ window.location.href='index.html'; });
 }
 </script>
 

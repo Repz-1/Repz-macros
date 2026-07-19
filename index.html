@@ -172,6 +172,13 @@ body {
 #repzSplash .sp-txt{position:absolute;bottom:7%;left:50%;transform:translateX(-50%);width:230px;max-width:66%;height:auto;}
 
 </style>
+<script>
+/* Demarrage rapide : si une session a deja ete etablie sur cet appareil,
+   on file a l'application sans attendre le SDK Firebase. La verification
+   reelle se fait ensuite en arriere-plan ; les regles Firestore protegent
+   les donnees, pas cet ecran. Le drapeau est efface a la deconnexion. */
+try{ if(localStorage.getItem('repz_session')==='1'){ location.replace('main.html'); } }catch(e){}
+</script>
 <div id="repzSplash">
   <img class="sp-sym" src="belfit-logo-b.png" alt="BELFIT">
   <img class="sp-txt" src="belfit-logo-full.png" alt="BelFit — Fitness, Nutrition, Bien-être">
@@ -367,8 +374,10 @@ auth.onAuthStateChanged((user) => {
     if(user) {
         // Déjà connecté : on nettoie le mode invité et on file à l'accueil
         localStorage.removeItem('repz_invite');
+        try{ localStorage.setItem('repz_session','1'); }catch(e){}
         window.location.href = 'main.html';
     } else {
+        try{ localStorage.removeItem('repz_session'); }catch(e){}
         // Pas connecté : on affiche le formulaire de connexion
         // Le splash reste "consommé" ici pour ne pas le rejouer après login
         try{ sessionStorage.setItem('repz_splash','1'); }catch(e){}
@@ -383,7 +392,7 @@ auth.onAuthStateChanged((user) => {
 function continuerInvite() {
     localStorage.setItem('repz_invite', '1');
     // Une session Firebase encore active écraserait le mode invité : on la coupe d'abord
-    auth.signOut().finally(()=>{ window.location.href = 'main.html'; });
+    (localStorage.removeItem('repz_session'), auth.signOut()).finally(()=>{ window.location.href = 'main.html'; });
 }
 
 function toggleForm(formName) {

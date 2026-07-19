@@ -996,8 +996,9 @@ auth.onAuthStateChanged((user) => {
     } else if(!authVerifie) {
         // Firebase peut renvoyer null avant d'avoir fini : on attend avant de rediriger
         setTimeout(() => {
-            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1' && window.self === window.top){
-                window.location.href = 'index.html';
+            if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
+                try{ localStorage.removeItem('repz_session'); }catch(e){}
+                (window.top || window).location.replace('index.html');
             }
         }, 1200);
     }
@@ -1009,7 +1010,7 @@ function logout() {
     localStorage.removeItem('repz_invite');
     localStorage.removeItem('repz_inviteDebut');
     sessionStorage.removeItem('repz_premSynced');
-    auth.signOut().finally(() => { (window.top||window).location.href = 'index.html'; });
+    (localStorage.removeItem('repz_session'), auth.signOut()).finally(() => { (window.top||window).location.href = 'index.html'; });
 }
 
 function afficherMessageInvite() {
