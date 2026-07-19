@@ -152,9 +152,9 @@ export function DayDashboard() {
 
       {/* Macros : trois colonnes strictement identiques */}
       <div class="cal-macros">
-        <Macro nom={t('proteins')} valeur={tot.prot}  cible={obj.prot}  teinte="var(--proteines)" />
-        <Macro nom={t('carbs')}    valeur={tot.carbs} cible={obj.carbs} teinte="var(--macro-neutre)" />
-        <Macro nom={t('fats')}     valeur={tot.lip}   cible={obj.lip}   teinte="var(--macro-neutre)" />
+        <Macro nom={t('proteins')} valeur={tot.prot}  cible={obj.prot}  teinte="var(--mac-prot)" />
+        <Macro nom={t('carbs')}    valeur={tot.carbs} cible={obj.carbs} teinte="var(--mac-carbs)" />
+        <Macro nom={t('fats')}     valeur={tot.lip}   cible={obj.lip}   teinte="var(--mac-lip)" />
       </div>
 
       {/* Action secondaire : presente mais jamais concurrente */}
