@@ -2,7 +2,7 @@
   "id": "/",
   "name": "BELFIT",
   "short_name": "BELFIT",
-  "start_url": "./index.html",
+  "start_url": "./main.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

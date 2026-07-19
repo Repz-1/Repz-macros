@@ -56,6 +56,16 @@ html, body { height:100%; overflow:hidden; background:#F8F8F8; font-family:'Manr
 </style>
 </head>
 <body>
+<script>
+/* Garde d'entree : le shell ne s'affiche que pour une session connue.
+   Sans session locale ni mode invite -> ecran de connexion. */
+try{
+  if(localStorage.getItem('repz_session') !== '1' && localStorage.getItem('repz_invite') !== '1'){
+    location.replace('index.html');
+  }
+}catch(e){}
+</script>
+
 
 <!-- SPLASH BELFIT -->
 <style>
