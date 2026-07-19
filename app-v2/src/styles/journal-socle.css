@@ -524,27 +524,27 @@
 .pg-journal .fab-label { font-size: 13px; }
 
 /* ---------- Feuille de reglage de l'hydratation ---------- */
-.pg-journal .water-overlay {
+.water-overlay {
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0, 0, 0, .5);
   display: flex; align-items: flex-end; justify-content: center;
   padding-bottom: var(--hauteur-nav);
 }
-.pg-journal .water-feuille {
+.water-feuille {
   position: relative; width: 100%; max-width: 480px;
   background: var(--carte); border-radius: 22px 22px 0 0;
   padding: 22px 20px calc(24px + env(safe-area-inset-bottom));
   text-align: center;
 }
-.pg-journal .water-feuille h3 { font-size: 17px; font-weight: 800; margin-bottom: 12px; }
-.pg-journal .water-total { font-size: 34px; font-weight: 800; color: #0284C7; margin-bottom: 18px; }
-.pg-journal .water-btns { display: flex; gap: 10px; }
-.pg-journal .water-btns button {
+.water-feuille h3 { font-size: 17px; font-weight: 800; margin-bottom: 12px; }
+.water-total { font-size: 34px; font-weight: 800; color: #0284C7; margin-bottom: 18px; }
+.water-btns { display: flex; gap: 10px; }
+.water-btns button {
   flex: 1; padding: 14px; border: none; border-radius: var(--rayon-puce);
   background: #E0F2FE; color: #0369A1;
   font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
 }
-.pg-journal .water-btns button:active { transform: scale(.97); background: #BAE6FD; }
+.water-btns button:active { transform: scale(.97); background: #BAE6FD; }
 
 /* ============================================================
    CARTE REPAS OUVERTE

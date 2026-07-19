@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { eau, ajouterEau } from '../store/journal.js';
 import { t } from '../i18n/index.js';
 
@@ -20,7 +21,7 @@ export function WaterTracker() {
         <span class="wf-count">{litres} L</span>
       </button>
 
-      {ouvert && (
+      {ouvert && createPortal(
         <div class="water-overlay" onClick={e => { if (e.target === e.currentTarget) setOuvert(false); }}>
           <div class="water-feuille">
             <button class="modal-x" onClick={() => setOuvert(false)} aria-label="Fermer">✕</button>
@@ -31,7 +32,8 @@ export function WaterTracker() {
               <button onClick={() => ajouterEau(0.25)}>+&nbsp;0,25&nbsp;L</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

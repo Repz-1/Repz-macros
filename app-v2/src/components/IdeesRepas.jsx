@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { signal } from '@preact/signals';
+import { createPortal } from 'preact/compat';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
 import { DB } from '../data/aliments.js';
 import { IDEA_PREP } from '../data/preparations.js';
@@ -104,7 +105,7 @@ function adapter(idee, restes, cible) {
 /** Fiche detaillee d'une recette : ingredients peses et preparation. */
 function FicheRecette({ nom, portion, kcal, prot, fermer }) {
   const prep = IDEA_PREP[nom];
-  return (
+  return createPortal(
     <div class="rm-overlay" onClick={e => { if (e.target === e.currentTarget) fermer(); }}>
       <div class="rm-boite">
         <button class="rm-x" onClick={fermer} aria-label="Fermer">✕</button>
@@ -124,7 +125,8 @@ function FicheRecette({ nom, portion, kcal, prot, fermer }) {
 
         {prep && prep.tip && <div class="rm-tip">{prep.tip}</div>}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
