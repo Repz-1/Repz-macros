@@ -1787,3 +1787,9 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   vm_premium_only: 'Premium-functie',
   vm_error: 'Er ging iets mis, probeer opnieuw'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, { vm_listening_tap: 'Je t\'écoute… Appuie à nouveau quand tu as fini' });
+
+Object.assign(window.BELFIT_STRINGS.en, { vm_listening_tap: 'Listening… Tap again when you are done' });
+
+Object.assign(window.BELFIT_STRINGS.nl, { vm_listening_tap: 'Ik luister… Tik opnieuw wanneer je klaar bent' });

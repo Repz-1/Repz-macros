@@ -541,6 +541,8 @@ body.search-open .meal-bar { display:flex; }
 .vm-mic-btn.ecoute { animation:vmPulse 1.2s ease-in-out infinite; background:#DE2F14; }
 .vm-mic-btn.ecoute svg { stroke:#fff; }
 @keyframes vmPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.vm-vu-piste { width:130px; height:5px; margin:10px auto 0; background:#EFEDE6; border-radius:3px; overflow:hidden; }
+.vm-vu { height:100%; background:linear-gradient(90deg,#F7B500,#DFA004); transform:scaleX(0); transform-origin:left; transition:transform .08s linear; border-radius:3px; }
 .vm-diag { font-size:11px; color:#b0a89a; margin-top:6px; min-height:14px; text-align:center; font-family:monospace; }
 .vm-live { min-height:22px; font-size:14.5px; font-weight:600; color:#374151; text-align:center; }
 .vm-input { width:100%; padding:13px 14px; border:1.5px solid #E6E6E6; border-radius:14px; font-size:15px; font-family:inherit; margin-bottom:10px; }
@@ -4688,6 +4690,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     </div>
     <div class="vm-mic" id="vmMicZone">
       <button class="vm-mic-btn" id="vmMicBtn" onclick="basculerEcoute()"><svg viewBox="0 0 24 24"><rect x="10" y="2.5" width="4" height="9.5" rx="2"/><path d="M6.5 11.5a5.5 5.5 0 0011 0"/><path d="M12 17v3.5"/><path d="M9 20.5h6"/></svg></button>
+      <div class="vm-vu-piste"><div class="vm-vu" id="vmVu"></div></div>
       <div class="vm-live" id="vmLive"></div>
       <div class="vm-diag" id="vmDiag"></div>
     </div>
@@ -4756,11 +4759,12 @@ function basculerEcoute(){
 async function demarrerEnregistrement(){
     try{
         vocalStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-        console.log('[vocal] micro autorise');
     }catch(e){
         document.getElementById('vmLive').textContent = t('vm_mic_denied') || 'Micro refusé';
+        diagVocal('acces micro refuse : ' + (e && e.name ? e.name : 'inconnu'));
         return;
     }
+    demarrerVuMetre();
     vocalChunks = [];
     // Choisir un format supporte
     let mime = 'audio/webm';
@@ -4773,10 +4777,46 @@ async function demarrerEnregistrement(){
     vocalMediaRec.start();
     vocalEcoute = true;
     document.getElementById('vmMicBtn').classList.add('ecoute');
-    document.getElementById('vmLive').textContent = t('vm_listening') || 'Je t\'écoute…';
+    // Etre explicite : rien ne s'affiche pendant la dictee, l'analyse
+    // se fait quand on appuie a nouveau. Sans cette phrase, l'utilisateur
+    // croit que rien n'est detecte.
+    document.getElementById('vmLive').textContent = t('vm_listening_tap') || 'Je t\'écoute… Appuie à nouveau quand tu as fini';
+    diagVocal('');
+}
+
+// ===== VU-METRE : barre qui bouge avec la voix =====
+let vuCtx = null, vuRaf = null;
+function demarrerVuMetre(){
+    try{
+        vuCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = vuCtx.createMediaStreamSource(vocalStream);
+        const ana = vuCtx.createAnalyser();
+        ana.fftSize = 256;
+        src.connect(ana);
+        const data = new Uint8Array(ana.frequencyBinCount);
+        const barre = document.getElementById('vmVu');
+        const boucle = ()=>{
+            if(!vocalEcoute){ if(barre) barre.style.transform = 'scaleX(0)'; return; }
+            ana.getByteFrequencyData(data);
+            let somme = 0;
+            for(let i=0;i<data.length;i++) somme += data[i];
+            const niveau = Math.min(1, (somme / data.length) / 70);
+            if(barre) barre.style.transform = 'scaleX(' + niveau.toFixed(2) + ')';
+            vuRaf = requestAnimationFrame(boucle);
+        };
+        boucle();
+    }catch(e){ /* decoratif : ne doit jamais bloquer l'enregistrement */ }
+}
+function arreterVuMetre(){
+    if(vuRaf) cancelAnimationFrame(vuRaf);
+    try{ if(vuCtx) vuCtx.close(); }catch(e){}
+    vuCtx = null;
+    const barre = document.getElementById('vmVu');
+    if(barre) barre.style.transform = 'scaleX(0)';
 }
 
 function arreterEnregistrement(){
+    arreterVuMetre();
     document.getElementById('vmLive').textContent = t('vm_analyzing') || 'Analyse en cours…';
     try{ if(vocalMediaRec && vocalMediaRec.state !== 'inactive') vocalMediaRec.stop(); }catch(e){}
     if(vocalStream){ vocalStream.getTracks().forEach(tr=>tr.stop()); vocalStream = null; }
