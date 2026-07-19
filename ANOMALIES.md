@@ -26,6 +26,11 @@ Statut : `observé` = relevé, non soumis · `soumis` = proposé à Raci ·
 | J10 | Boutons flottants | Recouvrent les actions rapides et le bas des modales | **observé** — audit final |
 | J11 | Haut de page | Espace vide important avant le logo | **observé** — audit final |
 | J12 | Barres de macros | Remplissage très petit aux faibles valeurs : la jauge se lit mal | **observé** |
+| J13 | Carte Calories | Chiffre central débordant de l'anneau sur écran étroit | **corrigé** — taille adaptative resserrée |
+| J14 | Lignes d'aliments | Nom et équivalence cassés sur deux lignes (colonnes fixes trop larges) | **corrigé** — colonnes resserrées, texte tronqué proprement |
+| J15 | Bas de page | Espace réservé excessif : on défile dans du vide sur un écran entier | **corrigé** — 120 px ramenés à 76 px |
+| J16 | Ligne date | « 19 JUIL.. » — double point, le mois abrégé en contient déjà un | **corrigé** |
+| J17 | Calculateur | Le bas de la carte (macros et bouton Appliquer) passe sous les flottants | **observé** — audit final |
 
 ---
 

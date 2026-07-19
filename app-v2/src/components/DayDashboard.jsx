@@ -111,7 +111,7 @@ export function DayDashboard() {
   const d = new Date();
   const jours = t('days_long').split('|');
   const moisCourt = t('months_min').split('|');
-  const dateTexte = `${t('today')}, ${d.getDate()} ${moisCourt[d.getMonth()] || ''}.`;
+  const dateTexte = `${t('today')}, ${d.getDate()} ${moisCourt[d.getMonth()] || ''}`;
 
   return (
     <section class={'carte carte--relief cal' + (pret ? '' : ' cal--chargement')}>
