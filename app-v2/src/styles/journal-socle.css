@@ -347,9 +347,9 @@
 }
 .pg-journal .qa-btn {
   position: relative;
-  flex: 1;                        /* trois parts strictement egales */
+  flex: 1 1 0; min-width: 0;      /* parts strictement egales */
   display: flex; flex-direction: column; align-items: center; gap: 7px;
-  background: none; border: none; padding: 14px 6px;
+  background: none; border: none; padding: 14px 4px;
   cursor: pointer; font-family: inherit;
 }
 /* Trait vertical entre les colonnes, jamais sur les bords exterieurs */
@@ -369,8 +369,10 @@
   stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-journal .qa-lb {
-  font-size: 12px; font-weight: 600; color: #4B4A47; letter-spacing: .01em;
+  font-size: 11.5px; font-weight: 600; color: #4B4A47; letter-spacing: 0;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+.pg-journal .qa-ic { width: 40px; height: 40px; }
 
 /* Badge Premium : deborde legerement dans le coin superieur droit */
 .pg-journal .qa-pro {

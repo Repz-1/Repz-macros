@@ -24,6 +24,16 @@ export function ActionsRapides({ ouvrirCalc, ouvrirVocal, ouvrirPlats }) {
         <span class="qa-lb">{t('qa_calc')}</span>
       </button>
 
+      <button class="qa-btn" onClick={() => { ongletActif.value = 'courses'; }}>
+        <span class="qa-ic">
+          <svg viewBox="0 0 24 24" class="ic">
+            <path d="M2.5 3h2.2l2.3 11.2a1.8 1.8 0 001.8 1.4h8.6a1.8 1.8 0 001.8-1.4L21 7H6" />
+            <circle cx="9.5" cy="20" r="1.4" /><circle cx="17" cy="20" r="1.4" />
+          </svg>
+        </span>
+        <span class="qa-lb">{t('qa_shop')}</span>
+      </button>
+
       <button class="qa-btn" onClick={ouvrirPlats}>
         <span class="qa-ic">
           <svg viewBox="0 0 24 24" class="ic">
@@ -32,7 +42,7 @@ export function ActionsRapides({ ouvrirCalc, ouvrirVocal, ouvrirPlats }) {
             <path d="M9 7.5c0-1 1.5-1.2 1.5-2.5M14 7.5c0-1 1.5-1.2 1.5-2.5" />
           </svg>
         </span>
-        <span class="qa-lb">{t('mp_titre')}</span>
+        <span class="qa-lb">{t('mp_court')}</span>
       </button>
 
       <button class="qa-btn" onClick={ouvrirVocal}>

@@ -1931,3 +1931,9 @@ Object.assign(STRINGS_V1.nl, {
   cp_combien: "Hoeveel porties?",
   cp_ajouter: "Aan maaltijd toevoegen"
 });
+
+Object.assign(STRINGS_V1.fr, { mp_court: 'Mes plats' });
+
+Object.assign(STRINGS_V1.en, { mp_court: 'Dishes' });
+
+Object.assign(STRINGS_V1.nl, { mp_court: 'Gerechten' });

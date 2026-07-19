@@ -1931,3 +1931,9 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   cp_combien: "Hoeveel porties?",
   cp_ajouter: "Aan maaltijd toevoegen"
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, { mp_court: 'Mes plats' });
+
+Object.assign(window.BELFIT_STRINGS.en, { mp_court: 'Dishes' });
+
+Object.assign(window.BELFIT_STRINGS.nl, { mp_court: 'Gerechten' });
