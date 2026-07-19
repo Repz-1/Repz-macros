@@ -43,6 +43,15 @@ Statut : `observé` = relevé, non soumis · `soumis` = proposé à Raci ·
 
 ---
 
+## À revoir en phase 2 — Idées recettes
+
+| # | Sujet | Attendu |
+|---|---|---|
+| R1 | Navigation dans la fiche | Pouvoir passer d'une recette à l'autre **depuis la fiche ouverte** (glissement latéral ou flèches). Aujourd'hui : fermer → Suivante → Voir la recette, soit trois gestes par recette. |
+| R2 | Présentation des suggestions | Le format « une recette + Précédente/Suivante » reste à retravailler. Ni la liste défilante ni cette version ne convainquent. |
+
+---
+
 ## À vérifier sur les écrans suivants
 
 - Cohérence des rayons de carte : 18 px (repas), 20 px (raccourcis),
