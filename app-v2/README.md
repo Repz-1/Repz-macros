@@ -19,3 +19,18 @@ reecriture manuelle, pour un resultat visuellement identique a l'existant.
 Le cout ne justifiait pas le benefice.
 
 Pour reprendre : voir l'historique git du workflow de deploiement.
+
+
+---
+
+## Chantier arrete (19 juillet 2026)
+
+Decision de Raci : la v2 est abandonnee. L'''application reste la v1.
+
+Le code est conserve en l'''etat, sans etre construit ni deploye.
+Ecran Journal reproduit a ~95 % au moment de l'''arret.
+
+Outils laisses en place s'''ils resservent un jour :
+-  : rend la v2 dans Chromium, capture et detecte les debordements
+-  : mesure la position et la taille des elements
+-  : verifie que l'''app se peint reellement
