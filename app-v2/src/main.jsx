@@ -108,7 +108,7 @@ function App() {
   const onglet = ongletActif.value;
   return (
     <>
-      <div class="conteneur">
+      <div class="conteneur conteneur--nu">
         {voletProfil.value && (
           <div class="profil-volet">
             <span>{utilisateur.value ? utilisateur.value.email : t('mode_invite')}</span>

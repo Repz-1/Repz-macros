@@ -6,6 +6,9 @@ input,button{font-family:inherit}
 button{cursor:pointer}
 
 .conteneur{max-width:480px;margin:0 auto;padding:16px 16px 96px}
+/* Les onglets qui portent leurs propres marges ne doivent pas
+   subir celles du conteneur : sinon elles s'additionnent. */
+.conteneur--nu{max-width:none;padding:0}
 
 /* ---- Dashboard du jour ---- */
 .tableau-bord{background:#fff;border:1px solid #e9f3ec;border-radius:24px;padding:16px 18px 14px;margin-bottom:14px}

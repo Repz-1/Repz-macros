@@ -52,7 +52,7 @@
   --rayon-puce: 12px;           /* champs et petits boutons */
   --rayon-capsule: 30px;        /* boutons flottants et pilules */
 
-  --marge-page: 20px;
+  --marge-page: 17px;   /* releve sur la reference */
   --espace: 22px;               /* entre deux cartes */
   --espace-court: 14px;         /* a l'interieur d'une carte */
 
