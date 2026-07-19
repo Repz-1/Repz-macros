@@ -37,7 +37,8 @@ page.on('pageerror', e => bavures.push('ERREUR : ' + e.message.slice(0, 140)));
 
 // Session simulee + un repas rempli, pour voir l'ecran en usage reel
 await page.addInitScript(() => {
-  localStorage.setItem('belfit_v2_invite', '1');   // evite l'ecran de connexion
+  localStorage.setItem('belfit_v2_invite', '1');            // evite l'ecran de connexion
+  localStorage.setItem('belfit_v2_apercu_premium', '1');   // voir aussi le contenu Premium
   localStorage.setItem('belfit_v2_journal___invite__', JSON.stringify({
     objectifs: { kcal: 4300, prot: 217, carbs: 538, lip: 96 },
     eau: 0,

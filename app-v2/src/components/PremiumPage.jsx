@@ -7,7 +7,19 @@ import { t } from '../i18n/index.js';
 // Statut Premium lu depuis Firestore (ecrit par le webhook LemonSqueezy)
 export const estPremium = signal(false);
 
+// Permet de simuler l'etat Premium pour inspecter l'interface dans un
+// navigateur de test. Sans cela, seule la version gratuite est visible
+// et tout le contenu Premium se code a l'aveugle.
+// N'a aucun effet en production : le drapeau n'est jamais pose par l'app,
+// et le serveur reste seul juge des acces reels.
+let apercuPremium = false;
+try {
+  apercuPremium = localStorage.getItem('belfit_v2_apercu_premium') === '1';
+  if (apercuPremium) estPremium.value = true;
+} catch (e) { /* stockage indisponible */ }
+
 effect(() => {
+  if (apercuPremium) return;          // l'apercu garde la main
   const u = utilisateur.value;
   if (!u) { estPremium.value = false; return; }
   const db = getFirestore(getApps()[0]);
