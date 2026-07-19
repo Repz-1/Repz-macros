@@ -520,3 +520,71 @@
   flex-shrink: 0; transition: transform 200ms ease;
 }
 .pg-journal .mc--ouvert .mc-chevron { transform: rotate(180deg); }
+
+/* ============================================================
+   BOUTONS FLOTTANTS
+   Meme couche, meme hauteur, mais independants. La rangee ne
+   capte pas les clics : seuls les boutons le font.
+   ============================================================ */
+.pg-journal .fab-rangee {
+  position: fixed; z-index: 80;
+  bottom: calc(var(--hauteur-nav) + 14px + env(safe-area-inset-bottom));
+  left: 12px; right: 12px;
+  max-width: 448px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  pointer-events: none;
+}
+.pg-journal .fab-rangee > * { pointer-events: auto; }
+
+/* ---------- Hydratation ---------- */
+.pg-journal .water-fab {
+  display: flex; align-items: center; gap: 6px;
+  background: #0EA5E9; color: #FFFFFF; border: none;
+  padding: 12px 16px; border-radius: 30px; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, .4);
+  font-size: 14px; font-weight: 700; font-family: inherit;
+  opacity: .72;
+  transition: transform .15s, opacity .15s;
+}
+.pg-journal .water-fab:active { transform: scale(.94); opacity: 1; background: #0284C7; }
+.pg-journal .wf-goutte { font-size: 18px; line-height: 1; }
+
+/* ---------- Ajouter ---------- */
+.pg-journal .fab {
+  display: flex; align-items: center; gap: 5px;
+  background: #F7B500; color: #181818; border: none;
+  padding: 10px 15px; border-radius: 30px; cursor: pointer;
+  box-shadow: 0 6px 16px rgba(247, 181, 0, .35);
+  font-size: 13.5px; font-weight: 700; font-family: inherit;
+  width: auto; height: auto;
+  transition: transform .15s, box-shadow .15s;
+}
+.pg-journal .fab:active {
+  transform: scale(.94); background: #E85D2A;
+  box-shadow: 0 4px 16px rgba(255, 140, 0, .5);
+}
+.pg-journal .fab-plus { font-size: 18px; line-height: 1; }
+.pg-journal .fab-label { font-size: 13px; }
+
+/* ---------- Feuille de reglage de l'hydratation ---------- */
+.pg-journal .water-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0, 0, 0, .5);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: var(--hauteur-nav);
+}
+.pg-journal .water-feuille {
+  position: relative; width: 100%; max-width: 480px;
+  background: var(--carte); border-radius: 22px 22px 0 0;
+  padding: 22px 20px calc(24px + env(safe-area-inset-bottom));
+  text-align: center;
+}
+.pg-journal .water-feuille h3 { font-size: 17px; font-weight: 800; margin-bottom: 12px; }
+.pg-journal .water-total { font-size: 34px; font-weight: 800; color: #0284C7; margin-bottom: 18px; }
+.pg-journal .water-btns { display: flex; gap: 10px; }
+.pg-journal .water-btns button {
+  flex: 1; padding: 14px; border: none; border-radius: var(--rayon-puce);
+  background: #E0F2FE; color: #0369A1;
+  font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
+}
+.pg-journal .water-btns button:active { transform: scale(.97); background: #BAE6FD; }

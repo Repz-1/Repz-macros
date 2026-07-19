@@ -40,8 +40,13 @@ function OngletJournal() {
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
       </div>
 
-      <div class="fixe-eau"><WaterTracker /></div>
-      <button class="fixe-ajout fab" onClick={() => setModale(true)} aria-label="Ajouter un repas">+</button>
+      <div class="fab-rangee">
+        <WaterTracker />
+        <button class="fab" onClick={() => setModale(true)} aria-label="Ajouter un repas">
+          <span class="fab-plus">＋</span>
+          <span class="fab-label">{t('add')}</span>
+        </button>
+      </div>
 
       <AddMealModal montre={modale} fermer={() => setModale(false)} />
       <TdeeCalculator montre={calc} fermer={() => setCalc(false)} />
