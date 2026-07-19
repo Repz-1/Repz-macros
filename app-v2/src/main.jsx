@@ -54,8 +54,8 @@ function OngletJournal() {
         </button>
       </div>
 
-      <AddMealModal montre={modale} fermer={() => setModale(false)} />
-      <TdeeCalculator montre={calc} fermer={() => setCalc(false)} />
+      {modale && <AddMealModal montre={true} fermer={() => setModale(false)} />}
+      {calc && <TdeeCalculator montre={true} fermer={() => setCalc(false)} />}
       {vocal && <VocalModal fermer={() => setVocal(false)} />}
     </div>
   );

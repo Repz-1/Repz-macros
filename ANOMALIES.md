@@ -32,6 +32,7 @@ Statut : `observé` = relevé, non soumis · `soumis` = proposé à Raci ·
 | J16 | Ligne date | « 19 JUIL.. » — double point, le mois abrégé en contient déjà un | **corrigé** |
 | J20 | En-tête | Deux en-têtes superposés en v2 (celui du shell + celui du Journal) : tout le contenu était poussé de 100 px vers le bas | **corrigé** — en-tête global retiré, choix de langue déplacé dans le volet profil |
 | J21 | Anneau | Diamètre 132 px contre ~178 px sur la référence | **corrigé** — plafond porté à 58 % de la largeur |
+| J22 | Calculateur | Modale montée en permanence, simplement décalée : allongeait la page de 2744 px et réapparaissait en bas | **corrigé** — montage à l'''ouverture seulement |
 | J17 | Calculateur | Le bas de la carte (macros et bouton Appliquer) passe sous les flottants | **observé** — audit final |
 | J18 | Lignes d'''aliments | Le champ de quantité fait exploser sa colonne (min-width auto en grille) | **corrigé** — min-width 0, règle globale sur input/select/textarea |
 | J19 | Lignes d'''aliments | Effacer le champ met la valeur à 0 immédiatement : impossible de vider pour retaper | **corrigé** — champ vide toléré pendant la frappe |
