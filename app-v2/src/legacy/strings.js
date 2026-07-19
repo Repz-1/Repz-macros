@@ -1847,3 +1847,9 @@ Object.assign(STRINGS_V1.fr, { eat_see: 'Voir la recette →' });
 Object.assign(STRINGS_V1.en, { eat_see: 'See the recipe →' });
 
 Object.assign(STRINGS_V1.nl, { eat_see: 'Bekijk het recept →' });
+
+Object.assign(STRINGS_V1.fr, { eat_other: 'Une autre idée' });
+
+Object.assign(STRINGS_V1.en, { eat_other: 'Another idea' });
+
+Object.assign(STRINGS_V1.nl, { eat_other: 'Een ander idee' });

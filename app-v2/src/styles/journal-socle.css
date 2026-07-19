@@ -771,13 +771,22 @@
 }
 
 /* ---------- Cartes de recettes ---------- */
-.pg-journal .eat-ideas {
-  display: flex; flex-direction: column; gap: 10px;
-  max-height: 340px; overflow-y: auto;
-  padding-right: 4px; -webkit-overflow-scrolling: touch;
+/* Une seule suggestion, aucune zone de defilement interne :
+   un scroll dans un scroll rendait la lecture confuse. */
+.pg-journal .eat-une { display: flex; flex-direction: column; gap: 10px; }
+.pg-journal .eat-suivante {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2px;
 }
-.pg-journal .eat-ideas::-webkit-scrollbar { width: 5px; }
-.pg-journal .eat-ideas::-webkit-scrollbar-thumb { background: #F0C4DC; border-radius: 5px; }
+.pg-journal .eat-suivante button {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  font-size: 13px; font-weight: 800; color: #BE185D;
+  padding: 8px 0;
+}
+.pg-journal .eat-suivante button:active { opacity: .6; }
+.pg-journal .eat-suivante .ic { width: 15px; height: 15px; stroke-width: 2; }
+.pg-journal .eat-compteur { font-size: 12px; font-weight: 700; color: #B79AA8; }
 
 .pg-journal .eat-idea {
   background: #FFFFFF;

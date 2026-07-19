@@ -1847,3 +1847,9 @@ Object.assign(window.BELFIT_STRINGS.fr, { eat_see: 'Voir la recette →' });
 Object.assign(window.BELFIT_STRINGS.en, { eat_see: 'See the recipe →' });
 
 Object.assign(window.BELFIT_STRINGS.nl, { eat_see: 'Bekijk het recept →' });
+
+Object.assign(window.BELFIT_STRINGS.fr, { eat_other: 'Une autre idée' });
+
+Object.assign(window.BELFIT_STRINGS.en, { eat_other: 'Another idea' });
+
+Object.assign(window.BELFIT_STRINGS.nl, { eat_other: 'Een ander idee' });

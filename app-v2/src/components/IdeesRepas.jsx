@@ -135,6 +135,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
   const setOuvert = (v) => { ideesOuvertes.value = v; };
   const [cat, setCat] = useState(null);
   const [fiche, setFiche] = useState(null);
+  const [index, setIndex] = useState(0);
   const [ajoute, setAjoute] = useState(null);
 
   const reste = Math.round(objectifs.value.kcal - totauxJour.value.kcal);
@@ -189,7 +190,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       <div class="eat-cats">
         {CATEGORIES_IDEES.map(c => (
           <button key={c.k} class={'eat-cat' + (cat === c.k ? ' active' : '')}
-                  onClick={() => setCat(cat === c.k ? null : c.k)}>
+                  onClick={() => { setIndex(0); setCat(cat === c.k ? null : c.k); }}>
             {c.label}
           </button>
         ))}
@@ -214,22 +215,35 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
           return <div class="eat-note">{t('eat_none_fit')}</div>;
         }
 
+        // Une seule suggestion a la fois : l'algorithme a deja classe
+        // les recettes, autant assumer de proposer la meilleure.
+        const { idee, p } = retenues[index % retenues.length];
+
         return (
-        <div class="eat-ideas">
-          {retenues.map(({ idee, p }, i) => {
-            return (
-              <div class="eat-idea" key={i}
-                   onClick={() => setFiche({ nom: idee.nom, portion: p.texte, kcal: p.kcal, prot: p.prot })}>
-                <div class="eat-idea-name">{idee.nom}</div>
-                <div class="eat-idea-ex">{p.texte}</div>
-                <div class="eat-idea-kcal">
-                  ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
-                </div>
-                {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
-                <span class="eat-open">{t('eat_see')}</span>
-              </div>
-            );
-          })}
+        <div class="eat-une">
+          <div class="eat-idea"
+               onClick={() => setFiche({ nom: idee.nom, portion: p.texte, kcal: p.kcal, prot: p.prot })}>
+            <div class="eat-idea-name">{idee.nom}</div>
+            <div class="eat-idea-ex">{p.texte}</div>
+            <div class="eat-idea-kcal">
+              ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
+            </div>
+            {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
+            <span class="eat-open">{t('eat_see')}</span>
+          </div>
+
+          {retenues.length > 1 && (
+            <div class="eat-suivante">
+              <button onClick={() => setIndex(index + 1)}>
+                <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
+                  <path d="M3 12a9 9 0 0115.5-6.2M21 12a9 9 0 01-15.5 6.2" />
+                  <path d="M18.5 3v3h-3M5.5 21v-3h3" />
+                </svg>
+                {t('eat_other')}
+              </button>
+              <span class="eat-compteur">{(index % retenues.length) + 1} / {retenues.length}</span>
+            </div>
+          )}
         </div>
         );
       })()}
