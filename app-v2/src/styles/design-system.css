@@ -1,0 +1,154 @@
+/* ============================================================
+   BELFIT — DESIGN SYSTEM
+   ============================================================
+   Source unique de verite pour tout le langage graphique.
+   Un ecran qui redefinit une valeur en dur cree une divergence :
+   il doit lire un jeton d'ici.
+
+   Toutes les valeurs proviennent des ecrans deja reproduits.
+   Aucune n'a ete inventee.
+   ============================================================ */
+
+:root {
+  /* ---------- Surfaces ---------- */
+  --fond: #FAF9F6;              /* fond de page, creme tres leger */
+  --carte: #FFFFFF;
+  --bordure: #E7E2D9;           /* bordure de carte, beige chaud */
+  --bordure-fine: #ECE8DF;      /* separateurs internes, plus clair */
+  --piste: #EFEADD;             /* fond des barres de progression */
+
+  /* ---------- Texte ---------- */
+  --texte: #191919;             /* titres et valeurs */
+  --texte-2: #6B7280;           /* secondaire */
+  --texte-3: #8A8580;           /* descriptions, unites, labels */
+  --texte-nav: #8A8375;         /* onglets au repos */
+
+  /* ---------- Couleurs de marque ----------
+     Une couleur = un sens. Ne jamais en creer de proche. */
+  --or: #F7B500;                /* action principale, Premium */
+  --or-fonce: #8F6200;          /* texte sur fond clair dore */
+  --or-pale: #FFF4CC;           /* fond d'icone */
+  --or-creme: #FFFBEF;          /* degrade de carte */
+
+  --proteines: #1F1F1F;
+  --glucides: #F5A800;
+  --lipides: #DE2F14;
+
+  --hydratation: #0EA5E9;
+  --hydratation-active: #0284C7;
+
+  --recettes-a: #A855F7;
+  --recettes-b: #DB2777;
+
+  --succes: #10B981;
+  --succes-pale: #DCECDF;
+  --alerte: #DE2F14;
+  --alerte-douce: #F87171;
+
+  /* ---------- Geometrie ----------
+     Trois rayons seulement. Toute autre valeur est une derive. */
+  --rayon-carte: 20px;          /* cartes de contenu */
+  --rayon-bloc: 16px;           /* blocs internes, vignettes */
+  --rayon-puce: 12px;           /* champs et petits boutons */
+  --rayon-capsule: 30px;        /* boutons flottants et pilules */
+
+  --marge-page: 20px;
+  --espace: 22px;               /* entre deux cartes */
+  --espace-court: 14px;         /* a l'interieur d'une carte */
+
+  /* ---------- Ombres ----------
+     Opacite faible, flou important, decalage faible.
+     La carte flotte, elle n'est pas posee. */
+  --ombre: 0 4px 14px rgba(60, 50, 40, .05);
+  --ombre-legere: 0 2px 10px rgba(24, 24, 24, .04);
+  --ombre-relief: 0 8px 22px rgba(247, 181, 0, .10);
+  --ombre-or: 0 6px 16px rgba(247, 181, 0, .35);
+
+  /* ---------- Mouvement ----------
+     Une seule courbe, deux durees. Discret, jamais demonstratif. */
+  --courbe: cubic-bezier(.4, 0, .2, 1);
+  --transition: 180ms var(--courbe);
+  --transition-lente: 400ms ease;
+
+  /* ---------- Reserve ---------- */
+  --hauteur-nav: 74px;
+}
+
+/* ============================================================
+   CARTE — composant de base, jamais recree ailleurs
+   ============================================================ */
+.carte {
+  background: var(--carte);
+  border: 1.5px solid var(--bordure);
+  border-radius: var(--rayon-carte);
+  box-shadow: var(--ombre);
+  padding: 18px 16px;
+  overflow: hidden;
+}
+.carte--action {
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.carte--action:active {
+  transform: scale(.985);
+  box-shadow: 0 2px 10px rgba(60, 50, 40, .04);
+}
+
+/* ============================================================
+   BOUTONS
+   ============================================================ */
+/* Principal : meme style que « Ajouter » */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--or); color: #181818; border: none;
+  padding: 12px 18px; border-radius: var(--rayon-puce);
+  font-size: 14px; font-weight: 800; font-family: inherit; cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.btn:active { transform: scale(.97); }
+
+/* Secondaire : presence sans concurrence */
+.btn--secondaire {
+  background: none; color: var(--texte-3);
+  border: 1.5px solid var(--bordure);
+}
+.btn--secondaire:active { background: #F5F2EC; }
+
+/* Discret : action de bas de carte, sans fond ni bordure */
+.btn--discret {
+  background: none; border: none; color: var(--texte-3);
+  font-size: 13px; font-weight: 600;
+}
+.btn--discret:active { color: var(--texte-2); background: rgba(0, 0, 0, .03); }
+
+/* ============================================================
+   TYPOGRAPHIE — quatre niveaux, pas davantage
+   ============================================================ */
+.t-titre     { font-size: 18px;   font-weight: 800; color: var(--texte); }
+.t-sous      { font-size: 14.5px; font-weight: 600; color: var(--texte-2); }
+.t-info      { font-size: 13px;   font-weight: 500; color: var(--texte-3); }
+.t-etiquette {
+  font-size: 12.5px; font-weight: 800; color: var(--texte-3);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+
+/* ============================================================
+   ICONES — un seul style : trait fin, extremites arrondies
+   ============================================================ */
+.ic {
+  fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ============================================================
+   ENTREE DE PAGE — meme animation partout
+   ============================================================ */
+@keyframes entree {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.entree { animation: entree 240ms var(--courbe) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .entree, .carte--action, .btn { animation: none; transition: none; }
+}

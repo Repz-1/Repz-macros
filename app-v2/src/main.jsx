@@ -1,6 +1,7 @@
 import { render } from 'preact';
 import { useState } from 'preact/hooks';
 import './styles.css';
+import './styles/design-system.css';
 import './styles/journal-socle.css';
 import { utilisateur, authPrete, deconnexion, invite, quitterInvite } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';

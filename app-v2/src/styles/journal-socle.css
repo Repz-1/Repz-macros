@@ -1,65 +1,22 @@
 /* ============================================================
    BELFIT — SOCLE DE DESIGN, PAGE JOURNAL
    ============================================================
-   Toutes les valeurs structurelles de la page vivent ici et
-   nulle part ailleurs. Un composant qui redefinit un rayon ou
-   une ombre en dur cree une incoherence : il doit lire un jeton.
+   Ce fichier ne contient QUE ce qui est propre a l ecran Journal.
+   Tout le reste (jetons, carte, boutons, typographie, icones,
+   animations) vit dans design-system.css et doit y etre lu.
 
-   Arbitrage entre la maquette et le CSS existant :
-   - fond, rayons, marges, espacements  -> valeurs de la maquette
-   - ombres, couleurs de marque         -> valeurs existantes
+   Avant d ajouter une valeur ici : verifier qu un jeton n existe
+   pas deja. Une valeur en dur est une divergence en puissance.
    ============================================================ */
 
 .pg-journal {
-  /* ---------- Surfaces ---------- */
-  --fond: #FAF9F6;          /* creme tres leger, jamais blanc pur */
-  --carte: #FFFFFF;
-  --bordure: #EDE9E1;       /* gris chaud, 1px suffit sous une ombre douce */
-
-  /* ---------- Texte ---------- */
-  --texte: #1A1A1A;         /* titres uniquement */
-  --texte-2: #6B7280;       /* secondaire */
-  --texte-3: #9A948A;       /* descriptions, unites */
-
-  /* ---------- Couleurs fonctionnelles ----------
-     Chacune porte un sens unique dans la page. Une couleur
-     utilisee pour deux choses differentes brouille la lecture. */
-  --or: #F7B500;            /* action principale, Premium */
-  --or-fonce: #8F6200;      /* texte sur fond or clair */
-  --or-pale: #FFFBEF;
-  --proteines: #F97316;
-  --glucides: #F7B500;
-  --lipides: #EF4444;
-  --hydratation: #38BDF8;
-  --recettes-a: #A855F7;
-  --recettes-b: #EC4899;
-  --anneau: #10B981;
-  --alerte: #DC2626;
-
-  /* ---------- Geometrie ---------- */
-  --rayon-carte: 24px;      /* toutes les cartes, sans exception */
-  --rayon-bloc: 16px;       /* blocs internes d'une carte */
-  --rayon-puce: 12px;       /* boutons, puces, champs */
-  --marge-page: 20px;
-  --espace: 22px;           /* entre deux cartes */
-  --espace-court: 14px;     /* a l'interieur d'une carte */
-
-  /* ---------- Ombres ----------
-     Faible opacite, flou important, decalage faible :
-     la carte doit flotter, pas etre posee. */
-  --ombre: 0 4px 20px rgba(15, 23, 42, .06);
-  --ombre-relief: 0 8px 22px rgba(247, 181, 0, .10);
-  --bordure-carte-cal: #C9EFE1;   /* vert pale, releve sur la reference */
-  --mac-prot: #1F1F1F;
-  --mac-carbs: #F5A800;
-  --mac-lip: #DE2F14;
-  --mac-piste: #EFEADD;
-
-  /* ---------- Mouvement ---------- */
-  --transition: 180ms cubic-bezier(.4, 0, .2, 1);
-
-  /* ---------- Reserve pour les elements fixes ---------- */
-  --hauteur-nav: 74px;
+  /* Les jetons viennent de design-system.css.
+     Seules les valeurs propres a cet ecran sont definies ici. */
+  --bordure-carte-cal: #C9EFE1;   /* liseré vert de la carte Calories */
+  --mac-prot: var(--proteines);
+  --mac-carbs: var(--glucides);
+  --mac-lip: var(--lipides);
+  --mac-piste: var(--piste);
 
   background: var(--fond);
   color: var(--texte);
@@ -96,14 +53,8 @@
 /* ============================================================
    CARTE — element structurant de la page
    ============================================================ */
-.pg-journal .carte {
-  background: var(--carte);
-  border: 1px solid var(--bordure);
-  border-radius: var(--rayon-carte);
-  box-shadow: var(--ombre);
-  padding: 20px 18px;
-  overflow: hidden;
-}
+/* .carte vient du design system. Le Journal n'ajuste que sa marge. */
+.pg-journal .carte { padding: 20px 18px; }
 
 /* Variante mise en avant : releve par une ombre doree, pas par
    une bordure epaisse ni une couleur de fond saturee. */
@@ -161,12 +112,8 @@
    Fondu court, montee de quelques pixels. Discret : on doit
    sentir que la page arrive, pas la regarder arriver.
    ============================================================ */
-@keyframes journalEntree {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
-}
 .pg-journal .colonne > * {
-  animation: journalEntree 240ms cubic-bezier(.4, 0, .2, 1) both;
+  animation: entree 240ms var(--courbe) both;
 }
 .pg-journal .colonne > *:nth-child(1) { animation-delay: 0ms; }
 .pg-journal .colonne > *:nth-child(2) { animation-delay: 40ms; }
@@ -254,7 +201,6 @@
 /* ============================================================
    CARTE CALORIES
    ============================================================ */
-.pg-journal { --macro-neutre: #4B5563; }   /* glucides et lipides : neutre, jamais agressif */
 
 .pg-journal .cal { padding: 18px 18px 12px; }
 
@@ -453,7 +399,7 @@
    colonne sans etre rattachee a une carte. */
 .pg-journal .eat-zone { display: flex; justify-content: center; }
 .pg-journal .eat-zone-wrap { display: flex; flex-direction: column; gap: 12px; }
-.pg-journal .eat-panneau { animation: journalEntree 200ms ease both; }
+.pg-journal .eat-panneau { animation: entree 200ms var(--courbe) both; }
 
 /* ============================================================
    CARTE REPAS
