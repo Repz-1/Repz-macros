@@ -715,31 +715,30 @@
 /* L'illustration est un SVG complet : elle occupe la vignette. */
 .pg-journal .mc-vignette svg { width: 42px; height: 42px; display: block; }
 
-/* Les trois boutons flottants : meme hauteur, alignes sur une
-   seule ligne, la pilule centrale absorbe l'espace restant. */
+/* Les trois boutons du bas : meme hauteur, meme ligne, la pilule
+   centrale absorbe l'espace restant. */
 .pg-journal .fab-rangee {
-  gap: 8px;
-  align-items: center;
-  justify-content: space-between;
+  gap: 8px; align-items: center; justify-content: space-between;
 }
 .pg-journal .fab-rangee > .water-fab,
 .pg-journal .fab-rangee > .eat-toggle,
 .pg-journal .fab-rangee > .fab {
-  height: 44px; box-sizing: border-box;
-  margin: 0;
+  height: 44px; box-sizing: border-box; margin: 0;
   display: inline-flex; align-items: center; justify-content: center;
   padding-top: 0; padding-bottom: 0;
 }
-/* Les deux extremites gardent leur largeur naturelle... */
 .pg-journal .fab-rangee > .water-fab,
 .pg-journal .fab-rangee > .fab { flex: 0 0 auto; }
-/* ...la pilule occupe exactement ce qui reste. */
 .pg-journal .fab-rangee > .eat-toggle {
   flex: 1 1 0; min-width: 0; max-width: none; width: auto;
 }
 .pg-journal .fab-rangee > .eat-toggle span:not(.eat-fleche) {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+
+/* Plus d'air entre les raccourcis et les cartes de repas :
+   la pilule n'occupe plus cet espace dans le flux. */
+.pg-journal .colonne > .qa { margin-bottom: 18px; }
 
 /* La pilule « Idées recettes » a quitté le flux pour rejoindre la
    rangée flottante : sans compensation, les raccourcis et les cartes
@@ -750,5 +749,3 @@
 /* La pilule « Idées recettes » a rejoint la rangée flottante :
    l'espace qu'elle occupait dans le flux est rendu au rythme
    vertical, entre les raccourcis et les cartes de repas. */
-.pg-journal .colonne > .qa { margin-bottom: 12px; }
-.pg-journal .colonne > .mc:first-of-type { margin-top: 4px; }
