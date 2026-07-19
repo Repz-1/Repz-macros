@@ -737,3 +737,35 @@
 /* La pilule « Idées recettes » a rejoint la rangée flottante :
    l'espace qu'elle occupait dans le flux est rendu au rythme
    vertical, entre les raccourcis et les cartes de repas. */
+
+/* ============================================================
+   PANNEAU DES IDEES RECETTES
+   Mesures relevees sur la reference.
+   ============================================================ */
+.pg-journal .eat-panneau {
+  background: #FDF4F8;
+  border: 1.5px solid #F3D9E7;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(160, 60, 110, .08);
+  padding: 16px 14px 18px;
+  text-align: left;
+}
+.pg-journal .eat-intro {
+  font-size: 13.5px; color: #7A5C6B; margin: 0 0 14px;
+}
+.pg-journal .eat-intro b { color: #DB2777; font-size: 15px; }
+
+.pg-journal .eat-cats {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 14px;
+}
+.pg-journal .eat-cat {
+  background: #FFFFFF; border: 1.5px solid #F3D9E7; color: #1A1A1A;
+  padding: 13px; border-radius: 12px;
+  font-size: 14px; font-weight: 700; font-family: inherit;
+  cursor: pointer; transition: all .12s;
+}
+.pg-journal .eat-cat.active,
+.pg-journal .eat-cat:active {
+  background: #FCE7F3; border-color: #DB2777; color: #BE185D;
+}

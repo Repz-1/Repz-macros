@@ -54,9 +54,10 @@ export const EAT_IDEAS = {
     ]
 };
 
+// Libelles repris de la reference : pas d'emoji, texte seul.
 export const CATEGORIES_IDEES = [
-  { k: 'sain',    label: 'Sain',    ic: '🥗' },
-  { k: 'rapide',  label: 'Rapide',  ic: '⚡' },
-  { k: 'plaisir', label: 'Plaisir', ic: '😋' },
-  { k: 'vege',    label: 'Végé',    ic: '🌱' },
+  { k: 'sain',    label: 'Sain & léger' },
+  { k: 'rapide',  label: 'Rapide' },
+  { k: 'plaisir', label: 'Plaisir' },
+  { k: 'vege',    label: 'Végé' },
 ].filter(c => EAT_IDEAS[c.k] && EAT_IDEAS[c.k].length);

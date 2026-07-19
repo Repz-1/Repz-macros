@@ -70,23 +70,21 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       </div>
 
       {ouvert && !estPremium.value && (
-        <div class="carte eat-panneau" onClick={() => { ongletActif.value = 'premium'; }}>
-          <p class="idees-intro">Des idées de repas calibrées sur tes macros restantes.</p>
+        <div class="eat-panneau" onClick={() => { ongletActif.value = 'premium'; }}>
+          <p class="eat-intro">Des idées de repas calibrées sur tes macros restantes. <b>Passe en Premium</b> pour les débloquer.</p>
         </div>
       )}
 
       {ouvert && estPremium.value && (
-    <div class="carte eat-panneau">
-      <p class="idees-intro">
-        {reste > 50 ? `Il te reste ${reste} kcal aujourd'hui.`
-          : reste < -50 ? `Tu as dépassé de ${Math.abs(reste)} kcal.`
-          : 'Tu es pile sur ton objectif.'}
-      </p>
+    <div class="eat-panneau">
+      <p class="eat-intro"
+         dangerouslySetInnerHTML={{ __html: t('eat_left').replace('{n}', Math.max(0, reste)) }} />
 
-      <div class="idees-cats">
+      <div class="eat-cats">
         {CATEGORIES_IDEES.map(c => (
-          <button key={c.k} class={cat === c.k ? 'actif' : ''} onClick={() => setCat(cat === c.k ? null : c.k)}>
-            {c.ic} {c.label}
+          <button key={c.k} class={'eat-cat' + (cat === c.k ? ' active' : '')}
+                  onClick={() => setCat(cat === c.k ? null : c.k)}>
+            {c.label}
           </button>
         ))}
       </div>
