@@ -4,7 +4,7 @@ import { createPortal } from 'preact/compat';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
 import { DB } from '../data/aliments.js';
 import { IDEA_PREP } from '../data/preparations.js';
-import { repas, ajouterIngredient, objectifs, totauxJour } from '../store/journal.js';
+import { objectifs, totauxJour } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -219,20 +219,8 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
   const [cat, setCat] = useState(null);
   const [fiche, setFiche] = useState(null);
   const [index, setIndex] = useState(0);
-  const [ajoute, setAjoute] = useState(null);
 
   const reste = Math.round(objectifs.value.kcal - totauxJour.value.kcal);
-  const cible = repas.value[repas.value.length - 1];
-
-  const ajouter = (idee) => {
-    if (!cible) return;
-    idee.ings.forEach(i => {
-      const d = DB[i.n];
-      if (d) ajouterIngredient(cible.id, i.n, d.unit ? i.q * d.unit : i.q);
-    });
-    setAjoute(idee.nom);
-    setTimeout(() => setAjoute(null), 1500);
-  };
 
   // Rangee flottante : la pilule seule.
   if (pilulSeule) {

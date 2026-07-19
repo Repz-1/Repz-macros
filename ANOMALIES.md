@@ -36,6 +36,7 @@ Statut : `observé` = relevé, non soumis · `soumis` = proposé à Raci ·
 | J23 | Cartes repas | Données enregistrées avant l'''ajout des clés : ni illustration ni fourchette, et pas de 4e carte | **corrigé** — migration au chargement, rattachement par le nom |
 | J24 | Mise en page | Marges doublées : le conteneur global ajoutait 16 px par-dessus les 20 px de la colonne, la carte perdait 38 px de large | **corrigé** — conteneur neutralisé, marge alignée à 17 px |
 | J25 | Idées recettes | Libellés omettant « cuit » / « cru » : 210 g de poulet cru n'''ont pas les macros de 210 g cuit | **corrigé** — 27 libellés complétés |
+| J26 | Idées recettes | Cliquer sur une carte ajoutait silencieusement tous ses ingrédients au journal, sans confirmation ni retour | **corrigé** — le clic ouvre la fiche, la fonction d'''ajout a été supprimée |
 | J17 | Calculateur | Le bas de la carte (macros et bouton Appliquer) passe sous les flottants | **observé** — audit final |
 | J18 | Lignes d'''aliments | Le champ de quantité fait exploser sa colonne (min-width auto en grille) | **corrigé** — min-width 0, règle globale sur input/select/textarea |
 | J19 | Lignes d'''aliments | Effacer le champ met la valeur à 0 immédiatement : impossible de vider pour retaper | **corrigé** — champ vide toléré pendant la frappe |
