@@ -14,7 +14,10 @@ POIDS_MAX = 150 * 1024
 
 
 def nom_fichier(nom):
-    s = unicodedata.normalize('NFD', nom.lower())
+    # Les ligatures ne sont pas decomposees par NFD : sans cela,
+    # « Œufs » donnerait « ufs ».
+    s = nom.lower().replace('œ', 'oe').replace('æ', 'ae')
+    s = unicodedata.normalize('NFD', s)
     s = ''.join(c for c in s if unicodedata.category(c) != 'Mn')
     s = re.sub(r'[^a-z0-9]+', '-', s).strip('-')
     return s + '.webp'

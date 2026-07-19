@@ -124,6 +124,7 @@ function dureeEstimee(prep) {
 function fichierImage(nom) {
   return nom
     .toLowerCase()
+    .replace(/œ/g, 'oe').replace(/æ/g, 'ae')            // ligatures
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   // accents
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') + '.webp';
