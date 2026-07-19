@@ -103,27 +103,108 @@ function adapter(idee, restes, cible) {
 
 
 /** Fiche detaillee d'une recette : ingredients peses et preparation. */
+/**
+ * Duree approximative d'une recette, deduite des temps cites dans ses
+ * etapes (« 25 min au four », « 5-6 min par face »). On retient le plus
+ * long, arrondi aux 5 minutes, avec un minimum de 10.
+ * Aucune donnee inventee : si aucun temps n'est mentionne, on n'affiche rien.
+ */
+function dureeEstimee(prep) {
+  if (!prep || !prep.steps) return null;
+  const texte = prep.steps.join(' ');
+  const trouves = [...texte.matchAll(/(\d+)(?:\s*[-–]\s*(\d+))?\s*min/gi)]
+    .map(m => parseInt(m[2] || m[1], 10))
+    .filter(n => !isNaN(n) && n < 240);
+  if (!trouves.length) return null;
+  const max = Math.max(...trouves);
+  return Math.max(10, Math.round(max / 5) * 5);
+}
+
+/** Nom de fichier image d'une recette : sans accent ni espace. */
+function fichierImage(nom) {
+  return nom
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   // accents
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') + '.webp';
+}
+
+/**
+ * Fiche recette plein ecran.
+ * Photo en banniere, informations essentielles dessous, puis le detail.
+ * Tant qu'une photo manque, un fond degrade prend sa place : la mise
+ * en page reste identique, sans trou ni image cassee.
+ */
 function FicheRecette({ nom, portion, kcal, prot, fermer }) {
   const prep = IDEA_PREP[nom];
+  const [photoOk, setPhotoOk] = useState(true);
+  const minutes = dureeEstimee(prep);
+
   return createPortal(
-    <div class="rm-overlay" onClick={e => { if (e.target === e.currentTarget) fermer(); }}>
-      <div class="rm-boite">
-        <button class="rm-x" onClick={fermer} aria-label="Fermer">✕</button>
-        <h3 class="rm-titre">{nom}</h3>
-        <div class="rm-macros">≈ {kcal} kcal · {prot} {t('g_protein')}</div>
+    <div class="fr-plein">
+      <div class="fr-defile">
 
-        <div class="rm-sec">{t('ingredients')}</div>
-        <ul class="rm-ings">
-          {portion.split(' · ').map((x, i) => <li key={i}>{x}</li>)}
-        </ul>
+        {/* Banniere : photo si elle existe, degrade sinon */}
+        <div class={'fr-banniere' + (photoOk ? '' : ' fr-banniere--vide')}>
+          {photoOk && (
+            <img
+              src={`../img/recettes/${fichierImage(nom)}`}
+              alt=""
+              onError={() => setPhotoOk(false)}
+            />
+          )}
+          {!photoOk && (
+            <svg class="fr-embleme" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3v7a2 2 0 002 2v9" /><path d="M5 3v4" /><path d="M9 3v4" />
+              <path d="M17 3c-1.5 0-3 2-3 5v4h3v9" />
+            </svg>
+          )}
+          <button class="fr-x" onClick={fermer} aria-label="Fermer">✕</button>
+        </div>
 
-        <div class="rm-sec">{t('preparation')}</div>
-        <ol class="rm-steps">
-          {(prep ? prep.steps : ['Assemble les ingrédients selon tes préférences.'])
-            .map((x, i) => <li key={i}>{x}</li>)}
-        </ol>
+        {/* En-tete : titre et informations essentielles */}
+        <div class="fr-tete">
+          <h2 class="fr-titre">{nom}</h2>
+          <div class="fr-meta">
+            {minutes && (
+              <span>
+                <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
+                  <circle cx="12" cy="13" r="8" /><path d="M12 9v4l2.5 2M9 2h6" />
+                </svg>
+                {minutes} min
+              </span>
+            )}
+            <span>
+              <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
+                <path d="M12 3C9 7 7 9 7 13a5 5 0 0010 0c0-2-1-3.6-2.5-5-.3 1.2-1 2-2 2.4C13 8 13 5.5 12 3z" />
+              </svg>
+              {kcal} kcal
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
+                <path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11" />
+              </svg>
+              {prot} g prot
+            </span>
+          </div>
+        </div>
 
-        {prep && prep.tip && <div class="rm-tip">{prep.tip}</div>}
+        <div class="fr-sep" />
+
+        <div class="fr-corps">
+          <div class="fr-sec">{t('ingredients')}</div>
+          <ul class="fr-ings">
+            {portion.split(' · ').map((x, i) => <li key={i}>{x}</li>)}
+          </ul>
+
+          <div class="fr-sec">{t('preparation')}</div>
+          <ol class="fr-steps">
+            {(prep ? prep.steps : ['Assemble les ingrédients selon tes préférences.'])
+              .map((x, i) => <li key={i}>{x}</li>)}
+          </ol>
+
+          {prep && prep.tip && <div class="fr-tip">{prep.tip}</div>}
+        </div>
       </div>
     </div>,
     document.body
