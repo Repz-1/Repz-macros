@@ -1793,3 +1793,24 @@ Object.assign(window.BELFIT_STRINGS.fr, { vm_listening_tap: 'Je t\'écoute… Ap
 Object.assign(window.BELFIT_STRINGS.en, { vm_listening_tap: 'Listening… Tap again when you are done' });
 
 Object.assign(window.BELFIT_STRINGS.nl, { vm_listening_tap: 'Ik luister… Tik opnieuw wanneer je klaar bent' });
+
+Object.assign(window.BELFIT_STRINGS.fr, {
+  proteins: 'Protéines',
+  fats: 'Lipides',
+  kcal_reached: 'objectif atteint',
+  confirm_new_day: 'Commencer une nouvelle journée ? Les repas d\'aujourd\'hui seront archivés.'
+});
+
+Object.assign(window.BELFIT_STRINGS.en, {
+  proteins: 'Protein',
+  fats: 'Fat',
+  kcal_reached: 'goal reached',
+  confirm_new_day: 'Start a new day? Today\'s meals will be archived.'
+});
+
+Object.assign(window.BELFIT_STRINGS.nl, {
+  proteins: 'Eiwitten',
+  fats: 'Vetten',
+  kcal_reached: 'doel bereikt',
+  confirm_new_day: 'Een nieuwe dag starten? De maaltijden van vandaag worden gearchiveerd.'
+});
