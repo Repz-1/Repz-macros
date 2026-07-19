@@ -21,17 +21,9 @@ function macrosIdee(idee) {
 }
 
 export function IdeesRepas() {
+  const [ouvert, setOuvert] = useState(false);
   const [cat, setCat] = useState(null);
   const [ajoute, setAjoute] = useState(null);
-
-  if (!estPremium.value) {
-    return (
-      <div class="carte idees-verrou" onClick={() => { ongletActif.value = 'premium'; }}>
-        <div class="idees-tete"><span>💡 {t('idees_repas')}</span><i class="pro-inline">✦ PRO</i></div>
-        <p>Des idées de repas calibrées sur tes macros restantes.</p>
-      </div>
-    );
-  }
 
   const reste = Math.round(objectifs.value.kcal - totauxJour.value.kcal);
   const cible = repas.value[repas.value.length - 1];
@@ -47,8 +39,25 @@ export function IdeesRepas() {
   };
 
   return (
-    <div class="carte">
-      <div class="idees-tete"><span>💡 {t('idees_repas')}</span></div>
+    <div class="eat-zone-wrap">
+      <div class="eat-zone">
+        <button class="eat-toggle" onClick={() => setOuvert(!ouvert)}>
+          <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
+            <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z" />
+          </svg>
+          <span>{t('eat_title')}</span>
+          <span class="eat-fleche">{ouvert ? '\u25B4' : '\u25BE'}</span>
+        </button>
+      </div>
+
+      {ouvert && !estPremium.value && (
+        <div class="carte eat-panneau" onClick={() => { ongletActif.value = 'premium'; }}>
+          <p class="idees-intro">Des idées de repas calibrées sur tes macros restantes.</p>
+        </div>
+      )}
+
+      {ouvert && estPremium.value && (
+    <div class="carte eat-panneau">
       <p class="idees-intro">
         {reste > 50 ? `Il te reste ${reste} kcal aujourd'hui.`
           : reste < -50 ? `Tu as dépassé de ${Math.abs(reste)} kcal.`
@@ -75,6 +84,8 @@ export function IdeesRepas() {
           </div>
         );
       })}
+    </div>
+      )}
     </div>
   );
 }

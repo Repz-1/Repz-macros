@@ -385,7 +385,7 @@
   background: var(--carte);
   border: 1px solid #ECE8DF;
   border-radius: 20px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 2px 10px rgba(24, 24, 24, .04);
 }
 .pg-journal .qa-btn {
@@ -397,6 +397,8 @@
 }
 /* Trait vertical entre les colonnes, jamais sur les bords exterieurs */
 .pg-journal .qa-btn + .qa-btn { border-left: 1px solid #ECE8DF; }
+.pg-journal .qa-btn:first-child { border-radius: 20px 0 0 20px; }
+.pg-journal .qa-btn:last-child  { border-radius: 0 20px 20px 0; }
 .pg-journal .qa-btn:active { background: #F5F6F8; }
 
 .pg-journal .qa-ic {
@@ -415,10 +417,40 @@
 
 /* Badge Premium : deborde legerement dans le coin superieur droit */
 .pg-journal .qa-pro {
-  position: absolute; top: 5px; right: 7px;
+  position: absolute; top: -7px; right: -4px;
   display: flex; align-items: center; gap: 2px;
   background: var(--or); color: #5A3E00;
   font-size: 8.5px; font-weight: 800; letter-spacing: .4px;
   padding: 2px 6px; border-radius: 7px;
 }
 .pg-journal .qa-pro::before { content: '\2726'; font-size: 7.5px; line-height: 1; }
+
+
+/* ============================================================
+   BOUTON IDEES RECETTES
+   Pilule independante, centree, degradé violet -> rose avec
+   ombre coloree. Mesures relevees sur la reference.
+   ============================================================ */
+.pg-journal .eat-toggle {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  width: fit-content; max-width: 80%; margin: 0 auto;
+  background: linear-gradient(135deg, #A855F7, #DB2777);
+  color: #FFFFFF; border: none;
+  padding: 11px 18px; border-radius: 22px;
+  font-size: 13.5px; font-weight: 800; font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(190, 24, 93, .28);
+}
+.pg-journal .eat-toggle:active { filter: brightness(.95); transform: scale(.98); }
+.pg-journal .eat-toggle .ic {
+  width: 17px; height: 17px; color: #FFFFFF;
+  fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .eat-fleche { font-size: 11px; line-height: 1; }
+
+/* La pilule est un element autonome : elle se centre dans la
+   colonne sans etre rattachee a une carte. */
+.pg-journal .eat-zone { display: flex; justify-content: center; }
+.pg-journal .eat-zone-wrap { display: flex; flex-direction: column; gap: 12px; }
+.pg-journal .eat-panneau { animation: journalEntree 200ms ease both; }
