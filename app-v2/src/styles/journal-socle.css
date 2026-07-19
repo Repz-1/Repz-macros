@@ -317,7 +317,9 @@
 
 /* ---------- Separateur ---------- */
 .pg-journal .cal-trait {
-  height: 1px; background: #ECE8DF; margin: 18px 0 0;
+  /* Legerement plus etroit que le contenu : le trait ne doit pas
+     toucher les bords, il separe sans encadrer. */
+  height: 1px; background: #ECE8DF; margin: 18px 6px 0;
 }
 
 /* ---------- Macros ---------- */
