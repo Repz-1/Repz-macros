@@ -9,3 +9,4 @@ android/*.keystore
 android/android-keystore.jks
 android/app/
 android/build/
+app-v2/apercu/
