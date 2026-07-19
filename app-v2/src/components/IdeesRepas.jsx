@@ -23,6 +23,38 @@ function macrosIdee(idee) {
 
 // Etat partage : la pilule est dans la rangee flottante, le panneau
 // reste dans le flux de la page.
+
+/** Quantites ajustees a ce qu'il reste dans la journee, comme sur
+    la reference : « 205g poulet · 275g patate douce · 205g brocoli ». */
+function portionAdaptee(idee, resteKcal) {
+  const base = macrosIdee(idee);
+  const cible = Math.max(250, Math.min(700, resteKcal > 0 ? resteKcal * 0.28 : 400));
+  const ratio = base.kcal > 0 ? Math.max(0.75, Math.min(1.4, cible / base.kcal)) : 1;
+
+  const parts = [];
+  let kcal = 0, prot = 0;
+  idee.ings.forEach(i => {
+    const d = DB[i.n];
+    if (!d) return;
+    let q, grammes, libelle;
+    if (d.unit) {
+      q = Math.max(1, Math.round(i.q * ratio));
+      grammes = q * d.unit;
+      libelle = q + ' ' + i.l + (q > 1 ? 's' : '');
+    } else {
+      q = Math.max(5, Math.round(i.q * ratio / 5) * 5);
+      grammes = q;
+      libelle = q + 'g ' + i.l;
+    }
+    const f = grammes / 100;
+    kcal += d.kcal * f;
+    prot += d.prot * f;
+    parts.push(libelle);
+  });
+
+  return { texte: parts.join(' · '), kcal: Math.round(kcal), prot: Math.round(prot) };
+}
+
 export const ideesOuvertes = signal(false);
 
 export function IdeesRepas({ pilulSeule, panneauSeul }) {
@@ -89,18 +121,23 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
         ))}
       </div>
 
-      {cat && EAT_IDEAS[cat].map((idee, i) => {
-        const m = macrosIdee(idee);
-        return (
-          <div class="idee" key={i}>
-            <div class="idee-info">
-              <div class="idee-nom">{idee.nom}</div>
-              <div class="idee-mac">{m.kcal.toFixed(0)} kcal · {m.prot.toFixed(0)}P · {m.carbs.toFixed(0)}C · {m.lip.toFixed(0)}L</div>
-            </div>
-            <button onClick={() => ajouter(idee)}>{ajoute === idee.nom ? '✓' : '+'}</button>
-          </div>
-        );
-      })}
+      {cat && (
+        <div class="eat-ideas">
+          {EAT_IDEAS[cat].map((idee, i) => {
+            const p = portionAdaptee(idee, reste);
+            return (
+              <div class="eat-idea" key={i} onClick={() => ajouter(idee)}>
+                <div class="eat-idea-name">{idee.nom}</div>
+                <div class="eat-idea-ex">{p.texte}</div>
+                <div class="eat-idea-kcal">
+                  ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
+                </div>
+                <span class="eat-open">{ajoute === idee.nom ? '✓ Ajouté' : 'Voir la recette →'}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
       )}
     </div>

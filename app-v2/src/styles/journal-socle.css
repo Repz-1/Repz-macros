@@ -769,3 +769,40 @@
 .pg-journal .eat-cat:active {
   background: #FCE7F3; border-color: #DB2777; color: #BE185D;
 }
+
+/* ---------- Cartes de recettes ---------- */
+.pg-journal .eat-ideas {
+  display: flex; flex-direction: column; gap: 10px;
+  max-height: 340px; overflow-y: auto;
+  padding-right: 4px; -webkit-overflow-scrolling: touch;
+}
+.pg-journal .eat-ideas::-webkit-scrollbar { width: 5px; }
+.pg-journal .eat-ideas::-webkit-scrollbar-thumb { background: #F0C4DC; border-radius: 5px; }
+
+.pg-journal .eat-idea {
+  background: #FFFFFF;
+  border: 1px solid #F3D9E7;
+  border-left: 4px solid #DB2777;      /* la barre rose de la reference */
+  border-radius: 14px;
+  padding: 15px 16px;
+  box-shadow: 0 3px 10px rgba(160, 60, 110, .05);
+  cursor: pointer;
+}
+.pg-journal .eat-idea-name {
+  font-size: 15px; font-weight: 800; color: #1A1A1A; line-height: 1.3;
+}
+.pg-journal .eat-idea-ex {
+  font-size: 12.5px; color: #8A7480; margin-top: 5px; line-height: 1.45;
+}
+.pg-journal .eat-idea-kcal {
+  display: inline-block; margin-top: 9px;
+  background: #FCE7F3; color: #BE185D;
+  font-size: 12px; font-weight: 800;
+  padding: 3px 10px; border-radius: 20px;
+}
+.pg-journal .eat-prot { font-weight: 700; }
+.pg-journal .eat-prot.ok { color: #8F6200; }
+.pg-journal .eat-open {
+  display: block; text-align: right; margin-top: 8px;
+  font-size: 12.5px; font-weight: 800; color: #DFA004;
+}
