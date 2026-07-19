@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BELFIT — Idées recettes, variantes</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MAQUETTE — comparaison des variantes du panneau Idees recettes.
+   Page de travail, non reliee a l'application.
+   ============================================================ */
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0 0 60px;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  background: linear-gradient(180deg, #FBF0DC 0%, #FAF6EC 20%, #FAF9F6 100%);
+  color: #191919;
+}
+.entete {
+  padding: calc(18px + env(safe-area-inset-top)) 17px 10px;
+  font-size: 13px; font-weight: 700; color: #8A8580;
+}
+.bloc { padding: 0 17px 34px; }
+.etiquette {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 800; letter-spacing: .06em;
+  text-transform: uppercase; color: #A8A297; margin: 0 0 12px;
+}
+.etiquette i {
+  font-style: normal; background: #191919; color: #fff;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+.note { font-size: 12.5px; color: #8A8580; margin: 10px 2px 0; line-height: 1.5; }
+
+/* ---------- Pilule commune ---------- */
+.pilule {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: fit-content; margin: 0 auto 14px;
+  background: linear-gradient(135deg, #A855F7, #DB2777);
+  color: #fff; border: none; border-radius: 22px;
+  padding: 11px 18px; font-size: 13.5px; font-weight: 800;
+  box-shadow: 0 4px 14px rgba(190,24,93,.28);
+}
+.pilule svg { width: 17px; height: 17px; fill: none; stroke: #fff; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ============================================================
+   ACTUEL
+   ============================================================ */
+.a-panneau {
+  background: #FDF4F8; border: 1.5px solid #F3D9E7; border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(160,60,110,.08); padding: 16px 14px 18px;
+}
+.a-intro { font-size: 13.5px; color: #7A5C6B; margin: 0 0 14px; }
+.a-intro b { color: #DB2777; font-size: 15px; }
+.a-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.a-cat {
+  background: #fff; border: 1.5px solid #F3D9E7; color: #1A1A1A;
+  padding: 13px; border-radius: 12px; font-size: 14px; font-weight: 700; font-family: inherit;
+}
+.a-cat.on { background: #FCE7F3; border-color: #DB2777; color: #BE185D; }
+.a-carte {
+  background: #fff; border: 1px solid #F3D9E7; border-left: 4px solid #DB2777;
+  border-radius: 14px; padding: 15px 16px; box-shadow: 0 3px 10px rgba(160,60,110,.05);
+}
+.a-nom { font-size: 15px; font-weight: 800; line-height: 1.3; }
+.a-ing { font-size: 12.5px; color: #8A7480; margin-top: 5px; }
+.a-mac {
+  display: inline-block; margin-top: 9px; background: #FCE7F3; color: #BE185D;
+  font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 20px;
+}
+.a-voir { display: block; text-align: right; margin-top: 8px; font-size: 12.5px; font-weight: 800; color: #DFA004; }
+.a-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 2px; margin-top: 10px;
+}
+.a-nav button { background: none; border: none; font-family: inherit; font-size: 13px; font-weight: 800; color: #BE185D; padding: 8px 4px; }
+.a-nav button.off { color: #D9C2CE; }
+.a-pos { font-size: 12px; font-weight: 700; color: #B79AA8; }
+
+/* ============================================================
+   VARIANTE A — sans fond rose
+   ============================================================ */
+.b-intro { font-size: 13.5px; color: #6B7280; margin: 0 0 14px; padding: 0 2px; }
+.b-intro b { color: #191919; font-weight: 800; }
+.b-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.b-cat {
+  background: #fff; border: 1px solid #EDE9E1; color: #1A1A1A;
+  padding: 13px; border-radius: 12px; font-size: 14px; font-weight: 700; font-family: inherit;
+  box-shadow: 0 2px 8px rgba(60,50,40,.04);
+}
+.b-cat.on { background: #191919; border-color: #191919; color: #fff; }
+
+/* ============================================================
+   VARIANTE B — categories en ligne
+   ============================================================ */
+.c-cats {
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 14px;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.c-cats::-webkit-scrollbar { display: none; }
+.c-cat {
+  flex: none; background: #fff; border: 1px solid #EDE9E1; color: #4B4A47;
+  padding: 9px 15px; border-radius: 20px; font-size: 13.5px; font-weight: 700; font-family: inherit;
+}
+.c-cat.on { background: #191919; border-color: #191919; color: #fff; }
+
+/* ============================================================
+   VARIANTE C — carte allegee
+   ============================================================ */
+.d-carte {
+  background: #fff; border: 1px solid #EDE9E1; border-radius: 20px;
+  padding: 18px; box-shadow: 0 4px 16px rgba(60,50,40,.06);
+}
+.d-nom { font-size: 16.5px; font-weight: 800; line-height: 1.3; letter-spacing: -.01em; }
+.d-ing { font-size: 13px; color: #8A8580; margin-top: 6px; line-height: 1.5; }
+.d-bas { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+.d-mac {
+  background: #FCE7F3; color: #BE185D;
+  font-size: 12.5px; font-weight: 800; padding: 5px 12px; border-radius: 20px;
+}
+.d-voir { font-size: 13px; font-weight: 800; color: #DFA004; }
+.d-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 14px; padding: 0 2px;
+}
+.d-nav button { background: none; border: none; font-family: inherit; font-size: 13px; font-weight: 800; color: #4B4A47; padding: 8px 2px; }
+.d-nav button.off { color: #C9C4BA; }
+.d-pos { font-size: 12px; font-weight: 700; color: #A8A297; }
+</style>
+</head>
+<body>
+
+<div class="entete">BELFIT — Idées recettes · quatre propositions à comparer</div>
+
+<!-- ======================= ACTUEL ======================= -->
+<section class="bloc">
+  <p class="etiquette"><i>0</i> Actuel</p>
+  <button class="pilule"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> Idées recettes ▴</button>
+  <div class="a-panneau">
+    <p class="a-intro">Il te reste <b>2881 kcal</b>. Choisis une envie :</p>
+    <div class="a-cats">
+      <button class="a-cat on">Sain &amp; léger</button><button class="a-cat">Rapide</button>
+      <button class="a-cat">Plaisir</button><button class="a-cat">Végé</button>
+    </div>
+    <div class="a-carte">
+      <div class="a-nom">Blanc de poulet + riz + légumes</div>
+      <div class="a-ing">210g poulet · 210g riz cuit · 210g brocoli</div>
+      <div class="a-mac">≈ 691 kcal · 77 g prot</div>
+      <span class="a-voir">Voir la recette →</span>
+    </div>
+    <div class="a-nav"><button class="off">← Précédente</button><span class="a-pos">1 / 10</span><button>Suivante →</button></div>
+  </div>
+  <p class="note">Quatre niveaux de rose, trois cadres imbriqués.</p>
+</section>
+
+<!-- ======================= A ======================= -->
+<section class="bloc">
+  <p class="etiquette"><i>A</i> Sans fond rose</p>
+  <button class="pilule"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> Idées recettes ▴</button>
+  <p class="b-intro">Il te reste <b>2881 kcal</b>. Choisis une envie :</p>
+  <div class="b-cats">
+    <button class="b-cat on">Sain &amp; léger</button><button class="b-cat">Rapide</button>
+    <button class="b-cat">Plaisir</button><button class="b-cat">Végé</button>
+  </div>
+  <div class="d-carte">
+    <div class="d-nom">Blanc de poulet + riz + légumes</div>
+    <div class="d-ing">210g poulet · 210g riz cuit · 210g brocoli</div>
+    <div class="d-bas"><span class="d-mac">≈ 691 kcal · 77 g prot</span><span class="d-voir">Voir la recette →</span></div>
+  </div>
+  <div class="d-nav"><button class="off">← Précédente</button><span class="d-pos">1 / 10</span><button>Suivante →</button></div>
+  <p class="note">Le panneau disparaît. Deux niveaux au lieu de quatre.</p>
+</section>
+
+<!-- ======================= B ======================= -->
+<section class="bloc">
+  <p class="etiquette"><i>B</i> Catégories en ligne</p>
+  <button class="pilule"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> Idées recettes ▴</button>
+  <p class="b-intro">Il te reste <b>2881 kcal</b>. Choisis une envie :</p>
+  <div class="c-cats">
+    <button class="c-cat on">Sain &amp; léger</button><button class="c-cat">Rapide</button>
+    <button class="c-cat">Plaisir</button><button class="c-cat">Végé</button>
+  </div>
+  <div class="d-carte">
+    <div class="d-nom">Blanc de poulet + riz + légumes</div>
+    <div class="d-ing">210g poulet · 210g riz cuit · 210g brocoli</div>
+    <div class="d-bas"><span class="d-mac">≈ 691 kcal · 77 g prot</span><span class="d-voir">Voir la recette →</span></div>
+  </div>
+  <div class="d-nav"><button class="off">← Précédente</button><span class="d-pos">1 / 10</span><button>Suivante →</button></div>
+  <p class="note">Une ligne gagnée. La recette remonte.</p>
+</section>
+
+<!-- ======================= C ======================= -->
+<section class="bloc">
+  <p class="etiquette"><i>C</i> Le plus épuré</p>
+  <button class="pilule"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z"/></svg> Idées recettes ▴</button>
+  <div class="c-cats">
+    <button class="c-cat on">Sain &amp; léger</button><button class="c-cat">Rapide</button>
+    <button class="c-cat">Plaisir</button><button class="c-cat">Végé</button>
+  </div>
+  <div class="d-carte">
+    <div class="d-nom">Blanc de poulet + riz + légumes</div>
+    <div class="d-ing">210g poulet · 210g riz cuit · 210g brocoli</div>
+    <div class="d-bas"><span class="d-mac">≈ 691 kcal · 77 g prot</span><span class="d-voir">Voir la recette →</span></div>
+  </div>
+  <div class="d-nav"><button class="off">← Précédente</button><span class="d-pos">1 / 10</span><button>Suivante →</button></div>
+  <p class="note">La phrase d'accroche disparaît aussi : le nombre de calories restantes est déjà affiché en haut de page.</p>
+</section>
+
+</body>
+</html>
