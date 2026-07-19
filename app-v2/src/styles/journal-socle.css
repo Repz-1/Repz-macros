@@ -534,3 +534,116 @@
   font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
 }
 .pg-journal .water-btns button:active { transform: scale(.97); background: #BAE6FD; }
+
+/* ============================================================
+   CARTE REPAS OUVERTE
+   Mesures relevees sur la reference.
+   ============================================================ */
+.pg-journal .mc-corps { padding: 0 16px 4px; }
+
+/* ---------- Ligne alimentaire ---------- */
+.pg-journal .mc-ing {
+  background: #FFFFFF;
+  border: 1px solid #EEF1F5;
+  border-radius: 10px;
+  padding: 10px 12px; margin-bottom: 6px;
+  display: grid; grid-template-columns: 1fr 66px 14px 84px 22px;
+  gap: 8px; align-items: center;
+}
+.pg-journal .mc-ing-info { min-width: 0; }
+.pg-journal .mc-ing-nom {
+  font-size: 14px; font-weight: 600; color: #1A1A1A; line-height: 1.25;
+}
+.pg-journal .mc-ing-base {
+  font-size: 11px; color: #94A3B8; margin-top: 2px;
+}
+
+.pg-journal .mc-ing-champ input {
+  width: 100%; padding: 6px 2px;
+  border: 1.5px solid #E2E8F0; border-radius: 8px;
+  background: #F8FAFC; color: #1A1A1A;
+  font-size: 15px; font-weight: 700; text-align: center; font-family: inherit;
+  scroll-margin: 140px;
+}
+.pg-journal .mc-ing-champ input:focus {
+  outline: none; border-color: var(--or); background: #FFFFFF;
+}
+.pg-journal .mc-ing-unite {
+  font-size: 12px; font-weight: 500; color: #94A3B8;
+}
+
+.pg-journal .mc-ing-macros { text-align: right; line-height: 1.2; }
+.pg-journal .mc-ing-kcal { font-size: 15px; font-weight: 800; color: #1A1A1A; }
+.pg-journal .mc-ing-sub {
+  font-size: 10px; font-weight: 500; color: #94A3B8;
+  margin-top: 2px; white-space: nowrap;
+}
+
+.pg-journal .mc-ing-del {
+  background: none; border: none; padding: 2px; cursor: pointer;
+  color: #CBD5E1; font-size: 14px; line-height: 1; font-family: inherit;
+}
+.pg-journal .mc-ing-del:active { color: #EF4444; }
+
+/* ---------- Champ d'ajout ---------- */
+.pg-journal .mc-ajout-zone { position: relative; }
+.pg-journal .mc-ajout {
+  display: flex; align-items: center;
+  margin-top: 10px;
+  background: #F5F6F8; border: 1.5px solid #E2E8F0; border-radius: 14px;
+  padding: 4px 4px 4px 0;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.pg-journal .mc-ajout:focus-within {
+  border-color: var(--or); background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(247, 181, 0, .12);
+}
+.pg-journal .mc-ajout input {
+  flex: 1; min-width: 0; padding: 9px 12px;
+  border: none; background: transparent;
+  font-size: 14px; font-family: inherit;
+  scroll-margin: 140px;
+}
+.pg-journal .mc-ajout input:focus { outline: none; }
+
+.pg-journal .mc-scan {
+  position: relative; flex-shrink: 0;
+  width: 52px; height: 40px; padding: 0;
+  border: none; border-radius: 10px;
+  background: #FFF4CC; color: #181818; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.pg-journal .mc-scan .ic { width: 22px; height: 22px; stroke-width: 1.7; }
+.pg-journal .mc-scan:active { background: #FBEFC7; }
+.pg-journal .mc-scan-pro {
+  position: absolute; top: -6px; right: -5px;
+  background: var(--or); color: #5A3E00;
+  font-size: 8px; font-weight: 800; font-style: normal;
+  padding: 1.5px 5px; border-radius: 6px;
+}
+
+/* ---------- Resultats de recherche ---------- */
+.pg-journal .mc-resultats {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 300;
+  background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px;
+  margin-top: 4px; max-height: 240px; overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+}
+.pg-journal .mc-resultats button {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; padding: 11px 14px;
+  background: none; border: none; border-bottom: 1px solid #F1F5F9;
+  font-size: 14px; font-family: inherit; text-align: left; cursor: pointer;
+}
+.pg-journal .mc-resultats button:last-child { border-bottom: none; }
+.pg-journal .mc-resultats button:active { background: #EFF6FF; }
+.pg-journal .mc-resultats .kc { color: #94A3B8; font-size: 12.5px; flex: none; }
+
+/* ---------- Bandeau recapitulatif ---------- */
+.pg-journal .mc-bandeau {
+  background: var(--or-creme);
+  border-top: 1px solid #F3E2A8;
+  border-radius: 0 0 17px 17px;      /* suit l'arrondi bas de la carte */
+  padding: 12px 16px;
+  font-size: 14px; font-weight: 700; color: var(--or-fonce);
+}

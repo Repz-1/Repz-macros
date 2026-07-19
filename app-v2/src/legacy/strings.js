@@ -1814,3 +1814,18 @@ Object.assign(STRINGS_V1.nl, {
   kcal_reached: 'doel bereikt',
   confirm_new_day: 'Een nieuwe dag starten? De maaltijden van vandaag worden gearchiveerd.'
 });
+
+Object.assign(STRINGS_V1.fr, {
+  mc_add_ph: 'Ajouter un aliment...',
+  mc_empty: 'Vide'
+});
+
+Object.assign(STRINGS_V1.en, {
+  mc_add_ph: 'Add a food...',
+  mc_empty: 'Empty'
+});
+
+Object.assign(STRINGS_V1.nl, {
+  mc_add_ph: 'Voeg een voedingsmiddel toe...',
+  mc_empty: 'Leeg'
+});

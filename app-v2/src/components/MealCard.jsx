@@ -12,29 +12,37 @@ import {
 const EMOJIS = { repas: '🍲', collation: '🍏', boisson: '🥛' };
 
 function LigneIngredient({ repasId, ing }) {
-  const d = DB[ing.name] || {};
+  const d = DB[ing.name] || customFoods.value[ing.name] || {};
   const m = macrosOf(ing);
+
   return (
-    <div class="ligne-ing">
-      <div class="infos">
-        <div class="nom">{ing.name}</div>
-        <div class="ref">
+    <div class="mc-ing">
+      <div class="mc-ing-info">
+        <div class="mc-ing-nom">{ing.name}</div>
+        <div class="mc-ing-base">
           {d.unit
-            ? `≈ ${(ing.portion / d.unit).toFixed(1).replace('.0', '')} ${d.unitLabel || 'pièce'}${ing.portion / d.unit >= 2 ? 's' : ''} · ${d.kcal} kcal/100g`
+            ? `1 ${d.unitLabel || 'pièce'} = ${Math.round((d.kcal || 0) * d.unit / 100)} kcal`
             : `100g = ${d.kcal ?? '?'} kcal`}
         </div>
       </div>
-      <input
-        type="number"
-        value={ing.portion}
-        onInput={e => setPortion(repasId, ing.id, e.currentTarget.value)}
-      />
-      <span class="unite">g</span>
-      <div class="macros">
-        <div class="k">{m.kcal.toFixed(0)} kcal</div>
-        <div class="d">{m.prot.toFixed(0)}P · {m.carbs.toFixed(0)}C · {m.lip.toFixed(0)}L</div>
+
+      <div class="mc-ing-champ">
+        <input
+          type="number"
+          value={ing.portion}
+          onInput={e => setPortion(repasId, ing.id, e.currentTarget.value)}
+        />
       </div>
-      <button class="suppr" onClick={() => supprimerIngredient(repasId, ing.id)}>✕</button>
+      <span class="mc-ing-unite">g</span>
+
+      <div class="mc-ing-macros">
+        <div class="mc-ing-kcal">{m.kcal.toFixed(0)} kcal</div>
+        <div class="mc-ing-sub">
+          {m.prot.toFixed(0)}P · {m.carbs.toFixed(0)}C · {m.lip.toFixed(0)}L
+        </div>
+      </div>
+
+      <button class="mc-ing-del" onClick={() => supprimerIngredient(repasId, ing.id)} aria-label="Retirer">✕</button>
     </div>
   );
 }
@@ -54,22 +62,27 @@ function Recherche({ repasId }) {
   };
 
   return (
-    <div class="recherche">
-      <div style={{display:'flex',gap:'6px'}}>
+    <div class="mc-ajout-zone">
+      <div class="mc-ajout">
         <input
-          style={{flex:1}}
-          placeholder={t("ajouter_aliment")}
+          placeholder={t('mc_add_ph')}
           value={q}
           onInput={e => setQ(e.currentTarget.value)}
         />
         <button
-          class="ing-scan"
+          class="mc-scan"
           onClick={() => { if (estPremium.value) setScan(true); else ongletActif.value = 'premium'; }}
-          title="Scanner un code-barres"
-        >▮▯▮{!estPremium.value && <i class="pro-mini">✦</i>}</button>
+          aria-label="Scanner un code-barres"
+        >
+          <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
+            <path d="M3 5v14M6.5 5v14M10 5v14M13.5 5v14M17 5v14M20.5 5v14" />
+          </svg>
+          {!estPremium.value && <i class="mc-scan-pro">✦</i>}
+        </button>
       </div>
+
       {resultats.length > 0 && (
-        <div class="resultats">
+        <div class="mc-resultats">
           {resultats.map(nom => (
             <button key={nom} onClick={() => choisir(nom)}>
               <span>{nom}</span>
@@ -78,6 +91,7 @@ function Recherche({ repasId }) {
           ))}
         </div>
       )}
+
       {scan && <Scanner repasId={repasId} fermer={() => setScan(false)} />}
     </div>
   );
@@ -112,7 +126,7 @@ export function MealCard({ r }) {
           ) : (
             <h3 class="mc-titre">{r.nom}</h3>
           )}
-          <p class="mc-sous">{vide ? t('vide') : `${tot.kcal.toFixed(0)} kcal`}</p>
+          <p class="mc-sous">{vide ? t('mc_empty') : `${tot.kcal.toFixed(0)} kcal`}</p>
         </div>
 
         <div class="mc-actions">
@@ -128,16 +142,20 @@ export function MealCard({ r }) {
       </div>
 
       {r.ouvert && (
-        <div>
+        <div class="mc-corps">
+          {/* Carte vide : le champ d'ajout vient directement sous l'en-tete,
+              aucune ligne fictive n'est affichee. */}
           {r.ings.map(ing => (
             <LigneIngredient key={ing.id} repasId={r.id} ing={ing} />
           ))}
           <Recherche repasId={r.id} />
-          {!vide && (
-            <div class="total-repas">
-              {tot.kcal.toFixed(0)} kcal | {tot.prot.toFixed(1)}P | {tot.carbs.toFixed(1)}C | {tot.lip.toFixed(1)}L
-            </div>
-          )}
+        </div>
+      )}
+
+      {/* Bandeau recapitulatif : suit l'arrondi bas de la carte */}
+      {r.ouvert && !vide && (
+        <div class="mc-bandeau">
+          {tot.kcal.toFixed(0)} kcal | {tot.prot.toFixed(1)}P | {tot.carbs.toFixed(1)}C | {tot.lip.toFixed(1)}L
         </div>
       )}
     </div>
