@@ -541,6 +541,7 @@ body.search-open .meal-bar { display:flex; }
 .vm-mic-btn.ecoute { animation:vmPulse 1.2s ease-in-out infinite; background:#DE2F14; }
 .vm-mic-btn.ecoute svg { stroke:#fff; }
 @keyframes vmPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.vm-diag { font-size:11px; color:#b0a89a; margin-top:6px; min-height:14px; text-align:center; font-family:monospace; }
 .vm-live { min-height:22px; font-size:14.5px; font-weight:600; color:#374151; text-align:center; }
 .vm-input { width:100%; padding:13px 14px; border:1.5px solid #E6E6E6; border-radius:14px; font-size:15px; font-family:inherit; margin-bottom:10px; }
 .vm-input:focus { outline:none; border-color:#F7B500; }
@@ -4687,6 +4688,7 @@ function inviteBloque(){ if(!estInviteRepz()) return false; murCompte(); return 
     <div class="vm-mic" id="vmMicZone">
       <button class="vm-mic-btn" id="vmMicBtn" onclick="basculerEcoute()"><svg viewBox="0 0 24 24"><rect x="10" y="2.5" width="4" height="9.5" rx="2"/><path d="M6.5 11.5a5.5 5.5 0 0011 0"/><path d="M12 17v3.5"/><path d="M9 20.5h6"/></svg></button>
       <div class="vm-live" id="vmLive"></div>
+      <div class="vm-diag" id="vmDiag"></div>
     </div>
     <input type="text" class="vm-input" id="vmInput" data-i18n-ph="vm_ph" placeholder="Décris ton repas…">
     <button class="vm-analyser" onclick="analyserVocal()" data-i18n="vm_analyze">Analyser</button>
@@ -4719,6 +4721,7 @@ function ouvrirVocal(){
     document.getElementById('vmConfirm').style.display = 'none';
     document.getElementById('vmInput').value = '';
     document.getElementById('vmLive').textContent = '';
+    diagVocal('');
     vocalFinal = ''; vocalArretVoulu = false;
     // Mode serveur (MediaRecorder) : marche sur tous les appareils, y compris iPhone.
     // On affiche donc toujours le micro. Fallback Web Speech seulement si pas de MediaRecorder.
@@ -4812,10 +4815,18 @@ async function blobVersWav(blob){
     return encoderWav(out, cible);
 }
 
+
+/** Affiche la cause reelle d'un echec vocal, sous le message principal. */
+function diagVocal(msg){
+    const el = document.getElementById('vmDiag');
+    if(el) el.textContent = msg ? '\u2139 ' + msg : '';
+    if(msg) console.warn('[vocal]', msg);
+}
+
 async function envoyerAudioVocal(mimeType){
     if(!vocalChunks.length){
         document.getElementById('vmLive').textContent = window.t('vm_no_audio');
-        console.warn('[vocal] aucun son capte'); return;
+        diagVocal('micro muet ou trop court'); return;
     }
     let blob = new Blob(vocalChunks, { type:mimeType });
     let typeEnvoye = 'audio/wav';
@@ -4845,26 +4856,30 @@ async function envoyerAudioVocal(mimeType){
         // et empeche de savoir ce qui bloque reellement.
         if(rep.status === 401){
             document.getElementById('vmLive').textContent = window.t('vm_need_login');
-            console.warn('[vocal] non authentifie'); return;
+            diagVocal('401 non authentifie'); return;
         }
         if(rep.status === 403){
             document.getElementById('vmLive').textContent = window.t('vm_premium_only');
-            console.warn('[vocal] compte non Premium cote serveur'); return;
+            diagVocal('403 non Premium cote serveur'); return;
         }
         if(rep.status === 404){
             document.getElementById('vmLive').textContent = window.t('vm_unavailable');
-            console.error('[vocal] Cloud Function absente : deployer transcrireVocal'); return;
+            diagVocal('404 fonction non deployee'); return;
         }
         if(!rep.ok){
             let detail = '';
             try { detail = (await rep.json()).error || ''; } catch(e){ detail = 'HTTP ' + rep.status; }
             document.getElementById('vmLive').textContent = window.t('vm_error');
-            console.error('[vocal] erreur serveur :', rep.status, detail);
+            diagVocal(rep.status + ' ' + detail);
             return;
         }
         const data = await rep.json();
         const aliments = Array.isArray(data.aliments) ? data.aliments : [];
-        if(!aliments.length){ document.getElementById('vmLive').textContent = t('vm_nothing') || 'Rien compris, réessaie'; return; }
+        if(!aliments.length){
+            document.getElementById('vmLive').textContent = t('vm_nothing') || 'Rien compris, réessaie';
+            diagVocal('reponse vide : ' + (data.texte ? 'entendu "' + String(data.texte).slice(0,40) + '"' : 'aucun texte reconnu'));
+            return;
+        }
         // Reconstituer une phrase que le parseur existant gère parfaitement
         const phrase = aliments.map(a=>{
             const u = a.unite === 'piece' ? '' : (a.unite || 'g');
