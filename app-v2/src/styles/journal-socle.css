@@ -740,3 +740,15 @@
 .pg-journal .fab-rangee > .eat-toggle span:not(.eat-fleche) {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+
+/* La pilule « Idées recettes » a quitté le flux pour rejoindre la
+   rangée flottante : sans compensation, les raccourcis et les cartes
+   repas se retrouvent collés. On rend l'espace qu'elle occupait. */
+.pg-journal .qa { margin-bottom: 30px; }
+
+
+/* La pilule « Idées recettes » a rejoint la rangée flottante :
+   l'espace qu'elle occupait dans le flux est rendu au rythme
+   vertical, entre les raccourcis et les cartes de repas. */
+.pg-journal .colonne > .qa { margin-bottom: 12px; }
+.pg-journal .colonne > .mc:first-of-type { margin-top: 4px; }
