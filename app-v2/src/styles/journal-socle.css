@@ -226,7 +226,7 @@
 /* Les deux cotes ont la MEME largeur : sans cela l'anneau se decale
    du centre optique des que les nombres changent de longueur. */
 .pg-journal .cal-cote {
-  flex: 1 1 0; min-width: 72px; text-align: center;
+  flex: 1 1 0; min-width: 62px; text-align: center;
   position: relative; z-index: 1;
 }
 .pg-journal .cal-cote-lb {
@@ -241,7 +241,7 @@
 /* ---------- Anneau ---------- */
 .pg-journal .cal-anneau {
   position: relative; flex: 0 1 184px;
-  width: 184px; max-width: 50vw;   /* laisse toujours de la place aux cotes */
+  width: 184px; max-width: 58vw;   /* laisse toujours de la place aux cotes */
   aspect-ratio: 1;
 }
 .pg-journal .cal-anneau-svg { display: block; width: 100%; height: 100%; }

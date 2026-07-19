@@ -30,6 +30,8 @@ Statut : `observé` = relevé, non soumis · `soumis` = proposé à Raci ·
 | J14 | Lignes d'aliments | Nom et équivalence cassés sur deux lignes (colonnes fixes trop larges) | **corrigé** — colonnes resserrées, texte tronqué proprement |
 | J15 | Bas de page | Espace réservé excessif : on défile dans du vide sur un écran entier | **corrigé** — 120 px ramenés à 76 px |
 | J16 | Ligne date | « 19 JUIL.. » — double point, le mois abrégé en contient déjà un | **corrigé** |
+| J20 | En-tête | Deux en-têtes superposés en v2 (celui du shell + celui du Journal) : tout le contenu était poussé de 100 px vers le bas | **corrigé** — en-tête global retiré, choix de langue déplacé dans le volet profil |
+| J21 | Anneau | Diamètre 132 px contre ~178 px sur la référence | **corrigé** — plafond porté à 58 % de la largeur |
 | J17 | Calculateur | Le bas de la carte (macros et bouton Appliquer) passe sous les flottants | **observé** — audit final |
 | J18 | Lignes d'''aliments | Le champ de quantité fait exploser sa colonne (min-width auto en grille) | **corrigé** — min-width 0, règle globale sur input/select/textarea |
 | J19 | Lignes d'''aliments | Effacer le champ met la valeur à 0 immédiatement : impossible de vider pour retaper | **corrigé** — champ vide toléré pendant la frappe |

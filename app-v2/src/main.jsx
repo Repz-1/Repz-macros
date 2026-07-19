@@ -18,6 +18,11 @@ import { Entrainer, vueEntrainer, retourEntrainer } from './components/Entrainer
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
+import { signal } from '@preact/signals';
+
+// Volet profil, ouvert depuis l'en-tete de chaque onglet
+export const voletProfil = signal(false);
+const ouvrirProfil = () => { voletProfil.value = !voletProfil.value; };
 import { PremiumPage } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
@@ -62,9 +67,9 @@ function Logo() {
     <header class="j-entete">
       <img class="j-logo" src="../belfit-logo-header.png" alt="BELFIT" />
       <div class="j-entete-actions">
-        <a class="j-btn-icone" href="../profil.html" aria-label="Profil">
+        <button class="j-btn-icone" onClick={ouvrirProfil} aria-label="Profil">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" /><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" /></svg>
-        </a>
+        </button>
         <a class="j-btn-icone" href="../parametres.html" aria-label="Réglages">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" /><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1.03 1.56V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1.11-1.56 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.56-1.03H3a2 2 0 110-4h.09a1.7 1.7 0 001.56-1.11 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34h.01A1.7 1.7 0 0010 4.09V4a2 2 0 114 0v.09a1.7 1.7 0 001.03 1.56h.01a1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87v.01a1.7 1.7 0 001.56 1.03H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1.02z" /></svg>
         </a>
@@ -90,7 +95,6 @@ function OngletEntrainer() {
 }
 
 function App() {
-  const [profil, setProfil] = useState(false);
   if (!authPrete.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>…</div>;
   }
@@ -105,31 +109,17 @@ function App() {
   return (
     <>
       <div class="conteneur">
-        <header class="entete">
-          <img src="/belfit-logo-b.png" alt="BelFit" class="entete-logo" />
-          <div class="lang-choix">
-            {LANGUES.map(l => (
-              <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
-            ))}
-          </div>
-          <button class="entete-profil" onClick={() => setProfil(!profil)} title={utilisateur.value ? utilisateur.value.email : t('mode_invite')}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
-          </button>
-        </header>
-
-        {profil && (
+        {voletProfil.value && (
           <div class="profil-volet">
             <span>{utilisateur.value ? utilisateur.value.email : t('mode_invite')}</span>
+            <div class="lang-choix">
+              {LANGUES.map(l => (
+                <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
+              ))}
+            </div>
             <button onClick={() => utilisateur.value ? deconnexion() : quitterInvite()}>
               {utilisateur.value ? t('deconnexion') : t('quitter')}
             </button>
-          </div>
-        )}
-
-        {invite.value && !utilisateur.value && (
-          <div class="bandeau-invite">
-            <span>{t('invite_bandeau')}</span>
-            <button onClick={quitterInvite}>{t('creer_compte')}</button>
           </div>
         )}
         {onglet === 'journal' && <OngletJournal />}
