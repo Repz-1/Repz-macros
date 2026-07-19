@@ -1829,3 +1829,9 @@ Object.assign(STRINGS_V1.nl, {
   mc_add_ph: 'Voeg een voedingsmiddel toe...',
   mc_empty: 'Leeg'
 });
+
+Object.assign(STRINGS_V1.fr, { mc_reco: 'Recommandé' });
+
+Object.assign(STRINGS_V1.en, { mc_reco: 'Recommended' });
+
+Object.assign(STRINGS_V1.nl, { mc_reco: 'Aanbevolen' });

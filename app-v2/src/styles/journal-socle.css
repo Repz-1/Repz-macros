@@ -705,3 +705,5 @@
 @media (prefers-reduced-motion: reduce) {
   .mtype-boite { animation: none; }
 }
+/* L'illustration est un SVG complet : elle occupe la vignette. */
+.pg-journal .mc-vignette svg { width: 42px; height: 42px; display: block; }

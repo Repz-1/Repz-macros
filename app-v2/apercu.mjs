@@ -42,12 +42,10 @@ await page.addInitScript(() => {
     objectifs: { kcal: 4300, prot: 217, carbs: 538, lip: 96 },
     eau: 0,
     repas: [
-      { id: 1, type: 'repas', nom: 'Petit déjeuner', ouvert: true, ings: [
-        { id: 11, name: 'Avoine', portion: 100 },
-        { id: 12, name: "Blanc d'oeuf", portion: 100 },
-      ]},
-      { id: 2, type: 'repas', nom: 'Déjeuner', ouvert: false, ings: [] },
-      { id: 3, type: 'repas', nom: 'Dîner', ouvert: false, ings: [] },
+      { id: 1, nom: 'Petit déjeuner', type:'repas', cle:'pdej',  fixe:true, ouvert:false, ings: [] },
+      { id: 2, nom: 'Déjeuner',       type:'repas', cle:'dej',   fixe:true, ouvert:false, ings: [] },
+      { id: 3, nom: 'Dîner',          type:'repas', cle:'diner', fixe:true, ouvert:false, ings: [] },
+      { id: 4, nom: 'Collations',     type:'collation', cle:'snack', fixe:true, ouvert:false, ings: [] },
     ],
   }));
 });

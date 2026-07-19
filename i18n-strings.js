@@ -1829,3 +1829,9 @@ Object.assign(window.BELFIT_STRINGS.nl, {
   mc_add_ph: 'Voeg een voedingsmiddel toe...',
   mc_empty: 'Leeg'
 });
+
+Object.assign(window.BELFIT_STRINGS.fr, { mc_reco: 'Recommandé' });
+
+Object.assign(window.BELFIT_STRINGS.en, { mc_reco: 'Recommended' });
+
+Object.assign(window.BELFIT_STRINGS.nl, { mc_reco: 'Aanbevolen' });

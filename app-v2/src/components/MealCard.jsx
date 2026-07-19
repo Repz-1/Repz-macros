@@ -4,12 +4,18 @@ import { customFoods, Scanner } from './Scanner.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
+import { MEAL_SVG, TYPE_SVG, MEAL_NEUTRAL_SVG } from '../data/illustrations.js';
 import {
   totauxRepas, setPortion, ajouterIngredient,
   supprimerIngredient, supprimerRepas, basculerRepas, renommerRepas,
+  fourchetteRepas,
 } from '../store/journal.js';
 
-const EMOJIS = { repas: '🍲', collation: '🍏', boisson: '🥛' };
+/** Illustration d'un repas : la sienne s'il est fixe, sinon celle de son type. */
+function illustration(r) {
+  if (r.cle && MEAL_SVG[r.cle]) return MEAL_SVG[r.cle];
+  return TYPE_SVG[r.type] || MEAL_NEUTRAL_SVG;
+}
 
 function LigneIngredient({ repasId, ing }) {
   const d = DB[ing.name] || customFoods.value[ing.name] || {};
@@ -122,7 +128,7 @@ export function MealCard({ r }) {
     <div class={'mc' + (r.ouvert ? ' mc--ouvert' : '')}>
       <div class="mc-tete" onClick={() => !edite && basculerRepas(r.id)}>
 
-        <div class="mc-vignette">{EMOJIS[r.type] || '🍲'}</div>
+        <div class="mc-vignette" dangerouslySetInnerHTML={{ __html: illustration(r) }} />
 
         <div class="mc-info">
           {edite ? (
@@ -138,7 +144,13 @@ export function MealCard({ r }) {
           ) : (
             <h3 class="mc-titre">{r.nom}</h3>
           )}
-          <p class="mc-sous">{vide ? t('mc_empty') : `${tot.kcal.toFixed(0)} kcal`}</p>
+          <p class="mc-sous">{
+            !vide ? `${tot.kcal.toFixed(0)} kcal`
+              : (() => {
+                  const f = fourchetteRepas(r.cle);
+                  return f ? `${t('mc_reco')} ${f.min} – ${f.max} kcal` : t('mc_empty');
+                })()
+          }</p>
         </div>
 
         <div class="mc-actions">

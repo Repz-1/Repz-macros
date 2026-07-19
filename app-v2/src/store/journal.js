@@ -16,9 +16,10 @@ const DEFAUTS = {
   eau: 0, // litres bus aujourd'hui
   objectifs: { kcal: 4300, prot: 217, carbs: 538, lip: 96 },
   repas: [
-    { id: 1, nom: 'Petit déjeuner', type: 'repas', ings: [], ouvert: false },
-    { id: 2, nom: 'Déjeuner',       type: 'repas', ings: [], ouvert: false },
-    { id: 3, nom: 'Dîner',          type: 'repas', ings: [], ouvert: false },
+    { id: 1, nom: 'Petit déjeuner', type: 'repas', cle: 'pdej',  fixe: true, ings: [], ouvert: false },
+    { id: 2, nom: 'Déjeuner',       type: 'repas', cle: 'dej',   fixe: true, ings: [], ouvert: false },
+    { id: 3, nom: 'Dîner',          type: 'repas', cle: 'diner', fixe: true, ings: [], ouvert: false },
+    { id: 4, nom: 'Collations',     type: 'collation', cle: 'snack', fixe: true, ings: [], ouvert: false },
   ],
 };
 
@@ -140,4 +141,21 @@ export function ajouterEau(litres) {
 
 export function setObjectifs(nouveaux) {
   objectifs.value = { ...objectifs.value, ...nouveaux };
+}
+
+// Part de l'objectif quotidien attribuee a chaque repas fixe.
+// Valeurs reprises de la reference.
+const PART_REPAS = {
+  pdej:  [0.20, 0.30],
+  dej:   [0.30, 0.40],
+  diner: [0.30, 0.40],
+  snack: [0.05, 0.10],
+};
+
+/** Fourchette recommandee d'un repas, ou null si le repas est libre. */
+export function fourchetteRepas(cle) {
+  const part = PART_REPAS[cle];
+  if (!part) return null;
+  const g = objectifs.value.kcal || 0;
+  return { min: Math.round(g * part[0]), max: Math.round(g * part[1]) };
 }
