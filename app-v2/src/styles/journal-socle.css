@@ -729,7 +729,9 @@
 /* La pilule « Idées recettes » a quitté le flux pour rejoindre la
    rangée flottante : sans compensation, les raccourcis et les cartes
    repas se retrouvent collés. On rend l'espace qu'elle occupait. */
-.pg-journal .qa { margin-bottom: 30px; }
+/* Le rythme vertical de la colonne (22 px) suffit : une marge
+   supplementaire creusait un trou avant la pilule. */
+.pg-journal .qa { margin-bottom: 0; }
 
 
 /* La pilule « Idées recettes » a rejoint la rangée flottante :
