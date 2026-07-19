@@ -39,12 +39,49 @@ effect(() => {
   donneesPretes.value = false;
   chargerDonnees(u).then(d => {
     if (uidCharge !== u) return; // changement de compte entre-temps
-    repas.value = d && d.repas ? d.repas : structuredClone(DEFAUTS.repas);
+    repas.value = migrerRepas(d && d.repas ? d.repas : structuredClone(DEFAUTS.repas));
     objectifs.value = d && d.objectifs ? d.objectifs : structuredClone(DEFAUTS.objectifs);
     eau.value = d && typeof d.eau === 'number' ? d.eau : 0;
     donneesPretes.value = true;
   });
 });
+
+
+// ============================================================
+// MIGRATION DES DONNEES EXISTANTES
+// Les repas enregistres avant l'ajout des cles n'en ont pas :
+// sans cle, ni illustration ni fourchette recommandee. On les
+// rattache par leur nom, et on complete les repas fixes absents.
+// ============================================================
+const CLE_PAR_NOM = {
+  'petit dejeuner': 'pdej', 'petit déjeuner': 'pdej', 'breakfast': 'pdej', 'ontbijt': 'pdej',
+  'dejeuner': 'dej', 'déjeuner': 'dej', 'lunch': 'dej',
+  'diner': 'diner', 'dîner': 'diner', 'dinner': 'diner', 'avondeten': 'diner',
+  'snacks': 'snack', 'collations': 'snack', 'collation': 'snack', 'tussendoortjes': 'snack',
+};
+
+function migrerRepas(liste) {
+  const sortie = liste.map(r => {
+    if (r.cle) return r;
+    const cle = CLE_PAR_NOM[(r.nom || '').trim().toLowerCase()];
+    return cle ? { ...r, cle, fixe: true } : r;
+  });
+
+  // Les quatre repas fixes doivent exister : un ancien enregistrement
+  // n'en contenait que trois.
+  const presentes = new Set(sortie.map(r => r.cle).filter(Boolean));
+  DEFAUTS.repas.forEach(def => {
+    if (def.cle && !presentes.has(def.cle)) {
+      const id = Math.max(0, ...sortie.map(r => r.id || 0)) + 1;
+      sortie.push({ ...structuredClone(def), id });
+    }
+  });
+
+  // Ordre de la reference : petit dejeuner, dejeuner, diner, collations,
+  // puis les repas libres ajoutes par l'utilisateur.
+  const rang = { pdej: 0, dej: 1, diner: 2, snack: 3 };
+  return sortie.sort((a, b) => (rang[a.cle] ?? 99) - (rang[b.cle] ?? 99));
+}
 
 // --- Sauvegarde automatique par compte : local immediat + cloud differe. ---
 effect(() => {
