@@ -18,7 +18,10 @@ const SECONDES = Array.from({ length: 12 }, (_, i) => i * 5);
 function chargerEtat() {
   try {
     const s = JSON.parse(localStorage.getItem(CLE));
-    if (s && typeof s.preset === 'number') return s;
+    if (s && typeof s.preset === 'number') {
+      // Ancien format (sans total) : on normalise pour eviter NaN
+      return { endAt: s.endAt || null, preset: s.preset, total: (typeof s.total === 'number' ? s.total : s.preset) };
+    }
   } catch {}
   return { endAt: null, preset: 90, total: 90 };
 }
