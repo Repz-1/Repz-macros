@@ -74,6 +74,13 @@ export function RestTimer() {
   const classe = !enCours ? '' :
     restant <= 5 ? 't-crit' : restant <= 10 ? 't-warn' : restant <= 30 ? 't-approche' : '';
 
+  // Surbrillance de l'item centre (comme updateWheelSel en v1)
+  const majSel = (el) => {
+    if (!el) return;
+    const i = Math.round(el.scrollTop / 50);
+    el.querySelectorAll('.v2-wheel-item').forEach((it, idx) => it.classList.toggle('sel', idx === i));
+  };
+
   // ---- Molettes : positionne sur une valeur (scroll programmatique) ----
   const calerMolettes = useCallback((total) => {
     const wm = wheelMinRef.current, ws = wheelSecRef.current;
@@ -83,6 +90,7 @@ export function RestTimer() {
     const si = SECONDES.indexOf(total % 60);
     wm.scrollTop = (mi < 0 ? 0 : mi) * 50;
     ws.scrollTop = (si < 0 ? 0 : si) * 50;
+    majSel(wm); majSel(ws);
     setTimeout(() => { verrouRef.current = false; }, 350);
   }, []);
 
@@ -115,6 +123,7 @@ export function RestTimer() {
     const attach = (el, key) => {
       if (!el) return () => {};
       const onScroll = () => {
+        majSel(el);
         clearTimeout(scrollTimerRef.current[key]);
         scrollTimerRef.current[key] = setTimeout(appliquer, 120);
       };
@@ -241,7 +250,7 @@ export function RestTimer() {
 
       <button ref={fabRef} class={'v2-chrono-fab' + (enCours ? ' running' : '') + (enCours && restant <= 5 ? ' crit' : '')} aria-label={t('chrono_titre')}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8" /><path d="M12 13V9" /><path d="M9 2h6" /></svg>
-        {fabTime && <span class="v2-chrono-fab-time">{fabTime}</span>}
+        <span class="v2-chrono-fab-time">{fabTime}</span>
       </button>
     </>
   );

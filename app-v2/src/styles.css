@@ -149,12 +149,13 @@ button{cursor:pointer}
 .cal-choix button{padding:12px 6px;border:1.5px solid #e8e4d8;border-radius:12px;background:#fff;font-weight:700;font-size:13.5px;font-family:inherit}
 
 /* ---- Chrono de repos (repro fidele du v1 : FAB + overlay + molettes) ---- */
-.v2-timer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:64;opacity:0;pointer-events:none;transition:opacity .25s}
-.v2-timer-overlay.show{opacity:1;pointer-events:auto}
-.v2-timer-container{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.18);padding:28px 20px calc(20px + env(safe-area-inset-bottom));z-index:65;transform:translateY(100%);transition:transform .3s ease-out;max-width:520px;margin:0 auto}
-.v2-timer-container.show{transform:translateY(0)}
+.v2-timer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:64}
+.v2-timer-overlay.show{display:block}
+.v2-timer-container{position:fixed;top:28%;transform:translateY(-50%);left:16px;right:16px;max-width:448px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 12px 34px rgba(0,0,0,.18);z-index:65;display:none}
+.v2-timer-container.show{display:block;animation:timerPop .3s ease-out}
+@keyframes timerPop{from{transform:translateY(calc(-50% + 24px));opacity:0}to{transform:translateY(-50%);opacity:1}}
 .v2-timer-display{text-align:center;margin-bottom:20px}
-.v2-timer-big{font-size:56px;font-weight:800;color:#F07818;font-family:'Monaco','Courier',monospace;letter-spacing:2px;transition:color .3s;font-variant-numeric:tabular-nums}
+.v2-timer-big{font-size:56px;font-weight:800;color:#F7B500;font-family:'Monaco','Courier',monospace;letter-spacing:2px;transition:color .3s;font-variant-numeric:tabular-nums}
 .v2-timer-big.t-approche{color:#E8930C;animation:breathe 2s ease-in-out infinite}
 .v2-timer-big.t-warn{color:#F07818;animation:tickp .45s ease-out}
 .v2-timer-big.t-crit{color:#DE2F14;animation:tickp .45s ease-out}
@@ -165,13 +166,14 @@ button{cursor:pointer}
 .v2-wheel-col{display:flex;flex-direction:column;align-items:center}
 .v2-wheel{height:150px;width:74px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;text-align:center;-ms-overflow-style:none}
 .v2-wheel::-webkit-scrollbar{display:none}
-.v2-wheel-item{height:50px;line-height:50px;scroll-snap-align:center;font-size:26px;font-weight:700;color:#cbd5e1;transition:color .15s}
+.v2-wheel-item{height:50px;line-height:50px;scroll-snap-align:center;font-size:26px;font-weight:700;color:#cbd5e1;transition:color .15s,transform .15s}
+.v2-wheel-item.sel{color:#1a1a1a;font-size:30px}
 .v2-wheel-unit{font-size:12px;color:#9ca3af;font-weight:600;margin-top:-6px}
 .v2-wheel-sep{font-size:28px;font-weight:800;color:#1a1a1a;align-self:flex-start;margin-top:54px}
-.v2-wheel-highlight{position:absolute;top:50px;left:0;right:0;height:50px;border-top:1.5px solid #F07818;border-bottom:1.5px solid #F07818;pointer-events:none;opacity:.5}
+.v2-wheel-highlight{position:absolute;top:50px;left:0;right:0;height:50px;border-top:1.5px solid #F7B500;border-bottom:1.5px solid #F7B500;pointer-events:none;opacity:.5}
 .v2-timer-controls{display:flex;gap:10px;justify-content:center}
-.v2-timer-btn{flex:1;max-width:100px;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit}
-.v2-timer-btn.start{background:#F07818;color:#fff}
+.v2-timer-btn{flex:1;max-width:100px;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.v2-timer-btn.start{background:#F7B500;color:#fff}
 .v2-timer-btn.start:active{transform:scale(.95)}
 .v2-timer-btn.reset{background:#f3f4f6;color:#1a1a1a;border:1px solid #e5e7eb}
 .v2-timer-btn.reset:active{background:#e5e7eb}
