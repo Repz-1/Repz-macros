@@ -228,7 +228,7 @@ export function Entrainer() {
         {/* Carte vedette : programme sur mesure (Premium) */}
         <a href="#" class={'choice ph featured' + locked} style="background-image:url('img/card-creer.jpg')"
           onClick={(e) => verrou(e, 'questionnaire')}>
-          {!estPremium.value && <span class="lock-badge">🔒 Premium</span>}
+          {!estPremium.value && <span class="pro-badge">✦ PRO</span>}
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z" /></svg></span>
           <span class="badge">{t('tr_badge_custom')}</span>
           <h3>{t('tr_create_title')}</h3>
@@ -248,7 +248,7 @@ export function Entrainer() {
         {/* Mes programmes (Premium) */}
         <a href="#" class={'choice ph sm' + locked} style="background-image:url('img/card-programmes.jpg')"
           onClick={(e) => verrou(e, 'programmes')}>
-          {!estPremium.value && <span class="lock-badge">🔒 Premium</span>}
+          {!estPremium.value && <span class="pro-badge">✦ PRO</span>}
           <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5" /><path d="M3.5 9h17M8 2.5v4M16 2.5v4" /></svg></span>
           <h3>{t('tr_progs_title')}</h3>
           <p>{t('tr_progs_sub')}</p>
