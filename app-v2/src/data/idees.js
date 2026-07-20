@@ -42,14 +42,14 @@ export const EAT_IDEAS = {
     ],
     vege: [
         { nom:'Buddha bowl pois chiches', ings:[{n:'Pois chiches (cuits)',q:200,l:'pois chiches cuits'},{n:'Quinoa (cuit)',q:150,l:'quinoa cuit'},{n:'Courgette',q:150,l:'courgette'}] },
-        { nom:'Tofu sauté + riz', ings:[{n:'Tofu',q:200,l:'tofu'},{n:'Riz cuit',q:200,l:'riz cuit'},{n:'Brocoli',q:150,l:'brocoli'},{n:'Huile olive',q:8,l:'huile olive'}] },
+        { nom:'Tofu brouillé + pain complet + avocat', ings:[{n:'Tofu',q:200,l:'tofu'},{n:'Pain complet',q:60,l:'pain complet'},{n:'Avocat',q:50,l:'avocat'}] },
         { nom:'Lentilles + œufs + légumes', ings:[{n:'Lentilles (cuites)',q:200,l:'lentilles cuites'},{n:'Oeuf entier M (50g)',q:2,l:'œuf'},{n:'Épinards frais',q:100,l:'épinards'}] },
         { nom:'Dahl lentilles corail + riz', ings:[{n:'Lentilles corail',q:200,l:'lentilles corail'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Lait de coco',q:50,l:'lait de coco'}] },
         { nom:'Omelette feta + épinards + pain', ings:[{n:'Oeuf entier M (50g)',q:3,l:'œuf'},{n:'Feta',q:40,l:'feta'},{n:'Épinards frais',q:80,l:'épinards'},{n:'Pain complet',q:50,l:'pain complet'}] },
         { nom:'Tofu + riz + brocoli', ings:[{n:'Tofu',q:150,l:'tofu'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Brocoli',q:150,l:'brocoli'}] },
         { nom:'Pois chiches + riz + épinards', ings:[{n:'Pois chiches cuits',q:200,l:'pois chiches cuits'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Épinards',q:80,l:'épinards'}] },
         { nom:'Œufs + haricots rouges + tomate', ings:[{n:'Oeuf entier M (50g)',q:150,l:'œufs'},{n:'Haricots rouges',q:150,l:'haricots rouges'},{n:'Tomate',q:80,l:'tomate'}] },
-        { nom:'Buddha bowl quinoa pois chiches', ings:[{n:'Quinoa cru',q:60,l:'quinoa cru'},{n:'Pois chiches cuits',q:150,l:'pois chiches cuits'},{n:'Courgette',q:120,l:'courgette'}] },
+        { nom:'Poêlée haricots noirs + patate douce + œuf', ings:[{n:'Haricots noirs',q:150,l:'haricots noirs'},{n:'Patate douce (cuite)',q:200,l:'patate douce cuite'},{n:'Oeuf entier M (50g)',q:2,l:'œuf'}] },
         { nom:'Fromage blanc + avoine + amandes + miel', ings:[{n:'Fromage blanc 0%',q:250,l:'fromage blanc'},{n:'Flocons avoine',q:40,l:'avoine'},{n:'Amandes',q:15,l:'amandes'},{n:'Miel',q:15,l:'miel'}] }
     ]
 };
