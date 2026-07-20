@@ -148,19 +148,40 @@ button{cursor:pointer}
 .cal-choix{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
 .cal-choix button{padding:12px 6px;border:1.5px solid #e8e4d8;border-radius:12px;background:#fff;font-weight:700;font-size:13.5px;font-family:inherit}
 
-/* ---- Chrono de repos ---- */
-.chrono{text-align:center}
-.chrono-aff{font-size:54px;font-weight:800;letter-spacing:2px;color:#F7B500;font-variant-numeric:tabular-nums;transition:color .3s;margin:6px 0 14px}
-.chrono-aff.t-approche{color:#E8930C;animation:breathe 2s ease-in-out infinite}
-.chrono-aff.t-warn{color:#F07818;animation:tickp .45s ease-out}
-.chrono-aff.t-crit{color:#DE2F14;animation:tickp .45s ease-out}
+/* ---- Chrono de repos (repro fidele du v1 : FAB + overlay + molettes) ---- */
+.v2-timer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:64;opacity:0;pointer-events:none;transition:opacity .25s}
+.v2-timer-overlay.show{opacity:1;pointer-events:auto}
+.v2-timer-container{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.18);padding:28px 20px calc(20px + env(safe-area-inset-bottom));z-index:65;transform:translateY(100%);transition:transform .3s ease-out;max-width:520px;margin:0 auto}
+.v2-timer-container.show{transform:translateY(0)}
+.v2-timer-display{text-align:center;margin-bottom:20px}
+.v2-timer-big{font-size:56px;font-weight:800;color:#F07818;font-family:'Monaco','Courier',monospace;letter-spacing:2px;transition:color .3s;font-variant-numeric:tabular-nums}
+.v2-timer-big.t-approche{color:#E8930C;animation:breathe 2s ease-in-out infinite}
+.v2-timer-big.t-warn{color:#F07818;animation:tickp .45s ease-out}
+.v2-timer-big.t-crit{color:#DE2F14;animation:tickp .45s ease-out}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
-@keyframes tickp{0%{transform:scale(1)}30%{transform:scale(1.1)}100%{transform:scale(1)}}
-.chrono-presets{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
-.chrono-presets button{padding:9px 16px;border:1.5px solid #e8e4d8;border-radius:11px;background:#fff;font-weight:800;font-size:14px;font-family:inherit}
-.chrono-presets button.actif{background:#181818;border-color:#181818;color:#fff}
-.chrono-presets button:disabled{opacity:.45}
-.chrono-go{width:100%;background:#F7B500;border:none;border-radius:14px;padding:14px;font-weight:800;font-size:15.5px;font-family:inherit}
+@keyframes tickp{0%{transform:scale(1)}30%{transform:scale(1.12)}100%{transform:scale(1)}}
+.v2-timer-label{font-size:13px;color:#9ca3af;margin-top:8px}
+.v2-timer-wheels{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;height:150px}
+.v2-wheel-col{display:flex;flex-direction:column;align-items:center}
+.v2-wheel{height:150px;width:74px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;text-align:center;-ms-overflow-style:none}
+.v2-wheel::-webkit-scrollbar{display:none}
+.v2-wheel-item{height:50px;line-height:50px;scroll-snap-align:center;font-size:26px;font-weight:700;color:#cbd5e1;transition:color .15s}
+.v2-wheel-unit{font-size:12px;color:#9ca3af;font-weight:600;margin-top:-6px}
+.v2-wheel-sep{font-size:28px;font-weight:800;color:#1a1a1a;align-self:flex-start;margin-top:54px}
+.v2-wheel-highlight{position:absolute;top:50px;left:0;right:0;height:50px;border-top:1.5px solid #F07818;border-bottom:1.5px solid #F07818;pointer-events:none;opacity:.5}
+.v2-timer-controls{display:flex;gap:10px;justify-content:center}
+.v2-timer-btn{flex:1;max-width:100px;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit}
+.v2-timer-btn.start{background:#F07818;color:#fff}
+.v2-timer-btn.start:active{transform:scale(.95)}
+.v2-timer-btn.reset{background:#f3f4f6;color:#1a1a1a;border:1px solid #e5e7eb}
+.v2-timer-btn.reset:active{background:#e5e7eb}
+.v2-chrono-fab{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));right:8px;z-index:66;width:60px;height:60px;border-radius:50%;background:#F7B500;color:#181818;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(247,181,0,.55);transition:transform .15s,background .2s;-webkit-tap-highlight-color:transparent}
+.v2-chrono-fab svg{width:30px;height:30px}
+.v2-chrono-fab:active{transform:scale(.94)}
+.v2-chrono-fab-time{font-size:11px;font-weight:800;line-height:1;margin-top:2px;font-variant-numeric:tabular-nums}
+.v2-chrono-fab.running{background:#181818;color:#F7B500;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+.v2-chrono-fab.crit{background:#DE2F14;color:#fff;box-shadow:0 8px 22px rgba(222,47,20,.55);animation:fabPulse 1s ease-in-out infinite}
+@keyframes fabPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 
 /* ---- Suivi de seance ---- */
 .seance-exo{border:1px solid #f0ede4;border-radius:14px;padding:12px;margin-bottom:10px}

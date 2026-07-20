@@ -794,13 +794,21 @@ function updateWheelSel(el){
     el.querySelectorAll('.wheel-item').forEach((it,idx)=>it.classList.toggle('sel',idx===i));
 }
 function appliquerMolettes(){
-    /* Ignore si (a) un repositionnement programmatique est en cours, ou
-       (b) un chrono tourne. Seule une vraie manip utilisateur applique les molettes. */
-    if(molettesVerrou || timerRunning) return;
-    totalSeconds=wheelMinVal*60+wheelSecVal; lastPreset=totalSeconds;
-    clearInterval(timerInterval); timerRunning=false; saveTimerState();
+    /* Ignore uniquement le repositionnement programmatique (scroll auto).
+       Une vraie manip utilisateur applique toujours les molettes. */
+    if(molettesVerrou) return;
+    const nouvelleDuree = wheelMinVal*60+wheelSecVal;
+    totalSeconds=nouvelleDuree; lastPreset=nouvelleDuree;
+    if(timerRunning){
+        /* Chrono en cours : on le relance sur la nouvelle duree (plus courte OU plus longue) */
+        timerEndAt = Date.now() + nouvelleDuree*1000;
+        lancerIntervalle();
+    } else {
+        clearInterval(timerInterval); timerRunning=false;
+        document.getElementById('timerStartBtn').textContent=t('start');
+    }
+    saveTimerState();
     updateTimerDisplay();
-    document.getElementById('timerStartBtn').textContent=t('start');
 }
 function initWheels(){
     const minutes=Array.from({length:61},(_,i)=>i);
