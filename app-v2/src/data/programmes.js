@@ -161,9 +161,9 @@ export const PROGRAMMES = {
 
 // Toutes les categories disponibles, dans l'ordre d'affichage
 export const CATEGORIES = [
-  { k: 'masse', label: 'Prise de masse' },
-  { k: 'forme', label: 'Forme & santé' },
-  { k: 'seche', label: 'Sèche' },
+  { k: 'masse', emoji: '💪', name: 'Prendre du muscle', sub: 'Construire du muscle visible, semaine après semaine' },
+  { k: 'seche', emoji: '🔥', name: 'Perdre du poids', sub: 'Brûler du gras sans sacrifier ton muscle' },
+  { k: 'forme', emoji: '⚡', name: 'Me remettre en forme', sub: 'Reprendre le sport en douceur, sans te blesser' },
 ].filter(c => PROGRAMMES[c.k] && PROGRAMMES[c.k].length);
 
 export function programmeParId(id) {

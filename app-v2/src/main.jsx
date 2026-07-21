@@ -72,11 +72,13 @@ function OngletEntrainer() {
   if (vue.nom === 'selection') {
     return (<><SelectionExercices /><RestTimer /></>);
   }
+  if (vue.nom === 'programmes') {
+    return (<><Programmes /><RestTimer /></>);
+  }
   return (
     <div class="pg-entrainer">
       <button class="v2-retour" onClick={retourEntrainer} aria-label="Retour">←</button>
       {vue.nom === 'seance' && <SeanceTracker />}
-      {vue.nom === 'programmes' && <Programmes />}
       <RestTimer />
     </div>
   );

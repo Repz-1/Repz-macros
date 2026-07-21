@@ -1,80 +1,129 @@
 import { useState } from 'preact/hooks';
-import { signal, effect } from '@preact/signals';
 import { PROGRAMMES, CATEGORIES } from '../data/programmes.js';
-import { identite } from '../services/firebase.js';
-import { chargerDonnees, sauvegarder } from '../services/sync.js';
-import { t } from '../i18n/index.js';
+import { retourEntrainer } from './Entrainer.jsx';
+import '../legacy/programmes.scoped.css';
 
-// Programme actif de l'utilisateur (sync cloud comme le reste)
-export const programmeActif = signal(null);
-let uidP = null, pretP = false;
+// ==========================================================
+// PAGE "Tous les programmes" — transposee du v1 (programmes.html).
+// 3 ecrans : Categories -> Programmes -> Seances.
+// Meme markup, meme CSS ; navigation en hooks.
+// ==========================================================
 
-effect(() => {
-  const u = identite.value;
-  if (!u) { uidP = null; pretP = false; return; }
-  if (u === uidP) return;
-  uidP = u; pretP = false;
-  chargerDonnees(u).then(d => {
-    if (uidP !== u) return;
-    programmeActif.value = (d && d.programmeActif) || null;
-    pretP = true;
-  });
-});
-
-effect(() => {
-  const p = programmeActif.value;
-  const u = identite.value;
-  if (!u || !pretP) return;
-  sauvegarder(u, { programmeActif: p });
-});
+const ORDRE_NIVEAUX = ['Débutant', 'Intermédiaire', 'Confirmé', 'Avancé'];
 
 export function Programmes() {
-  const [cat, setCat] = useState(CATEGORIES[0].k);
-  const [ouvert, setOuvert] = useState(null);
-  const actif = programmeActif.value;
+  // ecran : 'cats' | 'progs' | 'seances'
+  const [ecran, setEcran] = useState('cats');
+  const [catKey, setCatKey] = useState(null);
+  const [progId, setProgId] = useState(null);
+  const [niveau, setNiveau] = useState('Tous');
 
+  const cat = CATEGORIES.find(c => c.k === catKey);
+  const progsCat = catKey ? (PROGRAMMES[catKey] || []) : [];
+  const prog = progId ? progsCat.find(p => p.id === progId) : null;
+
+  // Niveaux presents dans la categorie (pour les filtres)
+  const niveauxPresents = ORDRE_NIVEAUX.filter(n => progsCat.some(p => p.niveau === n));
+
+  const ouvrirCat = (k) => { setCatKey(k); setNiveau('Tous'); setEcran('progs'); };
+  const ouvrirProg = (id) => { setProgId(id); setEcran('seances'); };
+
+  const stat = (icone, valeur) => (
+    <span>{icone}<b>{valeur}</b></span>
+  );
+
+  const carteProg = (p) => {
+    const showNiv = niveau === 'Tous' || niveauxPresents.length === 1;
+    return (
+      <div class="prog-card" key={p.id} onClick={() => ouvrirProg(p.id)}>
+        {p.tag && <span class="prog-badge reco">⭐ {p.tag}</span>}
+        <span class="prog-badge">{p.badge}</span>
+        {p.lieu && <span class="prog-badge lieu">🏋️ {p.lieu}</span>}
+        <div class="prog-name">{p.name}</div>
+        <div class="prog-desc">{p.desc}</div>
+        <div class="prog-stats">
+          {stat(<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2" /><path d="M4 9h16M8 3v4M16 3v4" /></svg>, p.duree)}
+          {showNiv && stat(<svg viewBox="0 0 24 24"><path d="M5 20v-6M12 20V8M19 20V4" /></svg>, p.niveau)}
+          {stat(<svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11" /></svg>, `${p.seances.length} séances`)}
+        </div>
+      </div>
+    );
+  };
+
+  // ---- Ecran 1 : Categories ----
+  if (ecran === 'cats') {
+    return (
+      <div class="pg-programmes">
+        <div class="top">
+          <button class="back-btn" onClick={retourEntrainer} aria-label="Retour">←</button>
+          <h1>Tous les programmes</h1>
+        </div>
+        <p class="intro-txt">Parcours la bibliothèque complète par objectif.</p>
+        <div class="cat-list">
+          {CATEGORIES.map(c => (
+            <div class="cat-card" key={c.k} onClick={() => ouvrirCat(c.k)}>
+              <div class="cat-emoji">{c.emoji}</div>
+              <div class="cat-info">
+                <div class="cat-name">{c.name}</div>
+                <div class="cat-sub">{c.sub}</div>
+              </div>
+              <div class="cat-arrow">→</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Ecran 2 : Programmes de la categorie ----
+  if (ecran === 'progs') {
+    const niveauxAff = niveau === 'Tous' ? niveauxPresents : [niveau];
+    const showHeaders = niveauxAff.length > 1;
+    return (
+      <div class="pg-programmes">
+        <div class="top">
+          <button class="back-btn" onClick={() => setEcran('cats')} aria-label="Retour">←</button>
+          <h1>{cat ? cat.name : 'Programmes'}</h1>
+        </div>
+        {niveauxPresents.length > 1 && (
+          <div class="niv-filter">
+            {['Tous', ...niveauxPresents].map(n => (
+              <button key={n} class={'niv-pill' + (n === niveau ? ' active' : '')} onClick={() => setNiveau(n)}>{n}</button>
+            ))}
+          </div>
+        )}
+        <div class="prog-list">
+          {niveauxAff.map(niv => (
+            <div key={niv}>
+              {showHeaders && <div class="niveau-sep">{niv}</div>}
+              {progsCat.filter(p => p.niveau === niv).map(carteProg)}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Ecran 3 : Seances du programme ----
   return (
-    <div class="carte">
-      <h3 style={{ margin: '0 0 12px', fontSize: '19px', fontWeight: 800 }}>{t('programmes')}</h3>
-
-      <div class="prog-onglets">
-        {CATEGORIES.map(c => (
-          <button key={c.k} class={cat === c.k ? 'actif' : ''} onClick={() => setCat(c.k)}>{c.label}</button>
+    <div class="pg-programmes">
+      <div class="top">
+        <button class="back-btn" onClick={() => setEcran('progs')} aria-label="Retour">←</button>
+        <h1>{prog ? prog.name : 'Séances'}</h1>
+      </div>
+      {prog && <p class="intro-txt">{prog.duree} · {prog.niveau} · {prog.seances.length} séances</p>}
+      <div class="seance-list">
+        {prog && prog.seances.map((s, i) => (
+          <div class="seance-card" key={i}>
+            <div class="seance-num">J{i + 1}</div>
+            <div class="seance-info">
+              <div class="seance-title">{s.titre}</div>
+              <div class="seance-sub">{s.sub}</div>
+            </div>
+            <div class="seance-arrow">→</div>
+          </div>
         ))}
       </div>
-
-      {(PROGRAMMES[cat] || []).map(p => {
-        const estActif = actif === p.id;
-        const deplie = ouvert === p.id;
-        return (
-          <div class={`prog-carte ${estActif ? 'choisi' : ''}`} key={p.id}>
-            <div class="prog-tete" onClick={() => setOuvert(deplie ? null : p.id)}>
-              <div class="prog-info">
-                {p.tag && <span class="prog-tag">{p.tag}</span>}
-                <div class="prog-nom">{p.name}</div>
-                <div class="prog-meta">{p.badge} · {p.duree} · {p.niveau}</div>
-              </div>
-              <span class={`prog-chev ${deplie ? 'ouv' : ''}`}>▼</span>
-            </div>
-
-            {deplie && (
-              <div class="prog-detail">
-                <p class="prog-desc">{p.desc}</p>
-                {p.seances.map((s, i) => (
-                  <div class="prog-seance" key={i}>
-                    <div class="prog-seance-t">{s.titre}</div>
-                    <div class="prog-seance-s">{s.sub}</div>
-                  </div>
-                ))}
-                <button
-                  class={estActif ? 'prog-btn actif' : 'prog-btn'}
-                  onClick={() => { programmeActif.value = estActif ? null : p.id; }}
-                >{estActif ? '✓ Programme suivi' : 'Choisir ce programme'}</button>
-              </div>
-            )}
-          </div>
-        );
-      })}
     </div>
   );
 }
