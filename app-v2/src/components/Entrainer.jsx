@@ -3,6 +3,7 @@ import { signal } from '@preact/signals';
 import { GROUPES, muscleLog, basculerMuscle } from '../store/entrainement.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
+import { Entete } from './Entete.jsx';
 import { t } from '../i18n/index.js';
 import '../legacy/entrainer.scoped.css';
 
@@ -220,6 +221,7 @@ export function Entrainer() {
 
   return (
     <div class="pg-entrainer">
+      <Entete />
       <div class="intro">
         <span class="intro-eyebrow">BelFit <em>Training</em></span>
       </div>

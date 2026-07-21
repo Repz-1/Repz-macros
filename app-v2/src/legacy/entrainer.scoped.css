@@ -353,3 +353,10 @@
 .pg-entrainer .ah-btn{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
 .pg-entrainer .ah-btn svg{ width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pg-entrainer .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
+/* En-tete commun (logo + profil + reglages) — transpose du v1 (.app-header) */
+.pg-entrainer .j-entete{ display:flex; align-items:center; justify-content:space-between; padding:0; min-height:44px; background:none; border:none; box-shadow:none; margin-bottom:4px; }
+.pg-entrainer .j-entete-actions{ display:flex; align-items:center; gap:8px; margin-right:-8px; }
+.pg-entrainer .j-logo{ height:55px; width:auto; display:block; filter:drop-shadow(0 4px 16px rgba(247,181,0,.15)); }
+.pg-entrainer .j-btn-icone{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#8F6200; text-decoration:none; background:none; border:none; padding:0; cursor:pointer; font-family:inherit; -webkit-tap-highlight-color:transparent; transition:background .2s; }
+.pg-entrainer .j-btn-icone:active{ background:rgba(247,181,0,.14); transform:scale(.94); }
+.pg-entrainer .j-btn-icone svg{ width:27px; height:27px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }

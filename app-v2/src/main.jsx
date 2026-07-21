@@ -19,10 +19,8 @@ import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { signal } from '@preact/signals';
+import { Entete, voletProfil } from './components/Entete.jsx';
 
-// Volet profil, ouvert depuis l'en-tete de chaque onglet
-export const voletProfil = signal(false);
-const ouvrirProfil = () => { voletProfil.value = !voletProfil.value; };
 import { PremiumPage } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
@@ -41,7 +39,7 @@ function OngletJournal() {
   return (
     <div class="pg-journal">
       <div class="colonne">
-        <Logo />
+        <Entete />
         <DayDashboard />
         <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} ouvrirPlats={() => setMesPlats(true)} />
         <IdeesRepas />
@@ -61,23 +59,6 @@ function OngletJournal() {
       {vocal && <VocalModal fermer={() => setVocal(false)} />}
       {mesPlats && <MesPlats fermer={() => setMesPlats(false)} />}
     </div>
-  );
-}
-
-/** En-tete : logo centre, profil et reglages a droite. */
-function Logo() {
-  return (
-    <header class="j-entete">
-      <img class="j-logo" src="../belfit-logo-header.png" alt="BELFIT" />
-      <div class="j-entete-actions">
-        <button class="j-btn-icone" onClick={ouvrirProfil} aria-label="Profil">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" /><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" /></svg>
-        </button>
-        <a class="j-btn-icone" href="../parametres.html" aria-label="Réglages">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" /><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1.03 1.56V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1.11-1.56 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.56-1.03H3a2 2 0 110-4h.09a1.7 1.7 0 001.56-1.11 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34h.01A1.7 1.7 0 0010 4.09V4a2 2 0 114 0v.09a1.7 1.7 0 001.03 1.56h.01a1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87v.01a1.7 1.7 0 001.56 1.03H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1.02z" /></svg>
-        </a>
-      </div>
-    </header>
   );
 }
 
