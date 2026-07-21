@@ -4,6 +4,7 @@ import { muscleLog, basculerMuscle, viderJourMuscles } from '../store/entraineme
 import { setLog } from './SeanceTracker.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
+import { Entete } from './Entete.jsx';
 import { t } from '../i18n/index.js';
 import '../legacy/stats.scoped.css';
 
@@ -311,6 +312,7 @@ export function Stats() {
   return (
     <div class="pg-stats">
       <div class="container">
+        <Entete />
         <div class="page-title">{t('st_title')}</div>
         <div class="page-sub">{t('st_sub')}</div>
 
