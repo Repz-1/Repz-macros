@@ -523,13 +523,17 @@
   bottom: calc(var(--hauteur-nav) + 14px + env(safe-area-inset-bottom));
   left: 12px; right: 12px;
   max-width: 448px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
   pointer-events: none;
 }
 .pg-journal .fab-rangee > * { pointer-events: auto; }
-/* La pilule Repas intelligent occupe le centre, entre les deux
-   ronds fixes (goutte a gauche, Ajouter a droite). */
-.pg-journal .fab-rangee > .eat-toggle { flex: 0 1 auto; margin: 0; max-width: none; min-width: 0; overflow: hidden; }
+/* Goutte a gauche, Ajouter a droite : taille fixe, ne s'etirent pas.
+   La pilule Repas intelligent occupe tout le centre entre les deux. */
+.pg-journal .fab-rangee > .water-fab,
+.pg-journal .fab-rangee > .fab { flex: 0 0 auto; }
+.pg-journal .fab-rangee > .eat-toggle {
+  flex: 1 1 auto; margin: 0; max-width: none; min-width: 0; overflow: hidden;
+}
 .pg-journal .fab-rangee > .eat-toggle > span:not(.eat-fleche):not(.eat-sep) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Le bouton Ajouter adopte la meme discretion que la goutte :
    semi-transparent au repos, pleinement opaque au contact. */
