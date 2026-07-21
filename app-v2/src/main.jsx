@@ -44,12 +44,13 @@ function OngletJournal() {
         <Entete />
         <DayDashboard />
         <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} ouvrirPlats={() => setMesPlats(true)} />
-        <IdeesRepas />
+        <IdeesRepas panneauSeul />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
       </div>
 
       <div class="fab-rangee">
         <WaterTracker />
+        <IdeesRepas pilulSeule />
         <button class="fab" onClick={() => setModale(true)} aria-label={t('add')}>
           <span class="fab-plus">＋</span>
         </button>

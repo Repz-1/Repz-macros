@@ -258,8 +258,12 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
     );
   }
 
+  // Panneau declenche depuis la rangee flottante : rien tant qu'il
+  // est ferme, sinon une feuille ancree au-dessus de la barre.
+  if (panneauSeul && !ouvert) return null;
+
   return (
-    <div class="eat-zone-wrap">
+    <div class={'eat-zone-wrap' + (panneauSeul ? ' eat-zone-wrap--flottant' : '')}>
       <div class="eat-zone" style={panneauSeul ? { display: 'none' } : null}>
         <button class="eat-toggle" onClick={() => setOuvert(!ouvert)}>
           <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
