@@ -1,5 +1,6 @@
-// Programmes d'entrainement BelFit — extraits de programmes.html (copie exacte).
-// Structure : { categorie: [ {id, name, badge, desc, duree, niveau, seances:[{titre,sub}]} ] }
+// Programmes d'entrainement BelFit — copie EXACTE de programmes.html (v1).
+// Structure : { categorie: [ {id, tag?, badge, name, desc, duree, niveau, lieu?, seances:[{titre,sub}]} ] }
+
 export const PROGRAMMES = {
     masse: [
         {
@@ -159,18 +160,18 @@ export const PROGRAMMES = {
     ],
 };
 
-// Comme en v1 (programmes.html) : le Full body debutant, range dans "forme",
-// est aussi propose dans "Prendre du muscle" (masse) comme option debutant.
-const fullBodyDebutant = PROGRAMMES.forme.find(p => p.id === 'deb-full-3j');
-if (fullBodyDebutant && !PROGRAMMES.masse.some(p => p.id === 'deb-full-3j')) {
-  PROGRAMMES.masse.push(fullBodyDebutant);
+// Objectif d'abord, niveau ensuite : le Full body debutant (range dans "forme")
+// sert aussi la prise de muscle. Reproduit la ligne push du v1.
+const _fb = PROGRAMMES.forme && PROGRAMMES.forme.find(p => p.id === 'deb-full-3j');
+if (_fb && PROGRAMMES.masse && !PROGRAMMES.masse.some(p => p.id === 'deb-full-3j')) {
+  PROGRAMMES.masse.push(_fb);
 }
 
-// Toutes les categories disponibles, dans l'ordre d'affichage
+// Categories affichees (ecran 1), avec emoji + libelles du v1.
 export const CATEGORIES = [
-  { k: 'masse', emoji: '💪', name: 'Prendre du muscle', sub: 'Construire du muscle visible, semaine après semaine' },
-  { k: 'seche', emoji: '🔥', name: 'Perdre du poids', sub: 'Brûler du gras sans sacrifier ton muscle' },
-  { k: 'forme', emoji: '⚡', name: 'Me remettre en forme', sub: 'Reprendre le sport en douceur, sans te blesser' },
+  { k: 'masse', emoji: '\u{1F4AA}', name: 'Prendre du muscle', sub: 'Construire du muscle visible, semaine après semaine' },
+  { k: 'seche', emoji: '\u{1F525}', name: 'Perdre du poids', sub: 'Brûler du gras sans sacrifier ton muscle' },
+  { k: 'forme', emoji: '\u{26A1}', name: 'Me remettre en forme', sub: 'Reprendre le sport en douceur, sans te blesser' },
 ].filter(c => PROGRAMMES[c.k] && PROGRAMMES[c.k].length);
 
 export function programmeParId(id) {
