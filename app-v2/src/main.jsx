@@ -50,9 +50,8 @@ function OngletJournal() {
 
       <div class="fab-rangee">
         <WaterTracker />
-        <button class="fab" onClick={() => setModale(true)} aria-label="Ajouter un repas">
+        <button class="fab" onClick={() => setModale(true)} aria-label={t('add')}>
           <span class="fab-plus">＋</span>
-          <span class="fab-label">{t('add')}</span>
         </button>
       </div>
 
