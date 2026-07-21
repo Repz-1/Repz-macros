@@ -514,10 +514,14 @@
   bottom: calc(var(--hauteur-nav) + 14px + env(safe-area-inset-bottom));
   left: 12px; right: 12px;
   max-width: 448px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
   pointer-events: none;
 }
 .pg-journal .fab-rangee > * { pointer-events: auto; }
+/* Le bouton Ajouter adopte la meme discretion que la goutte :
+   semi-transparent au repos, pleinement opaque au contact. */
+.pg-journal .fab-rangee > .fab { opacity: .72; transition: transform .15s, opacity .15s, background .15s; }
+.pg-journal .fab-rangee > .fab:active { opacity: 1; }
 
 /* ---------- Hydratation ---------- */
 .pg-journal .water-fab {
