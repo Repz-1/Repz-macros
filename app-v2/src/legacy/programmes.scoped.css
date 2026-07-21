@@ -49,3 +49,11 @@
 .pg-programmes .seance-title{ font-size:16px; font-weight:700; }
 .pg-programmes .seance-sub{ font-size:12.5px; color:var(--text-dim); margin-top:2px; }
 .pg-programmes .seance-arrow{ color:var(--orange); font-size:18px; }
+
+/* Barre du haut orange (maison + Premium) — transposee du v1 */
+.pg-programmes .topbar-app{ display:flex; justify-content:space-between; align-items:center; padding:12px 20px; margin:-16px -16px 8px; background:linear-gradient(160deg,#F7B500 0%,#DFA004 100%); }
+.pg-programmes .topbar-home{ display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.3); color:#fff; text-decoration:none; cursor:pointer; }
+.pg-programmes .topbar-home svg{ width:21px; height:21px; }
+.pg-programmes .topbar-home:active{ background:rgba(255,255,255,.25); transform:scale(.94); }
+.pg-programmes .premium-pill{ display:inline-flex; align-items:center; gap:5px; color:#1a1a1a; text-decoration:none; font-size:13px; font-weight:800; padding:8px 15px; border-radius:30px; background:#f5d76e; border:1.5px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.2); cursor:pointer; }
+.pg-programmes .premium-pill:active{ transform:scale(.95); }
