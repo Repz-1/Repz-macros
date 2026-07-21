@@ -61,11 +61,6 @@ export function PremiumPage() {
     window.location.href = construireUrl(FORMULES[formule].lien);
   };
 
-  const scrollFormules = () => {
-    const el = document.getElementById('formules');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
   const dejaPremium = estPremium.value;
 
   return (
@@ -74,9 +69,16 @@ export function PremiumPage() {
         <span class="hero-badge">✦ PREMIUM</span>
         <h1>Ton coach nutrition,<br />dans ta poche.</h1>
         <p>Calories, macros et plan sur mesure — comme un diététicien, sans y penser.</p>
+        <div class="hero-social">
+          <span class="hs-avatars"><i /><i /><i /></span>
+          <span class="hs-txt">Rejoins les membres BELFIT</span>
+        </div>
         <div class="hero-foot">
           <div class="hero-price"><span class="hp-from">dès</span> <b>3,99€</b><span class="hp-mo">/mois</span></div>
-          <a class="hero-cta" onClick={scrollFormules}>Voir les formules</a>
+          <div class="hero-guar">
+            <span>✓ Sans engagement</span>
+            <span>✓ Résiliable à tout moment</span>
+          </div>
         </div>
       </div>
 
