@@ -437,15 +437,6 @@
 .pg-journal .eat-zone { display: flex; justify-content: center; }
 .pg-journal .eat-zone-wrap { display: flex; flex-direction: column; gap: 12px; }
 .pg-journal .eat-panneau { animation: entree 200ms var(--courbe) both; }
-/* Panneau declenche depuis la rangee flottante : il se place juste
-   au-dessus d'elle, comme une feuille, et defile si trop long. */
-.pg-journal .eat-zone-wrap--flottant {
-  position: fixed; z-index: 79;
-  left: 12px; right: 12px; margin: 0 auto; max-width: 448px;
-  bottom: calc(var(--hauteur-nav) + 14px + 52px + 12px + env(safe-area-inset-bottom));
-  max-height: 60vh; overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
 
 /* ============================================================
    CARTE REPAS
@@ -527,14 +518,6 @@
   pointer-events: none;
 }
 .pg-journal .fab-rangee > * { pointer-events: auto; }
-/* Goutte a gauche, Ajouter a droite : taille fixe, ne s'etirent pas.
-   La pilule Repas intelligent occupe tout le centre entre les deux. */
-.pg-journal .fab-rangee > .water-fab,
-.pg-journal .fab-rangee > .fab { flex: 0 0 auto; }
-.pg-journal .fab-rangee > .eat-toggle {
-  flex: 1 1 auto; margin: 0; max-width: none; min-width: 0; overflow: hidden;
-}
-.pg-journal .fab-rangee > .eat-toggle > span:not(.eat-fleche):not(.eat-sep) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Le bouton Ajouter adopte la meme discretion que la goutte :
    semi-transparent au repos, pleinement opaque au contact. */
 .pg-journal .fab-rangee > .fab { opacity: .72; transition: transform .15s, opacity .15s, background .15s; }
