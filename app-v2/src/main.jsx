@@ -15,7 +15,8 @@ import { RestTimer } from './components/RestTimer.jsx';
 import { SeanceTracker } from './components/SeanceTracker.jsx';
 import { Programmes } from './components/Programmes.jsx';
 import { SelectionExercices } from './components/SelectionExercices.jsx';
-import { Entrainer, vueEntrainer, retourEntrainer } from './components/Entrainer.jsx';
+import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
+import { SeanceDetail } from './components/SeanceDetail.jsx';
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
@@ -74,6 +75,10 @@ function OngletEntrainer() {
   }
   if (vue.nom === 'programmes') {
     return (<><Programmes /><RestTimer /></>);
+  }
+  if (vue.nom === 'seanceDetail') {
+    const p = vue.params || {};
+    return (<><SeanceDetail seanceId={p.seanceId} titre={p.titre} retour={() => allerVers('programmes')} /><RestTimer /></>);
   }
   return (
     <div class="pg-entrainer">

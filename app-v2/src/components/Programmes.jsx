@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { PROGRAMMES, CATEGORIES } from '../data/programmes.js';
-import { retourEntrainer } from './Entrainer.jsx';
+import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import '../legacy/programmes.scoped.css';
 
@@ -130,7 +130,7 @@ export function Programmes() {
       {prog && <p class="intro-txt">{prog.duree} · niveau {prog.niveau}. Choisis une séance pour voir les exercices.</p>}
       <div class="seance-list">
         {prog && prog.seances.map((s, i) => (
-          <div class="seance-card" key={i}>
+          <div class="seance-card" key={i} onClick={() => allerVers('seanceDetail', { seanceId: prog.id + '-' + i, titre: s.titre })}>
             <div class="seance-num">J{i + 1}</div>
             <div class="seance-info">
               <div class="seance-title">{s.titre}</div>
