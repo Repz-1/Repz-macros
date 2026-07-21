@@ -25,6 +25,7 @@ export function setLangue(l) {
 
 const T = {
   fr: {
+    eat_title: 'Repas intelligent', eat_etat: 'adapté à tes macros',
     nav_journal: 'Journal', nav_entrainer: "S'entraîner", nav_courses: 'Courses',
     nav_stats: 'Stats', nav_premium: 'Premium',
     kcal_restantes: 'kcal restantes', proteines: 'Protéines', glucides: 'Glucides', lipides: 'Lipides',
@@ -58,6 +59,7 @@ const T = {
     premium_merci: 'Toutes les fonctionnalités sont débloquées. Merci de soutenir BelFit 💪',
   },
   en: {
+    eat_title: 'Smart meal', eat_etat: 'fits your macros',
     nav_journal: 'Journal', nav_entrainer: 'Train', nav_courses: 'Shopping',
     nav_stats: 'Stats', nav_premium: 'Premium',
     kcal_restantes: 'kcal left', proteines: 'Protein', glucides: 'Carbs', lipides: 'Fat',
@@ -91,6 +93,7 @@ const T = {
     premium_merci: 'All features unlocked. Thanks for supporting BelFit 💪',
   },
   nl: {
+    eat_title: 'Slimme maaltijd', eat_etat: 'past bij je macro\u2019s',
     nav_journal: 'Dagboek', nav_entrainer: 'Trainen', nav_courses: 'Boodschappen',
     nav_stats: 'Stats', nav_premium: 'Premium',
     kcal_restantes: 'kcal over', proteines: 'Eiwitten', glucides: 'Koolhydraten', lipides: 'Vetten',

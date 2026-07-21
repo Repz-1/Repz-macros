@@ -223,14 +223,36 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
 
   const reste = Math.round(objectifs.value.kcal - totauxJour.value.kcal);
 
+  // Etat contextuel de la pilule : au moins une recette rentre-t-elle
+  // dans les macros restantes ? (premium uniquement, calcul leger)
+  const suggestionPrete = (() => {
+    if (!estPremium.value) return false;
+    const obj = objectifs.value, tot = totauxJour.value;
+    const restes = {
+      prot:  obj.prot  > 0 ? obj.prot  - tot.prot  : null,
+      carbs: obj.carbs > 0 ? obj.carbs - tot.carbs : null,
+      lip:   obj.lip   > 0 ? obj.lip   - tot.lip   : null,
+    };
+    const cible = Math.max(250, Math.min(700, reste > 0 ? reste * 0.28 : 400));
+    return CATEGORIES_IDEES.some(c =>
+      EAT_IDEAS[c.k].some(idee => adapter(idee, restes, cible) !== null));
+  })();
+
   // Rangee flottante : la pilule seule.
   if (pilulSeule) {
     return (
       <button class="eat-toggle" onClick={() => setOuvert(!ouvert)}>
         <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
-          <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z" />
+          <path d="M12 3l1.7 4.6L18 9l-4.3 1.4L12 15l-1.7-4.6L6 9l4.3-1.4z" />
+          <path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" />
         </svg>
         <span>{t('eat_title')}</span>
+        {suggestionPrete && (
+          <>
+            <span class="eat-sep"></span>
+            <span class="eat-etat">{t('eat_etat')}</span>
+          </>
+        )}
         <span class="eat-fleche">{ouvert ? '\u25B4' : '\u25BE'}</span>
       </button>
     );
@@ -241,7 +263,8 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       <div class="eat-zone" style={panneauSeul ? { display: 'none' } : null}>
         <button class="eat-toggle" onClick={() => setOuvert(!ouvert)}>
           <svg viewBox="0 0 24 24" class="ic" aria-hidden="true">
-            <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2h6c0-.8.3-1.3 1-2A6 6 0 0 0 12 3z" />
+            <path d="M12 3l1.7 4.6L18 9l-4.3 1.4L12 15l-1.7-4.6L6 9l4.3-1.4z" />
+            <path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" />
           </svg>
           <span>{t('eat_title')}</span>
           <span class="eat-fleche">{ouvert ? '\u25B4' : '\u25BE'}</span>

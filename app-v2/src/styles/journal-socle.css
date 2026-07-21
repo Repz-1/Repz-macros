@@ -390,21 +390,45 @@
    Pilule independante, centree, degradé violet -> rose avec
    ombre coloree. Mesures relevees sur la reference.
    ============================================================ */
+/* Violet signature « intelligence BELFIT » : desature, profond,
+   sans derive rose. Capsule vraie, lumiere interne, ombre courte.
+   Au tap : legere elevation, comme l'hydratation. */
 .pg-journal .eat-toggle {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  width: fit-content; max-width: 80%; margin: 0 auto;
-  background: linear-gradient(135deg, #A855F7, #DB2777);
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  width: fit-content; max-width: 86%; margin: 0 auto;
+  background: linear-gradient(160deg, #8A7BD6 0%, #7E62BD 58%, #8A5CAE 100%);
   color: #FFFFFF; border: none;
-  padding: 11px 18px; border-radius: 22px;
-  font-size: 13.5px; font-weight: 800; font-family: inherit;
+  padding: 11px 19px; border-radius: 999px;
+  font-size: 13.5px; font-weight: 700; letter-spacing: .01em; font-family: inherit;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(190, 24, 93, .28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .22),
+    0 1px 2px rgba(24, 24, 24, .06),
+    0 5px 14px rgba(126, 98, 189, .20);
+  transition: transform 180ms cubic-bezier(.22, .8, .28, 1), box-shadow 180ms ease;
 }
-.pg-journal .eat-toggle:active { filter: brightness(.95); transform: scale(.98); }
+.pg-journal .eat-toggle:active {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .22),
+    0 1px 2px rgba(24, 24, 24, .05),
+    0 3px 10px rgba(126, 98, 189, .16);
+}
 .pg-journal .eat-toggle .ic {
-  width: 17px; height: 17px; color: #FFFFFF;
-  fill: none; stroke: currentColor; stroke-width: 1.9;
+  width: 16px; height: 16px; color: #FFFFFF; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.6;
   stroke-linecap: round; stroke-linejoin: round;
+}
+/* Etat contextuel : point de presence + libelle discret */
+.pg-journal .eat-sep { width: 1px; height: 12px; background: rgba(255, 255, 255, .28); }
+.pg-journal .eat-etat {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px; font-weight: 600; color: rgba(255, 255, 255, .85);
+  white-space: nowrap;
+}
+.pg-journal .eat-etat::before {
+  content: ''; width: 5px; height: 5px; border-radius: 50%;
+  background: #C9F7B8; box-shadow: 0 0 6px rgba(201, 247, 184, .8);
 }
 .pg-journal .eat-fleche { font-size: 11px; line-height: 1; }
 
