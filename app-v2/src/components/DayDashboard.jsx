@@ -48,19 +48,43 @@ function Anneau({ ratio, depasse, enfant }) {
   const CIRC = 515.2;
   const rempli = Math.min(1, Math.max(0, ratio));
 
+  // Remplissage anime au premier affichage : l'arc part de zero puis
+  // rejoint sa valeur (transition CSS). Respecte prefers-reduced-motion.
+  const [pret, setPret] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setPret(true); return;
+    }
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => setPret(true)));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  const trace = pret ? rempli : 0;
+
   return (
     <div class="cal-anneau">
       <svg width="184" height="184" viewBox="0 0 190 190" class="cal-anneau-svg">
+        <defs>
+          {/* Nuances du meme vert / meme rouge : richesse sans changer la teinte */}
+          <linearGradient id="calJauge" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#34D399" />
+            <stop offset="100%" stop-color="#0DA271" />
+          </linearGradient>
+          <linearGradient id="calJaugeAlerte" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FCA5A5" />
+            <stop offset="100%" stop-color="#EF5350" />
+          </linearGradient>
+        </defs>
         <circle
           cx="95" cy="95" r="82" fill="none" stroke="#DCECDF" stroke-width="13"
           stroke-linecap="round" stroke-dasharray={`${ARC} 144.2`}
           transform="rotate(140 95 95)"
+          class="cal-anneau-piste"
         />
         <circle
           cx="95" cy="95" r="82" fill="none"
-          stroke={depasse ? '#F87171' : '#10B981'} stroke-width="13"
+          stroke={depasse ? 'url(#calJaugeAlerte)' : 'url(#calJauge)'} stroke-width="13"
           stroke-linecap="round"
-          stroke-dasharray={`${(rempli * ARC).toFixed(1)} ${CIRC}`}
+          stroke-dasharray={`${(trace * ARC).toFixed(1)} ${CIRC}`}
           transform="rotate(140 95 95)"
           class="cal-anneau-trace"
         />
