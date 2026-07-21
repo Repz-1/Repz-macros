@@ -42,6 +42,7 @@ function Vide({ texte, cta, onCta }) {
 }
 
 // ---------- Silhouette : copie exacte de bodyMapSVG (v1) ----------
+// v1 : <div class="bodymap">svg + legende</div> — la legende vit DANS .bodymap (118px)
 function BodyMap({ compte, onClick }) {
   // Travaille sur la periode -> couleur du muscle ; sinon gris
   const col = (k) => (compte[k] > 0 ? (COL[k] || '#F7B500') : '#E9EBEF');
@@ -75,6 +76,7 @@ function BodyMap({ compte, onClick }) {
         <path class="bp" style={{ fill: col('jambes') }} d="M39 137 h10 v34 q0 4 -5 4 q-5 0 -5 -4z" />
         <path class="bp" style={{ fill: col('jambes') }} d="M61 137 h-10 v34 q0 4 5 4 q5 0 5 -4z" />
       </svg>
+      <div class="bodymap-legend"><i style="background:#E9EBEF" />{t('st_not_worked')}</div>
     </div>
   );
 }
@@ -450,10 +452,7 @@ export function Stats() {
           {totalRepart ? (
             <>
               <div class="repart-layout">
-                <div>
-                  <BodyMap compte={compte} onClick={() => setMlIso(isoDuJour(new Date()))} />
-                  <div class="bodymap-legend"><i style="background:#E9EBEF" />{t('st_not_worked')}</div>
-                </div>
+                <BodyMap compte={compte} onClick={() => setMlIso(isoDuJour(new Date()))} />
                 <div class="repart-body">
                   {GROUPES_REP.filter(g => compte[g.k]).sort((a, b) => (compte[b.k] || 0) - (compte[a.k] || 0)).map(g => (
                     <div class="rep-row" key={g.k}>
@@ -475,10 +474,7 @@ export function Stats() {
             </>
           ) : (
             <div class="repart-layout">
-              <div>
-                <BodyMap compte={{}} onClick={() => setMlIso(isoDuJour(new Date()))} />
-                <div class="bodymap-legend"><i style="background:#E9EBEF" />{t('st_not_worked')}</div>
-              </div>
+              <BodyMap compte={{}} onClick={() => setMlIso(isoDuJour(new Date()))} />
               <div class="repart-body"><div class="repart-vide">{t('st_repart_empty')}</div></div>
             </div>
           )}
