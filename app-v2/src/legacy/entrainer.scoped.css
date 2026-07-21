@@ -140,6 +140,8 @@
 }
 .pg-entrainer .choice.ph.featured .cta{ background:var(--gold); color:var(--noir); border:none; box-shadow:0 8px 20px rgba(247,181,0,.4); }
 .pg-entrainer .choice.ph .lock-badge{ background:rgba(10,10,10,.55); color:#fff; border:1px solid rgba(255,255,255,.3); backdrop-filter:blur(4px); }
+/* Badge PRO : doit rester en absolu malgre le position:relative pose par .choice.ph > * */
+.pg-entrainer .choice.ph .pro-badge{ position:absolute; top:14px; right:14px; }
 .pg-entrainer .choice.ph .badge{ position:absolute; top:18px; left:22px; right:auto; margin:0; }
 .pg-entrainer .choice.ph.featured{ min-height:260px; }
 .pg-entrainer .choice.ph.md{ min-height:220px; }
