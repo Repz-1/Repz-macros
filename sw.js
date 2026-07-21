@@ -7,7 +7,7 @@
  * le bump du nom de cache a chaque deploiement : l'installation du
  * nouveau SW retelecharge tout le noyau d'un bloc.
  */
-const CACHE = 'belfit-v147';
+const CACHE = 'belfit-v148';
 const CORE = ['./index.html','./main.html','./i18n.js','./i18n-strings.js','./app.html','./manifest.json','./icon-192-v7.png','./icon-512-v7.png','./belfit-logo-header.png'];
 
 self.addEventListener('install', e => {

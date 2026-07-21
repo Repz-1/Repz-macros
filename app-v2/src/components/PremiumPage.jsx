@@ -75,10 +75,6 @@ export function PremiumPage() {
         </div>
         <div class="hero-foot">
           <div class="hero-price"><span class="hp-from">dès</span> <b>3,99€</b><span class="hp-mo">/mois</span></div>
-          <div class="hero-guar">
-            <span>✓ Sans engagement</span>
-            <span>✓ Résiliable à tout moment</span>
-          </div>
         </div>
       </div>
 
