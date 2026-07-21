@@ -42,12 +42,6 @@ export function ajouterPesee(kg) {
   const sansAuj = weightLog.value.filter(p => p.iso !== iso);
   weightLog.value = [...sansAuj, { iso, date, weight: val }]
     .sort((a, b) => a.iso.localeCompare(b.iso));
-  // v1 : goal.weight = val (sert au score « Poids » de la page Stats)
-  try {
-    const g = JSON.parse(localStorage.getItem('repz_goal') || '{}') || {};
-    g.weight = val;
-    localStorage.setItem('repz_goal', JSON.stringify(g));
-  } catch (e) {}
 }
 
 export function enregistrerJour(totaux) {

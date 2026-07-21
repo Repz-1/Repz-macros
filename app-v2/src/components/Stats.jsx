@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import { weightLog, histoJours, ajouterPesee } from '../store/stats.js';
 import { muscleLog, basculerMuscle, viderJourMuscles } from '../store/entrainement.js';
+import { setLog } from './SeanceTracker.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -27,7 +28,6 @@ const CLES_ML = ['pecs', 'dos', 'epaules', 'biceps', 'triceps', 'jambes', 'abdos
 
 const isoNDaysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
 const isoDuJour = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-const lire = (cle, def) => { try { return JSON.parse(localStorage.getItem(cle) || def); } catch (e) { return JSON.parse(def); } };
 const jourCourt = (iso) => new Date(iso + 'T00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 // Pesees : v1 = {iso, date, weight} ; tolere l'ancien format v2 {iso, kg}
 const poidsDe = (e) => parseFloat(e.weight ?? e.kg) || 0;
@@ -164,25 +164,36 @@ export function Stats() {
 
   const poidsData = weightLog.value || [];
   const histoBrut = histoJours.value || {};
-  // v1 : history = [{iso, date, kcal, ...}] ; v2 store = {iso: {kcal,...}}
+  // v1 : history = [{iso, date, kcal, ...}] ; store v2 = {iso: {kcal,...}}
   const histoire = Object.entries(histoBrut).map(([iso, v]) => ({ iso, ...(v || {}) }));
   const mLog = muscleLog.value || {};
-  const sessionLog = lire('repz_sessionLog', '[]');
-  const setLogAll = lire('repz_setLog', '{}');
-  const objectif = lire('repz_goal', 'null') || { kcal: 0, weight: 0 };
+  // setLog v2 : { iso: [{ex, series:[{kg,reps}]}] }
+  // -> vue par exercice, meme forme que la v1 : { nom: [{iso, sets:[{w,r}]}] }
+  const setLogJours = setLog.value || {};
+  const setLogAll = {};
+  Object.keys(setLogJours).sort().forEach(iso => {
+    (setLogJours[iso] || []).forEach(e => {
+      if (!e || !e.ex) return;
+      const sets = (e.series || []).map(s => ({ w: s.kg, r: s.reps }));
+      if (!sets.length) return;
+      (setLogAll[e.ex] = setLogAll[e.ex] || []).push({ iso, sets });
+    });
+  });
+  // « Seance faite ce jour » (remplace le sessionLog v1) : au moins une serie notee
+  const seanceFaite = (iso) => (setLogJours[iso] || []).some(e => (e.series || []).length);
 
   // ================= Score global sur 7 jours (v1 calcScores) =================
   const j7 = Array.from({ length: 7 }, (_, i) => isoNDaysAgo(i));
   const jourActif = (iso) =>
     histoire.some(e => e.iso === iso) ||
     (mLog[iso] && mLog[iso].length && !(mLog[iso].length === 1 && mLog[iso][0] === 'repos')) ||
-    sessionLog.some(s => s.iso === iso) ||
+    seanceFaite(iso) ||
     poidsData.some(w => w.iso === iso);
 
   const nutrition = Math.round(j7.filter(iso => histoire.some(e => e.iso === iso)).length / 7 * 100);
   const trainJours = j7.filter(iso =>
     (mLog[iso] && mLog[iso].length && !(mLog[iso].length === 1 && mLog[iso][0] === 'repos')) ||
-    sessionLog.some(s => s.iso === iso)).length;
+    seanceFaite(iso)).length;
   const entrainement = Math.min(100, Math.round(trainJours / 4 * 100));
 
   const p14 = poidsData.filter(w => w.iso >= isoNDaysAgo(14)).sort((a, b) => a.iso.localeCompare(b.iso));
@@ -191,12 +202,13 @@ export function Stats() {
   else if (p14.length === 1) scorePoids = 60;
   else {
     const first = poidsDe(p14[0]), last = poidsDe(p14[p14.length - 1]);
-    const cible = parseFloat(objectif.weight || 0);
+    // v1 : goal.weight = derniere pesee saisie -> meme cible ici, sans localStorage
+    const cible = poidsData.length ? poidsDe([...poidsData].sort((a, b) => a.iso.localeCompare(b.iso))[poidsData.length - 1]) : 0;
     scorePoids = cible > 0 ? (Math.abs(last - cible) <= Math.abs(first - cible) ? 100 : 65) : 90;
   }
   const regularite = Math.round(j7.filter(jourActif).length / 7 * 100);
   const global = Math.round((nutrition + entrainement + scorePoids + regularite) / 4);
-  const rienDuTout = !histoire.length && !poidsData.length && !sessionLog.length && !Object.keys(mLog).length;
+  const rienDuTout = !histoire.length && !poidsData.length && !Object.keys(setLogJours).length && !Object.keys(mLog).length;
 
   // ================= Poids (v1 renderWeight) =================
   let poidsTri = [...poidsData].sort((a, b) => a.iso.localeCompare(b.iso));
