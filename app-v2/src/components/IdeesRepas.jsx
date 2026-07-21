@@ -149,7 +149,7 @@ function FicheRecette({ nom, portion, kcal, prot, fermer }) {
         <div class={'fr-banniere' + (photoOk ? '' : ' fr-banniere--vide')}>
           {photoOk && (
             <img
-              src={`../img/recettes/${fichierImage(nom)}`}
+              src={`/img/recettes/${fichierImage(nom)}`}
               alt=""
               onError={() => setPhotoOk(false)}
             />

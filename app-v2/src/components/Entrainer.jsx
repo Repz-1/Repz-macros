@@ -95,7 +95,7 @@ function JournalEntrainement({ ouvrirJour }) {
   }
 
   return (
-    <div class="choice ph sm" style="margin-top:24px; background-image:url('img/card-journal.jpg')">
+    <div class="choice ph sm" style="margin-top:24px; background-image:url('/img/card-journal.jpg')">
       <div class="ch-icon">
         <svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 10h18" /><path d="M9 16l2 2 4-4" /></svg>
       </div>
@@ -226,7 +226,7 @@ export function Entrainer() {
 
       <div class="choices">
         {/* Carte vedette : programme sur mesure (Premium) */}
-        <a href="#" class={'choice ph featured' + locked} style="background-image:url('img/card-creer.jpg')"
+        <a href="#" class={'choice ph featured' + locked} style="background-image:url('/img/card-creer.jpg')"
           onClick={(e) => { e.preventDefault(); if (!estPremium.value) setPremium(true); /* page questionnaire a brancher plus tard */ }}>
           {!estPremium.value && <span class="pro-badge">✦ PRO</span>}
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z" /></svg></span>
@@ -237,7 +237,7 @@ export function Entrainer() {
         </a>
 
         {/* Seance libre (gratuit) */}
-        <a href="#" class="choice ph md" style="background-image:url('img/card-libre.jpg')"
+        <a href="#" class="choice ph md" style="background-image:url('/img/card-libre.jpg')"
           onClick={(e) => { e.preventDefault(); allerVers('seance'); }}>
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11" /></svg></span>
           <h3>{t('tr_free_title')}</h3>
@@ -246,7 +246,7 @@ export function Entrainer() {
         </a>
 
         {/* Mes programmes (Premium) */}
-        <a href="#" class={'choice ph sm' + locked} style="background-image:url('img/card-programmes.jpg')"
+        <a href="#" class={'choice ph sm' + locked} style="background-image:url('/img/card-programmes.jpg')"
           onClick={(e) => verrou(e, 'programmes')}>
           {!estPremium.value && <span class="pro-badge">✦ PRO</span>}
           <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5" /><path d="M3.5 9h17M8 2.5v4M16 2.5v4" /></svg></span>
@@ -259,7 +259,6 @@ export function Entrainer() {
       <JournalEntrainement ouvrirJour={setJourOuvert} />
 
       <p class="note">{t('tr_note')}</p>
-      <div class="bottom-gradient" />
 
       <ModaleMuscles iso={jourOuvert} fermer={() => setJourOuvert(null)} />
       <ModalePremium montre={premium} fermer={() => setPremium(false)} />

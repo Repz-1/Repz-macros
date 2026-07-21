@@ -73,7 +73,7 @@
 .pg-seance .session-progress{ background:#fff; color:#181818; border-radius:18px; padding:13px 16px 12px; margin-bottom:12px; box-shadow:0 2px 10px rgba(24,24,24,.05); }
 .pg-seance .sess-hero{
     position:relative; border-radius:24px; overflow:hidden; min-height:150px;
-    background:url('img/card-libre.jpg') center/cover; color:#fff;
+    background:url('/img/card-libre.jpg') center/cover; color:#fff;
     display:flex; flex-direction:column; justify-content:flex-end;
     padding:18px 20px; margin-bottom:12px; box-shadow:0 8px 22px rgba(24,24,24,.18);
 }

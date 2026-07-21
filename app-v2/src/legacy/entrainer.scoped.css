@@ -93,10 +93,7 @@
 }
 .pg-entrainer .topbar-home svg{ width:21px; height:21px; }
 .pg-entrainer .topbar-home:active{ background:rgba(255,255,255,.25); transform:scale(.94); }
-.pg-entrainer .bottom-gradient{
-    height:80px; margin:32px -16px -16px;
-    background:linear-gradient(160deg,#191919 0%,#2a2620 100%);
-}
+
 .pg-entrainer .top{
     display:flex; align-items:center; gap:14px; padding:10px 4px 22px;
 }
@@ -123,6 +120,7 @@
     border:none; overflow:hidden; min-height:200px;
     display:flex; flex-direction:column; justify-content:flex-end;
     background-size:cover; background-position:center;
+    background-color:#181818; /* fond sombre si l'image tarde a charger */
     box-shadow:0 8px 22px rgba(24,24,24,.16); color:#fff;
 }
 .pg-entrainer .choice.ph::after{
