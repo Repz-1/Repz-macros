@@ -1,5 +1,7 @@
 .pg-stats{background:#F5F6F8!important;margin:0}
 .pg-stats{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}
+/* body v1 : min-height plein ecran + padding-top safe-area */
+.pg-stats{min-height:100vh;padding-top:max(12px,env(safe-area-inset-top));}
 .pg-stats .weight-add-btn{display:block;width:100%;margin-top:14px;padding:12px;background:#fff;border:1.5px solid #F7B500;border-radius:12px;color:#B98A00;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;transition:background .15s;}
 .pg-stats .weight-add-btn:active{background:#FFF9E6;}
 .pg-stats{
@@ -245,3 +247,5 @@
 .pg-stats .modal-cancel{ background:#e2e8f0; color:#475569; }
 .pg-stats .wm-last{ font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
 .pg-stats .wm-last b{ color:#191919; }
+/* .ce-btn est un <button> en v2 (lien en v1) : neutraliser le style bouton natif */
+.pg-stats .ce-btn{ border:none; cursor:pointer; font-family:inherit; }
