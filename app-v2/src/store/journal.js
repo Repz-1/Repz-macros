@@ -192,7 +192,12 @@ export function nouvelleJournee() {
 }
 
 export function ajouterEau(litres) {
-  eau.value = Math.max(0, Math.round((eau.value + litres) * 100) / 100);
+  // Precision au millieme : le pas v1 est de 75 ml (0,075 L).
+  eau.value = Math.max(0, Math.round((eau.value + litres) * 1000) / 1000);
+}
+
+export function resetEau() {
+  eau.value = 0;
 }
 
 export function setObjectifs(nouveaux) {
