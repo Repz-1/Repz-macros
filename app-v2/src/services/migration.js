@@ -62,7 +62,7 @@ export function convertirV1versV2(v1) {
     if (Array.isArray(v1.weightLog)) {
       out.weightLog = v1.weightLog
         .filter(w => w && w.iso)
-        .map(w => ({ iso: w.iso, kg: parseFloat(w.kg ?? w.poids) || 0 }))
+        .map(w => ({ iso: w.iso, date: w.date || '', weight: parseFloat(w.weight ?? w.kg ?? w.poids) || 0 }))
         .sort((a, b) => a.iso.localeCompare(b.iso));
     }
   } catch (e) {}

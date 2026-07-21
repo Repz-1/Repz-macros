@@ -125,11 +125,14 @@ const T = {
   },
 };
 
-export function t(cle) {
+export function t(cle, vars) {
   const l = langue.value;
   // Les chaines v2 priment ; on retombe sur le dictionnaire complet de la v1.
-  return (T[l] && T[l][cle]) || (STRINGS_V1[l] && STRINGS_V1[l][cle])
+  let s = (T[l] && T[l][cle]) || (STRINGS_V1[l] && STRINGS_V1[l][cle])
       || T.fr[cle] || (STRINGS_V1.fr && STRINGS_V1.fr[cle]) || cle;
+  // Substitution {k} — meme mecanique que la v1 (i18n.js)
+  if (vars) { for (const k in vars) { s = s.replace(new RegExp('{' + k + '}', 'g'), vars[k]); } }
+  return s;
 }
 
 export const LANGUES = [

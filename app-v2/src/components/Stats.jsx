@@ -1,48 +1,38 @@
 import { useState } from 'preact/hooks';
-import { weightLog, histoJours } from '../store/stats.js';
-import { muscleLog } from '../store/entrainement.js';
+import { weightLog, histoJours, ajouterPesee } from '../store/stats.js';
+import { muscleLog, basculerMuscle, viderJourMuscles } from '../store/entrainement.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
 import '../legacy/stats.scoped.css';
 
 // ==========================================================
-// PAGE MES STATS — portage a l'identique de mes-stats.html.
-// Memes cartes (acc-green / acc-orange / acc-blue / acc-red / acc-violet),
-// meme silhouette, memes graphiques en barres.
+// PAGE MES STATS — portage a l'identique de mes-stats.html (v1).
+// Regle : la v1 est la reference absolue. Memes cartes, meme
+// silhouette (dos, avant-bras, mains inclus), memes graphiques,
+// meme modale « muscles du jour », meme bouton pesee.
 // ==========================================================
 
 const LIMITE_GRATUIT = 7;
-const COL = { pecs:'#EF4444', dos:'#F97316', epaules:'#F7B500', biceps:'#10B981',
-              triceps:'#06B6D4', jambes:'#3B82F6', abdos:'#8B5CF6', cardio:'#EC4899' };
-const CLES = ['pecs','dos','epaules','biceps','triceps','jambes','abdos','cardio'];
+// v1 renderRepartition : ordre + couleurs des groupes
+const GROUPES_REP = [
+  { k: 'pecs', c: '#EF4444' }, { k: 'dos', c: '#F97316' },
+  { k: 'epaules', c: '#F7B500' }, { k: 'biceps', c: '#10B981' },
+  { k: 'triceps', c: '#06B6D4' }, { k: 'jambes', c: '#3B82F6' },
+  { k: 'abdos', c: '#8B5CF6' }, { k: 'cardio', c: '#EC4899' },
+];
+const COL = { pecs: '#EF4444', dos: '#F97316', epaules: '#F7B500', biceps: '#10B981', triceps: '#06B6D4', jambes: '#3B82F6', abdos: '#8B5CF6' };
+// v1 rendreEditMuscles : cles de la modale (repos inclus)
+const CLES_ML = ['pecs', 'dos', 'epaules', 'biceps', 'triceps', 'jambes', 'abdos', 'cardio', 'repos'];
 
-const isoIlYA = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
+const isoNDaysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
+const isoDuJour = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 const lire = (cle, def) => { try { return JSON.parse(localStorage.getItem(cle) || def); } catch (e) { return JSON.parse(def); } };
 const jourCourt = (iso) => new Date(iso + 'T00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+// Pesees : v1 = {iso, date, weight} ; tolere l'ancien format v2 {iso, kg}
+const poidsDe = (e) => parseFloat(e.weight ?? e.kg) || 0;
 
-// ---------- Graphique en barres, identique v1 ----------
-function Chart({ points, classeBarre }) {
-  const vals = points.map(p => p.v);
-  const max = Math.max(...vals), min = Math.min(...vals);
-  return (
-    <div class="chart">
-      {points.map((p, i) => {
-        const h = classeBarre === 'weight'
-          ? (((p.v - (min - 1)) / (((max + 1) - (min - 1)) || 1)) * 100)
-          : (max > 0 ? (p.v / (max * 1.1)) * 100 : 0);
-        return (
-          <div class="chart-bar-wrap" key={i}>
-            <div class="chart-val">{p.v}</div>
-            <div class={'chart-bar ' + classeBarre} style={{ height: Math.max(6, h) + '%' }} />
-            <div class="chart-day">{p.j}</div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
+// ---------- Etat vide (v1 .chart-empty) ----------
 function Vide({ texte, cta, onCta }) {
   return (
     <div class="chart-empty">
@@ -51,42 +41,138 @@ function Vide({ texte, cta, onCta }) {
   );
 }
 
-// ---------- Silhouette : chaque zone prend la couleur de son muscle ----------
-function BodyMap({ compte }) {
+// ---------- Silhouette : copie exacte de bodyMapSVG (v1) ----------
+function BodyMap({ compte, onClick }) {
+  // Travaille sur la periode -> couleur du muscle ; sinon gris
   const col = (k) => (compte[k] > 0 ? (COL[k] || '#F7B500') : '#E9EBEF');
+  // Avant-bras et mains : rattaches visuellement au bras (v1)
+  const colBras = () => {
+    if (compte.biceps > 0) return COL.biceps;
+    if (compte.triceps > 0) return COL.triceps;
+    return '#E9EBEF';
+  };
   return (
-    <svg viewBox="0 0 100 200">
-      <circle cx="50" cy="16" r="11" class="bp" />
-      <rect x="42" y="27" width="16" height="8" rx="3" class="bp" />
-      <path class="bp" style={{ fill: col('epaules') }} d="M30 37 q-8 1 -10 8 l4 6 q6 -6 12 -6z" />
-      <path class="bp" style={{ fill: col('epaules') }} d="M70 37 q8 1 10 8 l-4 6 q-6 -6 -12 -6z" />
-      <path class="bp" style={{ fill: col('pecs') }} d="M36 37 h28 q3 0 3 4 v10 q0 4 -4 4 h-26 q-4 0 -4 -4 v-10 q0 -4 3 -4z" />
-      <path class="bp" style={{ fill: col('abdos') }} d="M39 60 h22 q2 0 2 3 v20 q0 3 -3 3 h-20 q-3 0 -3 -3 v-20 q0 -3 2 -3z" />
-      <path class="bp" style={{ fill: col('biceps') }} d="M22 47 q-4 8 -4 18 l6 2 q2 -10 4 -16z" />
-      <path class="bp" style={{ fill: col('biceps') }} d="M78 47 q4 8 4 18 l-6 2 q-2 -10 -4 -16z" />
-      <path class="bp" style={{ fill: col('triceps') }} d="M17 66 q-2 8 -1 16 l6 -1 q0 -8 1 -14z" />
-      <path class="bp" style={{ fill: col('triceps') }} d="M83 66 q2 8 1 16 l-6 -1 q0 -8 -1 -14z" />
-      <path class="bp" style={{ fill: col('jambes') }} d="M40 89 h9 v40 q0 6 -5 6 q-5 0 -5 -6 z" />
-      <path class="bp" style={{ fill: col('jambes') }} d="M60 89 h-9 v40 q0 6 5 6 q5 0 5 -6 z" />
-      <path class="bp" style={{ fill: col('jambes') }} d="M39 137 h10 v34 q0 4 -5 4 q-5 0 -5 -4z" />
-      <path class="bp" style={{ fill: col('jambes') }} d="M61 137 h-10 v34 q0 4 5 4 q5 0 5 -4z" />
-    </svg>
+    <div class="bodymap" onClick={onClick}>
+      <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="16" r="11" class="bp" />
+        <rect x="42" y="27" width="16" height="8" rx="3" class="bp" />
+        <path class="bp" style={{ fill: col('epaules') }} d="M30 37 q-8 1 -10 8 l4 6 q6 -6 12 -6z" />
+        <path class="bp" style={{ fill: col('epaules') }} d="M70 37 q8 1 10 8 l-4 6 q-6 -6 -12 -6z" />
+        <path class="bp" style={{ fill: col('dos') }} d="M33 40 q-4 3 -4 9 l0 8 q0 3 3 3 l3 0 q-2 -10 -1 -20z" />
+        <path class="bp" style={{ fill: col('dos') }} d="M67 40 q4 3 4 9 l0 8 q0 3 -3 3 l-3 0 q2 -10 1 -20z" />
+        <path class="bp" style={{ fill: col('pecs') }} d="M36 37 h28 q3 0 3 4 v10 q0 4 -4 4 h-26 q-4 0 -4 -4 v-10 q0 -4 3 -4z" />
+        <path class="bp" style={{ fill: col('abdos') }} d="M39 60 h22 q2 0 2 3 v20 q0 3 -3 3 h-20 q-3 0 -3 -3 v-20 q0 -3 2 -3z" />
+        <path class="bp" style={{ fill: col('biceps') }} d="M22 47 q-4 8 -4 18 l6 2 q2 -10 4 -16z" />
+        <path class="bp" style={{ fill: col('biceps') }} d="M78 47 q4 8 4 18 l-6 2 q-2 -10 -4 -16z" />
+        <path class="bp" style={{ fill: col('triceps') }} d="M17 66 q-2 8 -1 16 l6 -1 q0 -8 1 -14z" />
+        <path class="bp" style={{ fill: col('triceps') }} d="M83 66 q2 8 1 16 l-6 -1 q0 -8 -1 -14z" />
+        <path class="bp" style={{ fill: colBras() }} d="M15 83 q-2 8 -1 15 l6 -1 q0 -7 1 -13z" />
+        <path class="bp" style={{ fill: colBras() }} d="M85 83 q2 8 1 15 l-6 -1 q0 -7 -1 -13z" />
+        <ellipse class="bp" style={{ fill: colBras() }} cx="16.5" cy="102" rx="3.6" ry="5" />
+        <ellipse class="bp" style={{ fill: colBras() }} cx="83.5" cy="102" rx="3.6" ry="5" />
+        <path class="bp" style={{ fill: col('jambes') }} d="M40 89 h9 v40 q0 6 -5 6 q-5 0 -5 -6 z" />
+        <path class="bp" style={{ fill: col('jambes') }} d="M60 89 h-9 v40 q0 6 5 6 q5 0 5 -6 z" />
+        <path class="bp" style={{ fill: col('jambes') }} d="M39 137 h10 v34 q0 4 -5 4 q-5 0 -5 -4z" />
+        <path class="bp" style={{ fill: col('jambes') }} d="M61 137 h-10 v34 q0 4 5 4 q5 0 5 -4z" />
+      </svg>
+    </div>
+  );
+}
+
+// ---------- Modale « muscles du jour » : copie v1 (ml-overlay) ----------
+function MlModal({ iso, setIso, fermer }) {
+  const sel = muscleLog.value[iso] || [];
+  const d = new Date(iso + 'T00:00');
+  const jours = t('days_long').split('|');
+  const mois = t('months_long').split('|');
+  const aujIso = isoDuJour(new Date());
+
+  const decaler = (n) => {
+    const dd = new Date(iso + 'T00:00');
+    dd.setDate(dd.getDate() + n);
+    const cible = isoDuJour(dd);
+    if (cible > aujIso) return; // pas de saisie dans le futur (v1)
+    setIso(cible);
+  };
+
+  return (
+    <div class="ml-overlay show" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
+      <div class="ml-modal">
+        <div class="ml-nav">
+          <button onClick={() => decaler(-1)} aria-label="Jour precedent">&lsaquo;</button>
+          <div style="flex:1;text-align:center;">
+            <h3 class="ml-date">{jours[d.getDay()]} {d.getDate()} {mois[d.getMonth()]}</h3>
+            <div class="ml-sub">{sel.length ? sel.map(k => t('mus_' + k)).join(' · ') : t('st_repart_empty')}</div>
+          </div>
+          <button disabled={iso >= aujIso} onClick={() => decaler(1)} aria-label="Jour suivant">&rsaquo;</button>
+        </div>
+        <div class="ml-groups">
+          {CLES_ML.map(k => (
+            <button
+              key={k}
+              class={'ml-chip ' + (k === 'repos' ? 'repos ' : '') + (sel.includes(k) ? 'on' : '')}
+              onClick={() => basculerMuscle(iso, k)}
+            >{t('mus_' + k)}</button>
+          ))}
+        </div>
+        <div class="ml-btns">
+          <button class="ml-clear" onClick={() => viderJourMuscles(iso)}>{t('clear')}</button>
+          <button class="ml-save" onClick={fermer}>{t('save')}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Modale poids : copie v1 (weightModal, app.html) ----------
+function WeightModal({ fermer }) {
+  const [val, setVal] = useState('');
+  const l = weightLog.value || [];
+  const last = l.length ? poidsDe([...l].sort((a, b) => a.iso.localeCompare(b.iso))[l.length - 1]) : '';
+
+  const enregistrer = () => {
+    const v = parseFloat(val);
+    if (!v || v <= 0) { alert(t('js_weight_invalid')); return; }
+    ajouterPesee(v);
+    fermer();
+  };
+
+  return (
+    <div class="modal-overlay show" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
+      <div class="modal">
+        <h3 class="modal-h3-ic">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15" /></svg>
+          {' '}<span>{t('wm_title')}</span>
+        </h3>
+        <label>{t('weight_kg')}</label>
+        <input type="number" step="0.1" placeholder="kg" inputMode="decimal" value={val} onInput={(e) => setVal(e.target.value)} />
+        {last ? <div class="wm-last">{t('prev_weight')} : <b>{last} kg</b></div> : null}
+        <div class="modal-btns">
+          <button class="modal-cancel" onClick={fermer}>{t('cancel')}</button>
+          <button class="modal-save" onClick={enregistrer}>{t('save')}</button>
+        </div>
+      </div>
+    </div>
   );
 }
 
 export function Stats() {
   const [exoSel, setExoSel] = useState(null);
+  const [mlIso, setMlIso] = useState(null);          // modale muscles ouverte si non null
+  const [modalePoids, setModalePoids] = useState(false);
   const prem = estPremium.value;
 
   const poidsData = weightLog.value || [];
-  const histoire = Object.values(histoJours.value || {});
+  const histoBrut = histoJours.value || {};
+  // v1 : history = [{iso, date, kcal, ...}] ; v2 store = {iso: {kcal,...}}
+  const histoire = Object.entries(histoBrut).map(([iso, v]) => ({ iso, ...(v || {}) }));
   const mLog = muscleLog.value || {};
   const sessionLog = lire('repz_sessionLog', '[]');
   const setLogAll = lire('repz_setLog', '{}');
   const objectif = lire('repz_goal', 'null') || { kcal: 0, weight: 0 };
 
-  // ================= Score global sur 7 jours =================
-  const j7 = Array.from({ length: 7 }, (_, i) => isoIlYA(i));
+  // ================= Score global sur 7 jours (v1 calcScores) =================
+  const j7 = Array.from({ length: 7 }, (_, i) => isoNDaysAgo(i));
   const jourActif = (iso) =>
     histoire.some(e => e.iso === iso) ||
     (mLog[iso] && mLog[iso].length && !(mLog[iso].length === 1 && mLog[iso][0] === 'repos')) ||
@@ -99,12 +185,12 @@ export function Stats() {
     sessionLog.some(s => s.iso === iso)).length;
   const entrainement = Math.min(100, Math.round(trainJours / 4 * 100));
 
-  const p14 = poidsData.filter(w => w.iso >= isoIlYA(14)).sort((a, b) => a.iso.localeCompare(b.iso));
+  const p14 = poidsData.filter(w => w.iso >= isoNDaysAgo(14)).sort((a, b) => a.iso.localeCompare(b.iso));
   let scorePoids;
   if (!p14.length) scorePoids = poidsData.length ? 40 : 0;
   else if (p14.length === 1) scorePoids = 60;
   else {
-    const first = parseFloat(p14[0].weight), last = parseFloat(p14[p14.length - 1].weight);
+    const first = poidsDe(p14[0]), last = poidsDe(p14[p14.length - 1]);
     const cible = parseFloat(objectif.weight || 0);
     scorePoids = cible > 0 ? (Math.abs(last - cible) <= Math.abs(first - cible) ? 100 : 65) : 90;
   }
@@ -112,44 +198,32 @@ export function Stats() {
   const global = Math.round((nutrition + entrainement + scorePoids + regularite) / 4);
   const rienDuTout = !histoire.length && !poidsData.length && !sessionLog.length && !Object.keys(mLog).length;
 
-  // ================= Poids =================
+  // ================= Poids (v1 renderWeight) =================
   let poidsTri = [...poidsData].sort((a, b) => a.iso.localeCompare(b.iso));
   const totalPesees = poidsTri.length;
   let sousTitrePoids;
   if (!prem && poidsTri.length > LIMITE_GRATUIT) {
     poidsTri = poidsTri.slice(-LIMITE_GRATUIT);
-    sousTitrePoids = `${LIMITE_GRATUIT} / ${totalPesees}`;
+    sousTitrePoids = t('st_last_weighins', { n: LIMITE_GRATUIT, total: totalPesees });
   } else sousTitrePoids = totalPesees + ' ' + t(totalPesees > 1 ? 'weighins' : 'weighin');
 
-  const poidsActuel = poidsTri.length ? parseFloat(poidsTri[poidsTri.length - 1].weight) : 0;
-  const poidsDebut = poidsTri.length ? parseFloat(poidsTri[0].weight) : 0;
+  const poidsActuel = poidsTri.length ? poidsDe(poidsTri[poidsTri.length - 1]) : 0;
+  const poidsDebut = poidsTri.length ? poidsDe(poidsTri[0]) : 0;
   const diff = (poidsActuel - poidsDebut).toFixed(1);
 
-  // ================= Calories =================
+  // ================= Calories (v1 renderKcal) =================
   let kcalTri = [...histoire].sort((a, b) => (a.iso || '').localeCompare(b.iso || ''));
   const totalJours = kcalTri.length;
   let sousTitreKcal;
   if (!prem && kcalTri.length > LIMITE_GRATUIT) {
     kcalTri = kcalTri.slice(-LIMITE_GRATUIT);
-    sousTitreKcal = `${LIMITE_GRATUIT} / ${totalJours}`;
+    sousTitreKcal = t('st_last_days', { n: LIMITE_GRATUIT, total: totalJours });
   } else sousTitreKcal = totalJours + ' ' + t(totalJours > 1 ? 'days' : 'day');
   const moyKcal = kcalTri.length ? Math.round(kcalTri.reduce((s, d) => s + parseInt(d.kcal || 0), 0) / kcalTri.length) : 0;
   const derniereKcal = kcalTri.length ? parseInt(kcalTri[kcalTri.length - 1].kcal || 0) : 0;
 
-  // ================= Records =================
-  const prs = [];
-  Object.keys(setLogAll).forEach(nom => {
-    let best = 0, reps = 0, dateBest = '';
-    (setLogAll[nom] || []).forEach(e => (e.sets || []).forEach(s => {
-      const w = parseFloat(s.w);
-      if (!isNaN(w) && w > best) { best = w; reps = s.r || 0; dateBest = e.iso; }
-    }));
-    if (best > 0) prs.push({ nom, best, reps, dateBest });
-  });
-  prs.sort((a, b) => b.best - a.best);
-  const recent = [...prs].sort((a, b) => (b.dateBest || '').localeCompare(a.dateBest || ''))[0];
-
-  // ================= Repartition musculaire (semaine en cours) =================
+  // ================= Repartition musculaire (v1 renderRepartition) =================
+  // Toujours la semaine en cours (lundi -> aujourd'hui)
   const auj = new Date();
   const lundi = new Date(auj); lundi.setDate(auj.getDate() - ((auj.getDay() + 6) % 7));
   const depuis = lundi.toISOString().slice(0, 10);
@@ -159,7 +233,7 @@ export function Stats() {
     (mLog[iso] || []).forEach(m => { if (m !== 'repos') compte[m] = (compte[m] || 0) + 1; });
   });
   const totalRepart = Object.values(compte).reduce((a, b) => a + b, 0);
-  const maxRepart = Math.max(1, ...CLES.map(k => compte[k] || 0));
+  const maxRepart = Math.max(...GROUPES_REP.map(g => compte[g.k] || 0));
 
   const aujIso = new Date().toISOString().slice(0, 10);
   const joursDepuis = (k) => {
@@ -167,13 +241,35 @@ export function Stats() {
     Object.keys(mLog).forEach(iso => { if ((mLog[iso] || []).includes(k) && (!dernier || iso > dernier)) dernier = iso; });
     return dernier ? Math.round((new Date(aujIso) - new Date(dernier)) / 86400000) : Infinity;
   };
-  const negliges = ['pecs', 'dos', 'jambes', 'epaules'].map(k => ({ k, j: joursDepuis(k) })).filter(x => x.j > 6);
+  // v1 : grands muscles negliges depuis 8 jours ou plus
+  const negliges = ['pecs', 'dos', 'jambes', 'epaules'].map(k => ({ k, j: joursDepuis(k) })).filter(x => x.j >= 8);
+  // v1 : suggestion = memes muscles que le meme jour la semaine passee,
+  // MAIS uniquement ceux pas retravailles depuis (fenetre 8 jours)
+  const FENETRE_JOURS = 8;
   const dSem = new Date(aujIso); dSem.setDate(dSem.getDate() - 7);
-  const memesJour = (mLog[dSem.toISOString().slice(0, 10)] || [])
-    .filter(v => v !== 'repos').map(k => t('mus_' + k).toLowerCase());
+  const isoSem = dSem.toISOString().slice(0, 10);
+  const memesJour = (mLog[isoSem] || [])
+    .filter(v => v !== 'repos')
+    .filter(k => joursDepuis(k) >= FENETRE_JOURS)
+    .map(k => t('mus_' + k).toLowerCase());
   const aujFait = (mLog[aujIso] || []).length > 0;
 
-  // ================= Progression par exercice =================
+  let noteTexte = '', noteCheck = false;
+  if (memesJour.length && !aujFait) {
+    const jourNom = t('days_long').split('|')[new Date(aujIso).getDay()].toLowerCase();
+    noteTexte = t('st_suggestion', { muscles: memesJour.join(', '), day: jourNom });
+  } else if (negliges.length) {
+    const items = negliges.map(x => {
+      const nom = t('mus_' + x.k).toLowerCase();
+      return x.j === Infinity ? nom : `${nom} (${x.j} j)`;
+    });
+    noteTexte = `${t('st_next_hint')} ${items.join(', ')}.`;
+  } else {
+    noteTexte = t('st_balanced');
+    noteCheck = true;
+  }
+
+  // ================= Progression par exercice (v1 renderExoProg) =================
   const topSet = (sets) => {
     let best = null;
     (sets || []).forEach(s => {
@@ -240,12 +336,27 @@ export function Stats() {
                 <div class="stat-box"><div class="sb-val">{poidsActuel} kg</div><div class="sb-lbl">{t('st_cur_weight')}</div></div>
                 <div class="stat-box"><div class="sb-val">{diff > 0 ? '+' + diff : diff} kg</div><div class="sb-lbl">{t('st_variation')}</div></div>
               </div>
-              <Chart classeBarre="weight" points={poidsTri.map(d => ({
-                v: parseFloat(d.weight),
-                j: d.date ? d.date.split(' ').slice(0, 2).join(' ') : jourCourt(d.iso),
-              }))} />
+              <div class="chart">
+                {(() => {
+                  const vals = poidsTri.map(poidsDe);
+                  const min = Math.min(...vals) - 1, max = Math.max(...vals) + 1;
+                  return poidsTri.map(d => {
+                    const p = poidsDe(d);
+                    const h = max > min ? ((p - min) / (max - min)) * 100 : 50;
+                    const jour = d.date ? d.date.split(' ').slice(0, 2).join(' ') : jourCourt(d.iso);
+                    return (
+                      <div class="chart-bar-wrap" key={d.iso}>
+                        <div class="chart-val">{p}</div>
+                        <div class="chart-bar weight" style={{ height: Math.max(6, h) + '%' }} />
+                        <div class="chart-day">{jour}</div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
             </>
-          ) : <Vide texte={t('st_no_weight')} cta={t('st_add_weight')} onCta={() => { ongletActif.value = 'journal'; }} />}
+          ) : <Vide texte={t('st_no_weight')} cta={t('st_add_weight')} onCta={() => setModalePoids(true)} />}
+          <button class="weight-add-btn" onClick={() => setModalePoids(true)}>{t('st_weight_add')}</button>
         </div>
 
         {/* CALORIES */}
@@ -258,10 +369,24 @@ export function Stats() {
                 <div class="stat-box"><div class="sb-val">{moyKcal}</div><div class="sb-lbl">{t('st_avg_kcal')}</div></div>
                 <div class="stat-box"><div class="sb-val">{derniereKcal}</div><div class="sb-lbl">{t('st_last_day')}</div></div>
               </div>
-              <Chart classeBarre="kcalbar" points={kcalTri.map(d => ({
-                v: parseInt(d.kcal || 0),
-                j: d.date ? d.date.split(' ').slice(0, 2).join(' ') : jourCourt(d.iso),
-              }))} />
+              <div class="chart">
+                {(() => {
+                  const kcals = kcalTri.map(d => parseInt(d.kcal || 0));
+                  const max = Math.max(...kcals) * 1.1;
+                  return kcalTri.map(d => {
+                    const k = parseInt(d.kcal || 0);
+                    const h = max > 0 ? (k / max) * 100 : 0;
+                    const jour = d.date ? d.date.split(' ').slice(0, 2).join(' ') : jourCourt(d.iso);
+                    return (
+                      <div class="chart-bar-wrap" key={d.iso}>
+                        <div class="chart-val">{k}</div>
+                        <div class="chart-bar kcalbar" style={{ height: Math.max(6, h) + '%' }} />
+                        <div class="chart-day">{jour}</div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
             </>
           ) : <Vide texte={t('st_no_day')} cta={t('st_save_day')} onCta={() => { ongletActif.value = 'journal'; }} />}
         </div>
@@ -303,59 +428,48 @@ export function Stats() {
         {/* REPARTITION MUSCULAIRE */}
         <div class="stat-card acc-red">
           <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z" /></svg><span>{t('st_repart')}</span></h2>
-          <div class="repart-periode">{t('st_this_week')}</div>
-          <div class="repart-layout">
-            <div class="bodymap">
-              <BodyMap compte={compte} />
-              <div class="bodymap-legend"><i style="background:#E9EBEF" />{t('st_not_worked')}</div>
-            </div>
-            <div class="repart-body">
-              {totalRepart ? CLES.filter(k => compte[k]).sort((a, b) => compte[b] - compte[a]).map(k => (
-                <div class="rep-row" key={k}>
-                  <div class="rep-lbl">{t('mus_' + k)}</div>
-                  <div class="rep-track">
-                    <div class="rep-fill" style={{ width: Math.max(18, Math.round(compte[k] / maxRepart * 100)) + '%', background: COL[k] }} />
-                  </div>
-                  <div class="rep-val">{compte[k]}</div>
-                </div>
-              )) : <div class="repart-vide">{t('st_repart_empty')}</div>}
-            </div>
+          <div class="rep-head">
+            <div class="repart-periode">{t('st_this_week')}</div>
+            <button class="rep-edit" onClick={() => setMlIso(isoDuJour(new Date()))}>
+              <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z" /></svg>
+              <span>{t('st_edit_muscles')}</span>
+            </button>
           </div>
-          {totalRepart > 0 && (
-            <div class="repart-note">
-              <svg class="rn-ic" viewBox="0 0 24 24">
-                <path d={((memesJour.length && !aujFait) || negliges.length) ? 'M9 18V5l12-2v13M9 9l12-2' : 'M20 6L9 17l-5-5'} />
-              </svg>
-              {(memesJour.length && !aujFait)
-                ? `${t('st_next_hint')} ${memesJour.join(', ')}.`
-                : negliges.length
-                  ? `${t('st_next_hint')} ${negliges.map(x => t('mus_' + x.k).toLowerCase() + (x.j === Infinity ? '' : ` (${x.j} j)`)).join(', ')}.`
-                  : t('st_balanced')}
+          {totalRepart ? (
+            <>
+              <div class="repart-layout">
+                <div>
+                  <BodyMap compte={compte} onClick={() => setMlIso(isoDuJour(new Date()))} />
+                  <div class="bodymap-legend"><i style="background:#E9EBEF" />{t('st_not_worked')}</div>
+                </div>
+                <div class="repart-body">
+                  {GROUPES_REP.filter(g => compte[g.k]).sort((a, b) => (compte[b.k] || 0) - (compte[a.k] || 0)).map(g => (
+                    <div class="rep-row" key={g.k}>
+                      <div class="rep-lbl">{t('mus_' + g.k)}</div>
+                      <div class="rep-track">
+                        <div class="rep-fill" style={{ width: Math.max(18, Math.round((compte[g.k] || 0) / maxRepart * 100)) + '%', background: g.c }} />
+                      </div>
+                      <div class="rep-val">{compte[g.k] || 0}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div class="repart-note">
+                <svg class="rn-ic" viewBox="0 0 24 24">
+                  <path d={noteCheck ? 'M20 6L9 17l-5-5' : 'M9 18V5l12-2v13M9 9l12-2'} />
+                </svg>
+                {noteTexte}
+              </div>
+            </>
+          ) : (
+            <div class="repart-layout">
+              <div>
+                <BodyMap compte={{}} onClick={() => setMlIso(isoDuJour(new Date()))} />
+                <div class="bodymap-legend"><i style="background:#E9EBEF" />{t('st_not_worked')}</div>
+              </div>
+              <div class="repart-body"><div class="repart-vide">{t('st_repart_empty')}</div></div>
             </div>
           )}
-        </div>
-
-        {/* RECORDS PERSONNELS */}
-        <div class="stat-card acc-violet">
-          <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M8 21h8" /><path d="M12 17v4" /><path d="M7 4h10v6a5 5 0 01-10 0V4z" /><path d="M7 6H4a2 2 0 002 4h1" /><path d="M17 6h3a2 2 0 01-2 4h-1" /></svg><span>{t('st_records')}</span></h2>
-          <div class="card-sub">{t('st_records_sub')}</div>
-          {prs.length ? (
-            <>
-              {prs.slice(0, 5).map((p, i) => (
-                <div class="pr-row" key={p.nom}>
-                  <span class={'pr-rank' + (i === 0 ? ' r1' : '')}>{i + 1}</span>
-                  <span class="pr-name">{p.nom}</span>
-                  <span class="pr-val">{p.best} kg{p.reps ? ` × ${p.reps}` : ''}</span>
-                </div>
-              ))}
-              {recent && recent.dateBest && (
-                <div class="pr-recent">
-                  Dernier record : <b>{recent.nom}</b> — {recent.best} kg, le{' '}
-                  {new Date(recent.dateBest + 'T00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
-                </div>
-              )}
-            </>
-          ) : <Vide texte={t('st_no_records')} cta={t('st_start_session')} onCta={() => { ongletActif.value = 'entrainer'; }} />}
         </div>
 
         {/* INVITATION PREMIUM */}
@@ -363,12 +477,15 @@ export function Stats() {
           <div class="premium-invite">
             <div class="pi-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11" /></svg></div>
             <h3>{t('st_prem_title')}</h3>
-            <p>{t('st_prem_body')}</p>
+            <p dangerouslySetInnerHTML={{ __html: t('st_prem_body') }} />
             <button class="pi-btn" onClick={() => { ongletActif.value = 'premium'; }}>{t('support_unlock')}</button>
             <div class="locked-note">{t('st_locked_note')}</div>
           </div>
         )}
       </div>
+
+      {mlIso && <MlModal iso={mlIso} setIso={setMlIso} fermer={() => setMlIso(null)} />}
+      {modalePoids && <WeightModal fermer={() => setModalePoids(false)} />}
     </div>
   );
 }

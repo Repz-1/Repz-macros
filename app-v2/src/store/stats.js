@@ -34,10 +34,20 @@ effect(() => {
 });
 
 export function ajouterPesee(kg) {
+  // Meme format d'entree que la v1 (app.html / saveWeightNutri) :
+  // { iso, date (jj mois court fr), weight }
+  const val = parseFloat(kg) || 0;
   const iso = new Date().toISOString().slice(0, 10);
+  const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   const sansAuj = weightLog.value.filter(p => p.iso !== iso);
-  weightLog.value = [...sansAuj, { iso, kg: parseFloat(kg) || 0 }]
+  weightLog.value = [...sansAuj, { iso, date, weight: val }]
     .sort((a, b) => a.iso.localeCompare(b.iso));
+  // v1 : goal.weight = val (sert au score « Poids » de la page Stats)
+  try {
+    const g = JSON.parse(localStorage.getItem('repz_goal') || '{}') || {};
+    g.weight = val;
+    localStorage.setItem('repz_goal', JSON.stringify(g));
+  } catch (e) {}
 }
 
 export function enregistrerJour(totaux) {
@@ -52,7 +62,8 @@ export function enregistrerJour(totaux) {
 export const tendancePoids = computed(() => {
   const l = weightLog.value;
   if (l.length < 2) return null;
-  return Math.round((l[l.length - 1].kg - l[0].kg) * 10) / 10;
+  const p = (e) => parseFloat(e.weight ?? e.kg) || 0;
+  return Math.round((p(l[l.length - 1]) - p(l[0])) * 10) / 10;
 });
 
 export const seancesParMois = computed(() => {

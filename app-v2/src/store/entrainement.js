@@ -57,3 +57,10 @@ export function basculerMuscle(iso, k) {
   if (!log[iso].length) delete log[iso];
   muscleLog.value = log;
 }
+
+export function viderJourMuscles(iso) {
+  // v1 : viderJourMuscles() — efface toute la journee
+  const log = { ...muscleLog.value };
+  delete log[iso];
+  muscleLog.value = log;
+}

@@ -185,3 +185,63 @@
 .pg-stats .ah-btn{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
 .pg-stats .ah-btn svg{ width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
+/* ===== MODIFIER LES MUSCLES DU JOUR (copie v1 mes-stats.html) ===== */
+.pg-stats .rep-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:2px; }
+.pg-stats .rep-edit{
+    flex:none; display:flex; align-items:center; gap:6px;
+    background:#FFF6DC; color:#8F6200; border:1px solid #F3E2A8;
+    border-radius:20px; padding:7px 13px;
+    font-size:12.5px; font-weight:800; font-family:inherit; cursor:pointer;
+}
+.pg-stats .rep-edit:active{ transform:scale(.96); background:#FBEFC7; }
+.pg-stats .rep-edit svg{ width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.pg-stats .bodymap{ cursor:pointer; }
+.pg-stats .ml-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; align-items:flex-end; justify-content:center; }
+.pg-stats .ml-overlay.show{ display:flex; }
+.pg-stats .ml-modal{ background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
+.pg-stats .ml-date{ font-size:17px; font-weight:800; margin-bottom:6px; text-transform:capitalize; }
+.pg-stats .ml-sub{ font-size:12.5px; color:#8a8580; font-weight:600; margin-bottom:16px; }
+.pg-stats .ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
+.pg-stats .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid #e7e2d9; background:#fff; color:#6b7280; cursor:pointer; font-family:inherit; }
+.pg-stats .ml-chip.on{ background:#DFA004; border-color:#DFA004; color:#fff; }
+.pg-stats .ml-chip.repos.on{ background:#64748b; border-color:#64748b; }
+.pg-stats .ml-chip:active{ transform:scale(.96); }
+.pg-stats .ml-nav{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
+.pg-stats .ml-nav button{ background:#F5F3EE; border:none; border-radius:10px; width:38px; height:38px; font-size:18px; color:#181818; cursor:pointer; font-family:inherit; }
+.pg-stats .ml-nav button:disabled{ opacity:.35; }
+.pg-stats .ml-btns{ display:flex; gap:10px; }
+.pg-stats .ml-btns button{ flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; }
+.pg-stats .ml-clear{ background:#f1f5f9; color:#64748b; }
+.pg-stats .ml-save{ background:#1a1a1a; color:#F5A800; }
+
+/* ===== MODALE POIDS (copie v1 app.html) ===== */
+.pg-stats .modal-overlay{
+    display:none; position:fixed; left:0; right:0;
+    top:var(--vv-top, 0px); height:var(--vv-h, 100%);
+    background:rgba(0,0,0,.5);
+    align-items:center; justify-content:center; z-index:100;
+    padding:20px 20px calc(20px + 74px);
+}
+.pg-stats .modal-overlay.show{ display:flex; }
+.pg-stats .modal{
+    background:white; border-radius:20px; padding:20px 20px 0; max-width:360px; width:100%;
+    max-height:calc(var(--vv-h, 100vh) - 110px); overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    scroll-padding-bottom:80px;
+}
+.pg-stats .modal .modal-btns{
+    position:sticky; bottom:0; background:#fff; padding:14px 0 18px;
+    margin-top:18px; z-index:2;
+    box-shadow:0 -10px 14px -10px rgba(0,0,0,.10);
+}
+.pg-stats .modal h3{ margin-bottom:16px; font-size:17px; padding-right:38px; }
+.pg-stats .modal-h3-ic{ display:flex; align-items:center; gap:8px; }
+.pg-stats .modal-h3-ic .ic{ width:20px; height:20px; color:#F7B500; }
+.pg-stats .modal label{ display:block; font-size:13px; font-weight:600; margin:10px 0 4px; color:#475569; }
+.pg-stats .modal input{ width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:15px; }
+.pg-stats .modal-btns{ display:flex; gap:8px; margin-top:18px; }
+.pg-stats .modal-btns button{ flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:inherit; }
+.pg-stats .modal-save{ background:#181818; color:#fff; }
+.pg-stats .modal-cancel{ background:#e2e8f0; color:#475569; }
+.pg-stats .wm-last{ font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
+.pg-stats .wm-last b{ color:#191919; }
