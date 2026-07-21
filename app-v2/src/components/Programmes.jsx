@@ -25,7 +25,13 @@ export function Programmes() {
   // Niveaux presents dans la categorie (pour les filtres)
   const niveauxPresents = ORDRE_NIVEAUX.filter(n => progsCat.some(p => p.niveau === n));
 
-  const ouvrirCat = (k) => { setCatKey(k); setNiveau('Tous'); setEcran('progs'); };
+  const ouvrirCat = (k) => {
+    setCatKey(k);
+    const progs = PROGRAMMES[k] || [];
+    const nivs = ORDRE_NIVEAUX.filter(n => progs.some(p => p.niveau === n));
+    setNiveau(nivs[0] || 'Tous');   // premier niveau present, comme en v1
+    setEcran('progs');
+  };
   const ouvrirProg = (id) => { setProgId(id); setEcran('seances'); };
 
   const stat = (icone, valeur) => (
@@ -33,7 +39,7 @@ export function Programmes() {
   );
 
   const carteProg = (p) => {
-    const showNiv = niveau === 'Tous' || niveauxPresents.length === 1;
+    const showNiv = niveauxPresents.length === 1;
     return (
       <div class="prog-card" key={p.id} onClick={() => ouvrirProg(p.id)}>
         {p.tag && <span class="prog-badge reco">⭐ {p.tag}</span>}
@@ -77,8 +83,6 @@ export function Programmes() {
 
   // ---- Ecran 2 : Programmes de la categorie ----
   if (ecran === 'progs') {
-    const niveauxAff = niveau === 'Tous' ? niveauxPresents : [niveau];
-    const showHeaders = niveauxAff.length > 1;
     return (
       <div class="pg-programmes">
         <div class="top">
@@ -87,18 +91,13 @@ export function Programmes() {
         </div>
         {niveauxPresents.length > 1 && (
           <div class="niv-filter">
-            {['Tous', ...niveauxPresents].map(n => (
+            {niveauxPresents.map(n => (
               <button key={n} class={'niv-pill' + (n === niveau ? ' active' : '')} onClick={() => setNiveau(n)}>{n}</button>
             ))}
           </div>
         )}
         <div class="prog-list">
-          {niveauxAff.map(niv => (
-            <div key={niv}>
-              {showHeaders && <div class="niveau-sep">{niv}</div>}
-              {progsCat.filter(p => p.niveau === niv).map(carteProg)}
-            </div>
-          ))}
+          {progsCat.filter(p => p.niveau === niveau).map(carteProg)}
         </div>
       </div>
     );

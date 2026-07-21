@@ -159,6 +159,13 @@ export const PROGRAMMES = {
     ],
 };
 
+// Comme en v1 (programmes.html) : le Full body debutant, range dans "forme",
+// est aussi propose dans "Prendre du muscle" (masse) comme option debutant.
+const fullBodyDebutant = PROGRAMMES.forme.find(p => p.id === 'deb-full-3j');
+if (fullBodyDebutant && !PROGRAMMES.masse.some(p => p.id === 'deb-full-3j')) {
+  PROGRAMMES.masse.push(fullBodyDebutant);
+}
+
 // Toutes les categories disponibles, dans l'ordre d'affichage
 export const CATEGORIES = [
   { k: 'masse', emoji: '💪', name: 'Prendre du muscle', sub: 'Construire du muscle visible, semaine après semaine' },
