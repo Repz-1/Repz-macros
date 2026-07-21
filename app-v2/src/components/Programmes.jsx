@@ -127,7 +127,7 @@ export function Programmes() {
         <button class="back-btn" onClick={() => setEcran('progs')} aria-label="Retour">←</button>
         <h1>{prog ? prog.name : 'Séances'}</h1>
       </div>
-      {prog && <p class="intro-txt">{prog.duree} · {prog.niveau} · {prog.seances.length} séances</p>}
+      {prog && <p class="intro-txt">{prog.duree} · niveau {prog.niveau}. Choisis une séance pour voir les exercices.</p>}
       <div class="seance-list">
         {prog && prog.seances.map((s, i) => (
           <div class="seance-card" key={i}>
