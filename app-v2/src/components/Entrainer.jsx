@@ -240,7 +240,7 @@ export function Entrainer() {
 
         {/* Seance libre (gratuit) */}
         <a href="#" class="choice ph md" style="background-image:url('/img/card-libre.jpg')"
-          onClick={(e) => { e.preventDefault(); allerVers('seance'); }}>
+          onClick={(e) => { e.preventDefault(); allerVers('selection'); }}>
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11" /></svg></span>
           <h3>{t('tr_free_title')}</h3>
           <p>{t('tr_free_sub')}</p>

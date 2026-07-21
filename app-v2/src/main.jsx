@@ -14,6 +14,7 @@ import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
 import { SeanceTracker } from './components/SeanceTracker.jsx';
 import { Programmes } from './components/Programmes.jsx';
+import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer } from './components/Entrainer.jsx';
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif } from './components/BottomNav.jsx';
@@ -67,6 +68,9 @@ function OngletEntrainer() {
   // Meme navigation qu'en v1 : une vue a la fois, fleche retour en haut.
   if (vue.nom === 'accueil') {
     return (<><Entrainer /><RestTimer /></>);
+  }
+  if (vue.nom === 'selection') {
+    return (<><SelectionExercices /><RestTimer /></>);
   }
   return (
     <div class="pg-entrainer">
