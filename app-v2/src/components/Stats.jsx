@@ -215,12 +215,7 @@ export function Stats() {
 
   // ================= Poids (v1 renderWeight) =================
   let poidsTri = [...poidsData].sort((a, b) => a.iso.localeCompare(b.iso));
-  const totalPesees = poidsTri.length;
-  let sousTitrePoids;
-  if (!prem && poidsTri.length > LIMITE_GRATUIT) {
-    poidsTri = poidsTri.slice(-LIMITE_GRATUIT);
-    sousTitrePoids = t('st_last_weighins', { n: LIMITE_GRATUIT, total: totalPesees });
-  } else sousTitrePoids = totalPesees + ' ' + t(totalPesees > 1 ? 'weighins' : 'weighin');
+  if (!prem && poidsTri.length > LIMITE_GRATUIT) poidsTri = poidsTri.slice(-LIMITE_GRATUIT);
 
   const poidsActuel = poidsTri.length ? poidsDe(poidsTri[poidsTri.length - 1]) : 0;
   const poidsDebut = poidsTri.length ? poidsDe(poidsTri[0]) : 0;
@@ -228,12 +223,7 @@ export function Stats() {
 
   // ================= Calories (v1 renderKcal) =================
   let kcalTri = [...histoire].sort((a, b) => (a.iso || '').localeCompare(b.iso || ''));
-  const totalJours = kcalTri.length;
-  let sousTitreKcal;
-  if (!prem && kcalTri.length > LIMITE_GRATUIT) {
-    kcalTri = kcalTri.slice(-LIMITE_GRATUIT);
-    sousTitreKcal = t('st_last_days', { n: LIMITE_GRATUIT, total: totalJours });
-  } else sousTitreKcal = totalJours + ' ' + t(totalJours > 1 ? 'days' : 'day');
+  if (!prem && kcalTri.length > LIMITE_GRATUIT) kcalTri = kcalTri.slice(-LIMITE_GRATUIT);
   const moyKcal = kcalTri.length ? Math.round(kcalTri.reduce((s, d) => s + parseInt(d.kcal || 0), 0) / kcalTri.length) : 0;
   const derniereKcal = kcalTri.length ? parseInt(kcalTri[kcalTri.length - 1].kcal || 0) : 0;
 
@@ -355,7 +345,7 @@ export function Stats() {
         {/* POIDS */}
         <div class="stat-card acc-green">
           <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M4 4v16h16" /><path d="M7 14l3-3 2.5 2L20 7" /></svg><span>{t('st_weight')}</span></h2>
-          <div class="card-sub">{poidsTri.length ? sousTitrePoids : t('st_weight_sub')}</div>
+          <div class="card-sub">{t('st_weight_sub')}</div>
           {poidsTri.length ? (
             <>
               <div class="stat-summary">
@@ -388,7 +378,7 @@ export function Stats() {
         {/* CALORIES */}
         <div class="stat-card acc-orange">
           <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M12 3C9 7 7 9 7 13a5 5 0 0010 0c0-2-1-3.6-2.5-5-.3 1.2-1 2-2 2.4C13 8 13 5.5 12 3z" /></svg><span>{t('st_kcal')}</span></h2>
-          <div class="card-sub">{kcalTri.length ? sousTitreKcal : t('st_kcal_sub')}</div>
+          <div class="card-sub">{t('st_kcal_sub')}</div>
           {kcalTri.length ? (
             <>
               <div class="stat-summary">
@@ -402,7 +392,9 @@ export function Stats() {
                   return kcalTri.map(d => {
                     const k = parseInt(d.kcal || 0);
                     const h = max > 0 ? (k / max) * 100 : 0;
-                    const jour = d.date ? d.date.split(' ').slice(0, 2).join(' ') : jourCourt(d.iso);
+                    // v1 : « mer. 15 » (champ date de history) — reconstruit depuis l'iso
+                    const jour = d.date ? d.date.split(' ').slice(0, 2).join(' ')
+                      : new Date(d.iso + 'T00:00').toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' });
                     return (
                       <div class="chart-bar-wrap" key={d.iso}>
                         <div class="chart-val">{k}</div>
