@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import { calculerBesoins, NIVEAUX_ACTIVITE, OBJECTIFS } from '../data/tdee.js';
 import { setObjectifs } from '../store/journal.js';
+import { createPortal } from 'preact/compat';
 
 // Calculateur de besoins. Le resultat se recalcule a chaque frappe (pas de bouton
 // "Calculer" : reactif). "Appliquer" pousse le resultat dans les objectifs du jour.
@@ -27,7 +28,7 @@ export function TdeeCalculator({ montre, fermer }) {
     setTimeout(() => { setApplique(false); fermer(); }, 1100);
   };
 
-  return (
+  return createPortal(
     <>
       <div class={`voile ${montre ? 'montre' : ''}`} onClick={fermer} />
       <div class={`modale modale-calc ${montre ? 'montre' : ''}`}>
@@ -84,5 +85,5 @@ export function TdeeCalculator({ montre, fermer }) {
         </button>
       </div>
     </>
-  );
+  , document.body);
 }

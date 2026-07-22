@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import { t } from '../i18n/index.js';
+import { createPortal } from 'preact/compat';
 
 // ============================================================
 // CHRONO DE REPOS v2 — reproduit fidelement le chrono v1 :
@@ -232,7 +233,7 @@ export function RestTimer() {
 
   const fabTime = enCours ? `${mm}:${ss}` : '';
 
-  return (
+  return createPortal(
     <>
       {ouvert && <div class="v2-timer-overlay show" onClick={() => setOuvert(false)} />}
 
@@ -275,5 +276,5 @@ export function RestTimer() {
         <span class="v2-chrono-fab-time">{fabTime}</span>
       </button>
     </>
-  );
+  , document.body);
 }

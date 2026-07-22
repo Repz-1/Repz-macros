@@ -3,6 +3,7 @@ import { signal, effect } from '@preact/signals';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 import { ajouterIngredient } from '../store/journal.js';
+import { createPortal } from 'preact/compat';
 
 // ============================================================
 // SCAN CODE-BARRES v2 (Premium) — camera -> Open Food Facts ->
@@ -85,7 +86,7 @@ export function Scanner({ repasId, fermer }) {
     setTimeout(fermer, 900);
   };
 
-  return (
+  return createPortal(
     <>
       <div class="voile montre" onClick={fermer} />
       <div class="modale montre">
@@ -98,5 +99,5 @@ export function Scanner({ repasId, fermer }) {
         </form>
       </div>
     </>
-  );
+  , document.body);
 }

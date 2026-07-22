@@ -4,6 +4,7 @@ import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
 import { repas, ajouterIngredient } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
+import { createPortal } from 'preact/compat';
 
 const API = 'https://europe-west1-repz-baf60.cloudfunctions.net/transcrireVocal';
 
@@ -107,7 +108,7 @@ export function VocalModal({ fermer }) {
     fermer();
   };
 
-  return (
+  return createPortal(
     <>
       <div class="voile montre" onClick={fermer} />
       <div class="modale montre">
@@ -155,5 +156,5 @@ export function VocalBouton() {
       >🎤 Ajout vocal {!estPremium.value && <i class="pro-inline">✦ PRO</i>}</button>
       {ouvert && <VocalModal fermer={() => setOuvert(false)} />}
     </>
-  );
+  , document.body);
 }

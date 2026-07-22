@@ -1,5 +1,6 @@
 import { ajouterRepas } from '../store/journal.js';
 import { t } from '../i18n/index.js';
+import { createPortal } from 'preact/compat';
 
 // ============================================================
 // FENETRE « QU'EST-CE QUE TU AJOUTES ? »
@@ -28,7 +29,7 @@ export function AddMealModal({ montre, fermer }) {
 
   const choisir = (type) => { ajouterRepas(type); fermer(); };
 
-  return (
+  return createPortal(
     <div class="mtype" onClick={e => { if (e.target === e.currentTarget) fermer(); }}>
       <div class="mtype-boite">
         <div class="mtype-titre">{t('mtype_title')}</div>
@@ -46,5 +47,5 @@ export function AddMealModal({ montre, fermer }) {
         </div>
       </div>
     </div>
-  );
+  , document.body);
 }
