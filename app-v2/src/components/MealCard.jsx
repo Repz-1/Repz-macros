@@ -8,6 +8,12 @@ import { signal } from '@preact/signals';
 // Repas dont le champ de recherche est actif. Sert au mode « focus » :
 // le reste de la page s'assombrit pour ne garder que l'aliment saisi.
 export const repasEnSaisie = signal(null);
+
+// Ouverture de la bibliotheque de plats. Elle a quitte les actions
+// rapides : on n'y va que pour renommer ou supprimer un plat, ce qui
+// est rare. Le lien vit donc au bas de la liste de recherche, la ou
+// les plats apparaissent deja.
+export const ouvrirMesPlats = signal(false);
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -205,6 +211,14 @@ function Recherche({ repasId }) {
               >{estFavori(nom) ? '★' : '☆'}</button>
             </div>
           ))}
+
+          {/* Acces discret a la bibliotheque, uniquement si elle existe */}
+          {plats.value.length > 0 && (
+            <button
+              class="mc-res-gerer"
+              onClick={() => { setActif(false); ouvrirMesPlats.value = true; }}
+            >{t('mp_gerer')}</button>
+          )}
         </div>
       )}
 

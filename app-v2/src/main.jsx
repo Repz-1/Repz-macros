@@ -8,7 +8,7 @@ import { LoginScreen } from './components/LoginScreen.jsx';
 import { repas, nouvelleJournee, donneesPretes } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
-import { MealCard, repasEnSaisie } from './components/MealCard.jsx';
+import { MealCard, repasEnSaisie, ouvrirMesPlats } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
 import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
@@ -35,7 +35,6 @@ function OngletJournal() {
   const [modale, setModale] = useState(false);
   const [calc, setCalc] = useState(false);
   const [vocal, setVocal] = useState(false);
-  const [mesPlats, setMesPlats] = useState(false);
   // Colonne unique, ordre de lecture descendant :
   // logo -> calories -> actions rapides -> idees recettes -> repas.
   // Seuls la navigation, le bouton d'ajout et l'hydratation sont fixes.
@@ -44,7 +43,7 @@ function OngletJournal() {
       <div class="colonne">
         <Entete />
         <DayDashboard />
-        <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} ouvrirPlats={() => setMesPlats(true)} />
+        <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} />
         <IdeesRepas />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
         {/* Mode focus : voile sombre pendant la saisie d'un aliment. */}
@@ -61,7 +60,7 @@ function OngletJournal() {
       {modale && <AddMealModal montre={true} fermer={() => setModale(false)} />}
       {calc && <TdeeCalculator montre={true} fermer={() => setCalc(false)} />}
       {vocal && <VocalModal fermer={() => setVocal(false)} />}
-      {mesPlats && <MesPlats fermer={() => setMesPlats(false)} />}
+      {ouvrirMesPlats.value && <MesPlats fermer={() => { ouvrirMesPlats.value = false; }} />}
     </div>
   );
 }
