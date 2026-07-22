@@ -134,13 +134,16 @@ function App() {
     // Ici on attend la fin du glissement, puis on libere la hauteur
     // et on remet la page d'arrivee en haut.
     const id = setTimeout(() => {
-      document.body.style.minHeight = '';
       window.scrollTo(0, 0);
       setGlisse(null);
       setPose(true);              // la page arrivee se pose sans rejouer sa cascade
       scrollSortant.value = 0;
+      // Hauteur liberee seulement une fois la vraie page remontee.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        document.body.style.minHeight = '';
+      }));
     }, 540);
-    return () => { clearTimeout(id); document.body.style.minHeight = ''; };
+    return () => clearTimeout(id);
   }, [glisse]);
   // La classe 'sans-entree' ne dure que le temps du premier rendu pose.
   const [pose, setPose] = useState(false);
@@ -158,7 +161,9 @@ function App() {
   const [tirage, setTirage] = useState(null);   // { courant, voisin, cote, scroll }
   const railRef = useRef(null);
   // Miroirs pour les ecouteurs globaux (poses une seule fois sur window).
-  const tirageRef = useRef(null); tirageRef.current = tirage;
+  const tirageRef = useRef(null);
+  if (tirage === null && glisse === null) tirageRef.current = null;
+  else if (tirage !== null) tirageRef.current = tirage;
   const glisseRef = useRef(null); glisseRef.current = glisse;
 
   const railX = (dx) => {
@@ -193,12 +198,16 @@ function App() {
         const cote = dx < 0 ? 'suivant' : 'precedent';
         const vId = cote === 'suivant' ? i + 1 : i - 1;
         document.body.style.minHeight = document.documentElement.scrollHeight + 'px';
-        setTirage({
+        const tir = {
           courant: ongletActif.value,
           voisin: (vId >= 0 && vId < ordre.length) ? ordre[vId] : null,
           cote,
           scroll: window.scrollY || 0,
-        });
+        };
+        // La ref est remplie tout de suite : un flick tres rapide peut
+        // relacher avant que l'etat ne soit commite par Preact.
+        tirageRef.current = tir;
+        setTirage(tir);
       }
     }
     if (g.verrou !== 'h') return;
@@ -216,7 +225,11 @@ function App() {
   const finTouche = () => {
     const g = geste.current;
     geste.current = null;
-    if (!g || g.verrou !== 'h' || !tirageRef.current) { return; }
+    if (!g || g.verrou !== 'h' || !tirageRef.current) {
+      // Un verrou horizontal sans tirage aurait fige la hauteur : on libere.
+      if (g && g.verrou === 'h') document.body.style.minHeight = '';
+      return;
+    }
     const L = window.innerWidth;
     const vx = g.vx || 0;
     const flick = Math.abs(vx) > 0.35;
@@ -231,9 +244,10 @@ function App() {
       if (!rail) { setTirage(null); document.body.style.minHeight = ''; return; }
       rail.style.transition = 'transform .3s cubic-bezier(.25,.8,.3,1)';
       rail.style.transform = 'translateX(' + cibleX + 'px)';
+      let fini = false;
       const fin = () => {
+        if (fini) return; fini = true;
         rail.removeEventListener('transitionend', fin);
-        document.body.style.minHeight = '';
         if (valide) {
           window.scrollTo(0, 0);
           // Bascule sans re-declencher l'animation de clic.
@@ -243,6 +257,12 @@ function App() {
         }
         setTirage(null);
         scrollSortant.value = 0;
+        // La hauteur n'est rendue qu'une fois la vraie page remontee :
+        // la liberer avant laisserait une frame de document vide et la
+        // barre du navigateur ferait sauter tout le contenu.
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          document.body.style.minHeight = '';
+        }));
       };
       rail.addEventListener('transitionend', fin);
       // Filet de securite si transitionend ne part pas.
