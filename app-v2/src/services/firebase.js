@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import {
   getAuth, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
-  GoogleAuthProvider, signInWithPopup,
+  GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
 } from 'firebase/auth';
 import { signal, computed } from '@preact/signals';
 
@@ -59,19 +59,39 @@ export async function connexion(email, mdp) {
   return signInWithEmailAndPassword(auth, email, mdp);
 }
 
-export async function connexionGoogle() {
-  // Meme flux que la v1 : popup Google avec choix du compte.
-  // Le prenom sert a l'accueil personnalise, comme en v1.
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
-  const cred = await signInWithPopup(auth, provider);
+function memoriserPrenom(user) {
   try {
-    const prenom = (cred.user.displayName || '').split(' ')[0] || '';
+    const prenom = (user.displayName || '').split(' ')[0] || '';
     if (prenom) localStorage.setItem('repz_firstName', prenom);
   } catch (e) {}
-  quitterInvite();
-  return cred.user;
 }
+
+export async function connexionGoogle() {
+  // Meme flux que la v1 : Google avec choix du compte. Popup d'abord ;
+  // si le navigateur mobile la bloque, on bascule en redirection
+  // (le resultat est recupere au rechargement, voir ci-dessous).
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  try {
+    const cred = await signInWithPopup(auth, provider);
+    memoriserPrenom(cred.user);
+    quitterInvite();
+    return cred.user;
+  } catch (e) {
+    if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user'
+      || e.code === 'auth/operation-not-supported-in-this-environment'
+      || e.code === 'auth/cancelled-popup-request')) {
+      await signInWithRedirect(auth, provider);
+      return null;   // la page va se recharger
+    }
+    throw e;
+  }
+}
+
+// Retour de redirection Google : recupere la session au chargement.
+getRedirectResult(auth).then(cred => {
+  if (cred && cred.user) { memoriserPrenom(cred.user); quitterInvite(); }
+}).catch(() => {});
 
 export async function inscription(email, mdp) {
   return createUserWithEmailAndPassword(auth, email, mdp);
