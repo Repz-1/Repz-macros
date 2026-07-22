@@ -150,34 +150,111 @@ function App() {
     return () => clearTimeout(id);
   }, [pose]);
 
-  // Balayage horizontal pour changer d'onglet (comme la v1).
+  // ---- Balayage : la page SUIT LE DOIGT en temps reel (comme la v1) ----
+  // Pendant le mouvement on translate le rail directement dans le DOM
+  // (aucun re-rendu par frame). Au relacher : seuil ou flick decident,
+  // puis le rail termine sa course en transition CSS.
   const geste = useRef(null);
-  const debutTouche = (e) => {
-    if (e.touches.length !== 1) return;
-    geste.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now(), verrou: null };
+  const [tirage, setTirage] = useState(null);   // { courant, voisin, cote, scroll }
+  const railRef = useRef(null);
+  // Miroirs pour les ecouteurs globaux (poses une seule fois sur window).
+  const tirageRef = useRef(null); tirageRef.current = tirage;
+  const glisseRef = useRef(null); glisseRef.current = glisse;
+
+  const railX = (dx) => {
+    if (railRef.current) railRef.current.style.transform = 'translateX(' + dx + 'px)';
   };
+
+  const debutTouche = (e) => {
+    if (e.touches.length !== 1 || glisseRef.current || tirageRef.current) return;
+    // Pas de changement d'onglet depuis les modales, la nav ou les
+    // zones qui defilent horizontalement elles-memes.
+    if (e.target.closest && e.target.closest(
+      '.modale, .voile, .cp-overlay, .fr-plein, .ml-overlay, .water-modal, .modal-overlay, ' +
+      '.premium-overlay, .v2-timer-container, .v2-timer-overlay, .bn, ' +
+      '.prog-onglets, .idees-cats, input, select, textarea'
+    )) return;
+    geste.current = {
+      x: e.touches[0].clientX, y: e.touches[0].clientY,
+      t: Date.now(), verrou: null, dx: 0, dernierX: e.touches[0].clientX, dernierT: Date.now(),
+    };
+  };
+
   const bougeTouche = (e) => {
     const g = geste.current;
     if (!g || e.touches.length !== 1) return;
-    const dx = e.touches[0].clientX - g.x, dy = e.touches[0].clientY - g.y;
-    // On decide une seule fois si le geste est horizontal ou vertical.
+    const x = e.touches[0].clientX;
+    const dx = x - g.x, dy = e.touches[0].clientY - g.y;
     if (g.verrou === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
       g.verrou = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'h' : 'v';
+      if (g.verrou === 'h') {
+        // Le doigt part : on monte le deck avec le voisin du bon cote.
+        const i = ordre.indexOf(ongletActif.value);
+        const cote = dx < 0 ? 'suivant' : 'precedent';
+        const vId = cote === 'suivant' ? i + 1 : i - 1;
+        document.body.style.minHeight = document.documentElement.scrollHeight + 'px';
+        setTirage({
+          courant: ongletActif.value,
+          voisin: (vId >= 0 && vId < ordre.length) ? ordre[vId] : null,
+          cote,
+          scroll: window.scrollY || 0,
+        });
+      }
     }
-    g.dx = dx;
+    if (g.verrou !== 'h') return;
+    // Vélocite instantanee (fenetre glissante) pour le flick.
+    const maintenant = Date.now();
+    if (maintenant - g.dernierT > 30) { g.vx = (x - g.dernierX) / (maintenant - g.dernierT); g.dernierX = x; g.dernierT = maintenant; }
+    // Resistance aux extremites, comme la v1 (dx / 3).
+    const i = ordre.indexOf(ongletActif.value);
+    let borne = dx;
+    if ((i === 0 && dx > 0) || (i === ordre.length - 1 && dx < 0)) borne = dx / 3;
+    g.dx = borne;
+    railX(borne);
   };
+
   const finTouche = () => {
     const g = geste.current;
     geste.current = null;
-    if (!g || g.verrou !== 'h' || !g.dx) return;
-    const duree = Math.max(1, Date.now() - g.t);
-    const vitesse = Math.abs(g.dx) / duree;          // px/ms
-    const seuil = window.innerWidth * 0.12;
-    if (Math.abs(g.dx) < seuil && vitesse < 0.35) return;
-    const i = ordre.indexOf(onglet);
-    const cible = i + (g.dx < 0 ? 1 : -1);
-    if (cible < 0 || cible >= ordre.length) return;
-    allerOnglet(ordre[cible]);
+    if (!g || g.verrou !== 'h' || !tirageRef.current) { return; }
+    const L = window.innerWidth;
+    const vx = g.vx || 0;
+    const flick = Math.abs(vx) > 0.35;
+    const seuil = L * 0.12;
+    // Direction de la fin de geste (comme la v1 : le relacher decide).
+    let va = null;
+    if (flick) va = vx < 0 ? 'suivant' : 'precedent';
+    else if (Math.abs(g.dx) > seuil) va = g.dx < 0 ? 'suivant' : 'precedent';
+
+    const rail = railRef.current;
+    const finir = (cibleX, valide) => {
+      if (!rail) { setTirage(null); document.body.style.minHeight = ''; return; }
+      rail.style.transition = 'transform .3s cubic-bezier(.25,.8,.3,1)';
+      rail.style.transform = 'translateX(' + cibleX + 'px)';
+      const fin = () => {
+        rail.removeEventListener('transitionend', fin);
+        document.body.style.minHeight = '';
+        if (valide) {
+          window.scrollTo(0, 0);
+          // Bascule sans re-declencher l'animation de clic.
+          precedent.current = valide;
+          ongletActif.value = valide;
+          setPose(true);
+        }
+        setTirage(null);
+        scrollSortant.value = 0;
+      };
+      rail.addEventListener('transitionend', fin);
+      // Filet de securite si transitionend ne part pas.
+      setTimeout(fin, 380);
+    };
+
+    const tir = tirageRef.current;
+    if (va && va === tir.cote && tir.voisin) {
+      finir(va === 'suivant' ? -L : L, tir.voisin);
+    } else {
+      finir(0, null);   // retour en place
+    }
   };
 
   const voletUtilisateur = voletProfil.value ? (
@@ -205,19 +282,53 @@ function App() {
     </>
   );
 
-  const gestes = {
-    onTouchStart: debutTouche,
-    onTouchMove: bougeTouche,
-    onTouchEnd: finTouche,
-    onTouchCancel: () => { geste.current = null; },
+  const annuleTouche = () => {
+    // Geste interrompu : le rail revient en place proprement.
+    if (geste.current && geste.current.verrou === 'h' && tirageRef.current) { finTouche(); return; }
+    geste.current = null;
   };
+  const refHandlers = useRef();
+  refHandlers.current = { debutTouche, bougeTouche, finTouche, annuleTouche };
+  useEffect(() => {
+    const ts = (e) => refHandlers.current.debutTouche(e);
+    const tm = (e) => refHandlers.current.bougeTouche(e);
+    const te = (e) => refHandlers.current.finTouche(e);
+    const tc = (e) => refHandlers.current.annuleTouche(e);
+    window.addEventListener('touchstart', ts, { passive: true });
+    window.addEventListener('touchmove', tm, { passive: true });
+    window.addEventListener('touchend', te, { passive: true });
+    window.addEventListener('touchcancel', tc, { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', ts);
+      window.removeEventListener('touchmove', tm);
+      window.removeEventListener('touchend', te);
+      window.removeEventListener('touchcancel', tc);
+    };
+  }, []);
 
   return (
     <>
-      {glisse ? (
+      {tirage ? (
+        // Tirage au doigt : un rail de deux pages, translate en direct.
+        <div class="deck">
+          <div class="deck-rail" ref={railRef}>
+            <div class="deck-pan" style={{ left: 0 }}>
+              <div
+                class="conteneur conteneur--nu"
+                style={{ transform: 'translateY(' + (-tirage.scroll) + 'px)' }}
+              >{rendreOnglet(tirage.courant)}</div>
+            </div>
+            {tirage.voisin && (
+              <div class="deck-pan" style={{ left: tirage.cote === 'suivant' ? '100%' : '-100%' }}>
+                <div class="conteneur conteneur--nu">{rendreOnglet(tirage.voisin)}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : glisse ? (
         // Pendant le glissement : les deux pages cohabitent et
         // se croisent horizontalement sur toute la largeur.
-        <div class={'deck deck--' + glisse.sens} {...gestes}>
+        <div class={'deck deck--' + glisse.sens}>
           <div class="deck-pan deck-pan--sortant" key={'s' + glisse.sortant}>
             <div
               class="conteneur conteneur--nu"
@@ -229,7 +340,7 @@ function App() {
           </div>
         </div>
       ) : (
-        <div class={'conteneur conteneur--nu' + (pose ? ' sans-entree' : '')} {...gestes}>
+        <div class={'conteneur conteneur--nu' + (pose ? ' sans-entree' : '')}>
           {rendreOnglet(onglet)}
         </div>
       )}
