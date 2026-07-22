@@ -18,7 +18,7 @@ import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
 import { SeanceDetail } from './components/SeanceDetail.jsx';
 import { Stats } from './components/Stats.jsx';
-import { BottomNav, ongletActif } from './components/BottomNav.jsx';
+import { BottomNav, ongletActif, allerOnglet, scrollSortant } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { signal } from '@preact/signals';
 import { Entete, voletProfil } from './components/Entete.jsx';
@@ -111,13 +111,22 @@ function App() {
     const a = ordre.indexOf(precedent.current), b = ordre.indexOf(onglet);
     if (a !== -1 && b !== -1) {
       // On memorise l'onglet qui s'en va et le sens du deplacement.
-      glisse === null && setGlisse({ sortant: precedent.current, sens: b > a ? 'droite' : 'gauche' });
+      glisse === null && setGlisse({
+        sortant: precedent.current,
+        sens: b > a ? 'droite' : 'gauche',
+        // Repli sur le defilement courant : les boutons qui changent
+        // d'onglet sans passer par allerOnglet restent corrects.
+        scroll: scrollSortant.value || window.scrollY || 0,
+      });
     }
     precedent.current = onglet;
   }
   useEffect(() => {
     if (!glisse) return;
-    const id = setTimeout(() => setGlisse(null), 540);
+    // Le deck couvre l'ecran : on peut remettre le document en haut
+    // sans que cela se voie, la page d'arrivee demarre ainsi au sommet.
+    window.scrollTo(0, 0);
+    const id = setTimeout(() => { setGlisse(null); scrollSortant.value = 0; }, 540);
     return () => clearTimeout(id);
   }, [glisse]);
 
@@ -148,8 +157,7 @@ function App() {
     const i = ordre.indexOf(onglet);
     const cible = i + (g.dx < 0 ? 1 : -1);
     if (cible < 0 || cible >= ordre.length) return;
-    ongletActif.value = ordre[cible];
-    window.scrollTo(0, 0);
+    allerOnglet(ordre[cible]);
   };
 
   const voletUtilisateur = voletProfil.value ? (
@@ -191,7 +199,10 @@ function App() {
         // se croisent horizontalement sur toute la largeur.
         <div class={'deck deck--' + glisse.sens} {...gestes}>
           <div class="deck-pan deck-pan--sortant" key={'s' + glisse.sortant}>
-            <div class="conteneur conteneur--nu">{rendreOnglet(glisse.sortant)}</div>
+            <div
+              class="conteneur conteneur--nu"
+              style={{ transform: 'translateY(' + (-glisse.scroll) + 'px)' }}
+            >{rendreOnglet(glisse.sortant)}</div>
           </div>
           <div class="deck-pan deck-pan--entrant" key={'e' + onglet}>
             <div class="conteneur conteneur--nu">{rendreOnglet(onglet)}</div>

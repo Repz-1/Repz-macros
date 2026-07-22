@@ -5,6 +5,18 @@ import { t } from '../i18n/index.js';
 // peut naviguer (ex : le bouton « Premium » d'une modale).
 export const ongletActif = signal('journal');
 
+// Hauteur de defilement de la page que l'on quitte. Le deck de
+// transition est en position fixe : sans cette valeur, la page
+// sortante repartirait de son sommet et sauterait verticalement.
+export const scrollSortant = signal(0);
+
+/** Changement d'onglet : memorise le defilement avant de basculer. */
+export function allerOnglet(cle) {
+  if (cle === ongletActif.value) return;
+  scrollSortant.value = window.scrollY || document.documentElement.scrollTop || 0;
+  ongletActif.value = cle;
+}
+
 // ============================================================
 // BARRE DE NAVIGATION
 // Quatre onglets de largeur egale. L'etat actif se marque
@@ -39,7 +51,7 @@ export function BottomNav() {
           <button
             key={o.k}
             class={'bn-item' + (actif ? ' bn-item--actif' : '') + (o.k === 'premium' ? ' bn-item--premium' : '')}
-            onClick={() => { ongletActif.value = o.k; window.scrollTo(0, 0); }}
+            onClick={() => allerOnglet(o.k)}
             aria-current={actif ? 'page' : undefined}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
