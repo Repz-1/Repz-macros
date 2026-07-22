@@ -196,8 +196,14 @@ function App() {
     if (!g || e.touches.length !== 1) return;
     const x = e.touches[0].clientX;
     const dx = x - g.x, dy = e.touches[0].clientY - g.y;
-    if (g.verrou === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-      g.verrou = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'h' : 'v';
+    // Decision differree et exigeante : un defilement vertical rapide
+    // comporte souvent quelques pixels d'horizontal sur les premiers
+    // evenements — la v2 verrouillait alors 'h' et le rail tressautait.
+    // On attend 14 px de deplacement et on exige une vraie dominante
+    // horizontale (ratio 1.5, comme le ressenti v1) pour prendre la main ;
+    // tout le reste est un defilement vertical.
+    if (g.verrou === null && (Math.abs(dx) > 14 || Math.abs(dy) > 14)) {
+      g.verrou = Math.abs(dx) > Math.abs(dy) * 1.5 ? 'h' : 'v';
       if (g.verrou === 'h') {
         // Si une transition est en cours, on repart de la position
         // REELLEMENT affichee du rail : sans cela, couper la
