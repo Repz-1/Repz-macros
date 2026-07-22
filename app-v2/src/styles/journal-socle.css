@@ -1499,8 +1499,18 @@
   /* La page parcourt une vraie distance (~30 % de l'ecran) sur une
      duree plus longue, avec une deceleration douce sans rebond :
      on lit le glissement au lieu de le subir. */
-  @keyframes pageDroite { from { transform: translateX(30%); opacity: 0; } to { transform: none; opacity: 1; } }
-  @keyframes pageGauche { from { transform: translateX(-30%); opacity: 0; } to { transform: none; opacity: 1; } }
-  .page-anim.page--droite { animation: pageDroite .46s cubic-bezier(.16, .84, .28, 1) both; }
-  .page-anim.page--gauche { animation: pageGauche .46s cubic-bezier(.16, .84, .28, 1) both; }
+  @keyframes pageDroite {
+    from { transform: translateX(45%); opacity: 0; }
+    60%  { opacity: 1; }
+    to   { transform: none; opacity: 1; }
+  }
+  @keyframes pageGauche {
+    from { transform: translateX(-45%); opacity: 0; }
+    60%  { opacity: 1; }
+    to   { transform: none; opacity: 1; }
+  }
+  .page-anim.page--droite { animation: pageDroite .62s cubic-bezier(.16, .84, .28, 1) both; }
+  .page-anim.page--gauche { animation: pageGauche .62s cubic-bezier(.16, .84, .28, 1) both; }
+  /* La page en mouvement ne doit jamais elargir le document. */
+  .page-anim { will-change: transform; }
 }

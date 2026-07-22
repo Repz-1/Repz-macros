@@ -1,4 +1,7 @@
 *, *::before, *::after { box-sizing: border-box; }
+/* Le glissement entre onglets translate la page : sans cela, le
+   debordement cree une bande blanche et un scroll lateral. */
+html, body { overflow-x: hidden; max-width: 100%; }
 /* Palette BELFIT : fond #F8F8F8, structure #181818, or #F7B500 (actions primaires uniquement) */
 *{box-sizing:border-box}
 html,body{margin:0;background:#F8F8F8;font-family:'Manrope',sans-serif;color:#181818}
