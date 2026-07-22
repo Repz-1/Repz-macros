@@ -129,6 +129,51 @@ function App() {
   useEffect(() => { poserRail(true); }, [idx]);
   useEffect(() => { poserRail(false); }, []);   /* position initiale sans animation */
 
+  // ============================================================
+  // BOUTON RETOUR DU TELEPHONE
+  // La v1 empilait des etats d'historique (pushState) pour que le
+  // retour Android navigue dans l'app au lieu d'en sortir. Meme
+  // principe ici, avec une sentinelle reposee a chaque retour :
+  //   • 1 pression  -> un cran en arriere (vue interne, puis onglet)
+  //   • 2 pressions rapprochees -> retour direct a l'accueil Journal
+  //   • deja a l'accueil -> on laisse le telephone quitter l'app
+  // ============================================================
+  const dernierRetour = useRef(0);
+  useEffect(() => {
+    try { history.pushState({ belfit: 1 }, ''); } catch (e) {}
+
+    const onPop = () => {
+      const t = Date.now();
+      const doublePression = t - dernierRetour.current < 600;
+      dernierRetour.current = t;
+
+      const vue = vueEntrainer.value;
+      const ongletCourant = ongletActif.value;
+      const enProfondeur = vue.nom !== 'accueil' || ongletCourant !== 'journal';
+
+      // Rien a remonter : on ne repose pas de sentinelle, le
+      // telephone peut quitter l'application normalement.
+      if (!enProfondeur) return;
+
+      try { history.pushState({ belfit: 1 }, ''); } catch (e) {}
+
+      if (doublePression) {
+        // Retour direct a l'accueil, quel que soit l'endroit.
+        vueEntrainer.value = { nom: 'accueil', params: null };
+        allerOnglet('journal');
+        return;
+      }
+
+      // Un seul cran en arriere.
+      if (vue.nom === 'seanceDetail') allerVers('programmes');
+      else if (vue.nom !== 'accueil') retourEntrainer();
+      else allerOnglet('journal');
+    };
+
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
   // ---- Balayage : le rail suit le doigt (v1) ----
   const geste = useRef(null);
   const debutTouche = (e) => {
