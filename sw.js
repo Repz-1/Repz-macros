@@ -1,13 +1,18 @@
-/* BELFIT service worker — demarrage instantane + hors-ligne
+/* BELFIT service worker — toujours a jour + hors-ligne
  *
- * Strategie HTML : CACHE D'ABORD, mise a jour en arriere-plan.
- * L'app s'ouvre a la vitesse du disque, comme une app native ; la
- * version fraiche est telechargee pendant l'usage et servie au
- * lancement suivant. La coherence entre versions est garantie par
- * le bump du nom de cache a chaque deploiement : l'installation du
- * nouveau SW retelecharge tout le noyau d'un bloc.
+ * Strategie HTML : RESEAU D'ABORD, cache en secours.
+ * En ligne, l'utilisateur voit toujours la derniere version des le
+ * premier lancement. Hors ligne (salle de sport, metro), la copie
+ * locale prend le relais : l'app reste utilisable comme avant.
+ *
+ * L'ancienne strategie (cache d'abord) affichait systematiquement la
+ * version PRECEDENTE, la nouvelle n'arrivant qu'au lancement suivant.
+ * Un correctif deploye ne se voyait donc jamais du premier coup.
+ *
+ * Les assets (images, polices, JS) restent en cache d'abord : ils
+ * sont versionnes par le nom de cache, donc jamais perimes.
  */
-const CACHE = 'belfit-v160';
+const CACHE = 'belfit-v161';
 const CORE = ['./index.html','./main.html','./i18n.js','./i18n-strings.js','./app.html','./manifest.json','./icon-192-v7.png','./icon-512-v7.png','./belfit-logo-header.png'];
 
 self.addEventListener('install', e => {
@@ -32,20 +37,23 @@ self.addEventListener('fetch', e => {
   // d'anciens fichiers : les mises a jour n'arrivaient jamais.
   if (url.pathname.startsWith('/v2/')) return;
 
-  // HTML : cache d'abord (affichage immediat), revalidation en arriere-plan
+  // HTML : reseau d'abord, cache en secours si hors ligne.
   if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
-    e.respondWith(
-      caches.match(req).then(enCache => {
-        const maj = fetch(req).then(res => {
-          if (res && res.ok) {
-            const copy = res.clone();
-            caches.open(CACHE).then(c => c.put(req, copy));
-          }
-          return res;
-        }).catch(() => null);
-        return enCache || maj.then(r => r || caches.match('./app.html'));
-      })
-    );
+    e.respondWith((async () => {
+      try {
+        const res = await fetch(req);
+        if (res && res.ok) {
+          // On garde une copie fraiche pour le mode hors ligne.
+          const copie = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copie));
+        }
+        return res;
+      } catch (err) {
+        // Pas de reseau : on sert la derniere copie connue.
+        const enCache = await caches.match(req);
+        return enCache || (await caches.match('./app.html'));
+      }
+    })());
     return;
   }
 
