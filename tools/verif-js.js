@@ -39,8 +39,12 @@ for (const page of pages) {
 }
 
 // ---------- 2. Execution des fichiers JS partages ----------
+// Les service workers s'executent dans un contexte a part (self,
+// caches, clients...) : on ne peut pas les evaluer comme un script
+// de page. On verifie donc uniquement leur SYNTAXE, plus haut.
+const estServiceWorker = (f) => f === 'sw.js' || f.startsWith('sw-');
 const partages = fs.readdirSync('.').filter(
-  (f) => f.endsWith('.js') && f !== 'sw.js'
+  (f) => f.endsWith('.js') && !estServiceWorker(f)
 );
 
 for (const fichier of partages) {
