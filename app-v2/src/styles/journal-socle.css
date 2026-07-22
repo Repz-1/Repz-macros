@@ -1608,3 +1608,31 @@
   font-size: 13px; font-weight: 700; color: #0F9D58;
   background: #EFF9F2; border-radius: 12px; padding: 10px 13px;
 }
+
+/* ============================================================
+   MODE FOCUS PENDANT LA SAISIE D'UN ALIMENT
+   Le reste de la page s'assombrit : seul le repas en cours de
+   saisie reste lisible, avec sa liste de resultats.
+   ============================================================ */
+.pg-journal .voile-saisie {
+  position: fixed; inset: 0;
+  background: rgba(28, 24, 16, .46);
+  -webkit-backdrop-filter: saturate(.85); backdrop-filter: saturate(.85);
+  z-index: 200;
+  animation: voileEntre .18s ease both;
+  /* Le voile capte l'appui : on referme la saisie sans declencher
+     par accident une action sur la carte assombrie du dessous. */
+}
+@keyframes voileEntre { from { opacity: 0; } to { opacity: 1; } }
+
+/* La carte en cours de saisie passe au-dessus du voile. */
+.pg-journal .mc--focus {
+  position: relative; z-index: 250;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .9),
+    0 2px 6px rgba(0, 0, 0, .18),
+    0 18px 44px rgba(0, 0, 0, .28);
+}
+/* Le bouton d'ajout et l'hydratation s'effacent : on encode, on ne navigue pas. */
+.pg-journal .voile-saisie ~ .fab-rangee,
+.pg-journal:has(.mc--focus) .fab-rangee { opacity: 0; pointer-events: none; transition: opacity .18s; }

@@ -8,7 +8,7 @@ import { LoginScreen } from './components/LoginScreen.jsx';
 import { repas, nouvelleJournee, donneesPretes } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
-import { MealCard } from './components/MealCard.jsx';
+import { MealCard, repasEnSaisie } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
 import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
@@ -47,6 +47,8 @@ function OngletJournal() {
         <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} ouvrirPlats={() => setMesPlats(true)} />
         <IdeesRepas />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
+        {/* Mode focus : voile sombre pendant la saisie d'un aliment. */}
+        {repasEnSaisie.value !== null && <div class="voile-saisie" />}
       </div>
 
       <div class="fab-rangee">

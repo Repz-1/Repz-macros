@@ -3,6 +3,11 @@ import { createPortal } from 'preact/compat';
 import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
 import { enregistrerPlat } from '../store/perso.js';
+import { signal } from '@preact/signals';
+
+// Repas dont le champ de recherche est actif. Sert au mode « focus » :
+// le reste de la page s'assombrit pour ne garder que l'aliment saisi.
+export const repasEnSaisie = signal(null);
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -106,6 +111,12 @@ function Recherche({ repasId }) {
   // La liste ne s'affiche que si le champ est actif : sans cela, vider
   // la saisie apres un choix rouvrait aussitot la liste des favoris.
   const [actif, setActif] = useState(false);
+  // Mise en avant du repas en cours de saisie (voile sur le reste).
+  useEffect(() => {
+    if (actif) repasEnSaisie.value = repasId;
+    else if (repasEnSaisie.value === repasId) repasEnSaisie.value = null;
+    return () => { if (repasEnSaisie.value === repasId) repasEnSaisie.value = null; };
+  }, [actif, repasId]);
 
   const noms = [...Object.keys(customFoods.value), ...NOMS_ALIMENTS];
   const terme = q.trim().toLowerCase();
@@ -239,7 +250,7 @@ export function MealCard({ r }) {
   // centres sur la meme ligne : places separement, ils se retrouvaient
   // l'un en haut, l'autre au milieu.
   return (
-    <div class={'mc' + (r.ouvert ? ' mc--ouvert' : '')}>
+    <div class={'mc' + (r.ouvert ? ' mc--ouvert' : '') + (repasEnSaisie.value === r.id ? ' mc--focus' : '')}>
       <div class="mc-tete" onClick={() => !edite && basculerRepas(r.id)}>
 
         <div class="mc-vignette" dangerouslySetInnerHTML={{ __html: illustration(r) }} />
