@@ -799,15 +799,30 @@ document.getElementById('recoveryForm').addEventListener('submit', async (e) => 
     successDiv.classList.remove('show');
     loadingDiv.classList.add('show');
     
+    var lg = 'fr';
     try {
-        // Langue du mail Firebase : sans cela, le modele part toujours en
-        // anglais quelle que soit la langue choisie dans l'app.
+        lg = (window.BELFIT_I18N && BELFIT_I18N.getLang && BELFIT_I18N.getLang())
+          || localStorage.getItem('repz_lang') || 'fr';
+    } catch(e) {}
+
+    try {
+        // Mail BELFIT (Cloud Function + Resend) : expedie depuis belfit.be,
+        // aux couleurs de la marque. Si le service est indisponible, on
+        // retombe sur l'envoi Firebase pour ne jamais bloquer l'utilisateur.
+        var envoye = false;
         try {
-            var lg = (window.BELFIT_I18N && BELFIT_I18N.getLang && BELFIT_I18N.getLang())
-                  || localStorage.getItem('repz_lang') || 'fr';
-            auth.languageCode = lg;
-        } catch(e) { try { auth.useDeviceLanguage(); } catch(_){} }
-        await auth.sendPasswordResetEmail(email);
+            var r = await fetch('https://europe-west1-repz-baf60.cloudfunctions.net/mailReinitialisation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, langue: lg })
+            });
+            envoye = r.ok;
+        } catch(e) { envoye = false; }
+
+        if(!envoye){
+            try { auth.languageCode = lg; } catch(e) {}
+            await auth.sendPasswordResetEmail(email);
+        }
         loadingDiv.classList.remove('show');
         successDiv.textContent = 'Lien de réinitialisation envoyé à ton email ! Vérifie ta boîte de réception.';
         successDiv.classList.add('show');

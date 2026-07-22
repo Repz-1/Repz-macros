@@ -428,3 +428,152 @@ exports.connexionParPseudo = onRequest(
     }
   },
 );
+
+// ============================================================
+// MAIL DE REINITIALISATION AUX COULEURS BELFIT
+//
+// Firebase envoie par defaut un message en anglais, expedie depuis
+// repz-baf60.firebaseapp.com : objet technique, URL brute de trois
+// lignes, aucune identite visuelle. Resultat observe : classe en
+// courrier indesirable.
+//
+// Ici : on genere le lien securise avec le SDK Admin, puis on envoie
+// NOTRE message depuis belfit.be via Resend.
+//
+// Secret a poser : firebase functions:secrets:set RESEND_API_KEY
+// ============================================================
+const RESEND_API_KEY = defineSecret("RESEND_API_KEY");
+
+/** Expediteur : doit correspondre au domaine verifie chez Resend. */
+const EXPEDITEUR = "BELFIT <noreply@belfit.be>";
+
+/** Modele du message, en trois langues. */
+const TEXTES = {
+  fr: {
+    objet: "Réinitialise ton mot de passe BELFIT",
+    titre: "Réinitialise ton mot de passe",
+    intro: "Tu as demandé à changer le mot de passe de ton compte BELFIT. " +
+      "Appuie sur le bouton ci-dessous — le lien reste valable 1 heure.",
+    bouton: "Choisir un nouveau mot de passe",
+    rassure: "Tu n'es pas à l'origine de cette demande ?<br>" +
+      "Ignore ce message, ton mot de passe reste inchangé.",
+    slogan: "Ton coach nutrition et entraînement",
+    pied: "Nous écrire",
+  },
+  en: {
+    objet: "Reset your BELFIT password",
+    titre: "Reset your password",
+    intro: "You asked to change the password of your BELFIT account. " +
+      "Tap the button below — the link stays valid for 1 hour.",
+    bouton: "Choose a new password",
+    rassure: "Didn't request this?<br>Just ignore this message, " +
+      "your password stays unchanged.",
+    slogan: "Your nutrition and training coach",
+    pied: "Contact us",
+  },
+  nl: {
+    objet: "Stel je BELFIT-wachtwoord opnieuw in",
+    titre: "Stel je wachtwoord opnieuw in",
+    intro: "Je vroeg om het wachtwoord van je BELFIT-account te wijzigen. " +
+      "Tik op de knop hieronder — de link blijft 1 uur geldig.",
+    bouton: "Kies een nieuw wachtwoord",
+    rassure: "Heb je dit niet aangevraagd?<br>" +
+      "Negeer dit bericht, je wachtwoord blijft ongewijzigd.",
+    slogan: "Jouw coach voor voeding en training",
+    pied: "Contacteer ons",
+  },
+};
+
+/** Construit le message HTML. Tables + styles en ligne : seule
+ *  mise en forme fiable dans les clients de messagerie. */
+function modeleMail(lien, langue) {
+  const T = TEXTES[langue] || TEXTES.fr;
+  return `<!DOCTYPE html>
+<html lang="${langue}"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#F5F6F8;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F6F8;">
+<tr><td align="center" style="padding:32px 16px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;background:#FFFFFF;border-radius:20px;overflow:hidden;">
+  <tr><td align="center" style="background:#141414;padding:30px 24px 26px;">
+    <div style="font-family:-apple-system,'Segoe UI',Roboto,sans-serif;font-size:27px;font-weight:800;letter-spacing:2px;color:#FFFFFF;">BEL<span style="color:#F7B500;">FIT</span></div>
+    <div style="font-family:-apple-system,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:#9C968A;margin-top:7px;">${T.slogan}</div>
+  </td></tr>
+  <tr><td style="padding:32px 30px 8px;font-family:-apple-system,'Segoe UI',Roboto,sans-serif;">
+    <div style="font-size:20px;font-weight:800;color:#181818;line-height:1.35;margin-bottom:14px;">${T.titre}</div>
+    <div style="font-size:14.5px;color:#5C5750;line-height:1.65;">${T.intro}</div>
+  </td></tr>
+  <tr><td align="center" style="padding:26px 30px 8px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" style="background:#F7B500;border-radius:14px;">
+        <a href="${lien}" style="display:block;padding:16px 40px;font-family:-apple-system,'Segoe UI',Roboto,sans-serif;font-size:16px;font-weight:800;color:#181818;text-decoration:none;">${T.bouton}</a>
+      </td></tr></table>
+  </td></tr>
+  <tr><td style="padding:22px 30px 30px;font-family:-apple-system,'Segoe UI',Roboto,sans-serif;">
+    <div style="font-size:13px;color:#8A8580;line-height:1.6;text-align:center;">${T.rassure}</div>
+  </td></tr>
+  <tr><td style="background:#FAF9F5;border-top:1px solid #EFEBE1;padding:20px 30px;font-family:-apple-system,'Segoe UI',Roboto,sans-serif;">
+    <div style="font-size:12px;color:#9C968A;line-height:1.6;text-align:center;">
+      BELFIT &middot; Startup belge<br>
+      <a href="https://belfit.be" style="color:#8F6200;text-decoration:none;font-weight:600;">belfit.be</a>
+      &nbsp;&middot;&nbsp;
+      <a href="mailto:contact@belfit.be" style="color:#8F6200;text-decoration:none;font-weight:600;">${T.pied}</a>
+    </div>
+  </td></tr>
+</table>
+</td></tr></table>
+</body></html>`;
+}
+
+exports.mailReinitialisation = onRequest(
+  {secrets: [RESEND_API_KEY], region: "europe-west1", cors: true},
+  async (req, res) => {
+    if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+    if (req.method !== "POST") { res.status(405).json({ok: false}); return; }
+
+    try {
+      const email = String((req.body && req.body.email) || "").trim();
+      const langue = String((req.body && req.body.langue) || "fr").slice(0, 2);
+      if (!email || email.indexOf("@") === -1) {
+        res.status(400).json({ok: false});
+        return;
+      }
+
+      // Lien officiel Firebase (jeton signe, expiration geree par Firebase).
+      let lien;
+      try {
+        lien = await admin.auth().generatePasswordResetLink(email);
+      } catch (e) {
+        // Compte inexistant : on repond OK malgre tout. Repondre
+        // differemment revelerait quelles adresses sont inscrites.
+        res.json({ok: true});
+        return;
+      }
+
+      const T = TEXTES[langue] || TEXTES.fr;
+      const envoi = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY.value()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: EXPEDITEUR,
+          to: [email],
+          subject: T.objet,
+          html: modeleMail(lien, langue),
+        }),
+      });
+
+      if (!envoi.ok) {
+        console.error("Resend a refuse l'envoi :", await envoi.text());
+        res.status(502).json({ok: false});
+        return;
+      }
+      res.json({ok: true});
+    } catch (e) {
+      console.error("mailReinitialisation :", e);
+      res.status(500).json({ok: false});
+    }
+  },
+);
