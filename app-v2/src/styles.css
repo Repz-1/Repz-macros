@@ -467,3 +467,6 @@ button{cursor:pointer}
 .login-google svg{width:19px;height:19px;flex:none}
 .login-ou{display:flex;align-items:center;gap:12px;color:#b5b0a4;font-size:12.5px;font-weight:700;margin-bottom:14px}
 .login-ou::before,.login-ou::after{content:'';flex:1;height:1px;background:#e8e4d8}
+/* Croix de fermeture du scanner (meme habillage que la v1 .vm-x) */
+.scan-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:#F2F0EA;color:#4b4b4b;font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;z-index:2}
+.scan-x:active{background:#E6E3DB}

@@ -89,7 +89,8 @@ export function Scanner({ repasId, fermer }) {
   return createPortal(
     <>
       <div class="voile montre" onClick={fermer} />
-      <div class="modale montre">
+      <div class="modale montre" style="position:relative">
+        <button class="scan-x" onClick={fermer} aria-label="Fermer">✕</button>
         <h3>Scanner un produit</h3>
         <div id="scan-zone" class="scan-zone" />
         <div class="scan-statut">{statut}</div>
