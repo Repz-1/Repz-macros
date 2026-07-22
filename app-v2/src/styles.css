@@ -470,3 +470,5 @@ button{cursor:pointer}
 /* Croix de fermeture du scanner (meme habillage que la v1 .vm-x) */
 .scan-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:#F2F0EA;color:#4b4b4b;font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;z-index:2}
 .scan-x:active{background:#E6E3DB}
+/* Statut du compte dans le panneau profil */
+.profil-statut{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.04em;color:#8F6200;background:#FFF6DC;border:1px solid #F3E2A8;border-radius:999px;padding:3px 10px;margin-top:6px}

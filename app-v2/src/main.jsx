@@ -24,7 +24,7 @@ import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { signal } from '@preact/signals';
 import { Entete, voletProfil } from './components/Entete.jsx';
 
-import { PremiumPage } from './components/PremiumPage.jsx';
+import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
 import { ActionsRapides } from './components/ActionsRapides.jsx';
@@ -280,6 +280,9 @@ function App() {
   const voletUtilisateur = voletProfil.value ? (
     <div class="profil-volet">
       <span>{utilisateur.value ? utilisateur.value.email : t('mode_invite')}</span>
+      <span class="profil-statut">
+        {estPremium.value ? '\u2726 PRO' : t('compte_gratuit')}
+      </span>
       <div class="lang-choix">
         {LANGUES.map(l => (
           <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>

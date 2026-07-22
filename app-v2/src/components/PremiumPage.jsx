@@ -19,14 +19,32 @@ try {
   if (apercuPremium) estPremium.value = true;
 } catch (e) { /* stockage indisponible */ }
 
+// Cache partage avec la v1 (app.html) : elle ecrit repz_premium apres
+// avoir verifie Firestore. Meme origine, donc meme valeur — on demarre
+// dessus pour ne pas afficher un utilisateur payant comme gratuit le
+// temps de la lecture reseau (ou s'il n'est connecte que cote v1).
+const CLE_PREM_V1 = 'repz_premium';
+try {
+  if (!apercuPremium && localStorage.getItem(CLE_PREM_V1) === '1') estPremium.value = true;
+} catch (e) {}
+
 effect(() => {
   if (apercuPremium) return;          // l'apercu garde la main
   const u = utilisateur.value;
-  if (!u) { estPremium.value = false; return; }
+  // Sans compte v2 : on garde ce que dit le cache v1, sans le contredire.
+  if (!u) return;
   const db = getFirestore(getApps()[0]);
   getDoc(doc(db, 'users', u.uid))
-    .then(s => { estPremium.value = s.exists() && s.data().premium === true; })
-    .catch(() => {});
+    .then(s => {
+      const prem = s.exists() && s.data().premium === true;
+      estPremium.value = prem;
+      // On tient le cache v1 a jour, exactement comme le fait app.html.
+      try {
+        if (prem) localStorage.setItem(CLE_PREM_V1, '1');
+        else localStorage.removeItem(CLE_PREM_V1);
+      } catch (e) {}
+    })
+    .catch(() => {});   // hors ligne : le cache fait foi
 });
 
 import { useState } from 'preact/hooks';

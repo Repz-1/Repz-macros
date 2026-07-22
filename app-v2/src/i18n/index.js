@@ -25,6 +25,7 @@ export function setLangue(l) {
 
 const T = {
   fr: {
+    compte_gratuit: 'Compte gratuit',
     ou: 'ou',
     mc_plat_btn: 'Enregistrer comme plat', mc_plat_nom: 'Nom du plat (ex : Petit-déj avoine-whey)', mc_plat_ok: 'Plat enregistré — retrouve-le dans « Mes plats »',
     eat_title: 'Repas intelligent', eat_etat: 'adapté à tes macros',
@@ -61,6 +62,7 @@ const T = {
     premium_merci: 'Toutes les fonctionnalités sont débloquées. Merci de soutenir BelFit 💪',
   },
   en: {
+    compte_gratuit: 'Free account',
     ou: 'or',
     mc_plat_btn: 'Save as a dish', mc_plat_nom: 'Dish name (e.g. Oats & whey breakfast)', mc_plat_ok: 'Dish saved — find it in "My dishes"',
     eat_title: 'Smart meal', eat_etat: 'fits your macros',
@@ -97,6 +99,7 @@ const T = {
     premium_merci: 'All features unlocked. Thanks for supporting BelFit 💪',
   },
   nl: {
+    compte_gratuit: 'Gratis account',
     ou: 'of',
     mc_plat_btn: 'Opslaan als gerecht', mc_plat_nom: 'Naam van het gerecht (bv. Havermout-whey ontbijt)', mc_plat_ok: 'Gerecht opgeslagen — te vinden bij ‘Mijn gerechten’',
     eat_title: 'Slimme maaltijd', eat_etat: 'past bij je macro\u2019s',
