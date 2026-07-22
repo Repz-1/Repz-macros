@@ -1,5 +1,5 @@
 import { render } from 'preact';
-import { useState, useRef } from 'preact/hooks';
+import { useState, useRef, useEffect } from 'preact/hooks';
 import './styles.css';
 import './styles/design-system.css';
 import './styles/journal-socle.css';
@@ -100,16 +100,26 @@ function App() {
   }
 
   const onglet = ongletActif.value;
-  // Glissement directionnel a l'arrivee, comme le deck de la v1 :
-  // on va vers la droite -> la page entre par la droite, et vice versa.
   const ordre = ['journal', 'entrainer', 'stats', 'premium'];
+
+  // ---- Deck : l'ancienne page SORT pendant que la nouvelle ENTRE ----
+  // Les deux sont montees ensemble pendant la duree du glissement,
+  // comme le deck de la v1 (et le ressenti d'Instagram).
   const precedent = useRef(onglet);
-  const sens = useRef('');
+  const [glisse, setGlisse] = useState(null);   // { sortant, sens }
   if (precedent.current !== onglet) {
     const a = ordre.indexOf(precedent.current), b = ordre.indexOf(onglet);
-    sens.current = (a === -1 || b === -1) ? '' : (b > a ? ' page--droite' : ' page--gauche');
+    if (a !== -1 && b !== -1) {
+      // On memorise l'onglet qui s'en va et le sens du deplacement.
+      glisse === null && setGlisse({ sortant: precedent.current, sens: b > a ? 'droite' : 'gauche' });
+    }
     precedent.current = onglet;
   }
+  useEffect(() => {
+    if (!glisse) return;
+    const id = setTimeout(() => setGlisse(null), 540);
+    return () => clearTimeout(id);
+  }, [glisse]);
 
   // Balayage horizontal pour changer d'onglet (comme la v1).
   const geste = useRef(null);
@@ -142,35 +152,56 @@ function App() {
     window.scrollTo(0, 0);
   };
 
+  const voletUtilisateur = voletProfil.value ? (
+    <div class="profil-volet">
+      <span>{utilisateur.value ? utilisateur.value.email : t('mode_invite')}</span>
+      <div class="lang-choix">
+        {LANGUES.map(l => (
+          <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
+        ))}
+      </div>
+      <button onClick={() => utilisateur.value ? deconnexion() : quitterInvite()}>
+        {utilisateur.value ? t('deconnexion') : t('quitter')}
+      </button>
+    </div>
+  ) : null;
+
+  const rendreOnglet = (k) => (
+    <>
+      {voletUtilisateur}
+      {k === 'journal' && <OngletJournal />}
+      {k === 'entrainer' && <OngletEntrainer />}
+      {k === 'stats' && <Stats />}
+      {k === 'courses' && <Courses />}
+      {k === 'premium' && <PremiumPage />}
+    </>
+  );
+
+  const gestes = {
+    onTouchStart: debutTouche,
+    onTouchMove: bougeTouche,
+    onTouchEnd: finTouche,
+    onTouchCancel: () => { geste.current = null; },
+  };
+
   return (
     <>
-      <div
-        class={'conteneur conteneur--nu page-anim' + sens.current}
-        key={onglet}
-        onTouchStart={debutTouche}
-        onTouchMove={bougeTouche}
-        onTouchEnd={finTouche}
-        onTouchCancel={() => { geste.current = null; }}
-      >
-        {voletProfil.value && (
-          <div class="profil-volet">
-            <span>{utilisateur.value ? utilisateur.value.email : t('mode_invite')}</span>
-            <div class="lang-choix">
-              {LANGUES.map(l => (
-                <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
-              ))}
-            </div>
-            <button onClick={() => utilisateur.value ? deconnexion() : quitterInvite()}>
-              {utilisateur.value ? t('deconnexion') : t('quitter')}
-            </button>
+      {glisse ? (
+        // Pendant le glissement : les deux pages cohabitent et
+        // se croisent horizontalement sur toute la largeur.
+        <div class={'deck deck--' + glisse.sens} {...gestes}>
+          <div class="deck-pan deck-pan--sortant" key={'s' + glisse.sortant}>
+            <div class="conteneur conteneur--nu">{rendreOnglet(glisse.sortant)}</div>
           </div>
-        )}
-        {onglet === 'journal' && <OngletJournal />}
-        {onglet === 'entrainer' && <OngletEntrainer />}
-        {onglet === 'stats' && <Stats />}
-        {onglet === 'courses' && <Courses />}
-        {onglet === 'premium' && <PremiumPage />}
-      </div>
+          <div class="deck-pan deck-pan--entrant" key={'e' + onglet}>
+            <div class="conteneur conteneur--nu">{rendreOnglet(onglet)}</div>
+          </div>
+        </div>
+      ) : (
+        <div class="conteneur conteneur--nu" {...gestes}>
+          {rendreOnglet(onglet)}
+        </div>
+      )}
       <BottomNav />
     </>
   );

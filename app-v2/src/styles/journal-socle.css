@@ -1495,22 +1495,31 @@
    Reprend le ressenti du deck de la v1 (translateX, meme courbe
    et meme duree) : la page entre par le cote vers lequel on va.
    ============================================================ */
+/* Deck : pendant le changement d'onglet, l'ancienne page et la
+   nouvelle sont montees ensemble et se croisent sur toute la
+   largeur de l'ecran — le glissement se voit vraiment. */
+.deck {
+  position: fixed; inset: 0;
+  bottom: 0; overflow: hidden;
+  z-index: 1;
+}
+.deck-pan {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  will-change: transform;
+}
 @media (prefers-reduced-motion: no-preference) {
-  /* La page parcourt une vraie distance (~30 % de l'ecran) sur une
-     duree plus longue, avec une deceleration douce sans rebond :
-     on lit le glissement au lieu de le subir. */
-  @keyframes pageDroite {
-    from { transform: translateX(45%); opacity: 0; }
-    60%  { opacity: 1; }
-    to   { transform: none; opacity: 1; }
-  }
-  @keyframes pageGauche {
-    from { transform: translateX(-45%); opacity: 0; }
-    60%  { opacity: 1; }
-    to   { transform: none; opacity: 1; }
-  }
-  .page-anim.page--droite { animation: pageDroite .62s cubic-bezier(.16, .84, .28, 1) both; }
-  .page-anim.page--gauche { animation: pageGauche .62s cubic-bezier(.16, .84, .28, 1) both; }
-  /* La page en mouvement ne doit jamais elargir le document. */
-  .page-anim { will-change: transform; }
+  @keyframes deckEntreDroite { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes deckSortDroite  { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+  @keyframes deckEntreGauche { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+  @keyframes deckSortGauche  { from { transform: translateX(0); } to { transform: translateX(100%); } }
+
+  .deck--droite .deck-pan--entrant { animation: deckEntreDroite .5s cubic-bezier(.25, .8, .3, 1) both; }
+  .deck--droite .deck-pan--sortant { animation: deckSortDroite  .5s cubic-bezier(.25, .8, .3, 1) both; }
+  .deck--gauche .deck-pan--entrant { animation: deckEntreGauche .5s cubic-bezier(.25, .8, .3, 1) both; }
+  .deck--gauche .deck-pan--sortant { animation: deckSortGauche  .5s cubic-bezier(.25, .8, .3, 1) both; }
+}
+/* Animations coupees : on affiche directement la page d'arrivee. */
+@media (prefers-reduced-motion: reduce) {
+  .deck-pan--sortant { display: none; }
 }
