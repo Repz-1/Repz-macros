@@ -137,10 +137,18 @@ function App() {
       document.body.style.minHeight = '';
       window.scrollTo(0, 0);
       setGlisse(null);
+      setPose(true);              // la page arrivee se pose sans rejouer sa cascade
       scrollSortant.value = 0;
     }, 540);
     return () => { clearTimeout(id); document.body.style.minHeight = ''; };
   }, [glisse]);
+  // La classe 'sans-entree' ne dure que le temps du premier rendu pose.
+  const [pose, setPose] = useState(false);
+  useEffect(() => {
+    if (!pose) return;
+    const id = setTimeout(() => setPose(false), 400);
+    return () => clearTimeout(id);
+  }, [pose]);
 
   // Balayage horizontal pour changer d'onglet (comme la v1).
   const geste = useRef(null);
@@ -153,8 +161,8 @@ function App() {
     if (!g || e.touches.length !== 1) return;
     const dx = e.touches[0].clientX - g.x, dy = e.touches[0].clientY - g.y;
     // On decide une seule fois si le geste est horizontal ou vertical.
-    if (g.verrou === null && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
-      g.verrou = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'h' : 'v';
+    if (g.verrou === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      g.verrou = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'h' : 'v';
     }
     g.dx = dx;
   };
@@ -164,8 +172,8 @@ function App() {
     if (!g || g.verrou !== 'h' || !g.dx) return;
     const duree = Math.max(1, Date.now() - g.t);
     const vitesse = Math.abs(g.dx) / duree;          // px/ms
-    const seuil = window.innerWidth * 0.15;
-    if (Math.abs(g.dx) < seuil && vitesse < 0.45) return;
+    const seuil = window.innerWidth * 0.12;
+    if (Math.abs(g.dx) < seuil && vitesse < 0.35) return;
     const i = ordre.indexOf(onglet);
     const cible = i + (g.dx < 0 ? 1 : -1);
     if (cible < 0 || cible >= ordre.length) return;
@@ -221,7 +229,7 @@ function App() {
           </div>
         </div>
       ) : (
-        <div class="conteneur conteneur--nu" {...gestes}>
+        <div class={'conteneur conteneur--nu' + (pose ? ' sans-entree' : '')} {...gestes}>
           {rendreOnglet(onglet)}
         </div>
       )}

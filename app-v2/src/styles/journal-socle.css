@@ -1512,6 +1512,10 @@
    d'entree (cascade du journal, remplissage de la jauge...) :
    pendant le glissement, tout doit etre immobile et deja en place. */
 .deck-pan .colonne > * { animation: none !important; opacity: 1 !important; transform: none !important; }
+/* Page qui vient de se poser apres un glissement : pas de cascade. */
+.sans-entree .colonne > * { animation: none !important; opacity: 1 !important; transform: none !important; }
+/* Les gestes horizontaux nous appartiennent, le vertical au navigateur. */
+.conteneur--nu, .deck { touch-action: pan-y; }
 .deck-pan .page-anim { animation: none !important; }
 .deck-pan .cal-anneau-trace { transition: none !important; }
 @media (prefers-reduced-motion: no-preference) {
