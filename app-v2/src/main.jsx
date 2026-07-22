@@ -111,33 +111,35 @@ function App() {
     const a = ordre.indexOf(precedent.current), b = ordre.indexOf(onglet);
     if (a !== -1 && b !== -1) {
       // On memorise l'onglet qui s'en va et le sens du deplacement.
-      glisse === null && setGlisse({
-        sortant: precedent.current,
-        sens: b > a ? 'droite' : 'gauche',
-        // Repli sur le defilement courant : les boutons qui changent
-        // d'onglet sans passer par allerOnglet restent corrects.
-        scroll: scrollSortant.value || window.scrollY || 0,
-      });
+      if (glisse === null) {
+        // L'ancien DOM est encore monte a cet instant : c'est le seul
+        // moment ou la hauteur du document est encore la bonne. On la
+        // fige tout de suite, sinon le navigateur voit un document vide,
+        // reaffiche sa barre d'outils et tout saute verticalement.
+        document.body.style.minHeight = document.documentElement.scrollHeight + 'px';
+        setGlisse({
+          sortant: precedent.current,
+          sens: b > a ? 'droite' : 'gauche',
+          // Repli sur le defilement courant : les boutons qui changent
+          // d'onglet sans passer par allerOnglet restent corrects.
+          scroll: scrollSortant.value || window.scrollY || 0,
+        });
+      }
     }
     precedent.current = onglet;
   }
   useEffect(() => {
     if (!glisse) return;
-    // Le deck est en position fixe : sans precaution, le document
-    // perd sa hauteur, le navigateur reaffiche sa barre d'outils et
-    // tout se decale verticalement pendant le glissement. On fige
-    // donc la hauteur du document, et on ne revient en haut qu'une
-    // fois l'animation terminee.
-    const corps = document.body;
-    const hauteurAvant = corps.style.minHeight;
-    corps.style.minHeight = document.documentElement.scrollHeight + 'px';
+    // La hauteur a ete figee au moment de la bascule (voir plus haut).
+    // Ici on attend la fin du glissement, puis on libere la hauteur
+    // et on remet la page d'arrivee en haut.
     const id = setTimeout(() => {
-      corps.style.minHeight = hauteurAvant;
+      document.body.style.minHeight = '';
       window.scrollTo(0, 0);
       setGlisse(null);
       scrollSortant.value = 0;
     }, 540);
-    return () => { clearTimeout(id); corps.style.minHeight = hauteurAvant; };
+    return () => { clearTimeout(id); document.body.style.minHeight = ''; };
   }, [glisse]);
 
   // Balayage horizontal pour changer d'onglet (comme la v1).
