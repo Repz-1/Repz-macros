@@ -1508,6 +1508,12 @@
   overflow: hidden;
   will-change: transform;
 }
+/* Les pages remontees dans le deck rejoueraient leurs animations
+   d'entree (cascade du journal, remplissage de la jauge...) :
+   pendant le glissement, tout doit etre immobile et deja en place. */
+.deck-pan .colonne > * { animation: none !important; opacity: 1 !important; transform: none !important; }
+.deck-pan .page-anim { animation: none !important; }
+.deck-pan .cal-anneau-trace { transition: none !important; }
 @media (prefers-reduced-motion: no-preference) {
   @keyframes deckEntreDroite { from { transform: translateX(100%); } to { transform: translateX(0); } }
   @keyframes deckSortDroite  { from { transform: translateX(0); } to { transform: translateX(-100%); } }
