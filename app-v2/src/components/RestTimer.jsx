@@ -238,7 +238,18 @@ export function RestTimer() {
 
       <div class={'v2-timer-container' + (ouvert ? ' show' : '')}>
         <div class="v2-timer-display">
-          <div class={'v2-timer-big ' + classe}>{mm}:{ss}</div>
+          <div class="v2-timer-scene">
+            {/* Onde de choc : une par seconde dans les 10 dernieres.
+                La cle forcee relance l'animation a chaque battement. */}
+            {enCours && restant <= 10 && restant > 0 && (
+              <span class={'v2-onde ' + classe} key={'o' + restant} />
+            )}
+            {/* La cle change a chaque seconde : sans cela le navigateur
+                ne rejoue pas l'animation, la classe restant identique. */}
+            <div class={'v2-timer-big ' + classe} key={enCours ? restant : 'arret'}>
+              {mm}:{ss}
+            </div>
+          </div>
           <div class="v2-timer-label">{t('chrono_titre')}</div>
         </div>
         <div class="v2-timer-wheels">
