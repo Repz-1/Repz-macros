@@ -677,9 +677,15 @@
 .pg-journal .mc-resultats {
   position: absolute; top: 100%; left: 0; right: 0; z-index: 300;
   background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px;
-  margin-top: 4px; max-height: 240px; overflow-y: auto;
+  margin-top: 4px; overflow-y: auto;
+  /* Le clavier occupe le bas de l'ecran : la liste se limite a la
+     bande reellement visible au-dessus de lui. */
+  max-height: min(240px, 34vh);
+  overscroll-behavior: contain;
   box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
 }
+/* La zone de saisie remonte en haut : on lui laisse un peu d'air. */
+.pg-journal .mc-ajout-zone { scroll-margin-top: 14px; }
 .pg-journal .mc-resultats > button {
   display: flex; justify-content: space-between; align-items: center;
   width: 100%; padding: 11px 14px;

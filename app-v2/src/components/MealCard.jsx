@@ -150,6 +150,20 @@ function Recherche({ repasId }) {
     if (champRef.current) champRef.current.blur();
   };
 
+  // Champ actif : on fait remonter la zone de saisie en haut de
+  // l'ecran. Sans cela, le clavier recouvre la liste de resultats et
+  // l'utilisateur tape a l'aveugle.
+  useEffect(() => {
+    if (!actif) return;
+    const id = setTimeout(() => {
+      const el = zoneRef.current;
+      if (el && el.scrollIntoView) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 140);   // on laisse le clavier finir son ouverture
+    return () => clearTimeout(id);
+  }, [actif]);
+
   // Un appui en dehors de la zone referme la liste.
   useEffect(() => {
     if (!actif) return;
