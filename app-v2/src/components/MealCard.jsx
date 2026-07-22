@@ -164,6 +164,44 @@ function Recherche({ repasId }) {
     return () => clearTimeout(id);
   }, [actif]);
 
+  // Hauteur de la liste calculee sur l'espace REELLEMENT visible :
+  // clavier ouvert, clavier replie, barre du bas... une hauteur fixe
+  // laissait toujours des aliments hors de l'ecran.
+  const [hListe, setHListe] = useState(240);
+  useEffect(() => {
+    if (!actif) return;
+    const vv = window.visualViewport;
+
+    const mesurer = () => {
+      const champ = champRef.current;
+      if (!champ) return;
+      const bas = champ.getBoundingClientRect().bottom;
+      const basVisible = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+      // Clavier ouvert : il ne reste que la bande au-dessus de lui.
+      // Clavier replie : il faut degager la barre de navigation.
+      const clavierOuvert = vv ? (window.innerHeight - vv.height > 120) : false;
+      const marge = clavierOuvert ? 16 : 88;
+      setHListe(Math.max(140, Math.round(basVisible - bas - marge)));
+    };
+
+    mesurer();
+    const t1 = setTimeout(mesurer, 180);   // apres l'ouverture du clavier
+    const t2 = setTimeout(mesurer, 420);   // apres le defilement doux
+    if (vv) {
+      vv.addEventListener('resize', mesurer);
+      vv.addEventListener('scroll', mesurer);
+    }
+    window.addEventListener('resize', mesurer);
+    return () => {
+      clearTimeout(t1); clearTimeout(t2);
+      if (vv) {
+        vv.removeEventListener('resize', mesurer);
+        vv.removeEventListener('scroll', mesurer);
+      }
+      window.removeEventListener('resize', mesurer);
+    };
+  }, [actif]);
+
   // Un appui en dehors de la zone referme la liste.
   useEffect(() => {
     if (!actif) return;
@@ -197,7 +235,7 @@ function Recherche({ repasId }) {
       </div>
 
       {actif && (platsTrouves.length > 0 || resultats.length > 0) && (
-        <div class="mc-resultats">
+        <div class="mc-resultats" style={{ maxHeight: hListe + 'px' }}>
           {terme.length < 2 && resultats.length > 0 && (
             <div class="mc-res-titre">{t('fav_titre')}</div>
           )}

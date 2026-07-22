@@ -678,10 +678,11 @@
   position: absolute; top: 100%; left: 0; right: 0; z-index: 300;
   background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px;
   margin-top: 4px; overflow-y: auto;
-  /* Le clavier occupe le bas de l'ecran : la liste se limite a la
-     bande reellement visible au-dessus de lui. */
-  max-height: min(240px, 34vh);
+  /* La hauteur est calculee en JS sur l'espace reellement visible
+     (clavier ouvert ou replie, barre du bas). Valeur de repli ici. */
+  max-height: 240px;
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
 }
 /* La zone de saisie remonte en haut : on lui laisse un peu d'air. */
