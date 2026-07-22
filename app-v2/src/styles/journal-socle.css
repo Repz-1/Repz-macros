@@ -1495,32 +1495,44 @@
    Reprend le ressenti du deck de la v1 (translateX, meme courbe
    et meme duree) : la page entre par le cote vers lequel on va.
    ============================================================ */
-/* Deck : pendant le changement d'onglet, l'ancienne page et la
-   nouvelle sont montees ensemble et se croisent sur toute la
-   largeur de l'ecran — le glissement se voit vraiment. */
-.deck {
-  position: fixed; inset: 0;
-  bottom: 0; overflow: hidden;
+/* ============================================================
+   RAIL A 4 PANNEAUX (architecture v1 : ses 4 iframes)
+   Les quatre onglets vivent cote a cote ; changer d'onglet =
+   translater le rail. Chaque panneau defile en interne, le
+   document ne bouge jamais (barre navigateur stable).
+   ============================================================ */
+.rail4 {
+  position: fixed; top: 0; bottom: 0; left: 0;
+  width: 400%;
+  display: flex;
+  will-change: transform;
   z-index: 1;
 }
-.deck-pan {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+.rail-pan {
+  position: relative;
+  width: 25%; height: 100%;
   overflow: hidden;
-  will-change: transform;
 }
-/* Rail du tirage au doigt : deux ecrans cote a cote, translate en
-   direct pendant le mouvement (aucune animation propre). */
-.deck-rail {
-  position: absolute; inset: 0;
-  will-change: transform;
+.pan-scroll {
+  height: 100%;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
 }
-.deck-rail .deck-pan { left: auto; right: auto; width: 100%; }
-.deck-rail .colonne > * { animation: none !important; opacity: 1 !important; transform: none !important; }
-.deck-rail .cal-anneau-trace { transition: none !important; }
-/* Les pages remontees dans le deck rejoueraient leurs animations
-   d'entree (cascade du journal, remplissage de la jauge...) :
-   pendant le glissement, tout doit etre immobile et deja en place. */
-.deck-pan .colonne > * { animation: none !important; opacity: 1 !important; transform: none !important; }
+/* Le rail est transforme : les elements position:fixed des pages
+   se caleraient sur ses 400 % de large. On les rattache au panneau. */
+.rail-pan .fab-rangee,
+.rail-pan .v2-chrono-fab,
+.rail-pan .v2-timer-overlay,
+.rail-pan .v2-timer-container,
+.rail-pan .ml-overlay,
+.rail-pan .pg-stats .modal-overlay,
+.rail-pan .premium-overlay { position: absolute !important; }
+
+/* Couche Courses (hors nav) au-dessus du rail */
+.couche-courses { z-index: 5; background: #F8F8F8; }
+
 /* Page qui vient de se poser apres un glissement : pas de cascade. */
 .sans-entree .colonne > * { animation: none !important; opacity: 1 !important; transform: none !important; }
 /* Les gestes horizontaux nous appartiennent, le vertical au navigateur. */
