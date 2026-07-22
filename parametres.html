@@ -268,7 +268,7 @@ auth.onAuthStateChanged((user) => {
     <div class="foot">
         <div class="f-logo">BEL<span>FIT</span></div>
         <div class="f-ver" data-i18n="set_ver">v1.0 · Startup belge 🇧🇪</div>
-        <button class="logout-btn" onclick="logout()" data-i18n="set_logout">SE DÉCONNECTER</button>
+        <button class="logout-btn" id="btnSession" onclick="actionSession()" data-i18n="set_logout">SE DÉCONNECTER</button>
     </div>
 </div>
 
@@ -553,7 +553,30 @@ function inviterAmis(){
     }
 }
 
-// ===== DÉCONNEXION =====
+// ===== SESSION : deconnexion, ou connexion si mode invite =====
+// En mode decouverte il n'y a aucune session a fermer : proposer
+// « SE DECONNECTER » n'avait pas de sens.
+function estInviteParam(){ return localStorage.getItem('repz_invite') === '1'; }
+function majBoutonSession(){
+    var b = document.getElementById('btnSession');
+    if(!b) return;
+    if(estInviteParam() && !(window.auth && auth.currentUser)){
+        b.textContent = (window.t ? t('set_login') : 'SE CONNECTER');
+        b.setAttribute('data-i18n','set_login');
+        b.style.background = '#FFF6DC';
+        b.style.color = '#8F6200';
+    }
+}
+document.addEventListener('DOMContentLoaded', majBoutonSession);
+function actionSession(){
+    if(estInviteParam() && !(window.auth && auth.currentUser)){
+        localStorage.removeItem('repz_invite');
+        localStorage.removeItem('repz_inviteDebut');
+        window.location.href = 'index.html';
+        return;
+    }
+    logout();
+}
 function logout(){
     localStorage.removeItem('repz_premium');
     localStorage.removeItem('repz_invite');
