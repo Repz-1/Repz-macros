@@ -800,6 +800,13 @@ document.getElementById('recoveryForm').addEventListener('submit', async (e) => 
     loadingDiv.classList.add('show');
     
     try {
+        // Langue du mail Firebase : sans cela, le modele part toujours en
+        // anglais quelle que soit la langue choisie dans l'app.
+        try {
+            var lg = (window.BELFIT_I18N && BELFIT_I18N.getLang && BELFIT_I18N.getLang())
+                  || localStorage.getItem('repz_lang') || 'fr';
+            auth.languageCode = lg;
+        } catch(e) { try { auth.useDeviceLanguage(); } catch(_){} }
         await auth.sendPasswordResetEmail(email);
         loadingDiv.classList.remove('show');
         successDiv.textContent = 'Lien de réinitialisation envoyé à ton email ! Vérifie ta boîte de réception.';
