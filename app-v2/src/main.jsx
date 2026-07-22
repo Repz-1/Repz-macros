@@ -147,6 +147,19 @@ function App() {
     const dx = x - g.x, dy = e.touches[0].clientY - g.y;
     if (g.verrou === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
       g.verrou = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'h' : 'v';
+      if (g.verrou === 'h') {
+        // Si une transition est en cours, on repart de la position
+        // REELLEMENT affichee du rail : sans cela, couper la
+        // transition le ferait claquer d'un coup a sa position
+        // theorique (le saut visible quand on enchaine les swipes).
+        const rail = railRef.current;
+        if (rail) {
+          const m = new DOMMatrixReadOnly(getComputedStyle(rail).transform);
+          g.baseX = m.m41;                       // translation X reelle, en px
+          rail.style.transition = 'none';
+          rail.style.transform = 'translateX(' + g.baseX + 'px)';
+        }
+      }
     }
     if (g.verrou !== 'h') return;
     const maintenant = Date.now();
@@ -155,15 +168,15 @@ function App() {
       g.dernierX = x; g.dernierT = maintenant;
     }
     // Resistance aux extremites, comme la v1 (dx / 3).
-    const i = ordre.indexOf(ongletActif.value);
-    let borne = dx;
-    if ((i === 0 && dx > 0) || (i === ordre.length - 1 && dx < 0)) borne = dx / 3;
-    g.dx = borne;
+    const L = window.innerWidth;
+    const minX = (ordre.length - 1) * -L, maxX = 0;
+    let cible = g.baseX + dx;
+    if (cible > maxX) cible = maxX + (cible - maxX) / 3;
+    if (cible < minX) cible = minX + (cible - minX) / 3;
+    g.dx = dx;
+    g.posX = cible;
     const rail = railRef.current;
-    if (rail) {
-      rail.style.transition = 'none';
-      rail.style.transform = 'translateX(calc(' + (i * -25) + '% + ' + borne + 'px))';
-    }
+    if (rail) rail.style.transform = 'translateX(' + cible + 'px)';
   };
   const finTouche = () => {
     const g = geste.current;
@@ -171,13 +184,13 @@ function App() {
     if (!g || g.verrou !== 'h') return;
     const L = window.innerWidth;
     const flick = Math.abs(g.vx) > 0.35;
-    const seuil = L * 0.12;
-    const i = ordre.indexOf(ongletActif.value);
-    let cible = i;
-    if (flick) cible = i + (g.vx < 0 ? 1 : -1);            /* la direction du relacher decide (v1) */
-    else if (Math.abs(g.dx) > seuil) cible = i + (g.dx < 0 ? 1 : -1);
+    // Panneau le plus proche de la position reelle du rail, puis le
+    // flick departage (la direction du relacher decide, comme la v1).
+    const posX = (typeof g.posX === 'number') ? g.posX : -ordre.indexOf(ongletActif.value) * L;
+    let cible = Math.round(-posX / L);
+    if (flick) cible = Math.floor(-posX / L) + (g.vx < 0 ? 1 : 0);
     cible = Math.max(0, Math.min(ordre.length - 1, cible));
-    if (cible !== i) {
+    if (ordre[cible] !== ongletActif.value) {
       ongletActif.value = ordre[cible];                     /* l'effet [idx] anime le rail */
     } else {
       poserRail(true);                                      /* retour elastique en place */
