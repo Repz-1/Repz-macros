@@ -18,7 +18,7 @@ import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
 import { SeanceDetail } from './components/SeanceDetail.jsx';
 import { Stats } from './components/Stats.jsx';
-import { BottomNav, ongletActif, allerOnglet, scrollSortant } from './components/BottomNav.jsx';
+import { BottomNav, ongletActif, allerOnglet, scrollSortant, defileur } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { signal } from '@preact/signals';
 import { Entete, voletProfil } from './components/Entete.jsx';
@@ -112,17 +112,12 @@ function App() {
     if (a !== -1 && b !== -1) {
       // On memorise l'onglet qui s'en va et le sens du deplacement.
       if (glisse === null) {
-        // L'ancien DOM est encore monte a cet instant : c'est le seul
-        // moment ou la hauteur du document est encore la bonne. On la
-        // fige tout de suite, sinon le navigateur voit un document vide,
-        // reaffiche sa barre d'outils et tout saute verticalement.
-        document.body.style.minHeight = document.documentElement.scrollHeight + 'px';
         setGlisse({
           sortant: precedent.current,
           sens: b > a ? 'droite' : 'gauche',
           // Repli sur le defilement courant : les boutons qui changent
           // d'onglet sans passer par allerOnglet restent corrects.
-          scroll: scrollSortant.value || window.scrollY || 0,
+          scroll: scrollSortant.value || (defileur.el ? defileur.el.scrollTop : 0),
         });
       }
     }
@@ -134,14 +129,10 @@ function App() {
     // Ici on attend la fin du glissement, puis on libere la hauteur
     // et on remet la page d'arrivee en haut.
     const id = setTimeout(() => {
-      window.scrollTo(0, 0);
+      if (defileur.el) defileur.el.scrollTop = 0;   // defilement interne : la barre du navigateur ne bouge pas
       setGlisse(null);
       setPose(true);              // la page arrivee se pose sans rejouer sa cascade
       scrollSortant.value = 0;
-      // Hauteur liberee seulement une fois la vraie page remontee.
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        document.body.style.minHeight = '';
-      }));
     }, 540);
     return () => clearTimeout(id);
   }, [glisse]);
@@ -197,12 +188,11 @@ function App() {
         const i = ordre.indexOf(ongletActif.value);
         const cote = dx < 0 ? 'suivant' : 'precedent';
         const vId = cote === 'suivant' ? i + 1 : i - 1;
-        document.body.style.minHeight = document.documentElement.scrollHeight + 'px';
         const tir = {
           courant: ongletActif.value,
           voisin: (vId >= 0 && vId < ordre.length) ? ordre[vId] : null,
           cote,
-          scroll: window.scrollY || 0,
+          scroll: defileur.el ? defileur.el.scrollTop : 0,
         };
         // La ref est remplie tout de suite : un flick tres rapide peut
         // relacher avant que l'etat ne soit commite par Preact.
@@ -225,11 +215,7 @@ function App() {
   const finTouche = () => {
     const g = geste.current;
     geste.current = null;
-    if (!g || g.verrou !== 'h' || !tirageRef.current) {
-      // Un verrou horizontal sans tirage aurait fige la hauteur : on libere.
-      if (g && g.verrou === 'h') document.body.style.minHeight = '';
-      return;
-    }
+    if (!g || g.verrou !== 'h' || !tirageRef.current) return;
     const L = window.innerWidth;
     const vx = g.vx || 0;
     const flick = Math.abs(vx) > 0.35;
@@ -241,7 +227,7 @@ function App() {
 
     const rail = railRef.current;
     const finir = (cibleX, valide) => {
-      if (!rail) { setTirage(null); document.body.style.minHeight = ''; return; }
+      if (!rail) { setTirage(null); return; }
       rail.style.transition = 'transform .3s cubic-bezier(.25,.8,.3,1)';
       rail.style.transform = 'translateX(' + cibleX + 'px)';
       let fini = false;
@@ -249,7 +235,7 @@ function App() {
         if (fini) return; fini = true;
         rail.removeEventListener('transitionend', fin);
         if (valide) {
-          window.scrollTo(0, 0);
+          if (defileur.el) defileur.el.scrollTop = 0;
           // Bascule sans re-declencher l'animation de clic.
           precedent.current = valide;
           ongletActif.value = valide;
@@ -257,12 +243,6 @@ function App() {
         }
         setTirage(null);
         scrollSortant.value = 0;
-        // La hauteur n'est rendue qu'une fois la vraie page remontee :
-        // la liberer avant laisserait une frame de document vide et la
-        // barre du navigateur ferait sauter tout le contenu.
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          document.body.style.minHeight = '';
-        }));
       };
       rail.addEventListener('transitionend', fin);
       // Filet de securite si transitionend ne part pas.
@@ -360,8 +340,10 @@ function App() {
           </div>
         </div>
       ) : (
-        <div class={'conteneur conteneur--nu' + (pose ? ' sans-entree' : '')}>
-          {rendreOnglet(onglet)}
+        <div class="app-scroll" ref={(n) => { defileur.el = n; }}>
+          <div class={'conteneur conteneur--nu' + (pose ? ' sans-entree' : '')}>
+            {rendreOnglet(onglet)}
+          </div>
         </div>
       )}
       <BottomNav />

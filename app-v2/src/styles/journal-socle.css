@@ -1525,6 +1525,20 @@
 .sans-entree .colonne > * { animation: none !important; opacity: 1 !important; transform: none !important; }
 /* Les gestes horizontaux nous appartiennent, le vertical au navigateur. */
 .conteneur--nu, .deck { touch-action: pan-y; }
+
+/* ============================================================
+   DEFILEMENT INTERNE (equivalent des iframes de la v1)
+   Le document ne defile jamais : c'est ce conteneur qui porte le
+   scroll. La barre du navigateur ne bouge donc plus, quel que soit
+   l'endroit ou l'on se trouve quand on change d'onglet.
+   ============================================================ */
+.app-scroll {
+  position: fixed; inset: 0;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
 .deck-pan .page-anim { animation: none !important; }
 .deck-pan .cal-anneau-trace { transition: none !important; }
 @media (prefers-reduced-motion: no-preference) {

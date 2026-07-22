@@ -10,10 +10,15 @@ export const ongletActif = signal('journal');
 // sortante repartirait de son sommet et sauterait verticalement.
 export const scrollSortant = signal(0);
 
+// L'app defile dans son propre conteneur (comme les iframes de la v1) :
+// le document ne bouge jamais, la barre du navigateur reste stable.
+export const defileur = { el: null };
+const lireScroll = () => (defileur.el ? defileur.el.scrollTop : (window.scrollY || 0));
+
 /** Changement d'onglet : memorise le defilement avant de basculer. */
 export function allerOnglet(cle) {
   if (cle === ongletActif.value) return;
-  scrollSortant.value = window.scrollY || document.documentElement.scrollTop || 0;
+  scrollSortant.value = lireScroll();
   ongletActif.value = cle;
 }
 
