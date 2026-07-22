@@ -388,6 +388,13 @@ export function MealCard({ r }) {
                 onInput={e => setNomPlat(e.currentTarget.value)}
                 onKeyDown={e => e.key === 'Enter' && enregistrerCommePlat()}
                 autoFocus
+                onFocus={e => e.currentTarget.select()}
+                ref={el => {
+                  // Le nom du repas est propose, mais entierement
+                  // selectionne : taper le remplace aussitot, sans avoir
+                  // a effacer. Le garder reste possible en validant.
+                  if (el && !el.dataset.pret) { el.dataset.pret = '1'; el.select(); }
+                }}
               />
               <button class="mc-plat-ok-btn" disabled={!nomPlat.trim()} onClick={enregistrerCommePlat}>
                 {t('save')}
