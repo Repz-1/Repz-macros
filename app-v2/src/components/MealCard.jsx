@@ -388,13 +388,6 @@ export function MealCard({ r }) {
                 onInput={e => setNomPlat(e.currentTarget.value)}
                 onKeyDown={e => e.key === 'Enter' && enregistrerCommePlat()}
                 autoFocus
-                onFocus={e => e.currentTarget.select()}
-                ref={el => {
-                  // Le nom du repas est propose, mais entierement
-                  // selectionne : taper le remplace aussitot, sans avoir
-                  // a effacer. Le garder reste possible en validant.
-                  if (el && !el.dataset.pret) { el.dataset.pret = '1'; el.select(); }
-                }}
               />
               <button class="mc-plat-ok-btn" disabled={!nomPlat.trim()} onClick={enregistrerCommePlat}>
                 {t('save')}
@@ -402,7 +395,7 @@ export function MealCard({ r }) {
               <button class="mc-plat-annul" onClick={() => { setEnrego(false); setNomPlat(''); }}>✕</button>
             </div>
           ) : (
-            <button class="mc-plat-btn" onClick={() => { setNomPlat(r.nom || ''); setEnrego(true); }}>
+            <button class="mc-plat-btn" onClick={() => { setNomPlat(''); setEnrego(true); }}>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><path d="M17 21v-8H7v8M7 3v5h8" /></svg>
               {t('mc_plat_btn')}
             </button>
