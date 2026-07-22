@@ -2,6 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
 import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
+import { enregistrerPlat } from '../store/perso.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -194,6 +195,25 @@ export function MealCard({ r }) {
   const tot = totauxRepas(r);
   const vide = r.ings.length === 0;
   const [edite, setEdite] = useState(false);
+  const [enrego, setEnrego] = useState(false);   // saisie du nom en cours
+  const [nomPlat, setNomPlat] = useState('');
+  const [garde, setGarde] = useState(false);     // confirmation breve
+
+  // Enregistre la composition courante du repas comme plat reutilisable.
+  // Les ingredients sont copies tels quels : le plat compte 1 portion,
+  // donc le rappeler redonne exactement la meme assiette.
+  const enregistrerCommePlat = () => {
+    const nom = nomPlat.trim();
+    if (!nom) return;
+    enregistrerPlat({
+      id: Date.now(),
+      nom,
+      portions: 1,
+      ings: r.ings.map(i => ({ name: i.name, portion: i.portion })),
+    });
+    setEnrego(false); setNomPlat('');
+    setGarde(true); setTimeout(() => setGarde(false), 2200);
+  };
 
   // Trois zones : vignette, contenu, actions.
   // Le crayon et le chevron sont regroupes dans la zone d'actions,
@@ -255,6 +275,35 @@ export function MealCard({ r }) {
             <LigneIngredient key={ing.id} repasId={r.id} ing={ing} />
           ))}
           <Recherche repasId={r.id} />
+        </div>
+      )}
+
+      {/* Enregistrer la composition comme plat reutilisable */}
+      {r.ouvert && !vide && (
+        <div class="mc-plat">
+          {garde ? (
+            <div class="mc-plat-ok">{'\u2713'} {t('mc_plat_ok')}</div>
+          ) : enrego ? (
+            <div class="mc-plat-saisie">
+              <input
+                class="mc-plat-champ"
+                placeholder={t('mc_plat_nom')}
+                value={nomPlat}
+                onInput={e => setNomPlat(e.currentTarget.value)}
+                onKeyDown={e => e.key === 'Enter' && enregistrerCommePlat()}
+                autoFocus
+              />
+              <button class="mc-plat-ok-btn" disabled={!nomPlat.trim()} onClick={enregistrerCommePlat}>
+                {t('save')}
+              </button>
+              <button class="mc-plat-annul" onClick={() => { setEnrego(false); setNomPlat(''); }}>✕</button>
+            </div>
+          ) : (
+            <button class="mc-plat-btn" onClick={() => { setNomPlat(r.nom || ''); setEnrego(true); }}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><path d="M17 21v-8H7v8M7 3v5h8" /></svg>
+              {t('mc_plat_btn')}
+            </button>
+          )}
         </div>
       )}
 

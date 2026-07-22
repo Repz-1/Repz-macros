@@ -1568,3 +1568,39 @@
 @media (prefers-reduced-motion: reduce) {
   .deck-pan--sortant { display: none; }
 }
+
+/* ---------- Enregistrer un repas comme plat reutilisable ---------- */
+.pg-journal .mc-plat { padding: 0 16px 12px; }
+.pg-journal .mc-plat-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #FFFBEF; border: 1px solid #F0E4BE; color: #8F6200;
+  border-radius: 999px; padding: 9px 15px;
+  font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
+  transition: transform var(--transition), background var(--transition);
+}
+.pg-journal .mc-plat-btn:active { transform: scale(.97); background: #FBF3DC; }
+.pg-journal .mc-plat-btn svg {
+  width: 15px; height: 15px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .mc-plat-saisie { display: flex; align-items: center; gap: 7px; }
+.pg-journal .mc-plat-champ {
+  flex: 1; min-width: 0; padding: 11px 13px;
+  border: 1px solid #E8E4D8; border-radius: 12px;
+  font-size: 14px; font-family: inherit; background: #FAF9F5;
+}
+.pg-journal .mc-plat-champ:focus { outline: none; border-color: var(--or); }
+.pg-journal .mc-plat-ok-btn {
+  border: none; border-radius: 12px; background: #181818; color: #fff;
+  padding: 11px 15px; font-size: 13.5px; font-weight: 700; font-family: inherit; cursor: pointer;
+}
+.pg-journal .mc-plat-ok-btn:disabled { opacity: .45; }
+.pg-journal .mc-plat-annul {
+  border: none; background: none; color: #B5B0A4;
+  font-size: 16px; padding: 8px; cursor: pointer; font-family: inherit;
+}
+.pg-journal .mc-plat-ok {
+  font-size: 13px; font-weight: 700; color: #0F9D58;
+  background: #EFF9F2; border-radius: 12px; padding: 10px 13px;
+}
