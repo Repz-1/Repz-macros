@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
 import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
@@ -98,9 +98,14 @@ function LigneIngredient({ repasId, ing }) {
 }
 
 function Recherche({ repasId }) {
+  const champRef = useRef(null);
+  const zoneRef = useRef(null);
   const [q, setQ] = useState('');
   const [scan, setScan] = useState(false);
   const [platChoisi, setPlatChoisi] = useState(null);
+  // La liste ne s'affiche que si le champ est actif : sans cela, vider
+  // la saisie apres un choix rouvrait aussitot la liste des favoris.
+  const [actif, setActif] = useState(false);
 
   const noms = [...Object.keys(customFoods.value), ...NOMS_ALIMENTS];
   const terme = q.trim().toLowerCase();
@@ -124,15 +129,29 @@ function Recherche({ repasId }) {
     // Aliment "a la piece" (burger, oeuf...) : portion par defaut = 1 piece
     ajouterIngredient(repasId, nom, d.unit || 100);
     setQ('');
+    setActif(false);          // la liste se referme, comme attendu
+    if (champRef.current) champRef.current.blur();
   };
 
+  // Un appui en dehors de la zone referme la liste.
+  useEffect(() => {
+    if (!actif) return;
+    const dehors = (e) => {
+      if (zoneRef.current && !zoneRef.current.contains(e.target)) setActif(false);
+    };
+    document.addEventListener('pointerdown', dehors, true);
+    return () => document.removeEventListener('pointerdown', dehors, true);
+  }, [actif]);
+
   return (
-    <div class="mc-ajout-zone">
+    <div class="mc-ajout-zone" ref={zoneRef}>
       <div class="mc-ajout">
         <input
+          ref={champRef}
           placeholder={t('mc_add_ph')}
           value={q}
-          onInput={e => setQ(e.currentTarget.value)}
+          onInput={e => { setQ(e.currentTarget.value); setActif(true); }}
+          onFocus={() => setActif(true)}
         />
         <button
           class="mc-scan"
@@ -146,7 +165,7 @@ function Recherche({ repasId }) {
         </button>
       </div>
 
-      {(platsTrouves.length > 0 || resultats.length > 0) && (
+      {actif && (platsTrouves.length > 0 || resultats.length > 0) && (
         <div class="mc-resultats">
           {terme.length < 2 && resultats.length > 0 && (
             <div class="mc-res-titre">{t('fav_titre')}</div>
@@ -182,7 +201,7 @@ function Recherche({ repasId }) {
         <ChoixPortions
           plat={platChoisi}
           fermer={() => setPlatChoisi(null)}
-          valider={(n) => { ajouterPlat(repasId, platChoisi, n); setPlatChoisi(null); setQ(''); }}
+          valider={(n) => { ajouterPlat(repasId, platChoisi, n); setPlatChoisi(null); setQ(''); setActif(false); }}
         />
       )}
 

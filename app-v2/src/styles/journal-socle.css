@@ -1009,12 +1009,16 @@
 }
 .pg-journal .mc-res-ligne:last-child { border-bottom: none; }
 .pg-journal .mc-res-choix {
-  flex: 1; min-width: 0;
+  flex: 1 1 auto; min-width: 0; width: 100%;
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
   padding: 11px 6px 11px 14px;
   background: none; border: none; font-size: 14px; font-family: inherit;
   text-align: left; cursor: pointer;
 }
+/* Le nom prend la place disponible, la valeur reste a droite :
+   sans cela l'etoile pouvait se superposer au libelle. */
+.pg-journal .mc-res-choix > span:first-child { flex: 1 1 auto; min-width: 0; }
+.pg-journal .mc-res-choix > .kc { flex: 0 0 auto; white-space: nowrap; }
 .pg-journal .mc-res-choix:active { background: #EFF6FF; }
 .pg-journal .mc-res-fav {
   flex: none; width: 42px;
