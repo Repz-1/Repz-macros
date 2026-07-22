@@ -1496,8 +1496,11 @@
    et meme duree) : la page entre par le cote vers lequel on va.
    ============================================================ */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes pageDroite { from { transform: translateX(34px); opacity: .35; } to { transform: none; opacity: 1; } }
-  @keyframes pageGauche { from { transform: translateX(-34px); opacity: .35; } to { transform: none; opacity: 1; } }
-  .page-anim.page--droite { animation: pageDroite .32s cubic-bezier(.2, .9, .25, 1.07) both; }
-  .page-anim.page--gauche { animation: pageGauche .32s cubic-bezier(.2, .9, .25, 1.07) both; }
+  /* La page parcourt une vraie distance (~30 % de l'ecran) sur une
+     duree plus longue, avec une deceleration douce sans rebond :
+     on lit le glissement au lieu de le subir. */
+  @keyframes pageDroite { from { transform: translateX(30%); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes pageGauche { from { transform: translateX(-30%); opacity: 0; } to { transform: none; opacity: 1; } }
+  .page-anim.page--droite { animation: pageDroite .46s cubic-bezier(.16, .84, .28, 1) both; }
+  .page-anim.page--gauche { animation: pageGauche .46s cubic-bezier(.16, .84, .28, 1) both; }
 }
