@@ -2,7 +2,7 @@
 window.BELFIT_STRINGS = {
   fr: {
     auth_subtitle: "Ton coach nutrition et entraînement",
-    guest_txt: "Explore l'appli librement.<br>Tu pourras t'inscrire plus tard pour sauvegarder tes données.",
+    guest_txt: "Explore l'appli librement, tu pourras t'inscrire plus tard.",
     guest_btn: "Découvrir BELFIT →",
     or: "ou",
     register_ref: "Code de parrainage",
@@ -47,7 +47,7 @@ window.BELFIT_STRINGS = {
 
   en: {
     auth_subtitle: "Your nutrition & training coach",
-    guest_txt: "Explore the app freely.<br>You can sign up later to save your data.",
+    guest_txt: "Explore the app freely, you can sign up later.",
     guest_btn: "Discover BELFIT →",
     or: "or",
     register_ref: "Referral code",
@@ -90,7 +90,7 @@ window.BELFIT_STRINGS = {
 
   nl: {
     auth_subtitle: "Jouw voedings- & trainingscoach",
-    guest_txt: "Ontdek de app vrij.<br>Je kunt je later registreren om je gegevens op te slaan.",
+    guest_txt: "Ontdek de app vrij, je kunt je later registreren.",
     guest_btn: "Ontdek BELFIT →",
     or: "of",
     register_ref: "Verwijzingscode",
