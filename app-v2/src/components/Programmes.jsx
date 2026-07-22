@@ -1,5 +1,14 @@
 import { useState } from 'preact/hooks';
 import { PROGRAMMES, CATEGORIES } from '../data/programmes.js';
+import { vueEntrainer } from './Entrainer.jsx';
+
+/** Categorie a laquelle appartient un programme (pour l'ouverture directe). */
+function categorieDuProgramme(id) {
+  for (const k of Object.keys(PROGRAMMES)) {
+    if ((PROGRAMMES[k] || []).some(p => p.id === id)) return k;
+  }
+  return null;
+}
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import '../legacy/programmes.scoped.css';
@@ -26,10 +35,15 @@ function TopBar() {
 const ORDRE_NIVEAUX = ['Débutant', 'Intermédiaire', 'Confirmé', 'Avancé'];
 
 export function Programmes() {
+  // Programme cible (arrive du questionnaire) : on ouvre directement
+  // sa fiche, comme le lien programmes.html?cat=..&prog=.. de la v1.
+  const vise = (vueEntrainer.value.params || {}).prog || null;
+  const catVisee = vise ? categorieDuProgramme(vise) : null;
+
   // ecran : 'cats' | 'progs' | 'seances'
-  const [ecran, setEcran] = useState('cats');
-  const [catKey, setCatKey] = useState(null);
-  const [progId, setProgId] = useState(null);
+  const [ecran, setEcran] = useState(vise && catVisee ? 'seances' : 'cats');
+  const [catKey, setCatKey] = useState(catVisee);
+  const [progId, setProgId] = useState(vise);
   const [niveau, setNiveau] = useState('Tous');
 
   const cat = CATEGORIES.find(c => c.k === catKey);

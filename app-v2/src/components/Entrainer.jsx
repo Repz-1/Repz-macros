@@ -229,7 +229,7 @@ export function Entrainer() {
       <div class="choices">
         {/* Carte vedette : programme sur mesure (Premium) */}
         <a href="#" class={'choice ph featured' + locked} style="background-image:url('/img/card-creer.jpg')"
-          onClick={(e) => { e.preventDefault(); if (!estPremium.value) setPremium(true); /* page questionnaire a brancher plus tard */ }}>
+          onClick={(e) => verrou(e, 'questionnaire')}>
           {!estPremium.value && <span class="pro-badge">✦ PRO</span>}
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z" /></svg></span>
           <span class="badge">{t('tr_badge_custom')}</span>

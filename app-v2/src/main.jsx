@@ -14,6 +14,7 @@ import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
 import { SeanceTracker } from './components/SeanceTracker.jsx';
 import { Programmes } from './components/Programmes.jsx';
+import { Questionnaire } from './components/Questionnaire.jsx';
 import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
 import { SeanceDetail } from './components/SeanceDetail.jsx';
@@ -74,6 +75,9 @@ function OngletEntrainer() {
   }
   if (vue.nom === 'programmes') {
     return (<><Programmes /><RestTimer /></>);
+  }
+  if (vue.nom === 'questionnaire') {
+    return <Questionnaire />;
   }
   if (vue.nom === 'seanceDetail') {
     const p = vue.params || {};

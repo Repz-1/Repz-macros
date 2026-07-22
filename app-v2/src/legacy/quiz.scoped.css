@@ -1,0 +1,88 @@
+/* ============================================================
+   QUESTIONNAIRE « CREER MON PROGRAMME »
+   CSS recopie de test.html (v1), prefixe .pg-quiz.
+   ============================================================ */
+:root { --orange:#F7B500; --bg:#F5F6F8; --card:#ffffff; --dark:#1f2937;
+    --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px; }
+.pg-quiz {
+    background:var(--bg); color:var(--text);
+    min-height:100%; overflow:hidden;
+    display:flex; flex-direction:column;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+
+/* Header progression */
+.pg-quiz .q-top { display:flex; align-items:center; gap:14px; padding:6px 4px 14px; flex-shrink:0; }
+.pg-quiz .back-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+    background:var(--card); display:flex; align-items:center; justify-content:center;
+    font-size:20px; color:var(--text); text-decoration:none; cursor:pointer; flex-shrink:0; }
+.pg-quiz .progress-wrap { flex:1; }
+.pg-quiz .progress-bar { height:8px; background:var(--line); border-radius:10px; overflow:hidden; }
+.pg-quiz .progress-fill { height:100%; background:var(--orange); border-radius:10px; transition:width .3s; width:20%; }
+.pg-quiz .progress-txt { font-size:12px; color:var(--text-dim); margin-top:6px; font-weight:600; }
+
+/* Question */
+.pg-quiz .q-content { flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; justify-content:center; padding:0 4px; max-width:480px; margin:0 auto; width:100%; }
+.pg-quiz .q-content::-webkit-scrollbar { display:none; }
+.pg-quiz .q-step { display:none; }
+.pg-quiz .q-step.active { display:block; animation:fadeIn .35s ease; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
+
+.pg-quiz .q-title { font-size:23px; font-weight:800; line-height:1.25; letter-spacing:-.02em; margin-bottom:8px; }
+.pg-quiz .coach-advice {
+    display:flex; gap:10px; align-items:flex-start;
+    background:linear-gradient(135deg,#FFFBEF,#FFFBEF);
+    border:1.5px solid #fed7aa; border-radius:14px;
+    padding:14px 16px; margin:14px 0; text-align:left;
+    font-size:14px; line-height:1.5; color:#7c2d12;
+}
+.pg-quiz .coach-advice span { flex:1; }
+.pg-quiz .q-sub { font-size:14px; color:var(--text-dim); margin-bottom:20px; line-height:1.5; }
+
+.pg-quiz .options { display:flex; flex-direction:column; gap:10px; }
+.pg-quiz .option { display:flex; align-items:center; gap:16px; background:var(--card);
+    border:2px solid var(--line); border-radius:16px; padding:15px 18px;
+    cursor:pointer; transition:all .15s; }
+.pg-quiz .option:active { transform:scale(.98); }
+.pg-quiz .option.selected { border-color:var(--orange); background:#FFFBEF; }
+.pg-quiz .option-emoji { font-size:26px; flex-shrink:0; }
+.pg-quiz .option-label { font-size:16.5px; font-weight:700; flex:1; }
+.pg-quiz .option-check { width:24px; height:24px; border-radius:50%; border:2px solid var(--line);
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+.pg-quiz .option.selected .option-check { background:var(--orange); border-color:var(--orange); }
+/* Choix multiple : checkbox carrée pour signaler qu'on peut cocher plusieurs */
+.pg-quiz .option.multi .option-check { border-radius:7px; }
+
+/* Bouton suivant */
+.pg-quiz .q-footer { padding:14px 4px 4px; max-width:480px; margin:0 auto; width:100%; flex-shrink:0; }
+.pg-quiz .next-btn { width:100%; background:var(--orange); color:#fff; border:none;
+    padding:16px; border-radius:16px; font-size:16px; font-weight:700; cursor:pointer;
+    box-shadow:0 6px 18px rgba(247,181,0,.3); transition:opacity .2s; }
+.pg-quiz .next-btn:disabled { opacity:.4; box-shadow:none; cursor:not-allowed; }
+
+/* Résultat */
+.pg-quiz .result { text-align:center; padding:0 4px; }
+.pg-quiz .result-badge { display:inline-block; background:rgba(247,181,0,.14); color:var(--orange);
+    font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+    padding:7px 16px; border-radius:20px; margin-bottom:22px; }
+.pg-quiz .result h2 { font-size:28px; font-weight:800; margin-bottom:14px; line-height:1.2; }
+.pg-quiz .result-recap { font-size:15px; color:var(--text-dim); line-height:1.6; margin-bottom:28px; max-width:330px; margin-left:auto; margin-right:auto; }
+.pg-quiz .result-prog { background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; margin:0 0 28px; box-shadow:0 4px 16px rgba(15,23,42,.06); text-align:left; }
+.pg-quiz .result-prog .desc { font-size:15px; color:var(--text); line-height:1.6; margin-bottom:22px; }
+.pg-quiz .result-prog .stats { display:flex; flex-direction:column; gap:14px; }
+.pg-quiz .result-prog .stats span { display:flex; flex-direction:column; gap:2px;
+    padding-bottom:14px; border-bottom:1px solid var(--line); }
+.pg-quiz .result-prog .stats span:last-child { border-bottom:none; padding-bottom:0; }
+.pg-quiz .result-prog .stats b { font-size:17px; font-weight:800; color:var(--text); }
+.pg-quiz .result-prog .stats small { font-size:12px; color:var(--text-dim); font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+.pg-quiz .seances { margin-top:20px; padding-top:18px; border-top:1px solid var(--line); }
+.pg-quiz .seances-title { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--text-dim); margin-bottom:12px; }
+.pg-quiz .seance-line { display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--text); padding:6px 0; }
+.pg-quiz .sl-num { display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:30px; border-radius:9px; background:var(--dark); color:#fff; font-size:12px; font-weight:800; flex-shrink:0; }
+.pg-quiz .result-btns { display:flex; flex-direction:column; gap:10px; }
+.pg-quiz .btn-primary { width:100%; background:var(--orange); color:#fff; border:none; padding:16px;
+    border-radius:16px; font-size:16px; font-weight:700; cursor:pointer; text-decoration:none; text-align:center;
+    box-shadow:0 6px 18px rgba(247,181,0,.3); }
+.pg-quiz .btn-secondary { width:100%; background:var(--card); color:var(--text); border:1.5px solid var(--line);
+    padding:15px; border-radius:16px; font-size:15px; font-weight:600; cursor:pointer; text-align:center; text-decoration:none; }
+
