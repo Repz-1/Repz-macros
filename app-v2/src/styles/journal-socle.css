@@ -680,14 +680,14 @@
   margin-top: 4px; max-height: 240px; overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
 }
-.pg-journal .mc-resultats button {
+.pg-journal .mc-resultats > button {
   display: flex; justify-content: space-between; align-items: center;
   width: 100%; padding: 11px 14px;
   background: none; border: none; border-bottom: 1px solid #F1F5F9;
   font-size: 14px; font-family: inherit; text-align: left; cursor: pointer;
 }
-.pg-journal .mc-resultats button:last-child { border-bottom: none; }
-.pg-journal .mc-resultats button:active { background: #EFF6FF; }
+.pg-journal .mc-resultats > button:last-child { border-bottom: none; }
+.pg-journal .mc-resultats > button:active { background: #EFF6FF; }
 .pg-journal .mc-resultats .kc { color: #94A3B8; font-size: 12.5px; flex: none; }
 
 /* ---------- Bandeau recapitulatif ---------- */
@@ -1008,8 +1008,8 @@
   border-bottom: 1px solid #F1F5F9;
 }
 .pg-journal .mc-res-ligne:last-child { border-bottom: none; }
-.pg-journal .mc-res-choix {
-  flex: 1 1 auto; min-width: 0; width: 100%;
+.pg-journal .mc-resultats .mc-res-choix {
+  flex: 1 1 auto; min-width: 0; width: auto;
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
   padding: 11px 6px 11px 14px;
   background: none; border: none; font-size: 14px; font-family: inherit;
@@ -1020,8 +1020,8 @@
 .pg-journal .mc-res-choix > span:first-child { flex: 1 1 auto; min-width: 0; }
 .pg-journal .mc-res-choix > .kc { flex: 0 0 auto; white-space: nowrap; }
 .pg-journal .mc-res-choix:active { background: #EFF6FF; }
-.pg-journal .mc-res-fav {
-  flex: none; width: 42px;
+.pg-journal .mc-resultats .mc-res-fav {
+  flex: 0 0 42px; width: 42px;
   background: none; border: none; cursor: pointer;
   color: #D8D3C8; font-size: 17px; line-height: 1; font-family: inherit;
 }
