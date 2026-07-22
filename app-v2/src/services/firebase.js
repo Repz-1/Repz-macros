@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import {
   getAuth, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
+  GoogleAuthProvider, signInWithPopup,
 } from 'firebase/auth';
 import { signal, computed } from '@preact/signals';
 
@@ -56,6 +57,20 @@ onAuthStateChanged(auth, (u) => {
 // --- Actions ---
 export async function connexion(email, mdp) {
   return signInWithEmailAndPassword(auth, email, mdp);
+}
+
+export async function connexionGoogle() {
+  // Meme flux que la v1 : popup Google avec choix du compte.
+  // Le prenom sert a l'accueil personnalise, comme en v1.
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  const cred = await signInWithPopup(auth, provider);
+  try {
+    const prenom = (cred.user.displayName || '').split(' ')[0] || '';
+    if (prenom) localStorage.setItem('repz_firstName', prenom);
+  } catch (e) {}
+  quitterInvite();
+  return cred.user;
 }
 
 export async function inscription(email, mdp) {
