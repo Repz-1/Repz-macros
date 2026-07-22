@@ -203,8 +203,14 @@ function App() {
     // horizontale (ratio 1.5, comme le ressenti v1) pour prendre la main ;
     // tout le reste est un defilement vertical.
     if (g.verrou === null && (Math.abs(dx) > 14 || Math.abs(dy) > 14)) {
-      g.verrou = Math.abs(dx) > Math.abs(dy) * 1.5 ? 'h' : 'v';
+      // Double exigence : dominante horizontale ET tres peu de vertical.
+      // Le pouce qui remonte la page en biais a toujours 12 px et plus
+      // de vertical au moment de la decision -> defilement, jamais swipe.
+      g.verrou = (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dy) < 12) ? 'h' : 'v';
       if (g.verrou === 'h') {
+        // Le rail suivra le doigt A PARTIR d'ici : sans cette origine,
+        // il sauterait d'un coup du deplacement deja accumule.
+        g.dxOrigine = dx;
         // Si une transition est en cours, on repart de la position
         // REELLEMENT affichee du rail : sans cela, couper la
         // transition le ferait claquer d'un coup a sa position
@@ -227,7 +233,7 @@ function App() {
     // Resistance aux extremites, comme la v1 (dx / 3).
     const L = window.innerWidth;
     const minX = (ordre.length - 1) * -L, maxX = 0;
-    let cible = g.baseX + dx;
+    let cible = g.baseX + (dx - (g.dxOrigine || 0));
     if (cible > maxX) cible = maxX + (cible - maxX) / 3;
     if (cible < minX) cible = minX + (cible - minX) / 3;
     g.dx = dx;
