@@ -919,6 +919,30 @@
 }
 .fr-x:active { background: rgba(20, 20, 20, .75); }
 
+/* Navigation entre recettes retenues, depuis la fiche agrandie.
+   Meme habillage que le bouton fermer : pastille sombre floutee. */
+.fr-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; cursor: pointer; font-family: inherit;
+  background: rgba(20, 20, 20, .55); color: #FFFFFF;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  font-size: 24px; line-height: 1; padding: 0 0 3px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, opacity .15s;
+}
+.fr-nav--prec { left: 14px; }
+.fr-nav--suiv { right: 14px; }
+.fr-nav:active { background: rgba(20, 20, 20, .75); }
+.fr-nav:disabled { opacity: .3; cursor: default; }
+.fr-compteur {
+  position: absolute; bottom: 14px; right: 14px;
+  background: rgba(20, 20, 20, .55); color: #FFFFFF;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border-radius: 999px; padding: 5px 11px;
+  font-size: 12px; font-weight: 700;
+}
+
 /* ---------- En-tete ---------- */
 .fr-tete { padding: 20px 20px 18px; }
 .fr-titre {
@@ -1465,3 +1489,15 @@
 }
 .wa-reset { background:#f1f5f9; color:#475569; }
 .wa-close { background:#0ea5e9; color:#fff; }
+
+/* ============================================================
+   TRANSITION ENTRE ONGLETS
+   Reprend le ressenti du deck de la v1 (translateX, meme courbe
+   et meme duree) : la page entre par le cote vers lequel on va.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes pageDroite { from { transform: translateX(34px); opacity: .35; } to { transform: none; opacity: 1; } }
+  @keyframes pageGauche { from { transform: translateX(-34px); opacity: .35; } to { transform: none; opacity: 1; } }
+  .page-anim.page--droite { animation: pageDroite .32s cubic-bezier(.2, .9, .25, 1.07) both; }
+  .page-anim.page--gauche { animation: pageGauche .32s cubic-bezier(.2, .9, .25, 1.07) both; }
+}

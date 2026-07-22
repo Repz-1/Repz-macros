@@ -1,5 +1,5 @@
 import { render } from 'preact';
-import { useState } from 'preact/hooks';
+import { useState, useRef } from 'preact/hooks';
 import './styles.css';
 import './styles/design-system.css';
 import './styles/journal-socle.css';
@@ -100,9 +100,58 @@ function App() {
   }
 
   const onglet = ongletActif.value;
+  // Glissement directionnel a l'arrivee, comme le deck de la v1 :
+  // on va vers la droite -> la page entre par la droite, et vice versa.
+  const ordre = ['journal', 'entrainer', 'stats', 'premium'];
+  const precedent = useRef(onglet);
+  const sens = useRef('');
+  if (precedent.current !== onglet) {
+    const a = ordre.indexOf(precedent.current), b = ordre.indexOf(onglet);
+    sens.current = (a === -1 || b === -1) ? '' : (b > a ? ' page--droite' : ' page--gauche');
+    precedent.current = onglet;
+  }
+
+  // Balayage horizontal pour changer d'onglet (comme la v1).
+  const geste = useRef(null);
+  const debutTouche = (e) => {
+    if (e.touches.length !== 1) return;
+    geste.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now(), verrou: null };
+  };
+  const bougeTouche = (e) => {
+    const g = geste.current;
+    if (!g || e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - g.x, dy = e.touches[0].clientY - g.y;
+    // On decide une seule fois si le geste est horizontal ou vertical.
+    if (g.verrou === null && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+      g.verrou = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'h' : 'v';
+    }
+    g.dx = dx;
+  };
+  const finTouche = () => {
+    const g = geste.current;
+    geste.current = null;
+    if (!g || g.verrou !== 'h' || !g.dx) return;
+    const duree = Math.max(1, Date.now() - g.t);
+    const vitesse = Math.abs(g.dx) / duree;          // px/ms
+    const seuil = window.innerWidth * 0.15;
+    if (Math.abs(g.dx) < seuil && vitesse < 0.45) return;
+    const i = ordre.indexOf(onglet);
+    const cible = i + (g.dx < 0 ? 1 : -1);
+    if (cible < 0 || cible >= ordre.length) return;
+    ongletActif.value = ordre[cible];
+    window.scrollTo(0, 0);
+  };
+
   return (
     <>
-      <div class="conteneur conteneur--nu">
+      <div
+        class={'conteneur conteneur--nu page-anim' + sens.current}
+        key={onglet}
+        onTouchStart={debutTouche}
+        onTouchMove={bougeTouche}
+        onTouchEnd={finTouche}
+        onTouchCancel={() => { geste.current = null; }}
+      >
         {voletProfil.value && (
           <div class="profil-volet">
             <span>{utilisateur.value ? utilisateur.value.email : t('mode_invite')}</span>

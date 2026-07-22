@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { createPortal } from 'preact/compat';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
@@ -136,10 +136,12 @@ function fichierImage(nom) {
  * Tant qu'une photo manque, un fond degrade prend sa place : la mise
  * en page reste identique, sans trou ni image cassee.
  */
-function FicheRecette({ nom, portion, kcal, prot, fermer }) {
+function FicheRecette({ nom, portion, kcal, prot, fermer, aPrec, aSuiv, prec, suiv, pos, total }) {
   const prep = IDEA_PREP[nom];
   const [photoOk, setPhotoOk] = useState(true);
   const minutes = dureeEstimee(prep);
+  // La photo doit se re-tester quand on change de recette.
+  useEffect(() => { setPhotoOk(true); }, [nom]);
 
   return createPortal(
     <div class="fr-plein">
@@ -161,6 +163,15 @@ function FicheRecette({ nom, portion, kcal, prot, fermer }) {
             </svg>
           )}
           <button class="fr-x" onClick={fermer} aria-label="Fermer">✕</button>
+
+          {/* Navigation entre recettes retenues */}
+          {total > 1 && (
+            <>
+              <button class="fr-nav fr-nav--prec" onClick={prec} disabled={!aPrec} aria-label="Recette précédente">‹</button>
+              <button class="fr-nav fr-nav--suiv" onClick={suiv} disabled={!aSuiv} aria-label="Recette suivante">›</button>
+              <span class="fr-compteur">{pos} / {total}</span>
+            </>
+          )}
         </div>
 
         {/* En-tete : titre et informations essentielles */}
@@ -312,12 +323,15 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
 
         // Une seule suggestion a la fois : l'algorithme a deja classe
         // les recettes, autant assumer de proposer la meilleure.
-        const { idee, p } = retenues[index % retenues.length];
+        const posCourante = index % retenues.length;
+        const { idee, p } = retenues[posCourante];
+        // La fiche recoit la liste complete : elle peut ainsi passer
+        // d'une recette a l'autre sans repasser par le panneau.
+        const ouvrirFiche = () => setFiche({ liste: retenues, pos: posCourante });
 
         return (
         <div class="eat-une">
-          <div class="eat-idea"
-               onClick={() => setFiche({ nom: idee.nom, portion: p.texte, kcal: p.kcal, prot: p.prot })}>
+          <div class="eat-idea" onClick={ouvrirFiche}>
             <div class="eat-idea-name">{idee.nom}</div>
             <div class="eat-idea-ex">{p.texte}</div>
             <div class="eat-idea-kcal">
@@ -328,7 +342,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
           </div>
 
           {retenues.length > 1 && (() => {
-            const pos = index % retenues.length;
+            const pos = posCourante;
             return (
               <div class="eat-nav">
                 <button
@@ -347,7 +361,20 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
         );
       })()}
 
-      {fiche && <FicheRecette {...fiche} fermer={() => setFiche(null)} />}
+      {fiche && (() => {
+        const { liste, pos } = fiche;
+        const { idee, p } = liste[pos];
+        return (
+          <FicheRecette
+            nom={idee.nom} portion={p.texte} kcal={p.kcal} prot={p.prot}
+            fermer={() => setFiche(null)}
+            pos={pos + 1} total={liste.length}
+            aPrec={pos > 0} aSuiv={pos < liste.length - 1}
+            prec={() => setFiche({ liste, pos: pos - 1 })}
+            suiv={() => setFiche({ liste, pos: pos + 1 })}
+          />
+        );
+      })()}
     </div>
       )}
     </div>
