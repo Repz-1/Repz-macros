@@ -123,11 +123,21 @@ function App() {
   }
   useEffect(() => {
     if (!glisse) return;
-    // Le deck couvre l'ecran : on peut remettre le document en haut
-    // sans que cela se voie, la page d'arrivee demarre ainsi au sommet.
-    window.scrollTo(0, 0);
-    const id = setTimeout(() => { setGlisse(null); scrollSortant.value = 0; }, 540);
-    return () => clearTimeout(id);
+    // Le deck est en position fixe : sans precaution, le document
+    // perd sa hauteur, le navigateur reaffiche sa barre d'outils et
+    // tout se decale verticalement pendant le glissement. On fige
+    // donc la hauteur du document, et on ne revient en haut qu'une
+    // fois l'animation terminee.
+    const corps = document.body;
+    const hauteurAvant = corps.style.minHeight;
+    corps.style.minHeight = document.documentElement.scrollHeight + 'px';
+    const id = setTimeout(() => {
+      corps.style.minHeight = hauteurAvant;
+      window.scrollTo(0, 0);
+      setGlisse(null);
+      scrollSortant.value = 0;
+    }, 540);
+    return () => { clearTimeout(id); corps.style.minHeight = hauteurAvant; };
   }, [glisse]);
 
   // Balayage horizontal pour changer d'onglet (comme la v1).
