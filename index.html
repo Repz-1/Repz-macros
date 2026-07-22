@@ -14,17 +14,21 @@ body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0
 /* ===== CONNEXION PAR GOOGLE ===== */
 .btn-social {
     display:flex; align-items:center; justify-content:center; gap:11px;
-    width:100%; background:#fff; border:1.5px solid #e3ded4; border-radius:12px;
-    padding:13px; font-size:15px; font-weight:700; color:#1a1a1a;
-    font-family:inherit; cursor:pointer; margin-bottom:16px;
+    width:100%; box-sizing:border-box; min-height:52px;
+    background:#fff; border:1.5px solid #ddd7cb; border-radius:14px;
+    padding:14px; font-size:15px; font-weight:700; color:#1a1a1a;
+    font-family:inherit; cursor:pointer; margin-bottom:10px;
+    transition:transform .16s cubic-bezier(.22,.8,.28,1), background .16s ease, box-shadow .16s ease;
+    box-shadow:0 1px 2px rgba(24,24,24,.04);
 }
-.btn-social:active { background:#f7f5f0; transform:scale(.99); }
+.btn-social:last-of-type { margin-bottom:0; }
+.btn-social:active { background:#f7f5f0; transform:translateY(1px) scale(.995); box-shadow:none; }
 .auth-sep {
     display:flex; align-items:center; gap:12px;
-    font-size:12.5px; color:#9a948a; font-weight:600; margin-bottom:16px;
+    font-size:12.5px; color:#8d8779; font-weight:600; margin:20px 0 16px;
 }
 .auth-sep::before, .auth-sep::after {
-    content:''; flex:1; height:1px; background:#e7e2d9;
+    content:''; flex:1; height:1px; background:#ddd6c9;
 }
 </style>
 <meta charset="UTF-8">
@@ -46,35 +50,41 @@ body {
     display:flex; align-items:center; justify-content:center;
 }
 
-.btn-apple { background:#000000; color:#FFFFFF; border-color:#000000; }
-.btn-apple:active { background:#1a1a1a; }
+.btn-apple { background:#000000; color:#FFFFFF; border-color:#000000;
+    box-shadow:0 1px 2px rgba(0,0,0,.12); }
+.btn-apple:active { background:#141414; box-shadow:none; }
 
 .auth-container {
-    background:var(--card); border-radius:24px; padding:36px 26px;
+    background:var(--card); border-radius:24px; padding:44px 26px 36px;
     max-width:400px; width:100%;
     box-shadow:0 1px 2px rgba(24,24,24,.05), 0 8px 24px rgba(24,24,24,.08), 0 20px 48px rgba(184,141,16,.10);
 }
 
 .auth-header {
-    text-align:center; margin-bottom:32px;
+    text-align:center; margin-bottom:26px;
 }
 
 .auth-logo {
-    width:86px; height:auto; margin:0 auto 14px; display:block;
+    width:86px; height:auto; margin:0 auto 16px; display:block;
     filter:drop-shadow(0 4px 16px rgba(247,181,0,.18));
 }
 
 .auth-title {
-    font-size:30px; font-weight:800; letter-spacing:.04em; margin-bottom:6px;
+    font-size:30px; font-weight:800; letter-spacing:.04em; margin-bottom:8px;
 }
 
-.guest-hero { text-align:center; margin:6px 0 4px; }
-.guest-txt { font-size:13.5px; color:#6f6a61; font-weight:600; line-height:1.5; margin-bottom:14px; }
-.btn-guest { width:100%; background:#F7B500; color:#191919; border:none; border-radius:14px; padding:15px;
-    font-size:16px; font-weight:800; cursor:pointer; box-shadow:0 6px 16px rgba(247,181,0,.28); }
-.btn-guest:active { transform:scale(.99); }
-.guest-or { display:flex; align-items:center; gap:12px; margin:18px 0 4px; color:#b4afa6; font-size:12px; font-weight:700; }
-.guest-or::before, .guest-or::after { content:''; flex:1; height:1px; background:#e7e3da; }
+.guest-hero { text-align:center; margin:0 0 4px; }
+.guest-txt { font-size:13.5px; color:#6f6a61; font-weight:600; line-height:1.55; margin-bottom:18px; }
+.btn-guest { width:100%; box-sizing:border-box; min-height:54px;
+    background:linear-gradient(180deg,#FFC933 0%,#F7B500 100%); color:#191919; border:none;
+    border-radius:14px; padding:16px; font-size:16px; font-weight:800; cursor:pointer;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 1px 2px rgba(24,24,24,.08), 0 8px 20px rgba(247,181,0,.30);
+    transition:transform .16s cubic-bezier(.22,.8,.28,1), box-shadow .16s ease, background .16s ease; }
+.btn-guest:active { transform:translateY(1px) scale(.995);
+    background:linear-gradient(180deg,#F7B500 0%,#E9A800 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.30), 0 1px 2px rgba(24,24,24,.10), 0 4px 10px rgba(247,181,0,.24); }
+.guest-or { display:flex; align-items:center; gap:12px; margin:22px 0 6px; color:#8d8779; font-size:12px; font-weight:700; }
+.guest-or::before, .guest-or::after { content:''; flex:1; height:1px; background:#ddd6c9; }
 .auth-subtitle {
     font-size:14px; color:var(--text-dim); font-weight:600;
 }
@@ -91,16 +101,17 @@ body {
 .pw-bar { height:100%; width:0; border-radius:5px; transition:width .25s, background .25s; }
 .pw-hint { font-size:11.5px; color:#9aa0aa; margin-top:6px; font-weight:600; }
 .form-group {
-    margin-bottom:16px;
+    margin-bottom:18px;
 }
 
 .label {
-    display:block; font-size:13px; font-weight:700; margin-bottom:6px;
+    display:block; font-size:13px; font-weight:700; margin-bottom:7px;
 }
 
 .input {
-    width:100%; padding:12px; border:1.5px solid var(--line); border-radius:12px;
-    font-size:15px; font-family:inherit;
+    width:100%; box-sizing:border-box; padding:14px 14px; border:1.5px solid var(--line);
+    border-radius:12px; font-size:15px; font-family:inherit; background:#FFFFFF;
+    transition:border-color .16s ease, background .16s ease, box-shadow .16s ease;
 }
 .pw-wrap { position:relative; }
 .pw-wrap .input { padding-right:46px; }
@@ -110,6 +121,7 @@ body {
 
 .input:focus {
     outline:none; border-color:var(--orange); background:#FFFBEF;
+    box-shadow:0 0 0 3px rgba(247,181,0,.14);
 }
 
 .field-hint {
@@ -117,16 +129,21 @@ body {
 }
 
 .btn {
-    width:100%; padding:14px; border:none; border-radius:14px; font-size:15px;
-    font-weight:700; cursor:pointer; transition:all .15s;
+    width:100%; box-sizing:border-box; min-height:52px;
+    padding:15px; border:none; border-radius:14px; font-size:15px;
+    font-weight:700; cursor:pointer;
+    transition:transform .16s cubic-bezier(.22,.8,.28,1), box-shadow .16s ease, background .16s ease;
 }
 
 .btn-primary {
-    background:var(--orange); color:#fff;
+    background:linear-gradient(180deg,#FFC933 0%,#F7B500 100%); color:#fff;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.30), 0 1px 2px rgba(24,24,24,.07), 0 6px 16px rgba(247,181,0,.26);
 }
 
 .btn-primary:active {
-    transform:scale(.98); opacity:.9;
+    transform:translateY(1px) scale(.995);
+    background:linear-gradient(180deg,#F7B500 0%,#E9A800 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.26), 0 1px 2px rgba(24,24,24,.09), 0 3px 9px rgba(247,181,0,.22);
 }
 
 .btn-primary:disabled {
@@ -134,12 +151,17 @@ body {
 }
 
 .toggle-form {
-    text-align:center; margin-top:16px; font-size:13px; color:var(--text-dim);
+    text-align:center; margin-top:20px; font-size:13.5px; color:var(--text-dim);
 }
 
 .toggle-form a {
-    color:var(--orange); font-weight:700; text-decoration:none; cursor:pointer;
+    color:#8F6200; font-weight:800; text-decoration:none; cursor:pointer;
+    padding:2px 2px; border-radius:6px;
 }
+.toggle-form a:active { background:#FFF6DC; }
+/* « Mot de passe oublie » reste volontairement en retrait. */
+.toggle-form--discret { margin-top:12px; font-size:13px; }
+.toggle-form--discret a { color:var(--text-dim); font-weight:600; }
 
 .error {
     background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:16px;
@@ -213,7 +235,7 @@ try{ if(localStorage.getItem('repz_session')==='1'){ location.replace('main.html
     <div class="auth-header">
         <img src="belfit-logo-b.png" class="auth-logo" alt="BELFIT">
         <div class="auth-title">BEL<span style="color:#DFA004">FIT</span></div>
-        <p class="auth-subtitle" data-i18n="auth_subtitle">Ton coach nutrition & entraînement</p>
+        <p class="auth-subtitle" data-i18n="auth_subtitle">Ton coach nutrition et entraînement</p>
     </div>
 
     <!-- MODE INVITÉ EN AVANT -->
@@ -260,7 +282,7 @@ try{ if(localStorage.getItem('repz_session')==='1'){ location.replace('main.html
             <span data-i18n="login_no_account">Pas de compte ?</span> <a onclick="toggleForm('register')" data-i18n="login_create">Créer un compte</a>
         </div>
 
-        <div class="toggle-form">
+        <div class="toggle-form toggle-form--discret">
             <a onclick="toggleForm('recovery')" data-i18n="login_forgot">Mot de passe oublié ?</a>
         </div>
     </form>

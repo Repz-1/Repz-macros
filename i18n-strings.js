@@ -1,7 +1,7 @@
 /* ===== BELFIT — chaînes de traduction (FR / EN / NL) ===== */
 window.BELFIT_STRINGS = {
   fr: {
-    auth_subtitle: "Ton coach nutrition & entraînement",
+    auth_subtitle: "Ton coach nutrition et entraînement",
     guest_txt: "Explore l'appli librement.<br>Tu pourras t'inscrire plus tard pour sauvegarder tes données.",
     guest_btn: "Découvrir BELFIT →",
     or: "ou",
