@@ -2,7 +2,7 @@
 window.BELFIT_STRINGS = {
   fr: {
     auth_subtitle: "Ton coach nutrition & entraînement",
-    guest_txt: "Explore l'appli librement, sans compte ni carte.<br>Tu pourras t'inscrire plus tard pour sauvegarder tes données.",
+    guest_txt: "Explore l'appli librement.<br>Tu pourras t'inscrire plus tard pour sauvegarder tes données.",
     guest_btn: "Découvrir BELFIT →",
     or: "ou",
     register_ref: "Code de parrainage",
@@ -47,7 +47,7 @@ window.BELFIT_STRINGS = {
 
   en: {
     auth_subtitle: "Your nutrition & training coach",
-    guest_txt: "Explore the app freely, no account or card needed.<br>You can sign up later to save your data.",
+    guest_txt: "Explore the app freely.<br>You can sign up later to save your data.",
     guest_btn: "Discover BELFIT →",
     or: "or",
     register_ref: "Referral code",
@@ -90,7 +90,7 @@ window.BELFIT_STRINGS = {
 
   nl: {
     auth_subtitle: "Jouw voedings- & trainingscoach",
-    guest_txt: "Ontdek de app vrij, zonder account of kaart.<br>Je kunt je later registreren om je gegevens op te slaan.",
+    guest_txt: "Ontdek de app vrij.<br>Je kunt je later registreren om je gegevens op te slaan.",
     guest_btn: "Ontdek BELFIT →",
     or: "of",
     register_ref: "Verwijzingscode",
@@ -1718,6 +1718,7 @@ Object.assign(window.BELFIT_STRINGS.nl, {
 
 Object.assign(window.BELFIT_STRINGS.fr, {
   auth_google: 'Continuer avec Google',
+  auth_apple:"Continuer avec Apple", auth_apple_err:"La connexion Apple n'a pas abouti. Réessaie.",
   auth_or_mail: 'ou avec un e-mail',
   auth_google_err: 'La connexion Google n\'a pas abouti. Réessaie.',
   auth_google_conflit: 'Un compte existe déjà avec cette adresse. Connecte-toi avec ton mot de passe.'
@@ -1725,6 +1726,7 @@ Object.assign(window.BELFIT_STRINGS.fr, {
 
 Object.assign(window.BELFIT_STRINGS.en, {
   auth_google: 'Continue with Google',
+  auth_apple:"Continue with Apple", auth_apple_err:"Apple sign-in failed. Please try again.",
   auth_or_mail: 'or with an email',
   auth_google_err: 'Google sign-in did not complete. Please try again.',
   auth_google_conflit: 'An account already exists with this address. Sign in with your password.'
@@ -1732,6 +1734,7 @@ Object.assign(window.BELFIT_STRINGS.en, {
 
 Object.assign(window.BELFIT_STRINGS.nl, {
   auth_google: 'Doorgaan met Google',
+  auth_apple:"Doorgaan met Apple", auth_apple_err:"Apple-aanmelding is mislukt. Probeer opnieuw.",
   auth_or_mail: 'of met een e-mail',
   auth_google_err: 'Aanmelden met Google is niet gelukt. Probeer opnieuw.',
   auth_google_conflit: 'Er bestaat al een account met dit adres. Meld je aan met je wachtwoord.'

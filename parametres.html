@@ -577,12 +577,28 @@ function actionSession(){
     }
     logout();
 }
+
+// ===== PURGE DES DONNEES LOCALES =====
+// A la deconnexion, tout ce qui appartient au compte doit disparaitre
+// de l'appareil : sans cela, le mode decouverte (ou la personne
+// suivante) retrouvait le journal, le poids et les seances du compte
+// precedent. On ne garde que les preferences de l'appareil.
+function purgerDonneesLocales(){
+    var aGarder = ['repz_lang','repz_splash','repz_notifs','repz_consentCGV'];
+    var cles = [];
+    for(var i=0; i<localStorage.length; i++){
+        var k = localStorage.key(i);
+        if(!k) continue;
+        if(aGarder.indexOf(k) !== -1) continue;
+        if(k.indexOf('repz_') === 0 || k.indexOf('belfit_') === 0) cles.push(k);
+    }
+    cles.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    try{ sessionStorage.clear(); }catch(e){}
+}
+
 function logout(){
-    localStorage.removeItem('repz_premium');
-    localStorage.removeItem('repz_invite');
-    localStorage.removeItem('repz_inviteDebut');
-    sessionStorage.removeItem('repz_premSynced');
-    (localStorage.removeItem('repz_session'), auth.signOut()).finally(()=>{ window.location.href='index.html'; });
+    purgerDonneesLocales();
+    auth.signOut().finally(()=>{ window.location.href='index.html'; });
 }
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>

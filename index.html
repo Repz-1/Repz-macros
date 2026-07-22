@@ -9,7 +9,9 @@
 <link rel="preconnect" href="https://www.gstatic.com">
 <link rel="prefetch" href="main.html">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>html{background:#F5F6F8!important;margin:0}body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}
+<style>html{background:#1A1712!important;margin:0}
+/* Fond assombri : la carte de connexion se detache nettement. */
+body{margin:0!important;background:radial-gradient(150% 420px at 50% 0,#3A3223 0%,#1A1712 62%,#12100C 100%)!important}
 /* ===== CONNEXION PAR GOOGLE ===== */
 .btn-social {
     display:flex; align-items:center; justify-content:center; gap:11px;
@@ -45,9 +47,13 @@ body {
     display:flex; align-items:center; justify-content:center;
 }
 
+.btn-apple { background:#000000; color:#FFFFFF; border-color:#000000; }
+.btn-apple:active { background:#1a1a1a; }
+
 .auth-container {
     background:var(--card); border-radius:24px; padding:36px 26px;
-    max-width:400px; width:100%; box-shadow:0 4px 16px rgba(0,0,0,.08);
+    max-width:400px; width:100%;
+    box-shadow:0 2px 8px rgba(0,0,0,.28), 0 24px 60px rgba(0,0,0,.45);
 }
 
 .auth-header {
@@ -213,7 +219,7 @@ try{ if(localStorage.getItem('repz_session')==='1'){ location.replace('main.html
 
     <!-- MODE INVITÉ EN AVANT -->
     <div class="guest-hero">
-        <p class="guest-txt" data-i18n-html="guest_txt">Explore l'appli librement, sans compte ni carte.<br>Tu pourras t'inscrire plus tard pour sauvegarder tes données.</p>
+        <p class="guest-txt" data-i18n-html="guest_txt">Explore l'appli librement.<br>Tu pourras t'inscrire plus tard pour sauvegarder tes données.</p>
         <button class="btn btn-guest" onclick="continuerInvite()" data-i18n="guest_btn">Découvrir BELFIT →</button>
         <div class="guest-or"><span data-i18n="or">ou</span></div>
     </div>
@@ -229,6 +235,10 @@ try{ if(localStorage.getItem('repz_session')==='1'){ location.replace('main.html
                 <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.4 6.7l4 3.1C6.3 6.9 8.9 4.8 12 4.8z"/>
             </svg>
             <span data-i18n="auth_google">Continuer avec Google</span>
+        </button>
+        <button class="btn-social btn-apple" type="button" onclick="connexionApple()">
+            <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path fill="currentColor" d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.5-.15-2.8.85-3.5.85-.72 0-1.8-.83-3-.81-1.55.02-2.98.9-3.78 2.28-1.6 2.8-.41 6.95 1.15 9.22.76 1.11 1.67 2.36 2.86 2.31 1.15-.05 1.58-.74 2.97-.74s1.78.74 3 .72c1.24-.02 2.02-1.13 2.78-2.25.87-1.29 1.23-2.54 1.25-2.6-.03-.01-2.4-.92-2.42-3.65zM14 5.9c.63-.77 1.06-1.83.94-2.9-.91.04-2.01.61-2.67 1.37-.59.68-1.1 1.77-.96 2.81 1.01.08 2.05-.51 2.69-1.28z"/></svg>
+            <span data-i18n="auth_apple">Continuer avec Apple</span>
         </button>
         <div class="auth-sep"><span data-i18n="auth_or_mail">ou avec un e-mail</span></div>
 
@@ -267,6 +277,10 @@ try{ if(localStorage.getItem('repz_session')==='1'){ location.replace('main.html
                 <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.4 6.7l4 3.1C6.3 6.9 8.9 4.8 12 4.8z"/>
             </svg>
             <span data-i18n="auth_google">Continuer avec Google</span>
+        </button>
+        <button class="btn-social btn-apple" type="button" onclick="connexionApple()">
+            <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path fill="currentColor" d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.5-.15-2.8.85-3.5.85-.72 0-1.8-.83-3-.81-1.55.02-2.98.9-3.78 2.28-1.6 2.8-.41 6.95 1.15 9.22.76 1.11 1.67 2.36 2.86 2.31 1.15-.05 1.58-.74 2.97-.74s1.78.74 3 .72c1.24-.02 2.02-1.13 2.78-2.25.87-1.29 1.23-2.54 1.25-2.6-.03-.01-2.4-.92-2.42-3.65zM14 5.9c.63-.77 1.06-1.83.94-2.9-.91.04-2.01.61-2.67 1.37-.59.68-1.1 1.77-.96 2.81 1.01.08 2.05-.51 2.69-1.28z"/></svg>
+            <span data-i18n="auth_apple">Continuer avec Apple</span>
         </button>
         <div class="auth-sep"><span data-i18n="auth_or_mail">ou avec un e-mail</span></div>
 
@@ -388,11 +402,33 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
+
+// ===== PURGE DES DONNEES LOCALES =====
+// A la deconnexion, tout ce qui appartient au compte doit disparaitre
+// de l'appareil : sans cela, le mode decouverte (ou la personne
+// suivante) retrouvait le journal, le poids et les seances du compte
+// precedent. On ne garde que les preferences de l'appareil.
+function purgerDonneesLocales(){
+    var aGarder = ['repz_lang','repz_splash','repz_notifs','repz_consentCGV'];
+    var cles = [];
+    for(var i=0; i<localStorage.length; i++){
+        var k = localStorage.key(i);
+        if(!k) continue;
+        if(aGarder.indexOf(k) !== -1) continue;
+        if(k.indexOf('repz_') === 0 || k.indexOf('belfit_') === 0) cles.push(k);
+    }
+    cles.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    try{ sessionStorage.clear(); }catch(e){}
+}
+
 // Mode découverte : navigation libre, actions bloquées jusqu'à la création du compte
 function continuerInvite() {
+    // On repart d'un appareil vierge : le mode decouverte ne doit jamais
+    // afficher le journal, le poids ou les seances du compte precedent.
+    purgerDonneesLocales();
     localStorage.setItem('repz_invite', '1');
     // Une session Firebase encore active écraserait le mode invité : on la coupe d'abord
-    (localStorage.removeItem('repz_session'), auth.signOut()).finally(()=>{ window.location.href = 'main.html'; });
+    auth.signOut().finally(()=>{ window.location.href = 'main.html'; });
 }
 
 function toggleForm(formName) {
@@ -404,6 +440,39 @@ function toggleForm(formName) {
 // ===== CONNEXION PAR GOOGLE =====
 // Un compte Google n'a ni mot de passe ni pseudo : il se connecte
 // toujours par Google. On ne lui demande donc pas de nom d'utilisateur.
+// ===== CONNEXION PAR APPLE =====
+// Meme principe que Google. Necessite que le fournisseur Apple soit
+// active dans la console Firebase (Apple Developer requis).
+async function connexionApple(){
+    const errorDiv = document.getElementById('loginError');
+    try {
+        const provider = new firebase.auth.OAuthProvider('apple.com');
+        provider.addScope('email');
+        provider.addScope('name');
+        const cred = await auth.signInWithPopup(provider);
+        const user = cred.user;
+        const prenom = ((user.displayName || '').split(' ')[0]) || '';
+        if(prenom) localStorage.setItem('repz_firstName', prenom);
+        if(cred.additionalUserInfo && cred.additionalUserInfo.isNewUser){
+            try {
+                const suffixe = Math.floor(1000 + Math.random()*9000);
+                await firebase.firestore().collection('users').doc(user.uid).set({
+                    consentRGPD: { accepte:true, date:new Date().toISOString(), version:'2026-07', via:'apple' },
+                    mon_code_parrainage: (prenom.toUpperCase().replace(/[^A-Z]/g,'').slice(0,10) || 'BELFIT') + '-' + suffixe
+                }, { merge:true });
+            } catch(e){}
+        }
+        localStorage.removeItem('repz_invite');
+        window.location.href = 'main.html';
+    } catch(e){
+        if(e && e.code === 'auth/popup-closed-by-user') return;
+        if(errorDiv){
+            errorDiv.textContent = (window.t ? t('auth_apple_err') : "La connexion Apple n'a pas abouti. Réessaie.");
+            errorDiv.classList.add('show');
+        }
+    }
+}
+
 async function connexionGoogle(){
     const errorDiv = document.getElementById('loginError');
     try {
