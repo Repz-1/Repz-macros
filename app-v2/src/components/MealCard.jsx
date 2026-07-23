@@ -14,6 +14,11 @@ export const ouvrirMesPlats = signal(false);
 // Journal ouvre la page d'encodage plein ecran (MealPage) : le clavier
 // et la liste de resultats y disposent de tout l'ecran.
 export const repasOuvertId = signal(null);
+
+// Ligne tout juste ajoutee : elle prend le focus sur son grammage.
+// Choisir un aliment et devoir ensuite aller chercher son champ de
+// quantite est un aller-retour de trop — l'un appelle l'autre.
+export const ingNouveau = signal(null);
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -64,9 +69,24 @@ export function LigneIngredient({ repasId, ing }) {
   const d = DB[ing.name] || customFoods.value[ing.name] || {};
   const m = macrosOf(ing);
   const [saisie, setSaisie] = useState(String(ing.portion));
+  const champQte = useRef(null);
 
   // La valeur peut changer ailleurs (vocal, scan) : on resynchronise.
   useEffect(() => { setSaisie(String(ing.portion)); }, [ing.portion]);
+
+  // Aliment tout juste ajoute : on enchaine sur sa quantite, deja
+  // selectionnee — taper le chiffre remplace la valeur par defaut.
+  useEffect(() => {
+    if (ingNouveau.value !== ing.id) return;
+    ingNouveau.value = null;
+    const n = champQte.current;
+    if (!n) return;
+    requestAnimationFrame(() => {
+      n.focus({ preventScroll: true });
+      n.select();
+      n.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+  }, [ing.id]);
 
   return (
     <div class="mc-ing">
@@ -81,6 +101,7 @@ export function LigneIngredient({ repasId, ing }) {
 
       <div class="mc-ing-champ">
         <input
+          ref={champQte}
           type="number" inputMode="decimal" min="0"
           value={saisie}
           onFocus={e => e.currentTarget.select()}
@@ -137,10 +158,11 @@ export function Recherche({ repasId }) {
   const choisir = (nom) => {
     const d = DB[nom] || customFoods.value[nom] || {};
     // Aliment "a la piece" (burger, oeuf...) : portion par defaut = 1 piece
-    ajouterIngredient(repasId, nom, d.unit || 100);
+    const id = ajouterIngredient(repasId, nom, d.unit || 100);
     setQ('');
     setActif(false);          // la liste se referme, comme attendu
     if (champRef.current) champRef.current.blur();
+    ingNouveau.value = id;    // la quantite prend le relais
   };
 
   // Champ actif : on fait remonter la zone de saisie en haut de

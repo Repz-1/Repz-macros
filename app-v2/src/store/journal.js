@@ -132,9 +132,11 @@ export function setPortion(repasId, ingId, portion) {
 }
 
 export function ajouterIngredient(repasId, name, portion = 100) {
+  const id = ++prochainId;
   repas.value = repas.value.map(r =>
-    r.id !== repasId ? r : { ...r, ings: [...r.ings, { id: ++prochainId, name, portion }] }
+    r.id !== repasId ? r : { ...r, ings: [...r.ings, { id, name, portion }] }
   );
+  return id;   // l'appelant peut ainsi donner le focus a la nouvelle ligne
 }
 
 /**
