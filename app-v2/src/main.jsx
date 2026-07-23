@@ -8,7 +8,7 @@ import { LoginScreen } from './components/LoginScreen.jsx';
 import { repas, nouvelleJournee, donneesPretes } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
-import { MealCard, repasEnSaisie, ouvrirMesPlats } from './components/MealCard.jsx';
+import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
 import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
@@ -29,6 +29,8 @@ import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
 import { ActionsRapides } from './components/ActionsRapides.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
+import { MealPage } from './components/MealPage.jsx';
+import { repasOuvertId } from './components/MealCard.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
 import { MesPlats } from './components/MesPlats.jsx';
 
@@ -48,8 +50,6 @@ function OngletJournal() {
         <WeightNote />
         <IdeesRepas />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
-        {/* Mode focus : voile sombre pendant la saisie d'un aliment. */}
-        {repasEnSaisie.value !== null && <div class="voile-saisie" />}
       </div>
 
       <div class="fab-rangee">
@@ -153,7 +153,8 @@ function App() {
 
       const vue = vueEntrainer.value;
       const ongletCourant = ongletActif.value;
-      const enProfondeur = vue.nom !== 'accueil' || ongletCourant !== 'journal';
+      const pageRepas = repasOuvertId.value !== null;
+      const enProfondeur = pageRepas || vue.nom !== 'accueil' || ongletCourant !== 'journal';
 
       // Rien a remonter : on ne repose pas de sentinelle, le
       // telephone peut quitter l'application normalement.
@@ -163,13 +164,15 @@ function App() {
 
       if (doublePression) {
         // Retour direct a l'accueil, quel que soit l'endroit.
+        repasOuvertId.value = null;
         vueEntrainer.value = { nom: 'accueil', params: null };
         allerOnglet('journal');
         return;
       }
 
       // Un seul cran en arriere.
-      if (vue.nom === 'seanceDetail') allerVers('programmes');
+      if (pageRepas) repasOuvertId.value = null;
+      else if (vue.nom === 'seanceDetail') allerVers('programmes');
       else if (vue.nom !== 'accueil') retourEntrainer();
       else allerOnglet('journal');
     };
@@ -333,6 +336,7 @@ function App() {
           <div class="conteneur conteneur--nu"><Courses /></div>
         </div>
       )}
+      <MealPage />
       <BottomNav />
     </>
   );

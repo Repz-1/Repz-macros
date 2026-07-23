@@ -1627,3 +1627,111 @@
 .pg-journal .weight-note .wn-txt { flex:1; }
 .pg-journal .weight-note .wn-title { font-size:13.5px; font-weight:800; color:#7a5600; }
 .pg-journal .weight-note .wn-cta { flex:none; font-size:13px; font-weight:800; color:#8F6200; }
+
+/* ============================================================
+   PAGE REPAS — encodage plein ecran.
+   Ouverte en touchant une carte repas du Journal. Elle reprend
+   la langue visuelle du Journal (creme, cartes blanches, or en
+   accent) et laisse tout l'ecran a la recherche : le clavier ne
+   recouvre plus la liste de resultats.
+   ============================================================ */
+.couche-repas {
+  z-index: 6;                       /* au-dessus du rail et de Courses */
+  background: var(--fond, #F8F8F8);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .couche-repas { animation: rp-entre 220ms cubic-bezier(.22, .8, .28, 1) both; }
+  @keyframes rp-entre {
+    from { opacity: 0; transform: translateX(28px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+}
+
+.pg-journal .rp-colonne {
+  width: 100%; max-width: 640px; margin: 0 auto;
+  padding: calc(12px + env(safe-area-inset-top)) var(--marge-page, 18px)
+           calc(40px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+/* ---------- Topbar ---------- */
+.pg-journal .rp-topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 2px 0 2px;
+}
+.pg-journal .rp-retour {
+  flex: none; width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; border: 1px solid #ececec; color: #181818;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .05); cursor: pointer;
+}
+.pg-journal .rp-retour svg { width: 20px; height: 20px; }
+.pg-journal .rp-retour:active { transform: scale(.94); }
+.pg-journal .rp-titre {
+  flex: 1; min-width: 0; margin: 0;
+  font-size: 20px; font-weight: 800; letter-spacing: -.02em; color: #191919;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pg-journal .rp-titre-champ {
+  flex: 1; min-width: 0;
+  font-size: 20px; font-weight: 800; color: #191919;
+  border: none; background: #F1EFE9; border-radius: 8px;
+  padding: 2px 8px; font-family: inherit;
+}
+.pg-journal .rp-titre-champ:focus { outline: none; }
+.pg-journal .rp-crayon {
+  flex: none; background: none; border: none; padding: 6px; cursor: pointer;
+  color: #C2BDB2; display: flex;
+}
+.pg-journal .rp-crayon svg {
+  width: 16px; height: 16px;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .rp-crayon:active { color: var(--or, #F7B500); }
+
+/* ---------- Resume du repas ---------- */
+.pg-journal .rp-resume {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(160deg, #FFFBEF 0%, #FFFFFF 42%, #FFFFFF 100%);
+  border: 1.5px solid #E7E2D9; border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(60, 50, 40, .05);
+  padding: 14px 16px;
+}
+.pg-journal .rp-vignette {
+  width: 52px; height: 52px; border-radius: 14px; background: #F2EFE9;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.pg-journal .rp-vignette svg { width: 38px; height: 38px; display: block; }
+.pg-journal .rp-resume-txt { flex: 1; min-width: 0; }
+.pg-journal .rp-kcal {
+  font-size: 24px; font-weight: 800; color: #191919; line-height: 1;
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.pg-journal .rp-kcal span { font-size: 13px; font-weight: 700; color: #8A8580; letter-spacing: 0; }
+.pg-journal .rp-reco { font-size: 12px; font-weight: 600; color: #8A8580; margin-top: 4px; min-height: 15px; }
+.pg-journal .rp-macros {
+  flex: none; display: flex; flex-direction: column; gap: 3px; text-align: right;
+  font-size: 12px; font-weight: 600; color: #8A8580;
+  font-variant-numeric: tabular-nums;
+}
+.pg-journal .rp-macros b { font-weight: 800; color: #191919; margin-right: 2px; }
+
+/* ---------- Section « Dans ce repas » ---------- */
+.pg-journal .rp-section-titre {
+  font-size: 11.5px; font-weight: 800; color: #8A8580;
+  text-transform: uppercase; letter-spacing: .06em;
+  margin: 4px 2px 8px;
+}
+.pg-journal .rp-liste {
+  background: #fff; border: 1.5px solid #E7E2D9; border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(60, 50, 40, .05);
+  padding: 4px 12px;
+}
+
+/* La zone d'ajout occupe la page, pas une carte : leger relief blanc */
+.pg-journal .rp-colonne .mc-ajout-zone { margin: 0; }
+.pg-journal .rp-plat { margin-top: 2px; }
+
+/* Chevron de navigation : la carte repas mene a une page */
+.pg-journal .mc-chevron--nav { font-size: 22px; transform: none; margin-top: -2px; }

@@ -1961,3 +1961,8 @@ Object.assign(STRINGS_V1.nl, {
   co_restants: "{n} artikelen te kopen",
   co_complete: "Lijst compleet, alles is afgevinkt."
 });
+
+// Page repas plein ecran (v2)
+Object.assign(STRINGS_V1.fr, { rp_dans_repas: 'Dans ce repas' });
+Object.assign(STRINGS_V1.en, { rp_dans_repas: 'In this meal' });
+Object.assign(STRINGS_V1.nl, { rp_dans_repas: 'In deze maaltijd' });
