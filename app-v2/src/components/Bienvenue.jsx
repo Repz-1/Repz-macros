@@ -111,9 +111,6 @@ export function Bienvenue({ versConnexion, versInscription }) {
   const ageOk = parseInt(r.age) >= 14 && parseInt(r.age) <= 99;
   const tailleOk = parseFloat(r.taille) >= 120 && parseFloat(r.taille) <= 230;
   const poidsOk = parseFloat(r.poids) >= 35 && parseFloat(r.poids) <= 250;
-  // Fourchette de poids sain (IMC 18,5 - 25) pour eclairer le poids ideal
-  const t2 = Math.pow((parseFloat(r.taille) || 0) / 100, 2);
-  const fMin = Math.round(18.5 * t2), fMax = Math.round(25 * t2);
 
   const precedent = () => { setSens(-1); setEtape(n => Math.max(0, n - 1)); };
 
@@ -268,8 +265,7 @@ export function Bienvenue({ versConnexion, versInscription }) {
         <div class="bv-corps">
           <h1 class="bv-titre">Tu veux perdre du gras.<br />Ton poids idéal ?</h1>
           <p class="bv-just">C'est le cap du programme — pas une obligation, tu pourras l'ajuster en route.</p>
-          <input class={'bv-champ' + (parseFloat(r.cible) > 0 ? ' bv-champ--plein' : '')} type="number" inputMode="decimal" min="35" max="250" placeholder={String(Math.min(parseFloat(r.poids) || fMax, fMax))} value={r.cible || ''} onInput={e => poser('cible', e.currentTarget.value, false)} autoFocus />
-          {tailleOk && <p class="bv-repere">{'\u{1F4A1}'} Poids de forme pour ta taille : {fMin} – {fMax} kg</p>}
+          <input class={'bv-champ' + (parseFloat(r.cible) > 0 ? ' bv-champ--plein' : '')} type="number" inputMode="decimal" min="35" max="250" placeholder="90" value={r.cible || ''} onInput={e => poser('cible', e.currentTarget.value, false)} autoFocus />
           <button class="bv-suivant" disabled={!(parseFloat(r.cible) >= 35 && parseFloat(r.cible) <= 250)} onClick={avancer}>Suivant</button>
         </div>
       )}
