@@ -482,6 +482,22 @@ function toggleForm(formName) {
 // Un compte Google n'a ni mot de passe ni pseudo : il se connecte
 // toujours par Google. On ne lui demande donc pas de nom d'utilisateur.
 // ===== CONNEXION PAR APPLE =====
+// ===== BOUTON APPLE : AFFICHAGE CONDITIONNEL =====
+// Tant que le fournisseur Apple n'est pas active dans la console Firebase,
+// le bouton echoue a coup sur : on ne l'affiche pas. Une fois active,
+// passer APPLE_PRET a true. Il ne s'affichera alors que sur les appareils
+// Apple, ou les gens s'attendent a le trouver ; ailleurs, il n'ajoute
+// qu'un choix de plus sans rien apporter.
+const APPLE_PRET = false;
+(function afficherApple(){
+    const surApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (APPLE_PRET && surApple) return;   // on laisse le bouton en place
+    document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('.btn-apple').forEach(function(b){ b.style.display = 'none'; });
+    });
+})();
+
 // Meme principe que Google. Necessite que le fournisseur Apple soit
 // active dans la console Firebase (Apple Developer requis).
 async function connexionApple(){
