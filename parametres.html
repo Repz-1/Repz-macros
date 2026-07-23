@@ -154,7 +154,7 @@ auth.onAuthStateChanged((user) => {
     } else if(!authVerifie){
         setTimeout(() => {
             if(!auth.currentUser && localStorage.getItem('repz_invite') !== '1'){
-                window.location.href = 'index.html';
+                window.location.href = destinationSortie();
             }
         }, 1200);
     }
@@ -496,7 +496,7 @@ function supprimerCompte(){
         localStorage.removeItem('repz_premium');
         sessionStorage.removeItem('repz_premSynced');
         alert(t('js_acc_deleted'));
-        window.location.href = 'index.html';
+        window.location.href = destinationSortie();
     }).catch((e)=>{
         fermerOverlay('delModal');
         if(e && e.code === 'auth/requires-recent-login'){
@@ -601,9 +601,15 @@ function purgerDonneesLocales(){
     try{ sessionStorage.clear(); }catch(e){}
 }
 
+// D'ou vient-on ? La v2 ouvre cette page avec ?de=v2 : toute sortie
+// (deconnexion, suppression, garde) doit ramener au meme endroit.
+function destinationSortie(){
+    return window.location.search.indexOf('de=v2') !== -1 ? '/v2/' : 'index.html';
+}
+
 function logout(){
     purgerDonneesLocales();
-    auth.signOut().finally(()=>{ window.location.href='index.html'; });
+    auth.signOut().finally(()=>{ window.location.href = destinationSortie(); });
 }
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
