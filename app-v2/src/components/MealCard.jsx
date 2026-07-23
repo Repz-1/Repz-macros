@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { DB, NOMS_ALIMENTS, macrosOf } from '../data/aliments.js';
+import { DB, NOMS_ALIMENTS, macrosOf, scoreRecherche } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
 import { signal } from '@preact/signals';
 
@@ -144,15 +144,27 @@ export function Recherche({ repasId }) {
   // Les plats enregistres passent avant les aliments : ils sont plus
   // specifiques et c'est souvent eux qu'on cherche.
   const platsTrouves = terme.length >= 2
-    ? plats.value.filter(p => p.nom.toLowerCase().includes(terme)).slice(0, 4)
+    ? plats.value
+        .map(p => [scoreRecherche(terme, p.nom), p])
+        .filter(([sc]) => sc > 0)
+        .sort((a, b) => b[0] - a[0])
+        .slice(0, 4)
+        .map(([, p]) => p)
     : [];
 
   // Sans saisie, on propose les favoris : c'est ce qu'on encode tous les jours.
+  // Les favoris gardent la priorite a score egal : ce sont les
+  // aliments que la personne encode reellement tous les jours.
+  const classer = (liste, bonus) => liste
+    .map(n => [scoreRecherche(terme, n) + bonus, n])
+    .filter(([sc]) => sc > bonus)
+    .sort((a, b) => b[0] - a[0]);
+
   const resultats = terme.length < 2
     ? favoris.value.filter(n => DB[n] || customFoods.value[n]).slice(0, 6)
     : [
-        ...favoris.value.filter(n => n.toLowerCase().includes(terme)),
-        ...noms.filter(n => n.toLowerCase().includes(terme) && !estFavori(n)),
+        ...classer(favoris.value, 25).map(([, n]) => n),
+        ...classer(noms.filter(n => !estFavori(n)), 0).map(([, n]) => n),
       ].slice(0, 8);
 
   const choisir = (nom) => {

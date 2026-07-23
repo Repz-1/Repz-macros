@@ -1182,3 +1182,86 @@ export function detailTotal(ings) {
   }
   return { total, connus, nbAliments: (ings || []).length };
 }
+
+// ============================================================
+// RECHERCHE D'ALIMENTS
+// La recherche par sous-chaine brute echouait des que l'ordre ou
+// les liaisons differaient : « huile de colza » ne trouvait pas
+// « Huile colza », « pate complete » ne trouvait pas « Pâtes
+// completes ». On compare donc mot a mot, sans accents, sans
+// liaisons, et sans distinguer singulier et pluriel.
+// ============================================================
+
+/** Minuscules, sans accents ni ponctuation. */
+export function sansAccents(s) {
+  return String(s || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9%\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Liaisons : elles varient d'une ecriture a l'autre sans rien changer
+// au sens. « Huile de colza » et « Huile colza » designent la meme chose.
+const LIAISONS = new Set(['de', 'du', 'des', 'd', 'a', 'au', 'aux', 'le', 'la', 'les', 'l', 'en', 'et']);
+
+// Mots decrivant l'etat de preparation, pas une recette.
+const ETATS_CUISSON = new Set([
+  'cru', 'crue', 'cuit', 'cuite', 'grille', 'grillee', 'roti', 'rotie',
+  'vapeur', 'bouilli', 'bouillie', 'sec', 'seche', 'frais', 'fraiche',
+  'nature', 'entier', 'entiere',
+]);
+
+/** Singulier approximatif : « pates » et « pate » doivent se rejoindre. */
+function racine(m) {
+  if (m.length > 3 && m.endsWith('x')) return m.slice(0, -1);
+  if (m.length > 3 && m.endsWith('s') && !m.endsWith('ss')) return m.slice(0, -1);
+  return m;
+}
+
+export function motsCles(s) {
+  return sansAccents(s).split(' ').filter(m => m && !LIAISONS.has(m)).map(racine);
+}
+
+/**
+ * Score de correspondance entre une saisie et un nom d'aliment.
+ * 0 = aucune correspondance. Plus le score est haut, plus le
+ * resultat remonte : on privilegie ce qui commence par la saisie,
+ * puis les noms courts, qui sont les aliments les plus generiques
+ * (« Riz cru » avant « Riz cantonais rechauffe »).
+ */
+export function scoreRecherche(saisie, nom) {
+  const req = motsCles(saisie);
+  if (!req.length) return 0;
+  const cible = sansAccents(nom);
+  const dispo = motsCles(nom);
+
+  let score = 0;
+  for (const mot of req) {
+    // Mot entier present : la correspondance la plus forte
+    const exact = dispo.some(d => d === mot);
+    // Debut de mot : « colz » trouve « colza », on suit la frappe
+    const debut = !exact && dispo.some(d => d.startsWith(mot));
+    // Ailleurs dans le nom : plus faible, mais utile sur les composes
+    const dedans = !exact && !debut && cible.includes(mot);
+    if (exact) score += 10;
+    else if (debut) score += 6;
+    else if (dedans) score += 2;
+    else return 0;               // un mot demande manque : on ecarte
+  }
+
+  const tout = sansAccents(saisie);
+  if (cible === tout) score += 40;              // nom exact
+  else if (cible.startsWith(tout)) score += 12; // commence par la saisie
+  if (dispo.length === req.length) score += 6;  // aucun mot superflu
+
+  // Aliment de base plutot que plat cuisine : quand les seuls mots en
+  // trop decrivent la cuisson, on tient l'ingredient lui-meme. « Riz »
+  // doit proposer « Riz cru » avant « Riz au lait ».
+  const reste = dispo.filter(d => !req.includes(d));
+  if (reste.length && reste.every(d => ETATS_CUISSON.has(d))) score += 5;
+
+  // A egalite, le nom le plus court passe devant
+  return score + Math.max(0, 12 - dispo.length) * 0.1;
+}
