@@ -191,8 +191,7 @@ export function Bienvenue({ versConnexion, versInscription }) {
           <div class="bv-deco bv-deco--rouge" aria-hidden="true" />
 
           <div class="bv-acc-haut">
-            <div class="bv-marque">BEL<span>FIT</span></div>
-            <p class="bv-tagline">Ton coach nutrition et entraînement,<br />quel que soit ton objectif</p>
+            <div class="bv-marque">Bel<span>Fit</span></div>
           </div>
 
           <img src="/belfit-logo-b.png" alt="" class="bv-acc-logo" />
