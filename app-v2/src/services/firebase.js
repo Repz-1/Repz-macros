@@ -91,6 +91,21 @@ getRedirectResult(auth).then(cred => {
 }).catch(() => {});
 
 /**
+ * Code de parrainage : tire au sort, sans aucun lien avec le pseudo,
+ * le prenom ou l'e-mail — un code ne doit rien reveler de son porteur
+ * ni pouvoir etre devine. Alphabet sans caracteres ambigus (ni O/0,
+ * ni I/1/L) : le code se dicte a voix haute sans erreur.
+ */
+function genererCodeParrainage() {
+  const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 8; i++) {
+    code += ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+  }
+  return 'BF-' + code.slice(0, 4) + '-' + code.slice(4);
+}
+
+/**
  * Inscription : e-mail + nom d'utilisateur + mot de passe.
  * Le pseudo est reserve cote serveur juste apres la creation du
  * compte. Si la reservation echoue (pseudo pris entre-temps), le
@@ -109,13 +124,16 @@ export async function inscription(email, mdp, pseudo) {
   try { localStorage.setItem('repz_firstName', normPseudo(pseudo)); } catch (e) {}
 
   // RGPD : preuve du consentement (horodatage + version de la politique),
-  // ecrite comme en v1. Non bloquant : un echec reseau ne doit pas
-  // priver l'utilisateur du compte qu'il vient de creer.
+  // et code de parrainage tire au sort. Non bloquant : un echec reseau
+  // ne doit pas priver l'utilisateur du compte qu'il vient de creer.
   try {
     const { getFirestore, doc, setDoc } = await import('firebase/firestore');
     await setDoc(
       doc(getFirestore(app), 'users', cred.user.uid),
-      { consentRGPD: { accepte: true, date: new Date().toISOString(), version: '2026-07' } },
+      {
+        consentRGPD: { accepte: true, date: new Date().toISOString(), version: '2026-07' },
+        mon_code_parrainage: genererCodeParrainage(),
+      },
       { merge: true }
     );
   } catch (e) { /* non bloquant */ }

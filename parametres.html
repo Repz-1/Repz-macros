@@ -516,9 +516,14 @@ function chargerCodeParrainage(u){
     doc.get().then(function(snap){
         let code = snap.exists ? snap.data().mon_code_parrainage : null;
         if(!code){
-            // Compte créé avant le système : générer le code maintenant
-            const prenom = (u.displayName || 'BELFIT').toUpperCase().replace(/[^A-Z]/g,'').slice(0,10) || 'BELFIT';
-            code = prenom + '-' + Math.floor(1000 + Math.random()*9000);
+            // Compte créé avant le système : générer le code maintenant.
+            // Tiré au sort, sans lien avec l'identité du porteur.
+            const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+            let tirage = '';
+            for(let i = 0; i < 8; i++){
+                tirage += ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+            }
+            code = 'BF-' + tirage.slice(0,4) + '-' + tirage.slice(4);
             doc.set({ mon_code_parrainage: code }, { merge:true }).catch(function(){});
         }
         monCodeParrainage = code;

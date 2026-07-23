@@ -446,6 +446,20 @@ function purgerDonneesLocales(){
     try{ sessionStorage.clear(); }catch(e){}
 }
 
+// ===== CODE DE PARRAINAGE =====
+// Tire au sort, sans aucun lien avec le prénom, le pseudo ou l'e-mail :
+// un code ne doit rien révéler de son porteur, ni pouvoir être deviné.
+// Alphabet sans caractères ambigus (ni O/0, ni I/1/L) : le code se
+// dicte à voix haute et se recopie sans erreur.
+function genererCodeParrainage(){
+    const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for(let i = 0; i < 8; i++){
+        code += ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+    }
+    return 'BF-' + code.slice(0,4) + '-' + code.slice(4);
+}
+
 // Le mode découverte a été retiré : on ouvre un compte dès le départ.
 // Les appareils encore marqués « invité » sont nettoyés ici, sinon ils
 // resteraient bloqués dans un état que l'application ne connaît plus.
@@ -482,10 +496,9 @@ async function connexionApple(){
         if(prenom) localStorage.setItem('repz_firstName', prenom);
         if(cred.additionalUserInfo && cred.additionalUserInfo.isNewUser){
             try {
-                const suffixe = Math.floor(1000 + Math.random()*9000);
                 await firebase.firestore().collection('users').doc(user.uid).set({
                     consentRGPD: { accepte:true, date:new Date().toISOString(), version:'2026-07', via:'apple' },
-                    mon_code_parrainage: (prenom.toUpperCase().replace(/[^A-Z]/g,'').slice(0,10) || 'BELFIT') + '-' + suffixe
+                    mon_code_parrainage: genererCodeParrainage()
                 }, { merge:true });
             } catch(e){}
         }
@@ -515,10 +528,9 @@ async function connexionGoogle(){
         // Premiere connexion : on cree le document utilisateur
         if(cred.additionalUserInfo && cred.additionalUserInfo.isNewUser){
             try {
-                const suffixe = Math.floor(1000 + Math.random()*9000);
                 await firebase.firestore().collection('users').doc(user.uid).set({
                     consentRGPD: { accepte:true, date:new Date().toISOString(), version:'2026-07', via:'google' },
-                    mon_code_parrainage: (prenom.toUpperCase().replace(/[^A-Z]/g,'').slice(0,10) || 'BELFIT') + '-' + suffixe
+                    mon_code_parrainage: genererCodeParrainage()
                 }, { merge:true });
             } catch(e){ /* non bloquant */ }
         }
@@ -774,9 +786,8 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
                     docUser.parrainage_date = new Date().toISOString();
                     docUser.parrainage_recompense = false; // passera à true quand l'avantage sera accordé
                 }
-                // Code de parrainage propre au nouvel utilisateur : PRENOM-XXXX
-                const suffixe = Math.floor(1000 + Math.random()*9000);
-                docUser.mon_code_parrainage = (firstName.toUpperCase().replace(/[^A-Z]/g,'').slice(0,10) || 'BELFIT') + '-' + suffixe;
+                // Code de parrainage : tire au sort, sans lien avec l'identite
+                docUser.mon_code_parrainage = genererCodeParrainage();
                 await firebase.firestore().collection('users').doc(cred.user.uid).set(docUser, { merge: true });
             } catch(e){ /* non bloquant */ }
         }
