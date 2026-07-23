@@ -1832,3 +1832,63 @@
   letter-spacing: -.01em; white-space: nowrap;
   max-width: 42vw; overflow: hidden; text-overflow: ellipsis;
 }
+
+/* ============================================================
+   DETAIL NUTRITIONNEL — carte de la page repas.
+   Meme carte blanche que le reste du journal ; le detail est un
+   prolongement du repas, pas un encart promotionnel.
+   ============================================================ */
+.pg-journal .dn {
+  background: #fff; border: 1.5px solid #E7E2D9; border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(60, 50, 40, .05);
+  padding: 14px 16px;
+}
+.pg-journal .dn-tete {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 10px;
+}
+.pg-journal .dn-titre {
+  font-size: 11.5px; font-weight: 800; color: #8A8580;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.pg-journal .dn-offert {
+  font-size: 10.5px; font-weight: 800; color: #15803D;
+  background: #E9F7EF; border-radius: 999px; padding: 3px 8px;
+  white-space: nowrap;
+}
+.pg-journal .dn-pro {
+  font-size: 10.5px; font-weight: 800; color: #8F6200;
+  background: #FFF4CC; border-radius: 999px; padding: 3px 8px;
+}
+.pg-journal .dn-ligne {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 9px 0; border-top: 1px solid #F2EFE9;
+}
+.pg-journal .dn-ligne:first-child { border-top: none; padding-top: 2px; }
+.pg-journal .dn-lb { font-size: 13.5px; font-weight: 600; color: #4B4A47; }
+.pg-journal .dn-val {
+  font-size: 14px; font-weight: 800; color: #191919;
+  font-variant-numeric: tabular-nums;
+}
+.pg-journal .dn-cadenas {
+  width: 26px; height: 26px; border-radius: 50%; background: #F2EFE9;
+  display: flex; align-items: center; justify-content: center;
+}
+.pg-journal .dn-cadenas svg {
+  width: 14px; height: 14px; fill: none; stroke: #A8A29A;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .dn-partiel,
+.pg-journal .dn-absent {
+  font-size: 11.5px; font-weight: 500; color: #8A8580;
+  line-height: 1.45; margin: 10px 0 0;
+}
+.pg-journal .dn-absent { margin-top: 0; }
+.pg-journal .dn-cta {
+  width: 100%; margin-top: 12px; padding: 11px 0;
+  border: none; border-radius: 12px; cursor: pointer; font-family: inherit;
+  font-size: 13.5px; font-weight: 800; color: #181818;
+  background: linear-gradient(135deg, #FFD86B, #F7B500);
+  box-shadow: 0 4px 14px rgba(247, 181, 0, .28);
+}
+.pg-journal .dn-cta:active { transform: scale(.99); }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { repas, totauxRepas, fourchetteRepas, renommerRepas } from '../store/journal.js';
 import { enregistrerPlat } from '../store/perso.js';
 import { Recherche, LigneIngredient, illustration, repasOuvertId } from './MealCard.jsx';
+import { DetailNutritionnel } from './DetailNutritionnel.jsx';
 import { t } from '../i18n/index.js';
 
 // ============================================================
@@ -97,6 +98,9 @@ export function MealPage() {
             </div>
           </div>
         )}
+
+        {/* Au-dela des macros : fibres, sucres, satures, sel */}
+        {!vide && <DetailNutritionnel ings={r.ings} />}
 
         {/* Enregistrer la composition comme plat reutilisable */}
         {!vide && (

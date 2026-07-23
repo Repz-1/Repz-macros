@@ -1135,3 +1135,50 @@ export function macrosOf(ing){
 
 // Liste triee des noms pour la recherche
 export const NOMS_ALIMENTS = Object.keys(DB).sort((a,b)=>a.localeCompare(b,'fr'));
+
+// ============================================================
+// DETAIL NUTRITIONNEL
+// Fibres, sucres, graisses saturees et sel. Tous les aliments
+// n'en disposent pas : la base interne ne porte que les macros,
+// tandis que les produits scannes rapportent ce detail depuis
+// Open Food Facts. On distingue donc « absent » de « zero ».
+// ============================================================
+export const CLES_DETAIL = ['fibres', 'sucres', 'satures', 'sel'];
+
+/** Detail d'un ingredient, ramene a sa quantite. null si inconnu. */
+export function detailOf(ing) {
+  const d = DB[ing.name] || (window.__customFoods && window.__customFoods[ing.name]);
+  if (!d) return null;
+  const f = (parseFloat(ing.portion) || 0) / 100;
+  let renseigne = false;
+  const out = {};
+  for (const k of CLES_DETAIL) {
+    if (d[k] == null) { out[k] = null; continue; }
+    out[k] = d[k] * f;
+    renseigne = true;
+  }
+  return renseigne ? out : null;
+}
+
+/**
+ * Detail cumule d'une liste d'ingredients.
+ * Renvoie aussi la couverture : combien d'aliments ont reellement
+ * la donnee. Sans elle, un total calcule sur un seul aliment sur
+ * cinq se lirait comme un total complet — donc comme un mensonge.
+ */
+export function detailTotal(ings) {
+  const total = {};
+  const connus = {};
+  for (const k of CLES_DETAIL) { total[k] = 0; connus[k] = 0; }
+
+  for (const ing of ings || []) {
+    const d = detailOf(ing);
+    if (!d) continue;
+    for (const k of CLES_DETAIL) {
+      if (d[k] == null) continue;
+      total[k] += d[k];
+      connus[k]++;
+    }
+  }
+  return { total, connus, nbAliments: (ings || []).length };
+}
