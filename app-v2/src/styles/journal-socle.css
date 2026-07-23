@@ -2032,3 +2032,28 @@
   font-size: 12.5px; font-weight: 500; color: #8A8580;
   text-align: center; line-height: 1.5; margin: 12px 0 0;
 }
+
+/* Offre Premium du parcours d'accueil */
+.bv-prem { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.bv-prem-l {
+  display: flex; align-items: flex-start; gap: 13px;
+  background: #fff; border: 1.5px solid #E7E2D9; border-radius: 16px; padding: 13px 15px;
+}
+.bv-prem-l span:last-child { display: flex; flex-direction: column; gap: 2px; }
+.bv-prem-l b { font-size: 14.5px; font-weight: 800; color: #191919; }
+.bv-prem-l i { font-style: normal; font-size: 12.5px; font-weight: 500; color: #8A8580; line-height: 1.4; }
+.bv-prem-prix {
+  text-align: center; font-size: 14px; font-weight: 700; color: #4B4A47;
+  margin-bottom: 16px;
+}
+.bv-prem-prix b { font-size: 22px; font-weight: 800; color: #191919; }
+.bv-prem-prix span { display: block; font-size: 12.5px; font-weight: 600; color: #8F6200; margin-top: 4px; }
+.bv-suivant--or {
+  background: linear-gradient(135deg, #FFD86B, #F7B500); color: #181818;
+  box-shadow: 0 4px 14px rgba(247, 181, 0, .28);
+}
+.bv-standard {
+  margin-top: 10px; padding: 13px 0; border-radius: 999px; cursor: pointer;
+  background: #fff; border: 1.5px solid #E7E2D9; font-family: inherit;
+  font-size: 14.5px; font-weight: 700; color: #191919;
+}

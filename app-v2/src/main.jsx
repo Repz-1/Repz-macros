@@ -124,6 +124,15 @@ function App() {
       purgerProgrammeEnAttente();
     }, 1500);
   }
+
+  // La personne a demande a voir Premium pendant l'accueil : on l'y
+  // amene directement, une seule fois, maintenant que le compte existe.
+  try {
+    if (localStorage.getItem('belfit_v2_intention_premium') === '1') {
+      localStorage.removeItem('belfit_v2_intention_premium');
+      ongletActif.value = 'premium';
+    }
+  } catch (e) {}
   if (!donneesPretes.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;
   }
