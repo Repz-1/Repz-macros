@@ -1966,3 +1966,33 @@ Object.assign(STRINGS_V1.nl, {
 Object.assign(STRINGS_V1.fr, { rp_dans_repas: 'Dans ce repas' });
 Object.assign(STRINGS_V1.en, { rp_dans_repas: 'In this meal' });
 Object.assign(STRINGS_V1.nl, { rp_dans_repas: 'In deze maaltijd' });
+
+// Accueil de l'ecran de connexion : un message tire au sort a chaque
+// ouverture. L'application dit bonjour avant de demander quoi que ce soit.
+Object.assign(STRINGS_V1.fr, {
+  hello_1: 'Content de te revoir',
+  hello_2: 'On reprend où on en était ?',
+  hello_3: 'Ton coach t\'attend',
+  hello_4: 'Prêt pour aujourd\'hui ?',
+  hello_5: 'Une journée de plus, un pas de plus',
+  hello_6: 'C\'est la régularité qui paie',
+  hello_new: 'Bienvenue chez BELFIT',
+});
+Object.assign(STRINGS_V1.en, {
+  hello_1: 'Good to see you again',
+  hello_2: 'Shall we pick up where we left off?',
+  hello_3: 'Your coach is waiting',
+  hello_4: 'Ready for today?',
+  hello_5: 'One more day, one more step',
+  hello_6: 'Consistency is what pays off',
+  hello_new: 'Welcome to BELFIT',
+});
+Object.assign(STRINGS_V1.nl, {
+  hello_1: 'Leuk je terug te zien',
+  hello_2: 'Gaan we verder waar we gebleven waren?',
+  hello_3: 'Je coach wacht op je',
+  hello_4: 'Klaar voor vandaag?',
+  hello_5: 'Een dag erbij, een stap verder',
+  hello_6: 'Regelmaat is wat loont',
+  hello_new: 'Welkom bij BELFIT',
+});

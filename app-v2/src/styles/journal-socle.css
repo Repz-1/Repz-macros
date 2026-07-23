@@ -1804,3 +1804,31 @@
   accent-color: #F7B500; flex-shrink: 0;
 }
 .login-consent a { color: #8F6200; font-weight: 700; }
+
+/* ============================================================
+   EN-TETE PERSONNELLE
+   Une fois connecte, le prenom prend le centre : l'application
+   s'adresse a quelqu'un plutot que d'afficher sa propre marque.
+   Trois colonnes egales sur les bords : le centre reste centre
+   meme si le symbole et les icones n'ont pas la meme largeur.
+   ============================================================ */
+.pg-journal .j-entete--perso,
+.pg-entrainer .j-entete--perso {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+.pg-journal .j-entete--perso .j-symbole,
+.pg-entrainer .j-entete--perso .j-symbole {
+  height: 34px; width: auto; display: block; justify-self: start;
+  filter: drop-shadow(0 4px 16px rgba(247, 181, 0, .15));
+}
+.pg-journal .j-entete--perso .j-entete-actions,
+.pg-entrainer .j-entete--perso .j-entete-actions { justify-self: end; }
+.pg-journal .j-prenom,
+.pg-entrainer .j-prenom {
+  justify-self: center;
+  font-size: 17px; font-weight: 800; color: #191919;
+  letter-spacing: -.01em; white-space: nowrap;
+  max-width: 42vw; overflow: hidden; text-overflow: ellipsis;
+}

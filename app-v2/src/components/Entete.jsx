@@ -1,15 +1,35 @@
 import { signal } from '@preact/signals';
+import { utilisateur } from '../services/firebase.js';
 
 // Etat du volet profil, partage entre l'en-tete de chaque onglet.
 export const voletProfil = signal(false);
 export const ouvrirProfil = () => { voletProfil.value = !voletProfil.value; };
 
-// En-tete commun : logo BELFIT a gauche, profil + reglages a droite.
-// Transpose fidelement du v1 (.app-header dans entrainements.html).
+/** Prenom de la personne connectee, sinon rien. */
+function prenom() {
+  const u = utilisateur.value;
+  const nom = (u && u.displayName) || '';
+  if (nom) return nom.split(' ')[0];
+  try { return localStorage.getItem('repz_firstName') || ''; } catch (e) { return ''; }
+}
+
+// En-tete commun : marque a gauche, prenom au centre, profil + reglages
+// a droite. Le prenom au centre donne le sentiment d'une application qui
+// appartient a la personne, plutot que d'un service qui l'accueille.
+// Trois colonnes (1fr / auto / 1fr) : le centre reste centre quelle que
+// soit la largeur des deux bords.
 export function Entete() {
+  const p = prenom();
   return (
-    <header class="j-entete">
-      <img class="j-logo" src="../belfit-logo-header.png" alt="BELFIT" />
+    <header class={'j-entete' + (p ? ' j-entete--perso' : '')}>
+      <img
+        class={p ? 'j-symbole' : 'j-logo'}
+        src={p ? '../logo-symbol.png' : '../belfit-logo-header.png'}
+        alt="BELFIT"
+      />
+
+      {p && <div class="j-prenom">{p}</div>}
+
       <div class="j-entete-actions">
         <button class="j-btn-icone" onClick={ouvrirProfil} aria-label="Profil">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" /><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" /></svg>

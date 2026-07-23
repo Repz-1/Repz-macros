@@ -29,9 +29,15 @@ function manquesMdp(pw) {
   return m;
 }
 
+// Un message d'accueil tire au sort a l'ouverture, comme une salutation
+// qui ne se repete pas mot pour mot chaque jour. Fige au montage : il ne
+// doit pas changer sous les yeux pendant que la personne tape.
+const ACCUEILS = ['hello_1', 'hello_2', 'hello_3', 'hello_4', 'hello_5', 'hello_6'];
+
 // Ecran de connexion / inscription — sobre, palette BelFit.
 export function LoginScreen() {
   const [mode, setMode] = useState('connexion');
+  const [accueil] = useState(() => ACCUEILS[Math.floor(Math.random() * ACCUEILS.length)]);
   const [email, setEmail] = useState('');
   const [prenom, setPrenom] = useState('');
   const [pseudo, setPseudo] = useState('');
@@ -96,7 +102,7 @@ export function LoginScreen() {
     <div class="login-ecran">
       <img src="/belfit-logo-b.png" alt="BelFit" class="login-logo" />
       <h1 class="login-titre">
-        {mode === 'connexion' ? t('revoir') : t('creer_compte')}
+        {mode === 'connexion' ? t(accueil) : t('hello_new')}
       </h1>
 
       <button
