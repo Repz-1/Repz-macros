@@ -1772,3 +1772,13 @@
 .modal .modal-h3-ic .ic { width:20px; height:20px; flex:none; color:#F7B500; }
 .modal .wm-last { font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
 .modal .wm-last b { color:#191919; }
+
+/* Nom d'utilisateur : etat de disponibilite sous le champ.
+   Couleurs reprises de la v1 (index.html, #pseudoHint). */
+.login-pseudo-note {
+  font-size: 12px; font-weight: 600; color: #9aa0aa;
+  margin: -6px 2px 2px; line-height: 1.4; min-height: 17px;
+}
+.login-pseudo-note--invalide,
+.login-pseudo-note--pris { color: #dc2626; }
+.login-pseudo-note--libre { color: #15803d; }

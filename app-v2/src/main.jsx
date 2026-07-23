@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'preact/hooks';
 import './styles.css';
 import './styles/design-system.css';
 import './styles/journal-socle.css';
-import { utilisateur, authPrete, deconnexion, invite, quitterInvite } from './services/firebase.js';
+import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { repas, nouvelleJournee, donneesPretes } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
@@ -100,7 +100,7 @@ function App() {
   if (!authPrete.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>…</div>;
   }
-  if (!utilisateur.value && !invite.value) {
+  if (!utilisateur.value) {
     return <LoginScreen />;
   }
   if (!donneesPretes.value) {
@@ -284,7 +284,7 @@ function App() {
 
   const voletUtilisateur = voletProfil.value ? (
     <div class="profil-volet">
-      <span>{utilisateur.value ? utilisateur.value.email : t('mode_invite')}</span>
+      <span>{utilisateur.value ? (utilisateur.value.displayName || utilisateur.value.email) : ''}</span>
       <span class="profil-statut">
         {estPremium.value ? '\u2726 PRO' : t('compte_gratuit')}
       </span>
@@ -293,25 +293,11 @@ function App() {
           <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
         ))}
       </div>
-      <button onClick={() => utilisateur.value ? deconnexion() : quitterInvite()}>
-        {utilisateur.value ? t('deconnexion') : t('quitter')}
-      </button>
+      <button onClick={deconnexion}>{t('deconnexion')}</button>
     </div>
   ) : null;
 
   const PAGES = { journal: OngletJournal, entrainer: OngletEntrainer, stats: Stats, premium: PremiumPage };
-
-  // Bandeau « Mode découverte » : copie v1 (script REPZ_INVITE, app.html) —
-  // memes styles inline, meme cle i18n. Un appui ramene a l'ecran de connexion.
-  const AVEC_BANDEAU = ['journal', 'entrainer', 'stats'];
-  const bandeauInvite = (k) => (invite.value && !utilisateur.value && AVEC_BANDEAU.includes(k)) ? (
-    <a
-      href="#"
-      onClick={(e) => { e.preventDefault(); quitterInvite(); }}
-      style="display:flex;align-items:center;justify-content:center;gap:6px;background:#FFFBEF;border-bottom:1px solid #F3E2A8;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;"
-      dangerouslySetInnerHTML={{ __html: t('invite_banner') }}
-    />
-  ) : null;
 
   return (
     <>
@@ -321,7 +307,6 @@ function App() {
           return (
             <div class="rail-pan" key={k}>
               <div class="pan-scroll" ref={(n) => { defileurs.current[k] = n; if (k === onglet) defileur.el = n; }}>
-                {bandeauInvite(k)}
                 <div class="conteneur conteneur--nu">
                   {k === 'journal' && voletUtilisateur}
                   <Page />

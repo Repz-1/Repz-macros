@@ -1,22 +1,55 @@
-import { useState } from 'preact/hooks';
-import { connexion, connexionGoogle, inscription, messageErreurAuth, entrerInvite } from '../services/firebase.js';
+import { useState, useEffect, useRef } from 'preact/hooks';
+import { connexion, connexionGoogle, inscription, messageErreurAuth } from '../services/firebase.js';
+import { normPseudo, formePseudo, pseudoDisponible } from '../services/pseudo.js';
 import { t } from '../i18n/index.js';
 
 // Ecran de connexion / inscription — sobre, palette BelFit.
 export function LoginScreen() {
   const [mode, setMode] = useState('connexion');
   const [email, setEmail] = useState('');
+  const [pseudo, setPseudo] = useState('');
   const [mdp, setMdp] = useState('');
   const [erreur, setErreur] = useState('');
   const [chargement, setChargement] = useState(false);
 
+  // Etat du nom d'utilisateur : 'vide' | 'invalide' | 'verif' | 'libre' | 'pris'
+  const [etatPseudo, setEtatPseudo] = useState('vide');
+  const [notePseudo, setNotePseudo] = useState('');
+  const dernierePseudo = useRef('');
+
+  // Disponibilite verifiee au fil de la frappe, avec un temps mort de
+  // 450 ms (v1) : on n'interroge pas le serveur a chaque lettre.
+  useEffect(() => {
+    if (mode !== 'inscription') return;
+    const p = normPseudo(pseudo);
+    dernierePseudo.current = p;
+
+    const forme = formePseudo(p);
+    if (forme === 'vide') { setEtatPseudo('vide'); setNotePseudo(t('register_pseudo_hint')); return; }
+    if (forme === 'trop_court') { setEtatPseudo('invalide'); setNotePseudo(t('pseudo_court')); return; }
+    if (forme) { setEtatPseudo('invalide'); setNotePseudo(t('pseudo_caracteres')); return; }
+
+    setEtatPseudo('verif'); setNotePseudo(t('pseudo_verif'));
+    const id = setTimeout(async () => {
+      const d = await pseudoDisponible(p);
+      if (dernierePseudo.current !== p) return;   // la frappe a continue
+      if (d.disponible) { setEtatPseudo('libre'); setNotePseudo(d.horsLigne ? t('register_pseudo_hint') : t('pseudo_libre')); }
+      else { setEtatPseudo('pris'); setNotePseudo(t(d.raison === 'reserve' ? 'pseudo_reserve' : 'pseudo_pris')); }
+    }, 450);
+    return () => clearTimeout(id);
+  }, [pseudo, mode]);
+
   const valider = async (e) => {
     e.preventDefault();
     setErreur('');
+    if (mode === 'inscription' && etatPseudo !== 'libre') {
+      setErreur(t('pseudo_invalide'));
+      return;
+    }
     setChargement(true);
     try {
       if (mode === 'connexion') await connexion(email.trim(), mdp);
-      else await inscription(email.trim(), mdp);
+      else await inscription(email.trim(), mdp, pseudo);
       // onAuthStateChanged fera basculer l'app tout seul
     } catch (err) {
       setErreur(messageErreurAuth(err.code));
@@ -46,9 +79,25 @@ export function LoginScreen() {
 
       <form onSubmit={valider} class="login-form">
         <input
-          type="email" placeholder={t("email")} value={email}
-          onInput={e => setEmail(e.currentTarget.value)} required autocomplete="email"
+          type={mode === 'connexion' ? 'text' : 'email'}
+          placeholder={mode === 'connexion' ? t('login_identifiant') : t('email')}
+          value={email}
+          onInput={e => setEmail(e.currentTarget.value)} required
+          autocomplete={mode === 'connexion' ? 'username' : 'email'}
+          autocapitalize="none" spellcheck={false}
         />
+
+        {mode === 'inscription' && (
+          <>
+            <input
+              type="text" placeholder={t('register_pseudo')} value={pseudo}
+              onInput={e => setPseudo(e.currentTarget.value)} required
+              autocomplete="username" autocapitalize="none" spellcheck={false}
+              maxLength={20}
+            />
+            <div class={'login-pseudo-note login-pseudo-note--' + etatPseudo}>{notePseudo}</div>
+          </>
+        )}
         <input
           type="password" placeholder={t("mdp")} value={mdp}
           onInput={e => setMdp(e.currentTarget.value)} required
@@ -66,10 +115,6 @@ export function LoginScreen() {
       >
         {mode === 'connexion' ? t('pas_compte') : t('deja_compte')}
       </button>
-
-      <div class="login-sep"><span>ou</span></div>
-      <button class="login-invite" onClick={entrerInvite}>{t('essayer_sans_compte')}</button>
-      <p class="login-invite-note">{t('invite_note')}</p>
     </div>
   );
 }

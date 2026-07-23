@@ -2,8 +2,10 @@ import { initializeApp } from 'firebase/app';
 import {
   getAuth, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
+  signInWithCustomToken, updateProfile,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
 } from 'firebase/auth';
+import { normPseudo, jetonParPseudo, reserverPseudo } from './pseudo.js';
 import { signal, computed } from '@preact/signals';
 
 // ============================================================
@@ -29,39 +31,30 @@ export const auth = getAuth(app);
 export const utilisateur = signal(null);
 export const authPrete = signal(false);
 
-// Mode invite : essai sans compte. Les donnees restent LOCALES
-// (aucune sync cloud) jusqu'a la creation d'un vrai compte.
-const CLE_INVITE = 'belfit_v2_invite';
-export const invite = signal(localStorage.getItem(CLE_INVITE) === '1');
+// Le mode invite a ete retire : on ouvre desormais un compte des le
+// depart. Le drapeau des anciennes sessions est purge au chargement
+// pour qu'aucun appareil ne reste bloque dans un etat qui n'existe plus.
+try { localStorage.removeItem('belfit_v2_invite'); } catch (e) {}
 
-export function entrerInvite() {
-  try { localStorage.setItem(CLE_INVITE, '1'); } catch (e) {}
-  invite.value = true;
-}
-export function quitterInvite() {
-  try { localStorage.removeItem(CLE_INVITE); } catch (e) {}
-  invite.value = false;
-}
-
-// Identite courante : uid du compte, '__invite__' si mode invite, sinon null.
-// Les stores s'y branchent : le meme code marche pour les deux cas.
-export const identite = computed(() =>
-  utilisateur.value ? utilisateur.value.uid : (invite.value ? '__invite__' : null)
-);
+// Identite courante : uid du compte, sinon null.
+export const identite = computed(() => utilisateur.value ? utilisateur.value.uid : null);
 
 onAuthStateChanged(auth, (u) => {
   utilisateur.value = u;
   authPrete.value = true;
-  // Un vrai compte prend le dessus sur l'essai sans compte, quelle que
-  // soit la voie empruntee (e-mail, Google, Apple, session retrouvee).
-  // Sans cela, le bandeau « Mode decouverte » restait affiche a un
-  // utilisateur pourtant connecte.
-  if (u && invite.value) quitterInvite();
 });
 
 // --- Actions ---
-export async function connexion(email, mdp) {
-  return signInWithEmailAndPassword(auth, email, mdp);
+/**
+ * Connexion par identifiant : e-mail OU nom d'utilisateur.
+ * Regle reprise de la v1 : un identifiant sans arobase est traite
+ * comme un pseudo, resolu cote serveur (l'e-mail ne sort jamais).
+ */
+export async function connexion(identifiant, mdp) {
+  const id = String(identifiant || '').trim();
+  if (id.includes('@')) return signInWithEmailAndPassword(auth, id, mdp);
+  const jeton = await jetonParPseudo(normPseudo(id), mdp);
+  return signInWithCustomToken(auth, jeton);
 }
 
 function memoriserPrenom(user) {
@@ -80,7 +73,6 @@ export async function connexionGoogle() {
   try {
     const cred = await signInWithPopup(auth, provider);
     memoriserPrenom(cred.user);
-    quitterInvite();
     return cred.user;
   } catch (e) {
     if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user'
@@ -95,11 +87,27 @@ export async function connexionGoogle() {
 
 // Retour de redirection Google : recupere la session au chargement.
 getRedirectResult(auth).then(cred => {
-  if (cred && cred.user) { memoriserPrenom(cred.user); quitterInvite(); }
+  if (cred && cred.user) { memoriserPrenom(cred.user); }
 }).catch(() => {});
 
-export async function inscription(email, mdp) {
-  return createUserWithEmailAndPassword(auth, email, mdp);
+/**
+ * Inscription : e-mail + nom d'utilisateur + mot de passe.
+ * Le pseudo est reserve cote serveur juste apres la creation du
+ * compte. Si la reservation echoue (pseudo pris entre-temps), le
+ * compte est supprime : pas de compte orphelin sans pseudo. Meme
+ * enchainement qu'en v1 (index.html).
+ */
+export async function inscription(email, mdp, pseudo) {
+  const cred = await createUserWithEmailAndPassword(auth, String(email).trim(), mdp);
+  try {
+    await reserverPseudo(cred.user, normPseudo(pseudo));
+  } catch (e) {
+    try { await cred.user.delete(); } catch (e2) {}
+    throw { code: e.message === 'pris' ? 'pseudo/pris' : 'pseudo/invalide' };
+  }
+  try { await updateProfile(cred.user, { displayName: normPseudo(pseudo) }); } catch (e) {}
+  try { localStorage.setItem('repz_firstName', normPseudo(pseudo)); } catch (e) {}
+  return cred;
 }
 
 export async function deconnexion() {
@@ -117,6 +125,9 @@ export function messageErreurAuth(code) {
     'auth/weak-password': 'Mot de passe trop court (6 caractères min.)',
     'auth/too-many-requests': 'Trop de tentatives, réessaie dans un moment',
     'auth/network-request-failed': 'Pas de connexion internet',
+    // Identifiant sans arobase : la resolution du pseudo a echoue.
+    'pseudo/pris': 'Ce nom d\'utilisateur est déjà pris',
+    'pseudo/invalide': 'Choisis un nom d\'utilisateur valide et disponible',
   };
   return messages[code] || 'Erreur de connexion, réessaie';
 }
