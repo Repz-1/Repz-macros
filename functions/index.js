@@ -447,6 +447,9 @@ const RESEND_API_KEY = defineSecret("RESEND_API_KEY");
 /** Expediteur : doit correspondre au domaine verifie chez Resend. */
 const EXPEDITEUR = "BELFIT <noreply@belfit.be>";
 
+/** Ou arrivent les reponses : noreply n'est pas une vraie boite. */
+const REPONSE_A = "contact@belfit.be";
+
 /** Modele du message, en trois langues. */
 const TEXTES = {
   fr: {
@@ -559,6 +562,7 @@ exports.mailReinitialisation = onRequest(
         },
         body: JSON.stringify({
           from: EXPEDITEUR,
+          reply_to: REPONSE_A,
           to: [email],
           subject: T.objet,
           html: modeleMail(lien, langue),
