@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'preact/hooks';
 import { connexion, connexionGoogle, inscription, messageErreurAuth } from '../services/firebase.js';
 import { normPseudo, formePseudo, pseudoDisponible } from '../services/pseudo.js';
 import { t } from '../i18n/index.js';
+import { programmeEnAttente, prenomEnAttente } from './Bienvenue.jsx';
 
 // Force du mot de passe : memes regles qu'en v1 (index.html).
 // 8 caracteres minimum, avec majuscule, minuscule, chiffre et symbole.
@@ -36,10 +37,12 @@ const ACCUEILS = ['hello_1', 'hello_2', 'hello_3', 'hello_4', 'hello_5', 'hello_
 
 // Ecran de connexion / inscription — sobre, palette BelFit.
 export function LoginScreen() {
-  const [mode, setMode] = useState('connexion');
+  // Un programme construit pendant l'accueil attend d'etre sauvegarde :
+  // on ouvre directement l'inscription, prenom deja rempli.
+  const [mode, setMode] = useState(() => programmeEnAttente() ? 'inscription' : 'connexion');
   const [accueil] = useState(() => ACCUEILS[Math.floor(Math.random() * ACCUEILS.length)]);
   const [email, setEmail] = useState('');
-  const [prenom, setPrenom] = useState('');
+  const [prenom, setPrenom] = useState(() => prenomEnAttente());
   const [pseudo, setPseudo] = useState('');
   const [mdp, setMdp] = useState('');
   const [mdp2, setMdp2] = useState('');
@@ -102,7 +105,8 @@ export function LoginScreen() {
     <div class="login-ecran">
       <img src="/belfit-logo-b.png" alt="BelFit" class="login-logo" />
       <h1 class="login-titre">
-        {mode === 'connexion' ? t(accueil) : t('hello_new')}
+        {mode === 'connexion' ? t(accueil)
+          : (prenom ? `Garde ton programme, ${prenom}` : t('hello_new'))}
       </h1>
 
       <button

@@ -5,7 +5,7 @@ import './styles/design-system.css';
 import './styles/journal-socle.css';
 import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
-import { repas, nouvelleJournee, donneesPretes } from './store/journal.js';
+import { repas, objectifs, nouvelleJournee, donneesPretes } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
@@ -30,6 +30,7 @@ import { Courses } from './components/Courses.jsx';
 import { ActionsRapides } from './components/ActionsRapides.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
 import { MealPage } from './components/MealPage.jsx';
+import { Bienvenue, bienvenueFaite, programmeEnAttente, purgerProgrammeEnAttente } from './components/Bienvenue.jsx';
 import { repasOuvertId } from './components/MealCard.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
 import { MesPlats } from './components/MesPlats.jsx';
@@ -101,7 +102,27 @@ function App() {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>…</div>;
   }
   if (!utilisateur.value) {
+    // Le questionnaire vient AVANT le compte : la personne construit son
+    // programme, puis l'inscription devient le geste qui le sauvegarde.
+    if (!bienvenueFaite.value) {
+      return (
+        <Bienvenue
+          versConnexion={() => { bienvenueFaite.value = true; }}
+          versInscription={() => {}}
+        />
+      );
+    }
     return <LoginScreen />;
+  }
+
+  // Programme construit pendant l'accueil : applique une fois le compte
+  // cree, apres le premier chargement du store (sinon il serait ecrase).
+  const prog = programmeEnAttente();
+  if (prog) {
+    setTimeout(() => {
+      objectifs.value = { kcal: prog.kcal, prot: prog.prot, carbs: prog.carbs, lip: prog.lip };
+      purgerProgrammeEnAttente();
+    }, 1500);
   }
   if (!donneesPretes.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;

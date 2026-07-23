@@ -1911,3 +1911,124 @@
   box-shadow: 0 1px 3px rgba(60, 50, 40, .12);
 }
 .pg-journal .mc-ing-cuisson.est-cuit span.actif { color: #8F6200; }
+
+/* ============================================================
+   PARCOURS D'ACCUEIL — questionnaire avant inscription.
+   Palette BELFIT stricte : creme en fond, chapitres marques par
+   trois accents (or, noir, brun dore). Une question par ecran,
+   la justification sous le titre, le vrai calcul a la fin.
+   ============================================================ */
+.bv-ecran {
+  position: fixed; inset: 0; z-index: 5;
+  background: #F8F8F8;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  display: flex; flex-direction: column;
+  padding: calc(14px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+}
+.bv-tete { margin-bottom: 6px; }
+.bv-badge {
+  display: inline-block; font-size: 12px; font-weight: 800;
+  padding: 5px 12px; border-radius: 999px; letter-spacing: .01em;
+}
+.bv-barres { display: flex; gap: 6px; margin-top: 10px; }
+.bv-barre {
+  flex: 1; height: 4px; border-radius: 4px; background: #E9E5DC; overflow: hidden;
+}
+.bv-barre-plein { height: 100%; border-radius: 4px; transition: width .25s ease; }
+
+.bv-corps {
+  flex: 1; display: flex; flex-direction: column;
+  max-width: 560px; width: 100%; margin: 0 auto; padding-top: 16px;
+}
+.bv-logo { width: 54px; height: auto; margin: 8px 0 14px; }
+.bv-titre {
+  font-size: 24px; font-weight: 800; letter-spacing: -.02em;
+  color: #191919; margin: 0 0 8px; line-height: 1.2;
+}
+.bv-just {
+  font-size: 13.5px; font-weight: 500; color: #8A8580;
+  line-height: 1.5; margin: 0 0 18px;
+}
+
+/* Cartes de reponse : blanches, choix marque a l'or */
+.bv-carte {
+  display: flex; align-items: center; gap: 13px; text-align: left;
+  background: #fff; border: 1.5px solid #E7E2D9; border-radius: 16px;
+  padding: 14px 15px; margin-bottom: 10px; cursor: pointer; font-family: inherit;
+  transition: border-color .12s, transform .08s;
+}
+.bv-carte:active { transform: scale(.99); }
+.bv-carte--choisie { border-color: #F7B500; box-shadow: 0 4px 14px rgba(247, 181, 0, .16); }
+.bv-emo { font-size: 22px; flex: none; }
+.bv-carte-txt { display: flex; flex-direction: column; gap: 2px; }
+.bv-carte-txt b { font-size: 15px; font-weight: 800; color: #191919; }
+.bv-carte-txt i { font-style: normal; font-size: 12.5px; font-weight: 500; color: #8A8580; }
+
+/* Pilules (sexe) et tuiles (nombres) */
+.bv-rangee { display: flex; gap: 10px; margin-bottom: 16px; }
+.bv-pilule {
+  flex: 1; padding: 13px 0; border-radius: 999px; cursor: pointer;
+  background: #fff; border: 1.5px solid #E7E2D9; font-family: inherit;
+  font-size: 14.5px; font-weight: 700; color: #191919;
+}
+.bv-pilule--choisie { border-color: #F7B500; background: #FFFBEF; }
+.bv-grille { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.bv-tuile {
+  padding: 16px 0; border-radius: 14px; cursor: pointer;
+  background: #fff; border: 1.5px solid #E7E2D9; font-family: inherit;
+  font-size: 15px; font-weight: 800; color: #191919;
+}
+.bv-tuile--choisie { border-color: #F7B500; background: #FFFBEF; }
+
+/* Champs */
+.bv-label { font-size: 13px; font-weight: 700; color: #4B4A47; margin: 6px 2px 6px; }
+.bv-champ {
+  width: 100%; padding: 14px; border-radius: 14px; margin-bottom: 12px;
+  border: 1.5px solid #E7E2D9; background: #fff; font-family: inherit;
+  font-size: 16px; font-weight: 600; color: #191919;
+}
+.bv-champ:focus { outline: none; border-color: #F7B500; }
+
+/* Boutons */
+.bv-suivant {
+  margin-top: auto; padding: 15px 0; border: none; border-radius: 999px;
+  background: #191919; color: #fff; font-family: inherit;
+  font-size: 15.5px; font-weight: 800; cursor: pointer;
+}
+.bv-suivant:disabled { opacity: .35; }
+.bv-suivant:active:not(:disabled) { transform: scale(.99); }
+.bv-lien {
+  margin-top: 14px; background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 13.5px; font-weight: 700; color: #8F6200;
+}
+.bv-retour {
+  position: fixed; left: 16px; bottom: calc(18px + env(safe-area-inset-bottom));
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 1px solid #ececec; color: #191919;
+  font-size: 19px; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+
+/* Resultat : le vrai calcul */
+.bv-resultat {
+  background: linear-gradient(160deg, #FFFBEF 0%, #FFFFFF 45%);
+  border: 1.5px solid #F3E2A8; border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(247, 181, 0, .12);
+  padding: 22px 20px; text-align: center; margin-bottom: 20px;
+}
+.bv-res-kcal {
+  font-size: 44px; font-weight: 800; color: #191919; line-height: 1;
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.bv-res-kcal span { font-size: 15px; font-weight: 700; color: #8A8580; letter-spacing: 0; }
+.bv-res-detail { font-size: 12.5px; font-weight: 600; color: #8A8580; margin-top: 10px; line-height: 1.5; }
+.bv-res-macros {
+  display: flex; justify-content: center; gap: 26px; margin-top: 16px;
+  padding-top: 16px; border-top: 1px solid #ECE8DF;
+}
+.bv-res-m { display: flex; flex-direction: column; }
+.bv-res-m b { font-size: 20px; font-weight: 800; color: #191919; font-variant-numeric: tabular-nums; }
+.bv-res-m span { font-size: 11.5px; font-weight: 700; color: #8A8580; }
+.bv-note {
+  font-size: 12.5px; font-weight: 500; color: #8A8580;
+  text-align: center; line-height: 1.5; margin: 12px 0 0;
+}
