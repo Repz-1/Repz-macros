@@ -20,6 +20,14 @@ const CLE_REPONSES = 'belfit_v2_bienvenue_reponses';
 
 export const bienvenueFaite = signal(localStorage.getItem(CLE_FAIT) === '1');
 
+/** Marque le parcours comme fait — utilise a la deconnexion : quelqu'un
+ *  qui se deconnecte a forcement un compte, il doit retrouver l'ecran
+ *  de connexion, pas le questionnaire des nouveaux venus. */
+export function marquerBienvenueFaite() {
+  try { localStorage.setItem(CLE_FAIT, '1'); } catch (e) {}
+  bienvenueFaite.value = true;
+}
+
 /** Programme calcule pendant l'accueil, a appliquer apres l'inscription. */
 export function programmeEnAttente() {
   try { return JSON.parse(localStorage.getItem(CLE_PROGRAMME)); } catch (e) { return null; }

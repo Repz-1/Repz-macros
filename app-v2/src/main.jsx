@@ -30,7 +30,7 @@ import { Courses } from './components/Courses.jsx';
 import { ActionsRapides } from './components/ActionsRapides.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
 import { MealPage } from './components/MealPage.jsx';
-import { Bienvenue, bienvenueFaite, programmeEnAttente, purgerProgrammeEnAttente } from './components/Bienvenue.jsx';
+import { Bienvenue, bienvenueFaite, marquerBienvenueFaite, programmeEnAttente, purgerProgrammeEnAttente } from './components/Bienvenue.jsx';
 import { OffrePremium, verifierOffrePremium } from './components/OffrePremium.jsx';
 import { repasOuvertId } from './components/MealCard.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
@@ -318,7 +318,7 @@ function App() {
           <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
         ))}
       </div>
-      <button onClick={deconnexion}>{t('deconnexion')}</button>
+      <button onClick={() => { marquerBienvenueFaite(); deconnexion(); }}>{t('deconnexion')}</button>
     </div>
   ) : null;
 
