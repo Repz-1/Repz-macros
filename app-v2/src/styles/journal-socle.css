@@ -1920,7 +1920,9 @@
    ============================================================ */
 .bv-ecran {
   position: fixed; inset: 0; z-index: 5;
-  background: #F8F8F8;
+  /* Le degrade chaud de la v1 : on arrive chez BELFIT, pas sur un
+     formulaire gris. */
+  background: linear-gradient(180deg, #FDF3D8 0%, #FAF7EF 34%, #F8F8F8 62%);
   overflow-y: auto; -webkit-overflow-scrolling: touch;
   display: flex; flex-direction: column;
   padding: calc(14px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
@@ -1992,10 +1994,13 @@
 /* Boutons */
 .bv-suivant {
   margin-top: auto; padding: 15px 0; border: none; border-radius: 999px;
-  background: #191919; color: #fff; font-family: inherit;
-  font-size: 15.5px; font-weight: 800; cursor: pointer;
+  /* Le CTA porte l'or de la marque, comme sur l'ecran de connexion v1 */
+  background: linear-gradient(135deg, #FFD86B, #F7B500); color: #181818;
+  font-family: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 1px 2px rgba(24, 24, 24, .10), 0 10px 26px rgba(247, 181, 0, .32);
+  transition: opacity .15s, transform .08s;
 }
-.bv-suivant:disabled { opacity: .35; }
+.bv-suivant:disabled { opacity: .38; box-shadow: none; }
 .bv-suivant:active:not(:disabled) { transform: scale(.99); }
 .bv-lien {
   margin-top: 14px; background: none; border: none; cursor: pointer;
@@ -2079,7 +2084,39 @@
 .pg-journal .dn-rappel:active { transform: scale(.99); }
 
 /* Ecran d'accueil du parcours : la marque d'abord, la question ensuite */
-.bv-corps--accueil { justify-content: center; text-align: center; padding-bottom: 8vh; }
-.bv-corps--accueil .bv-titre { font-size: 27px; }
-.bv-logo--grand { width: 72px; margin: 0 auto 18px; filter: drop-shadow(0 8px 24px rgba(247, 181, 0, .22)); }
-.bv-corps--accueil .bv-suivant { margin-top: 26px; }
+.bv-corps--accueil { justify-content: center; padding-bottom: 6vh; }
+.bv-carte-accueil {
+  background: #fff; border-radius: 28px; padding: 40px 26px 30px;
+  text-align: center;
+  box-shadow: 0 22px 60px rgba(60, 45, 20, .10), 0 2px 8px rgba(60, 45, 20, .04);
+}
+.bv-logo--grand {
+  width: 84px; height: auto; margin: 0 auto 14px; display: block;
+  filter: drop-shadow(0 10px 28px rgba(247, 181, 0, .35));
+}
+.bv-marque {
+  font-size: 30px; font-weight: 800; letter-spacing: .04em; color: #191919;
+}
+.bv-marque span { color: #DFA004; }
+.bv-tagline {
+  font-size: 14.5px; font-weight: 600; color: #6B6862; margin: 6px 0 22px;
+}
+.bv-promesse {
+  font-size: 14px; font-weight: 500; color: #4B4A47; line-height: 1.55;
+  margin: 0 0 24px; padding: 14px 16px;
+  background: #FFFBEF; border: 1.5px solid #F3E2A8; border-radius: 16px;
+  text-align: left;
+}
+.bv-promesse b { font-weight: 800; color: #191919; }
+.bv-carte-accueil .bv-suivant { width: 100%; margin-top: 0; }
+.bv-carte-accueil .bv-lien { margin-top: 16px; color: #6B6862; font-weight: 600; }
+.bv-carte-accueil .bv-lien b { color: #8F6200; font-weight: 800; }
+
+/* Entree en douceur : chaque ecran du parcours glisse a sa place */
+@media (prefers-reduced-motion: no-preference) {
+  .bv-corps { animation: bv-entre 260ms cubic-bezier(.22, .8, .28, 1) both; }
+  @keyframes bv-entre {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}

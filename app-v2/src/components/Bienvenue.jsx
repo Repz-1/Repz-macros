@@ -163,14 +163,17 @@ export function Bienvenue({ versConnexion, versInscription }) {
       {/* ---------- Chapitre 1 : Toi ---------- */}
       {ecran === 'accueil' && (
         <div class="bv-corps bv-corps--accueil">
-          <img src="/belfit-logo-b.png" alt="BELFIT" class="bv-logo bv-logo--grand" />
-          <h1 class="bv-titre">Ton coach nutrition<br />et entraînement</h1>
-          <p class="bv-just">
-            Réponds à 8 questions — 2 minutes — et repars avec tes calories
-            et tes macros, calculées pour de vrai.
-          </p>
-          <button class="bv-suivant" onClick={() => setEtape(1)}>Commencer</button>
-          <button class="bv-lien" onClick={versConnexion}>Déjà un compte ? Se connecter</button>
+          <div class="bv-carte-accueil">
+            <img src="/belfit-logo-b.png" alt="" class="bv-logo--grand" />
+            <div class="bv-marque">BEL<span>FIT</span></div>
+            <p class="bv-tagline">Ton coach nutrition et entraînement</p>
+            <p class="bv-promesse">
+              8 questions, 2 minutes — et repars avec <b>tes calories et tes
+              macros</b>, calculées pour de vrai.
+            </p>
+            <button class="bv-suivant" onClick={() => setEtape(1)}>Commencer</button>
+            <button class="bv-lien" onClick={versConnexion}>Déjà un compte ? <b>Se connecter</b></button>
+          </div>
         </div>
       )}
 
