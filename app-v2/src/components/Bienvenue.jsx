@@ -28,6 +28,13 @@ export function marquerBienvenueFaite() {
   bienvenueFaite.value = true;
 }
 
+/** Rouvre le parcours d'accueil : pour un nouveau venu sur un appareil
+ *  ou quelqu'un s'est deja connecte (le drapeau y est pose). */
+export function relancerBienvenue() {
+  try { localStorage.removeItem(CLE_FAIT); } catch (e) {}
+  bienvenueFaite.value = false;
+}
+
 /** Programme calcule pendant l'accueil, a appliquer apres l'inscription. */
 export function programmeEnAttente() {
   try { return JSON.parse(localStorage.getItem(CLE_PROGRAMME)); } catch (e) { return null; }
