@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { weightLog } from '../store/stats.js';
 import { WeightModal } from './Stats.jsx';
 import { t } from '../i18n/index.js';
@@ -24,7 +25,7 @@ export function WeightNote() {
         </span>
         <span class="wn-cta">{t('weigh_add')}</span>
       </div>
-      {modale && <WeightModal fermer={() => setModale(false)} />}
+      {modale && createPortal(<WeightModal fermer={() => setModale(false)} />, document.body)}
     </>
   );
 }

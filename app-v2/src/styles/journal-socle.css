@@ -1735,3 +1735,40 @@
 
 /* Chevron de navigation : la carte repas mene a une page */
 .pg-journal .mc-chevron--nav { font-size: 22px; transform: none; margin-top: -2px; }
+
+/* ============================================================
+   MODALE GENERIQUE — CSS v1 (app.html) recopie tel quel.
+   Portalisee dans <body> : classes non prefixees, comme la
+   modale hydratation. Les feuilles de page (.pg-stats, .pg-seance)
+   gardent la main chez elles grace a leur specificite superieure.
+   ============================================================ */
+.modal-overlay {
+    display:none; position:fixed; left:0; right:0;
+    top:var(--vv-top, 0px); height:var(--vv-h, 100%);
+    background:rgba(0,0,0,.5);
+    align-items:center; justify-content:center; z-index:100001;
+    padding:20px 20px calc(20px + 74px);
+}
+.modal-overlay.show { display:flex; }
+.modal {
+    background:white; border-radius:20px; padding:20px 20px 0; max-width:360px; width:100%;
+    max-height:calc(var(--vv-h, 100vh) - 110px); overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    scroll-padding-bottom:80px;
+}
+.modal .modal-btns {
+    position:sticky; bottom:0; background:#fff; padding:14px 0 18px;
+    margin-top:18px; z-index:2;
+    box-shadow:0 -10px 14px -10px rgba(0,0,0,.10);
+}
+.modal h3 { margin-bottom:16px; font-size:17px; padding-right:38px; }
+.modal label { display:block; font-size:13px; font-weight:600; margin:10px 0 4px; color:#475569; }
+.modal input { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:15px; }
+.modal-btns { display:flex; gap:8px; margin-top:18px; }
+.modal-btns button { flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:inherit; }
+.modal-save { background:#181818; color:#fff; }
+.modal-cancel { background:#e2e8f0; color:#475569; }
+.modal .modal-h3-ic { display:flex; align-items:center; gap:8px; }
+.modal .modal-h3-ic .ic { width:20px; height:20px; flex:none; color:#F7B500; }
+.modal .wm-last { font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
+.modal .wm-last b { color:#191919; }
