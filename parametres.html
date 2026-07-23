@@ -496,7 +496,7 @@ function supprimerCompte(){
         localStorage.removeItem('repz_premium');
         sessionStorage.removeItem('repz_premSynced');
         alert(t('js_acc_deleted'));
-        window.location.href = destinationSortie();
+        window.location.href = destinationSortie(true);
     }).catch((e)=>{
         fermerOverlay('delModal');
         if(e && e.code === 'auth/requires-recent-login'){
@@ -603,13 +603,18 @@ function purgerDonneesLocales(){
 
 // D'ou vient-on ? La v2 ouvre cette page avec ?de=v2 : toute sortie
 // (deconnexion, suppression, garde) doit ramener au meme endroit.
-function destinationSortie(){
-    return window.location.search.indexOf('de=v2') !== -1 ? '/v2/' : 'index.html';
+// Les deux generations d'app ne rangent pas leur session au meme
+// endroit (v1 compat : localStorage ; v2 modulaire : IndexedDB).
+// Se deconnecter ici ne suffit donc pas pour la v2 : on lui porte
+// l'ordre (?logout=1), elle coupera sa propre session en arrivant.
+function destinationSortie(avecLogout){
+    if(window.location.search.indexOf('de=v2') === -1) return 'index.html';
+    return avecLogout ? '/v2/?logout=1' : '/v2/';
 }
 
 function logout(){
     purgerDonneesLocales();
-    auth.signOut().finally(()=>{ window.location.href = destinationSortie(); });
+    auth.signOut().finally(()=>{ window.location.href = destinationSortie(true); });
 }
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>

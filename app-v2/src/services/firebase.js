@@ -39,6 +39,17 @@ try { localStorage.removeItem('belfit_v2_invite'); } catch (e) {}
 // Identite courante : uid du compte, sinon null.
 export const identite = computed(() => utilisateur.value ? utilisateur.value.uid : null);
 
+// Ordre de deconnexion porte par l'URL (venu de la page reglages v1,
+// dont la session ne partage pas le meme magasin que la notre) : on
+// coupe notre propre session avant toute chose, puis on nettoie l'URL.
+try {
+  if (new URLSearchParams(window.location.search).get('logout') === '1') {
+    signOut(auth).catch(() => {});
+    localStorage.setItem('belfit_v2_bienvenue_fait', '1');
+    history.replaceState(null, '', window.location.pathname);
+  }
+} catch (e) { /* URL intouchable : tant pis, l'ecran de connexion suffira */ }
+
 onAuthStateChanged(auth, (u) => {
   utilisateur.value = u;
   authPrete.value = true;

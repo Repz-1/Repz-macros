@@ -12,7 +12,7 @@
  * Les assets (images, polices, JS) restent en cache d'abord : ils
  * sont versionnes par le nom de cache, donc jamais perimes.
  */
-const CACHE = 'belfit-v172';
+const CACHE = 'belfit-v173';
 const CORE = ['./index.html','./main.html','./i18n.js','./i18n-strings.js','./app.html','./manifest.json','./icon-192-v7.png','./icon-512-v7.png','./belfit-logo-header.png'];
 
 self.addEventListener('install', e => {
