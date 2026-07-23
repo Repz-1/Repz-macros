@@ -33,6 +33,7 @@ function manquesMdp(pw) {
 export function LoginScreen() {
   const [mode, setMode] = useState('connexion');
   const [email, setEmail] = useState('');
+  const [prenom, setPrenom] = useState('');
   const [pseudo, setPseudo] = useState('');
   const [mdp, setMdp] = useState('');
   const [mdp2, setMdp2] = useState('');
@@ -77,12 +78,13 @@ export function LoginScreen() {
         return;
       }
       if (mdp !== mdp2) { setErreur('Les deux mots de passe ne correspondent pas'); return; }
+      if (!prenom.trim()) { setErreur(t('js_enter_firstname')); return; }
       if (!consent) { setErreur("Merci d'accepter la politique de confidentialité pour créer ton compte"); return; }
     }
     setChargement(true);
     try {
       if (mode === 'connexion') await connexion(email.trim(), mdp);
-      else await inscription(email.trim(), mdp, pseudo);
+      else await inscription(email.trim(), mdp, pseudo, prenom.trim());
       // onAuthStateChanged fera basculer l'app tout seul
     } catch (err) {
       setErreur(messageErreurAuth(err.code));
@@ -111,6 +113,13 @@ export function LoginScreen() {
       <div class="login-ou"><span>{t('ou')}</span></div>
 
       <form onSubmit={valider} class="login-form">
+        {mode === 'inscription' && (
+          <input
+            type="text" placeholder={t('register_firstname_ph')} value={prenom}
+            onInput={e => setPrenom(e.currentTarget.value)} required
+            autocomplete="given-name" maxLength={30}
+          />
+        )}
         <input
           type={mode === 'connexion' ? 'text' : 'email'}
           placeholder={mode === 'connexion' ? t('login_identifiant') : t('email')}

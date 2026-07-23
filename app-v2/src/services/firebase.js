@@ -112,7 +112,7 @@ function genererCodeParrainage() {
  * compte est supprime : pas de compte orphelin sans pseudo. Meme
  * enchainement qu'en v1 (index.html).
  */
-export async function inscription(email, mdp, pseudo) {
+export async function inscription(email, mdp, pseudo, prenom) {
   const cred = await createUserWithEmailAndPassword(auth, String(email).trim(), mdp);
   try {
     await reserverPseudo(cred.user, normPseudo(pseudo));
@@ -120,8 +120,13 @@ export async function inscription(email, mdp, pseudo) {
     try { await cred.user.delete(); } catch (e2) {}
     throw { code: e.message === 'pris' ? 'pseudo/pris' : 'pseudo/invalide' };
   }
-  try { await updateProfile(cred.user, { displayName: normPseudo(pseudo) }); } catch (e) {}
-  try { localStorage.setItem('repz_firstName', normPseudo(pseudo)); } catch (e) {}
+  // Le prenom sert a s'adresser a la personne (message de bienvenue,
+  // e-mails du coach) ; le pseudo, lui, est son identifiant public et
+  // vit dans Firestore, pose par la Cloud Function. Meme repartition
+  // qu'en v1 : displayName = prenom.
+  const p = String(prenom || '').trim();
+  try { await updateProfile(cred.user, { displayName: p }); } catch (e) {}
+  try { localStorage.setItem('repz_firstName', p); } catch (e) {}
 
   // RGPD : preuve du consentement (horodatage + version de la politique),
   // et code de parrainage tire au sort. Non bloquant : un echec reseau
