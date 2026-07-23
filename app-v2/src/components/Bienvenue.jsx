@@ -48,7 +48,7 @@ const CHAPITRES = {
 
 // Ordre des ecrans. Chaque question porte sa justification : on dit
 // pourquoi on demande, honnetement, comme un coach le ferait.
-const ECRANS = ['prenom', 'objectif', 'profil', 'mesures', 'activite', 'sport', 'repas', 'faible', 'resultat'];
+const ECRANS = ['accueil', 'prenom', 'objectif', 'profil', 'mesures', 'activite', 'sport', 'repas', 'faible', 'resultat'];
 const CHAPITRE_DE = {
   prenom: 'toi', objectif: 'toi', profil: 'toi', mesures: 'toi',
   activite: 'quotidien', sport: 'quotidien',
@@ -145,7 +145,7 @@ export function Bienvenue({ versConnexion, versInscription }) {
 
   return (
     <div class="bv-ecran">
-      {ecran !== 'resultat' && (
+      {info && ecran !== 'resultat' && (
         <div class="bv-tete">
           <span class="bv-badge" style={{ background: info.accent, color: info.accent === '#F7B500' ? '#191919' : '#fff' }}>
             {info.nom}
@@ -161,20 +161,31 @@ export function Bienvenue({ versConnexion, versInscription }) {
       )}
 
       {/* ---------- Chapitre 1 : Toi ---------- */}
+      {ecran === 'accueil' && (
+        <div class="bv-corps bv-corps--accueil">
+          <img src="/belfit-logo-b.png" alt="BELFIT" class="bv-logo bv-logo--grand" />
+          <h1 class="bv-titre">Ton coach nutrition<br />et entraînement</h1>
+          <p class="bv-just">
+            Réponds à 8 questions — 2 minutes — et repars avec tes calories
+            et tes macros, calculées pour de vrai.
+          </p>
+          <button class="bv-suivant" onClick={() => setEtape(1)}>Commencer</button>
+          <button class="bv-lien" onClick={versConnexion}>Déjà un compte ? Se connecter</button>
+        </div>
+      )}
+
       {ecran === 'prenom' && (
         <div class="bv-corps">
-          <img src="/belfit-logo-b.png" alt="BELFIT" class="bv-logo" />
-          <h1 class="bv-titre">Construisons ton programme</h1>
-          <p class="bv-just">8 questions, 2 minutes. À la fin : tes calories et tes macros, calculées pour de vrai.</p>
+          <h1 class="bv-titre">Faisons connaissance.<br />Comment tu t'appelles ?</h1>
+          <p class="bv-just">Ton coach s'adressera à toi par ton prénom — pas « cher utilisateur ».</p>
           <input
             class="bv-champ" placeholder="Ton prénom" value={r.prenom || ''}
             onInput={e => poser('prenom', e.currentTarget.value, false)}
             autocomplete="given-name" maxLength={30} autoFocus
           />
-          <button class="bv-suivant" disabled={!(r.prenom || '').trim()} onClick={() => setEtape(1)}>
-            Commencer
+          <button class="bv-suivant" disabled={!(r.prenom || '').trim()} onClick={() => setEtape(etape + 1)}>
+            Suivant
           </button>
-          <button class="bv-lien" onClick={versConnexion}>Déjà un compte ? Se connecter</button>
         </div>
       )}
 
@@ -301,7 +312,7 @@ export function Bienvenue({ versConnexion, versInscription }) {
         </div>
       )}
 
-      {etape > 0 && ecran !== 'resultat' && (
+      {etape > 1 && ecran !== 'resultat' && (
         <button class="bv-retour" onClick={precedent} aria-label="Retour">←</button>
       )}
     </div>

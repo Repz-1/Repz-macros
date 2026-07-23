@@ -2077,3 +2077,9 @@
   font-size: 12.5px; font-weight: 700; color: #8F6200; line-height: 1.4;
 }
 .pg-journal .dn-rappel:active { transform: scale(.99); }
+
+/* Ecran d'accueil du parcours : la marque d'abord, la question ensuite */
+.bv-corps--accueil { justify-content: center; text-align: center; padding-bottom: 8vh; }
+.bv-corps--accueil .bv-titre { font-size: 27px; }
+.bv-logo--grand { width: 72px; margin: 0 auto 18px; filter: drop-shadow(0 8px 24px rgba(247, 181, 0, .22)); }
+.bv-corps--accueil .bv-suivant { margin-top: 26px; }
