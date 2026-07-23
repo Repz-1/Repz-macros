@@ -52,6 +52,11 @@ export const identite = computed(() =>
 onAuthStateChanged(auth, (u) => {
   utilisateur.value = u;
   authPrete.value = true;
+  // Un vrai compte prend le dessus sur l'essai sans compte, quelle que
+  // soit la voie empruntee (e-mail, Google, Apple, session retrouvee).
+  // Sans cela, le bandeau « Mode decouverte » restait affiche a un
+  // utilisateur pourtant connecte.
+  if (u && invite.value) quitterInvite();
 });
 
 // --- Actions ---

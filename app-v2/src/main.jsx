@@ -304,7 +304,7 @@ function App() {
   // Bandeau « Mode découverte » : copie v1 (script REPZ_INVITE, app.html) —
   // memes styles inline, meme cle i18n. Un appui ramene a l'ecran de connexion.
   const AVEC_BANDEAU = ['journal', 'entrainer', 'stats'];
-  const bandeauInvite = (k) => (invite.value && AVEC_BANDEAU.includes(k)) ? (
+  const bandeauInvite = (k) => (invite.value && !utilisateur.value && AVEC_BANDEAU.includes(k)) ? (
     <a
       href="#"
       onClick={(e) => { e.preventDefault(); quitterInvite(); }}
