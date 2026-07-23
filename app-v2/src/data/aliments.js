@@ -1129,7 +1129,10 @@ export const DB = {
 export function macrosOf(ing){
     const d = DB[ing.name] || (window.__customFoods && window.__customFoods[ing.name]);
     if(!d) return { kcal:0, prot:0, carbs:0, lip:0 };
-    const f = (parseFloat(ing.portion)||0) / 100;
+    // ing.cuit : la quantite pesee l'a ete apres cuisson. On ramene au
+    // poids cru, seul poids auquel se rapportent les valeurs de l'etiquette.
+    const abs = ing.cuit ? (facteurCuisson(ing.name) || 1) : 1;
+    const f = ((parseFloat(ing.portion)||0) / abs) / 100;
     return { kcal:d.kcal*f, prot:d.prot*f, carbs:d.carbs*f, lip:d.lip*f };
 }
 
@@ -1149,7 +1152,8 @@ export const CLES_DETAIL = ['fibres', 'sucres', 'satures', 'sel'];
 export function detailOf(ing) {
   const d = DB[ing.name] || (window.__customFoods && window.__customFoods[ing.name]);
   if (!d) return null;
-  const f = (parseFloat(ing.portion) || 0) / 100;
+  const abs = ing.cuit ? (facteurCuisson(ing.name) || 1) : 1;
+  const f = ((parseFloat(ing.portion) || 0) / abs) / 100;
   let renseigne = false;
   const out = {};
   for (const k of CLES_DETAIL) {
@@ -1264,4 +1268,43 @@ export function scoreRecherche(saisie, nom) {
 
   // A egalite, le nom le plus court passe devant
   return score + Math.max(0, 12 - dispo.length) * 0.1;
+}
+
+// ============================================================
+// CRU / CUIT — facteurs d'absorption
+// L'etiquette d'un paquet donne les valeurs du produit tel qu'il
+// est vendu, donc cru. Or on pese generalement son assiette apres
+// cuisson. Sans correction, 200 g de pates cuites comptees comme
+// crues font plus du double des calories reelles : c'est l'erreur
+// de suivi la plus frequente.
+//
+// Le facteur est le rapport de poids cuit / cru : les feculents
+// absorbent l'eau (les valeurs sont donc divisees d'autant pour
+// 100 g), tandis que les viandes en perdent (facteur < 1, les
+// valeurs augmentent au poids cuit).
+// ============================================================
+
+export const FACTEURS_CUISSON = [
+  { cle: 'pates',    facteur: 2.4, mots: ['pate', 'spaghetti', 'macaroni', 'penne', 'tagliatelle', 'fusilli', 'coquillette', 'nouille', 'lasagne', 'vermicelle'] },
+  { cle: 'riz',      facteur: 2.7, mots: ['riz', 'risotto'] },
+  { cle: 'semoule',  facteur: 2.5, mots: ['semoule', 'couscous', 'boulgour', 'quinoa', 'ebly'] },
+  { cle: 'legumsec', facteur: 2.4, mots: ['lentille', 'pois', 'chiche', 'haricot', 'flageolet', 'feve'] },
+  { cle: 'avoine',   facteur: 3.0, mots: ['avoine', 'flocon', 'porridge'] },
+  { cle: 'viande',   facteur: 0.7, mots: ['poulet', 'dinde', 'boeuf', 'porc', 'veau', 'agneau', 'steak', 'escalope', 'filet', 'saumon', 'cabillaud', 'thon', 'colin', 'merlu', 'crevette'] },
+];
+
+/**
+ * Facteur de cuisson devine a partir du nom, ou null si l'aliment
+ * ne s'y prete pas (huile, fromage, fruit...). On ne propose la
+ * bascule que lorsqu'elle a un sens.
+ */
+export function facteurCuisson(nom) {
+  const mots = motsCles(nom);
+  // Deja precise dans le nom : l'aliment porte sa propre valeur,
+  // aucune conversion a proposer.
+  if (mots.some(m => ['cru', 'crue', 'cuit', 'cuite'].includes(m))) return null;
+  for (const f of FACTEURS_CUISSON) {
+    if (mots.some(m => f.mots.some(x => m.startsWith(x) || x.startsWith(m)))) return f.facteur;
+  }
+  return null;
 }

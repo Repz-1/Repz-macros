@@ -158,6 +158,20 @@ export function ajouterPlat(repasId, plat, nbPortions = 1) {
   );
 }
 
+/**
+ * Bascule un ingredient entre poids cru et poids cuit.
+ * La quantite saisie n'est PAS retouchee : on pese son assiette,
+ * puis on indique ce que represente ce poids. Modifier le chiffre
+ * que la personne vient de taper serait deroutant ; ce sont les
+ * calories qui se recalculent, et c'est bien le but.
+ */
+export function basculerCuisson(repasId, ingId) {
+  repas.value = repas.value.map(r => r.id !== repasId ? r : {
+    ...r,
+    ings: r.ings.map(i => i.id !== ingId ? i : { ...i, cuit: !i.cuit }),
+  });
+}
+
 export function supprimerIngredient(repasId, ingId) {
   repas.value = repas.value.map(r =>
     r.id !== repasId ? r : { ...r, ings: r.ings.filter(i => i.id !== ingId) }

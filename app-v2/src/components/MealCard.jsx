@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { DB, NOMS_ALIMENTS, macrosOf, scoreRecherche } from '../data/aliments.js';
+import { DB, NOMS_ALIMENTS, macrosOf, scoreRecherche, facteurCuisson } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
 import { signal } from '@preact/signals';
 
@@ -26,7 +26,7 @@ import { favoris, estFavori, basculerFavori, plats, macrosPortion } from '../sto
 import { MEAL_SVG, TYPE_SVG, MEAL_NEUTRAL_SVG } from '../data/illustrations.js';
 import {
   totauxRepas, setPortion, ajouterIngredient, ajouterPlat,
-  supprimerIngredient, supprimerRepas, renommerRepas,
+  supprimerIngredient, supprimerRepas, renommerRepas, basculerCuisson,
   fourchetteRepas,
 } from '../store/journal.js';
 
@@ -70,6 +70,7 @@ export function LigneIngredient({ repasId, ing }) {
   const m = macrosOf(ing);
   const [saisie, setSaisie] = useState(String(ing.portion));
   const champQte = useRef(null);
+  const fc = facteurCuisson(ing.name);   // null si la bascule n'a pas de sens
 
   // La valeur peut changer ailleurs (vocal, scan) : on resynchronise.
   useEffect(() => { setSaisie(String(ing.portion)); }, [ing.portion]);
@@ -97,6 +98,18 @@ export function LigneIngredient({ repasId, ing }) {
             ? `1 ${d.unitLabel || 'pièce'} = ${Math.round((d.kcal || 0) * d.unit / 100)} kcal`
             : `100g = ${d.kcal ?? '?'} kcal`}
         </div>
+
+        {/* Cru ou cuit : les valeurs d'etiquette valent pour le produit
+            cru, alors qu'on pese le plus souvent apres cuisson. */}
+        {fc && (
+          <button
+            class={'mc-ing-cuisson' + (ing.cuit ? ' est-cuit' : '')}
+            onClick={() => basculerCuisson(repasId, ing.id)}
+          >
+            <span class={ing.cuit ? '' : 'actif'}>cru</span>
+            <span class={ing.cuit ? 'actif' : ''}>cuit</span>
+          </button>
+        )}
       </div>
 
       <div class="mc-ing-champ">
