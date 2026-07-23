@@ -40,9 +40,8 @@ export function WaterTracker() {
   return (
     <>
       <button class="water-fab" onClick={() => setOuvert(true)} aria-label={`${t('water_title')} — ${litresTxt(total)}`}>
-        <svg class="wf-goutte" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3.2c3.2 4.1 6 7.3 6 10.6a6 6 0 01-12 0c0-3.3 2.8-6.5 6-10.6z" />
-        </svg>
+        <span style={{ fontSize: '18px' }}>💧</span>
+        <span class="wf-count">{litresTxt(total)}</span>
       </button>
 
       {ouvert && createPortal(

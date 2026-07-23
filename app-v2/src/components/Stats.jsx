@@ -128,7 +128,7 @@ function MlModal({ iso, setIso, fermer }) {
 }
 
 // ---------- Modale poids : copie v1 (weightModal, app.html) ----------
-function WeightModal({ fermer }) {
+export function WeightModal({ fermer }) {
   const [val, setVal] = useState('');
   const l = weightLog.value || [];
   const last = l.length ? poidsDe([...l].sort((a, b) => a.iso.localeCompare(b.iso))[l.length - 1]) : '';

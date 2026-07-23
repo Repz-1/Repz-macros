@@ -28,6 +28,7 @@ import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
 import { ActionsRapides } from './components/ActionsRapides.jsx';
+import { WeightNote } from './components/WeightNote.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
 import { MesPlats } from './components/MesPlats.jsx';
 
@@ -44,6 +45,7 @@ function OngletJournal() {
         <Entete />
         <DayDashboard />
         <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} />
+        <WeightNote />
         <IdeesRepas />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
         {/* Mode focus : voile sombre pendant la saisie d'un aliment. */}
@@ -54,6 +56,7 @@ function OngletJournal() {
         <WaterTracker />
         <button class="fab" onClick={() => setModale(true)} aria-label={t('add')}>
           <span class="fab-plus">＋</span>
+          <span class="fab-label">{t('add')}</span>
         </button>
       </div>
 
@@ -295,6 +298,18 @@ function App() {
 
   const PAGES = { journal: OngletJournal, entrainer: OngletEntrainer, stats: Stats, premium: PremiumPage };
 
+  // Bandeau « Mode découverte » : copie v1 (script REPZ_INVITE, app.html) —
+  // memes styles inline, meme cle i18n. Un appui ramene a l'ecran de connexion.
+  const AVEC_BANDEAU = ['journal', 'entrainer', 'stats'];
+  const bandeauInvite = (k) => (invite.value && AVEC_BANDEAU.includes(k)) ? (
+    <a
+      href="#"
+      onClick={(e) => { e.preventDefault(); quitterInvite(); }}
+      style="display:flex;align-items:center;justify-content:center;gap:6px;background:#FFFBEF;border-bottom:1px solid #F3E2A8;color:#8F6200;font-size:12.5px;font-weight:700;padding:8px 12px;text-decoration:none;position:relative;z-index:75;"
+      dangerouslySetInnerHTML={{ __html: t('invite_banner') }}
+    />
+  ) : null;
+
   return (
     <>
       <div class="rail4" ref={railRef}>
@@ -303,6 +318,7 @@ function App() {
           return (
             <div class="rail-pan" key={k}>
               <div class="pan-scroll" ref={(n) => { defileurs.current[k] = n; if (k === onglet) defileur.el = n; }}>
+                {bandeauInvite(k)}
                 <div class="conteneur conteneur--nu">
                   {k === 'journal' && voletUtilisateur}
                   <Page />

@@ -83,16 +83,19 @@ export function PremiumPage() {
 
   return (
     <div class="pg-premium">
+      <div class="topbar-app">
+        <a class="topbar-home" onClick={() => { ongletActif.value = 'journal'; }} aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6" /></svg></a>
+        <img src="../belfit-logo-header.png" class="tb-logo" alt="BelFit" />
+        <span style="width:38px"></span>
+      </div>
+
       <div class="hero-card">
         <span class="hero-badge">✦ PREMIUM</span>
         <h1>Ton coach nutrition,<br />dans ta poche.</h1>
         <p>Calories, macros et plan sur mesure — comme un diététicien, sans y penser.</p>
-        <div class="hero-social">
-          <span class="hs-avatars"><i /><i /><i /></span>
-          <span class="hs-txt">Rejoins les membres BELFIT</span>
-        </div>
         <div class="hero-foot">
           <div class="hero-price"><span class="hp-from">dès</span> <b>3,99€</b><span class="hp-mo">/mois</span></div>
+          <a class="hero-cta" onClick={() => { const el = document.getElementById('formules'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>Voir les formules</a>
         </div>
       </div>
 

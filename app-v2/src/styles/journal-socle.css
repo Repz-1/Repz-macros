@@ -208,7 +208,7 @@
    CARTE CALORIES
    ============================================================ */
 
-.pg-journal .cal { padding: 18px 14px 12px; overflow: visible; }
+.pg-journal .cal { padding: 20px 18px; overflow: visible; }
 
 /* ---------- Ligne date ---------- */
 .pg-journal .cal-date {
@@ -226,7 +226,7 @@
 /* ---------- Corps : consommees | anneau | objectif ---------- */
 .pg-journal .cal-corps {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 2px; padding: 2px 0 6px;
+  gap: 6px; padding: 8px 0 4px;
 }
 
 /* Les deux cotes ont la MEME largeur : sans cela l'anneau se decale
@@ -248,7 +248,7 @@
 /* ---------- Anneau ---------- */
 .pg-journal .cal-anneau {
   position: relative; flex: none;
-  width: min(178px, 44vw);
+  width: 184px;
   aspect-ratio: 1;
 }
 .pg-journal .cal-anneau-svg { display: block; width: 100%; height: 100%; }
@@ -261,22 +261,21 @@
   gap: 2px;
 }
 .pg-journal .cal-num {
-  font-size: clamp(32px, 12vw, 48px);
+  font-size: 48px;
   font-weight: 800; line-height: 1; color: #191919;
   letter-spacing: -1.5px; font-variant-numeric: tabular-nums;
 }
 .pg-journal .cal-num--depasse { color: var(--alerte); }
 .pg-journal .cal-num-lb {
-  font-size: 12px; font-weight: 700; color: #8A8580;
-  margin-top: 4px; text-align: center; line-height: 1.3;
+  font-size: 12.5px; font-weight: 700; color: #8A8580;
+  margin-top: 5px; text-align: center; line-height: 1.3;
   max-width: 86%;
 }
 
 /* ---------- Separateur ---------- */
+/* Trait plein, pleine largeur : v1 (.nutri-macros border-top) */
 .pg-journal .cal-trait {
-  /* Legerement plus etroit que le contenu : le trait ne doit pas
-     toucher les bords, il separe sans encadrer. */
-  height: 1px; background: #ECE8DF; margin: 18px 6px 0;
+  height: 1px; background: #ECE8DF; margin: 18px 0 0;
 }
 
 /* ---------- Macros ---------- */
@@ -294,6 +293,7 @@
   font-variant-numeric: tabular-nums;
 }
 .pg-journal .cal-macro-val span { color: #9CA3AF; font-weight: 700; }
+.pg-journal .cal-macro-val b { font-weight: 800; }
 .pg-journal .cal-macro-piste {
   height: 7px; background: var(--mac-piste); border-radius: 6px; overflow: hidden;
 }
@@ -304,10 +304,10 @@
 
 /* ---------- Action secondaire ---------- */
 .pg-journal .cal-reset {
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-  width: 100%; margin-top: 16px; padding: 11px 0;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: auto; margin: 12px auto 0; padding: 8px 14px;
   background: none; border: none; cursor: pointer; font-family: inherit;
-  font-size: 13px; font-weight: 600; color: var(--texte-3);
+  font-size: 12.5px; font-weight: 600; color: #8a857c;
   border-radius: var(--rayon-puce);
   transition: color var(--transition), background var(--transition), transform var(--transition);
 }
@@ -369,14 +369,12 @@
   stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-journal .qa-lb {
-  font-size: 11.5px; font-weight: 600; color: #4B4A47; letter-spacing: 0;
+  font-size: 12px; font-weight: 600; color: #4B4A47; letter-spacing: .01em;
   max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.pg-journal .qa-ic { width: 40px; height: 40px; }
-
 /* Badge Premium : deborde legerement dans le coin superieur droit */
 .pg-journal .qa-pro {
-  position: absolute; top: -7px; right: -4px;
+  position: absolute; top: 5px; right: 7px;
   display: flex; align-items: center; gap: 2px;
   background: var(--or); color: #5A3E00;
   font-size: 8.5px; font-weight: 800; letter-spacing: .4px;
@@ -558,6 +556,7 @@
   box-shadow: 0 4px 16px rgba(255, 140, 0, .5);
 }
 .pg-journal .fab-plus { font-size: 18px; line-height: 1; }
+.pg-journal .fab-label { font-size: 13px; }
 
 /* ---------- Feuille de reglage de l'hydratation ---------- */
 .water-overlay {
@@ -762,25 +761,6 @@
    droite. La pilule « Idees recettes » n'en fait pas partie :
    elle vit dans la page et defile avec elle. */
 .pg-journal .fab-rangee { gap: 8px; align-items: center; }
-.pg-journal .fab-rangee > .water-fab,
-.pg-journal .fab-rangee > .fab {
-  height: 48px; box-sizing: border-box; margin: 0; flex: 0 0 auto;
-  display: inline-flex; align-items: center; justify-content: center;
-  padding-top: 0; padding-bottom: 0;
-}
-/* Bouton Ajouter : pastille ronde, un « + » seul, plus grand.
-   Standard des apps premium (Apple, Hevy) : allege la barre du bas. */
-.pg-journal .fab-rangee > .fab {
-  width: 48px; height: 48px; padding: 0; border-radius: 50%;
-  box-shadow: 0 1px 2px rgba(24,24,24,.10), 0 8px 20px rgba(247, 181, 0, .38);
-}
-.pg-journal .fab-plus {
-  font-size: 28px; font-weight: 300; line-height: 1; margin-top: -2px;
-}
-/* Goutte : meme diametre que le bouton Ajouter. */
-.pg-journal .fab-rangee > .water-fab {
-  height: 48px;
-}
 
 /* La pilule « Idées recettes » a quitté le flux pour rejoindre la
    rangée flottante : sans compensation, les raccourcis et les cartes
@@ -1412,35 +1392,8 @@
   .pg-journal .colonne > :nth-child(n+6) { animation-delay: .20s; }
 }
 
-/* ============================================================
-   HYDRATATION — refonte visuelle de la capsule.
-   Meme fonction, meme position ; elle rejoint simplement la
-   langue visuelle des autres composants : bleu adouci, ombre
-   diffuse, trait fin, capsule plus basse et plus arrondie.
-   ============================================================ */
-.pg-journal .water-fab {
-  padding: 0; width: 48px;
-  border-radius: 50%;                /* meme forme ronde que le bouton + */
-  background: #0EA5E9;
-  color: #FFFFFF;
-  opacity: .72;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, .4);
-  justify-content: center;
-  transition: transform 180ms cubic-bezier(.22, .8, .28, 1), opacity .15s, background .15s;
-}
-/* Au clic : devient pleinement opaque et s'enfonce legerement. */
-.pg-journal .water-fab:active {
-  transform: scale(.94);
-  background: #0284C7;
-  opacity: 1;
-}
-/* Goutte : emoji d'origine, centree dans le rond */
-.pg-journal .wf-goutte {
-  width: 24px; height: 24px; flex: none;
-  fill: currentColor; stroke: none;
-}
-/* « 0 L » : centre optique parfait sur la ligne de la goutte */
-.pg-journal .wf-count { line-height: 1; display: inline-block; transform: translateY(.5px); }
+/* Compteur « 0 L » de la capsule : regle v1 (app.html) */
+.pg-journal .wf-count { font-size: 13px; font-weight: 600; opacity: .9; }
 
 /* ============================================================
    MODALE HYDRATATION — CSS v1 (app.html) recopie tel quel.
@@ -1653,3 +1606,24 @@
   font-family: inherit; cursor: pointer;
 }
 .pg-journal .mc-res-gerer:active { background: #FFF6DC; }
+
+/* Espace entre deux cartes repas : 12px, v1 (.meal-card) */
+.pg-journal .mc + .mc { margin-top: calc(12px - var(--espace)); }
+
+/* ============================================================
+   NOTE POIDS DU JOUR — CSS v1 (app.html) recopie tel quel
+   ============================================================ */
+.pg-journal .weight-note {
+    display:flex; align-items:center; gap:11px; cursor:pointer;
+    background:linear-gradient(135deg,#FFFBEF,#FBEFC7); border:1.5px solid #F3E2A8;
+    border-radius:16px; padding:13px 15px; margin:0;
+    box-shadow:0 4px 14px rgba(247,181,0,.10);
+}
+.pg-journal .weight-note:active { transform:scale(.99); }
+.pg-journal .weight-note .wn-ic {
+    flex:none; color:#F7B500; display:flex; align-items:center; justify-content:center;
+}
+.pg-journal .weight-note .wn-ic svg { width:22px; height:22px; }
+.pg-journal .weight-note .wn-txt { flex:1; }
+.pg-journal .weight-note .wn-title { font-size:13.5px; font-weight:800; color:#7a5600; }
+.pg-journal .weight-note .wn-cta { flex:none; font-size:13px; font-weight:800; color:#8F6200; }
