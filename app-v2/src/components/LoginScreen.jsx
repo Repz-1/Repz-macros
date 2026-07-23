@@ -3,12 +3,40 @@ import { connexion, connexionGoogle, inscription, messageErreurAuth } from '../s
 import { normPseudo, formePseudo, pseudoDisponible } from '../services/pseudo.js';
 import { t } from '../i18n/index.js';
 
+// Force du mot de passe : memes regles qu'en v1 (index.html).
+// 8 caracteres minimum, avec majuscule, minuscule, chiffre et symbole.
+function mdpValide(pw) {
+  return pw.length >= 8 && /[a-z]/.test(pw) && /[A-Z]/.test(pw)
+    && /[0-9]/.test(pw) && /[^a-zA-Z0-9]/.test(pw);
+}
+function scoreMdp(pw) {
+  let s = 0;
+  if (/[a-z]/.test(pw)) s++;
+  if (/[A-Z]/.test(pw)) s++;
+  if (/[0-9]/.test(pw)) s++;
+  if (/[^a-zA-Z0-9]/.test(pw)) s++;
+  if (pw.length < 8) s = Math.min(s, 2);   // longueur insuffisante = plafonne
+  return Math.min(s, 4);
+}
+/** Ce qui manque encore, enonce simplement. */
+function manquesMdp(pw) {
+  const m = [];
+  if (pw.length < 8) m.push('8 caractères');
+  if (!/[A-Z]/.test(pw)) m.push('majuscule');
+  if (!/[a-z]/.test(pw)) m.push('minuscule');
+  if (!/[0-9]/.test(pw)) m.push('chiffre');
+  if (!/[^a-zA-Z0-9]/.test(pw)) m.push('symbole');
+  return m;
+}
+
 // Ecran de connexion / inscription — sobre, palette BelFit.
 export function LoginScreen() {
   const [mode, setMode] = useState('connexion');
   const [email, setEmail] = useState('');
   const [pseudo, setPseudo] = useState('');
   const [mdp, setMdp] = useState('');
+  const [mdp2, setMdp2] = useState('');
+  const [consent, setConsent] = useState(false);
   const [erreur, setErreur] = useState('');
   const [chargement, setChargement] = useState(false);
 
@@ -42,9 +70,14 @@ export function LoginScreen() {
   const valider = async (e) => {
     e.preventDefault();
     setErreur('');
-    if (mode === 'inscription' && etatPseudo !== 'libre') {
-      setErreur(t('pseudo_invalide'));
-      return;
+    if (mode === 'inscription') {
+      if (etatPseudo !== 'libre') { setErreur(t('pseudo_invalide')); return; }
+      if (!mdpValide(mdp)) {
+        setErreur('Mot de passe trop faible : 8 caractères min avec majuscule, minuscule, chiffre et symbole');
+        return;
+      }
+      if (mdp !== mdp2) { setErreur('Les deux mots de passe ne correspondent pas'); return; }
+      if (!consent) { setErreur("Merci d'accepter la politique de confidentialité pour créer ton compte"); return; }
     }
     setChargement(true);
     try {
@@ -103,15 +136,55 @@ export function LoginScreen() {
           onInput={e => setMdp(e.currentTarget.value)} required
           autocomplete={mode === 'connexion' ? 'current-password' : 'new-password'}
         />
+
+        {mode === 'inscription' && (
+          <>
+            <div class="login-pw-jauge">
+              <div
+                class="login-pw-bar"
+                style={{
+                  width: mdp ? ['25%', '45%', '70%', '100%'][Math.max(0, scoreMdp(mdp) - 1)] : '0',
+                  background: ['#DC2626', '#F97316', '#F7B500', '#10B981'][Math.max(0, scoreMdp(mdp) - 1)],
+                }}
+              />
+            </div>
+            <div class={'login-pseudo-note' + (mdp && mdpValide(mdp) ? ' login-pseudo-note--libre' : '')}>
+              {!mdp
+                ? '8 caractères min, avec majuscule, minuscule, chiffre et symbole.'
+                : mdpValide(mdp) ? '✓ Mot de passe solide' : 'Manque : ' + manquesMdp(mdp).join(', ')}
+            </div>
+
+            <input
+              type="password" placeholder="Confirmer le mot de passe" value={mdp2}
+              onInput={e => setMdp2(e.currentTarget.value)} required autocomplete="new-password"
+            />
+
+            <label class="login-consent">
+              <input
+                type="checkbox" checked={consent}
+                onChange={e => setConsent(e.currentTarget.checked)}
+              />
+              <span>
+                {t('register_consent').split('{link}')[0]}
+                <a href="https://www.belfit.be/confidentialite.html" target="_blank" rel="noopener">{t('privacy_policy')}</a>
+                {t('register_consent').split('{link}')[1]}
+              </span>
+            </label>
+          </>
+        )}
+
         {erreur && <div class="login-erreur">{erreur}</div>}
-        <button type="submit" class="login-btn" disabled={chargement}>
+        <button type="submit" class="login-btn" disabled={chargement || (mode === 'inscription' && !consent)}>
           {chargement ? '…' : (mode === 'connexion' ? t('connexion') : t('inscription'))}
         </button>
       </form>
 
       <button
         class="login-bascule"
-        onClick={() => { setMode(mode === 'connexion' ? 'inscription' : 'connexion'); setErreur(''); }}
+        onClick={() => {
+          setMode(mode === 'connexion' ? 'inscription' : 'connexion');
+          setErreur(''); setMdp2(''); setConsent(false);
+        }}
       >
         {mode === 'connexion' ? t('pas_compte') : t('deja_compte')}
       </button>

@@ -250,12 +250,6 @@ try{ if(localStorage.getItem('repz_session')==='1'){ location.replace('main.html
         <p class="auth-subtitle" data-i18n="auth_subtitle">Ton coach nutrition et entraînement</p>
     </div>
 
-    <!-- MODE INVITÉ EN AVANT -->
-    <div class="guest-hero">
-        <button class="btn btn-guest" onclick="continuerInvite()" data-i18n="guest_btn">Découvrir BELFIT →</button>
-        <div class="guest-or"><span data-i18n="or">ou</span></div>
-    </div>
-
     <!-- FORM LOGIN -->
     <form class="auth-form active" id="loginForm">
         <div class="error" id="loginError"></div>
@@ -452,15 +446,17 @@ function purgerDonneesLocales(){
     try{ sessionStorage.clear(); }catch(e){}
 }
 
-// Mode découverte : navigation libre, actions bloquées jusqu'à la création du compte
-function continuerInvite() {
-    // On repart d'un appareil vierge : le mode decouverte ne doit jamais
-    // afficher le journal, le poids ou les seances du compte precedent.
-    purgerDonneesLocales();
-    localStorage.setItem('repz_invite', '1');
-    // Une session Firebase encore active écraserait le mode invité : on la coupe d'abord
-    auth.signOut().finally(()=>{ window.location.href = 'main.html'; });
-}
+// Le mode découverte a été retiré : on ouvre un compte dès le départ.
+// Les appareils encore marqués « invité » sont nettoyés ici, sinon ils
+// resteraient bloqués dans un état que l'application ne connaît plus.
+(function purgerAncienModeInvite(){
+    try {
+        if(localStorage.getItem('repz_invite') === '1'){
+            localStorage.removeItem('repz_invite');
+            localStorage.removeItem('repz_inviteDebut');
+        }
+    } catch(e){}
+})();
 
 function toggleForm(formName) {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));

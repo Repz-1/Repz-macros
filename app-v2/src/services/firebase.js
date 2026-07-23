@@ -107,6 +107,19 @@ export async function inscription(email, mdp, pseudo) {
   }
   try { await updateProfile(cred.user, { displayName: normPseudo(pseudo) }); } catch (e) {}
   try { localStorage.setItem('repz_firstName', normPseudo(pseudo)); } catch (e) {}
+
+  // RGPD : preuve du consentement (horodatage + version de la politique),
+  // ecrite comme en v1. Non bloquant : un echec reseau ne doit pas
+  // priver l'utilisateur du compte qu'il vient de creer.
+  try {
+    const { getFirestore, doc, setDoc } = await import('firebase/firestore');
+    await setDoc(
+      doc(getFirestore(app), 'users', cred.user.uid),
+      { consentRGPD: { accepte: true, date: new Date().toISOString(), version: '2026-07' } },
+      { merge: true }
+    );
+  } catch (e) { /* non bloquant */ }
+
   return cred;
 }
 
