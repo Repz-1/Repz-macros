@@ -245,8 +245,8 @@ Regles :
 
 const {defineSecret: _defSecret} = require("firebase-functions/params");
 // Cle Web de l'API Firebase, utilisee pour verifier le mot de passe.
-// A definir via : firebase functions:secrets:set FIREBASE_WEB_API_KEY
-const FIREBASE_WEB_API_KEY = _defSecret("FIREBASE_WEB_API_KEY");
+// A definir via : firebase functions:secrets:set WEB_API_KEY
+const WEB_API_KEY = _defSecret("WEB_API_KEY");
 
 const PSEUDO_MIN = 3;
 const PSEUDO_MAX = 20;
@@ -378,7 +378,7 @@ exports.reserverPseudo = onRequest(
  * le client recoit un jeton de connexion — jamais l'adresse email.
  */
 exports.connexionParPseudo = onRequest(
-  {secrets: [FIREBASE_WEB_API_KEY], region: "europe-west1", cors: false},
+  {secrets: [WEB_API_KEY], region: "europe-west1", cors: false},
   async (req, res) => {
     if (appliquerCors(req, res)) return;
     try {
@@ -403,7 +403,7 @@ exports.connexionParPseudo = onRequest(
       // Verification du mot de passe via l'API Identity Toolkit.
       const reponse = await fetch(
         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" +
-          FIREBASE_WEB_API_KEY.value(),
+          WEB_API_KEY.value(),
         {
           method: "POST",
           headers: {"Content-Type": "application/json"},

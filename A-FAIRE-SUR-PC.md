@@ -35,7 +35,7 @@ Paramètres du projet → Général → section « Vos applications » →
 application Web → champ `apiKey`.
 
 ```bash
-firebase functions:secrets:set FIREBASE_WEB_API_KEY
+firebase functions:secrets:set WEB_API_KEY
 # colle la clé quand c'est demandé
 
 firebase deploy --only functions:pseudoDisponible,functions:reserverPseudo,functions:connexionParPseudo
