@@ -46,7 +46,7 @@ export function DetailNutritionnel({ ings }) {
       <div class="dn-tete">
         <span class="dn-titre">Détail nutritionnel</span>
         {ouvert && enDecouverte.value && (
-          <span class="dn-offert">
+          <span class={'dn-offert' + (joursRestantsDecouverte.value <= 2 ? ' dn-offert--fin' : '')}>
             Offert {joursRestantsDecouverte.value} j
           </span>
         )}
@@ -74,6 +74,14 @@ export function DetailNutritionnel({ ings }) {
         <p class="dn-partiel">
           Calculé sur les aliments qui portent l'information — les autres ne sont pas comptés.
         </p>
+      )}
+
+      {/* Moment n°2 : la fin de la fenetre approche. Un rappel doux,
+          une seule ligne, sans pop-up — la perte annoncee suffit. */}
+      {ouvert && enDecouverte.value && joursRestantsDecouverte.value <= 2 && (
+        <button class="dn-rappel" onClick={() => { repasOuvertId.value = null; ongletActif.value = 'premium'; }}>
+          Ton accès se termine dans {joursRestantsDecouverte.value} j — garde-le dès 3,99 €/mois →
+        </button>
       )}
 
       {!ouvert && (

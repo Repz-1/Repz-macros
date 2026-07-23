@@ -31,6 +31,7 @@ import { ActionsRapides } from './components/ActionsRapides.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
 import { MealPage } from './components/MealPage.jsx';
 import { Bienvenue, bienvenueFaite, programmeEnAttente, purgerProgrammeEnAttente } from './components/Bienvenue.jsx';
+import { OffrePremium, verifierOffrePremium } from './components/OffrePremium.jsx';
 import { repasOuvertId } from './components/MealCard.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
 import { MesPlats } from './components/MesPlats.jsx';
@@ -125,14 +126,8 @@ function App() {
     }, 1500);
   }
 
-  // La personne a demande a voir Premium pendant l'accueil : on l'y
-  // amene directement, une seule fois, maintenant que le compte existe.
-  try {
-    if (localStorage.getItem('belfit_v2_intention_premium') === '1') {
-      localStorage.removeItem('belfit_v2_intention_premium');
-      ongletActif.value = 'premium';
-    }
-  } catch (e) {}
+  // L'offre Premium se montre UNE fois, maintenant que le compte existe.
+  verifierOffrePremium();
   if (!donneesPretes.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;
   }
@@ -352,6 +347,7 @@ function App() {
         </div>
       )}
       <MealPage />
+      <OffrePremium />
       <BottomNav />
     </>
   );

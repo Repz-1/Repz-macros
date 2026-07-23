@@ -40,7 +40,7 @@ const CHAPITRES = {
 
 // Ordre des ecrans. Chaque question porte sa justification : on dit
 // pourquoi on demande, honnetement, comme un coach le ferait.
-const ECRANS = ['prenom', 'objectif', 'profil', 'mesures', 'activite', 'sport', 'repas', 'faible', 'resultat', 'premium'];
+const ECRANS = ['prenom', 'objectif', 'profil', 'mesures', 'activite', 'sport', 'repas', 'faible', 'resultat'];
 const CHAPITRE_DE = {
   prenom: 'toi', objectif: 'toi', profil: 'toi', mesures: 'toi',
   activite: 'quotidien', sport: 'quotidien',
@@ -111,22 +111,18 @@ export function Bienvenue({ versConnexion, versInscription }) {
     ajustement: r.objectif ?? 0,
   }) : null;
 
-  const sauverProgramme = () => {
+  // Ordre voulu : programme -> compte -> offre Premium. On sauvegarde,
+  // on pose le drapeau de l'offre (montree une seule fois, apres la
+  // creation du compte), et on file a l'inscription.
+  const terminer = () => {
     try {
       localStorage.setItem(CLE_PROGRAMME, JSON.stringify({
         kcal: programme.kcal, prot: programme.prot,
         carbs: programme.carbs, lip: programme.lip,
         nbRepas: r.nbRepas || 4, faible: r.faible || 'aucun',
       }));
-    } catch (e) {}
-    setEtape(n => n + 1);   // l'offre Premium, une seule fois, ici
-  };
-
-  /** Fin du parcours : vers l'inscription, avec ou sans intention Premium. */
-  const terminer = (veutPremium) => {
-    try {
       localStorage.setItem(CLE_FAIT, '1');
-      if (veutPremium) localStorage.setItem('belfit_v2_intention_premium', '1');
+      localStorage.setItem('belfit_v2_offre_premium', '1');
     } catch (e) {}
     bienvenueFaite.value = true;
     versInscription();
@@ -292,36 +288,8 @@ export function Bienvenue({ versConnexion, versInscription }) {
             </div>
           </div>
 
-          <button class="bv-suivant" onClick={sauverProgramme}>Sauvegarder mon programme</button>
+          <button class="bv-suivant" onClick={terminer}>Sauvegarder mon programme</button>
           <p class="bv-note">Crée ton compte en 30 secondes : ton programme et ton journal te suivront sur tous tes appareils.</p>
-        </div>
-      )}
-
-      {/* ---------- L'offre Premium : proposee UNE fois, au sommet de
-          l'engagement, avec une sortie aussi visible que l'entree.
-          Refuser est un choix respecte, pas un echec a rattraper. ---------- */}
-      {ecran === 'premium' && (
-        <div class="bv-corps bv-corps--resultat">
-          <h1 class="bv-titre">Va plus loin, si tu veux</h1>
-          <p class="bv-just">
-            Ton programme est prêt et il restera complet en standard.
-            Premium enlève juste le travail restant :
-          </p>
-
-          <div class="bv-prem">
-            <div class="bv-prem-l"><span class="bv-emo">{'\u{1F4F7}'}</span><span><b>Scan de code-barres</b><i>Le produit s'encode tout seul, valeurs de l'étiquette</i></span></div>
-            <div class="bv-prem-l"><span class="bv-emo">{'\u{1F399}\u{FE0F}'}</span><span><b>Ajout vocal</b><i>« 125 g de riz et un blanc de poulet » — c'est noté</i></span></div>
-            <div class="bv-prem-l"><span class="bv-emo">{'\u{1F9EA}'}</span><span><b>Détail nutritionnel</b><i>Fibres, sucres, graisses saturées, sel — sur tout le journal</i></span></div>
-          </div>
-
-          <div class="bv-prem-prix">
-            dès <b>3,99 €</b>/mois
-            <span>Le prix d'un café latte. Un seul, pour le mois.</span>
-          </div>
-
-          <button class="bv-suivant bv-suivant--or" onClick={() => terminer(true)}>Découvrir Premium</button>
-          <button class="bv-standard" onClick={() => terminer(false)}>Continuer en standard</button>
-          <p class="bv-note">Le détail nutritionnel t'est offert les 7 premiers jours, quoi que tu choisisses.</p>
         </div>
       )}
 
