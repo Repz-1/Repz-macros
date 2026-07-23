@@ -2084,33 +2084,56 @@
 .pg-journal .dn-rappel:active { transform: scale(.99); }
 
 /* Ecran d'accueil du parcours : la marque d'abord, la question ensuite */
-.bv-corps--accueil { justify-content: center; padding-bottom: 6vh; }
-.bv-carte-accueil {
-  background: #fff; border-radius: 28px; padding: 40px 26px 30px;
-  text-align: center;
-  box-shadow: 0 22px 60px rgba(60, 45, 20, .10), 0 2px 8px rgba(60, 45, 20, .04);
+/* ---- Accueil plein ecran : la marque occupe l'espace, le decor
+        respire — pas de carte posee sur un fond vide. ---- */
+.bv-corps--accueil { position: relative; justify-content: space-between; padding-top: 8vh; padding-bottom: 2vh; }
+.bv-deco { position: fixed; border-radius: 50%; pointer-events: none; z-index: -1; }
+.bv-deco--or {
+  width: 46vw; height: 46vw; right: -16vw; top: -10vw;
+  background: radial-gradient(circle at 35% 65%, #FFD86B, #F7B500);
+  opacity: .5; filter: blur(2px);
 }
-.bv-logo--grand {
-  width: 84px; height: auto; margin: 0 auto 14px; display: block;
-  filter: drop-shadow(0 10px 28px rgba(247, 181, 0, .35));
+.bv-deco--noir {
+  width: 30vw; height: 30vw; left: -14vw; top: 30vh;
+  background: #191919; opacity: .06;
 }
+.bv-deco--rouge {
+  width: 20vw; height: 20vw; right: -6vw; bottom: 18vh;
+  background: #E23A2E; opacity: .14; filter: blur(1px);
+}
+.bv-acc-haut { }
 .bv-marque {
-  font-size: 30px; font-weight: 800; letter-spacing: .04em; color: #191919;
+  font-size: 46px; font-weight: 800; letter-spacing: .02em; color: #191919; line-height: 1;
 }
 .bv-marque span { color: #DFA004; }
 .bv-tagline {
-  font-size: 14.5px; font-weight: 600; color: #6B6862; margin: 6px 0 22px;
+  font-size: 16px; font-weight: 600; color: #4B4A47; margin: 12px 0 0; line-height: 1.5;
 }
-.bv-promesse {
-  font-size: 14px; font-weight: 500; color: #4B4A47; line-height: 1.55;
-  margin: 0 0 24px; padding: 14px 16px;
-  background: #FFFBEF; border: 1.5px solid #F3E2A8; border-radius: 16px;
-  text-align: left;
+.bv-acc-logo {
+  width: 42vw; max-width: 190px; height: auto; align-self: center; margin: 2vh 0;
+  filter: drop-shadow(0 18px 44px rgba(247, 181, 0, .38));
+  animation: bv-flotte 4.5s ease-in-out infinite;
 }
-.bv-promesse b { font-weight: 800; color: #191919; }
-.bv-carte-accueil .bv-suivant { width: 100%; margin-top: 0; }
-.bv-carte-accueil .bv-lien { margin-top: 16px; color: #6B6862; font-weight: 600; }
-.bv-carte-accueil .bv-lien b { color: #8F6200; font-weight: 800; }
+@keyframes bv-flotte {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-10px) rotate(2deg); }
+}
+@media (prefers-reduced-motion: reduce) { .bv-acc-logo { animation: none; } }
+.bv-acc-bas { display: flex; flex-direction: column; }
+.bv-promesse-libre {
+  font-size: 14.5px; font-weight: 500; color: #4B4A47; line-height: 1.55; margin: 0 0 18px;
+}
+.bv-promesse-libre b { font-weight: 800; color: #191919; }
+.bv-acc-bas .bv-suivant { margin-top: 0; }
+.bv-acc-bas .bv-lien { margin-top: 14px; color: #6B6862; font-weight: 600; }
+.bv-acc-bas .bv-lien b { color: #8F6200; font-weight: 800; }
+
+/* Revelation progressive du profil : chaque champ entre en douceur */
+.bv-revele { animation: bv-entre 240ms cubic-bezier(.22, .8, .28, 1) both; }
+.bv-champ--plein { background: #FFF4CC; border-color: #F3D06B; }
+.bv-repere {
+  font-size: 12.5px; font-weight: 600; color: #8F6200; margin: -4px 2px 12px;
+}
 
 /* Entree en douceur : chaque ecran du parcours glisse a sa place */
 @media (prefers-reduced-motion: no-preference) {

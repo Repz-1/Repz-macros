@@ -48,9 +48,9 @@ const CHAPITRES = {
 
 // Ordre des ecrans. Chaque question porte sa justification : on dit
 // pourquoi on demande, honnetement, comme un coach le ferait.
-const ECRANS = ['accueil', 'prenom', 'objectif', 'profil', 'mesures', 'activite', 'sport', 'repas', 'faible', 'resultat'];
+const ECRANS = ['accueil', 'prenom', 'objectif', 'corps', 'cible', 'activite', 'sport', 'repas', 'faible', 'resultat'];
 const CHAPITRE_DE = {
-  prenom: 'toi', objectif: 'toi', profil: 'toi', mesures: 'toi',
+  prenom: 'toi', objectif: 'toi', corps: 'toi', cible: 'toi',
   activite: 'quotidien', sport: 'quotidien',
   repas: 'assiette', faible: 'assiette',
 };
@@ -89,6 +89,7 @@ const FAIBLES_Q = [
 
 export function Bienvenue({ versConnexion, versInscription }) {
   const [etape, setEtape] = useState(0);
+  const [sens, setSens] = useState(1);   // 1 = on avance, -1 = on recule
   const [r, setR] = useState(() => {
     try { return JSON.parse(localStorage.getItem(CLE_REPONSES)) || {}; } catch (e) { return {}; }
   });
@@ -101,10 +102,26 @@ export function Bienvenue({ versConnexion, versInscription }) {
     const suiv = { ...r, [cle]: valeur };
     setR(suiv);
     try { localStorage.setItem(CLE_REPONSES, JSON.stringify(suiv)); } catch (e) {}
-    if (avancer) setEtape(n => Math.min(n + 1, ECRANS.length - 1));
+    if (avancer) { setSens(1); setEtape(n => Math.min(n + 1, ECRANS.length - 1)); }
   };
+  const avancer = () => { setSens(1); setEtape(n => n + 1); };
 
-  const precedent = () => setEtape(n => Math.max(0, n - 1));
+  // Validites du profil : chaque reponse ouvre la question suivante.
+  const sexeOk = !!r.sexe;
+  const ageOk = parseInt(r.age) >= 14 && parseInt(r.age) <= 99;
+  const tailleOk = parseFloat(r.taille) >= 120 && parseFloat(r.taille) <= 230;
+  const poidsOk = parseFloat(r.poids) >= 35 && parseFloat(r.poids) <= 250;
+  // Fourchette de poids sain (IMC 18,5 - 25) pour eclairer le poids ideal
+  const t2 = Math.pow((parseFloat(r.taille) || 0) / 100, 2);
+  const fMin = Math.round(18.5 * t2), fMax = Math.round(25 * t2);
+
+  const precedent = () => { setSens(-1); setEtape(n => Math.max(0, n - 1)); };
+
+  // Le poids ideal n'a de sens que pour la perte : hors de cet objectif,
+  // l'ecran s'efface dans le sens de la marche.
+  if (ecran === 'cible' && r.objectif !== -400) {
+    setTimeout(() => setEtape(n => n + sens), 0);
+  }
 
   // ---- Calcul du programme : les VRAIES formules, rien d'invente ----
   const programme = ecran === 'resultat' ? calculerBesoins({
@@ -163,15 +180,22 @@ export function Bienvenue({ versConnexion, versInscription }) {
       {/* ---------- Chapitre 1 : Toi ---------- */}
       {ecran === 'accueil' && (
         <div class="bv-corps bv-corps--accueil">
-          <div class="bv-carte-accueil">
-            <img src="/belfit-logo-b.png" alt="" class="bv-logo--grand" />
+          {/* Le decor respire : les couleurs du drapeau, dispersees en
+              grandes formes douces, comme les illustrations de la marque */}
+          <div class="bv-deco bv-deco--or" aria-hidden="true" />
+          <div class="bv-deco bv-deco--noir" aria-hidden="true" />
+          <div class="bv-deco bv-deco--rouge" aria-hidden="true" />
+
+          <div class="bv-acc-haut">
             <div class="bv-marque">BEL<span>FIT</span></div>
-            <p class="bv-tagline">Ton coach nutrition et entraînement</p>
-            <p class="bv-promesse">
-              8 questions, 2 minutes — et repars avec <b>tes calories et tes
-              macros</b>, calculées pour de vrai.
-            </p>
-            <button class="bv-suivant" onClick={() => setEtape(1)}>Commencer</button>
+            <p class="bv-tagline">Ton coach nutrition et entraînement,<br />quel que soit ton objectif</p>
+          </div>
+
+          <img src="/belfit-logo-b.png" alt="" class="bv-acc-logo" />
+
+          <div class="bv-acc-bas">
+            <p class="bv-promesse-libre">8 questions, 2 minutes — et repars avec <b>tes calories et tes macros</b>, calculées pour de vrai.</p>
+            <button class="bv-suivant" onClick={() => { setSens(1); setEtape(1); }}>Commencer</button>
             <button class="bv-lien" onClick={versConnexion}>Déjà un compte ? <b>Se connecter</b></button>
           </div>
         </div>
@@ -205,33 +229,48 @@ export function Bienvenue({ versConnexion, versInscription }) {
         </div>
       )}
 
-      {ecran === 'profil' && (
+      {ecran === 'corps' && (
         <div class="bv-corps">
           <h1 class="bv-titre">Tu es...</h1>
-          <p class="bv-just">La formule de calcul des besoins n'est pas la même pour un homme et pour une femme, et l'âge la fait varier.</p>
+          <p class="bv-just">Sexe, âge, taille, poids : les quatre entrées de la formule. Chaque réponse ouvre la suivante.</p>
+
           <div class="bv-rangee">
             <button class={'bv-pilule' + (r.sexe === 'h' ? ' bv-pilule--choisie' : '')} onClick={() => poser('sexe', 'h', false)}>Un homme</button>
             <button class={'bv-pilule' + (r.sexe === 'f' ? ' bv-pilule--choisie' : '')} onClick={() => poser('sexe', 'f', false)}>Une femme</button>
           </div>
-          <label class="bv-label">Ton âge</label>
-          <input class="bv-champ" type="number" inputMode="numeric" min="14" max="99" placeholder="30" value={r.age || ''} onInput={e => poser('age', e.currentTarget.value, false)} />
-          <button class="bv-suivant" disabled={!r.sexe || !(parseInt(r.age) >= 14 && parseInt(r.age) <= 99)} onClick={() => setEtape(etape + 1)}>Suivant</button>
+
+          {sexeOk && (
+            <div class="bv-revele">
+              <label class="bv-label">Ton âge</label>
+              <input class={'bv-champ' + (ageOk ? ' bv-champ--plein' : '')} type="number" inputMode="numeric" min="14" max="99" placeholder="30" value={r.age || ''} onInput={e => poser('age', e.currentTarget.value, false)} autoFocus />
+            </div>
+          )}
+
+          {sexeOk && ageOk && (
+            <div class="bv-revele">
+              <label class="bv-label">Ta taille (cm)</label>
+              <input class={'bv-champ' + (tailleOk ? ' bv-champ--plein' : '')} type="number" inputMode="decimal" min="120" max="230" placeholder="178" value={r.taille || ''} onInput={e => poser('taille', e.currentTarget.value, false)} autoFocus />
+            </div>
+          )}
+
+          {sexeOk && ageOk && tailleOk && (
+            <div class="bv-revele">
+              <label class="bv-label">Ton poids actuel (kg)</label>
+              <input class={'bv-champ' + (poidsOk ? ' bv-champ--plein' : '')} type="number" inputMode="decimal" min="35" max="250" placeholder="80" value={r.poids || ''} onInput={e => poser('poids', e.currentTarget.value, false)} autoFocus />
+            </div>
+          )}
+
+          <button class="bv-suivant" disabled={!(sexeOk && ageOk && tailleOk && poidsOk)} onClick={avancer}>Suivant</button>
         </div>
       )}
 
-      {ecran === 'mesures' && (
+      {ecran === 'cible' && r.objectif === -400 && (
         <div class="bv-corps">
-          <h1 class="bv-titre">Tes mesures</h1>
-          <p class="bv-just">C'est la base du calcul de ta dépense énergétique. Personne d'autre que toi ne les verra.</p>
-          <label class="bv-label">Taille (cm)</label>
-          <input class="bv-champ" type="number" inputMode="decimal" min="120" max="230" placeholder="178" value={r.taille || ''} onInput={e => poser('taille', e.currentTarget.value, false)} />
-          <label class="bv-label">Poids (kg)</label>
-          <input class="bv-champ" type="number" inputMode="decimal" min="35" max="250" placeholder="80" value={r.poids || ''} onInput={e => poser('poids', e.currentTarget.value, false)} />
-          <button
-            class="bv-suivant"
-            disabled={!(parseFloat(r.taille) >= 120 && parseFloat(r.taille) <= 230) || !(parseFloat(r.poids) >= 35 && parseFloat(r.poids) <= 250)}
-            onClick={() => setEtape(etape + 1)}
-          >Suivant</button>
+          <h1 class="bv-titre">Tu veux perdre du gras.<br />Ton poids idéal ?</h1>
+          <p class="bv-just">C'est le cap du programme — pas une obligation, tu pourras l'ajuster en route.</p>
+          <input class={'bv-champ' + (parseFloat(r.cible) > 0 ? ' bv-champ--plein' : '')} type="number" inputMode="decimal" min="35" max="250" placeholder={String(Math.min(parseFloat(r.poids) || fMax, fMax))} value={r.cible || ''} onInput={e => poser('cible', e.currentTarget.value, false)} autoFocus />
+          {tailleOk && <p class="bv-repere">{'\u{1F4A1}'} Poids de forme pour ta taille : {fMin} – {fMax} kg</p>}
+          <button class="bv-suivant" disabled={!(parseFloat(r.cible) >= 35 && parseFloat(r.cible) <= 250)} onClick={avancer}>Suivant</button>
         </div>
       )}
 
@@ -290,7 +329,11 @@ export function Bienvenue({ versConnexion, versInscription }) {
       {/* ---------- Resultat : le vrai calcul, montre AVANT le compte ---------- */}
       {ecran === 'resultat' && programme && (
         <div class="bv-corps bv-corps--resultat">
-          <h1 class="bv-titre">Ton programme, {(r.prenom || '').trim()}</h1>
+          <h1 class="bv-titre">
+            {r.objectif === -400 && parseFloat(r.cible) > 0
+              ? `Ton programme pour viser ${r.cible} kg`
+              : `Ton programme, ${(r.prenom || '').trim()}`}
+          </h1>
           <p class="bv-just">
             Calculé avec la formule Mifflin-St Jeor, la référence en nutrition —
             pas un chiffre sorti d'un chapeau.
