@@ -450,6 +450,9 @@ const EXPEDITEUR = "BELFIT <noreply@belfit.be>";
 /** Ou arrivent les reponses : noreply n'est pas une vraie boite. */
 const REPONSE_A = "contact@belfit.be";
 
+/** Notre page de saisie du nouveau mot de passe. */
+const PAGE_REINIT = "https://belfit.be/reinitialisation.html";
+
 /** Modele du message, en trois langues. */
 const TEXTES = {
   fr: {
@@ -551,6 +554,21 @@ exports.mailReinitialisation = onRequest(
         // differemment revelerait quelles adresses sont inscrites.
         res.json({ok: true});
         return;
+      }
+
+      // Firebase pointe vers repz-baf60.firebaseapp.com : une adresse
+      // etrangere au site, qui inquiete a juste titre. On ne garde que
+      // le jeton et on renvoie vers notre propre page, sur belfit.be.
+      // Si le jeton est introuvable, on laisse le lien Firebase :
+      // moins beau, mais l'utilisateur peut quand meme se depanner.
+      try {
+        const jeton = new URL(lien).searchParams.get("oobCode");
+        if (jeton) {
+          lien = `${PAGE_REINIT}?code=${encodeURIComponent(jeton)}` +
+            `&lang=${encodeURIComponent(langue)}`;
+        }
+      } catch (e) {
+        console.error("Lien Firebase illisible :", e);
       }
 
       const T = TEXTES[langue] || TEXTES.fr;

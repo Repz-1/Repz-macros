@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script src="i18n-strings.js?v=37"></script>
+<script src="i18n.js?v=4"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>html{background:#F5F6F8!important;margin:0}
+body{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7efd9">
+<meta name="robots" content="noindex">
+<title>BELFIT — Mot de passe</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+    --orange:#F7B500; --green:#8F6200; --bg:#F5F6F8; --card:#ffffff;
+    --dark:#1f2937; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px;
+}
+body {
+    font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh; padding:12px;
+    display:flex; align-items:center; justify-content:center;
+    /* Optiquement, un bloc parfaitement centre parait trop haut :
+       on le descend un peu pour equilibrer le regard. */
+    padding-top:96px;
+}
+/* Ecrans peu hauts : la carte se cale en haut au lieu d'etre coupee,
+   avec un leger retrait pour ne pas coller au bord superieur. */
+@media (max-height:780px){
+    body { align-items:flex-start; padding-top:56px; padding-bottom:8px; }
+    .auth-container { padding:20px 22px 20px; }
+    .auth-logo { width:54px; margin-bottom:8px; }
+    .auth-title { font-size:24px; }
+    .auth-header { margin-bottom:12px; }
+}
+
+.auth-container {
+    background:var(--card); border-radius:24px; padding:26px 24px 24px;
+    max-width:400px; width:100%;
+    box-shadow:0 1px 2px rgba(24,24,24,.05), 0 8px 24px rgba(24,24,24,.08), 0 20px 48px rgba(184,141,16,.10);
+}
+
+.auth-header {
+    text-align:center; margin-bottom:16px;
+}
+
+.auth-logo {
+    width:62px; height:auto; margin:0 auto 10px; display:block;
+    filter:drop-shadow(0 4px 16px rgba(247,181,0,.18));
+}
+
+.auth-title {
+    font-size:26px; font-weight:800; letter-spacing:.04em; margin-bottom:4px;
+}
+
+.auth-subtitle {
+    font-size:14px; color:var(--text-dim); font-weight:600;
+}
+
+.pw-meter { height:5px; background:#EEF0F3; border-radius:5px; margin-top:8px; overflow:hidden; }
+.pw-bar { height:100%; width:0; border-radius:5px; transition:width .25s, background .25s; }
+.pw-hint { font-size:11.5px; color:#9aa0aa; margin-top:6px; font-weight:600; }
+.form-group {
+    margin-bottom:12px;
+}
+
+.label {
+    display:block; font-size:12.5px; font-weight:700; margin-bottom:5px;
+}
+
+.input {
+    width:100%; box-sizing:border-box; padding:12px 13px; border:1.5px solid var(--line);
+    border-radius:12px; font-size:15px; font-family:inherit; background:#FFFFFF;
+    transition:border-color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+.pw-wrap { position:relative; }
+.pw-wrap .input { padding-right:46px; }
+.pw-eye { position:absolute; top:50%; right:6px; transform:translateY(-50%); width:36px; height:36px; border:none; background:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#9ca3af; padding:0; }
+.pw-eye svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.pw-eye:active { color:#181818; }
+
+.input:focus {
+    outline:none; border-color:var(--orange); background:#FFFBEF;
+    box-shadow:0 0 0 3px rgba(247,181,0,.14);
+}
+
+.btn {
+    width:100%; box-sizing:border-box; min-height:48px;
+    padding:13px; border:none; border-radius:14px; font-size:15px;
+    font-weight:700; cursor:pointer;
+    transition:transform .16s cubic-bezier(.22,.8,.28,1), box-shadow .16s ease, background .16s ease;
+}
+
+.btn-primary {
+    background:linear-gradient(180deg,#FFC933 0%,#F7B500 100%); color:#fff;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.30), 0 1px 2px rgba(24,24,24,.07), 0 6px 16px rgba(247,181,0,.26);
+}
+
+.btn-primary:active {
+    transform:translateY(1px) scale(.995);
+    background:linear-gradient(180deg,#F7B500 0%,#E9A800 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.26), 0 1px 2px rgba(24,24,24,.09), 0 3px 9px rgba(247,181,0,.22);
+}
+
+.btn-primary:disabled {
+    opacity:.5; cursor:not-allowed;
+}
+
+.toggle-form {
+    text-align:center; margin-top:14px; font-size:13.5px; color:var(--text-dim);
+}
+
+.toggle-form a {
+    color:#8F6200; font-weight:800; text-decoration:none; cursor:pointer;
+    padding:2px 2px; border-radius:6px;
+}
+.toggle-form a:active { background:#FFF6DC; }
+
+.error {
+    background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:16px;
+    font-size:13px; display:none;
+}
+
+.error.show {
+    display:block;
+}
+
+.loading {
+    display:none; text-align:center; color:var(--orange); font-size:13px;
+}
+
+.loading.show {
+    display:block;
+}
+
+/* Les trois ecrans de la page : verification, formulaire, resultat.
+   Un seul est visible a la fois, comme les formulaires d'index.html. */
+.vue { display:none; }
+.vue.active { display:block; }
+</style>
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-header">
+        <img src="belfit-logo-b.png" class="auth-logo" alt="BELFIT">
+        <div class="auth-title">BEL<span style="color:#DFA004">FIT</span></div>
+        <p class="auth-subtitle" id="sousTitre" data-i18n="reinit_checking">Vérification du lien…</p>
+    </div>
+
+    <!-- 1. Verification du jeton en cours -->
+    <div class="vue active" id="vueAttente">
+        <div class="loading show" data-i18n="reinit_checking">Vérification du lien…</div>
+    </div>
+
+    <!-- 2. Saisie du nouveau mot de passe -->
+    <form class="vue" id="vueForm">
+        <div class="error" id="formError"></div>
+
+        <div class="form-group">
+            <label class="label" data-i18n="reinit_new">Nouveau mot de passe</label>
+            <div class="pw-wrap"><input type="password" class="input" id="pw1" placeholder="••••••••" required oninput="checkPwStrength()"><button type="button" class="pw-eye" onclick="togglePw('pw1',this)" aria-label="Afficher le mot de passe"><svg class="eye-open" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+            <div class="pw-meter" id="pwMeter"><div class="pw-bar" id="pwBar"></div></div>
+            <div class="pw-hint" id="pwHint" data-i18n="register_password_hint">8 caractères min, avec majuscule, minuscule, chiffre et symbole.</div>
+        </div>
+
+        <div class="form-group">
+            <label class="label" data-i18n="register_password_confirm">Confirmer mot de passe</label>
+            <div class="pw-wrap"><input type="password" class="input" id="pw2" placeholder="••••••••" required><button type="button" class="pw-eye" onclick="togglePw('pw2',this)" aria-label="Afficher le mot de passe"><svg class="eye-open" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btnValider" data-i18n="reinit_btn">Enregistrer le mot de passe</button>
+    </form>
+
+    <!-- 3. Resultat : succes ou lien perime -->
+    <div class="vue" id="vueFin">
+        <p class="auth-subtitle" id="finTexte" style="text-align:center; margin-bottom:16px;"></p>
+        <button type="button" class="btn btn-primary" id="finBouton"></button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script>
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
+  authDomain: "repz-baf60.firebaseapp.com",
+  projectId: "repz-baf60",
+  storageBucket: "repz-baf60.firebasestorage.app",
+  messagingSenderId: "403252293048",
+  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+/* Regles de mot de passe : identiques a l'inscription (index.html). */
+function estMotDePasseValide(pw){
+    return pw.length >= 8 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /[0-9]/.test(pw) && /[^a-zA-Z0-9]/.test(pw);
+}
+function scorePw(pw){
+    let s = 0;
+    if(/[a-z]/.test(pw)) s++;
+    if(/[A-Z]/.test(pw)) s++;
+    if(/[0-9]/.test(pw)) s++;
+    if(/[^a-zA-Z0-9]/.test(pw)) s++;
+    if(pw.length < 8) s = Math.min(s, 2); // longueur insuffisante = plafonné
+    return Math.min(s, 4); // 0..4
+}
+function checkPwStrength(){
+    const pw = document.getElementById('pw1').value;
+    const bar = document.getElementById('pwBar');
+    const hint = document.getElementById('pwHint');
+    if(!bar) return;
+    if(!pw){ bar.style.width = '0'; hint.textContent = window.t('register_password_hint'); hint.style.color = '#9aa0aa'; return; }
+    const s = scorePw(pw);
+    const pcts = ['25%','45%','70%','100%'];
+    const cols = ['#DC2626','#F97316','#F7B500','#10B981'];
+    const idx = Math.max(0, s - 1);
+    bar.style.width = pcts[idx];
+    bar.style.background = cols[idx];
+    if(!estMotDePasseValide(pw)){
+        const manque = [];
+        if(pw.length < 8) manque.push('8 caractères');
+        if(!/[A-Z]/.test(pw)) manque.push('majuscule');
+        if(!/[a-z]/.test(pw)) manque.push('minuscule');
+        if(!/[0-9]/.test(pw)) manque.push('chiffre');
+        if(!/[^a-zA-Z0-9]/.test(pw)) manque.push('symbole');
+        hint.textContent = 'Manque : ' + manque.join(', ');
+        hint.style.color = '#DC2626';
+    } else {
+        const mots = ['','Correct','Bon','Très bon','Excellent'];
+        hint.textContent = 'Mot de passe ' + mots[s].toLowerCase() + ' 👍';
+        hint.style.color = '#10B981';
+    }
+}
+function togglePw(id, btn){
+    const inp = document.getElementById(id);
+    if(!inp) return;
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.innerHTML = show
+      ? '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>'
+      : '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+
+/* ===== Enchainement de la page ===== */
+const params = new URLSearchParams(location.search);
+// « code » est notre parametre ; « oobCode » couvre un lien Firebase brut.
+const codeReinit = params.get('code') || params.get('oobCode') || '';
+const langUrl = (params.get('lang') || '').slice(0, 2);
+
+// La langue du courriel s'applique seulement si l'appareil n'a pas
+// deja un choix explicite : on ne contredit jamais l'utilisateur.
+if (langUrl && window.BELFIT_I18N && BELFIT_I18N.LANGS.indexOf(langUrl) !== -1 && !BELFIT_I18N.langChoisie()) {
+    BELFIT_I18N.setLang(langUrl);
+}
+
+function montrer(idVue){
+    document.querySelectorAll('.vue').forEach(function(v){ v.classList.remove('active'); });
+    document.getElementById(idVue).classList.add('active');
+}
+
+function ecranFin(cleTitre, cleTexte, cleBouton, destination){
+    document.getElementById('sousTitre').textContent = window.t(cleTitre);
+    document.getElementById('finTexte').textContent = window.t(cleTexte);
+    const b = document.getElementById('finBouton');
+    b.textContent = window.t(cleBouton);
+    b.className = 'btn btn-primary';
+    b.onclick = function(){ location.href = destination; };
+    montrer('vueFin');
+}
+
+// Verification du jeton avant d'afficher quoi que ce soit.
+if (!codeReinit) {
+    ecranFin('reinit_bad_title', 'reinit_bad_txt', 'reinit_bad_btn', 'index.html');
+} else {
+    auth.verifyPasswordResetCode(codeReinit).then(function(email){
+        document.getElementById('sousTitre').textContent = window.t('reinit_sub', { email: email });
+        montrer('vueForm');
+        document.getElementById('pw1').focus();
+    }).catch(function(){
+        ecranFin('reinit_bad_title', 'reinit_bad_txt', 'reinit_bad_btn', 'index.html');
+    });
+}
+
+document.getElementById('vueForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const pw1 = document.getElementById('pw1').value;
+    const pw2 = document.getElementById('pw2').value;
+    const err = document.getElementById('formError');
+    const btn = document.getElementById('btnValider');
+
+    function afficherErreur(cle){
+        err.textContent = window.t(cle);
+        err.classList.add('show');
+    }
+    err.classList.remove('show');
+
+    if (!estMotDePasseValide(pw1)) { afficherErreur('reinit_weak'); return; }
+    if (pw1 !== pw2) { afficherErreur('reinit_mismatch'); return; }
+
+    btn.disabled = true;
+    btn.textContent = window.t('reinit_saving');
+
+    auth.confirmPasswordReset(codeReinit, pw1).then(function(){
+        // Le mot de passe a change : toute session locale doit repartir de zero.
+        try { localStorage.removeItem('repz_session'); } catch (e) {}
+        ecranFin('reinit_ok_title', 'reinit_ok_txt', 'reinit_ok_btn', 'index.html');
+    }).catch(function(){
+        // Jeton perime pendant la saisie, ou mot de passe refuse par Firebase.
+        btn.disabled = false;
+        btn.textContent = window.t('reinit_btn');
+        afficherErreur('reinit_bad_txt');
+    });
+});
+</script>
+</body>
+</html>
