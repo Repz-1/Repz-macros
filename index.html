@@ -824,12 +824,15 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         localStorage.setItem('repz_firstName', firstName);
         // Confirmation d'adresse : le courriel part maintenant, mais il
         // n'arrete personne. L'app s'ouvre, une relance discrete suivra.
+        // Rien de tout ceci ne doit retarder l'entree dans l'app : le
+        // courriel part en arriere-plan, la redirection ne l'attend pas.
         try {
-            const jetonNouveau = await cred.user.getIdToken();
-            fetch('https://europe-west1-repz-baf60.cloudfunctions.net/mailVerification', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jetonNouveau },
-                body: JSON.stringify({ langue: (window.BELFIT_I18N && BELFIT_I18N.getLang()) || 'fr' })
+            cred.user.getIdToken().then(function(jetonNouveau){
+                fetch('https://europe-west1-repz-baf60.cloudfunctions.net/mailVerification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jetonNouveau },
+                    body: JSON.stringify({ langue: (window.BELFIT_I18N && BELFIT_I18N.getLang()) || 'fr' })
+                }).catch(function(){});
             }).catch(function(){});
         } catch(e) {}
         window.location.href = 'main.html';
