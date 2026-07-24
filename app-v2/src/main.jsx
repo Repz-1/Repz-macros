@@ -31,8 +31,6 @@ import { Courses } from './components/Courses.jsx';
 import { ActionsRapides } from './components/ActionsRapides.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
 import { MealPage } from './components/MealPage.jsx';
-import { Bienvenue, bienvenueFaite, marquerBienvenueFaite, programmeEnAttente, purgerProgrammeEnAttente } from './components/Bienvenue.jsx';
-import { OffrePremium, verifierOffrePremium } from './components/OffrePremium.jsx';
 import { repasOuvertId } from './components/MealCard.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
 import { MesPlats } from './components/MesPlats.jsx';
@@ -105,31 +103,9 @@ function App() {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>…</div>;
   }
   if (!utilisateur.value) {
-    // Le questionnaire vient AVANT le compte : la personne construit son
-    // programme, puis l'inscription devient le geste qui le sauvegarde.
-    if (!bienvenueFaite.value) {
-      return (
-        <Bienvenue
-          versConnexion={() => { bienvenueFaite.value = true; }}
-          versInscription={() => {}}
-        />
-      );
-    }
     return <LoginScreen />;
   }
 
-  // Programme construit pendant l'accueil : applique une fois le compte
-  // cree, apres le premier chargement du store (sinon il serait ecrase).
-  const prog = programmeEnAttente();
-  if (prog) {
-    setTimeout(() => {
-      objectifs.value = { kcal: prog.kcal, prot: prog.prot, carbs: prog.carbs, lip: prog.lip };
-      purgerProgrammeEnAttente();
-    }, 1500);
-  }
-
-  // L'offre Premium se montre UNE fois, maintenant que le compte existe.
-  verifierOffrePremium();
   if (!donneesPretes.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;
   }
@@ -320,7 +296,7 @@ function App() {
           <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
         ))}
       </div>
-      <button onClick={() => { marquerBienvenueFaite(); deconnexion(); }}>{t('deconnexion')}</button>
+      <button onClick={deconnexion}>{t('deconnexion')}</button>
     </div>
   ) : null;
 
@@ -349,7 +325,6 @@ function App() {
         </div>
       )}
       <MealPage />
-      <OffrePremium />
       <BottomNav />
     </>
   );

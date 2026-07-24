@@ -3,7 +3,6 @@ import { connexion, connexionGoogle, inscription, messageErreurAuth, envoyerLien
 import { normPseudo, formePseudo, pseudoDisponible } from '../services/pseudo.js';
 import { t, langue } from '../i18n/index.js';
 import { signal } from '@preact/signals';
-import { programmeEnAttente, prenomEnAttente, relancerBienvenue } from './Bienvenue.jsx';
 
 // Force du mot de passe : memes regles qu'en v1 (index.html).
 // 8 caracteres minimum, avec majuscule, minuscule, chiffre et symbole.
@@ -72,10 +71,10 @@ export const erreurPersistante = signal('');
 export function LoginScreen() {
   // Un programme construit pendant l'accueil attend d'etre sauvegarde :
   // on ouvre directement l'inscription, prenom deja rempli.
-  const [mode, setMode] = useState(() => programmeEnAttente() ? 'inscription' : 'connexion');
+  const [mode, setMode] = useState('connexion');
   const [accueil] = useState(() => ACCUEILS[Math.floor(Math.random() * ACCUEILS.length)]);
   const [email, setEmail] = useState('');
-  const [prenom, setPrenom] = useState(() => prenomEnAttente());
+  const [prenom, setPrenom] = useState('');
   const [pseudo, setPseudo] = useState('');
   const [mdp, setMdp] = useState('');
   const [mdp2, setMdp2] = useState('');
@@ -286,10 +285,6 @@ export function LoginScreen() {
       <button
         class="login-bascule"
         onClick={() => {
-          // Toute inscription passe par le questionnaire : « S'inscrire »
-          // le lance, sauf si un programme tout juste construit attend
-          // deja — le formulaire s'ouvre alors directement.
-          if (mode === 'connexion' && !programmeEnAttente()) { relancerBienvenue(); return; }
           setMode(mode === 'connexion' ? 'inscription' : 'connexion');
           setErreur(''); setMdp2(''); setConsent(false);
         }}
