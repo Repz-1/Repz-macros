@@ -130,7 +130,8 @@ export async function inscription(email, mdp, pseudo, prenom) {
     await reserverPseudo(cred.user, normPseudo(pseudo));
   } catch (e) {
     try { await cred.user.delete(); } catch (e2) {}
-    throw { code: e.message === 'pris' ? 'pseudo/pris' : 'pseudo/invalide' };
+    const causes = { pris: 'pseudo/pris', reseau: 'pseudo/reseau' };
+    throw { code: causes[e.message] || 'pseudo/invalide' };
   }
   // Le prenom sert a s'adresser a la personne (message de bienvenue,
   // e-mails du coach) ; le pseudo, lui, est son identifiant public et
@@ -177,6 +178,7 @@ export function messageErreurAuth(code) {
     // Identifiant sans arobase : la resolution du pseudo a echoue.
     'pseudo/pris': 'Ce nom d\'utilisateur est déjà pris',
     'pseudo/invalide': 'Choisis un nom d\'utilisateur valide et disponible',
+    'pseudo/reseau': 'Le serveur ne repond pas. Ton compte n\'a pas ete cree — reessaie dans un instant.',
   };
   return messages[code] || 'Erreur de connexion, réessaie';
 }

@@ -41,14 +41,21 @@ export async function pseudoDisponible(pseudo) {
 /** Reserve le pseudo une fois le compte cree (unicite garantie par transaction). */
 export async function reserverPseudo(user, pseudo) {
   const jeton = await user.getIdToken();
-  const r = await fetch(API_BELFIT + '/reserverPseudo', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jeton },
-    body: JSON.stringify({ pseudo }),
-  });
+  let r;
+  try {
+    r = await fetch(API_BELFIT + '/reserverPseudo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jeton },
+      body: JSON.stringify({ pseudo }),
+    });
+  } catch (e) {
+    // Serveur injoignable : distinct d'un pseudo deja pris. Confondre
+    // les deux ferait accuser l'utilisateur d'une panne de notre cote.
+    throw new Error('reseau');
+  }
   if (!r.ok) {
     const d = await r.json().catch(() => ({}));
-    throw new Error(d.error || 'pseudo');
+    throw new Error(d.error || (r.status >= 500 ? 'reseau' : 'pseudo'));
   }
 }
 

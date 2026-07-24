@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'preact/hooks';
 import { connexion, connexionGoogle, inscription, messageErreurAuth, envoyerLienReinitialisation } from '../services/firebase.js';
 import { normPseudo, formePseudo, pseudoDisponible } from '../services/pseudo.js';
 import { t, langue } from '../i18n/index.js';
+import { signal } from '@preact/signals';
 import { programmeEnAttente, prenomEnAttente, relancerBienvenue } from './Bienvenue.jsx';
 
 // Force du mot de passe : memes regles qu'en v1 (index.html).
@@ -60,6 +61,14 @@ function ChampMotDePasse({ valeur, onInput, placeholder, autocomplete }) {
   );
 }
 
+/**
+ * Message d'erreur hors du composant. Une inscription qui echoue apres
+ * la creation du compte demonte puis remonte cet ecran : un etat local
+ * disparaitrait avec lui, et la personne se retrouverait devant un
+ * formulaire vierge, sans la moindre explication.
+ */
+export const erreurPersistante = signal('');
+
 export function LoginScreen() {
   // Un programme construit pendant l'accueil attend d'etre sauvegarde :
   // on ouvre directement l'inscription, prenom deja rempli.
@@ -71,7 +80,9 @@ export function LoginScreen() {
   const [mdp, setMdp] = useState('');
   const [mdp2, setMdp2] = useState('');
   const [consent, setConsent] = useState(false);
-  const [erreur, setErreur] = useState('');
+  const [erreurLocale, setErreurLocale] = useState('');
+  const erreur = erreurLocale || erreurPersistante.value;
+  const setErreur = (v) => { setErreurLocale(v); erreurPersistante.value = v; };
   const [chargement, setChargement] = useState(false);
   // Recuperation de mot de passe : champ dedie et message de reussite,
   // comme le formulaire separe de la v1 (recoveryForm).
@@ -108,6 +119,7 @@ export function LoginScreen() {
   const valider = async (e) => {
     e.preventDefault();
     setErreur('');
+    erreurPersistante.value = '';
     if (mode === 'inscription') {
       if (etatPseudo !== 'libre') { setErreur(t('pseudo_invalide')); return; }
       if (!mdpValide(mdp)) {
