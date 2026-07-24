@@ -229,7 +229,7 @@ export function LoginScreen() {
             <input
               type="text" placeholder={t('register_pseudo')} value={pseudo}
               onInput={e => setPseudo(e.currentTarget.value)} required
-              autocomplete="username" autocapitalize="none" spellcheck={false}
+              autocomplete="nickname" autocapitalize="none" spellcheck={false}
               maxLength={20}
             />
             <div class={'login-pseudo-note login-pseudo-note--' + etatPseudo}>{notePseudo}</div>
