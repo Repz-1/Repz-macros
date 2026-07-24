@@ -132,6 +132,9 @@ button{cursor:pointer}
 .login-ok{background:#FFFCF0;color:#166534;border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
 /* « Mot de passe oublie » reste volontairement en retrait (v1). */
 .login-oubli{background:none;border:none;color:#a5a19a;font-weight:600;font-size:12.5px;margin-top:8px;text-decoration:underline}
+/* Ecran de confirmation d'adresse : texte explicatif et ligne d'aide. */
+.conf-texte{font-size:14.5px;line-height:1.55;color:#5C5750;margin:0 0 4px;text-align:center}
+.conf-aide{font-size:12.5px;color:#a5a19a;margin:6px 0 0;text-align:center}
 
 /* ---- En-tete connecte ---- */
 .entete-user{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}

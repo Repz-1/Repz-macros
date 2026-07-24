@@ -2091,6 +2091,7 @@
 /* Ecrans jalons : l'illustration respire, le titre porte un segment or
    souligne d'un court trait — la grammaire des maquettes validees. */
 .bv-jalon { padding-top: 4vh; }
+.bv-jalon .bv-suivant { margin-left: 56px; }
 .bv-jalon-img {
   width: 100%; max-width: 340px; margin: 0 auto 26px;
   border-radius: 26px; display: block;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script src="i18n-strings.js?v=37"></script>
+<script src="i18n-strings.js?v=38"></script>
 <script src="i18n.js?v=4"></script>
 <script>if(window.self!==window.top){try{window.top.location=window.location.href;}catch(e){}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -409,7 +409,22 @@ const auth = firebase.auth();
 sessionStorage.removeItem('repz_premSynced');
 
 // Vérifier si l'utilisateur est déjà connecté
+
+/* Confirmation d'adresse : ne concerne que les comptes crees a partir
+   de la mise en service. Les inscrits anterieurs portent tous
+   emailVerified = false faute d'avoir jamais ete sollicites — les
+   bloquer reviendrait a mettre tout le monde dehors d'un coup. */
+function belfitAConfirmer(u){
+  if(!u || u.emailVerified) return false;
+  var parMdp = (u.providerData || []).some(function(p){ return p.providerId === 'password'; });
+  if(!parMdp) return false;
+  var cree = u.metadata && u.metadata.creationTime;
+  if(!cree) return false;
+  return Date.parse(cree) >= Date.parse('2026-07-24T00:00:00Z');
+}
+
 auth.onAuthStateChanged((user) => {
+    if(belfitAConfirmer(user)) { window.location.href = 'confirmation.html'; return; }
     if(user) {
         // Déjà connecté : on nettoie le mode invité et on file à l'accueil
         localStorage.removeItem('repz_invite');
@@ -808,7 +823,8 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             } catch(e){ /* non bloquant */ }
         }
         localStorage.setItem('repz_firstName', firstName);
-        window.location.href = 'main.html';
+        // Compte tout juste cree : l'adresse reste a confirmer.
+        window.location.href = 'confirmation.html';
     } catch(error) {
         loadingDiv.classList.remove('show');
         let message = 'Erreur : ' + error.code;

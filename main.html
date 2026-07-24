@@ -17,10 +17,24 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script>
 /* Garde d'authentification unique du shell : si personne n'est connecté ni invité -> connexion */
+/* Confirmation d'adresse : ne concerne que les comptes crees a partir
+   de la mise en service. Les inscrits anterieurs portent tous
+   emailVerified = false faute d'avoir jamais ete sollicites — les
+   bloquer reviendrait a mettre tout le monde dehors d'un coup. */
+function belfitAConfirmer(u){
+  if(!u || u.emailVerified) return false;
+  var parMdp = (u.providerData || []).some(function(p){ return p.providerId === 'password'; });
+  if(!parMdp) return false;
+  var cree = u.metadata && u.metadata.creationTime;
+  if(!cree) return false;
+  return Date.parse(cree) >= Date.parse('2026-07-24T00:00:00Z');
+}
+
 (function(){
   try{
     firebase.initializeApp({ apiKey:"AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I", authDomain:"repz-baf60.firebaseapp.com", projectId:"repz-baf60", storageBucket:"repz-baf60.firebasestorage.app", messagingSenderId:"403252293048", appId:"1:403252293048:web:e7db6aed4ba92f0ebfb34d" });
     firebase.auth().onAuthStateChanged(function(u){
+      if(belfitAConfirmer(u)){ location.replace('confirmation.html'); return; }
       if(!u && localStorage.getItem('repz_invite') !== '1'){
         setTimeout(function(){
           if(!firebase.auth().currentUser && localStorage.getItem('repz_invite') !== '1'){
@@ -113,7 +127,7 @@ try{
 })();
 </script>
 
-<script src="i18n-strings.js?v=37"></script>
+<script src="i18n-strings.js?v=38"></script>
 <script src="i18n.js?v=4"></script>
 <div id="deck">
     <div class="panel"><iframe id="f0" src="app.html" title="Journal"></iframe></div>

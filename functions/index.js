@@ -453,6 +453,9 @@ const REPONSE_A = "contact@belfit.be";
 /** Notre page de saisie du nouveau mot de passe. */
 const PAGE_REINIT = "https://belfit.be/reinitialisation.html";
 
+/** Notre page de confirmation d'adresse. */
+const PAGE_VERIF = "https://belfit.be/verification.html";
+
 /** Modele du message, en trois langues. */
 const TEXTES = {
   fr: {
@@ -490,10 +493,48 @@ const TEXTES = {
   },
 };
 
+/** Confirmation d'adresse, en trois langues. */
+const TEXTES_VERIF = {
+  fr: {
+    objet: "Confirme ton adresse — BELFIT",
+    titre: "Plus qu'une étape",
+    intro: "Bienvenue chez BELFIT. Confirme ton adresse e-mail pour " +
+      "débloquer ton programme — le lien reste valable 24 heures.",
+    bouton: "Confirmer mon adresse",
+    rassure: "Tu n'es pas à l'origine de cette inscription ?<br>" +
+      "Ignore ce message, aucun compte ne sera activé.",
+    slogan: "Ton coach nutrition et entraînement",
+    pied: "Nous écrire",
+  },
+  en: {
+    objet: "Confirm your email — BELFIT",
+    titre: "One last step",
+    intro: "Welcome to BELFIT. Confirm your email address to unlock " +
+      "your programme — the link stays valid for 24 hours.",
+    bouton: "Confirm my email",
+    rassure: "Didn't sign up?<br>Just ignore this message, " +
+      "no account will be activated.",
+    slogan: "Your nutrition and training coach",
+    pied: "Contact us",
+  },
+  nl: {
+    objet: "Bevestig je e-mailadres — BELFIT",
+    titre: "Nog één stap",
+    intro: "Welkom bij BELFIT. Bevestig je e-mailadres om je programma " +
+      "te ontgrendelen — de link blijft 24 uur geldig.",
+    bouton: "Mijn adres bevestigen",
+    rassure: "Heb je je niet ingeschreven?<br>" +
+      "Negeer dit bericht, er wordt geen account geactiveerd.",
+    slogan: "Jouw coach voor voeding en training",
+    pied: "Contacteer ons",
+  },
+};
+
 /** Construit le message HTML. Tables + styles en ligne : seule
  *  mise en forme fiable dans les clients de messagerie. */
-function modeleMail(lien, langue) {
-  const T = TEXTES[langue] || TEXTES.fr;
+function modeleMail(lien, langue, jeu) {
+  const J = jeu || TEXTES;
+  const T = J[langue] || J.fr;
   return `<!DOCTYPE html>
 <html lang="${langue}"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -530,6 +571,95 @@ function modeleMail(lien, langue) {
 </td></tr></table>
 </body></html>`;
 }
+
+// ---------------------------------------------------------------
+// Confirmation d'adresse a l'inscription.
+// Meme chaine que la reinitialisation : Firebase signe le jeton,
+// nous envoyons le message et hebergeons la page d'arrivee.
+// Ici l'appel exige un jeton de session : sans cela l'adresse
+// serait libre, et l'endpoint deviendrait un relais a courriels.
+// ---------------------------------------------------------------
+exports.mailVerification = onRequest(
+  {secrets: [RESEND_API_KEY], region: "europe-west1", cors: true},
+  async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+    if (req.method !== "POST") { res.status(405).json({ok: false}); return; }
+
+    try {
+      const entete = req.get("Authorization") || "";
+      const jetonSession = entete.startsWith("Bearer ") ? entete.slice(7) : "";
+      if (!jetonSession) { res.status(401).json({ok: false}); return; }
+
+      let compte;
+      try {
+        const decode = await admin.auth().verifyIdToken(jetonSession);
+        compte = await admin.auth().getUser(decode.uid);
+      } catch (e) {
+        res.status(401).json({ok: false}); return;
+      }
+
+      // Deja confirme : inutile d'envoyer quoi que ce soit.
+      if (compte.emailVerified) { res.json({ok: true, deja: true}); return; }
+      if (!compte.email) { res.status(400).json({ok: false}); return; }
+
+      // Garde-fou : un envoi par minute. Sans cela, un clic repete sur
+      // « renvoyer » suffirait a inonder une boite et a abimer notre
+      // reputation d'expediteur.
+      const ref = db.collection("users").doc(compte.uid);
+      const snap = await ref.get();
+      const dernier = snap.exists && snap.data().dernierMailVerif;
+      if (dernier && Date.now() - dernier.toMillis() < 60000) {
+        res.status(429).json({ok: false, attendre: true}); return;
+      }
+
+      const langue = String((req.body && req.body.langue) || "fr").slice(0, 2);
+
+      let lien = await admin.auth()
+        .generateEmailVerificationLink(compte.email);
+      try {
+        const jeton = new URL(lien).searchParams.get("oobCode");
+        if (jeton) {
+          lien = `${PAGE_VERIF}?code=${encodeURIComponent(jeton)}` +
+            `&lang=${encodeURIComponent(langue)}`;
+        }
+      } catch (e) {
+        console.error("Lien Firebase illisible :", e);
+      }
+
+      const T = TEXTES_VERIF[langue] || TEXTES_VERIF.fr;
+      const envoi = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY.value()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: EXPEDITEUR,
+          reply_to: REPONSE_A,
+          to: [compte.email],
+          subject: T.objet,
+          html: modeleMail(lien, langue, TEXTES_VERIF),
+        }),
+      });
+
+      if (!envoi.ok) {
+        console.error("Resend a refuse l'envoi :", await envoi.text());
+        res.status(502).json({ok: false});
+        return;
+      }
+      await ref.set({
+        dernierMailVerif: admin.firestore.FieldValue.serverTimestamp(),
+      }, {merge: true});
+      res.json({ok: true});
+    } catch (e) {
+      console.error("mailVerification :", e);
+      res.status(500).json({ok: false});
+    }
+  },
+);
 
 exports.mailReinitialisation = onRequest(
   {secrets: [RESEND_API_KEY], region: "europe-west1", cors: true},

@@ -159,6 +159,7 @@ export async function inscription(email, mdp, pseudo, prenom) {
 }
 
 export async function deconnexion() {
+  adresseConfirmee.value = false;
   return signOut(auth);
 }
 
@@ -203,4 +204,54 @@ export async function envoyerLienReinitialisation(email, lang) {
     try { auth.languageCode = lg; } catch (e) {}
     await sendPasswordResetEmail(auth, email);
   }
+}
+
+/** Mise en service de la confirmation d'adresse. Les comptes anterieurs
+ *  portent tous emailVerified = false, faute d'avoir jamais ete
+ *  sollicites : les bloquer reviendrait a mettre dehors l'integralite
+ *  des inscrits d'un coup. Ils restent donc acquis. */
+const DEBUT_CONFIRMATION = Date.parse('2026-07-24T00:00:00Z');
+
+/** L'adresse reste-t-elle a confirmer ? Les comptes Google arrivent
+ *  deja verifies par Google : on ne leur demande rien. */
+export function adresseAConfirmer(u) {
+  if (!u || u.emailVerified || adresseConfirmee.value) return false;
+  const parMdp = (u.providerData || []).some((p) => p.providerId === 'password');
+  if (!parMdp) return false;
+  const cree = u.metadata && u.metadata.creationTime;
+  if (!cree) return false;              // date illisible : on laisse passer
+  return Date.parse(cree) >= DEBUT_CONFIRMATION;
+}
+
+/** Demande l'envoi du courriel de confirmation. La Cloud Function
+ *  exige le jeton de session : personne ne peut declencher un envoi
+ *  vers une adresse qui n'est pas la sienne. */
+export async function envoyerMailVerification(lang) {
+  const u = auth.currentUser;
+  if (!u) throw new Error('pas de session');
+  const jeton = await u.getIdToken();
+  const r = await fetch('https://europe-west1-repz-baf60.cloudfunctions.net/mailVerification', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jeton}` },
+    body: JSON.stringify({ langue: lang || 'fr' }),
+  });
+  if (r.status === 429) throw new Error('trop_tot');
+  if (!r.ok) throw new Error('envoi');
+}
+
+/** Confirmation constatee pendant la session. Le SDK garde en memoire
+ *  un instantane du compte et ne le remplace pas apres reload() : sans
+ *  ce drapeau, l'ecran d'attente resterait affiche indefiniment. */
+export const adresseConfirmee = signal(false);
+
+/** Relit l'etat du compte cote serveur. */
+export async function rafraichirUtilisateur() {
+  const u = auth.currentUser;
+  if (!u) return false;
+  await u.reload();
+  if (auth.currentUser && auth.currentUser.emailVerified) {
+    adresseConfirmee.value = true;
+    return true;
+  }
+  return false;
 }
