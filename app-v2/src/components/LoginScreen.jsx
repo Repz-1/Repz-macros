@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { connexion, connexionGoogle, inscription, messageErreurAuth } from '../services/firebase.js';
+import { connexion, connexionGoogle, inscription, messageErreurAuth, envoyerLienReinitialisation } from '../services/firebase.js';
 import { normPseudo, formePseudo, pseudoDisponible } from '../services/pseudo.js';
-import { t } from '../i18n/index.js';
+import { t, langue } from '../i18n/index.js';
 import { programmeEnAttente, prenomEnAttente, relancerBienvenue } from './Bienvenue.jsx';
 
 // Force du mot de passe : memes regles qu'en v1 (index.html).
@@ -49,6 +49,10 @@ export function LoginScreen() {
   const [consent, setConsent] = useState(false);
   const [erreur, setErreur] = useState('');
   const [chargement, setChargement] = useState(false);
+  // Recuperation de mot de passe : champ dedie et message de reussite,
+  // comme le formulaire separe de la v1 (recoveryForm).
+  const [emailRecup, setEmailRecup] = useState('');
+  const [msgOk, setMsgOk] = useState('');
 
   // Etat du nom d'utilisateur : 'vide' | 'invalide' | 'verif' | 'libre' | 'pris'
   const [etatPseudo, setEtatPseudo] = useState('vide');
@@ -100,6 +104,51 @@ export function LoginScreen() {
     }
     setChargement(false);
   };
+
+  // La v1 remplace le formulaire de connexion par celui-ci dans la meme
+  // carte : ni bouton Google, ni separateur, juste l'adresse et l'envoi.
+  if (mode === 'recuperation') {
+    const envoyer = async (e) => {
+      e.preventDefault();
+      setErreur(''); setMsgOk(''); setChargement(true);
+      try {
+        await envoyerLienReinitialisation(emailRecup, langue.value);
+        setMsgOk(t('recup_ok'));
+        // Retour automatique a la connexion apres 3 s, comme en v1.
+        setTimeout(() => { setMode('connexion'); setMsgOk(''); }, 3000);
+      } catch (err) {
+        setErreur(t('recup_erreur'));
+      }
+      setChargement(false);
+    };
+
+    return (
+      <div class="login-ecran">
+        <img src="/belfit-logo-b.png" alt="BelFit" class="login-logo" />
+        <h1 class="login-titre">{t('recup_titre')}</h1>
+
+        <form onSubmit={envoyer} class="login-form">
+          {erreur && <div class="login-erreur">{erreur}</div>}
+          {msgOk && <div class="login-ok">{msgOk}</div>}
+          <input
+            type="email" placeholder={t('email')} value={emailRecup}
+            onInput={e => setEmailRecup(e.currentTarget.value)} required
+            autocomplete="email" autocapitalize="none" spellcheck={false}
+          />
+          <button type="submit" class="login-btn" disabled={chargement}>
+            {chargement ? t('recup_envoi') : t('recup_envoyer')}
+          </button>
+        </form>
+
+        <button
+          class="login-bascule"
+          onClick={() => { setMode('connexion'); setErreur(''); setMsgOk(''); }}
+        >
+          {t('recup_retour')}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div class="login-ecran">
@@ -211,6 +260,16 @@ export function LoginScreen() {
       >
         {mode === 'connexion' ? t('pas_compte') : t('deja_compte')}
       </button>
+
+      {/* « Mot de passe oublie » reste volontairement en retrait (v1). */}
+      {mode === 'connexion' && (
+        <button
+          class="login-oubli"
+          onClick={() => { setMode('recuperation'); setErreur(''); setMsgOk(''); }}
+        >
+          {t('mdp_oublie')}
+        </button>
+      )}
     </div>
   );
 }

@@ -128,6 +128,10 @@ button{cursor:pointer}
 .login-btn{background:#F7B500;border:none;border-radius:14px;padding:15px;font-weight:800;font-size:15.5px;margin-top:4px}
 .login-btn:disabled{opacity:.6}
 .login-bascule{background:none;border:none;color:#8a8a8a;font-weight:600;font-size:14px;margin-top:20px;text-decoration:underline}
+/* Message de reussite : memes teintes que la v1 (.success). */
+.login-ok{background:#FFFCF0;color:#166534;border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
+/* « Mot de passe oublie » reste volontairement en retrait (v1). */
+.login-oubli{background:none;border:none;color:#a5a19a;font-weight:600;font-size:12.5px;margin-top:8px;text-decoration:underline}
 
 /* ---- En-tete connecte ---- */
 .entete-user{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}

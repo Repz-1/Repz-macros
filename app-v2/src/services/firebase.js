@@ -3,6 +3,7 @@ import {
   getAuth, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
   signInWithCustomToken, updateProfile,
+  sendPasswordResetEmail,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
 } from 'firebase/auth';
 import { normPseudo, jetonParPseudo, reserverPseudo } from './pseudo.js';
@@ -177,4 +178,29 @@ export function messageErreurAuth(code) {
     'pseudo/invalide': 'Choisis un nom d\'utilisateur valide et disponible',
   };
   return messages[code] || 'Erreur de connexion, réessaie';
+}
+
+/**
+ * Envoi du lien de reinitialisation — meme chaine qu'en v1 (index.html).
+ * On passe d'abord par la Cloud Function : le courriel part alors de
+ * belfit.be, aux couleurs de la marque, et renvoie vers notre propre
+ * page. Si ce service ne repond pas, Firebase prend le relais : moins
+ * beau, mais personne ne reste bloque devant un ecran muet.
+ */
+export async function envoyerLienReinitialisation(email, lang) {
+  const lg = lang || 'fr';
+  let envoye = false;
+  try {
+    const r = await fetch('https://europe-west1-repz-baf60.cloudfunctions.net/mailReinitialisation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, langue: lg }),
+    });
+    envoye = r.ok;
+  } catch (e) { envoye = false; }
+
+  if (!envoye) {
+    try { auth.languageCode = lg; } catch (e) {}
+    await sendPasswordResetEmail(auth, email);
+  }
 }
