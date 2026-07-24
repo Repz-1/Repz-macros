@@ -3,9 +3,9 @@ import { useState, useRef, useEffect } from 'preact/hooks';
 import './styles.css';
 import './styles/design-system.css';
 import './styles/journal-socle.css';
-import { utilisateur, authPrete, deconnexion, adresseAConfirmer } from './services/firebase.js';
+import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
-import { ConfirmationAdresse } from './components/ConfirmationAdresse.jsx';
+import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
 import { repas, objectifs, nouvelleJournee, donneesPretes } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
@@ -95,6 +95,7 @@ function OngletEntrainer() {
       <button class="v2-retour" onClick={retourEntrainer} aria-label="Retour">←</button>
       {vue.nom === 'seance' && <SeanceTracker />}
       <RestTimer />
+      <BandeauConfirmation />
     </div>
   );
 }
@@ -115,13 +116,6 @@ function App() {
       );
     }
     return <LoginScreen />;
-  }
-
-  // Adresse non confirmee : l'application reste fermee. Le programme
-  // calcule pendant l'accueil est deja mis de cote, il sera applique
-  // des l'entree — rien de ce qui a ete saisi n'est perdu.
-  if (adresseAConfirmer(utilisateur.value)) {
-    return <ConfirmationAdresse />;
   }
 
   // Programme construit pendant l'accueil : applique une fois le compte

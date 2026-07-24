@@ -134,7 +134,10 @@ button{cursor:pointer}
 .login-oubli{background:none;border:none;color:#a5a19a;font-weight:600;font-size:12.5px;margin-top:8px;text-decoration:underline}
 /* Ecran de confirmation d'adresse : texte explicatif et ligne d'aide. */
 .conf-texte{font-size:14.5px;line-height:1.55;color:#5C5750;margin:0 0 4px;text-align:center}
-.conf-aide{font-size:12.5px;color:#a5a19a;margin:6px 0 0;text-align:center}
+.bandeau-conf{position:fixed;left:0;right:0;z-index:90;bottom:calc(60px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;margin:0 10px;padding:10px 12px;background:#FFFBEF;border:1px solid #F0E2B4;border-radius:12px;box-shadow:0 4px 14px rgba(24,24,24,.08)}
+.bc-txt{flex:1;font-size:12.5px;font-weight:600;color:#5C5750;line-height:1.4}
+.bc-action{background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:800;color:#8F6200;text-decoration:underline;cursor:pointer;padding:0;white-space:nowrap}
+.bc-fermer{background:none;border:none;font-size:19px;line-height:1;color:#b5b0a4;cursor:pointer;padding:0 2px}
 
 /* ---- En-tete connecte ---- */
 .entete-user{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}

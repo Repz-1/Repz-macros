@@ -21,6 +21,63 @@
    de la mise en service. Les inscrits anterieurs portent tous
    emailVerified = false faute d'avoir jamais ete sollicites — les
    bloquer reviendrait a mettre tout le monde dehors d'un coup. */
+
+/* Relance de confirmation d'adresse. Ni mur ni fenetre : une bande
+   fine, ecartable, qui laisse l'application entierement accessible.
+   Les concurrents directs procedent tous ainsi. */
+function belfitBandeauConfirmation(u){
+  if(sessionStorage.getItem('belfit_conf_masque') === '1') return;
+  if(document.getElementById('bandeauConf')) return;
+
+  var b = document.createElement('div');
+  b.id = 'bandeauConf';
+  b.className = 'bandeau-conf';
+  var texte = (window.t ? window.t('conf_bandeau') : 'Confirme ton adresse e-mail.');
+  var lien  = (window.t ? window.t('conf_renvoyer') : "Renvoyer l'e-mail");
+  b.innerHTML = '<span class="bc-txt"></span>' +
+                '<button type="button" class="bc-action"></button>' +
+                '<button type="button" class="bc-fermer" aria-label="Fermer">&times;</button>';
+  b.querySelector('.bc-txt').textContent = texte;
+  b.querySelector('.bc-action').textContent = lien;
+  document.body.appendChild(b);
+
+  b.querySelector('.bc-fermer').addEventListener('click', function(){
+    try{ sessionStorage.setItem('belfit_conf_masque','1'); }catch(e){}
+    b.remove();
+  });
+
+  b.querySelector('.bc-action').addEventListener('click', async function(){
+    var bouton = this;
+    bouton.disabled = true;
+    try {
+      var jeton = await firebase.auth().currentUser.getIdToken();
+      var r = await fetch('https://europe-west1-repz-baf60.cloudfunctions.net/mailVerification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jeton },
+        body: JSON.stringify({ langue: (window.BELFIT_I18N && BELFIT_I18N.getLang()) || 'fr' })
+      });
+      b.querySelector('.bc-txt').textContent = window.t
+        ? window.t(r.status === 429 ? 'conf_trop_tot' : (r.ok ? 'conf_renvoye' : 'conf_erreur'))
+        : '';
+      if(r.ok) bouton.remove();
+    } catch(e){ bouton.disabled = false; }
+  });
+
+  // La confirmation se fait souvent sur un autre appareil : on relit
+  // l'etat du compte plutot que d'attendre un retour ici.
+  var minuteur = setInterval(function(){
+    var c = firebase.auth().currentUser;
+    if(!c){ clearInterval(minuteur); return; }
+    c.reload().then(function(){
+      if(firebase.auth().currentUser.emailVerified){
+        clearInterval(minuteur);
+        var el = document.getElementById('bandeauConf');
+        if(el) el.remove();
+      }
+    }).catch(function(){});
+  }, 15000);
+}
+
 function belfitAConfirmer(u){
   if(!u || u.emailVerified) return false;
   var parMdp = (u.providerData || []).some(function(p){ return p.providerId === 'password'; });
@@ -34,7 +91,7 @@ function belfitAConfirmer(u){
   try{
     firebase.initializeApp({ apiKey:"AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I", authDomain:"repz-baf60.firebaseapp.com", projectId:"repz-baf60", storageBucket:"repz-baf60.firebasestorage.app", messagingSenderId:"403252293048", appId:"1:403252293048:web:e7db6aed4ba92f0ebfb34d" });
     firebase.auth().onAuthStateChanged(function(u){
-      if(belfitAConfirmer(u)){ location.replace('confirmation.html'); return; }
+      if(belfitAConfirmer(u)){ belfitBandeauConfirmation(u); }
       if(!u && localStorage.getItem('repz_invite') !== '1'){
         setTimeout(function(){
           if(!firebase.auth().currentUser && localStorage.getItem('repz_invite') !== '1'){
@@ -67,6 +124,21 @@ html, body { height:100%; overflow:hidden; background:#F8F8F8; font-family:'Manr
 .bn-item span { font-size:10.5px; font-weight:700; }
 .bn-item.active { color:#181818; }
 .bn-item.bn-premium.active { color:#DE2F14; }
+
+/* Relance de confirmation d'adresse : au-dessus de la navigation,
+   assez discrete pour ne rien masquer d'essentiel. */
+.bandeau-conf {
+    position:fixed; left:0; right:0; z-index:90;
+    bottom:calc(60px + env(safe-area-inset-bottom));
+    display:flex; align-items:center; gap:10px;
+    margin:0 10px; padding:10px 12px;
+    background:#FFFBEF; border:1px solid #F0E2B4; border-radius:12px;
+    box-shadow:0 4px 14px rgba(24,24,24,.08);
+}
+.bc-txt { flex:1; font-size:12.5px; font-weight:600; color:#5C5750; line-height:1.4; }
+.bc-action { background:none; border:none; font-family:inherit; font-size:12.5px; font-weight:800; color:#8F6200; text-decoration:underline; cursor:pointer; padding:0; white-space:nowrap; }
+.bc-fermer { background:none; border:none; font-size:19px; line-height:1; color:#b5b0a4; cursor:pointer; padding:0 2px; }
+
 </style>
 </head>
 <body>
@@ -127,7 +199,7 @@ try{
 })();
 </script>
 
-<script src="i18n-strings.js?v=38"></script>
+<script src="i18n-strings.js?v=39"></script>
 <script src="i18n.js?v=4"></script>
 <div id="deck">
     <div class="panel"><iframe id="f0" src="app.html" title="Journal"></iframe></div>
