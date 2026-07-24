@@ -36,6 +36,30 @@ function manquesMdp(pw) {
 const ACCUEILS = ['hello_1', 'hello_2', 'hello_3', 'hello_4', 'hello_5', 'hello_6'];
 
 // Ecran de connexion / inscription — sobre, palette BelFit.
+
+/** Oeil d'affichage du mot de passe — meme geste et meme trace qu'en v1. */
+function ChampMotDePasse({ valeur, onInput, placeholder, autocomplete }) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div class="pw-wrap">
+      <input
+        type={visible ? 'text' : 'password'} placeholder={placeholder} value={valeur}
+        onInput={onInput} required autocomplete={autocomplete}
+      />
+      <button
+        type="button" class="pw-eye" onClick={() => setVisible(!visible)}
+        aria-label={visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
+          <circle cx="12" cy="12" r="3" />
+          {visible && <path d="M3 3l18 18" />}
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 export function LoginScreen() {
   // Un programme construit pendant l'accueil attend d'etre sauvegarde :
   // on ouvre directement l'inscription, prenom deja rempli.
@@ -199,9 +223,9 @@ export function LoginScreen() {
             <div class={'login-pseudo-note login-pseudo-note--' + etatPseudo}>{notePseudo}</div>
           </>
         )}
-        <input
-          type="password" placeholder={t("mdp")} value={mdp}
-          onInput={e => setMdp(e.currentTarget.value)} required
+        <ChampMotDePasse
+          placeholder={t("mdp")} valeur={mdp}
+          onInput={e => setMdp(e.currentTarget.value)}
           autocomplete={mode === 'connexion' ? 'current-password' : 'new-password'}
         />
 
@@ -222,9 +246,9 @@ export function LoginScreen() {
                 : mdpValide(mdp) ? '✓ Mot de passe solide' : 'Manque : ' + manquesMdp(mdp).join(', ')}
             </div>
 
-            <input
-              type="password" placeholder="Confirmer le mot de passe" value={mdp2}
-              onInput={e => setMdp2(e.currentTarget.value)} required autocomplete="new-password"
+            <ChampMotDePasse
+              placeholder="Confirmer le mot de passe" valeur={mdp2}
+              onInput={e => setMdp2(e.currentTarget.value)} autocomplete="new-password"
             />
 
             <label class="login-consent">

@@ -124,6 +124,12 @@ button{cursor:pointer}
 .login-form{width:100%;display:flex;flex-direction:column;gap:12px}
 .login-form input{padding:15px 16px;border:1px solid #e8e4d8;border-radius:14px;font-size:15px;font-family:inherit;background:#fff}
 .login-form input:focus{outline:none;border-color:#F7B500}
+/* Oeil d'affichage du mot de passe — memes mesures qu'en v1. */
+.pw-wrap{position:relative;display:flex;flex-direction:column}
+.pw-wrap input{padding-right:46px!important}
+.pw-eye{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#9ca3af;padding:0}
+.pw-eye svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pw-eye:active{color:#181818}
 .login-erreur{background:#FDECEA;color:#B3261E;border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
 .login-btn{background:#F7B500;border:none;border-radius:14px;padding:15px;font-weight:800;font-size:15.5px;margin-top:4px}
 .login-btn:disabled{opacity:.6}
