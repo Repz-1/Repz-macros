@@ -55,7 +55,9 @@ const CHAPITRES = {
 
 // Ordre des ecrans. Chaque question porte sa justification : on dit
 // pourquoi on demande, honnetement, comme un coach le ferait.
-const ECRANS = ['accueil', 'prenom', 'objectif', 'corps', 'cible', 'activite', 'sport', 'repas', 'faible', 'resultat'];
+// Deux jalons ponctuent le tunnel (procede Foodvisor) : une pause qui
+// felicite et relance, placee entre les chapitres — jamais au debut.
+const ECRANS = ['accueil', 'prenom', 'objectif', 'corps', 'cible', 'jalon1', 'activite', 'sport', 'repas', 'faible', 'jalon2', 'resultat'];
 const CHAPITRE_DE = {
   prenom: 'toi', objectif: 'toi', corps: 'toi', cible: 'toi',
   activite: 'quotidien', sport: 'quotidien',
@@ -276,6 +278,17 @@ export function Bienvenue({ versConnexion, versInscription }) {
         </div>
       )}
 
+      {/* ---------- Jalon 1 : fin du chapitre Toi ---------- */}
+      {ecran === 'jalon1' && (
+        <div class="bv-corps bv-jalon">
+          <img src="/img/jalon-premier-pas.jpg" alt="" class="bv-jalon-img" />
+          <h1 class="bv-jalon-titre">Bravo, tu as fait<br /><span>le premier pas.</span></h1>
+          <div class="bv-jalon-trait" aria-hidden="true" />
+          <p class="bv-jalon-sous">Ton objectif est désormais <b>le nôtre</b>.</p>
+          <button class="bv-suivant" onClick={avancer}>Suivant</button>
+        </div>
+      )}
+
       {/* ---------- Chapitre 2 : Ton quotidien ---------- */}
       {ecran === 'activite' && (
         <div class="bv-corps">
@@ -325,6 +338,17 @@ export function Bienvenue({ versConnexion, versInscription }) {
               <span class="bv-carte-txt"><b>{f.l}</b></span>
             </button>
           ))}
+        </div>
+      )}
+
+      {/* ---------- Jalon 2 : juste avant le calcul ---------- */}
+      {ecran === 'jalon2' && (
+        <div class="bv-corps bv-jalon">
+          <img src="/img/jalon-assiette.jpg" alt="" class="bv-jalon-img" />
+          <h1 class="bv-jalon-titre">En nutrition, trouver<br /><span>ce qui te convient</span><br />fait toute la différence.</h1>
+          <div class="bv-jalon-trait" aria-hidden="true" />
+          <p class="bv-jalon-sous">Une alimentation adaptée à ton quotidien, <b>pas l'inverse</b>.</p>
+          <button class="bv-suivant" onClick={avancer}>Suivant</button>
         </div>
       )}
 
