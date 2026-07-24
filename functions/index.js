@@ -284,7 +284,10 @@ function appliquerCors(req, res) {
     res.set("Access-Control-Allow-Origin", origine);
   }
   res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.set("Access-Control-Allow-Headers", "Content-Type");
+  // reserverPseudo est appelee avec un jeton de session : sans
+  // Authorization dans cette liste, le navigateur bloque la requete au
+  // prevol et l'inscription echoue juste apres la creation du compte.
+  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") {
     res.status(204).send("");
     return true;
