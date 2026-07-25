@@ -57,6 +57,7 @@
 .pg-premium .cmp-tete .h-prem{ background:var(--vert); color:#fff; border-radius:14px 14px 0 0; }
 .pg-premium .cmp-ligne{ display:grid; grid-template-columns:1fr 72px 84px; align-items:center; border-top:1px solid var(--line); }
 .pg-premium .cmp-ligne .c-nom{ font-size:13px; font-weight:500; padding:8px 12px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pg-premium .cmp-ligne .c-note{ display:block; font-style:normal; font-size:10px; font-weight:400; color:#9aa0a8; margin-top:1px; }
 .pg-premium .cmp-ligne .c-cell{ text-align:center; font-size:11.5px; font-weight:600; color:var(--text-dim); }
 .pg-premium .cmp-ligne .c-cell.on{ padding:0; }
 .pg-premium .cmp-ligne .c-prem{ background:var(--vert-pastel); align-self:stretch; display:flex; align-items:center; justify-content:center; }

@@ -113,9 +113,12 @@ export function PremiumPage() {
   const Check = () => (
     <span class="ck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" /></svg></span>
   );
-  const Ligne = ({ nom, gratuit }) => (
+  const Ligne = ({ nom, note, gratuit }) => (
     <div class="cmp-ligne">
-      <span class="c-nom">{nom}</span>
+      <span class="c-nom">
+        {nom}
+        {note && <em class="c-note">{note}</em>}
+      </span>
       <span class="c-cell">{gratuit === true ? <Check /> : (gratuit || '—')}</span>
       <span class="c-cell on c-prem"><Check /></span>
     </div>
@@ -137,7 +140,7 @@ export function PremiumPage() {
         <div class="cmp-tete"><span></span><span class="h-gratuit">GRATUIT</span><span class="h-prem">PREMIUM</span></div>
         <div class="cmp-corps ouvert">
           <Ligne nom="Journal & macros" gratuit={true} />
-          <Ligne nom="Programme sur mesure" />
+          <Ligne nom="Programme fait par un coach" note="livré sous 24-48 h" />
           <Ligne nom="Programmes d'entraînement" gratuit="7 jours" />
           <Ligne nom="Saisir les aliments par photo" />
           <Ligne nom="Ajout vocal" />
