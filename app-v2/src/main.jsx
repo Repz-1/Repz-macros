@@ -19,6 +19,7 @@ import { Questionnaire } from './components/Questionnaire.jsx';
 import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
 import { SeanceDetail } from './components/SeanceDetail.jsx';
+import { MaSeance } from './components/MaSeance.jsx';
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif, allerOnglet, scrollSortant, defileur } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
@@ -80,6 +81,9 @@ function OngletEntrainer() {
   }
   if (vue.nom === 'selection') {
     return (<><SelectionExercices /><RestTimer /></>);
+  }
+  if (vue.nom === 'maseance') {
+    return (<><MaSeance /><RestTimer /></>);
   }
   if (vue.nom === 'programmes') {
     return (<><Programmes /><RestTimer /></>);

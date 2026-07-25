@@ -2,6 +2,8 @@ import { useState } from 'preact/hooks';
 import { MUSCLES, EXERCISES, FILTERS, NIVEAUX, IMG_BASE } from '../data/exercices.js';
 import { retourEntrainer } from './Entrainer.jsx';
 import '../legacy/selection-exercices.scoped.css';
+import { seanceRefs } from './MaSeance.jsx';
+import { allerVers } from './Entrainer.jsx';
 
 // ==========================================================
 // ECRAN "Choisir mes exercices" — transpose a l'identique du v1
@@ -103,7 +105,18 @@ export function SelectionExercices() {
         })}
       </div>
 
-      <div class={'session-bar' + (nbSelectionnes === 0 ? ' hidden' : '')}>
+      <div class={'session-bar' + (nbSelectionnes === 0 ? ' hidden' : '')}
+        onClick={() => {
+          // Ordre v1 : muscle par muscle, index croissant.
+          const refs = [];
+          MUSCLES.forEach(m => {
+            [...(selection[m.key] || [])].sort((a, b) => a - b)
+              .forEach(i => refs.push({ mKey: m.key, i }));
+          });
+          if (!refs.length) return;
+          seanceRefs.value = refs;
+          allerVers('maseance');
+        }}>
         <span class="count">{nbSelectionnes} exercices sélectionnés</span>
         <span class="go">Ma séance →</span>
       </div>
