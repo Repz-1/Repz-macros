@@ -31,7 +31,7 @@ function AnneauRepas({ kcal, cible }) {
           stroke-dasharray={`${(part * C).toFixed(1)} ${C.toFixed(1)}`}
         />
       </svg>
-      <div class="rp-anneau-c"><span>{'\uD83D\uDD25'}</span></div>
+      <div class="rp-anneau-c"><span /></div>
     </div>
   );
 }

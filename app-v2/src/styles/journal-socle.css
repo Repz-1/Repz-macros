@@ -1661,7 +1661,7 @@
 .pg-journal .rp-colonne {
   width: 100%; max-width: 640px; margin: 0 auto;
   padding: calc(10px + env(safe-area-inset-top)) 16px
-           calc(28px + env(safe-area-inset-bottom));
+           calc(var(--hauteur-nav) + 28px + env(safe-area-inset-bottom));
   display: flex; flex-direction: column; gap: 14px;
 }
 /* Fond creme propre a la page repas (maquette) */
@@ -1682,7 +1682,7 @@
 .pg-journal .rp-retour:active { transform: scale(.94); }
 .pg-journal .rp-titre {
   margin: 0; text-align: center;
-  font-size: 21px; font-weight: 800; letter-spacing: -.02em; color: #191919;
+  font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: #191919;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pg-journal .rp-titre-champ {
@@ -1694,7 +1694,7 @@
 .pg-journal .rp-titre-champ:focus { outline: none; }
 .pg-journal .rp-terminer {
   background: none; border: none; cursor: pointer; padding: 6px 2px;
-  font-family: inherit; font-size: 15.5px; font-weight: 700; color: #B7860B;
+  font-family: inherit; font-size: 16px; font-weight: 700; color: #B7860B;
 }
 .pg-journal .rp-terminer:active { opacity: .6; }
 
@@ -1710,15 +1710,15 @@
 .pg-journal .rp-anneau-c { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .pg-journal .rp-anneau-c span {
   width: 34px; height: 34px; border-radius: 50%; background: #FDF3E0;
-  display: flex; align-items: center; justify-content: center; font-size: 19px;
+  display: block;
 }
 .pg-journal .rp-resume-txt { flex: 1; min-width: 84px; }
 .pg-journal .rp-kcal {
-  font-size: 25px; font-weight: 800; color: #191919; line-height: 1; white-space: nowrap;
+  font-size: 28px; font-weight: 800; color: #191919; line-height: 1; white-space: nowrap;
   letter-spacing: -.03em; font-variant-numeric: tabular-nums;
 }
-.pg-journal .rp-kcal span { font-size: 14px; font-weight: 600; color: #8A8580; letter-spacing: 0; margin-left: 3px; }
-.pg-journal .rp-reco { font-size: 11.5px; font-weight: 500; color: #8A8580; margin-top: 5px; min-height: 16px; line-height: 1.3; }
+.pg-journal .rp-kcal span { font-size: 15px; font-weight: 600; color: #8A8580; letter-spacing: 0; margin-left: 3px; }
+.pg-journal .rp-reco { font-size: 13px; font-weight: 500; color: #8A8580; margin-top: 5px; min-height: 16px; line-height: 1.3; }
 
 /* Trio de macros, separe par un filet, avec pastille de couleur */
 .pg-journal .rp-macros {
@@ -1728,16 +1728,16 @@
 .pg-journal .rp-macro { text-align: center; padding: 0 6px; }
 .pg-journal .rp-macro + .rp-macro { border-left: 1px solid #F3EFE8; }
 .pg-journal .rp-macro b {
-  display: block; font-size: 15px; font-weight: 800; color: #191919;
+  display: block; font-size: 17px; font-weight: 800; color: #191919;
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
-.pg-journal .rp-macro b i { font-style: normal; font-size: 11px; font-weight: 600; color: #8A8580; margin-left: 1px; }
-.pg-journal .rp-macro em { font-style: normal; display: block; font-size: 9.5px; font-weight: 500; color: #6B6763; margin-top: 2px; white-space: nowrap; }
+.pg-journal .rp-macro b i { font-style: normal; font-size: 12px; font-weight: 600; color: #8A8580; margin-left: 1px; }
+.pg-journal .rp-macro em { font-style: normal; display: block; font-size: 11px; font-weight: 500; color: #6B6763; margin-top: 2px; white-space: nowrap; }
 .pg-journal .rp-macro s { display: block; width: 6px; height: 6px; border-radius: 50%; margin: 4px auto 0; }
 
 /* ---------- Section « Dans ce repas » ---------- */
 .pg-journal .rp-section-titre {
-  font-size: 11.5px; font-weight: 700; color: #A9A49C;
+  font-size: 12.5px; font-weight: 700; color: #A9A49C;
   text-transform: uppercase; letter-spacing: .1em;
   margin: 4px 4px 8px;
 }
@@ -1759,8 +1759,8 @@
   display: flex; align-items: center; justify-content: space-between;
   border-top: 1px solid #F2EEE7; padding: 13px 0 8px; margin-top: 2px;
 }
-.pg-journal .rp-total-lb { font-size: 14.5px; font-weight: 600; color: #4A4642; }
-.pg-journal .rp-total-val { font-size: 17px; font-weight: 800; color: #191919; font-variant-numeric: tabular-nums; }
+.pg-journal .rp-total-lb { font-size: 16px; font-weight: 600; color: #4A4642; }
+.pg-journal .rp-total-val { font-size: 19px; font-weight: 800; color: #191919; font-variant-numeric: tabular-nums; }
 .pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: #8A8580; margin-left: 3px; }
 
 /* ---------- Boutons de bas de page ---------- */
@@ -1769,7 +1769,7 @@
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 16px; border-radius: 16px;
   background: #fff; border: 1.5px solid #E4CE96; color: #B7860B;
-  font-family: inherit; font-size: 15.5px; font-weight: 700; cursor: pointer;
+  font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
 }
 .pg-journal .rp-btn-plat svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .pg-journal .rp-btn-plat:active { background: #FFFBF2; }
@@ -1777,7 +1777,7 @@
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 17px; border-radius: 999px;
   background: #141414; border: none; color: #fff;
-  font-family: inherit; font-size: 15.5px; font-weight: 700; cursor: pointer;
+  font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
 }
 .pg-journal .rp-btn-fin svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.9; }
 .pg-journal .rp-btn-fin:active { transform: scale(.99); opacity: .92; }
@@ -1807,7 +1807,7 @@
 .pg-journal .rp-colonne .mc-ajout:focus-within {
   border: none; box-shadow: 0 0 0 2px rgba(224, 162, 28, .28), 0 2px 12px rgba(60, 50, 40, .06);
 }
-.pg-journal .rp-colonne .mc-ajout input { padding: 13px 0; font-size: 15px; }
+.pg-journal .rp-colonne .mc-ajout input { padding: 14px 0; font-size: 16px; }
 /* Le bouton code-barres devient une tuile blanche a part, comme la maquette */
 .pg-journal .rp-colonne .mc-ajout-zone { display: flex; align-items: stretch; gap: 10px; }
 .pg-journal .rp-colonne .mc-ajout { flex: 1; min-width: 0; }
@@ -1824,7 +1824,7 @@
   background: #fff; padding: 3px 4px;
 }
 .pg-journal .rp-liste .mc-ing-champ input {
-  font-size: 14.5px; font-weight: 700; text-align: center;
+  font-size: 16px; font-weight: 700; text-align: center;
   padding: 7px 2px; border: none; background: transparent;
 }
 
@@ -1835,7 +1835,7 @@
   padding: 16px 18px 8px;
 }
 .pg-journal .rp-colonne .dn-titre {
-  font-size: 12px; font-weight: 700; color: #6B6763;
+  font-size: 13px; font-weight: 700; color: #6B6763;
   text-transform: uppercase; letter-spacing: .09em;
 }
 .pg-journal .rp-colonne .dn-ligne {
@@ -1852,8 +1852,8 @@
   width: 19px; height: 19px; fill: none; stroke: #6B6763;
   stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
 }
-.pg-journal .rp-colonne .dn-lb { font-size: 15px; font-weight: 500; color: #2C2A27; }
-.pg-journal .rp-colonne .dn-val { font-size: 15.5px; font-weight: 800; color: #191919; }
+.pg-journal .rp-colonne .dn-lb { font-size: 16px; font-weight: 500; color: #2C2A27; }
+.pg-journal .rp-colonne .dn-val { font-size: 17px; font-weight: 800; color: #191919; }
 
 /* Chevron de navigation : la carte repas mene a une page */
 .pg-journal .mc-chevron--nav { font-size: 22px; transform: none; margin-top: -2px; }
