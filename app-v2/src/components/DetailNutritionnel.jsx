@@ -14,6 +14,13 @@ import { repasOuvertId } from './MealCard.jsx';
 // de fibres » faux vaut moins que pas de chiffre du tout.
 // ============================================================
 
+const ICONES = {
+  fibres: <svg viewBox="0 0 24 24"><path d="M5 19c8 0 14-5 14-14-9 0-14 5-14 14z" /><path d="M5 19c3-4 6-6 10-8" /></svg>,
+  sucres: <svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z" /><path d="M4 7.5l8 4.5 8-4.5M12 12v9" /></svg>,
+  satures: <svg viewBox="0 0 24 24"><path d="M12 3.5c3.6 4.2 5.5 7 5.5 9.5a5.5 5.5 0 11-11 0c0-2.5 1.9-5.3 5.5-9.5z" /></svg>,
+  sel: <svg viewBox="0 0 24 24"><path d="M8.5 9h7l1 11.5h-9z" /><path d="M9.5 9V6.5a2.5 2.5 0 015 0V9" /><path d="M11 4.5h2" /></svg>,
+};
+
 const LIBELLES = {
   fibres: 'Fibres',
   sucres: 'Sucres',
@@ -56,6 +63,7 @@ export function DetailNutritionnel({ ings }) {
       <div class={'dn-lignes' + (ouvert ? '' : ' dn-lignes--verrou')}>
         {dispos.map(k => (
           <div class="dn-ligne" key={k}>
+            <span class="dn-ic" aria-hidden="true">{ICONES[k] || null}</span>
             <span class="dn-lb">{LIBELLES[k]}</span>
             {ouvert ? (
               <span class="dn-val">

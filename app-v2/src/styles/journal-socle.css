@@ -1700,39 +1700,39 @@
 
 /* ---------- Carte resume : anneau + kcal + macros ---------- */
 .pg-journal .rp-resume {
-  display: flex; align-items: center; gap: 14px;
+  display: flex; align-items: center; gap: 11px;
   background: #fff; border: none; border-radius: 20px;
   box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
   padding: 16px 18px;
 }
-.pg-journal .rp-anneau { position: relative; width: 74px; height: 74px; flex: none; }
-.pg-journal .rp-anneau svg { width: 74px; height: 74px; display: block; transform: rotate(-90deg); }
+.pg-journal .rp-anneau { position: relative; width: 62px; height: 62px; flex: none; }
+.pg-journal .rp-anneau svg { width: 62px; height: 62px; display: block; transform: rotate(-90deg); }
 .pg-journal .rp-anneau-c { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .pg-journal .rp-anneau-c span {
-  width: 40px; height: 40px; border-radius: 50%; background: #FDF3E0;
+  width: 34px; height: 34px; border-radius: 50%; background: #FDF3E0;
   display: flex; align-items: center; justify-content: center; font-size: 19px;
 }
-.pg-journal .rp-resume-txt { flex: 1; min-width: 0; }
+.pg-journal .rp-resume-txt { flex: 1; min-width: 84px; }
 .pg-journal .rp-kcal {
-  font-size: 27px; font-weight: 800; color: #191919; line-height: 1;
+  font-size: 25px; font-weight: 800; color: #191919; line-height: 1; white-space: nowrap;
   letter-spacing: -.03em; font-variant-numeric: tabular-nums;
 }
 .pg-journal .rp-kcal span { font-size: 14px; font-weight: 600; color: #8A8580; letter-spacing: 0; margin-left: 3px; }
-.pg-journal .rp-reco { font-size: 12.5px; font-weight: 500; color: #8A8580; margin-top: 5px; min-height: 16px; }
+.pg-journal .rp-reco { font-size: 11.5px; font-weight: 500; color: #8A8580; margin-top: 5px; min-height: 16px; line-height: 1.3; }
 
 /* Trio de macros, separe par un filet, avec pastille de couleur */
 .pg-journal .rp-macros {
   flex: none; display: flex; align-items: stretch;
-  border-left: 1px solid #EFEAE2; padding-left: 14px; margin-left: 2px;
+  border-left: 1px solid #EFEAE2; padding-left: 10px; margin-left: 0;
 }
-.pg-journal .rp-macro { text-align: center; padding: 0 9px; }
+.pg-journal .rp-macro { text-align: center; padding: 0 6px; }
 .pg-journal .rp-macro + .rp-macro { border-left: 1px solid #F3EFE8; }
 .pg-journal .rp-macro b {
-  display: block; font-size: 17px; font-weight: 800; color: #191919;
+  display: block; font-size: 15px; font-weight: 800; color: #191919;
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
 .pg-journal .rp-macro b i { font-style: normal; font-size: 11px; font-weight: 600; color: #8A8580; margin-left: 1px; }
-.pg-journal .rp-macro em { font-style: normal; display: block; font-size: 11px; font-weight: 500; color: #6B6763; margin-top: 2px; }
+.pg-journal .rp-macro em { font-style: normal; display: block; font-size: 9.5px; font-weight: 500; color: #6B6763; margin-top: 2px; white-space: nowrap; }
 .pg-journal .rp-macro s { display: block; width: 6px; height: 6px; border-radius: 50%; margin: 4px auto 0; }
 
 /* ---------- Section « Dans ce repas » ---------- */
@@ -1785,6 +1785,75 @@
 /* La zone d'ajout occupe la page, pas une carte */
 .pg-journal .rp-colonne .mc-ajout-zone { margin: 0; }
 .pg-journal .rp-plat { margin-top: 2px; }
+
+
+/* ============================================================
+   PAGE REPAS — habillage d'apres la maquette (25/07)
+   Barre de recherche en pilule + bouton code-barres separe,
+   quantite dans un cadre, carte Detail nutritionnel a icones.
+   ============================================================ */
+
+/* --- Barre « Ajouter un aliment » --- */
+.pg-journal .rp-colonne .mc-ajout {
+  background: #fff; border: none; border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
+  padding: 4px 4px 4px 14px; margin-top: 0; gap: 8px;
+}
+.pg-journal .rp-colonne .mc-ajout::before {
+  content: ''; flex: none; width: 19px; height: 19px; opacity: .45;
+  background: no-repeat center/contain
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23191919' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E");
+}
+.pg-journal .rp-colonne .mc-ajout:focus-within {
+  border: none; box-shadow: 0 0 0 2px rgba(224, 162, 28, .28), 0 2px 12px rgba(60, 50, 40, .06);
+}
+.pg-journal .rp-colonne .mc-ajout input { padding: 13px 0; font-size: 15px; }
+/* Le bouton code-barres devient une tuile blanche a part, comme la maquette */
+.pg-journal .rp-colonne .mc-ajout-zone { display: flex; align-items: stretch; gap: 10px; }
+.pg-journal .rp-colonne .mc-ajout { flex: 1; min-width: 0; }
+.pg-journal .rp-colonne .mc-scan {
+  width: 60px; height: auto; align-self: stretch; border-radius: 16px;
+  background: #fff; box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
+}
+.pg-journal .rp-colonne .mc-scan .ic { width: 26px; height: 26px; stroke-width: 2.1; }
+.pg-journal .rp-colonne .mc-scan:active { background: #FBF7F2; }
+
+/* --- Quantite dans un cadre arrondi --- */
+.pg-journal .rp-liste .mc-ing-champ {
+  border: 1px solid #E9E3D9; border-radius: 12px;
+  background: #fff; padding: 3px 4px;
+}
+.pg-journal .rp-liste .mc-ing-champ input {
+  font-size: 14.5px; font-weight: 700; text-align: center;
+  padding: 7px 2px; border: none; background: transparent;
+}
+
+/* --- Carte Detail nutritionnel --- */
+.pg-journal .rp-colonne .dn {
+  background: #fff; border: none; border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
+  padding: 16px 18px 8px;
+}
+.pg-journal .rp-colonne .dn-titre {
+  font-size: 12px; font-weight: 700; color: #6B6763;
+  text-transform: uppercase; letter-spacing: .09em;
+}
+.pg-journal .rp-colonne .dn-ligne {
+  display: grid; grid-template-columns: 38px 1fr auto;
+  align-items: center; gap: 12px;
+  border-top: 1px solid #F2EEE7; padding: 12px 0;
+}
+.pg-journal .rp-colonne .dn-lignes > .dn-ligne:first-child { border-top: none; }
+.pg-journal .rp-colonne .dn-ic {
+  width: 38px; height: 38px; border-radius: 50%; background: #FAF5EC;
+  display: flex; align-items: center; justify-content: center;
+}
+.pg-journal .rp-colonne .dn-ic svg {
+  width: 19px; height: 19px; fill: none; stroke: #6B6763;
+  stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .rp-colonne .dn-lb { font-size: 15px; font-weight: 500; color: #2C2A27; }
+.pg-journal .rp-colonne .dn-val { font-size: 15.5px; font-weight: 800; color: #191919; }
 
 /* Chevron de navigation : la carte repas mene a une page */
 .pg-journal .mc-chevron--nav { font-size: 22px; transform: none; margin-top: -2px; }
