@@ -230,6 +230,129 @@ Regles :
 );
 
 // ============================================================
+// PHOTO D'ASSIETTE -> ALIMENTS
+//
+// Meme pipeline que le vocal : media -> Gemini -> JSON structure
+// {aliment, quantite, unite} -> journal. Seuls changent le type
+// d'entree (image) et le prompt. Premium-gated cote serveur,
+// comme le vocal. Les resultats sont PRE-REMPLIS mais modifiables
+// cote client avant validation : l'IA estime les portions, elle
+// ne les connait pas.
+// ============================================================
+
+exports.analyserPhoto = onRequest(
+  {secrets: [GEMINI_API_KEY], region: "europe-west1", cors: true, timeoutSeconds: 60},
+  async (req, res) => {
+    // CORS
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+    if (req.method !== "POST") { res.status(405).json({error: "method"}); return; }
+
+    try {
+      // 1) Connecte ET Premium (gating serveur, comme le vocal)
+      const authHeader = req.get("Authorization") || "";
+      const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+      if (!token) { res.status(401).json({error: "no_auth"}); return; }
+
+      let uid;
+      try {
+        const decoded = await admin.auth().verifyIdToken(token);
+        uid = decoded.uid;
+      } catch (e) {
+        res.status(401).json({error: "bad_token"}); return;
+      }
+
+      const userDoc = await db.collection("users").doc(uid).get();
+      const estPremium = userDoc.exists && userDoc.data().premium === true;
+      if (!estPremium) { res.status(403).json({error: "not_premium"}); return; }
+
+      // 2) Recuperer l'image (base64) et son type
+      const {imageBase64, mimeType} = req.body || {};
+      if (!imageBase64) { res.status(400).json({error: "no_image"}); return; }
+      // ~6 Mo max une fois decode : au-dela, le client doit recompresser.
+      if (imageBase64.length > 8 * 1024 * 1024) {
+        res.status(413).json({error: "image_too_big"}); return;
+      }
+
+      // 3) Appel Gemini : photo -> JSON structure
+      const prompt = `Tu analyses la photo d'un repas ou d'un aliment.
+Identifie chaque aliment visible avec une estimation de sa quantite. Reponds UNIQUEMENT avec un tableau JSON valide, sans texte autour, sans backticks.
+Format exact : [{"aliment":"nom en francais","quantite":nombre,"unite":"g"|"ml"|"piece"}]
+Regles :
+- Estime les portions en grammes/ml d'apres la taille apparente (assiette standard ~26 cm de diametre comme repere).
+- Si l'element se compte a la piece (oeuf, banane, tranche de pain), mets "piece" et quantite = nombre de pieces.
+- Nomme l'aliment tel qu'il est PREPARE sur la photo (ex: "riz cuit", "poulet grille", "pates cuites").
+- Noms d'aliments simples et courants. Decompose les plats en composants visibles (ex: assiette poulet-riz-brocoli = 3 entrees).
+- N'invente pas d'ingredients invisibles (sauces ou huiles non discernables). Si rien d'exploitable (photo floue, pas de nourriture), renvoie [].`;
+
+      const typeImage = String(mimeType || "image/jpeg").split(";")[0].trim();
+      console.log("analyserPhoto", JSON.stringify({uid, typeImage, tailleKo: Math.round(imageBase64.length * 0.75 / 1024)}));
+
+      // Meme liste de repli que le vocal : un modele retire (404) ne
+      // met pas la feature en panne.
+      const MODELES = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-2.5-flash"];
+      const geminiBody = {
+        contents: [{
+          parts: [
+            {text: prompt},
+            {inline_data: {mime_type: typeImage, data: imageBase64}},
+          ],
+        }],
+        generationConfig: {temperature: 0.1, responseMimeType: "application/json"},
+      };
+
+      let gRes = null;
+      let dernierErr = "";
+      for (const modele of MODELES) {
+        const url = "https://generativelanguage.googleapis.com/v1beta/models/" +
+          modele + ":generateContent?key=" + GEMINI_API_KEY.value();
+        gRes = await fetch(url, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(geminiBody),
+        });
+        if (gRes.ok) { console.log("analyserPhoto modele:", modele); break; }
+        dernierErr = (await gRes.text()).slice(0, 300);
+        console.error("Gemini", modele, gRes.status, dernierErr);
+        if (gRes.status !== 404) break;
+      }
+
+      if (!gRes || !gRes.ok) {
+        let detail = "";
+        try { detail = (JSON.parse(dernierErr).error || {}).message || ""; } catch (e) { detail = dernierErr; }
+        res.status(502).json({error: "gemini_failed", detail: String(detail).slice(0, 160)});
+        return;
+      }
+
+      const gData = await gRes.json();
+      const texte = gData.candidates &&
+        gData.candidates[0] &&
+        gData.candidates[0].content &&
+        gData.candidates[0].content.parts[0].text || "[]";
+
+      let aliments;
+      try {
+        aliments = JSON.parse(texte);
+        if (!Array.isArray(aliments)) aliments = [];
+      } catch (e) {
+        console.warn("JSON parse fail", texte.slice(0, 200));
+        aliments = [];
+      }
+      if (!aliments.length) {
+        console.warn("Aucun aliment detecte. Reponse Gemini:", texte.slice(0, 300));
+      }
+
+      res.status(200).json({aliments});
+    } catch (err) {
+      console.error("analyserPhoto error", err);
+      res.status(500).json({error: "server"});
+    }
+  }
+);
+
+// ============================================================
 // PSEUDONYMES DE CONNEXION
 //
 // L'utilisateur peut se connecter avec son email OU son pseudo.
