@@ -123,13 +123,13 @@ export function PremiumPage() {
 
       <div class="cmp">
         <div class="cmp-tete"><span></span><span class="h-gratuit">GRATUIT</span><span class="h-prem">PREMIUM</span></div>
-        <Ligne nom="Journal calories & macros" gratuit={true} />
-        <Ligne nom="Programme alimentaire sur mesure" />
-        <Ligne nom="Programmes d'entraînement prêts" />
-        <Ligne nom="Scan code-barres (ajout auto)" />
-        <Ligne nom="Ajout vocal intelligent (IA)" />
-        <Ligne nom="Liste de courses automatique" />
-        <Ligne nom="Historique poids & stats" gratuit="7 jours" />
+        <Ligne nom="Journal & macros" gratuit={true} />
+        <Ligne nom="Programme sur mesure" />
+        <Ligne nom="Programmes d'entraînement" />
+        <Ligne nom="Scan code-barres" />
+        <Ligne nom="Ajout vocal (IA)" />
+        <Ligne nom="Courses automatiques" />
+        <Ligne nom="Stats illimitées" gratuit="7 jours" />
       </div>
 
       {dejaPremium ? (
@@ -139,8 +139,6 @@ export function PremiumPage() {
         </div>
       ) : (
         <>
-          <div class="bandeau">−50 % sur la formule 12 mois</div>
-
           <div class="formules">
             {['mensuel', 'annuel', 'trimestriel'].map((k) => {
               const f = FORMULES[k];
