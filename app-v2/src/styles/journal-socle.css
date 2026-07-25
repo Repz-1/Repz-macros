@@ -361,18 +361,19 @@
 .pg-journal .qa-btn:last-child  { border-radius: 0 20px 20px 0; }
 .pg-journal .qa-btn:active { background: #F5F6F8; }
 
+/* Icones a nu (maquette 25/07) : trait noir franc + accent dore,
+   sans tuile de fond — la carte blanche et les filets suffisent. */
 .pg-journal .qa-ic {
-  width: 42px; height: 42px; border-radius: 14px;
-  background: #FFF4CC; color: #181818;
+  width: 34px; height: 34px; color: #181818;
   display: inline-flex; align-items: center; justify-content: center;
 }
 .pg-journal .qa-ic .ic {
-  width: 21px; height: 21px;
-  fill: none; stroke: currentColor; stroke-width: 1.6;
+  width: 30px; height: 30px;
+  fill: none; stroke: currentColor; stroke-width: 1.9;
   stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-journal .qa-lb {
-  font-size: 12px; font-weight: 600; color: #4B4A47; letter-spacing: .01em;
+  font-size: 12.5px; font-weight: 600; color: #2C2A27; letter-spacing: .01em;
   max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 /* Badge Premium : deborde legerement dans le coin superieur droit */
