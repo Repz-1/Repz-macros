@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { GROUPES, muscleLog, basculerMuscle } from '../store/entrainement.js';
 import { estPremium } from './PremiumPage.jsx';
+import { enDecouverte } from '../services/decouverte.js';
 import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
 import { t } from '../i18n/index.js';
@@ -212,12 +213,22 @@ export function Entrainer() {
   const [jourOuvert, setJourOuvert] = useState(null);
   const [premium, setPremium] = useState(false);
 
+  // Les programmes prets sont OFFERTS pendant la fenetre decouverte de
+  // 7 jours (meme mecanisme que le detail nutritionnel), puis Premium.
+  // Le programme SUR MESURE, lui, reste Premium des le premier jour.
+  const accesProgs = estPremium.value || enDecouverte.value;
   const verrou = (e, dest) => {
     e.preventDefault();
     if (!estPremium.value) { setPremium(true); return; }
     allerVers(dest);
   };
+  const verrouProgs = (e, dest) => {
+    e.preventDefault();
+    if (!accesProgs) { setPremium(true); return; }
+    allerVers(dest);
+  };
   const locked = estPremium.value ? '' : ' locked';
+  const lockedProgs = accesProgs ? '' : ' locked';
 
   return (
     <div class="pg-entrainer">
@@ -248,9 +259,9 @@ export function Entrainer() {
         </a>
 
         {/* Mes programmes (Premium) */}
-        <a href="#" class={'choice ph sm' + locked} style="background-image:url('/img/card-programmes.jpg')"
-          onClick={(e) => verrou(e, 'programmes')}>
-          {!estPremium.value && <span class="pro-badge">✦ PRO</span>}
+        <a href="#" class={'choice ph sm' + lockedProgs} style="background-image:url('/img/card-programmes.jpg')"
+          onClick={(e) => verrouProgs(e, 'programmes')}>
+          {!accesProgs && <span class="pro-badge">✦ PRO</span>}
           <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5" /><path d="M3.5 9h17M8 2.5v4M16 2.5v4" /></svg></span>
           <h3>{t('tr_progs_title')}</h3>
           <p>{t('tr_progs_sub')}</p>
