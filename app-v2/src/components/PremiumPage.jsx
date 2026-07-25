@@ -20,31 +20,43 @@ try {
 } catch (e) { /* stockage indisponible */ }
 
 // Cache partage avec la v1 (app.html) : elle ecrit repz_premium apres
-// avoir verifie Firestore. Meme origine, donc meme valeur — on demarre
-// dessus pour ne pas afficher un utilisateur payant comme gratuit le
-// temps de la lecture reseau (ou s'il n'est connecte que cote v1).
+// avoir verifie Firestore. MAIS ce drapeau est pose PAR APPAREIL, pas
+// par compte : si un membre Premium se deconnecte et qu'un autre compte
+// se connecte sur le meme telephone, le drapeau seul ferait passer le
+// nouveau venu pour Premium. On ne fait donc confiance au cache que si
+// l'uid memorise a cote correspond au compte reellement connecte.
 const CLE_PREM_V1 = 'repz_premium';
-try {
-  if (!apercuPremium && localStorage.getItem(CLE_PREM_V1) === '1') estPremium.value = true;
-} catch (e) {}
+const CLE_PREM_UID = 'belfit_v2_prem_uid';
 
 effect(() => {
   if (apercuPremium) return;          // l'apercu garde la main
   const u = utilisateur.value;
-  // Sans compte v2 : on garde ce que dit le cache v1, sans le contredire.
-  if (!u) return;
+  if (!u) { estPremium.value = false; return; }   // deconnecte : jamais Premium
+
+  // Demarrage rapide : le cache ne vaut que pour le MEME compte.
+  try {
+    estPremium.value = localStorage.getItem(CLE_PREM_V1) === '1' &&
+      localStorage.getItem(CLE_PREM_UID) === u.uid;
+  } catch (e) { estPremium.value = false; }
+
+  // Puis Firestore tranche (source de verite, ecrite par le webhook).
   const db = getFirestore(getApps()[0]);
   getDoc(doc(db, 'users', u.uid))
     .then(s => {
       const prem = s.exists() && s.data().premium === true;
       estPremium.value = prem;
-      // On tient le cache v1 a jour, exactement comme le fait app.html.
+      // Cache tenu a jour, avec l'uid proprietaire du drapeau.
       try {
-        if (prem) localStorage.setItem(CLE_PREM_V1, '1');
-        else localStorage.removeItem(CLE_PREM_V1);
+        if (prem) {
+          localStorage.setItem(CLE_PREM_V1, '1');
+          localStorage.setItem(CLE_PREM_UID, u.uid);
+        } else {
+          localStorage.removeItem(CLE_PREM_V1);
+          localStorage.removeItem(CLE_PREM_UID);
+        }
       } catch (e) {}
     })
-    .catch(() => {});   // hors ligne : le cache fait foi
+    .catch(() => {});   // hors ligne : le demarrage rapide fait foi
 });
 
 import { useState } from 'preact/hooks';
