@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { repas, totauxRepas, fourchetteRepas, renommerRepas } from '../store/journal.js';
 import { enregistrerPlat } from '../store/perso.js';
-import { Recherche, LigneIngredient, illustration, repasOuvertId } from './MealCard.jsx';
+import { Recherche, LigneIngredient, repasOuvertId } from './MealCard.jsx';
 import { DetailNutritionnel } from './DetailNutritionnel.jsx';
 import { t } from '../i18n/index.js';
 
@@ -13,6 +13,28 @@ import { t } from '../i18n/index.js';
 // La logique (recherche, favoris, plats, scan, lignes) est
 // reutilisee telle quelle depuis MealCard.
 // ============================================================
+
+
+// Anneau du resume : la part de la fourchette conseillee deja
+// couverte par le repas. Sans fourchette, l'anneau reste neutre.
+function AnneauRepas({ kcal, cible }) {
+  const max = cible ? cible.max : 0;
+  const part = max > 0 ? Math.min(1, kcal / max) : 0;
+  const R = 32, C = 2 * Math.PI * R;
+  return (
+    <div class="rp-anneau">
+      <svg viewBox="0 0 74 74">
+        <circle cx="37" cy="37" r={R} fill="none" stroke="#F1ECE3" stroke-width="6" />
+        <circle
+          cx="37" cy="37" r={R} fill="none" stroke="#E0A21C" stroke-width="6"
+          stroke-linecap="round"
+          stroke-dasharray={`${(part * C).toFixed(1)} ${C.toFixed(1)}`}
+        />
+      </svg>
+      <div class="rp-anneau-c"><span>{'\uD83D\uDD25'}</span></div>
+    </div>
+  );
+}
 
 export function MealPage() {
   const id = repasOuvertId.value;
@@ -65,22 +87,28 @@ export function MealPage() {
           ) : (
             <h1 class="rp-titre" onClick={() => setEdite(true)}>{r.nom}</h1>
           )}
-          <button class="rp-crayon" onClick={() => setEdite(true)} aria-label="Renommer">
-            <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z" /></svg>
+          <button class="rp-terminer" onClick={() => { repasOuvertId.value = null; }}>
+            {t('rp_terminer')}
           </button>
         </div>
 
         {/* Resume : total du repas + repere recommande */}
         <div class="rp-resume">
-          <div class="rp-vignette" dangerouslySetInnerHTML={{ __html: illustration(r) }} />
+          <AnneauRepas kcal={tot.kcal} cible={f} />
           <div class="rp-resume-txt">
-            <div class="rp-kcal">{tot.kcal.toFixed(0)} <span>kcal</span></div>
-            <div class="rp-reco">{f ? `${t('mc_reco')} ${f.min} – ${f.max} kcal` : ' '}</div>
+            <div class="rp-kcal">{tot.kcal.toFixed(0)}<span>kcal</span></div>
+            <div class="rp-reco">{f ? `${t('mc_reco')} ${f.min}\u2013${f.max} kcal` : ' '}</div>
           </div>
           <div class="rp-macros">
-            <span><b>{tot.prot.toFixed(0)}</b>P</span>
-            <span><b>{tot.carbs.toFixed(0)}</b>C</span>
-            <span><b>{tot.lip.toFixed(0)}</b>L</span>
+            <div class="rp-macro">
+              <b>{tot.prot.toFixed(0)}<i>g</i></b><em>{t('protein')}</em><s style="background:#E6B02A" />
+            </div>
+            <div class="rp-macro">
+              <b>{tot.carbs.toFixed(0)}<i>g</i></b><em>{t('carbs')}</em><s style="background:#448EF1" />
+            </div>
+            <div class="rp-macro">
+              <b>{tot.lip.toFixed(0)}<i>g</i></b><em>{t('fat')}</em><s style="background:#EF6327" />
+            </div>
           </div>
         </div>
 
@@ -95,6 +123,10 @@ export function MealPage() {
               {r.ings.map(ing => (
                 <LigneIngredient key={ing.id} repasId={r.id} ing={ing} />
               ))}
+              <div class="rp-total">
+                <span class="rp-total-lb">{t('rp_total')}</span>
+                <span class="rp-total-val">{tot.kcal.toFixed(0)}<span>kcal</span></span>
+              </div>
             </div>
           </div>
         )}
@@ -123,10 +155,16 @@ export function MealPage() {
                 <button class="mc-plat-annul" onClick={() => { setEnrego(false); setNomPlat(''); }}>✕</button>
               </div>
             ) : (
-              <button class="mc-plat-btn" onClick={() => { setNomPlat(''); setEnrego(true); }}>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><path d="M17 21v-8H7v8M7 3v5h8" /></svg>
-                {t('mc_plat_btn')}
-              </button>
+              <div class="rp-actions">
+                <button class="rp-btn-plat" onClick={() => { setNomPlat(''); setEnrego(true); }}>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2z" /></svg>
+                  {t('mc_plat_btn')}
+                </button>
+                <button class="rp-btn-fin" onClick={() => { repasOuvertId.value = null; }}>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8.5 12.5l2.5 2.5 4.5-5" /></svg>
+                  {t('rp_enregistrer')}
+                </button>
+              </div>
             )}
           </div>
         )}

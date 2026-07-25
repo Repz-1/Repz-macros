@@ -596,7 +596,7 @@
   border: 1px solid #EEF1F5;
   border-radius: 10px;
   padding: 10px; margin-bottom: 6px;
-  display: grid; grid-template-columns: 34px 1fr 54px 10px 72px 18px;
+  display: grid; grid-template-columns: 1fr 54px 10px 72px 18px;
   gap: 6px; align-items: center;
 }
 /* Vignette de l'aliment : carre discret devant le nom. La variante
@@ -1660,87 +1660,129 @@
 
 .pg-journal .rp-colonne {
   width: 100%; max-width: 640px; margin: 0 auto;
-  padding: calc(12px + env(safe-area-inset-top)) var(--marge-page, 18px)
-           calc(40px + env(safe-area-inset-bottom));
+  padding: calc(10px + env(safe-area-inset-top)) 16px
+           calc(28px + env(safe-area-inset-bottom));
   display: flex; flex-direction: column; gap: 14px;
 }
+/* Fond creme propre a la page repas (maquette) */
+.pg-journal.couche-repas { background: #FBF7F2; }
 
-/* ---------- Topbar ---------- */
+/* ---------- Topbar : retour | titre centre | Terminer ---------- */
 .pg-journal .rp-topbar {
-  display: flex; align-items: center; gap: 12px;
-  padding: 2px 0 2px;
+  display: grid; grid-template-columns: 40px 1fr auto;
+  align-items: center; gap: 10px; padding: 2px 0 6px;
 }
 .pg-journal .rp-retour {
-  flex: none; width: 38px; height: 38px; border-radius: 50%;
+  width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: #fff; border: 1px solid #ececec; color: #181818;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .05); cursor: pointer;
+  background: #fff; border: none; color: #191919;
+  box-shadow: 0 2px 8px rgba(60, 50, 40, .08); cursor: pointer;
 }
 .pg-journal .rp-retour svg { width: 20px; height: 20px; }
 .pg-journal .rp-retour:active { transform: scale(.94); }
 .pg-journal .rp-titre {
-  flex: 1; min-width: 0; margin: 0;
-  font-size: 20px; font-weight: 800; letter-spacing: -.02em; color: #191919;
+  margin: 0; text-align: center;
+  font-size: 21px; font-weight: 800; letter-spacing: -.02em; color: #191919;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pg-journal .rp-titre-champ {
-  flex: 1; min-width: 0;
-  font-size: 20px; font-weight: 800; color: #191919;
-  border: none; background: #F1EFE9; border-radius: 8px;
-  padding: 2px 8px; font-family: inherit;
+  width: 100%; text-align: center;
+  font-size: 21px; font-weight: 800; color: #191919;
+  border: none; background: #F1EDE6; border-radius: 8px;
+  padding: 3px 8px; font-family: inherit;
 }
 .pg-journal .rp-titre-champ:focus { outline: none; }
-.pg-journal .rp-crayon {
-  flex: none; background: none; border: none; padding: 6px; cursor: pointer;
-  color: #C2BDB2; display: flex;
+.pg-journal .rp-terminer {
+  background: none; border: none; cursor: pointer; padding: 6px 2px;
+  font-family: inherit; font-size: 15.5px; font-weight: 700; color: #B7860B;
 }
-.pg-journal .rp-crayon svg {
-  width: 16px; height: 16px;
-  fill: none; stroke: currentColor; stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.pg-journal .rp-crayon:active { color: var(--or, #F7B500); }
+.pg-journal .rp-terminer:active { opacity: .6; }
 
-/* ---------- Resume du repas ---------- */
+/* ---------- Carte resume : anneau + kcal + macros ---------- */
 .pg-journal .rp-resume {
   display: flex; align-items: center; gap: 14px;
-  background: linear-gradient(160deg, #FFFBEF 0%, #FFFFFF 42%, #FFFFFF 100%);
-  border: 1.5px solid #E7E2D9; border-radius: 18px;
-  box-shadow: 0 4px 14px rgba(60, 50, 40, .05);
-  padding: 14px 16px;
+  background: #fff; border: none; border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
+  padding: 16px 18px;
 }
-.pg-journal .rp-vignette {
-  width: 52px; height: 52px; border-radius: 14px; background: #F2EFE9;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+.pg-journal .rp-anneau { position: relative; width: 74px; height: 74px; flex: none; }
+.pg-journal .rp-anneau svg { width: 74px; height: 74px; display: block; transform: rotate(-90deg); }
+.pg-journal .rp-anneau-c { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.pg-journal .rp-anneau-c span {
+  width: 40px; height: 40px; border-radius: 50%; background: #FDF3E0;
+  display: flex; align-items: center; justify-content: center; font-size: 19px;
 }
-.pg-journal .rp-vignette svg { width: 38px; height: 38px; display: block; }
 .pg-journal .rp-resume-txt { flex: 1; min-width: 0; }
 .pg-journal .rp-kcal {
-  font-size: 24px; font-weight: 800; color: #191919; line-height: 1;
+  font-size: 27px; font-weight: 800; color: #191919; line-height: 1;
+  letter-spacing: -.03em; font-variant-numeric: tabular-nums;
+}
+.pg-journal .rp-kcal span { font-size: 14px; font-weight: 600; color: #8A8580; letter-spacing: 0; margin-left: 3px; }
+.pg-journal .rp-reco { font-size: 12.5px; font-weight: 500; color: #8A8580; margin-top: 5px; min-height: 16px; }
+
+/* Trio de macros, separe par un filet, avec pastille de couleur */
+.pg-journal .rp-macros {
+  flex: none; display: flex; align-items: stretch;
+  border-left: 1px solid #EFEAE2; padding-left: 14px; margin-left: 2px;
+}
+.pg-journal .rp-macro { text-align: center; padding: 0 9px; }
+.pg-journal .rp-macro + .rp-macro { border-left: 1px solid #F3EFE8; }
+.pg-journal .rp-macro b {
+  display: block; font-size: 17px; font-weight: 800; color: #191919;
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
-.pg-journal .rp-kcal span { font-size: 13px; font-weight: 700; color: #8A8580; letter-spacing: 0; }
-.pg-journal .rp-reco { font-size: 12px; font-weight: 600; color: #8A8580; margin-top: 4px; min-height: 15px; }
-.pg-journal .rp-macros {
-  flex: none; display: flex; flex-direction: column; gap: 3px; text-align: right;
-  font-size: 12px; font-weight: 600; color: #8A8580;
-  font-variant-numeric: tabular-nums;
-}
-.pg-journal .rp-macros b { font-weight: 800; color: #191919; margin-right: 2px; }
+.pg-journal .rp-macro b i { font-style: normal; font-size: 11px; font-weight: 600; color: #8A8580; margin-left: 1px; }
+.pg-journal .rp-macro em { font-style: normal; display: block; font-size: 11px; font-weight: 500; color: #6B6763; margin-top: 2px; }
+.pg-journal .rp-macro s { display: block; width: 6px; height: 6px; border-radius: 50%; margin: 4px auto 0; }
 
 /* ---------- Section « Dans ce repas » ---------- */
 .pg-journal .rp-section-titre {
-  font-size: 11.5px; font-weight: 800; color: #8A8580;
-  text-transform: uppercase; letter-spacing: .06em;
-  margin: 4px 2px 8px;
+  font-size: 11.5px; font-weight: 700; color: #A9A49C;
+  text-transform: uppercase; letter-spacing: .1em;
+  margin: 4px 4px 8px;
 }
 .pg-journal .rp-liste {
-  background: #fff; border: 1.5px solid #E7E2D9; border-radius: 18px;
-  box-shadow: 0 4px 14px rgba(60, 50, 40, .05);
-  padding: 4px 12px;
+  background: #fff; border: none; border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
+  padding: 4px 14px 6px;
 }
+/* Lignes sans carte individuelle : filets internes, facon maquette */
+.pg-journal .rp-liste .mc-ing {
+  background: none; border: none; border-radius: 0;
+  border-top: 1px solid #F2EEE7; box-shadow: none;
+  padding: 12px 0; margin: 0;
+}
+.pg-journal .rp-liste .mc-ing:first-child { border-top: none; }
 
-/* La zone d'ajout occupe la page, pas une carte : leger relief blanc */
+/* Total du repas, au pied de la carte */
+.pg-journal .rp-total {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid #F2EEE7; padding: 13px 0 8px; margin-top: 2px;
+}
+.pg-journal .rp-total-lb { font-size: 14.5px; font-weight: 600; color: #4A4642; }
+.pg-journal .rp-total-val { font-size: 17px; font-weight: 800; color: #191919; font-variant-numeric: tabular-nums; }
+.pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: #8A8580; margin-left: 3px; }
+
+/* ---------- Boutons de bas de page ---------- */
+.pg-journal .rp-actions { display: flex; flex-direction: column; gap: 11px; margin-top: 4px; }
+.pg-journal .rp-btn-plat {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 16px; border-radius: 16px;
+  background: #fff; border: 1.5px solid #E4CE96; color: #B7860B;
+  font-family: inherit; font-size: 15.5px; font-weight: 700; cursor: pointer;
+}
+.pg-journal .rp-btn-plat svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.pg-journal .rp-btn-plat:active { background: #FFFBF2; }
+.pg-journal .rp-btn-fin {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 17px; border-radius: 999px;
+  background: #141414; border: none; color: #fff;
+  font-family: inherit; font-size: 15.5px; font-weight: 700; cursor: pointer;
+}
+.pg-journal .rp-btn-fin svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.9; }
+.pg-journal .rp-btn-fin:active { transform: scale(.99); opacity: .92; }
+
+/* La zone d'ajout occupe la page, pas une carte */
 .pg-journal .rp-colonne .mc-ajout-zone { margin: 0; }
 .pg-journal .rp-plat { margin-top: 2px; }
 

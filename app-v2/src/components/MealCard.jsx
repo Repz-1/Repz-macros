@@ -119,7 +119,6 @@ export function LigneIngredient({ repasId, ing }) {
 
   return (
     <div class="mc-ing">
-      <ImageAliment nom={ing.name} />
       <div class="mc-ing-info">
         <div class="mc-ing-nom">{ing.name}</div>
         <div class="mc-ing-base">
