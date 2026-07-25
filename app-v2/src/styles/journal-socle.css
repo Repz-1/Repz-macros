@@ -365,6 +365,7 @@
    sans tuile de fond — la carte blanche et les filets suffisent. */
 .pg-journal .qa-ic {
   width: 34px; height: 34px; color: #181818;
+  background: transparent; border-radius: 0;   /* neutralise la tuile posee par la regle globale .qa-ic de styles.css */
   display: inline-flex; align-items: center; justify-content: center;
 }
 .pg-journal .qa-ic .ic {
@@ -1372,7 +1373,7 @@
 
 /* ---------- Actions rapides : reponse tactile ---------- */
 .pg-journal .qa { box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 2px 10px rgba(24, 24, 24, .04); }
-.pg-journal .qa-ic { transition: transform var(--transition); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.pg-journal .qa-ic { transition: transform var(--transition); box-shadow: none; }
 .pg-journal .qa-btn:active .qa-ic { transform: scale(.92); }
 
 /* ---------- Boutons flottants : presse plus riche ----------
