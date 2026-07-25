@@ -33,12 +33,14 @@ import { WeightNote } from './components/WeightNote.jsx';
 import { MealPage } from './components/MealPage.jsx';
 import { repasOuvertId } from './components/MealCard.jsx';
 import { VocalModal } from './components/VocalModal.jsx';
+import { PhotoModal } from './components/PhotoModal.jsx';
 import { MesPlats } from './components/MesPlats.jsx';
 
 function OngletJournal() {
   const [modale, setModale] = useState(false);
   const [calc, setCalc] = useState(false);
   const [vocal, setVocal] = useState(false);
+  const [photo, setPhoto] = useState(false);
   // Colonne unique, ordre de lecture descendant :
   // logo -> calories -> actions rapides -> idees recettes -> repas.
   // Seuls la navigation, le bouton d'ajout et l'hydratation sont fixes.
@@ -47,7 +49,7 @@ function OngletJournal() {
       <div class="colonne">
         <Entete />
         <DayDashboard />
-        <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} />
+        <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} ouvrirPhoto={() => { if (estPremium.value) setPhoto(true); else { ongletActif.value = 'premium'; } }} />
         <WeightNote />
         <IdeesRepas />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
@@ -64,6 +66,7 @@ function OngletJournal() {
       {modale && <AddMealModal montre={true} fermer={() => setModale(false)} />}
       {calc && <TdeeCalculator montre={true} fermer={() => setCalc(false)} />}
       {vocal && <VocalModal fermer={() => setVocal(false)} />}
+      {photo && <PhotoModal fermer={() => setPhoto(false)} />}
       {ouvrirMesPlats.value && <MesPlats fermer={() => { ouvrirMesPlats.value = false; }} />}
     </div>
   );

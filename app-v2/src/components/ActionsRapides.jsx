@@ -9,7 +9,7 @@ import { t } from '../i18n/index.js';
 // par les boutons, comme sur la reference.
 // ============================================================
 
-export function ActionsRapides({ ouvrirCalc, ouvrirVocal }) {
+export function ActionsRapides({ ouvrirCalc, ouvrirVocal, ouvrirPhoto }) {
   return (
     <div class="qa">
       <button class="qa-btn" onClick={ouvrirCalc}>
@@ -32,6 +32,17 @@ export function ActionsRapides({ ouvrirCalc, ouvrirVocal }) {
           </svg>
         </span>
         <span class="qa-lb">{t('qa_shop')}</span>
+      </button>
+
+      <button class="qa-btn" onClick={ouvrirPhoto}>
+        {!estPremium.value && <span class="qa-pro">PRO</span>}
+        <span class="qa-ic">
+          <svg viewBox="0 0 24 24" class="ic">
+            <path d="M4 8.5A2.5 2.5 0 016.5 6h1.6l1.2-1.8A1.5 1.5 0 0110.6 3.5h2.8a1.5 1.5 0 011.3.7L15.9 6h1.6A2.5 2.5 0 0120 8.5v8A2.5 2.5 0 0117.5 19h-11A2.5 2.5 0 014 16.5v-8z" />
+            <circle cx="12" cy="12.5" r="3.4" />
+          </svg>
+        </span>
+        <span class="qa-lb">Photo</span>
       </button>
 
       <button class="qa-btn" onClick={ouvrirVocal}>

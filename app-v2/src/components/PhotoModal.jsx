@@ -1,0 +1,133 @@
+import { useState, useRef } from 'preact/hooks';
+import { auth } from '../services/firebase.js';
+import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
+import { repas, ajouterIngredient } from '../store/journal.js';
+import { createPortal } from 'preact/compat';
+
+const API = 'https://europe-west1-repz-baf60.cloudfunctions.net/analyserPhoto';
+
+// Reduit la photo a 1024px max et l'encode en JPEG : une photo de
+// telephone fait 3-10 Mo, inutile (et trop lourd) pour l'analyse.
+async function compresser(fichier) {
+  const img = await new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i); i.onerror = rej;
+    i.src = URL.createObjectURL(fichier);
+  });
+  const max = 1024;
+  const ratio = Math.min(1, max / Math.max(img.width, img.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(img.width * ratio);
+  c.height = Math.round(img.height * ratio);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  URL.revokeObjectURL(img.src);
+  const dataUrl = c.toDataURL('image/jpeg', 0.8);
+  return dataUrl.split(',')[1] || '';
+}
+
+// Meme appariement que le vocal : nom detecte -> aliment de la base
+function trouverAliment(nom) {
+  const n = (nom || '').toLowerCase().trim();
+  if (!n) return null;
+  if (DB[nom]) return nom;
+  const exact = NOMS_ALIMENTS.find(a => a.toLowerCase() === n);
+  if (exact) return exact;
+  const contient = NOMS_ALIMENTS.find(a => a.toLowerCase().includes(n) || n.includes(a.toLowerCase()));
+  return contient || null;
+}
+
+export function PhotoModal({ fermer }) {
+  const [etat, setEtat] = useState('pret'); // pret | analyse | resultat
+  const [props, setProps] = useState([]);
+  const [msg, setMsg] = useState('');
+  const champ = useRef(null);
+
+  const analyser = async (e) => {
+    const fichier = e.target.files && e.target.files[0];
+    if (!fichier) return;
+    setEtat('analyse'); setMsg('Analyse de la photo…');
+    let b64 = '';
+    try { b64 = await compresser(fichier); } catch (err) { setMsg('Photo illisible'); setEtat('pret'); return; }
+    let token = '';
+    try { token = await auth.currentUser.getIdToken(); } catch (err) {}
+    try {
+      const rep = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({ imageBase64: b64, mimeType: 'image/jpeg' }),
+      });
+      if (rep.status === 403) { setMsg('Fonction Premium'); setEtat('pret'); return; }
+      if (!rep.ok) { setMsg('Erreur, réessaie'); setEtat('pret'); return; }
+      const { aliments } = await rep.json();
+      const trouves = (aliments || []).map(a => {
+        const cle = trouverAliment(a.aliment);
+        if (!cle) return null;
+        const d = DB[cle];
+        const portion = a.unite === 'piece' && d.unit ? a.quantite * d.unit : a.quantite;
+        return { cle, portion: Math.round(portion), dit: a.aliment };
+      }).filter(Boolean);
+      if (!trouves.length) { setMsg('Rien de reconnu sur la photo, réessaie'); setEtat('pret'); return; }
+      setProps(trouves); setEtat('resultat'); setMsg('');
+    } catch (err) { setMsg('Erreur, réessaie'); setEtat('pret'); }
+    // Permet de re-choisir la meme photo apres correction
+    if (champ.current) champ.current.value = '';
+  };
+
+  const majPortion = (i, val) => {
+    const n = Math.max(0, parseFloat(String(val).replace(',', '.')) || 0);
+    setProps(props.map((p, j) => j === i ? { ...p, portion: n } : p));
+  };
+
+  const ajouterTout = () => {
+    const cible = repas.value[repas.value.length - 1];
+    if (!cible) return;
+    props.forEach(p => { if (p.portion > 0) ajouterIngredient(cible.id, p.cle, p.portion); });
+    fermer();
+  };
+
+  return createPortal(
+    <>
+      <div class="voile montre" onClick={fermer} />
+      <div class="modale montre">
+        <h3>📷 Photo d'assiette</h3>
+        <p class="idees-intro">Prends ton assiette en photo — les quantités sont estimées, ajuste-les avant d'ajouter.</p>
+
+        <input ref={champ} type="file" accept="image/*" capture="environment" style="display:none" onChange={analyser} />
+
+        {etat !== 'resultat' && (
+          <div class="vocal-zone">
+            <button
+              class="vocal-mic"
+              disabled={etat === 'analyse'}
+              onClick={() => champ.current && champ.current.click()}
+            >📷</button>
+            <div class="vocal-msg">{msg || 'Tape pour photographier'}</div>
+          </div>
+        )}
+
+        {etat === 'resultat' && (
+          <>
+            {props.map((p, i) => (
+              <div class="idee" key={i}>
+                <div class="idee-info">
+                  <div class="idee-nom">{p.cle}</div>
+                  <div class="idee-mac">
+                    <input
+                      class="photo-portion"
+                      type="number" inputmode="decimal" min="0"
+                      value={p.portion}
+                      onInput={(e) => majPortion(i, e.target.value)}
+                    /> g · vu : « {p.dit} »
+                  </div>
+                </div>
+                <button onClick={() => setProps(props.filter((_, j) => j !== i))}>✕</button>
+              </div>
+            ))}
+            <button class="calc-appliquer" onClick={ajouterTout}>Ajouter au repas</button>
+          </>
+        )}
+      </div>
+    </>,
+    document.body
+  );
+}
