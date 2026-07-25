@@ -29,6 +29,18 @@
 
 /* ---- Tableau Gratuit / Premium ---- */
 .pg-premium .cmp{ border-radius:18px; overflow:hidden; border:1.5px solid var(--vert-ligne); background:var(--card); }
+/* Corps deroulant : 5 lignes visibles ; ouvert, le RESTE defile a
+   l'interieur — la hauteur du tableau ne change pas, les prix en
+   dessous ne bougent donc jamais. */
+.pg-premium .cmp-corps{ max-height:187px; overflow:hidden; }
+.pg-premium .cmp-corps.ouvert{ overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.pg-premium .cmp-toggle{
+  display:flex; align-items:center; justify-content:center; gap:6px; width:100%;
+  background:none; border:none; border-top:1px solid var(--line);
+  font-family:inherit; font-size:11.5px; font-weight:700; color:var(--vert-fonce);
+  padding:9px; cursor:pointer;
+}
+.pg-premium .cmp-toggle svg{ width:13px; height:13px; fill:none; stroke:var(--vert-fonce); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; transition:transform .2s; }
 .pg-premium .cmp-tete{ display:grid; grid-template-columns:1fr 72px 84px; }
 .pg-premium .cmp-tete span{ font-size:10.5px; font-weight:800; letter-spacing:.08em; padding:9px 6px; text-align:center; }
 .pg-premium .cmp-tete .h-gratuit{ color:var(--text-dim); }

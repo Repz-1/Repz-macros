@@ -89,6 +89,7 @@ export function PremiumPage() {
   const [payOuvert, setPayOuvert] = useState(false);
   const [consent, setConsent] = useState(false);
   const [consentErr, setConsentErr] = useState(false);
+  const [listeOuverte, setListeOuverte] = useState(false);
 
   const construireUrl = (lien) => {
     let url = lien + '?checkout[billing_address][country]=BE';
@@ -135,13 +136,22 @@ export function PremiumPage() {
 
       <div class="cmp">
         <div class="cmp-tete"><span></span><span class="h-gratuit">GRATUIT</span><span class="h-prem">PREMIUM</span></div>
-        <Ligne nom="Journal & macros" gratuit={true} />
-        <Ligne nom="Programme sur mesure" />
-        <Ligne nom="Programmes d'entraînement" />
-        <Ligne nom="Scan code-barres" />
-        <Ligne nom="Ajout vocal (IA)" />
-        <Ligne nom="Courses automatiques" />
-        <Ligne nom="Stats illimitées" gratuit="7 jours" />
+        <div class={'cmp-corps' + (listeOuverte ? ' ouvert' : '')}>
+          <Ligne nom="Journal & macros" gratuit={true} />
+          <Ligne nom="Programme sur mesure" />
+          <Ligne nom="Programmes d'entraînement" />
+          <Ligne nom="Photo d'assiette (IA)" />
+          <Ligne nom="Ajout vocal (IA)" />
+          <Ligne nom="Scan code-barres" />
+          <Ligne nom="Détail nutritionnel complet" gratuit="7 jours" />
+          <Ligne nom="Idées recettes" />
+          <Ligne nom="Courses automatiques" />
+          <Ligne nom="Stats illimitées" gratuit="7 jours" />
+        </div>
+        <button class="cmp-toggle" onClick={() => setListeOuverte(!listeOuverte)}>
+          {listeOuverte ? 'Réduire' : 'Voir les 5 autres avantages'}
+          <svg viewBox="0 0 24 24" style={listeOuverte ? 'transform:rotate(180deg)' : ''}><path d="M6 9l6 6 6-9" /></svg>
+        </button>
       </div>
 
       {dejaPremium ? (
