@@ -104,14 +104,33 @@
   padding:4px 10px; border-radius:10px; white-space:nowrap;
 }
 
-/* ---- Bouton principal (libelle dynamique) ---- */
+/* ---- Bouton principal (libelle dynamique) ----
+   Meme mise en scene que le CTA dore v1 (plans.html) : degrade,
+   halo pulsant, reflet traversant — transposee dans le vert. */
+@keyframes ctaGlowVert { 0%,100% { box-shadow:0 6px 20px rgba(78,155,114,.38); } 50% { box-shadow:0 8px 28px rgba(78,155,114,.62); } }
+@keyframes ctaShineVert { 0%,55% { left:-60%; } 85%,100% { left:130%; } }
 .pg-premium .continuer{
-  display:block; width:100%; background:var(--vert); color:#fff; border:none;
+  display:block; width:100%;
+  background:linear-gradient(135deg, #63B287, #4E9B72 55%, #3F8560);
+  color:#fff; border:none;
   font-size:15px; font-weight:800; letter-spacing:.02em; font-family:inherit;
   padding:14px; border-radius:15px; margin:12px 0 8px; cursor:pointer;
+  box-shadow:0 6px 20px rgba(78,155,114,.42);
+  animation:ctaGlowVert 2.6s ease-in-out infinite;
+  position:relative; overflow:hidden;
+}
+.pg-premium .continuer::after{
+  content:''; position:absolute; top:0; left:-60%; width:40%; height:100%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+  transform:skewX(-20deg);
+  animation:ctaShineVert 3.4s ease-in-out infinite;
 }
 .pg-premium .continuer small{ display:block; font-size:10.5px; font-weight:600; opacity:.85; letter-spacing:0; margin-top:2px; }
 .pg-premium .continuer:active{ transform:scale(.985); }
+@media (prefers-reduced-motion: reduce){
+  .pg-premium .continuer{ animation:none; }
+  .pg-premium .continuer::after{ animation:none; display:none; }
+}
 
 /* ---- Renouvellement (dynamique) + ligne legale ---- */
 .pg-premium .renouv{ font-size:10px; color:#9aa0a8; font-weight:400; text-align:center; margin-bottom:6px; }
