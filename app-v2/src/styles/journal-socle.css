@@ -1779,8 +1779,20 @@
   width: 100%; padding: 17px; border-radius: 999px;
   background: #141414; border: none; color: #fff;
   font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
+  position: relative; overflow: hidden;
 }
-.pg-journal .rp-btn-fin svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.9; }
+/* Reflet traversant, meme mecanique que les CTA Premium et « Creer
+   mon programme » — plus discret ici, le noir suffit deja a porter. */
+@keyframes ctaShineRepas { 0%,62% { left: -55%; } 90%,100% { left: 130%; } }
+.pg-journal .rp-btn-fin::after {
+  content: ''; position: absolute; top: 0; left: -55%; width: 38%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.22), transparent);
+  transform: skewX(-20deg); animation: ctaShineRepas 4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pg-journal .rp-btn-fin::after { animation: none; display: none; }
+}
+.pg-journal .rp-btn-fin svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.9; position: relative; z-index: 1; }
 .pg-journal .rp-btn-fin:active { transform: scale(.99); opacity: .92; }
 
 /* La zone d'ajout occupe la page, pas une carte */
