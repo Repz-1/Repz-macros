@@ -44,6 +44,10 @@ export function PhotoModal({ fermer }) {
 
   const analyser = async (e) => {
     const fichier = e.target.files && e.target.files[0];
+    // Vide le champ TOUT DE SUITE : sinon, reprendre la meme photo
+    // apres une erreur ne redeclenche pas onChange (valeur identique)
+    // et l'ecran semble ne rien faire.
+    if (champ.current) champ.current.value = '';
     if (!fichier) return;
     setEtat('analyse'); setMsg('Analyse de la photo…');
     let b64 = '';
@@ -56,8 +60,9 @@ export function PhotoModal({ fermer }) {
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
         body: JSON.stringify({ imageBase64: b64, mimeType: 'image/jpeg' }),
       });
-      if (rep.status === 403) { setMsg('Fonction Premium'); setEtat('pret'); return; }
-      if (!rep.ok) { setMsg('Erreur, réessaie'); setEtat('pret'); return; }
+      if (rep.status === 403) { setMsg('Réservé aux membres Premium'); setEtat('pret'); return; }
+      if (rep.status === 404) { setMsg('Service pas encore activé'); setEtat('pret'); return; }
+      if (!rep.ok) { setMsg('Erreur ' + rep.status + ', réessaie'); setEtat('pret'); return; }
       const { aliments } = await rep.json();
       const trouves = (aliments || []).map(a => {
         const cle = trouverAliment(a.aliment);
@@ -68,9 +73,9 @@ export function PhotoModal({ fermer }) {
       }).filter(Boolean);
       if (!trouves.length) { setMsg('Rien de reconnu sur la photo, réessaie'); setEtat('pret'); return; }
       setProps(trouves); setEtat('resultat'); setMsg('');
-    } catch (err) { setMsg('Erreur, réessaie'); setEtat('pret'); }
-    // Permet de re-choisir la meme photo apres correction
-    if (champ.current) champ.current.value = '';
+    } catch (err) {
+      setMsg('Analyse indisponible pour le moment'); setEtat('pret');
+    }
   };
 
   const majPortion = (i, val) => {
