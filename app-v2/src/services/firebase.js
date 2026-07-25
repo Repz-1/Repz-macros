@@ -2,11 +2,10 @@ import { initializeApp } from 'firebase/app';
 import {
   getAuth, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
-  signInWithCustomToken, updateProfile,
+  updateProfile,
   sendPasswordResetEmail,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
 } from 'firebase/auth';
-import { normPseudo, jetonParPseudo, reserverPseudo } from './pseudo.js';
 import { signal, computed } from '@preact/signals';
 
 // ============================================================
@@ -57,15 +56,13 @@ onAuthStateChanged(auth, (u) => {
 
 // --- Actions ---
 /**
- * Connexion par identifiant : e-mail OU nom d'utilisateur.
- * Regle reprise de la v1 : un identifiant sans arobase est traite
- * comme un pseudo, resolu cote serveur (l'e-mail ne sort jamais).
+ * Connexion par e-mail. La connexion par pseudo a ete abandonnee
+ * (decision Raci 25/07) : le prenom suffit, l'inscription est plus
+ * courte. Les Cloud Functions du pseudo restent deployees mais ne
+ * sont plus appelees.
  */
 export async function connexion(identifiant, mdp) {
-  const id = String(identifiant || '').trim();
-  if (id.includes('@')) return signInWithEmailAndPassword(auth, id, mdp);
-  const jeton = await jetonParPseudo(normPseudo(id), mdp);
-  return signInWithCustomToken(auth, jeton);
+  return signInWithEmailAndPassword(auth, String(identifiant || '').trim(), mdp);
 }
 
 function memoriserPrenom(user) {
@@ -117,25 +114,13 @@ function genererCodeParrainage() {
 }
 
 /**
- * Inscription : e-mail + nom d'utilisateur + mot de passe.
- * Le pseudo est reserve cote serveur juste apres la creation du
- * compte. Si la reservation echoue (pseudo pris entre-temps), le
- * compte est supprime : pas de compte orphelin sans pseudo. Meme
- * enchainement qu'en v1 (index.html).
+ * Inscription : prenom + e-mail + mot de passe (le pseudo a ete
+ * abandonne le 25/07 — moins de champs, moins de friction).
  */
-export async function inscription(email, mdp, pseudo, prenom) {
+export async function inscription(email, mdp, prenom) {
   const cred = await createUserWithEmailAndPassword(auth, String(email).trim(), mdp);
-  try {
-    await reserverPseudo(cred.user, normPseudo(pseudo));
-  } catch (e) {
-    try { await cred.user.delete(); } catch (e2) {}
-    const causes = { pris: 'pseudo/pris', reseau: 'pseudo/reseau' };
-    throw { code: causes[e.message] || 'pseudo/invalide' };
-  }
-  // Le prenom sert a s'adresser a la personne (message de bienvenue,
-  // e-mails du coach) ; le pseudo, lui, est son identifiant public et
-  // vit dans Firestore, pose par la Cloud Function. Meme repartition
-  // qu'en v1 : displayName = prenom.
+  // Le prenom sert a s'adresser a la personne (en-tete, page Premium,
+  // e-mails du coach) : displayName = prenom, comme en v1.
   const p = String(prenom || '').trim();
   try { await updateProfile(cred.user, { displayName: p }); } catch (e) {}
   try { localStorage.setItem('repz_firstName', p); } catch (e) {}

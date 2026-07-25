@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { connexion, connexionGoogle, inscription, messageErreurAuth, envoyerLienReinitialisation } from '../services/firebase.js';
-import { normPseudo, formePseudo, pseudoDisponible } from '../services/pseudo.js';
 import { t, langue } from '../i18n/index.js';
 import { signal } from '@preact/signals';
 
@@ -75,7 +74,6 @@ export function LoginScreen() {
   const [accueil] = useState(() => ACCUEILS[Math.floor(Math.random() * ACCUEILS.length)]);
   const [email, setEmail] = useState('');
   const [prenom, setPrenom] = useState('');
-  const [pseudo, setPseudo] = useState('');
   const [mdp, setMdp] = useState('');
   const [mdp2, setMdp2] = useState('');
   const [consent, setConsent] = useState(false);
@@ -89,38 +87,12 @@ export function LoginScreen() {
   const [msgOk, setMsgOk] = useState('');
 
   // Etat du nom d'utilisateur : 'vide' | 'invalide' | 'verif' | 'libre' | 'pris'
-  const [etatPseudo, setEtatPseudo] = useState('vide');
-  const [notePseudo, setNotePseudo] = useState('');
-  const dernierePseudo = useRef('');
-
-  // Disponibilite verifiee au fil de la frappe, avec un temps mort de
-  // 450 ms (v1) : on n'interroge pas le serveur a chaque lettre.
-  useEffect(() => {
-    if (mode !== 'inscription') return;
-    const p = normPseudo(pseudo);
-    dernierePseudo.current = p;
-
-    const forme = formePseudo(p);
-    if (forme === 'vide') { setEtatPseudo('vide'); setNotePseudo(t('register_pseudo_hint')); return; }
-    if (forme === 'trop_court') { setEtatPseudo('invalide'); setNotePseudo(t('pseudo_court')); return; }
-    if (forme) { setEtatPseudo('invalide'); setNotePseudo(t('pseudo_caracteres')); return; }
-
-    setEtatPseudo('verif'); setNotePseudo(t('pseudo_verif'));
-    const id = setTimeout(async () => {
-      const d = await pseudoDisponible(p);
-      if (dernierePseudo.current !== p) return;   // la frappe a continue
-      if (d.disponible) { setEtatPseudo('libre'); setNotePseudo(d.horsLigne ? t('register_pseudo_hint') : t('pseudo_libre')); }
-      else { setEtatPseudo('pris'); setNotePseudo(t(d.raison === 'reserve' ? 'pseudo_reserve' : 'pseudo_pris')); }
-    }, 450);
-    return () => clearTimeout(id);
-  }, [pseudo, mode]);
 
   const valider = async (e) => {
     e.preventDefault();
     setErreur('');
     erreurPersistante.value = '';
     if (mode === 'inscription') {
-      if (etatPseudo !== 'libre') { setErreur(t('pseudo_invalide')); return; }
       if (!mdpValide(mdp)) {
         setErreur('Mot de passe trop faible : 8 caractères min avec majuscule, minuscule, chiffre et symbole');
         return;
@@ -132,7 +104,7 @@ export function LoginScreen() {
     setChargement(true);
     try {
       if (mode === 'connexion') await connexion(email.trim(), mdp);
-      else await inscription(email.trim(), mdp, pseudo, prenom.trim());
+      else await inscription(email.trim(), mdp, prenom.trim());
       // onAuthStateChanged fera basculer l'app tout seul
     } catch (err) {
       setErreur(messageErreurAuth(err.code));
@@ -215,25 +187,14 @@ export function LoginScreen() {
           />
         )}
         <input
-          type={mode === 'connexion' ? 'text' : 'email'}
-          placeholder={mode === 'connexion' ? t('login_identifiant') : t('email')}
+          type="email"
+          placeholder={t('email')}
           value={email}
           onInput={e => setEmail(e.currentTarget.value)} required
           autocomplete={mode === 'connexion' ? 'username' : 'email'}
           autocapitalize="none" spellcheck={false}
         />
 
-        {mode === 'inscription' && (
-          <>
-            <input
-              type="text" placeholder={t('register_pseudo')} value={pseudo}
-              onInput={e => setPseudo(e.currentTarget.value)} required
-              autocomplete="nickname" autocapitalize="none" spellcheck={false}
-              maxLength={20}
-            />
-            <div class={'login-pseudo-note login-pseudo-note--' + etatPseudo}>{notePseudo}</div>
-          </>
-        )}
         <ChampMotDePasse
           placeholder={t("mdp")} valeur={mdp}
           onInput={e => setMdp(e.currentTarget.value)}
