@@ -65,6 +65,34 @@ export function ChoixPortions({ plat, fermer, valider }) {
   );
 }
 
+
+// ============================================================
+// VIGNETTE D'ALIMENT
+// Photo generee par IA, servie depuis /img/aliments/<slug>.webp.
+// Tant qu'une image manque, la pastille neutre reste affichee :
+// l'app fonctionne avec 0 comme avec 1048 images.
+// ============================================================
+export function slugAliment(nom) {
+  return String(nom || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function ImageAliment({ nom }) {
+  const [absente, setAbsente] = useState(false);
+  if (absente) return <span class="mc-ing-vignette mc-ing-vignette--vide" />;
+  return (
+    <img
+      class="mc-ing-vignette"
+      src={'/img/aliments/' + slugAliment(nom) + '.webp'}
+      alt="" loading="lazy" decoding="async"
+      onError={() => setAbsente(true)}
+    />
+  );
+}
+
 export function LigneIngredient({ repasId, ing }) {
   const d = DB[ing.name] || customFoods.value[ing.name] || {};
   const m = macrosOf(ing);
@@ -91,6 +119,7 @@ export function LigneIngredient({ repasId, ing }) {
 
   return (
     <div class="mc-ing">
+      <ImageAliment nom={ing.name} />
       <div class="mc-ing-info">
         <div class="mc-ing-nom">{ing.name}</div>
         <div class="mc-ing-base">
