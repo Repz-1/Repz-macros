@@ -12,6 +12,15 @@
   --text-dim:#6b7280; --line:#ece9e3; --card:#fff; --radius:20px;
 }
 .pg-premium *{ box-sizing:border-box; }
+/* Fond propre a l'onglet : masque le halo creme du Journal, qui
+   s'etale derriere tous les panneaux du rail. */
+.pg-premium{ position:relative; }
+.pg-premium::before{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg, #EEF4EF 0%, #FAFAF8 300px, #FAFAF8 100%);
+  z-index:0;
+}
+.pg-premium > *{ position:relative; z-index:1; }
 
 /* ---- Topbar (retour + logo) ---- */
 .pg-premium .topbar-app{ display:flex; justify-content:space-between; align-items:center; background:transparent; padding:14px 2px 4px; margin:-16px -16px 6px; }
