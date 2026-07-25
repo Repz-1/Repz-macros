@@ -136,7 +136,21 @@
     background:rgba(255,255,255,.14); color:#fff;
     border:1.5px solid rgba(255,255,255,.55); backdrop-filter:blur(4px); box-shadow:none;
 }
-.pg-entrainer .choice.ph.featured .cta{ background:var(--gold); color:var(--noir); border:none; box-shadow:0 8px 20px rgba(247,181,0,.4); }
+.pg-entrainer .choice.ph.featured .cta{
+    background:var(--gold); color:var(--noir); border:none; box-shadow:0 8px 20px rgba(247,181,0,.4);
+    position:relative; overflow:hidden;
+}
+/* Reflet traversant, meme mecanique que le CTA de la page Premium :
+   une bande de lumiere inclinee balaie le bouton pour attirer l'oeil. */
+@keyframes ctaShineEntr { 0%,58% { left:-60%; } 88%,100% { left:130%; } }
+.pg-entrainer .choice.ph.featured .cta::after{
+    content:''; position:absolute; top:0; left:-60%; width:40%; height:100%;
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+    transform:skewX(-20deg); animation:ctaShineEntr 3.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce){
+    .pg-entrainer .choice.ph.featured .cta::after{ animation:none; display:none; }
+}
 .pg-entrainer .choice.ph .lock-badge{ background:rgba(10,10,10,.55); color:#fff; border:1px solid rgba(255,255,255,.3); backdrop-filter:blur(4px); }
 /* Badge PRO : doit rester en absolu malgre le position:relative pose par .choice.ph > * */
 .pg-entrainer .choice.ph .pro-badge{ position:absolute; top:14px; right:14px; }
