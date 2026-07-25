@@ -137,7 +137,7 @@ export function PremiumPage() {
         <div class="cmp-tete"><span></span><span class="h-gratuit">GRATUIT</span><span class="h-prem">PREMIUM</span></div>
         <div class="cmp-corps ouvert">
           <Ligne nom="Journal & macros" gratuit={true} />
-          <Ligne nom="Programme alimentaire fait par un coach" note="livré sous 24-48 h" />
+          <Ligne nom="Plan alimentaire par un coach" note="livré sous 24-48 h" />
           <Ligne nom="Programmes d'entraînement" gratuit="7 jours" />
           <Ligne nom="Saisir les aliments par photo" />
           <Ligne nom="Ajout vocal" />
