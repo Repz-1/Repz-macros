@@ -131,6 +131,7 @@ export function PremiumPage() {
             <div class={'fo' + (formule === 'mensuel' ? ' sel' : '')} onClick={() => setFormule('mensuel')}>
               <div class="fo-dur">1<small>mois</small></div>
               <div class="fo-prix">7,99 €</div>
+              <div class="fo-barre"></div>
               <div class="fo-mois">7,99 € / mois</div>
               <div class="fo-note">Facturé mensuel</div>
             </div>
@@ -138,12 +139,14 @@ export function PremiumPage() {
               <span class="fo-badge">LE PLUS POPULAIRE</span>
               <div class="fo-dur">12<small>mois</small></div>
               <div class="fo-prix">47,88 €</div>
+              <div class="fo-barre">95,88 €</div>
               <div class="fo-mois">3,99 € / mois</div>
               <div class="fo-note">Facturé annuel</div>
             </div>
             <div class={'fo' + (formule === 'trimestriel' ? ' sel' : '')} onClick={() => setFormule('trimestriel')}>
               <div class="fo-dur">3<small>mois</small></div>
               <div class="fo-prix">19,99 €</div>
+              <div class="fo-barre">23,97 €</div>
               <div class="fo-mois">6,66 € / mois</div>
               <div class="fo-note">Facturé par trimestre</div>
             </div>
