@@ -1682,7 +1682,8 @@
 .pg-journal .rp-retour:active { transform: scale(.94); }
 .pg-journal .rp-titre {
   margin: 0; text-align: center;
-  font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: #191919;
+  font-size: 12.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #A9A49C;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pg-journal .rp-titre-champ {
