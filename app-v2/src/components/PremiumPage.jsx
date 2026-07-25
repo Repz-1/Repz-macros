@@ -139,13 +139,13 @@ export function PremiumPage() {
         <div class={'cmp-corps' + (listeOuverte ? ' ouvert' : '')}>
           <Ligne nom="Journal & macros" gratuit={true} />
           <Ligne nom="Programme sur mesure" />
-          <Ligne nom="Programmes d'entraînement" />
-          <Ligne nom="Photo d'assiette (IA)" />
-          <Ligne nom="Ajout vocal (IA)" />
+          <Ligne nom="Programmes d'entraînement" gratuit="7 jours" />
+          <Ligne nom="Saisir les aliments par photo" />
+          <Ligne nom="Ajout vocal" />
           <Ligne nom="Scan code-barres" />
           <Ligne nom="Détail nutritionnel complet" gratuit="7 jours" />
-          <Ligne nom="Idées recettes" />
-          <Ligne nom="Courses automatiques" />
+          <Ligne nom="Idées recettes intelligentes" />
+          <Ligne nom="Courses intelligentes" />
           <Ligne nom="Stats illimitées" gratuit="7 jours" />
         </div>
         <button class="cmp-toggle" onClick={() => setListeOuverte(!listeOuverte)}>
