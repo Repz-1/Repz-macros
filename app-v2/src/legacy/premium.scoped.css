@@ -66,10 +66,10 @@
   display:flex; flex-direction:column; align-items:center;
   transition:border-color .15s, background .15s;
 }
-.pg-premium .fo .fo-dur{ font-size:12px; font-weight:700; color:var(--text-dim); letter-spacing:.02em; }
+.pg-premium .fo .fo-dur{ font-size:12px; font-weight:600; color:#9aa0a8; letter-spacing:.02em; }
 .pg-premium .fo .fo-mois{ font-size:19px; font-weight:800; letter-spacing:-.02em; margin:7px 0 1px; line-height:1; }
-.pg-premium .fo .fo-mois small{ font-size:11px; font-weight:700; color:var(--text-dim); letter-spacing:0; }
-.pg-premium .fo .fo-total{ font-size:10px; font-weight:500; color:var(--text-dim); margin-top:3px; }
+.pg-premium .fo .fo-mois small{ font-size:10.5px; font-weight:500; color:#9aa0a8; letter-spacing:0; }
+.pg-premium .fo .fo-total{ font-size:9.5px; font-weight:400; color:#b8bcc2; margin-top:3px; }
 .pg-premium .fo .fo-eco{
   margin-top:8px; background:var(--vert-pastel); color:var(--vert-fonce);
   font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:9px;
@@ -93,9 +93,9 @@
 .pg-premium .continuer:active{ transform:scale(.985); }
 
 /* ---- Renouvellement (dynamique) + ligne legale ---- */
-.pg-premium .renouv{ font-size:10.5px; color:var(--text-dim); font-weight:500; text-align:center; margin-bottom:6px; }
-.pg-premium .legal{ font-size:10.5px; color:var(--text-dim); font-weight:500; text-align:center; line-height:1.5; }
-.pg-premium .legal a{ color:var(--text-dim); text-decoration:underline; }
+.pg-premium .renouv{ font-size:10px; color:#9aa0a8; font-weight:400; text-align:center; margin-bottom:6px; }
+.pg-premium .legal{ font-size:10px; color:#9aa0a8; font-weight:400; text-align:center; line-height:1.5; }
+.pg-premium .legal a{ color:#9aa0a8; text-decoration:underline; }
 .pg-premium .legal .l-liens{ display:inline; margin-left:6px; }
 
 /* ---- Modale de consentement (inchangee, couleurs alignees) ---- */
