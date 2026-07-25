@@ -265,7 +265,10 @@
   font-weight: 800; line-height: 1; color: #191919;
   letter-spacing: -1.5px; font-variant-numeric: tabular-nums;
 }
-.pg-journal .cal-num--depasse { color: var(--alerte); }
+/* Depassement : trois paliers, du plus doux au plus alarmant. */
+.pg-journal .cal-num--jaune  { color: #B7860B; }
+.pg-journal .cal-num--orange { color: #D2691E; }
+.pg-journal .cal-num--rouge  { color: var(--alerte); }
 .pg-journal .cal-num-lb {
   font-size: 12.5px; font-weight: 700; color: #8A8580;
   margin-top: 5px; text-align: center; line-height: 1.3;

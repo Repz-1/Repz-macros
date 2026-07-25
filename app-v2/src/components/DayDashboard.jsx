@@ -44,7 +44,17 @@ function useNombreAnime(cible, duree = 650) {
 /** Jauge ouverte, reprise a l'identique de la reference :
     arc de 371 unites sur une circonference de 515.2, rayon 82,
     trait de 13, pivote de 140 degres pour ouvrir vers le bas. */
-function Anneau({ ratio, depasse, enfant }) {
+// Palier de depassement : null, 'jaune' (<=150), 'orange' (<=300),
+// 'rouge' (au-dela). Sert a la fois a l'arc et au chiffre central.
+export function palierDepassement(surplus) {
+  if (surplus <= 0) return null;
+  if (surplus <= 150) return 'jaune';
+  if (surplus <= 300) return 'orange';
+  return 'rouge';
+}
+const DEGRADE = { jaune: 'url(#calJaugeJaune)', orange: 'url(#calJaugeOrange)', rouge: 'url(#calJaugeAlerte)' };
+
+function Anneau({ ratio, palier, enfant }) {
   const ARC = 371;
   const CIRC = 515.2;
   const rempli = Math.min(1, Math.max(0, ratio));
@@ -70,6 +80,16 @@ function Anneau({ ratio, depasse, enfant }) {
             <stop offset="0%" stop-color="#34D399" />
             <stop offset="100%" stop-color="#0DA271" />
           </linearGradient>
+          {/* Trois paliers de depassement : jaune jusqu'a 150 kcal,
+              orange jusqu'a 300, rouge au-dela. */}
+          <linearGradient id="calJaugeJaune" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FCD34D" />
+            <stop offset="100%" stop-color="#EAB308" />
+          </linearGradient>
+          <linearGradient id="calJaugeOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FDBA74" />
+            <stop offset="100%" stop-color="#EA7C1B" />
+          </linearGradient>
           <linearGradient id="calJaugeAlerte" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#FCA5A5" />
             <stop offset="100%" stop-color="#EF5350" />
@@ -83,7 +103,7 @@ function Anneau({ ratio, depasse, enfant }) {
         />
         <circle
           cx="95" cy="95" r="82" fill="none"
-          stroke={depasse ? 'url(#calJaugeAlerte)' : 'url(#calJauge)'} stroke-width="13"
+          stroke={palier ? DEGRADE[palier] : 'url(#calJauge)'} stroke-width="13"
           stroke-linecap="round"
           stroke-dasharray={`${(trace * ARC).toFixed(1)} ${CIRC}`}
           transform="rotate(140 95 95)"
@@ -124,7 +144,9 @@ export function DayDashboard() {
   const restant = kcalRestantes.value;
   const pret = donneesPretes.value;
 
-  const depasse = restant < 0;
+  const surplus = Math.max(0, -restant);
+  const palier = palierDepassement(surplus);
+  const depasse = palier !== null;
   const atteint = !depasse && restant <= 50 && tot.kcal > 0;
   const vide = tot.kcal === 0;
 
@@ -157,9 +179,9 @@ export function DayDashboard() {
           <div class="cal-cote-val">{consommees}</div>
         </div>
 
-        <Anneau ratio={ratio} depasse={depasse} enfant={
+        <Anneau ratio={ratio} palier={palier} enfant={
           <>
-            <div class={'cal-num' + (depasse ? ' cal-num--depasse' : '')}>{chiffre}</div>
+            <div class={'cal-num' + (palier ? ' cal-num--' + palier : '')}>{chiffre}</div>
             <div class="cal-num-lb">
               {vide ? t('kcal_left') : depasse ? t('kcal_over') : atteint ? t('kcal_reached') : t('kcal_left')}
             </div>

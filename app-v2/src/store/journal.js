@@ -111,8 +111,10 @@ export const totauxJour = computed(() => {
   return t;
 });
 
+// Peut etre NEGATIVE : c'est le depassement. Le borner a 0 masquait
+// le surplus (l'anneau affichait « objectif atteint » a 4588/4300).
 export const kcalRestantes = computed(() =>
-  Math.max(0, objectifs.value.kcal - totauxJour.value.kcal)
+  objectifs.value.kcal - totauxJour.value.kcal
 );
 
 // ---------- Actions ----------
