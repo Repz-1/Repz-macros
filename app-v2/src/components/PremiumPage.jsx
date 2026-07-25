@@ -52,10 +52,24 @@ import '../legacy/premium.scoped.css';
 
 // Formules — liens LemonSqueezy repris tels quels du v1 (plans.html)
 const FORMULES = {
-  mensuel:     { lien: 'https://belfit.lemonsqueezy.com/checkout/buy/390c6785-f085-4452-b43a-6206fbc3c106' },
-  trimestriel: { lien: 'https://belfit.lemonsqueezy.com/checkout/buy/62c379de-5b7e-4a8d-868f-87595f4d7733' },
-  annuel:      { lien: 'https://belfit.lemonsqueezy.com/checkout/buy/b66fe18e-6b2a-4953-ab29-d5b4ab99e04a' },
+  mensuel: {
+    lien: 'https://belfit.lemonsqueezy.com/checkout/buy/390c6785-f085-4452-b43a-6206fbc3c106',
+    duree: '1 mois', parMois: '7,99', total: '7,99 € facturés', eco: null,
+    renouv: '7,99 € aujourd\u2019hui, renouvelé chaque mois. Résiliable à tout moment.',
+  },
+  trimestriel: {
+    lien: 'https://belfit.lemonsqueezy.com/checkout/buy/62c379de-5b7e-4a8d-868f-87595f4d7733',
+    duree: '3 mois', parMois: '6,66', total: '19,99 € facturés', eco: '\u221217 %',
+    renouv: '19,99 € aujourd\u2019hui, renouvelé chaque trimestre. Résiliable à tout moment.',
+  },
+  annuel: {
+    lien: 'https://belfit.lemonsqueezy.com/checkout/buy/b66fe18e-6b2a-4953-ab29-d5b4ab99e04a',
+    duree: '12 mois', parMois: '3,99', total: '47,88 € facturés', eco: '\u221250 %',
+    renouv: '47,88 € aujourd\u2019hui, renouvelé chaque année. Résiliable à tout moment.',
+  },
 };
+// Les economies affichees sont calculees sur le tarif mensuel reel
+// (7,99 €/mois) : 6,66 = -17 %, 3,99 = -50 %. Rien d'invente.
 
 export function PremiumPage() {
   const u = utilisateur.value;
@@ -128,31 +142,29 @@ export function PremiumPage() {
           <div class="bandeau">−50 % sur la formule 12 mois</div>
 
           <div class="formules">
-            <div class={'fo' + (formule === 'mensuel' ? ' sel' : '')} onClick={() => setFormule('mensuel')}>
-              <div class="fo-dur">1<small>mois</small></div>
-              <div class="fo-prix">7,99 €</div>
-              <div class="fo-mois">7,99 € / mois</div>
-              <div class="fo-note">Facturé mensuel</div>
-            </div>
-            <div class={'fo' + (formule === 'annuel' ? ' sel' : '')} onClick={() => setFormule('annuel')}>
-              <span class="fo-badge">LE PLUS POPULAIRE</span>
-              <div class="fo-dur">12<small>mois</small></div>
-              <div class="fo-prix">47,88 €</div>
-              <div class="fo-mois">3,99 € / mois</div>
-              <div class="fo-note">Facturé annuel</div>
-            </div>
-            <div class={'fo' + (formule === 'trimestriel' ? ' sel' : '')} onClick={() => setFormule('trimestriel')}>
-              <div class="fo-dur">3<small>mois</small></div>
-              <div class="fo-prix">19,99 €</div>
-              <div class="fo-mois">6,66 € / mois</div>
-              <div class="fo-note">Facturé par trimestre</div>
-            </div>
+            {['mensuel', 'annuel', 'trimestriel'].map((k) => {
+              const f = FORMULES[k];
+              return (
+                <div key={k} class={'fo' + (formule === k ? ' sel' : '')} onClick={() => setFormule(k)}>
+                  {k === 'annuel' && <span class="fo-badge">RECOMMANDÉ</span>}
+                  <div class="fo-dur">{f.duree}</div>
+                  <div class="fo-mois">{f.parMois} €<small> /mois</small></div>
+                  <div class="fo-total">{f.total}</div>
+                  {f.eco && <div class="fo-eco">{f.eco}</div>}
+                </div>
+              );
+            })}
           </div>
 
-          <button class="continuer" onClick={payer}>CONTINUER</button>
+          <button class="continuer" onClick={payer}>
+            S'ABONNER — {FORMULES[formule].parMois} € / MOIS
+            <small>{FORMULES[formule].duree === '1 mois' ? 'Sans engagement' : FORMULES[formule].total.replace(' facturés', '') + ' en un paiement'}</small>
+          </button>
+
+          <p class="renouv">{FORMULES[formule].renouv}</p>
 
           <p class="legal">
-            Paiement sécurisé (LemonSqueezy). Abonnement auto-renouvelé. Résiliable à tout moment.
+            Paiement sécurisé (LemonSqueezy).
             <span class="l-liens"><a href="https://www.belfit.be/confidentialite.html" target="_blank" rel="noopener">Confidentialité & Conditions</a></span>
           </p>
         </>
