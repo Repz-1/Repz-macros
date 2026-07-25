@@ -22,9 +22,12 @@ export function Entete() {
   const p = prenom();
   return (
     <header class={'j-entete' + (p ? ' j-entete--perso' : '')}>
+      {/* Le symbole compact est le B BELFIT (belfit-logo-b.png), le meme
+          que le splash v1 — logo-symbol.png etait un reste de l'epoque
+          REPZ (feuille verte), jamais rebrande. */}
       <img
         class={p ? 'j-symbole' : 'j-logo'}
-        src={p ? '../logo-symbol.png' : '../belfit-logo-header.png'}
+        src={p ? '../belfit-logo-b.png' : '../belfit-logo-header.png'}
         alt="BELFIT"
       />
 
