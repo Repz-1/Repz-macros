@@ -66,8 +66,7 @@
 }
 .pg-premium .fo .fo-dur{ font-size:26px; font-weight:800; line-height:1; }
 .pg-premium .fo .fo-dur small{ display:block; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px; }
-.pg-premium .fo .fo-prix{ font-size:15px; font-weight:800; margin:10px 0 0; }
-.pg-premium .fo .fo-barre{ font-size:12px; font-weight:600; color:#9ca3af; text-decoration:line-through; margin:1px 0 2px; min-height:15px; }
+.pg-premium .fo .fo-prix{ font-size:15px; font-weight:800; margin:10px 0 2px; }
 .pg-premium .fo .fo-mois{ font-size:12.5px; font-weight:700; color:var(--text-dim); }
 .pg-premium .fo .fo-note{ font-size:10.5px; font-weight:600; color:var(--text-dim); margin-top:6px; }
 .pg-premium .fo.sel{ border-color:var(--vert); background:var(--vert-pastel); }
