@@ -1,5 +1,6 @@
 import { signal } from '@preact/signals';
 import { t } from '../i18n/index.js';
+import { repasOuvertId } from './MealCard.jsx';
 
 // Onglet actif de l'app. Signal global : n'importe quel composant
 // peut naviguer (ex : le bouton « Premium » d'une modale).
@@ -17,6 +18,10 @@ const lireScroll = () => (defileur.el ? defileur.el.scrollTop : (window.scrollY 
 
 /** Changement d'onglet : memorise le defilement avant de basculer. */
 export function allerOnglet(cle) {
+  // La page repas (plein ecran) recouvre le rail : sans cette
+  // fermeture, taper un autre onglet changeait bien l'onglet actif
+  // mais l'ecran restait bloque sur l'encodage du repas.
+  if (repasOuvertId.value !== null) repasOuvertId.value = null;
   if (cle === ongletActif.value) return;
   scrollSortant.value = lireScroll();
   ongletActif.value = cle;
