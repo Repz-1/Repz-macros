@@ -46,7 +46,6 @@ export const identite = computed(() => utilisateur.value ? utilisateur.value.uid
 try {
   if (new URLSearchParams(window.location.search).get('logout') === '1') {
     signOut(auth).catch(() => {});
-    localStorage.setItem('belfit_v2_bienvenue_fait', '1');
     history.replaceState(null, '', window.location.pathname);
   }
 } catch (e) { /* URL intouchable : tant pis, l'ecran de connexion suffira */ }

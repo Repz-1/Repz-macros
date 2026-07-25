@@ -12,10 +12,10 @@ import { estPremium } from '../components/PremiumPage.jsx';
 // du telephone, contrairement a un compteur local.
 // ============================================================
 
-export const JOURS_DECOUVERTE = 7;
+const JOURS_DECOUVERTE = 7;
 
 /** Jours ecoules depuis la creation du compte (0 le premier jour). */
-export const joursDepuisInscription = computed(() => {
+const joursDepuisInscription = computed(() => {
   const u = utilisateur.value;
   const brut = u && u.metadata && u.metadata.creationTime;
   if (!brut) return null;

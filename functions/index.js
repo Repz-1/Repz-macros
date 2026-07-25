@@ -243,10 +243,9 @@ Regles :
 // recoit qu'un jeton de connexion — l'email ne sort jamais.
 // ============================================================
 
-const {defineSecret: _defSecret} = require("firebase-functions/params");
 // Cle Web de l'API Firebase, utilisee pour verifier le mot de passe.
 // A definir via : firebase functions:secrets:set FIREBASE_WEB_API_KEY
-const FIREBASE_WEB_API_KEY = _defSecret("FIREBASE_WEB_API_KEY");
+const FIREBASE_WEB_API_KEY = defineSecret("FIREBASE_WEB_API_KEY");
 
 const PSEUDO_MIN = 3;
 const PSEUDO_MAX = 20;

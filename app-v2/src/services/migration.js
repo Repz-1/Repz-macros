@@ -27,7 +27,7 @@ const FORMAT_V1 = {
   },
 };
 
-export function convertirV1versV2(v1) {
+function convertirV1versV2(v1) {
   const out = {};
 
   // --- Repas du jour ---

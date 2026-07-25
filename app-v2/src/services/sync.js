@@ -26,12 +26,12 @@ let timerEnvoi = null;
 // ecraser les champs des autres.
 let etatComplet = {};
 
-export function cleLocale(uid) {
+function cleLocale(uid) {
   return `belfit_v2_journal_${uid}`;
 }
 
 // L'invite n'a pas de compte : pas de cloud, uniquement le local
-export const UID_INVITE = '__invite__';
+const UID_INVITE = '__invite__';
 
 // ---- Lecture au demarrage : cloud d'abord, local en secours ----
 export async function chargerDonnees(uid) {
