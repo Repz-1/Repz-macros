@@ -55,7 +55,7 @@ export function BottomNav() {
         return (
           <button
             key={o.k}
-            class={'bn-item' + (actif ? ' bn-item--actif' : '') + (o.k === 'premium' ? ' bn-item--premium' : '')}
+            class={'bn-item bn-item--' + o.k + (actif ? ' bn-item--actif' : '')}
             onClick={() => allerOnglet(o.k)}
             aria-current={actif ? 'page' : undefined}
           >
