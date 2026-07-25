@@ -198,9 +198,6 @@ export function renommerRepas(repasId, nom) {
   repas.value = repas.value.map(r => r.id !== repasId ? r : { ...r, nom });
 }
 
-export function basculerRepas(repasId) {
-  repas.value = repas.value.map(r => r.id !== repasId ? r : { ...r, ouvert: !r.ouvert });
-}
 
 export function nouvelleJournee() {
   repas.value = structuredClone(DEFAUTS.repas);

@@ -1,7 +1,6 @@
 import { signal, computed, effect } from '@preact/signals';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
-import { muscleLog } from './entrainement.js';
 
 // ============================================================
 // STORE STATS v2
@@ -53,19 +52,4 @@ export function enregistrerJour(totaux) {
 }
 
 // --- Derives ---
-export const tendancePoids = computed(() => {
-  const l = weightLog.value;
-  if (l.length < 2) return null;
-  const p = (e) => parseFloat(e.weight ?? e.kg) || 0;
-  return Math.round((p(l[l.length - 1]) - p(l[0])) * 10) / 10;
-});
 
-export const seancesParMois = computed(() => {
-  const compte = {};
-  Object.entries(muscleLog.value).forEach(([iso, groupes]) => {
-    if (!groupes.some(g => g !== 'repos')) return;
-    const mois = iso.slice(0, 7);
-    compte[mois] = (compte[mois] || 0) + 1;
-  });
-  return compte;
-});
