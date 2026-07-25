@@ -21,8 +21,9 @@
 
 /* ---- Titre ---- */
 .pg-premium .prem-titre{
-  font-size:19px; font-weight:800; line-height:1.2; letter-spacing:-.02em;
-  text-align:center; margin:8px 6px 12px;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:21px; font-weight:600; line-height:1.28; letter-spacing:0;
+  text-align:center; margin:8px 10px 14px;
 }
 .pg-premium .prem-titre em{ font-style:normal; color:var(--vert); }
 
@@ -33,8 +34,8 @@
 .pg-premium .cmp-tete .h-gratuit{ color:var(--text-dim); }
 .pg-premium .cmp-tete .h-prem{ background:var(--vert); color:#fff; border-radius:14px 14px 0 0; }
 .pg-premium .cmp-ligne{ display:grid; grid-template-columns:1fr 72px 84px; align-items:center; border-top:1px solid var(--line); }
-.pg-premium .cmp-ligne .c-nom{ font-size:13px; font-weight:600; padding:8px 12px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.pg-premium .cmp-ligne .c-cell{ text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); }
+.pg-premium .cmp-ligne .c-nom{ font-size:13px; font-weight:500; padding:8px 12px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pg-premium .cmp-ligne .c-cell{ text-align:center; font-size:11.5px; font-weight:600; color:var(--text-dim); }
 .pg-premium .cmp-ligne .c-cell.on{ padding:0; }
 .pg-premium .cmp-ligne .c-prem{ background:var(--vert-pastel); align-self:stretch; display:flex; align-items:center; justify-content:center; }
 .pg-premium .ck{
@@ -65,10 +66,10 @@
   display:flex; flex-direction:column; align-items:center;
   transition:border-color .15s, background .15s;
 }
-.pg-premium .fo .fo-dur{ font-size:13px; font-weight:800; color:var(--text-dim); letter-spacing:.02em; }
+.pg-premium .fo .fo-dur{ font-size:12px; font-weight:700; color:var(--text-dim); letter-spacing:.02em; }
 .pg-premium .fo .fo-mois{ font-size:19px; font-weight:800; letter-spacing:-.02em; margin:7px 0 1px; line-height:1; }
 .pg-premium .fo .fo-mois small{ font-size:11px; font-weight:700; color:var(--text-dim); letter-spacing:0; }
-.pg-premium .fo .fo-total{ font-size:11px; font-weight:600; color:var(--text-dim); margin-top:3px; }
+.pg-premium .fo .fo-total{ font-size:10px; font-weight:500; color:var(--text-dim); margin-top:3px; }
 .pg-premium .fo .fo-eco{
   margin-top:8px; background:var(--vert-pastel); color:var(--vert-fonce);
   font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:9px;
@@ -88,12 +89,12 @@
   font-size:15px; font-weight:800; letter-spacing:.02em; font-family:inherit;
   padding:14px; border-radius:15px; margin:12px 0 8px; cursor:pointer;
 }
-.pg-premium .continuer small{ display:block; font-size:11.5px; font-weight:700; opacity:.85; letter-spacing:0; margin-top:2px; }
+.pg-premium .continuer small{ display:block; font-size:10.5px; font-weight:600; opacity:.85; letter-spacing:0; margin-top:2px; }
 .pg-premium .continuer:active{ transform:scale(.985); }
 
 /* ---- Renouvellement (dynamique) + ligne legale ---- */
-.pg-premium .renouv{ font-size:11px; color:var(--text-dim); font-weight:600; text-align:center; margin-bottom:6px; }
-.pg-premium .legal{ font-size:11.5px; color:var(--text-dim); font-weight:500; text-align:center; line-height:1.5; }
+.pg-premium .renouv{ font-size:10.5px; color:var(--text-dim); font-weight:500; text-align:center; margin-bottom:6px; }
+.pg-premium .legal{ font-size:10.5px; color:var(--text-dim); font-weight:500; text-align:center; line-height:1.5; }
 .pg-premium .legal a{ color:var(--text-dim); text-decoration:underline; }
 .pg-premium .legal .l-liens{ display:inline; margin-left:6px; }
 
