@@ -108,6 +108,7 @@
 .pg-premium .renouv{ font-size:10px; color:#9aa0a8; font-weight:400; text-align:center; margin-bottom:6px; }
 .pg-premium .legal{ font-size:10px; color:#9aa0a8; font-weight:400; text-align:center; line-height:1.5; }
 .pg-premium .legal a{ color:#9aa0a8; text-decoration:underline; }
+.pg-premium .l-bouclier{ width:13px; height:13px; vertical-align:-2px; margin-right:4px; fill:none; stroke:#9aa0a8; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .pg-premium .legal .l-liens{ display:inline; margin-left:6px; }
 
 /* ---- Modale de consentement (inchangee, couleurs alignees) ---- */

@@ -67,17 +67,17 @@ const FORMULES = {
   mensuel: {
     lien: 'https://belfit.lemonsqueezy.com/checkout/buy/390c6785-f085-4452-b43a-6206fbc3c106',
     duree: '1 mois', parMois: '7,99', total: '7,99 € facturés', eco: null,
-    renouv: '7,99 € aujourd\u2019hui, renouvelé chaque mois. Résiliable à tout moment.',
+    renouv: '7,99 € aujourd\u2019hui, renouvelé chaque mois.',
   },
   trimestriel: {
     lien: 'https://belfit.lemonsqueezy.com/checkout/buy/62c379de-5b7e-4a8d-868f-87595f4d7733',
     duree: '3 mois', parMois: '6,66', total: '19,99 € facturés', eco: '\u221217 %',
-    renouv: '19,99 € aujourd\u2019hui, renouvelé chaque trimestre. Résiliable à tout moment.',
+    renouv: '19,99 € aujourd\u2019hui, renouvelé chaque trimestre.',
   },
   annuel: {
     lien: 'https://belfit.lemonsqueezy.com/checkout/buy/b66fe18e-6b2a-4953-ab29-d5b4ab99e04a',
     duree: '12 mois', parMois: '3,99', total: '47,88 € facturés', eco: '\u221250 %',
-    renouv: '47,88 € aujourd\u2019hui, renouvelé chaque année. Résiliable à tout moment.',
+    renouv: '47,88 € aujourd\u2019hui, renouvelé chaque année.',
   },
 };
 // Les economies affichees sont calculees sur le tarif mensuel reel
@@ -184,7 +184,8 @@ export function PremiumPage() {
           <p class="renouv">{FORMULES[formule].renouv}</p>
 
           <p class="legal">
-            Paiement sécurisé (LemonSqueezy).
+            <svg class="l-bouclier" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 9.2-8 11-4.5-1.8-8-6-8-11V5l8-3z" /><path d="M9 12l2 2 4-4" /></svg>
+            Paiement sécurisé. Facturation auto-renouvelable. Annulez à tout moment.
             <span class="l-liens"><a href="https://www.belfit.be/confidentialite.html" target="_blank" rel="noopener">Confidentialité & Conditions</a></span>
           </p>
         </>
