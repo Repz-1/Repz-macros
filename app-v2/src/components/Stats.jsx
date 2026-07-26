@@ -134,10 +134,27 @@ export function WeightModal({ fermer }) {
 
   // La regle : 30 -> 250 kg, 7 px par 0,1 kg. La valeur = position de
   // l'aiguille centrale. On demarre sur la derniere pesee (ou 80).
-  const MIN = 30, MAX = 250, PX = 70;               // px par kg
-  const [val, setVal] = useState(last || 80);
+  const MIN = 30, MAX = 150, PX = 70;               // px par kg (plafond 150 kg)
+  const [val, setVal] = useState(Math.min(150, last || 80));
+  const [manuel, setManuel] = useState(false);   // saisie clavier
+  const [texte, setTexte] = useState('');
   const piste = useRef(null);
   const synchro = useRef(false);
+
+  // Positionne la regle sur une valeur donnee (apres saisie manuelle)
+  const calerRegle = (v) => {
+    const el = piste.current;
+    if (!el) return;
+    synchro.current = true;
+    el.scrollLeft = (v - MIN) * PX;
+    setTimeout(() => { synchro.current = false; }, 80);
+  };
+
+  const validerManuel = () => {
+    const v = Math.round(parseFloat(String(texte).replace(',', '.')) * 10) / 10;
+    setManuel(false);
+    if (!isNaN(v) && v >= MIN && v <= MAX) { setVal(v); calerRegle(v); }
+  };
 
   useEffect(() => {
     const el = piste.current;
@@ -171,9 +188,23 @@ export function WeightModal({ fermer }) {
       <div class="wm2">
         <div class="wm2-poignee" />
 
-        <div class="wm2-valeur">
-          {val.toFixed(1).replace('.', ',')}<span>kg</span>
-        </div>
+        {manuel ? (
+          <div class="wm2-valeur wm2-valeur--champ">
+            <input
+              type="number" inputMode="decimal" step="0.1" min={MIN} max={MAX}
+              value={texte} autoFocus
+              onInput={(e) => setTexte(e.currentTarget.value)}
+              onBlur={validerManuel}
+              onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+            /><span>kg</span>
+          </div>
+        ) : (
+          <button class="wm2-valeur wm2-valeur--btn"
+            onClick={() => { setTexte(val.toFixed(1)); setManuel(true); }}>
+            {val.toFixed(1).replace('.', ',')}<span>kg</span>
+            <svg class="wm2-crayon" viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z" /></svg>
+          </button>
+        )}
         <div class="wm2-delta-zone">
           {delta !== null && delta !== 0 ? (
             <span class={'wm2-delta' + (delta < 0 ? ' baisse' : ' hausse')}>

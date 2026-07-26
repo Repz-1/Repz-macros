@@ -2382,7 +2382,8 @@
 .wm2-voile { align-items: flex-end !important; padding: 0 !important; }
 .wm2 {
   width: 100%; background: #fff; border-radius: 26px 26px 0 0;
-  padding: 10px 20px calc(18px + env(safe-area-inset-bottom));
+  padding: 12px 20px calc(46px + env(safe-area-inset-bottom));
+  min-height: 62dvh; display: flex; flex-direction: column; justify-content: center;
   box-shadow: 0 -8px 30px rgba(24, 24, 24, .16);
   animation: wm2-monte .26s cubic-bezier(.22, .8, .28, 1) both;
 }
@@ -2391,14 +2392,35 @@
 
 .wm2-poignee {
   width: 40px; height: 4px; border-radius: 4px; background: #E7E2D8;
-  margin: 0 auto 18px;
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
 }
+.wm2 { position: relative; }
+.wm2-regle { flex: none; }
 
 /* Le chiffre est la page */
 .wm2-valeur {
   text-align: center; font-size: 58px; font-weight: 800; color: #191919;
   letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums;
 }
+/* La valeur est aussi un bouton : un appui ouvre la saisie clavier */
+.wm2-valeur--btn {
+  display: block; width: 100%; background: none; border: none;
+  font-family: inherit; cursor: pointer; padding: 0; position: relative;
+}
+.wm2-crayon {
+  width: 16px; height: 16px; margin-left: 10px; vertical-align: 26px;
+  fill: none; stroke: #C9C3B8; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.wm2-valeur--champ input {
+  width: 190px; border: none; background: #FBF7F0; border-radius: 16px;
+  padding: 4px 10px; margin: 0;
+  font-family: inherit; font-size: 52px; font-weight: 800; color: #191919;
+  text-align: center; letter-spacing: -.03em; font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 2.5px rgba(224, 162, 28, .5);
+}
+.wm2-valeur--champ input:focus { outline: none; }
+.wm2-valeur--champ input::-webkit-outer-spin-button,
+.wm2-valeur--champ input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .wm2-valeur span { font-size: 21px; font-weight: 700; color: #8A8580; letter-spacing: 0; margin-left: 6px; }
 .wm2-delta-zone { text-align: center; margin: 10px 0 4px; min-height: 24px; }
 .wm2-delta {
@@ -2451,7 +2473,7 @@
   display: block; width: 100%; padding: 16px; border-radius: 999px;
   background: #141414; border: none; color: #fff;
   font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
-  margin-top: 10px;
+  margin-top: 22px;
 }
 .wm2-ok:active { transform: scale(.99); opacity: .92; }
 .wm2-annuler {
