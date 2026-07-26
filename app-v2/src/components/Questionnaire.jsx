@@ -359,7 +359,7 @@ export function Questionnaire() {
       const it = setInterval(() => {
         const p = Math.min(300, Math.round((Date.now() - debut) / 11.5));
         setCalcul(p);
-        if (p >= 300) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 260); }
+        if (p >= 300) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 420); }
       }, 40);
       return;
     }
@@ -374,8 +374,10 @@ export function Questionnaire() {
     // la fin du 1er tour, JAUNE au 2e, ROUGE au 3e — puis le resultat.
     const FINS = ['#1F1F1F', '#F7B500'];
     const tour = Math.min(2, Math.floor((calcul - 1) / 100));
-    const dansTour = calcul - tour * 100;
-    const piste = tour === 0 ? '#EFEBE2' : FINS[tour - 1];
+    // Fin du 3e tour : l'anneau vire au rouge un instant avant le resultat.
+    const fini = calcul >= 300;
+    const dansTour = fini ? 0 : calcul - tour * 100;
+    const piste = fini ? '#DE2F14' : (tour === 0 ? '#EFEBE2' : FINS[tour - 1]);
     const TEXTES = [
       'Analyse de tes réponses…',
       'Choix du programme adapté…',
