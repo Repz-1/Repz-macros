@@ -370,14 +370,14 @@ export function Questionnaire() {
 
   // ---------- Cinematique ----------
   if (calcul > 0) {
-    // 3 tours (Raci) : l'arc or repeint l'anneau, qui devient NOIR a
-    // la fin du 1er tour, JAUNE au 2e, ROUGE au 3e — puis le resultat.
-    const FINS = ['#1F1F1F', '#F7B500'];
+    // 3 tours (Raci, version definitive) : l'ARC change de couleur a
+    // chaque tour — il se remplit en NOIR, puis en ROUGE par-dessus le
+    // noir, puis en JAUNE par-dessus le rouge, et le resultat suit.
+    const COULEURS = ['#1F1F1F', '#DE2F14', '#F7B500'];
     const tour = Math.min(2, Math.floor((calcul - 1) / 100));
-    // Fin du 3e tour : l'anneau vire au rouge un instant avant le resultat.
-    const fini = calcul >= 300;
-    const dansTour = fini ? 0 : calcul - tour * 100;
-    const piste = fini ? '#DE2F14' : (tour === 0 ? '#EFEBE2' : FINS[tour - 1]);
+    const dansTour = Math.min(100, calcul - tour * 100);
+    const arc = COULEURS[tour];
+    const piste = tour === 0 ? '#EFEBE2' : COULEURS[tour - 1];
     const TEXTES = [
       'Analyse de tes réponses…',
       'Choix du programme adapté…',
@@ -389,15 +389,9 @@ export function Questionnaire() {
         <div class="qz-calc">
           <div class="qz-calc-anneau">
             <svg viewBox="0 0 150 150">
-              <defs>
-                <linearGradient id="qzOr" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#FFC93C" />
-                  <stop offset="100%" stop-color="#E19609" />
-                </linearGradient>
-              </defs>
               <circle cx="75" cy="75" r={R} fill="none"
                 stroke={piste} stroke-width="9" />
-              <circle cx="75" cy="75" r={R} fill="none" stroke="url(#qzOr)" stroke-width="9"
+              <circle cx="75" cy="75" r={R} fill="none" stroke={arc} stroke-width="9"
                 stroke-linecap="round" transform="rotate(-90 75 75)"
                 stroke-dasharray={`${(dansTour / 100 * C).toFixed(1)} ${C.toFixed(1)}`} />
             </svg>
