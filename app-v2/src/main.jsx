@@ -54,14 +54,18 @@ function OngletJournal() {
         <WeightNote />
         <IdeesRepas />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
+        {/* L'ajout d'un repas vit desormais dans le flux, sous le
+            dernier repas — plus de bouton flottant jaune (Raci). */}
+        <div class="ajout-repas-rang">
+          <button class="ajout-repas" onClick={() => setModale(true)}>
+            <svg viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13" /></svg>
+            {t('add_meal_btn')}
+          </button>
+        </div>
       </div>
 
       <div class="fab-rangee">
         <WaterTracker />
-        <button class="fab" onClick={() => setModale(true)} aria-label={t('add')}>
-          <span class="fab-plus">＋</span>
-          <span class="fab-label">{t('add')}</span>
-        </button>
       </div>
 
       {modale && <AddMealModal montre={true} fermer={() => setModale(false)} />}
