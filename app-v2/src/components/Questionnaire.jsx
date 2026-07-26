@@ -24,7 +24,7 @@ const REGLETTES = {
             t: 'Quelle est ta taille ?', s: 'Sert à estimer tes besoins caloriques.' },
   poids:  { min: 35, max: 200, pas: 0.1, px: 110, unite: 'kg', defaut: 75,
             t: 'Quel est ton poids ?', s: 'Ton point de départ, rien de plus.' },
-  age:    { min: 14, max: 90, pas: 1, unite: 'ans', defaut: 30,
+  age:    { min: 14, max: 90, pas: 1, px: 26, unite: 'ans', defaut: 30,
             t: 'Quel âge as-tu ?', s: 'La récupération change avec l\u2019âge : les conseils s\u2019adaptent.' },
 };
 
@@ -279,8 +279,12 @@ function Reglette({ min, max, pas, valeur, unite, onChange, px }) {
     }
   };
 
+  // Echelle serree -> un chiffre tous les 5 crans, sinon chaque cran
+  const saut = PX >= 44 ? 1 : 5;
   const reperes = [];
-  for (let k = Math.ceil(min); k <= max; k++) reperes.push(k);
+  for (let k = Math.ceil(min); k <= max; k++) {
+    if (k % saut === 0 || k === min || k === max) reperes.push(k);
+  }
 
   return (
     <div class="rg">
