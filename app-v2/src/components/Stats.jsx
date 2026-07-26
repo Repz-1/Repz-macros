@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState, useRef, useEffect } from 'preact/hooks';
 import { weightLog, histoJours, ajouterPesee } from '../store/stats.js';
 import { muscleLog, basculerMuscle, viderJourMuscles } from '../store/entrainement.js';
 import { setLog } from './SeanceTracker.jsx';
@@ -129,68 +129,72 @@ function MlModal({ iso, setIso, fermer }) {
 
 // ---------- Modale poids : copie v1 (weightModal, app.html) ----------
 export function WeightModal({ fermer }) {
-  const [val, setVal] = useState('');
   const l = weightLog.value || [];
-  const last = l.length ? poidsDe([...l].sort((a, b) => a.iso.localeCompare(b.iso))[l.length - 1]) : '';
+  const last = l.length ? parseFloat(poidsDe([...l].sort((a, b) => a.iso.localeCompare(b.iso))[l.length - 1])) : null;
+
+  // La regle : 30 -> 250 kg, 7 px par 0,1 kg. La valeur = position de
+  // l'aiguille centrale. On demarre sur la derniere pesee (ou 80).
+  const MIN = 30, MAX = 250, PX = 70;               // px par kg
+  const [val, setVal] = useState(last || 80);
+  const piste = useRef(null);
+  const synchro = useRef(false);
+
+  useEffect(() => {
+    const el = piste.current;
+    if (!el) return;
+    synchro.current = true;
+    el.scrollLeft = ((last || 80) - MIN) * PX;
+    const fin = setTimeout(() => { synchro.current = false; }, 80);
+    return () => clearTimeout(fin);
+  }, []);
+
+  const surDefile = () => {
+    if (synchro.current || !piste.current) return;
+    const v = Math.round((MIN + piste.current.scrollLeft / PX) * 10) / 10;
+    setVal(Math.min(MAX, Math.max(MIN, v)));
+  };
 
   const enregistrer = () => {
-    const v = parseFloat(val);
-    if (!v || v <= 0) { alert(t('js_weight_invalid')); return; }
-    ajouterPesee(v);
+    if (!val || val <= 0) { alert(t('js_weight_invalid')); return; }
+    ajouterPesee(val);
     fermer();
   };
 
-  // Delta en direct face a la derniere pesee : le retour visuel qui
-  // donne envie d'encoder (vert = descend, encre = monte, gris = egal).
-  const v = parseFloat(String(val).replace(',', '.'));
-  const delta = last && !isNaN(v) && v > 0 ? +(v - parseFloat(last)).toFixed(1) : null;
+  const delta = last !== null ? +(val - last).toFixed(1) : null;
+
+  // Graduations : un repere chiffre par kilo entier.
+  const reperes = [];
+  for (let k = MIN; k <= MAX; k++) reperes.push(k);
 
   return (
-    <div class="modal-overlay show" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
-      <div class="modal wm">
-        <div class="wm-tete">
-          <span class="wm-ic">
-            <svg viewBox="0 0 24 24">
-              <defs>
-                <linearGradient id="wmOr" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#FFDF8E" />
-                  <stop offset="100%" stop-color="#F0A90A" />
-                </linearGradient>
-              </defs>
-              <path d="M4 12a3 3 0 006 0z" fill="url(#wmOr)" stroke="none" />
-              <path d="M14 12a3 3 0 006 0z" fill="url(#wmOr)" stroke="none" />
-              <path d="M12 3.5v2M7 5.5h10M7 5.5l-3 6.5a3 3 0 006 0L7 5.5zM17 5.5l-3 6.5a3 3 0 006 0l-3-6.5zM9 20.5h6M12 5.5v15" />
-            </svg>
-          </span>
-          <h3 class="wm-titre">{t('wm_title')}</h3>
+    <div class="modal-overlay show wm2-voile" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
+      <div class="wm2">
+        <div class="wm2-poignee" />
+
+        <div class="wm2-valeur">
+          {val.toFixed(1).replace('.', ',')}<span>kg</span>
+        </div>
+        <div class="wm2-delta-zone">
+          {delta !== null && delta !== 0 ? (
+            <span class={'wm2-delta' + (delta < 0 ? ' baisse' : ' hausse')}>
+              {delta > 0 ? '+' : '\u2212'}{Math.abs(delta).toFixed(1)} kg {t('wm2_depuis')}
+            </span>
+          ) : <span class="wm2-delta neutre">{last !== null ? t('wm2_pareil') : '\u00a0'}</span>}
         </div>
 
-        <div class="wm-saisie">
-          <input
-            type="number" step="0.1" min="0" placeholder="0,0" inputMode="decimal"
-            value={val} onInput={(e) => setVal(e.target.value)} autoFocus
-          />
-          <span class="wm-unite">kg</span>
-        </div>
-
-        {last ? (
-          <div class="wm-prec">
-            {t('prev_weight')} : <b>{last} kg</b>
-            {delta !== null && delta !== 0 && (
-              <span class={'wm-delta' + (delta < 0 ? ' baisse' : ' hausse')}>
-                {delta > 0 ? '+' : '\u2212'}{Math.abs(delta).toFixed(1)} kg
-              </span>
-            )}
+        <div class="wm2-regle">
+          <div class="wm2-aiguille" />
+          <div class="wm2-piste" ref={piste} onScroll={surDefile}>
+            <div class="wm2-ruban" style={{ width: (MAX - MIN) * PX + 'px' }}>
+              {reperes.map(k => (
+                <span key={k} class="wm2-repere" style={{ left: (k - MIN) * PX + 'px' }}>{k}</span>
+              ))}
+            </div>
           </div>
-        ) : null}
-
-        <div class="wm-btns">
-          <button class="wm-annuler" onClick={fermer}>{t('cancel')}</button>
-          <button class="wm-ok" onClick={enregistrer}>
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M8.5 12.5l2.5 2.5 4.5-5" /></svg>
-            {t('save')}
-          </button>
         </div>
+
+        <button class="wm2-ok" onClick={enregistrer}>{t('save')}</button>
+        <button class="wm2-annuler" onClick={fermer}>{t('cancel')}</button>
       </div>
     </div>
   );
