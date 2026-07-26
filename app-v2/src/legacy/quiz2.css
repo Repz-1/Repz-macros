@@ -298,3 +298,14 @@
   font-size: 13px; font-weight: 700; color: #8A8580;
   font-variant-numeric: tabular-nums;
 }
+
+/* Recap des repos pendant la cinematique : compact, sous l'anneau */
+.qz-repos--calc { width: 100%; max-width: 340px; margin-top: 6px; }
+.qz-rep-t {
+  font-size: 11.5px; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: #B7860B; text-align: center;
+  margin-bottom: 10px;
+}
+.qz-repos--calc .qz-rep-l { padding: 11px 14px; }
+.qz-repos--calc .qz-rep-l b { min-width: 64px; font-size: 15px; }
+.qz-repos--calc .qz-rep-l span { font-size: 13px; }

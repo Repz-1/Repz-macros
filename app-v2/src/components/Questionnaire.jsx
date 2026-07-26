@@ -15,7 +15,7 @@ const ETAPES = [
   'objectif', 'niveau', 'zones',
   'taille', 'poids', 'age',
   'lieu', 'materiel',
-  'frequence', 'duree', 'repos',
+  'frequence', 'duree',
 ];
 
 // Etapes a reglette (taille / poids / age) : bornes et unite
@@ -111,11 +111,6 @@ const QUESTIONS = {
       { v: '60-75', l: '60 à 75 minutes' },
       { v: '75-90', l: '75 à 90 minutes' },
     ],
-  },
-  repos: {
-    t: 'Tes temps de repos',
-    s: 'Les repères qui font tenir ta séance dans le temps choisi. Un chrono de repos est intégré à tes séances.',
-    o: [],
   },
 };
 
@@ -330,7 +325,7 @@ export function Questionnaire() {
   const pct = surResultat ? 100 : ((i + 1) / total) * 100;
 
   const valeur = reponses[etape];
-  const repondu = (REGLETTES[etape] || etape === 'repos') ? true
+  const repondu = REGLETTES[etape] ? true
     : (MULTI[etape] ? (valeur || []).length > 0 : !!valeur);
 
   const choisir = (v) => {
@@ -362,7 +357,7 @@ export function Questionnaire() {
       setCalcul(1);
       const debut = Date.now();
       const it = setInterval(() => {
-        const p = Math.min(400, Math.round((Date.now() - debut) / 9));
+        const p = Math.min(400, Math.round((Date.now() - debut) / 11.5));
         setCalcul(p);
         if (p >= 400) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 260); }
       }, 40);
@@ -409,6 +404,15 @@ export function Questionnaire() {
             <div class="qz-calc-pct">{Math.round(calcul / 4)}<span>%</span></div>
           </div>
           <div class="qz-calc-txt">{TEXTES[tour]}</div>
+
+          <div class="qz-repos qz-repos--calc">
+            <div class="qz-rep-t">Tes temps de repos entre les séries</div>
+            <div class="qz-rep-l"><b>45 s</b><span>Circuits, abdominaux, exercices légers</span></div>
+            <div class="qz-rep-l"><b>1 min 15</b><span>Exercices d\u2019isolation</span></div>
+            <div class="qz-rep-l"><b>2 min</b><span>Exercices classiques</span></div>
+            <div class="qz-rep-l"><b>3 min</b><span>Exercices lourds</span></div>
+            <div class="qz-rep-note">Le chrono de repos est intégré à tes séances.</div>
+          </div>
         </div>
       </div>
     );
@@ -505,17 +509,7 @@ export function Questionnaire() {
           />
         )}
 
-        {etape === 'repos' && (
-          <div class="qz-repos">
-            <div class="qz-rep-l"><b>45 s</b><span>Circuits, abdominaux, exercices légers</span></div>
-            <div class="qz-rep-l"><b>1 min 15</b><span>Exercices d\u2019isolation</span></div>
-            <div class="qz-rep-l"><b>2 min</b><span>Exercices classiques</span></div>
-            <div class="qz-rep-l"><b>3 min</b><span>Exercices lourds</span></div>
-            <div class="qz-rep-note">Le chrono de repos est intégré : tu le lances d\u2019un geste à la fin de chaque série.</div>
-          </div>
-        )}
-
-        {!rg && etape !== 'repos' && <div class="qz-options">
+        {!rg && <div class="qz-options">
           {q.o.map(o => (
             <button
               key={o.v}
