@@ -24,7 +24,7 @@ const REGLETTES = {
             t: 'Quelle est ta taille ?', s: 'Sert à estimer tes besoins caloriques.' },
   poids:  { min: 35, max: 200, pas: 0.1, px: 110, unite: 'kg', defaut: 75,
             t: 'Quel est ton poids ?', s: 'Ton point de départ, rien de plus.' },
-  age:    { min: 14, max: 90, pas: 1, px: 26, unite: 'ans', defaut: 30,
+  age:    { min: 14, max: 90, pas: 1, px: 40, unite: 'ans', defaut: 30,
             t: 'Quel âge as-tu ?', s: 'La récupération change avec l\u2019âge : les conseils s\u2019adaptent.' },
 };
 
@@ -375,11 +375,13 @@ export function Questionnaire() {
 
   // ---------- Cinematique ----------
   if (calcul > 0) {
-    // 4 tours : chaque tour a sa couleur, et la piste garde la couleur
-    // du tour precedent — noir, rouge, jaune, puis or en degrade.
-    const TOURS = ['#1F1F1F', '#DE2F14', '#F7B500', 'url(#qzOr)'];
+    // L'arc qui se remplit est TOUJOURS or ; a chaque fin de tour,
+    // l'anneau complet prend sa couleur : noir, rouge, jaune — et le
+    // 4e tour, rempli d'or, amene le resultat (correction Raci).
+    const FINS = ['#1F1F1F', '#DE2F14', '#F7B500'];
     const tour = Math.min(3, Math.floor((calcul - 1) / 100));
     const dansTour = calcul - tour * 100;
+    const piste = tour === 0 ? '#EFEBE2' : FINS[tour - 1];
     const TEXTES = [
       'Analyse de tes réponses…',
       'Choix du programme adapté…',
@@ -399,8 +401,8 @@ export function Questionnaire() {
                 </linearGradient>
               </defs>
               <circle cx="75" cy="75" r={R} fill="none"
-                stroke={tour === 0 ? '#EFEBE2' : TOURS[tour - 1]} stroke-width="9" />
-              <circle cx="75" cy="75" r={R} fill="none" stroke={TOURS[tour]} stroke-width="9"
+                stroke={piste} stroke-width="9" />
+              <circle cx="75" cy="75" r={R} fill="none" stroke="url(#qzOr)" stroke-width="9"
                 stroke-linecap="round" transform="rotate(-90 75 75)"
                 stroke-dasharray={`${(dansTour / 100 * C).toFixed(1)} ${C.toFixed(1)}`} />
             </svg>
