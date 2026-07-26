@@ -2379,56 +2379,54 @@
    ENCODAGE DU POIDS v2 — feuille du bas + regle coulissante.
    Ni titre ni logo : le chiffre et la regle disent tout.
    ============================================================ */
-.wm2-voile { align-items: flex-end !important; padding: 0 !important; }
+.wm2-voile { align-items: center !important; padding: 0 18px !important; }
 .wm2 {
-  width: 100%; background: #fff; border-radius: 26px 26px 0 0;
-  padding: 12px 20px calc(40px + env(safe-area-inset-bottom));
-  min-height: 52dvh; display: flex; flex-direction: column; justify-content: center;
+  width: 100%; max-width: 380px; margin: 0 auto;
+  background: var(--fond, #FAF9F6); border-radius: 26px;
+  padding: 26px 20px 22px;
+  display: flex; flex-direction: column; justify-content: center;
   box-shadow: 0 -8px 30px rgba(24, 24, 24, .16);
   animation: wm2-monte .26s cubic-bezier(.22, .8, .28, 1) both;
 }
 @keyframes wm2-monte { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .wm2 { animation: none; } }
 
-.wm2-poignee {
-  width: 40px; height: 4px; border-radius: 4px; background: #E7E2D8;
-  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-}
+.wm2-poignee { display: none; }
 .wm2 { position: relative; }
 
 
 /* Le chiffre est la page */
 .wm2-valeur {
-  text-align: center; font-size: 58px; font-weight: 800; color: #191919;
-  letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums;
+  text-align: center; font-size: 42px; font-weight: 700; color: #2C2A27;
+  letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums;
 }
 /* La valeur est aussi un bouton : un appui ouvre la saisie clavier */
 .wm2-valeur--btn {
-  display: block; width: 178px; background: none; border: none;
+  display: block; width: 150px; background: none; border: none;
   font-family: inherit; cursor: pointer; padding: 0; position: relative;
 }
-.wm2-valeur--champ { width: 178px; }
+.wm2-valeur--champ { width: 150px; }
 .wm2-valeur--champ input {
-  width: 178px; border: none; background: #FBF7F0; border-radius: 16px;
+  width: 150px; border: none; background: #fff; border-radius: 14px;
   padding: 4px 10px; margin: 0;
-  font-family: inherit; font-size: 52px; font-weight: 800; color: #191919;
+  font-family: inherit; font-size: 38px; font-weight: 700; color: #2C2A27;
   text-align: center; letter-spacing: -.03em; font-variant-numeric: tabular-nums;
   box-shadow: 0 0 0 2.5px rgba(224, 162, 28, .5);
 }
 .wm2-valeur--champ input:focus { outline: none; }
 .wm2-valeur--champ input::-webkit-outer-spin-button,
 .wm2-valeur--champ input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.wm2-valeur span { font-size: 21px; font-weight: 700; color: #8A8580; letter-spacing: 0; margin-left: 6px; }
+.wm2-valeur span { font-size: 16px; font-weight: 600; color: #A9A49C; letter-spacing: 0; margin-left: 5px; }
 /* Rang du stepper : - / valeur / + */
 .wm2-rang { display: flex; align-items: center; justify-content: center; gap: 18px; }
 .wm2-pas {
-  flex: none; width: 58px; height: 58px; border-radius: 50%;
-  background: #FBF7F0; border: 1.5px solid #EFE7D8; color: #191919;
-  font-family: inherit; font-size: 30px; font-weight: 600; line-height: 1;
+  flex: none; width: 52px; height: 52px; border-radius: 50%;
+  background: #FFF4CC; border: none; color: #7a5600;
+  font-family: inherit; font-size: 27px; font-weight: 600; line-height: 1;
   cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation;
   display: flex; align-items: center; justify-content: center; padding-bottom: 3px;
 }
-.wm2-pas:active { background: #F3ECDF; transform: scale(.94); }
+.wm2-pas:active { background: #FBE9AC; transform: scale(.94); }
 .wm2-delta-zone { text-align: center; margin: 14px 0 4px; min-height: 24px; }
 .wm2-delta {
   display: inline-block; font-size: 12.5px; font-weight: 700;
@@ -2451,10 +2449,10 @@
 
 
 .wm2-ok {
-  display: block; width: 100%; padding: 16px; border-radius: 999px;
-  background: #141414; border: none; color: #fff;
-  font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
-  margin-top: 22px;
+  display: block; width: 100%; padding: 15px; border-radius: 999px;
+  background: #F7B500; border: none; color: #181818;
+  font-family: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer;
+  margin-top: 20px;
 }
 .wm2-ok:active { transform: scale(.99); opacity: .92; }
 .wm2-annuler {
