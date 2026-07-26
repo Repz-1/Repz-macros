@@ -176,7 +176,7 @@ export function WeightModal({ fermer }) {
             class="wm2-pas" aria-label="Moins"
             onPointerDown={() => demarrerPas(-1)}
             onPointerUp={arreterPas} onPointerLeave={arreterPas} onPointerCancel={arreterPas}
-          >&#8722;</button>
+          ><svg viewBox="0 0 24 24"><path d="M5.5 12h13" /></svg></button>
 
           {manuel ? (
             <div class="wm2-valeur wm2-valeur--champ">
@@ -199,7 +199,7 @@ export function WeightModal({ fermer }) {
             class="wm2-pas" aria-label="Plus"
             onPointerDown={() => demarrerPas(1)}
             onPointerUp={arreterPas} onPointerLeave={arreterPas} onPointerCancel={arreterPas}
-          >+</button>
+          ><svg viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13" /></svg></button>
         </div>
 
         <div class="wm2-delta-zone">
