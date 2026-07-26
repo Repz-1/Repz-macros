@@ -357,7 +357,7 @@ export function Questionnaire() {
       setCalcul(1);
       const debut = Date.now();
       const it = setInterval(() => {
-        const p = Math.min(300, Math.round((Date.now() - debut) / 11.5));
+        const p = Math.min(300, Math.round((Date.now() - debut) / 17));
         setCalcul(p);
         if (p >= 300) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 420); }
       }, 40);
@@ -497,6 +497,7 @@ export function Questionnaire() {
 
         {rg && (
           <Reglette
+            key={etape}
             min={rg.min} max={rg.max} pas={rg.pas} unite={rg.unite} px={rg.px}
             valeur={reponses[etape] ?? rg.defaut}
             onChange={(v) => setReponses(r => ({ ...r, [etape]: v }))}
