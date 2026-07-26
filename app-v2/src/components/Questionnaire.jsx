@@ -357,9 +357,9 @@ export function Questionnaire() {
       setCalcul(1);
       const debut = Date.now();
       const it = setInterval(() => {
-        const p = Math.min(400, Math.round((Date.now() - debut) / 11.5));
+        const p = Math.min(300, Math.round((Date.now() - debut) / 11.5));
         setCalcul(p);
-        if (p >= 400) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 260); }
+        if (p >= 300) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 260); }
       }, 40);
       return;
     }
@@ -370,18 +370,16 @@ export function Questionnaire() {
 
   // ---------- Cinematique ----------
   if (calcul > 0) {
-    // L'arc qui se remplit est TOUJOURS or ; a chaque fin de tour,
-    // l'anneau complet prend sa couleur : noir, rouge, jaune — et le
-    // 4e tour, rempli d'or, amene le resultat (correction Raci).
-    const FINS = ['#1F1F1F', '#DE2F14', '#F7B500'];
-    const tour = Math.min(3, Math.floor((calcul - 1) / 100));
+    // 3 tours (Raci) : l'arc or repeint l'anneau, qui devient NOIR a
+    // la fin du 1er tour, JAUNE au 2e, ROUGE au 3e — puis le resultat.
+    const FINS = ['#1F1F1F', '#F7B500'];
+    const tour = Math.min(2, Math.floor((calcul - 1) / 100));
     const dansTour = calcul - tour * 100;
     const piste = tour === 0 ? '#EFEBE2' : FINS[tour - 1];
     const TEXTES = [
       'Analyse de tes réponses…',
       'Choix du programme adapté…',
       'Calage de tes temps de repos…',
-      'Derniers réglages…',
     ];
     const R = 62, C = 2 * Math.PI * R;
     return (
@@ -401,7 +399,7 @@ export function Questionnaire() {
                 stroke-linecap="round" transform="rotate(-90 75 75)"
                 stroke-dasharray={`${(dansTour / 100 * C).toFixed(1)} ${C.toFixed(1)}`} />
             </svg>
-            <div class="qz-calc-pct">{Math.round(calcul / 4)}<span>%</span></div>
+            <div class="qz-calc-pct">{Math.round(calcul / 3)}<span>%</span></div>
           </div>
           <div class="qz-calc-txt">{TEXTES[tour]}</div>
 
