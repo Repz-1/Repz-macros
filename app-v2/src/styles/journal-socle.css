@@ -2315,3 +2315,62 @@
   width:52px; padding:2px 5px; border:1px solid #ECE8DF; border-radius:7px;
   font:inherit; font-size:12.5px; text-align:right; background:#fff;
 }
+
+/* ============================================================
+   MODAL DE PESEE — langage maquette (carte blanche, balance
+   trait noir + plateaux dores, grand champ, pilule noire)
+   ============================================================ */
+.modal.wm { padding: 22px 20px 18px; border-radius: 24px; }
+.modal.wm .wm-tete { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; }
+.modal.wm .wm-ic { flex: none; color: #181818; display: flex; }
+.modal.wm .wm-ic svg {
+  width: 27px; height: 27px;
+  fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.modal.wm .wm-titre { margin: 0; font-size: 18.5px; font-weight: 800; color: #191919; letter-spacing: -.01em; }
+
+/* Grand champ : le chiffre est la vedette, l'unite integree */
+.modal.wm .wm-saisie {
+  display: flex; align-items: baseline; justify-content: center; gap: 8px;
+  background: #FBF7F0; border: 1.5px solid #EFE7D8; border-radius: 18px;
+  padding: 14px 16px;
+}
+.modal.wm .wm-saisie:focus-within { border-color: #E0A21C; box-shadow: 0 0 0 3px rgba(224, 162, 28, .15); }
+.modal.wm .wm-saisie input {
+  width: 130px; border: none; background: none; padding: 0; margin: 0;
+  font-family: inherit; font-size: 40px; font-weight: 800; color: #191919;
+  text-align: right; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.modal.wm .wm-saisie input:focus { outline: none; }
+.modal.wm .wm-saisie input::placeholder { color: #D8D2C6; }
+/* Les fleches de champ nombre gachent le grand chiffre */
+.modal.wm .wm-saisie input::-webkit-outer-spin-button,
+.modal.wm .wm-saisie input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.modal.wm .wm-saisie input[type="number"] { -moz-appearance: textfield; }
+.modal.wm .wm-unite { font-size: 19px; font-weight: 700; color: #8A8580; }
+
+.modal.wm .wm-prec {
+  text-align: center; font-size: 13.5px; font-weight: 500; color: #6B6763;
+  margin-top: 12px;
+}
+.modal.wm .wm-prec b { color: #191919; font-weight: 800; }
+.modal.wm .wm-delta { margin-left: 8px; font-weight: 800; }
+.modal.wm .wm-delta.baisse { color: #2E7D4F; }
+.modal.wm .wm-delta.hausse { color: #191919; }
+
+.modal.wm .wm-btns { display: flex; gap: 10px; margin-top: 20px; }
+.modal.wm .wm-annuler {
+  flex: 1; padding: 14px; border-radius: 999px;
+  background: none; border: none; color: #8A8580;
+  font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.modal.wm .wm-annuler:active { background: #F5F2EC; }
+.modal.wm .wm-ok {
+  flex: 1.6; display: flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 14px; border-radius: 999px;
+  background: #141414; border: none; color: #fff;
+  font-family: inherit; font-size: 15.5px; font-weight: 700; cursor: pointer;
+}
+.modal.wm .wm-ok svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.modal.wm .wm-ok:active { transform: scale(.99); opacity: .92; }

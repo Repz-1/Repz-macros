@@ -140,19 +140,56 @@ export function WeightModal({ fermer }) {
     fermer();
   };
 
+  // Delta en direct face a la derniere pesee : le retour visuel qui
+  // donne envie d'encoder (vert = descend, encre = monte, gris = egal).
+  const v = parseFloat(String(val).replace(',', '.'));
+  const delta = last && !isNaN(v) && v > 0 ? +(v - parseFloat(last)).toFixed(1) : null;
+
   return (
     <div class="modal-overlay show" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
-      <div class="modal">
-        <h3 class="modal-h3-ic">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M6 6h12M6 6l-3 7a3 3 0 0 0 6 0L6 6zM18 6l-3 7a3 3 0 0 0 6 0l-3-7zM9 21h6M12 6v15" /></svg>
-          {' '}<span>{t('wm_title')}</span>
-        </h3>
-        <label>{t('weight_kg')}</label>
-        <input type="number" step="0.1" placeholder="kg" inputMode="decimal" value={val} onInput={(e) => setVal(e.target.value)} />
-        {last ? <div class="wm-last">{t('prev_weight')} : <b>{last} kg</b></div> : null}
-        <div class="modal-btns">
-          <button class="modal-cancel" onClick={fermer}>{t('cancel')}</button>
-          <button class="modal-save" onClick={enregistrer}>{t('save')}</button>
+      <div class="modal wm">
+        <div class="wm-tete">
+          <span class="wm-ic">
+            <svg viewBox="0 0 24 24">
+              <defs>
+                <linearGradient id="wmOr" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFDF8E" />
+                  <stop offset="100%" stop-color="#F0A90A" />
+                </linearGradient>
+              </defs>
+              <path d="M4 12a3 3 0 006 0z" fill="url(#wmOr)" stroke="none" />
+              <path d="M14 12a3 3 0 006 0z" fill="url(#wmOr)" stroke="none" />
+              <path d="M12 3.5v2M7 5.5h10M7 5.5l-3 6.5a3 3 0 006 0L7 5.5zM17 5.5l-3 6.5a3 3 0 006 0l-3-6.5zM9 20.5h6M12 5.5v15" />
+            </svg>
+          </span>
+          <h3 class="wm-titre">{t('wm_title')}</h3>
+        </div>
+
+        <div class="wm-saisie">
+          <input
+            type="number" step="0.1" min="0" placeholder="0,0" inputMode="decimal"
+            value={val} onInput={(e) => setVal(e.target.value)} autoFocus
+          />
+          <span class="wm-unite">kg</span>
+        </div>
+
+        {last ? (
+          <div class="wm-prec">
+            {t('prev_weight')} : <b>{last} kg</b>
+            {delta !== null && delta !== 0 && (
+              <span class={'wm-delta' + (delta < 0 ? ' baisse' : ' hausse')}>
+                {delta > 0 ? '+' : '\u2212'}{Math.abs(delta).toFixed(1)} kg
+              </span>
+            )}
+          </div>
+        ) : null}
+
+        <div class="wm-btns">
+          <button class="wm-annuler" onClick={fermer}>{t('cancel')}</button>
+          <button class="wm-ok" onClick={enregistrer}>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M8.5 12.5l2.5 2.5 4.5-5" /></svg>
+            {t('save')}
+          </button>
         </div>
       </div>
     </div>
