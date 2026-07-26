@@ -15,7 +15,7 @@ const ETAPES = [
   'objectif', 'niveau', 'zones',
   'taille', 'poids', 'age',
   'lieu', 'materiel',
-  'frequence', 'duree',
+  'frequence', 'duree', 'repos',
 ];
 
 // Etapes a reglette (taille / poids / age) : bornes et unite
@@ -45,7 +45,7 @@ const QUESTIONS = {
     o: [
       { v: 'masse', l: 'Prendre du muscle', n: 'Gagner en volume et en force' },
       { v: 'seche', l: 'Perdre du poids', n: 'Réduire la masse grasse' },
-      { v: 'forme', l: 'Me remettre en forme', n: 'Reprendre en douceur' },
+      { v: 'forme', l: 'Maintien', n: 'Rester en forme et entretenir' },
     ],
   },
   zones: {
@@ -104,12 +104,18 @@ const QUESTIONS = {
   },
   duree: {
     t: 'Combien de temps par séance ?',
-    s: 'On calera tes temps de repos pour que tu tiennes cette durée.',
+    s: 'Hors cardio : ce temps ne compte que la musculation.',
     o: [
-      { v: 'court', l: 'Environ 30 minutes' },
-      { v: 'moyen', l: '45 à 60 minutes' },
-      { v: 'long', l: 'Plus d\u2019une heure' },
+      { v: '30-45', l: '30 à 45 minutes' },
+      { v: '45-60', l: '45 à 60 minutes' },
+      { v: '60-75', l: '60 à 75 minutes' },
+      { v: '75-90', l: '75 à 90 minutes' },
     ],
+  },
+  repos: {
+    t: 'Tes temps de repos',
+    s: 'Les repères qui font tenir ta séance dans le temps choisi. Un chrono de repos est intégré à tes séances.',
+    o: [],
   },
 };
 
@@ -181,12 +187,12 @@ function recommander({ objectif, niveau, frequence }) {
 function conseilsPersonnels(r) {
   const out = [];
 
-  if (r.duree === 'court') {
-    out.push("Pour tenir tes 30 minutes, garde 45 à 60 secondes de repos entre les séries et enchaîne deux exercices d\u2019affilée quand tu peux. Le chrono de l\u2019app t\u2019aide à ne pas déborder.");
-  } else if (r.duree === 'moyen') {
-    out.push("Sur 45 à 60 minutes, vise environ 90 secondes de repos entre les séries, un peu plus sur les mouvements lourds. Lance le chrono à chaque fin de série.");
-  } else if (r.duree === 'long') {
-    out.push("Tu as le temps de bien récupérer : 2 à 3 minutes sur les gros mouvements (squat, développé, soulevé de terre), 60 à 90 secondes sur le reste.");
+  if (r.duree === '30-45') {
+    out.push("Pour tenir 30 à 45 minutes, garde 45 secondes de repos sur les exercices légers et enchaîne deux exercices d\u2019affilée quand tu peux. Le chrono de l\u2019app t\u2019aide à ne pas déborder.");
+  } else if (r.duree === '45-60') {
+    out.push("Sur 45 à 60 minutes, vise 1 min 15 de repos sur l\u2019isolation et 2 minutes sur les exercices classiques. Lance le chrono à chaque fin de série.");
+  } else if (r.duree === '60-75' || r.duree === '75-90') {
+    out.push("Tu as le temps de bien récupérer : 3 minutes sur les mouvements lourds (squat, développé, soulevé de terre), 2 minutes sur les classiques, 1 min 15 sur l\u2019isolation.");
   }
 
   const age = Number(r.age) || 0;
@@ -251,14 +257,14 @@ function Reglette({ min, max, pas, valeur, unite, onChange }) {
     const el = piste.current;
     if (!el) return;
     synchro.current = true;
-    el.scrollLeft = (valeur - min) * PX;
+    el.scrollTop = (valeur - min) * PX;
     const t = setTimeout(() => { synchro.current = false; }, 80);
     return () => clearTimeout(t);
   }, []);
 
   const surDefile = () => {
     if (synchro.current || !piste.current) return;
-    const brut = min + piste.current.scrollLeft / PX;
+    const brut = min + piste.current.scrollTop / PX;
     const v = Math.round(brut / pas) * pas;
     onChange(Math.min(max, Math.max(min, Math.round(v * 10) / 10)));
   };
@@ -269,7 +275,7 @@ function Reglette({ min, max, pas, valeur, unite, onChange }) {
     if (!isNaN(v) && v >= min && v <= max) {
       onChange(v);
       const el = piste.current;
-      if (el) { synchro.current = true; el.scrollLeft = (v - min) * PX; setTimeout(() => { synchro.current = false; }, 80); }
+      if (el) { synchro.current = true; el.scrollTop = (v - min) * PX; setTimeout(() => { synchro.current = false; }, 80); }
     }
   };
 
@@ -289,14 +295,15 @@ function Reglette({ min, max, pas, valeur, unite, onChange }) {
       ) : (
         <button class="rg-val" onClick={() => { setTexte(String(valeur)); setManuel(true); }}>
           {String(valeur).replace('.', ',')}<span>{unite}</span>
+          <i class="rg-astuce">Touche le chiffre pour le taper</i>
         </button>
       )}
       <div class="rg-zone">
         <div class="rg-aiguille" />
         <div class="rg-piste" ref={piste} onScroll={surDefile}>
-          <div class="rg-ruban" style={{ width: (max - min) * PX + 'px' }}>
+          <div class="rg-ruban" style={{ height: (max - min) * PX + 'px' }}>
             {reperes.map(k => (
-              <span key={k} class="rg-rep" style={{ left: (k - min) * PX + 'px' }}>{k}</span>
+              <span key={k} class="rg-rep" style={{ top: (k - min) * PX + 'px' }}>{k}</span>
             ))}
           </div>
         </div>
@@ -314,7 +321,8 @@ export function Questionnaire() {
   const pct = surResultat ? 100 : ((i + 1) / total) * 100;
 
   const valeur = reponses[etape];
-  const repondu = REGLETTES[etape] ? true : (MULTI[etape] ? (valeur || []).length > 0 : !!valeur);
+  const repondu = (REGLETTES[etape] || etape === 'repos') ? true
+    : (MULTI[etape] ? (valeur || []).length > 0 : !!valeur);
 
   const choisir = (v) => {
     if (etape === 'lieu') {
@@ -335,9 +343,48 @@ export function Questionnaire() {
   };
   const estChoisi = (v) => (MULTI[etape] ? (valeur || []).includes(v) : valeur === v);
 
-  const suivant = () => setI(x => x + 1);
+  const [calcul, setCalcul] = useState(0);   // 0 = non, 1..100 = %
+  const suivant = () => {
+    if (i === total - 1) {
+      // Cinematique avant le resultat : progression reguliere,
+      // textes decrivant ce que le code fait reellement.
+      setCalcul(1);
+      const debut = Date.now();
+      const it = setInterval(() => {
+        const p = Math.min(100, Math.round((Date.now() - debut) / 26));
+        setCalcul(p);
+        if (p >= 100) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 240); }
+      }, 40);
+      return;
+    }
+    setI(x => x + 1);
+  };
   const retour = () => { if (i === 0) retourEntrainer(); else setI(x => x - 1); };
   const refaire = () => { setReponses({ materiel: [] }); setI(0); };
+
+  // ---------- Cinematique ----------
+  if (calcul > 0) {
+    const texte = calcul < 34 ? 'Analyse de tes réponses…'
+      : calcul < 67 ? 'Choix du programme adapté…'
+      : 'Calage de tes temps de repos…';
+    const R = 62, C = 2 * Math.PI * R;
+    return (
+      <div class="qz qz--calc">
+        <div class="qz-calc">
+          <div class="qz-calc-anneau">
+            <svg viewBox="0 0 150 150">
+              <circle cx="75" cy="75" r={R} fill="none" stroke="#EFEBE2" stroke-width="9" />
+              <circle cx="75" cy="75" r={R} fill="none" stroke="#E0A21C" stroke-width="9"
+                stroke-linecap="round" transform="rotate(-90 75 75)"
+                stroke-dasharray={`${(calcul / 100 * C).toFixed(1)} ${C.toFixed(1)}`} />
+            </svg>
+            <div class="qz-calc-pct">{calcul}<span>%</span></div>
+          </div>
+          <div class="qz-calc-txt">{texte}</div>
+        </div>
+      </div>
+    );
+  }
 
   // ---------- Resultat ----------
   if (surResultat) {
@@ -345,9 +392,8 @@ export function Questionnaire() {
     const prog = programmeParId(progId);
     const perso = conseilsPersonnels(reponses);
     const objTxt = reponses.objectif === 'masse' ? 'prendre du muscle'
-      : (reponses.objectif === 'seche' ? 'perdre du poids' : 'te remettre en forme');
-    const dureeTxt = reponses.duree === 'court' ? 'en séances courtes'
-      : reponses.duree === 'long' ? 'en séances longues' : 'en séances d\u2019environ une heure';
+      : (reponses.objectif === 'seche' ? 'perdre du poids' : 'maintenir ta forme');
+    const dureeTxt = 'en séances de ' + String(reponses.duree || '45-60').replace('-', ' à ') + ' minutes';
 
     return (
       <div class="qz">
@@ -406,6 +452,9 @@ export function Questionnaire() {
   // ---------- Questions ----------
   const rg = REGLETTES[etape];
   const q = rg ? { t: rg.t, s: rg.s, o: [] } : QUESTIONS[etape];
+  // La duree ideale depend de l'objectif (table de Raci) :
+  // masse -> 60-75 ; seche et maintien -> 45-60.
+  const dureeIdeale = reponses.objectif === 'masse' ? '60-75' : '45-60';
   return (
     <div class="qz">
       <div class="qz-haut">
@@ -428,7 +477,17 @@ export function Questionnaire() {
           />
         )}
 
-        {!rg && <div class="qz-options">
+        {etape === 'repos' && (
+          <div class="qz-repos">
+            <div class="qz-rep-l"><b>45 s</b><span>Circuits, abdominaux, exercices légers</span></div>
+            <div class="qz-rep-l"><b>1 min 15</b><span>Exercices d\u2019isolation</span></div>
+            <div class="qz-rep-l"><b>2 min</b><span>Exercices classiques</span></div>
+            <div class="qz-rep-l"><b>3 min</b><span>Exercices lourds</span></div>
+            <div class="qz-rep-note">Le chrono de repos est intégré : tu le lances d\u2019un geste à la fin de chaque série.</div>
+          </div>
+        )}
+
+        {!rg && etape !== 'repos' && <div class="qz-options">
           {q.o.map(o => (
             <button
               key={o.v}
@@ -436,7 +495,9 @@ export function Questionnaire() {
               onClick={() => choisir(o.v)}
             >
               <span class="qz-opt-tx">
-                <span class="qz-opt-lb">{o.l}</span>
+                <span class="qz-opt-lb">{o.l}
+                  {etape === 'duree' && o.v === dureeIdeale && <i class="qz-ideal">Idéal pour ton objectif</i>}
+                </span>
                 {o.n && <span class="qz-opt-note">{o.n}</span>}
               </span>
               <span class="qz-rond">
