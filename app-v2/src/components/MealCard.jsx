@@ -367,7 +367,7 @@ export function MealCard({ r }) {
     <div class="mc">
       <div class="mc-tete" onClick={() => { if (!edite) repasOuvertId.value = r.id; }}>
 
-        <div class="mc-vignette" dangerouslySetInnerHTML={{ __html: illustration(r) }} />
+        <div class={'mc-vignette' + (r.cle ? ' mc-vignette--' + r.cle : '')} dangerouslySetInnerHTML={{ __html: illustration(r) }} />
 
         <div class="mc-info">
           {edite ? (

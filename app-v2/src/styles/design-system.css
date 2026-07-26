@@ -30,9 +30,12 @@
   --or-pale: #FFF4CC;           /* fond d'icone */
   --or-creme: #FFFBEF;          /* degrade de carte */
 
-  --proteines: #1F1F1F;
-  --glucides: #F5A800;
-  --lipides: #DE2F14;
+  /* Trio colore (25/07, passe couleur du journal) : les teintes de la
+     page repas — or / bleu / orange — remplacent noir / or / rouge.
+     Le bleu apporte la couleur qui manquait a la page. */
+  --proteines: #E6B02A;
+  --glucides: #448EF1;
+  --lipides: #EF6327;
 
   --hydratation: #0EA5E9;
   --hydratation-active: #0284C7;

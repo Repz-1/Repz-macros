@@ -300,6 +300,11 @@
 .pg-journal .cal-macro-piste {
   height: 7px; background: var(--mac-piste); border-radius: 6px; overflow: hidden;
 }
+/* Chaque piste porte un souffle de sa couleur : la carte est coloree
+   des le matin, meme avant la premiere bouchee. */
+.pg-journal .cal-macro:nth-child(1) .cal-macro-piste { background: #F8EFD8; }
+.pg-journal .cal-macro:nth-child(2) .cal-macro-piste { background: #E3EDFC; }
+.pg-journal .cal-macro:nth-child(3) .cal-macro-piste { background: #FDE9DF; }
 .pg-journal .cal-macro-jauge {
   height: 100%; border-radius: 6px;
   transition: width 400ms ease, background 300ms ease;
@@ -464,6 +469,13 @@
 .pg-journal .mc-vignette {
   width: 58px; height: 58px; border-radius: 16px;
   background: #F2EFE9;
+}
+/* Teinte par repas : ambre / peche / lavande / menthe */
+.pg-journal .mc-vignette--pdej  { background: #FDF3D9; }
+.pg-journal .mc-vignette--dej   { background: #FDE8D6; }
+.pg-journal .mc-vignette--diner { background: #E9EDFB; }
+.pg-journal .mc-vignette--snack { background: #E7F4EA; }
+.pg-journal .mc-vignette {
   display: flex; align-items: center; justify-content: center;
   font-size: 30px; flex-shrink: 0;
 }
