@@ -132,43 +132,30 @@ export function WeightModal({ fermer }) {
   const l = weightLog.value || [];
   const last = l.length ? parseFloat(poidsDe([...l].sort((a, b) => a.iso.localeCompare(b.iso))[l.length - 1])) : null;
 
-  // La regle : 30 -> 250 kg, 7 px par 0,1 kg. La valeur = position de
-  // l'aiguille centrale. On demarre sur la derniere pesee (ou 80).
-  const MIN = 30, MAX = 150, PX = 70;               // px par kg (plafond 150 kg)
-  const [val, setVal] = useState(Math.min(150, last || 80));
-  const [manuel, setManuel] = useState(false);   // saisie clavier
+  const MIN = 30, MAX = 150;
+  const borne = (v) => Math.min(MAX, Math.max(MIN, Math.round(v * 10) / 10));
+  const [val, setVal] = useState(borne(last || 80));
+  const [manuel, setManuel] = useState(false);
   const [texte, setTexte] = useState('');
-  const piste = useRef(null);
-  const synchro = useRef(false);
+  const repete = useRef(null);
 
-  // Positionne la regle sur une valeur donnee (apres saisie manuelle)
-  const calerRegle = (v) => {
-    const el = piste.current;
-    if (!el) return;
-    synchro.current = true;
-    el.scrollLeft = (v - MIN) * PX;
-    setTimeout(() => { synchro.current = false; }, 80);
+  // Appui long : premiere marche tout de suite, puis repetition rapide.
+  const demarrerPas = (sens) => {
+    setVal(v => borne(v + sens * 0.1));
+    let delai = setTimeout(function tourne() {
+      setVal(v => borne(v + sens * 0.1));
+      delai = setTimeout(tourne, 70);
+      repete.current = delai;
+    }, 420);
+    repete.current = delai;
   };
+  const arreterPas = () => { clearTimeout(repete.current); repete.current = null; };
+  useEffect(() => () => clearTimeout(repete.current), []);
 
   const validerManuel = () => {
-    const v = Math.round(parseFloat(String(texte).replace(',', '.')) * 10) / 10;
+    const v = parseFloat(String(texte).replace(',', '.'));
     setManuel(false);
-    if (!isNaN(v) && v >= MIN && v <= MAX) { setVal(v); calerRegle(v); }
-  };
-
-  useEffect(() => {
-    const el = piste.current;
-    if (!el) return;
-    synchro.current = true;
-    el.scrollLeft = ((last || 80) - MIN) * PX;
-    const fin = setTimeout(() => { synchro.current = false; }, 80);
-    return () => clearTimeout(fin);
-  }, []);
-
-  const surDefile = () => {
-    if (synchro.current || !piste.current) return;
-    const v = Math.round((MIN + piste.current.scrollLeft / PX) * 10) / 10;
-    setVal(Math.min(MAX, Math.max(MIN, v)));
+    if (!isNaN(v)) setVal(borne(v));
   };
 
   const enregistrer = () => {
@@ -179,49 +166,48 @@ export function WeightModal({ fermer }) {
 
   const delta = last !== null ? +(val - last).toFixed(1) : null;
 
-  // Graduations : un repere chiffre par kilo entier.
-  const reperes = [];
-  for (let k = MIN; k <= MAX; k++) reperes.push(k);
-
   return (
     <div class="modal-overlay show wm2-voile" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
       <div class="wm2">
         <div class="wm2-poignee" />
 
-        {manuel ? (
-          <div class="wm2-valeur wm2-valeur--champ">
-            <input
-              type="number" inputMode="decimal" step="0.1" min={MIN} max={MAX}
-              value={texte} autoFocus
-              onInput={(e) => setTexte(e.currentTarget.value)}
-              onBlur={validerManuel}
-              onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
-            /><span>kg</span>
-          </div>
-        ) : (
-          <button class="wm2-valeur wm2-valeur--btn"
-            onClick={() => { setTexte(val.toFixed(1)); setManuel(true); }}>
-            {val.toFixed(1).replace('.', ',')}<span>kg</span>
-            <svg class="wm2-crayon" viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z" /></svg>
-          </button>
-        )}
+        <div class="wm2-rang">
+          <button
+            class="wm2-pas" aria-label="Moins"
+            onPointerDown={() => demarrerPas(-1)}
+            onPointerUp={arreterPas} onPointerLeave={arreterPas} onPointerCancel={arreterPas}
+          >&#8722;</button>
+
+          {manuel ? (
+            <div class="wm2-valeur wm2-valeur--champ">
+              <input
+                type="number" inputMode="decimal" step="0.1" min={MIN} max={MAX}
+                value={texte} autoFocus
+                onInput={(e) => setTexte(e.currentTarget.value)}
+                onBlur={validerManuel}
+                onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+              />
+            </div>
+          ) : (
+            <button class="wm2-valeur wm2-valeur--btn"
+              onClick={() => { setTexte(val.toFixed(1)); setManuel(true); }}>
+              {val.toFixed(1).replace('.', ',')}<span>kg</span>
+            </button>
+          )}
+
+          <button
+            class="wm2-pas" aria-label="Plus"
+            onPointerDown={() => demarrerPas(1)}
+            onPointerUp={arreterPas} onPointerLeave={arreterPas} onPointerCancel={arreterPas}
+          >+</button>
+        </div>
+
         <div class="wm2-delta-zone">
           {delta !== null && delta !== 0 ? (
             <span class={'wm2-delta' + (delta < 0 ? ' baisse' : ' hausse')}>
               {delta > 0 ? '+' : '\u2212'}{Math.abs(delta).toFixed(1)} kg {t('wm2_depuis')}
             </span>
           ) : <span class="wm2-delta neutre">{last !== null ? t('wm2_pareil') : '\u00a0'}</span>}
-        </div>
-
-        <div class="wm2-regle">
-          <div class="wm2-aiguille" />
-          <div class="wm2-piste" ref={piste} onScroll={surDefile}>
-            <div class="wm2-ruban" style={{ width: (MAX - MIN) * PX + 'px' }}>
-              {reperes.map(k => (
-                <span key={k} class="wm2-repere" style={{ left: (k - MIN) * PX + 'px' }}>{k}</span>
-              ))}
-            </div>
-          </div>
         </div>
 
         <button class="wm2-ok" onClick={enregistrer}>{t('save')}</button>
