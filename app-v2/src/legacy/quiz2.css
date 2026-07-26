@@ -159,3 +159,62 @@
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 800;
 }
+
+/* ============================================================
+   REGLETTE GRADUEE (taille / poids / age)
+   Meme principe que la pesee : on fait glisser sous l'aiguille,
+   et le chiffre reste tapable au clavier.
+   ============================================================ */
+.rg { margin-top: 30px; }
+.rg-val {
+  display: block; width: 100%; background: none; border: none; padding: 0;
+  font-family: inherit; font-size: 46px; font-weight: 800; color: #181818;
+  letter-spacing: -.03em; text-align: center; cursor: pointer;
+  font-variant-numeric: tabular-nums; line-height: 1;
+}
+.rg-val span {
+  font-size: 15px; font-weight: 700; color: #B5B0A4;
+  letter-spacing: .04em; text-transform: uppercase; margin-left: 6px;
+}
+.rg-val--champ input {
+  width: 170px; border: none; background: #FAF8F3; border-radius: 14px;
+  padding: 4px 10px; font-family: inherit; font-size: 40px; font-weight: 800;
+  color: #181818; text-align: center; letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums; box-shadow: 0 0 0 2.5px rgba(224, 162, 28, .45);
+}
+.rg-val--champ { text-align: center; }
+.rg-val--champ input:focus { outline: none; }
+.rg-val--champ input::-webkit-outer-spin-button,
+.rg-val--champ input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.rg-zone { position: relative; height: 86px; margin: 18px -20px 0; }
+.rg-aiguille {
+  position: absolute; left: 50%; top: 4px; bottom: 24px; width: 3px;
+  transform: translateX(-50%); background: #E0A21C; border-radius: 3px;
+  z-index: 2; pointer-events: none;
+}
+.rg-aiguille::before {
+  content: ''; position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: #E0A21C; border-bottom: none;
+}
+.rg-piste {
+  position: absolute; inset: 0; overflow-x: auto; overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 50vw;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+}
+.rg-piste::-webkit-scrollbar { display: none; }
+.rg-ruban {
+  position: relative; height: 100%;
+  background:
+    repeating-linear-gradient(90deg, #DDD7CA 0 1.5px, transparent 1.5px 12px),
+    repeating-linear-gradient(90deg, #A9A49C 0 2px, transparent 2px 60px);
+  background-size: 100% 22px, 100% 38px;
+  background-position: 0 12px, 0 4px;
+  background-repeat: no-repeat;
+}
+.rg-rep {
+  position: absolute; top: 48px; transform: translateX(-50%);
+  font-size: 12.5px; font-weight: 700; color: #8A8580;
+  font-variant-numeric: tabular-nums;
+}

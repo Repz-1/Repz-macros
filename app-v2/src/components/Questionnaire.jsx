@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState, useRef, useEffect } from 'preact/hooks';
 import { programmeParId } from '../data/programmes.js';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import '../legacy/quiz2.css';
@@ -11,22 +11,34 @@ import '../legacy/quiz2.css';
 // supplementaires composent le paragraphe de conseil du coach.
 // ============================================================
 
-const ETAPES = ['age', 'objectif', 'materiel', 'niveau', 'frequence', 'duree', 'priorite'];
+const ETAPES = [
+  'objectif', 'niveau', 'zones',
+  'taille', 'poids', 'age',
+  'lieu', 'materiel',
+  'frequence', 'duree',
+];
 
-const MULTI = { materiel: true };                    // cases a cocher
-const EXCLUSIF = { materiel: ['salle', 'aucun'] };   // cocher -> seul
+// Etapes a reglette (taille / poids / age) : bornes et unite
+const REGLETTES = {
+  taille: { min: 120, max: 220, pas: 1, unite: 'cm', defaut: 175,
+            t: 'Quelle est ta taille ?', s: 'Sert à estimer tes besoins caloriques.' },
+  poids:  { min: 35, max: 200, pas: 0.5, unite: 'kg', defaut: 75,
+            t: 'Quel est ton poids ?', s: 'Ton point de départ, rien de plus.' },
+  age:    { min: 14, max: 90, pas: 1, unite: 'ans', defaut: 30,
+            t: 'Quel âge as-tu ?', s: 'La récupération change avec l\u2019âge : les conseils s\u2019adaptent.' },
+};
+
+// Equipements pre-coches selon le lieu choisi
+const EQUIP_PAR_LIEU = {
+  'grande-salle': ['barre', 'halteres', 'machine', 'poulie', 'banc', 'traction'],
+  'petite-salle': ['halteres', 'machine', 'banc'],
+  'maison':       ['halteres', 'elastiques'],
+  'exterieur':    ['traction'],
+};
+
+const MULTI = { materiel: true, zones: true };       // cases a cocher
 
 const QUESTIONS = {
-  age: {
-    t: 'Quel âge as-tu ?',
-    s: 'La récupération change avec l\u2019âge : les conseils s\u2019adaptent.',
-    o: [
-      { v: '-25', l: 'Moins de 25 ans' },
-      { v: '25-34', l: '25 à 34 ans' },
-      { v: '35-44', l: '35 à 44 ans' },
-      { v: '45+', l: '45 ans et plus' },
-    ],
-  },
   objectif: {
     t: 'Ton objectif ?',
     s: 'Ce que tu veux atteindre en priorité dans les prochains mois.',
@@ -36,24 +48,50 @@ const QUESTIONS = {
       { v: 'forme', l: 'Me remettre en forme', n: 'Reprendre en douceur' },
     ],
   },
-  materiel: {
-    t: 'Quel matériel as-tu ?',
-    s: 'Plusieurs réponses possibles. Ton programme n\u2019utilisera que ça.',
+  zones: {
+    t: 'Quelles zones veux-tu travailler ?',
+    s: 'Plusieurs réponses possibles. On y mettra plus de volume.',
     o: [
-      { v: 'salle', l: 'Salle de sport complète', n: 'Machines, barres, haltères' },
-      { v: 'halteres', l: 'Haltères', n: 'À la maison' },
+      { v: 'pecs', l: 'Pectoraux' },
+      { v: 'dos', l: 'Dos' },
+      { v: 'epaules', l: 'Épaules' },
+      { v: 'bras', l: 'Bras', n: 'Biceps et triceps' },
+      { v: 'jambes', l: 'Jambes', n: 'Cuisses, fessiers, mollets' },
+      { v: 'abdos', l: 'Abdominaux' },
+      { v: 'tout', l: 'Tout le corps', n: 'Aucune zone privilégiée' },
+    ],
+  },
+  lieu: {
+    t: 'Où t\u2019entraînes-tu ?',
+    s: 'On présélectionnera le matériel correspondant à l\u2019étape suivante.',
+    o: [
+      { v: 'grande-salle', l: 'Grande salle de sport', n: 'Racks, barres, haltères, machines' },
+      { v: 'petite-salle', l: 'Petite salle', n: 'Quelques machines et haltères' },
+      { v: 'maison', l: 'À la maison', n: 'Ce que tu as chez toi' },
+      { v: 'exterieur', l: 'Dehors', n: 'Parc, aire de street workout' },
+    ],
+  },
+  materiel: {
+    t: 'Ton matériel',
+    s: 'Présélectionné selon ton lieu. Décoche ce que tu n\u2019as pas.',
+    o: [
+      { v: 'barre', l: 'Barre et disques' },
+      { v: 'halteres', l: 'Haltères' },
+      { v: 'machine', l: 'Machines guidées' },
+      { v: 'poulie', l: 'Poulies / câbles' },
+      { v: 'banc', l: 'Banc' },
+      { v: 'traction', l: 'Barre de traction' },
       { v: 'elastiques', l: 'Élastiques' },
-      { v: 'banc', l: 'Banc de musculation' },
-      { v: 'aucun', l: 'Rien du tout', n: 'Poids du corps uniquement' },
+      { v: 'kettlebell', l: 'Kettlebells' },
     ],
   },
   niveau: {
     t: 'Ton niveau ?',
     s: 'Sois honnête : un programme trop dur est un programme abandonné.',
     o: [
-      { v: 'debutant', l: 'Débutant', n: 'Moins d\u2019un an de pratique' },
-      { v: 'intermediaire', l: 'Intermédiaire', n: 'Un à trois ans' },
-      { v: 'confirme', l: 'Confirmé', n: 'Plus de trois ans' },
+      { v: 'debutant', l: 'Je débute', n: 'Jamais ou presque' },
+      { v: 'intermediaire', l: 'Je m\u2019entraîne de temps en temps', n: 'Sans vraie régularité' },
+      { v: 'confirme', l: 'Je m\u2019entraîne régulièrement', n: 'Depuis plus d\u2019un an' },
     ],
   },
   frequence: {
@@ -71,15 +109,6 @@ const QUESTIONS = {
       { v: 'court', l: 'Environ 30 minutes' },
       { v: 'moyen', l: '45 à 60 minutes' },
       { v: 'long', l: 'Plus d\u2019une heure' },
-    ],
-  },
-  priorite: {
-    t: 'Une partie à privilégier ?',
-    s: 'On mettra un peu plus de volume sur cette zone.',
-    o: [
-      { v: 'haut', l: 'Le haut du corps', n: 'Pectoraux, dos, épaules, bras' },
-      { v: 'bas', l: 'Le bas du corps', n: 'Jambes, fessiers' },
-      { v: 'equilibre', l: 'Tout de façon équilibrée' },
     ],
   },
 };
@@ -160,31 +189,42 @@ function conseilsPersonnels(r) {
     out.push("Tu as le temps de bien récupérer : 2 à 3 minutes sur les gros mouvements (squat, développé, soulevé de terre), 60 à 90 secondes sur le reste.");
   }
 
-  if (r.age === '45+') {
+  const age = Number(r.age) || 0;
+  if (age >= 45) {
     out.push("Passé 45 ans, l\u2019échauffement n\u2019est pas optionnel : 8 à 10 minutes avant de charger, et garde un jour de repos entre deux séances lourdes. Tes épaules et tes genoux te remercieront.");
-  } else if (r.age === '35-44') {
+  } else if (age >= 35) {
     out.push("Entre 35 et 44 ans, la récupération reste bonne mais l\u2019échauffement devient important : cinq minutes avant de charger, et surveille ton sommeil.");
-  } else if (r.age === '-25') {
+  } else if (age > 0 && age < 25) {
     out.push("À ton âge la récupération est excellente : tu peux tenir une fréquence élevée. Le vrai risque, c\u2019est la technique bâclée pour charger plus vite — ne brûle pas les étapes.");
   }
 
   const m = r.materiel || [];
-  if (m.includes('aucun')) {
+  if (m.length === 0) {
     out.push("Au poids du corps, la progression passe par la difficulté du mouvement et le tempo plutôt que par la charge : ralentis la descente, resserre les appuis, augmente les répétitions.");
-  } else if (!m.includes('salle')) {
-    const dispo = [];
-    if (m.includes('halteres')) dispo.push('des haltères');
-    if (m.includes('elastiques')) dispo.push('des élastiques');
-    if (m.includes('banc')) dispo.push('un banc');
+  } else if (!m.includes('machine') && !m.includes('poulie')) {
+    const noms = { barre: 'une barre', halteres: 'des haltères', banc: 'un banc',
+                   traction: 'une barre de traction', elastiques: 'des élastiques',
+                   kettlebell: 'des kettlebells' };
+    const dispo = m.map(x => noms[x]).filter(Boolean);
     if (dispo.length) {
-      out.push(`Avec ${dispo.join(' et ')}, tu couvres l\u2019essentiel. Quand un exercice du programme demande une machine, remplace-le par la variante libre équivalente.`);
+      out.push(`Avec ${dispo.join(', ')}, tu couvres l\u2019essentiel. Quand un exercice demande une machine, remplace-le par la variante libre équivalente.`);
     }
   }
 
-  if (r.priorite === 'haut') {
-    out.push("Tu privilégies le haut du corps : ajoute une série sur les exercices de pectoraux, dos et épaules, sans supprimer les jambes — elles soutiennent toute ta progression.");
-  } else if (r.priorite === 'bas') {
-    out.push("Tu privilégies le bas du corps : ajoute une série sur les squats, fentes et soulevés. Garde au moins un tirage et une poussée pour le haut du corps.");
+  const z = (r.zones || []).filter(x => x !== 'tout');
+  if (z.length) {
+    const noms = { pecs: 'les pectoraux', dos: 'le dos', epaules: 'les épaules',
+                   bras: 'les bras', jambes: 'les jambes', abdos: 'les abdominaux' };
+    const liste = z.map(x => noms[x]).filter(Boolean);
+    out.push(`Tu vises ${liste.join(', ')} : ajoute une série sur ces exercices-là. Ne supprime pas le reste pour autant — un corps déséquilibré progresse moins vite et se blesse plus.`);
+  }
+
+  // IMC : on le calcule sans en faire un jugement (pas de fourchette
+  // conseillee, decision produit de Raci).
+  const t = Number(r.taille) || 0, p = Number(r.poids) || 0;
+  if (t > 100 && p > 20) {
+    const kcal = Math.round((10 * p + 6.25 * t - 5 * (Number(r.age) || 30) + 5) * 1.5);
+    out.push(`À titre indicatif, ton métabolisme et ton niveau d\u2019activité situent tes besoins autour de ${kcal} kcal par jour. Le calculateur du journal affine ce chiffre.`);
   }
 
   if (r.frequence === '7') {
@@ -194,8 +234,79 @@ function conseilsPersonnels(r) {
   return out;
 }
 
+
+/**
+ * Reglette graduee horizontale : on fait glisser sous l'aiguille.
+ * Sert pour la taille, le poids et l'age. La valeur est aussi
+ * tapable au clavier (appui sur le chiffre).
+ */
+function Reglette({ min, max, pas, valeur, unite, onChange }) {
+  const PX = 60;                                  // px par unite entiere
+  const piste = useRef(null);
+  const synchro = useRef(false);
+  const [manuel, setManuel] = useState(false);
+  const [texte, setTexte] = useState('');
+
+  useEffect(() => {
+    const el = piste.current;
+    if (!el) return;
+    synchro.current = true;
+    el.scrollLeft = (valeur - min) * PX;
+    const t = setTimeout(() => { synchro.current = false; }, 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  const surDefile = () => {
+    if (synchro.current || !piste.current) return;
+    const brut = min + piste.current.scrollLeft / PX;
+    const v = Math.round(brut / pas) * pas;
+    onChange(Math.min(max, Math.max(min, Math.round(v * 10) / 10)));
+  };
+
+  const validerManuel = () => {
+    const v = parseFloat(String(texte).replace(',', '.'));
+    setManuel(false);
+    if (!isNaN(v) && v >= min && v <= max) {
+      onChange(v);
+      const el = piste.current;
+      if (el) { synchro.current = true; el.scrollLeft = (v - min) * PX; setTimeout(() => { synchro.current = false; }, 80); }
+    }
+  };
+
+  const reperes = [];
+  for (let k = Math.ceil(min); k <= max; k++) reperes.push(k);
+
+  return (
+    <div class="rg">
+      {manuel ? (
+        <div class="rg-val rg-val--champ">
+          <input type="number" inputMode="decimal" step={pas} min={min} max={max}
+            value={texte} autoFocus
+            onInput={(e) => setTexte(e.currentTarget.value)}
+            onBlur={validerManuel}
+            onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
+        </div>
+      ) : (
+        <button class="rg-val" onClick={() => { setTexte(String(valeur)); setManuel(true); }}>
+          {String(valeur).replace('.', ',')}<span>{unite}</span>
+        </button>
+      )}
+      <div class="rg-zone">
+        <div class="rg-aiguille" />
+        <div class="rg-piste" ref={piste} onScroll={surDefile}>
+          <div class="rg-ruban" style={{ width: (max - min) * PX + 'px' }}>
+            {reperes.map(k => (
+              <span key={k} class="rg-rep" style={{ left: (k - min) * PX + 'px' }}>{k}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Questionnaire() {
-  const [reponses, setReponses] = useState({ materiel: [] });
+  const [reponses, setReponses] = useState({ materiel: [], zones: [], taille: 175, poids: 75, age: 30 });
   const [i, setI] = useState(0);
   const total = ETAPES.length;
   const surResultat = i >= total;
@@ -203,13 +314,18 @@ export function Questionnaire() {
   const pct = surResultat ? 100 : ((i + 1) / total) * 100;
 
   const valeur = reponses[etape];
-  const repondu = MULTI[etape] ? (valeur || []).length > 0 : !!valeur;
+  const repondu = REGLETTES[etape] ? true : (MULTI[etape] ? (valeur || []).length > 0 : !!valeur);
 
   const choisir = (v) => {
+    if (etape === 'lieu') {
+      // Le lieu presele le materiel : l'utilisateur n'a plus qu'a decocher.
+      setReponses(r => ({ ...r, lieu: v, materiel: [...(EQUIP_PAR_LIEU[v] || [])] }));
+      return;
+    }
     if (!MULTI[etape]) { setReponses(r => ({ ...r, [etape]: v })); return; }
     setReponses(r => {
       const liste = r[etape] || [];
-      const excl = EXCLUSIF[etape] || [];
+      const excl = etape === 'zones' ? ['tout'] : [];
       let suite;
       if (liste.includes(v)) suite = liste.filter(x => x !== v);
       else if (excl.includes(v)) suite = [v];
@@ -288,7 +404,8 @@ export function Questionnaire() {
   }
 
   // ---------- Questions ----------
-  const q = QUESTIONS[etape];
+  const rg = REGLETTES[etape];
+  const q = rg ? { t: rg.t, s: rg.s, o: [] } : QUESTIONS[etape];
   return (
     <div class="qz">
       <div class="qz-haut">
@@ -303,7 +420,15 @@ export function Questionnaire() {
         <h1 class="qz-titre">{q.t}</h1>
         <p class="qz-sous">{q.s}</p>
 
-        <div class="qz-options">
+        {rg && (
+          <Reglette
+            min={rg.min} max={rg.max} pas={rg.pas} unite={rg.unite}
+            valeur={reponses[etape] ?? rg.defaut}
+            onChange={(v) => setReponses(r => ({ ...r, [etape]: v }))}
+          />
+        )}
+
+        {!rg && <div class="qz-options">
           {q.o.map(o => (
             <button
               key={o.v}
@@ -319,7 +444,7 @@ export function Questionnaire() {
               </span>
             </button>
           ))}
-        </div>
+        </div>}
       </div>
 
       <div class="qz-pied">
