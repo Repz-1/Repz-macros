@@ -22,7 +22,7 @@ const ETAPES = [
 const REGLETTES = {
   taille: { min: 120, max: 220, pas: 1, unite: 'cm', defaut: 175,
             t: 'Quelle est ta taille ?', s: 'Sert à estimer tes besoins caloriques.' },
-  poids:  { min: 35, max: 200, pas: 0.5, unite: 'kg', defaut: 75,
+  poids:  { min: 35, max: 200, pas: 0.1, px: 110, unite: 'kg', defaut: 75,
             t: 'Quel est ton poids ?', s: 'Ton point de départ, rien de plus.' },
   age:    { min: 14, max: 90, pas: 1, unite: 'ans', defaut: 30,
             t: 'Quel âge as-tu ?', s: 'La récupération change avec l\u2019âge : les conseils s\u2019adaptent.' },
@@ -246,8 +246,8 @@ function conseilsPersonnels(r) {
  * Sert pour la taille, le poids et l'age. La valeur est aussi
  * tapable au clavier (appui sur le chiffre).
  */
-function Reglette({ min, max, pas, valeur, unite, onChange }) {
-  const PX = 60;                                  // px par unite entiere
+function Reglette({ min, max, pas, valeur, unite, onChange, px }) {
+  const PX = px || 60;                            // px par unite entiere
   const piste = useRef(null);
   const synchro = useRef(false);
   const [manuel, setManuel] = useState(false);
@@ -348,12 +348,14 @@ export function Questionnaire() {
     if (i === total - 1) {
       // Cinematique avant le resultat : progression reguliere,
       // textes decrivant ce que le code fait reellement.
+      // 4 tours d'anneau (demande Raci) : noir, rouge, jaune, dore —
+      // le B tricolore puis l'or. ~0,9 s par tour.
       setCalcul(1);
       const debut = Date.now();
       const it = setInterval(() => {
-        const p = Math.min(100, Math.round((Date.now() - debut) / 26));
+        const p = Math.min(400, Math.round((Date.now() - debut) / 9));
         setCalcul(p);
-        if (p >= 100) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 240); }
+        if (p >= 400) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 260); }
       }, 40);
       return;
     }
@@ -364,23 +366,38 @@ export function Questionnaire() {
 
   // ---------- Cinematique ----------
   if (calcul > 0) {
-    const texte = calcul < 34 ? 'Analyse de tes réponses…'
-      : calcul < 67 ? 'Choix du programme adapté…'
-      : 'Calage de tes temps de repos…';
+    // 4 tours : chaque tour a sa couleur, et la piste garde la couleur
+    // du tour precedent — noir, rouge, jaune, puis or en degrade.
+    const TOURS = ['#1F1F1F', '#DE2F14', '#F7B500', 'url(#qzOr)'];
+    const tour = Math.min(3, Math.floor((calcul - 1) / 100));
+    const dansTour = calcul - tour * 100;
+    const TEXTES = [
+      'Analyse de tes réponses…',
+      'Choix du programme adapté…',
+      'Calage de tes temps de repos…',
+      'Derniers réglages…',
+    ];
     const R = 62, C = 2 * Math.PI * R;
     return (
       <div class="qz qz--calc">
         <div class="qz-calc">
           <div class="qz-calc-anneau">
             <svg viewBox="0 0 150 150">
-              <circle cx="75" cy="75" r={R} fill="none" stroke="#EFEBE2" stroke-width="9" />
-              <circle cx="75" cy="75" r={R} fill="none" stroke="#E0A21C" stroke-width="9"
+              <defs>
+                <linearGradient id="qzOr" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#FFC93C" />
+                  <stop offset="100%" stop-color="#E19609" />
+                </linearGradient>
+              </defs>
+              <circle cx="75" cy="75" r={R} fill="none"
+                stroke={tour === 0 ? '#EFEBE2' : TOURS[tour - 1]} stroke-width="9" />
+              <circle cx="75" cy="75" r={R} fill="none" stroke={TOURS[tour]} stroke-width="9"
                 stroke-linecap="round" transform="rotate(-90 75 75)"
-                stroke-dasharray={`${(calcul / 100 * C).toFixed(1)} ${C.toFixed(1)}`} />
+                stroke-dasharray={`${(dansTour / 100 * C).toFixed(1)} ${C.toFixed(1)}`} />
             </svg>
-            <div class="qz-calc-pct">{calcul}<span>%</span></div>
+            <div class="qz-calc-pct">{Math.round(calcul / 4)}<span>%</span></div>
           </div>
-          <div class="qz-calc-txt">{texte}</div>
+          <div class="qz-calc-txt">{TEXTES[tour]}</div>
         </div>
       </div>
     );
@@ -471,7 +488,7 @@ export function Questionnaire() {
 
         {rg && (
           <Reglette
-            min={rg.min} max={rg.max} pas={rg.pas} unite={rg.unite}
+            min={rg.min} max={rg.max} pas={rg.pas} unite={rg.unite} px={rg.px}
             valeur={reponses[etape] ?? rg.defaut}
             onChange={(v) => setReponses(r => ({ ...r, [etape]: v }))}
           />

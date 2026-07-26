@@ -213,22 +213,14 @@ export function Entrainer() {
   const [jourOuvert, setJourOuvert] = useState(null);
   const [premium, setPremium] = useState(false);
 
-  // Les programmes prets sont OFFERTS pendant la fenetre decouverte de
-  // 7 jours (meme mecanisme que le detail nutritionnel), puis Premium.
-  // Le programme SUR MESURE, lui, reste Premium des le premier jour.
-  const accesProgs = estPremium.value || enDecouverte.value;
-  const verrou = (e, dest) => {
-    e.preventDefault();
-    if (!estPremium.value) { setPremium(true); return; }
-    allerVers(dest);
-  };
-  const verrouProgs = (e, dest) => {
-    e.preventDefault();
-    if (!accesProgs) { setPremium(true); return; }
-    allerVers(dest);
-  };
-  const locked = estPremium.value ? '' : ' locked';
-  const lockedProgs = accesProgs ? '' : ' locked';
+  // DECISION RACI (26/07) : la partie entrainement est GRATUITE en
+  // entier — questionnaire, programmes, seances. Les anciens verrous
+  // (Premium jour 1 sur le sur-mesure, fenetre decouverte sur les
+  // programmes) sont leves ; le Premium reste sur la nutrition.
+  const verrou = (e, dest) => { e.preventDefault(); allerVers(dest); };
+  const verrouProgs = verrou;
+  const locked = '';
+  const lockedProgs = '';
 
   return (
     <div class="pg-entrainer">
@@ -241,7 +233,7 @@ export function Entrainer() {
         {/* Carte vedette : programme sur mesure (Premium) */}
         <a href="#" class={'choice ph featured' + locked} style="background-image:url('/img/card-creer.jpg')"
           onClick={(e) => verrou(e, 'questionnaire')}>
-          {!estPremium.value && <span class="pro-badge">✦ PRO</span>}
+
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z" /></svg></span>
           <span class="badge">{t('tr_badge_custom')}</span>
           <h3>{t('tr_create_title')}</h3>
@@ -261,7 +253,7 @@ export function Entrainer() {
         {/* Mes programmes (Premium) */}
         <a href="#" class={'choice ph sm' + lockedProgs} style="background-image:url('/img/card-programmes.jpg')"
           onClick={(e) => verrouProgs(e, 'programmes')}>
-          {!accesProgs && <span class="pro-badge">✦ PRO</span>}
+
           <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5" /><path d="M3.5 9h17M8 2.5v4M16 2.5v4" /></svg></span>
           <h3>{t('tr_progs_title')}</h3>
           <p>{t('tr_progs_sub')}</p>
