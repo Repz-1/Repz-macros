@@ -305,7 +305,12 @@ function Reglette({ min, max, pas, valeur, unite, onChange, px }) {
       <div class="rg-zone">
         <div class="rg-aiguille" />
         <div class="rg-piste" ref={piste} onScroll={surDefile}>
-          <div class="rg-ruban" style={{ height: (max - min) * PX + 'px' }}>
+          <div class="rg-ruban" style={{
+            height: (max - min) * PX + 'px',
+            backgroundImage:
+              `repeating-linear-gradient(180deg, #DDD7CA 0 1.5px, transparent 1.5px ${pas < 1 ? PX * pas : PX / 5}px), `
+              + `repeating-linear-gradient(180deg, #A9A49C 0 2px, transparent 2px ${PX}px)`,
+          }}>
             {reperes.map(k => (
               <span key={k} class="rg-rep" style={{ top: (k - min) * PX + 'px' }}>{k}</span>
             ))}

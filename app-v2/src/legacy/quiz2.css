@@ -284,9 +284,8 @@
 .rg-piste::-webkit-scrollbar { display: none; }
 .rg-ruban {
   position: relative; width: 100%;
-  background:
-    repeating-linear-gradient(180deg, #DDD7CA 0 1.5px, transparent 1.5px 12px),
-    repeating-linear-gradient(180deg, #A9A49C 0 2px, transparent 2px 60px);
+  /* L'image des graduations est calculee par le composant selon
+     l'echelle du curseur ; ici seulement largeur et position. */
   background-size: 26% 100%, 40% 100%;
   background-position: 30% 0, 23% 0;
   background-repeat: no-repeat;
