@@ -326,6 +326,13 @@
 /* Zone d'action de la carte : la pilule « Repas intelligent » y est
    centree, avec la meme respiration que l'ancienne action secondaire. */
 .pg-journal .cal-action { display: flex; justify-content: center; margin: 16px 0 2px; }
+/* Dans la carte, la largeur utile tombe a ~320px : sans resserrage le
+   libelle passait sur deux lignes. Une pilule ne se casse jamais. */
+.pg-journal .cal-action .eat-toggle {
+  width: 100%; max-width: 100%; gap: 6px; padding: 11px 13px; white-space: nowrap;
+}
+.pg-journal .cal-action .eat-toggle > span { white-space: nowrap; }
+.pg-journal .cal-action .eat-etat { font-size: 11px; }
 
 /* ---------- Chargement ---------- */
 .pg-journal .cal--chargement .cal-num,
@@ -796,31 +803,31 @@
    Mesures relevees sur la reference.
    ============================================================ */
 .pg-journal .eat-panneau {
-  background: #FDF4F8;
-  border: 1.5px solid #F3D9E7;
+  background: #F8F6FD;
+  border: 1.5px solid #E4DDF4;
   border-radius: 18px;
-  box-shadow: 0 6px 18px rgba(160, 60, 110, .08);
+  box-shadow: 0 6px 18px rgba(90, 62, 150, .08);
   padding: 16px 14px 18px;
   text-align: left;
 }
 .pg-journal .eat-intro {
-  font-size: 13.5px; color: #7A5C6B; margin: 0 0 14px;
+  font-size: 13.5px; color: #675A7D; margin: 0 0 14px;
 }
-.pg-journal .eat-intro b { color: #DB2777; font-size: 15px; }
+.pg-journal .eat-intro b { color: #6B4FA8; font-size: 15px; }
 
 .pg-journal .eat-cats {
   display: grid; grid-template-columns: repeat(2, 1fr);
   gap: 10px; margin-bottom: 14px;
 }
 .pg-journal .eat-cat {
-  background: #FFFFFF; border: 1.5px solid #F3D9E7; color: #1A1A1A;
+  background: #FFFFFF; border: 1.5px solid #E4DDF4; color: #1A1A1A;
   padding: 13px; border-radius: 12px;
   font-size: 14px; font-weight: 700; font-family: inherit;
   cursor: pointer; transition: all .12s;
 }
 .pg-journal .eat-cat.active,
 .pg-journal .eat-cat:active {
-  background: #FCE7F3; border-color: #DB2777; color: #BE185D;
+  background: #EDE7FA; border-color: #7E62BD; color: #5E3F9E;
 }
 
 /* ---------- Cartes de recettes ---------- */
@@ -836,42 +843,42 @@
 }
 .pg-journal .eat-nav button {
   background: none; border: none; cursor: pointer; font-family: inherit;
-  font-size: 13px; font-weight: 800; color: #BE185D;
+  font-size: 13px; font-weight: 800; color: #5E3F9E;
   padding: 8px 4px; white-space: nowrap;
   transition: opacity var(--transition);
 }
 .pg-journal .eat-nav button:active { opacity: .6; }
-.pg-journal .eat-nav button:disabled { color: #D9C2CE; cursor: default; }
+.pg-journal .eat-nav button:disabled { color: #C6BDD8; cursor: default; }
 .pg-journal .eat-compteur {
-  font-size: 12px; font-weight: 700; color: #B79AA8; flex: none;
+  font-size: 12px; font-weight: 700; color: #A79BBB; flex: none;
 }
 
 .pg-journal .eat-idea {
   background: #FFFFFF;
-  border: 1px solid #F3D9E7;
-  border-left: 4px solid #DB2777;      /* la barre rose de la reference */
+  border: 1px solid #E4DDF4;
+  border-left: 4px solid #7E62BD;      /* meme violet que la pilule qui l'ouvre */
   border-radius: 14px;
   padding: 15px 16px;
-  box-shadow: 0 3px 10px rgba(160, 60, 110, .05);
+  box-shadow: 0 3px 10px rgba(90, 62, 150, .05);
   cursor: pointer;
 }
 .pg-journal .eat-idea-name {
   font-size: 15px; font-weight: 800; color: #1A1A1A; line-height: 1.3;
 }
 .pg-journal .eat-idea-ex {
-  font-size: 12.5px; color: #8A7480; margin-top: 5px; line-height: 1.45;
+  font-size: 12.5px; color: #7C7189; margin-top: 5px; line-height: 1.45;
 }
 .pg-journal .eat-idea-kcal {
   display: inline-block; margin-top: 9px;
-  background: #FCE7F3; color: #BE185D;
+  background: #EDE7FA; color: #5E3F9E;
   font-size: 12px; font-weight: 800;
   padding: 3px 10px; border-radius: 20px;
 }
 .pg-journal .eat-prot { font-weight: 700; }
-.pg-journal .eat-prot.ok { color: #8F6200; }
+.pg-journal .eat-prot.ok { color: #5E3F9E; }
 .pg-journal .eat-open {
   display: block; text-align: right; margin-top: 8px;
-  font-size: 12.5px; font-weight: 800; color: #DFA004;
+  font-size: 12.5px; font-weight: 800; color: #7E62BD;
 }
 
 /* ============================================================
