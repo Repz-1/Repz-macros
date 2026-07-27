@@ -535,7 +535,9 @@
   bottom: calc(var(--hauteur-nav) + 14px + env(safe-area-inset-bottom));
   left: 12px; right: 12px;
   max-width: 448px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  /* Le bouton jaune « Ajouter » ayant quitte la rangee (Raci), la goutte
+     est seule : space-between n'avait plus de sens, elle se cale a gauche. */
+  display: flex; align-items: center; justify-content: flex-start; gap: 10px;
   pointer-events: none;
 }
 .pg-journal .fab-rangee > * { pointer-events: auto; }
