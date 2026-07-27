@@ -7,7 +7,7 @@ import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
 import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
-import { DayDashboard } from './components/DayDashboard.jsx';
+import { DayDashboard, ouvrirCalcDemande } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
@@ -40,6 +40,9 @@ import { MesPlats } from './components/MesPlats.jsx';
 function OngletJournal() {
   const [modale, setModale] = useState(false);
   const [calc, setCalc] = useState(false);
+  // Le rappel de recalcul (carte Calories) demande l'ouverture par signal :
+  // le composant ne possede pas l'etat de la modale, main.jsx si.
+  if (ouvrirCalcDemande.value) { ouvrirCalcDemande.value = false; setCalc(true); }
   const [vocal, setVocal] = useState(false);
   const [photo, setPhoto] = useState(false);
   // Colonne unique, ordre de lecture descendant :

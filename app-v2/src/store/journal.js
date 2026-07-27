@@ -38,6 +38,9 @@ export const dateJour = signal(aujourdhui());
 // sans lui, un compte gratuit resterait fige sur les objectifs par defaut.
 // Une fois consomme, le recalcul devient une fonction Premium.
 export const calculBaseFait = signal(false);
+// Poids (kg) saisi lors du dernier calcul de besoins : sert au rappel
+// « ton objectif date de X kg » quand le poids reel s'en eloigne.
+export const poidsCalcul = signal(null);
 
 function aujourdhui() { return new Date().toISOString().slice(0, 10); }
 
@@ -57,6 +60,7 @@ effect(() => {
     eau.value = d && typeof d.eau === 'number' ? d.eau : 0;
     dateJour.value = (d && d.dateJour) || aujourdhui();
     calculBaseFait.value = !!(d && d.calculBaseFait);
+    poidsCalcul.value = (d && typeof d.poidsCalcul === 'number') ? d.poidsCalcul : null;
     basculerSiJourChange();
     donneesPretes.value = true;
   });
@@ -101,7 +105,7 @@ function migrerRepas(liste) {
 
 // --- Sauvegarde automatique par compte : local immediat + cloud differe. ---
 effect(() => {
-  const instantane = { repas: repas.value, objectifs: objectifs.value, eau: eau.value, dateJour: dateJour.value, calculBaseFait: calculBaseFait.value };
+  const instantane = { repas: repas.value, objectifs: objectifs.value, eau: eau.value, dateJour: dateJour.value, calculBaseFait: calculBaseFait.value, poidsCalcul: poidsCalcul.value };
   const u = identite.value;
   if (!u || !donneesPretes.value) return; // ne pas ecraser avant le chargement
   sauvegarder(u, instantane);

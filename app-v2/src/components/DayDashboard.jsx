@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { objectifs, totauxJour, kcalRestantes, donneesPretes } from '../store/journal.js';
+import { signal } from '@preact/signals';
+
+// Demande d'ouverture du calculateur emise par la carte (rappel de
+// recalcul) ; consommee par main.jsx qui possede l'etat de la modale.
+export const ouvrirCalcDemande = signal(false);
+import { objectifs, totauxJour, kcalRestantes, donneesPretes, poidsCalcul } from '../store/journal.js';
+import { weightLog } from '../store/stats.js';
+import { estPremium } from './PremiumPage.jsx';
+import { ongletActif } from './BottomNav.jsx';
 import { IdeesRepas } from './IdeesRepas.jsx';
 import { t } from '../i18n/index.js';
 
@@ -207,9 +215,48 @@ export function DayDashboard() {
           remplace l'ancien « Commencer une nouvelle journee », desormais
           automatique au changement de date. La pilule seule vit ici ; le
           panneau deplie s'ouvre sous la carte (etat partage par signal). */}
+      <RappelRecalcul />
+
       <div class="cal-action">
         <IdeesRepas pilulSeule />
       </div>
     </section>
+  );
+}
+
+// ============================================================
+// RAPPEL DE RECALCUL
+// L'objectif a ete calcule pour un certain poids ; quand la derniere
+// pesee s'en eloigne d'au moins 3 kg, l'objectif est perime et on le
+// dit — au bon moment, dans la carte que l'utilisateur regarde deja.
+// Premium : ouvre le calculateur. Gratuit : c'est LE moment de vente,
+// le besoin est reel et demontre par ses propres donnees.
+// ============================================================
+const SEUIL_RECALCUL_KG = 3;
+
+function RappelRecalcul() {
+  const base = poidsCalcul.value;
+  const log = weightLog.value;
+  if (!base || !log.length) return null;
+  const actuel = log[log.length - 1].weight;
+  const ecart = Math.abs(actuel - base);
+  if (ecart < SEUIL_RECALCUL_KG) return null;
+
+  const aller = () => {
+    if (estPremium.value) { ouvrirCalcDemande.value = true; }
+    else { ongletActif.value = 'premium'; }
+  };
+  return (
+    <button class="cal-rappel" onClick={aller}>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 12a9 9 0 0115.5-6.2M21 12a9 9 0 01-15.5 6.2" />
+        <path d="M18.5 3v3h-3M5.5 21v-3h3" />
+      </svg>
+      <span>
+        {t('recalc_hint')
+          .replace('{avant}', Math.round(base))
+          .replace('{maintenant}', Math.round(actuel))}
+      </span>
+    </button>
   );
 }

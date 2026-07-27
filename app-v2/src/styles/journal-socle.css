@@ -323,6 +323,23 @@
   color: var(--texte-2); background: rgba(0, 0, 0, .03); transform: scale(.98);
 }
 
+/* Rappel de recalcul : discret mais present, entre les macros et la
+   pilule. Or BELFIT — c'est une action de l'app, pas de l'IA. */
+.pg-journal .cal-rappel {
+  display: flex; align-items: flex-start; gap: 8px;
+  width: 100%; margin: 14px 0 0; padding: 10px 12px;
+  background: #FDF6E4; border: 1px solid #F2E2B6; border-radius: 12px;
+  cursor: pointer; font-family: inherit; text-align: left;
+  font-size: 12.5px; font-weight: 600; color: #8F6200; line-height: 1.45;
+  transition: background var(--transition), transform var(--transition);
+}
+.pg-journal .cal-rappel:active { background: #FBEFCB; transform: scale(.99); }
+.pg-journal .cal-rappel svg {
+  width: 15px; height: 15px; flex: none; margin-top: 1px;
+  fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
 /* Zone d'action de la carte : la pilule « Repas intelligent » y est
    centree, avec la meme respiration que l'ancienne action secondaire. */
 .pg-journal .cal-action { display: flex; justify-content: center; margin: 16px 0 2px; }
