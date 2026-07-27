@@ -43,8 +43,10 @@ export function ajouterPesee(kg) {
     .sort((a, b) => a.iso.localeCompare(b.iso));
 }
 
-export function enregistrerJour(totaux) {
-  const iso = new Date().toISOString().slice(0, 10);
+export function enregistrerJour(totaux, isoForce) {
+  // isoForce : utilise par la bascule automatique de journee, qui archive
+  // la journee ECOULEE (donc pas la date du jour).
+  const iso = isoForce || new Date().toISOString().slice(0, 10);
   histoJours.value = { ...histoJours.value, [iso]: {
     kcal: Math.round(totaux.kcal), prot: Math.round(totaux.prot),
     carbs: Math.round(totaux.carbs), lip: Math.round(totaux.lip),

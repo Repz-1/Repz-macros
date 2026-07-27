@@ -2,6 +2,7 @@ import { signal, computed, effect } from '@preact/signals';
 import { macrosOf } from '../data/aliments.js';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
+import { enregistrerJour } from './stats.js';
 
 // ============================================================
 // STORE DU JOURNAL v2
@@ -28,6 +29,13 @@ export const objectifs = signal(structuredClone(DEFAUTS.objectifs));
 export const eau = signal(0);
 export const donneesPretes = signal(false);
 
+// Date (ISO) de la journee actuellement affichee. Sert a la bascule
+// automatique : le bouton « Commencer une nouvelle journee » a ete retire,
+// c'est donc le changement de date qui archive et remet a zero.
+export const dateJour = signal(aujourdhui());
+
+function aujourdhui() { return new Date().toISOString().slice(0, 10); }
+
 // --- Chargement par compte : quand l'utilisateur change (connexion),
 // on charge SES donnees (cloud d'abord, local en secours). ---
 let uidCharge = null;
@@ -42,6 +50,8 @@ effect(() => {
     repas.value = migrerRepas(d && d.repas ? d.repas : structuredClone(DEFAUTS.repas));
     objectifs.value = d && d.objectifs ? d.objectifs : structuredClone(DEFAUTS.objectifs);
     eau.value = d && typeof d.eau === 'number' ? d.eau : 0;
+    dateJour.value = (d && d.dateJour) || aujourdhui();
+    basculerSiJourChange();
     donneesPretes.value = true;
   });
 });
@@ -85,7 +95,7 @@ function migrerRepas(liste) {
 
 // --- Sauvegarde automatique par compte : local immediat + cloud differe. ---
 effect(() => {
-  const instantane = { repas: repas.value, objectifs: objectifs.value, eau: eau.value };
+  const instantane = { repas: repas.value, objectifs: objectifs.value, eau: eau.value, dateJour: dateJour.value };
   const u = identite.value;
   if (!u || !donneesPretes.value) return; // ne pas ecraser avant le chargement
   sauvegarder(u, instantane);
@@ -204,6 +214,28 @@ export function renommerRepas(repasId, nom) {
 export function nouvelleJournee() {
   repas.value = structuredClone(DEFAUTS.repas);
   eau.value = 0;
+  dateJour.value = aujourdhui();
+}
+
+// Bascule automatique : si la journee chargee n'est pas celle d'aujourd'hui,
+// on l'archive dans l'historique des stats SOUS SA PROPRE DATE, puis on
+// repart a zero. Une journee vide n'est pas archivee (pas de faux 0 kcal
+// dans les stats). Appelee au chargement et au retour en avant-plan.
+export function basculerSiJourChange() {
+  const veille = dateJour.value;
+  if (veille === aujourdhui()) return false;
+  const t = totauxJour.value;
+  if (t.kcal > 0) enregistrerJour(t, veille);
+  nouvelleJournee();
+  return true;
+}
+
+// L'app reste ouverte des jours en PWA : on revalide la date a chaque
+// retour en avant-plan, sinon la journee de la veille resterait affichee.
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && donneesPretes.value) basculerSiJourChange();
+  });
 }
 
 export function ajouterEau(litres) {

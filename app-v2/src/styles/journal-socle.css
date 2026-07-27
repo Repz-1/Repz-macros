@@ -323,6 +323,10 @@
   color: var(--texte-2); background: rgba(0, 0, 0, .03); transform: scale(.98);
 }
 
+/* Zone d'action de la carte : la pilule « Repas intelligent » y est
+   centree, avec la meme respiration que l'ancienne action secondaire. */
+.pg-journal .cal-action { display: flex; justify-content: center; margin: 16px 0 2px; }
+
 /* ---------- Chargement ---------- */
 .pg-journal .cal--chargement .cal-num,
 .pg-journal .cal--chargement .cal-cote-val { opacity: .35; }

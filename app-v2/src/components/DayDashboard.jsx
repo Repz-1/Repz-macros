@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { objectifs, totauxJour, kcalRestantes, nouvelleJournee, donneesPretes } from '../store/journal.js';
-import { enregistrerJour } from '../store/stats.js';
+import { objectifs, totauxJour, kcalRestantes, donneesPretes } from '../store/journal.js';
+import { IdeesRepas } from './IdeesRepas.jsx';
 import { t } from '../i18n/index.js';
 
 // ============================================================
@@ -203,21 +203,13 @@ export function DayDashboard() {
         <Macro nom={t('fats')}     valeur={tot.lip}   cible={obj.lip}   teinte="var(--mac-lip)" />
       </div>
 
-      {/* Action secondaire : presente mais jamais concurrente */}
-      <button class="cal-reset" onClick={() => {
-        if (!confirm(t('confirm_new_day'))) return;
-        // Comme en v1 (confirmerSaveDay) : la journee est ARCHIVEE dans
-        // l'historique des stats avant d'etre videe. Sans cela, l'ecran
-        // repartait a zero mais la page Stats ne gagnait aucun jour.
-        enregistrerJour(totauxJour.value);
-        nouvelleJournee();
-      }}>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 12a9 9 0 0115.5-6.2M21 12a9 9 0 01-15.5 6.2" />
-          <path d="M18.5 3v3h-3M5.5 21v-3h3" />
-        </svg>
-        <span>{t('new_day')}</span>
-      </button>
+      {/* Action principale du jour : « Repas intelligent » (Raci). Elle
+          remplace l'ancien « Commencer une nouvelle journee », desormais
+          automatique au changement de date. La pilule seule vit ici ; le
+          panneau deplie s'ouvre sous la carte (etat partage par signal). */}
+      <div class="cal-action">
+        <IdeesRepas pilulSeule />
+      </div>
     </section>
   );
 }
