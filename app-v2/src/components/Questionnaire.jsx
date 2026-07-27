@@ -22,7 +22,7 @@ const ETAPES = [
 const REGLETTES = {
   taille: { min: 120, max: 220, pas: 1, unite: 'cm', defaut: 175,
             t: 'Quelle est ta taille ?', s: 'Sert à estimer tes besoins caloriques.' },
-  poids:  { min: 35, max: 200, pas: 0.1, px: 110, unite: 'kg', defaut: 75,
+  poids:  { min: 35, max: 200, pas: 0.1, px: 90, unite: 'kg', defaut: 75,
             t: 'Quel est ton poids ?', s: 'Ton point de départ, rien de plus.' },
   age:    { min: 14, max: 90, pas: 1, px: 40, unite: 'ans', defaut: 30,
             t: 'Quel âge as-tu ?', s: 'La récupération change avec l\u2019âge : les conseils s\u2019adaptent.' },
