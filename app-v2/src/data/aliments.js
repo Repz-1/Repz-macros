@@ -1300,7 +1300,15 @@ export const FACTEURS_CUISSON = [
   { cle: 'legumsec', facteur: 2.4, mots: ['lentille', 'pois', 'chiche', 'haricot', 'flageolet', 'feve'] },
   { cle: 'avoine',   facteur: 3.0, mots: ['avoine', 'flocon', 'porridge'] },
   { cle: 'viande',   facteur: 0.7, mots: ['poulet', 'dinde', 'boeuf', 'porc', 'veau', 'agneau', 'steak', 'escalope', 'filet', 'saumon', 'cabillaud', 'thon', 'colin', 'merlu', 'crevette'] },
+  // « terre » plutot que « pomme » : la pomme fruit ne doit pas heriter
+  // de la bascule. 0.9 = le rapport des propres paires de la base
+  // (77 kcal crue -> 87 kcal cuite a l'eau).
+  { cle: 'pdt',      facteur: 0.9, mots: ['terre', 'patate', 'grenaille'] },
 ];
+
+// Preparations deja cuisinees : leurs valeurs valent pour le produit
+// fini, la bascule cru/cuit n'y a aucun sens (puree, frites, sautees...).
+const PREPARATIONS = new Set(['puree', 'croquette', 'sautee', 'rissolee', 'frite', 'mousline', 'chips', 'rosti', 'gratin', 'dauphinois']);
 
 /**
  * Facteur de cuisson devine a partir du nom, ou null si l'aliment
@@ -1312,6 +1320,7 @@ export function facteurCuisson(nom) {
   // Deja precise dans le nom : l'aliment porte sa propre valeur,
   // aucune conversion a proposer.
   if (mots.some(m => ['cru', 'crue', 'cuit', 'cuite'].includes(m))) return null;
+  if (mots.some(m => PREPARATIONS.has(m))) return null;
   for (const f of FACTEURS_CUISSON) {
     // Mots de moins de 3 lettres exclus du rapprochement : la taille
     // « M » d'un oeuf faisait demarrer « macaroni », d'ou une bascule
