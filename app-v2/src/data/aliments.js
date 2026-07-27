@@ -75,7 +75,7 @@ export const DB = {
     // Lipides & oléagineux
     'Huile olive':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:15.2,sel:0.01},
     'Huile colza':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:7.26,sel:0},
-    'Beurre cacahuète':{kcal:588,prot:25,carbs:20,lip:50,fibres:5,sucres:10.5,satures:10.4,sel:0.97},
+    'Beurre cacahuète':{kcal:588,prot:25,carbs:20,lip:50,fibres:5,sucres:10.5,satures:10.4,sel:0.97,cache:true}, // doublon de « Beurre de cacahuète » : garde pour les journaux existants, masque de la recherche
     'Amandes':{kcal:579,prot:21,carbs:22,lip:50,fibres:12.5,sucres:4.2,satures:4.11,sel:0.01},
     'Noix':{kcal:654,prot:15,carbs:14,lip:65,fibres:8.33,sucres:3.64,satures:6.62,sel:0},
     'Noix de cajou':{kcal:553,prot:18,carbs:30,lip:44,fibres:3.85,sucres:8.01,satures:10.5,sel:1.15},
@@ -1144,7 +1144,9 @@ export function macrosOf(ing){
 }
 
 // Liste triee des noms pour la recherche
-export const NOMS_ALIMENTS = Object.keys(DB).sort((a,b)=>a.localeCompare(b,'fr'));
+// Les entrees marquees cache:true restent resolubles (journaux et plats
+// deja enregistres) mais n'apparaissent plus dans la recherche.
+export const NOMS_ALIMENTS = Object.keys(DB).filter(n => !DB[n].cache).sort((a,b)=>a.localeCompare(b,'fr'));
 
 // ============================================================
 // DETAIL NUTRITIONNEL

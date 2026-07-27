@@ -673,8 +673,10 @@
 }
 
 .pg-journal .mc-ing-del {
-  background: none; border: none; padding: 2px; cursor: pointer;
-  color: #CBD5E1; font-size: 14px; line-height: 1; font-family: inherit;
+  background: none; border: none; cursor: pointer;
+  /* 2px de padding = cible de ~18px, sous le minimum tactile. */
+  padding: 10px; margin: -8px; border-radius: 10px;
+  color: #B9B0A3; font-size: 14px; line-height: 1; font-family: inherit;
 }
 .pg-journal .mc-ing-del:active { color: #EF4444; }
 
@@ -1735,6 +1737,7 @@
   padding: 3px 8px; font-family: inherit;
 }
 .pg-journal .rp-titre-champ:focus { outline: none; }
+.pg-journal .rp-terminer-esp { width: 44px; flex: none; } /* equilibre la fleche retour */
 .pg-journal .rp-terminer {
   background: none; border: none; cursor: pointer; padding: 6px 2px;
   font-family: inherit; font-size: 16px; font-weight: 700; color: #B7860B;
@@ -1761,7 +1764,9 @@
   letter-spacing: -.03em; font-variant-numeric: tabular-nums;
 }
 .pg-journal .rp-kcal span { font-size: 15px; font-weight: 600; color: #8A8580; letter-spacing: 0; margin-left: 3px; }
-.pg-journal .rp-reco { font-size: 13px; font-weight: 500; color: #8A8580; margin-top: 5px; min-height: 16px; line-height: 1.3; }
+.pg-journal .rp-reco { margin-top: 5px; min-height: 16px; line-height: 1.35; }
+.pg-journal .rp-reco span { display: block; font-size: 11px; font-weight: 600; color: #A39D95; text-transform: uppercase; letter-spacing: .04em; }
+.pg-journal .rp-reco b { display: block; font-size: 13px; font-weight: 700; color: #6E6961; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 /* Trio de macros, separe par un filet, avec pastille de couleur */
 .pg-journal .rp-macros {
@@ -1875,13 +1880,22 @@
 
 /* --- Quantite dans un cadre arrondi --- */
 .pg-journal .rp-liste .mc-ing-champ {
-  border: 1px solid #E9E3D9; border-radius: 12px;
-  background: #fff; padding: 3px 4px;
+  /* Le liseret fantome #E9E3D9 se fondait dans la carte : la zone ou
+     ecrire etait invisible. Bord franc, ombre interne legere, or au focus. */
+  border: 1.5px solid #D9CFBB; border-radius: 12px;
+  background: #FFFDF8; padding: 3px 4px;
+  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
+  transition: border-color .15s, box-shadow .15s;
+}
+.pg-journal .rp-liste .mc-ing-champ:focus-within {
+  border-color: var(--or); background: #FFFFFF;
+  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .04), 0 0 0 3px rgba(247, 181, 0, .14);
 }
 .pg-journal .rp-liste .mc-ing-champ input {
   font-size: 16px; font-weight: 700; text-align: center;
   padding: 7px 2px; border: none; background: transparent;
 }
+.pg-journal .rp-liste .mc-ing-champ input:focus { outline: none; border: none; background: transparent; }
 
 /* --- Carte Detail nutritionnel --- */
 .pg-journal .rp-colonne .dn {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { repas, totauxRepas, fourchetteRepas, renommerRepas } from '../store/journal.js';
+import { macrosOf } from '../data/aliments.js';
 import { enregistrerPlat } from '../store/perso.js';
 import { Recherche, LigneIngredient, repasOuvertId } from './MealCard.jsx';
 import { DetailNutritionnel } from './DetailNutritionnel.jsx';
@@ -30,6 +31,14 @@ function AnneauRepas({ kcal, cible }) {
           stroke-linecap="round"
           stroke-dasharray={`${(part * C).toFixed(1)} ${C.toFixed(1)}`}
         />
+        {/* Repere du minimum recommande : sans lui l'anneau ne dit pas
+            vers quoi il se remplit. Le maximum est la boucle complete. */}
+        {cible && cible.min > 0 && (() => {
+          const a = (cible.min / max) * 2 * Math.PI;
+          const x1 = 37 + Math.cos(a) * (R - 5), y1 = 37 + Math.sin(a) * (R - 5);
+          const x2 = 37 + Math.cos(a) * (R + 5), y2 = 37 + Math.sin(a) * (R + 5);
+          return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#B7A98C" stroke-width="2" stroke-linecap="round" />;
+        })()}
       </svg>
       <div class="rp-anneau-c"><span /></div>
     </div>
@@ -50,6 +59,15 @@ export function MealPage() {
   if (!r) return null;
 
   const tot = totauxRepas(r);
+  // Chaque ligne affiche des valeurs arrondies : l'en-tete doit etre LEUR
+  // somme, pas l'arrondi de la somme exacte, sinon 6+1+11 « fait 19 » et
+  // l'utilisateur qui verifie conclut que l'app compte mal.
+  const totAff = { kcal: 0, prot: 0, carbs: 0, lip: 0 };
+  for (const ing of r.ings) {
+    const m = macrosOf(ing);
+    totAff.kcal += Math.round(m.kcal); totAff.prot += Math.round(m.prot);
+    totAff.carbs += Math.round(m.carbs); totAff.lip += Math.round(m.lip);
+  }
   const vide = r.ings.length === 0;
   const f = fourchetteRepas(r.cle);
 
@@ -87,27 +105,28 @@ export function MealPage() {
           ) : (
             <h1 class="rp-titre" onClick={() => setEdite(true)}>{r.nom}</h1>
           )}
-          <button class="rp-terminer" onClick={() => { repasOuvertId.value = null; }}>
-            {t('rp_terminer')}
-          </button>
+          {/* Une seule sortie : la barre du bas. Un second « Terminer »
+              ici laissait croire que la fleche retour annulait quelque
+              chose — tout est sauve en continu, rien n'est annulable. */}
+          <span class="rp-terminer-esp" />
         </div>
 
         {/* Resume : total du repas + repere recommande */}
         <div class="rp-resume">
           <AnneauRepas kcal={tot.kcal} cible={f} />
           <div class="rp-resume-txt">
-            <div class="rp-kcal">{tot.kcal.toFixed(0)}<span>kcal</span></div>
-            <div class="rp-reco">{f ? `${t('mc_reco')} ${f.min}\u2013${f.max} kcal` : ' '}</div>
+            <div class="rp-kcal">{totAff.kcal}<span>kcal</span></div>
+            <div class="rp-reco">{f ? <><span>{t('mc_reco')}</span><b>{f.min}\u2013{f.max} kcal</b></> : ' '}</div>
           </div>
           <div class="rp-macros">
             <div class="rp-macro">
-              <b>{tot.prot.toFixed(0)}<i>g</i></b><em>{t('protein')}</em><s style="background:#E6B02A" />
+              <b>{totAff.prot}<i>g</i></b><em>{t('protein')}</em><s style="background:#E6B02A" />
             </div>
             <div class="rp-macro">
-              <b>{tot.carbs.toFixed(0)}<i>g</i></b><em>{t('carbs')}</em><s style="background:#448EF1" />
+              <b>{totAff.carbs}<i>g</i></b><em>{t('carbs')}</em><s style="background:#448EF1" />
             </div>
             <div class="rp-macro">
-              <b>{tot.lip.toFixed(0)}<i>g</i></b><em>{t('fat')}</em><s style="background:#EF6327" />
+              <b>{totAff.lip}<i>g</i></b><em>{t('fat')}</em><s style="background:#EF6327" />
             </div>
           </div>
         </div>
@@ -125,7 +144,7 @@ export function MealPage() {
               ))}
               <div class="rp-total">
                 <span class="rp-total-lb">{t('rp_total')}</span>
-                <span class="rp-total-val">{tot.kcal.toFixed(0)}<span>kcal</span></span>
+                <span class="rp-total-val">{totAff.kcal}<span>kcal</span></span>
               </div>
             </div>
           </div>
@@ -162,7 +181,7 @@ export function MealPage() {
                 </button>
                 <button class="rp-btn-fin" onClick={() => { repasOuvertId.value = null; }}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8.5 12.5l2.5 2.5 4.5-5" /></svg>
-                  {t('rp_enregistrer')}
+                  {t('rp_terminer')}
                 </button>
               </div>
             )}

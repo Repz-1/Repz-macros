@@ -67,7 +67,7 @@ export function DetailNutritionnel({ ings }) {
             <span class="dn-lb">{LIBELLES[k]}</span>
             {ouvert ? (
               <span class="dn-val">
-                {total[k] < 10 ? total[k].toFixed(1) : Math.round(total[k])} g
+                {total[k] < 10 ? total[k].toFixed(1).replace('.', ',') : Math.round(total[k])} g
               </span>
             ) : (
               <span class="dn-cadenas" aria-hidden="true">
