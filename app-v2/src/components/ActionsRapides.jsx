@@ -1,4 +1,5 @@
 import { estPremium } from './PremiumPage.jsx';
+import { calculBaseFait } from '../store/journal.js';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
 
@@ -22,9 +23,13 @@ const Degrade = () => (
 );
 
 export function ActionsRapides({ ouvrirCalc, ouvrirVocal, ouvrirPhoto }) {
+  // Le calculateur ne porte le badge que lorsqu'il est REELLEMENT ferme :
+  // tant que le calcul offert n'a pas ete pris, il reste gratuit.
+  const calcVerrouille = !estPremium.value && calculBaseFait.value;
   return (
     <div class="qa">
       <button class="qa-btn" onClick={ouvrirCalc}>
+        {calcVerrouille && <span class="qa-pro">PRO</span>}
         <span class="qa-ic">
           <svg viewBox="0 0 24 24" class="ic">
             <Degrade />

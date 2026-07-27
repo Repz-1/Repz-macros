@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { calculerBesoins, NIVEAUX_ACTIVITE, OBJECTIFS } from '../data/tdee.js';
-import { setObjectifs } from '../store/journal.js';
+import { setObjectifs, calculBaseFait } from '../store/journal.js';
 import { createPortal } from 'preact/compat';
 
 // Calculateur de besoins. Le resultat se recalcule a chaque frappe (pas de bouton
@@ -24,6 +24,7 @@ export function TdeeCalculator({ montre, fermer }) {
 
   const appliquer = () => {
     setObjectifs({ kcal: r.kcal, prot: r.prot, carbs: r.carbs, lip: r.lip });
+    calculBaseFait.value = true;   // le calcul offert est consomme
     setApplique(true);
     setTimeout(() => { setApplique(false); fermer(); }, 1100);
   };

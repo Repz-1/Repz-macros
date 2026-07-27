@@ -6,7 +6,7 @@ import './styles/journal-socle.css';
 import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
-import { repas, objectifs, donneesPretes } from './store/journal.js';
+import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
 import { DayDashboard } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
@@ -53,7 +53,7 @@ function OngletJournal() {
         {/* La pilule vit dans la carte Calories ; ici, uniquement le
             panneau qui se deplie, juste sous elle. */}
         <IdeesRepas panneauSeul />
-        <ActionsRapides ouvrirCalc={() => setCalc(true)} ouvrirVocal={() => setVocal(true)} ouvrirPhoto={() => { if (estPremium.value) setPhoto(true); else { ongletActif.value = 'premium'; } }} />
+        <ActionsRapides ouvrirCalc={() => { if (estPremium.value || !calculBaseFait.value) setCalc(true); else { ongletActif.value = 'premium'; } }} ouvrirVocal={() => setVocal(true)} ouvrirPhoto={() => { if (estPremium.value) setPhoto(true); else { ongletActif.value = 'premium'; } }} />
         <WeightNote />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
         {/* L'ajout d'un repas vit desormais dans le flux, sous le
