@@ -197,12 +197,6 @@
   content: ''; position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
   border: 6px solid transparent; border-top-color: #E0A21C; border-bottom: none;
 }
-.rg-piste {
-  position: absolute; inset: 0; overflow-x: auto; overflow-y: hidden;
-  -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 50vw;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-}
 .rg-piste::-webkit-scrollbar { display: none; }
 .rg-ruban {
   position: relative; height: 100%;
