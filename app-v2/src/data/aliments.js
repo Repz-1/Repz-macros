@@ -1129,6 +1129,13 @@ export const DB = {
 export function macrosOf(ing){
     const d = DB[ing.name] || (window.__customFoods && window.__customFoods[ing.name]);
     if(!d) return { kcal:0, prot:0, carbs:0, lip:0 };
+    // Aliment a l'unite (oeuf, canette, dose de whey...) : la portion
+    // COMPTE des pieces, pas des grammes — comme dans la reference v1.
+    // Une piece reste une piece cuite ou crue : pas de facteur de cuisson.
+    if (d.unit) {
+      const f = ((parseFloat(ing.portion) || 0) * d.unit) / 100;
+      return { kcal:d.kcal*f, prot:d.prot*f, carbs:d.carbs*f, lip:d.lip*f };
+    }
     // ing.cuit : la quantite pesee l'a ete apres cuisson. On ramene au
     // poids cru, seul poids auquel se rapportent les valeurs de l'etiquette.
     const abs = ing.cuit ? (facteurCuisson(ing.name) || 1) : 1;
@@ -1152,8 +1159,10 @@ export const CLES_DETAIL = ['fibres', 'sucres', 'satures', 'sel'];
 export function detailOf(ing) {
   const d = DB[ing.name] || (window.__customFoods && window.__customFoods[ing.name]);
   if (!d) return null;
-  const abs = ing.cuit ? (facteurCuisson(ing.name) || 1) : 1;
-  const f = ((parseFloat(ing.portion) || 0) / abs) / 100;
+  const abs = (!d.unit && ing.cuit) ? (facteurCuisson(ing.name) || 1) : 1;
+  const f = d.unit
+    ? ((parseFloat(ing.portion) || 0) * d.unit) / 100
+    : ((parseFloat(ing.portion) || 0) / abs) / 100;
   let renseigne = false;
   const out = {};
   for (const k of CLES_DETAIL) {
@@ -1304,7 +1313,10 @@ export function facteurCuisson(nom) {
   // aucune conversion a proposer.
   if (mots.some(m => ['cru', 'crue', 'cuit', 'cuite'].includes(m))) return null;
   for (const f of FACTEURS_CUISSON) {
-    if (mots.some(m => f.mots.some(x => m.startsWith(x) || x.startsWith(m)))) return f.facteur;
+    // Mots de moins de 3 lettres exclus du rapprochement : la taille
+    // « M » d'un oeuf faisait demarrer « macaroni », d'ou une bascule
+    // cru/cuit au facteur PATES (x2.4) sur les oeufs.
+    if (mots.some(m => m.length >= 3 && f.mots.some(x => m.startsWith(x) || x.startsWith(m)))) return f.facteur;
   }
   return null;
 }

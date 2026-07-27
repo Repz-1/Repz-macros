@@ -60,7 +60,10 @@ const baseJournee = computed(() => {
     (r.ings || []).forEach(i => {
       const nom = nomCourse(i.name);
       if (!totaux[nom]) totaux[nom] = { qty: 0, ref: i.name };
-      totaux[nom].qty += i.portion || 0;
+      // La portion d'un aliment a l'unite compte des PIECES : on la
+      // ramene en grammes avant de cumuler, l'affichage reconvertit.
+      const du = DB[i.name];
+      totaux[nom].qty += (du && du.unit) ? (i.portion || 0) * du.unit : (i.portion || 0);
     });
   });
   return Object.entries(totaux).map(([nom, v]) => {

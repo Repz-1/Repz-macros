@@ -98,7 +98,9 @@ export function LigneIngredient({ repasId, ing }) {
   const m = macrosOf(ing);
   const [saisie, setSaisie] = useState(String(ing.portion));
   const champQte = useRef(null);
-  const fc = facteurCuisson(ing.name);   // null si la bascule n'a pas de sens
+  // Pas de bascule cru/cuit sur un aliment compte a la piece : un oeuf
+  // reste un oeuf. Sinon, null si la bascule n'a pas de sens.
+  const fc = d.unit ? null : facteurCuisson(ing.name);
 
   // La valeur peut changer ailleurs (vocal, scan) : on resynchronise.
   useEffect(() => { setSaisie(String(ing.portion)); }, [ing.portion]);
@@ -156,7 +158,7 @@ export function LigneIngredient({ repasId, ing }) {
           }}
         />
       </div>
-      <span class="mc-ing-unite">g</span>
+      <span class="mc-ing-unite">{d.unit ? (d.unitLabel || 'pièce') : 'g'}</span>
 
       <div class="mc-ing-macros">
         <div class="mc-ing-kcal">{m.kcal.toFixed(0)} kcal</div>
