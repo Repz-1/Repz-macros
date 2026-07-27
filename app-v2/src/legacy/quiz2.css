@@ -307,3 +307,17 @@
 .qz-repos--calc .qz-rep-l { padding: 11px 14px; }
 .qz-repos--calc .qz-rep-l b { min-width: 64px; font-size: 15px; }
 .qz-repos--calc .qz-rep-l span { font-size: 13px; }
+
+/* ---------- Bloc priorite : exercices d'isolation a placer en tete ---------- */
+.qz-prio {
+  margin-top: 18px; background: #fff;
+  border: 1.5px solid #E0A21C; border-radius: 18px; padding: 18px;
+  box-shadow: 0 0 0 3px rgba(224, 162, 28, .08);
+}
+.qz-prio-intro { margin: 0 0 12px; font-size: 13.5px; font-weight: 500; color: #6B6763; line-height: 1.55; }
+.qz-prio-bloc {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 10px 0; border-top: 1px solid #F5F1E8;
+}
+.qz-prio-bloc b { font-size: 13px; font-weight: 800; color: #B7860B; text-transform: uppercase; letter-spacing: .06em; }
+.qz-prio-bloc span { font-size: 14px; font-weight: 600; color: #2C2A27; line-height: 1.5; }
