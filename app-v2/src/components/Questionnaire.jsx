@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { programmeParId } from '../data/programmes.js';
-import { EXERCISES } from '../data/exercices.js';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import '../legacy/quiz2.css';
 
@@ -13,7 +12,7 @@ import '../legacy/quiz2.css';
 // ============================================================
 
 const ETAPES = [
-  'objectif', 'niveau', 'zones',
+  'objectif', 'niveau',
   'taille', 'poids', 'age',
   'lieu', 'materiel',
   'frequence', 'duree',
@@ -37,7 +36,7 @@ const EQUIP_PAR_LIEU = {
   'exterieur':    ['traction'],
 };
 
-const MULTI = { materiel: true, zones: true };       // cases a cocher
+const MULTI = { materiel: true };                    // cases a cocher
 
 const QUESTIONS = {
   objectif: {
@@ -47,19 +46,6 @@ const QUESTIONS = {
       { v: 'masse', l: 'Prendre du muscle', n: 'Gagner en volume et en force' },
       { v: 'seche', l: 'Perdre du poids', n: 'Réduire la masse grasse' },
       { v: 'forme', l: 'Maintien', n: 'Rester en forme et entretenir' },
-    ],
-  },
-  zones: {
-    t: 'Quelles zones veux-tu travailler ?',
-    s: 'Plusieurs réponses possibles. On y mettra plus de volume.',
-    o: [
-      { v: 'pecs', l: 'Pectoraux' },
-      { v: 'dos', l: 'Dos' },
-      { v: 'epaules', l: 'Épaules' },
-      { v: 'bras', l: 'Bras', n: 'Biceps et triceps' },
-      { v: 'jambes', l: 'Jambes', n: 'Cuisses, fessiers, mollets' },
-      { v: 'abdos', l: 'Abdominaux' },
-      { v: 'tout', l: 'Tout le corps', n: 'Aucune zone privilégiée' },
     ],
   },
   lieu: {
@@ -214,48 +200,8 @@ function conseilsPersonnels(r) {
   return out;
 }
 
-// ---- Conseils PAR MUSCLE choisi (refonte Raci) : chaque zone cochee
-//      recoit son paragraphe concret, ancre dans le programme.
-const CONSEIL_MUSCLE = {
-  pecs: "Pectoraux : commence tes séances de poussée par ton exercice d\u2019isolation (écartés) avant les développés — le muscle pré-fatigué travaille vraiment. Amplitude complète, descente contrôlée.",
-  dos: "Dos : alterne toujours un tirage vertical et un tirage horizontal dans la même séance, et tire avec les coudes, pas avec les mains. Commence par l\u2019exercice où tu sens le mieux ton dos.",
-  epaules: "Épaules : les élévations latérales se font légères et propres — c\u2019est le volume qui construit, pas la charge. Place-les en début de séance d\u2019épaules tant que tu es frais.",
-  bras: "Bras : place l\u2019isolation biceps et triceps EN PREMIER dans tes séances concernées — c\u2019est ta priorité, elle passe avant les exercices généraux. Coudes fixes, pas d\u2019élan.",
-  jambes: "Jambes : ta priorité passe en tête de séance — squats ou presses d\u2019abord, quand tu es frais. Profondeur avant charge, et les mollets en fin de séance.",
-  abdos: "Abdominaux : travaille-les en circuit avec 45 secondes de repos, en début ou fin de séance. La respiration compte autant que le mouvement : souffle en contractant.",
-};
-
-// ---- Exercices d'isolation PRIORITAIRES tires de la vraie base,
-//      filtres par le materiel coche. zone 'bras' = biceps + triceps.
-const ZONE_VERS_GROUPES = {
-  pecs: ['pecs'], dos: ['dos'], epaules: ['epaules'],
-  bras: ['biceps', 'triceps'], jambes: ['jambes'], abdos: ['abdos'],
-};
-function matDisponible(exoMat, coches) {
-  if (exoMat === 'rien') return true;
-  if (exoMat === 'machine') return coches.includes('machine') || coches.includes('poulie');
-  return coches.includes(exoMat);
-}
-function exercicesPrioritaires(r) {
-  const zones = (r.zones || []).filter(z => z !== 'tout');
-  const coches = r.materiel || [];
-  const blocs = [];
-  for (const z of zones) {
-    const groupes = ZONE_VERS_GROUPES[z] || [];
-    const noms = [];
-    for (const g of groupes) {
-      const dispo = (EXERCISES[g] || []).filter(e => matDisponible(e.mat, coches));
-      // les moins "lourds" d'abord : lvl croissant = isolation/accessible
-      dispo.sort((a, b) => (a.lvl || 0) - (b.lvl || 0));
-      for (const e of dispo.slice(0, 2)) noms.push(e.nom);
-    }
-    if (noms.length) blocs.push({ zone: z, noms });
-  }
-  return blocs;
-}
-
 export function Questionnaire() {
-  const [reponses, setReponses] = useState({ materiel: [], zones: [], taille: 175, poids: 75, age: 30 });
+  const [reponses, setReponses] = useState({ materiel: [], taille: 175, poids: 75, age: 30 });
   const [i, setI] = useState(0);
   const total = ETAPES.length;
   const surResultat = i >= total;
@@ -275,7 +221,7 @@ export function Questionnaire() {
     if (!MULTI[etape]) { setReponses(r => ({ ...r, [etape]: v })); return; }
     setReponses(r => {
       const liste = r[etape] || [];
-      const excl = etape === 'zones' ? ['tout'] : [];
+      const excl = [];
       let suite;
       if (liste.includes(v)) suite = liste.filter(x => x !== v);
       else if (excl.includes(v)) suite = [v];
@@ -346,10 +292,6 @@ export function Questionnaire() {
     const { progId, conseil, desc } = recommander(reponses);
     const prog = programmeParId(progId);
     const perso = conseilsPersonnels(reponses);
-    const zonesChoisies = (reponses.zones || []).filter(z => z !== 'tout');
-    const prioritaires = exercicesPrioritaires(reponses);
-    const NOMS_ZONES = { pecs: 'Pectoraux', dos: 'Dos', epaules: 'Épaules',
-                         bras: 'Bras', jambes: 'Jambes', abdos: 'Abdominaux' };
     const objTxt = reponses.objectif === 'masse' ? 'prendre du muscle'
       : (reponses.objectif === 'seche' ? 'perdre du poids' : 'maintenir ta forme');
     const dureeTxt = 'en séances de ' + String(reponses.duree || '45-60').replace('-', ' à ') + ' minutes';
@@ -380,24 +322,10 @@ export function Questionnaire() {
             </div>
           </div>
 
-          {prioritaires.length > 0 && (
-            <div class="qz-prio">
-              <div class="qz-coach-tit">Ta priorité : {zonesChoisies.map(z => NOMS_ZONES[z]).join(', ')}</div>
-              <p class="qz-prio-intro">Place ces exercices d\u2019isolation en début de séance, quand tu es frais — ta priorité passe en premier :</p>
-              {prioritaires.map(b => (
-                <div class="qz-prio-bloc" key={b.zone}>
-                  <b>{NOMS_ZONES[b.zone]}</b>
-                  <span>{b.noms.join(' · ')}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {(conseil || perso.length > 0 || zonesChoisies.length > 0) && (
+          {(conseil || perso.length > 0) && (
             <div class="qz-coach">
               <div class="qz-coach-tit">Les conseils de ton coach</div>
               {conseil && <p>{conseil}</p>}
-              {zonesChoisies.map(z => CONSEIL_MUSCLE[z] && <p key={z}>{CONSEIL_MUSCLE[z]}</p>)}
               {perso.map((c, k) => <p key={k}>{c}</p>)}
             </div>
           )}
