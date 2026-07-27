@@ -133,8 +133,21 @@ export const totauxJour = computed(() => {
 
 // Peut etre NEGATIVE : c'est le depassement. Le borner a 0 masquait
 // le surplus (l'anneau affichait « objectif atteint » a 4588/4300).
+// Totaux du jour tels qu'AFFICHES : somme des totaux arrondis de chaque
+// repas, pour que le compteur du jour soit exactement la somme des cartes
+// que l'utilisateur a sous les yeux (meme principe que dans la page repas).
+export const totauxJourAff = computed(() => {
+  const t = { kcal: 0, prot: 0, carbs: 0, lip: 0 };
+  for (const r of repas.value) {
+    const m = totauxRepas(r);
+    t.kcal += Math.round(m.kcal); t.prot += Math.round(m.prot);
+    t.carbs += Math.round(m.carbs); t.lip += Math.round(m.lip);
+  }
+  return t;
+});
+
 export const kcalRestantes = computed(() =>
-  objectifs.value.kcal - totauxJour.value.kcal
+  objectifs.value.kcal - totauxJourAff.value.kcal
 );
 
 // ---------- Actions ----------

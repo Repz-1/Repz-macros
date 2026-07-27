@@ -4,7 +4,7 @@ import { signal } from '@preact/signals';
 // Demande d'ouverture du calculateur emise par la carte (rappel de
 // recalcul) ; consommee par main.jsx qui possede l'etat de la modale.
 export const ouvrirCalcDemande = signal(false);
-import { objectifs, totauxJour, kcalRestantes, donneesPretes, poidsCalcul } from '../store/journal.js';
+import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul } from '../store/journal.js';
 import { weightLog } from '../store/stats.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
@@ -148,7 +148,7 @@ function Macro({ nom, valeur, cible, teinte }) {
 
 export function DayDashboard() {
   const obj = objectifs.value;
-  const tot = totauxJour.value;
+  const tot = totauxJourAff.value;
   const restant = kcalRestantes.value;
   const pret = donneesPretes.value;
 
