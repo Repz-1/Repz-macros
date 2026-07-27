@@ -241,7 +241,7 @@ export function Questionnaire() {
       setCalcul(1);
       const debut = Date.now();
       const it = setInterval(() => {
-        const p = Math.min(300, Math.round((Date.now() - debut) / 17));
+        const p = Math.min(300, Math.round((Date.now() - debut) / 24));
         setCalcul(p);
         if (p >= 300) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 420); }
       }, 40);
@@ -281,7 +281,10 @@ export function Questionnaire() {
             </svg>
             <div class="qz-calc-pct">{Math.round(calcul / 3)}<span>%</span></div>
           </div>
-          <div class="qz-calc-txt">{TEXTES[tour]}</div>
+          <div class="qz-calc-txt" key={tour}
+            style={{ color: ['#1F1F1F', '#DE2F14', '#C98A00'][tour] }}>
+            {TEXTES[tour]}
+          </div>
         </div>
       </div>
     );
