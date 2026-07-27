@@ -120,13 +120,13 @@ export function MealPage() {
           </div>
           <div class="rp-macros">
             <div class="rp-macro">
-              <b>{totAff.prot}<i>g</i></b><em>{t('protein')}</em><s style="background:#E6B02A" />
+              <b>{totAff.prot}<i>g</i></b><em>{t('protein')}</em><s style="background:var(--proteines)" />
             </div>
             <div class="rp-macro">
-              <b>{totAff.carbs}<i>g</i></b><em>{t('carbs')}</em><s style="background:#448EF1" />
+              <b>{totAff.carbs}<i>g</i></b><em>{t('carbs')}</em><s style="background:var(--glucides)" />
             </div>
             <div class="rp-macro">
-              <b>{totAff.lip}<i>g</i></b><em>{t('fat')}</em><s style="background:#EF6327" />
+              <b>{totAff.lip}<i>g</i></b><em>{t('fat')}</em><s style="background:var(--lipides)" />
             </div>
           </div>
         </div>
