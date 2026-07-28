@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { eau, ajouterEau, resetEau } from '../store/journal.js';
+import { eau, ajouterEau, resetEau, tailleBouteille } from '../store/journal.js';
 import { t } from '../i18n/index.js';
 
 // ============================================================
@@ -10,7 +10,9 @@ import { t } from '../i18n/index.js';
 // ============================================================
 
 const PAR_APPUI = 0.075;   // v1 : WATER_PER_TAP = 75 ml
-const BOUTEILLE = 1.5;     // v1 : WATER_BOTTLE = 1500 ml
+// Contenances proposees (litres). La bouteille v1 etait figee a 1,5 L ;
+// le choix est desormais persiste avec le journal (tailleBouteille).
+const TAILLES = [0.5, 1, 1.5, 2];
 
 /** Format v1 : « 0 L », « 0,300 L », « 1,5 L » */
 function litresTxt(l) {
@@ -25,12 +27,13 @@ export function WaterTracker() {
   const [pleine, setPleine] = useState(false);
 
   const total = eau.value;
-  const dansBouteille = Math.round((total % BOUTEILLE) * 1000) / 1000;
-  const pct = pleine ? 100 : (dansBouteille / BOUTEILLE) * 100;
+  const taille = tailleBouteille.value;
+  const dansBouteille = Math.round((total % taille) * 1000) / 1000;
+  const pct = pleine ? 100 : (dansBouteille / taille) * 100;
 
   const appui = () => {
     ajouterEau(PAR_APPUI);
-    const apres = Math.round((eau.value % BOUTEILLE) * 1000) / 1000;
+    const apres = Math.round((eau.value % taille) * 1000) / 1000;
     if (apres === 0 && eau.value > 0) {
       setPleine(true);
       setTimeout(() => setPleine(false), 450);
@@ -49,6 +52,18 @@ export function WaterTracker() {
           <div class="water-box">
             <h3>{t('water_title')}</h3>
             <div class="wb-sub">{t('water_sub')}</div>
+
+            <div class="wb-tailles" role="group" aria-label="Contenance">
+              {TAILLES.map(v => (
+                <button
+                  key={v}
+                  class={'wbt' + (taille === v ? ' active' : '')}
+                  onClick={() => { tailleBouteille.value = v; }}
+                >
+                  {String(v).replace('.', ',')} L
+                </button>
+              ))}
+            </div>
 
             <div class="bottle" onClick={appui}>
               <div class="bottle-cap"></div>
