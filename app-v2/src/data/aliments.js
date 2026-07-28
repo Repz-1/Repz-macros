@@ -73,8 +73,10 @@ export const DB = {
     'Pois chiches cuits':{kcal:164,prot:9,carbs:27,lip:2.6,fibres:8.2,sucres:0.3,satures:0.46,sel:0.03},
     'Haricots rouges':{kcal:127,prot:9,carbs:23,lip:0.5,fibres:15.2,sucres:2.1,satures:0.15,sel:0.03},
     // Lipides & oléagineux
-    'Huile olive':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:15.2,sel:0.01},
-    'Huile colza':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:7.26,sel:0},
+    'Huile d\'olive':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:15.2,sel:0.01},
+    'Huile de colza':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:7.26,sel:0},
+    'Huile olive':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:15.2,sel:0.01,cache:true}, // graphie fautive : gardee pour les journaux existants, masquee de la recherche
+    'Huile colza':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:7.26,sel:0,cache:true},
     'Beurre cacahuète':{kcal:588,prot:25,carbs:20,lip:50,fibres:5,sucres:10.5,satures:10.4,sel:0.97,cache:true}, // doublon de « Beurre de cacahuète » : garde pour les journaux existants, masque de la recherche
     'Amandes':{kcal:579,prot:21,carbs:22,lip:50,fibres:12.5,sucres:4.2,satures:4.11,sel:0.01},
     'Noix':{kcal:654,prot:15,carbs:14,lip:65,fibres:8.33,sucres:3.64,satures:6.62,sel:0},
@@ -730,7 +732,7 @@ export const DB = {
     'Truite (cuite)':{kcal:150,prot:25,carbs:0,lip:5,fibres:0,sucres:0,satures:0.54},
     'Maquereau (cru)':{kcal:205,prot:19,carbs:0,lip:14,fibres:0,sucres:0,satures:3.22,sel:0.16},
     'Sardine (crue)':{kcal:165,prot:21,carbs:0,lip:9,fibres:0,sucres:0,satures:2.4,sel:0.22},
-    'Sardine à l\'huile':{kcal:220,prot:24,carbs:0,lip:14},
+    'Sardine à l\'huile':{kcal:220,prot:24,carbs:0,lip:14,cache:true}, // doublon de « Sardines à l'huile »
     'Crevettes (cuites)':{kcal:99,prot:24,carbs:0,lip:0.3,fibres:0,sucres:0.25,satures:0.31,sel:1.35},
     'Moules (cuites)':{kcal:86,prot:12,carbs:4,lip:2,fibres:0,satures:0.37,sel:0.8},
     'Tilapia (cru)':{kcal:96,prot:20,carbs:0,lip:2,fibres:0,sucres:0,satures:0.56,sel:0.07},
