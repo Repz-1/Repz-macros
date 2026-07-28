@@ -4,7 +4,7 @@ import { createPortal } from 'preact/compat';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
 import { DB } from '../data/aliments.js';
 import { IDEA_PREP } from '../data/preparations.js';
-import { objectifs, totauxJour, kcalRestantes } from '../store/journal.js';
+import { objectifs, totauxJourAff, kcalRestantes } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -231,10 +231,6 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
   const [cat, setCat] = useState(null);
   const [fiche, setFiche] = useState(null);
   const filRef = useRef(null);
-  const defiler = (sens) => {
-    const el = filRef.current;
-    if (el) el.scrollBy({ left: sens * el.clientWidth, behavior: 'smooth' });
-  };
   const [index, setIndex] = useState(0);
 
   // MEME chiffre que la carte Calories (kcalRestantes, base sur les
@@ -246,7 +242,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
   // dans les macros restantes ? (premium uniquement, calcul leger)
   const suggestionPrete = (() => {
     if (!estPremium.value) return false;
-    const obj = objectifs.value, tot = totauxJour.value;
+    const obj = objectifs.value, tot = totauxJourAff.value;
     const restes = {
       prot:  obj.prot  > 0 ? obj.prot  - tot.prot  : null,
       carbs: obj.carbs > 0 ? obj.carbs - tot.carbs : null,
@@ -311,7 +307,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       </div>
 
       {cat && (() => {
-        const obj = objectifs.value, tot = totauxJour.value;
+        const obj = objectifs.value, tot = totauxJourAff.value;
         const restes = {
           prot:  obj.prot  > 0 ? obj.prot  - tot.prot  : null,
           carbs: obj.carbs > 0 ? obj.carbs - tot.carbs : null,
@@ -361,17 +357,22 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
             ))}
           </div>
 
+          {/* Curseur (Raci) : le fil se parcourt au doigt, les points
+              montrent ou l'on est et servent aussi de commande — plus
+              de bouton Suivante a marteler. */}
           {retenues.length > 1 && (
-            <div class="eat-nav">
-              <button
-                onClick={() => defiler(-1)}
-                disabled={pos === 0}
-              >← {t('eat_prev')}</button>
-              <span class="eat-compteur">{pos + 1} / {retenues.length}</span>
-              <button
-                onClick={() => defiler(1)}
-                disabled={pos === retenues.length - 1}
-              >{t('eat_next')} →</button>
+            <div class="eat-points" role="tablist">
+              {retenues.map((_, i) => (
+                <button
+                  key={i}
+                  class={'eat-point' + (i === pos ? ' actif' : '')}
+                  aria-label={'Recette ' + (i + 1)}
+                  onClick={() => {
+                    setIndex(i);
+                    if (filRef.current) filRef.current.scrollTo({ left: i * filRef.current.clientWidth, behavior: 'smooth' });
+                  }}
+                />
+              ))}
             </div>
           )}
         </div>

@@ -872,7 +872,16 @@
   scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
 .pg-journal .eat-fil::-webkit-scrollbar { display: none; }
-.pg-journal .eat-slide { flex: 0 0 100%; scroll-snap-align: center; }
+.pg-journal .eat-slide { flex: 0 0 88%; scroll-snap-align: center; }
+/* Le bord de la carte suivante depasse : l'oeil comprend qu'on glisse.
+   Une seule recette retenue : pleine largeur, rien a faire deviner. */
+.pg-journal .eat-slide:only-child { flex-basis: 100%; }
+.pg-journal .eat-points { display: flex; justify-content: center; gap: 7px; padding: 2px 0 2px; }
+.pg-journal .eat-point {
+  width: 7px; height: 7px; border-radius: 50%; border: none; padding: 0;
+  background: #D8CDEA; cursor: pointer; transition: transform .15s, background .15s;
+}
+.pg-journal .eat-point.actif { background: #7E62BD; transform: scale(1.35); }
 
 .pg-journal .eat-nav {
   display: flex; align-items: center; justify-content: space-between;
