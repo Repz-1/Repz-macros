@@ -1465,6 +1465,18 @@
 .water-box .wb-sub { font-size:13px; color:#6b7280; margin-bottom:18px; }
 
 /* La bouteille */
+.wb-tailles {
+  display: flex; justify-content: center; gap: 6px; margin: 2px 0 14px;
+}
+.wbt {
+  padding: 7px 12px; border-radius: 20px; cursor: pointer;
+  border: 1.5px solid #D6E8F2; background: #FFFFFF;
+  font-size: 12.5px; font-weight: 700; color: #4A6B7C; font-family: inherit;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.wbt.active { background: #0EA5E9; border-color: #0EA5E9; color: #FFFFFF; }
+.wbt:active { transform: scale(.96); }
+
 .bottle {
     width:120px; height:230px; margin:0 auto 18px; position:relative; cursor:pointer;
     -webkit-tap-highlight-color:transparent;
