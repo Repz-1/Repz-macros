@@ -141,7 +141,8 @@ export function VocalModal({ fermer }) {
           </>
         )}
       </div>
-    </>
+    </>,
+    document.body
   );
 }
 
@@ -156,5 +157,5 @@ export function VocalBouton() {
       >🎤 Ajout vocal {!estPremium.value && <i class="pro-inline">✦ PRO</i>}</button>
       {ouvert && <VocalModal fermer={() => setOuvert(false)} />}
     </>
-  , document.body);
+  );
 }
