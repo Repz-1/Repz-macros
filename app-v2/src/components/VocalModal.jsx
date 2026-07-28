@@ -1,4 +1,5 @@
-import { useState, useRef } from 'preact/hooks';
+import { useState, useRef, useEffect } from 'preact/hooks';
+import { VERSION_APP } from '../version.js';
 import { auth } from '../services/firebase.js';
 import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
 import { repas, ajouterIngredient } from '../store/journal.js';
@@ -53,6 +54,18 @@ export function VocalModal({ fermer }) {
   const rec = useRef(null), flux = useRef(null), morceaux = useRef([]);
 
   const [erreur, setErreur] = useState('');
+  const [diag, setDiag] = useState('');
+
+  useEffect(() => {
+    const morceauxDiag = ['v' + VERSION_APP];
+    morceauxDiag.push(navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? 'API ✓' : 'API ✗');
+    morceauxDiag.push(typeof MediaRecorder !== 'undefined' ? 'Enreg. ✓' : 'Enreg. ✗');
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'microphone' })
+        .then(r => setDiag([...morceauxDiag, 'micro: ' + r.state].join(' · ')))
+        .catch(() => setDiag(morceauxDiag.join(' · ')));
+    } else setDiag(morceauxDiag.join(' · '));
+  }, []);
 
   const demarrer = async () => {
     setErreur('');
@@ -107,7 +120,11 @@ export function VocalModal({ fermer }) {
   };
 
   const envoyer = async () => {
-    if (!morceaux.current.length) { setEtat('pret'); setMsg(''); return; }
+    if (!morceaux.current.length) {
+      setEtat('pret'); setMsg('');
+      setErreur("Micro ouvert mais aucun son capté — vérifie qu'une autre app n'occupe pas le micro.");
+      return;
+    }
     let blob = new Blob(morceaux.current, { type: rec.current?.mimeType || 'audio/webm' });
     let type = 'audio/wav';
     try { blob = await versWav(blob); } catch (e) { type = (rec.current?.mimeType || 'audio/webm').split(';')[0]; }
@@ -137,7 +154,10 @@ export function VocalModal({ fermer }) {
       }).filter(Boolean);
       if (!trouves.length) { setMsg("Aucun aliment reconnu, reformule"); setEtat('pret'); return; }
       setProps(trouves); setEtat('resultat'); setMsg('');
-    } catch (e) { setMsg('Erreur, réessaie'); setEtat('pret'); }
+    } catch (e) {
+      setMsg(''); setEtat('pret');
+      setErreur('Envoi impossible : ' + ((e && (e.name + ' — ' + e.message)) || e));
+    }
   };
 
   const ajouterTout = () => {
@@ -172,6 +192,7 @@ export function VocalModal({ fermer }) {
             </button>
             <div class={`vocal-msg ${etat === 'ecoute' ? 'ecoute' : ''}`}>{msg || 'Appuie et parle'}</div>
             {erreur && <div class="ia-erreur">{erreur}</div>}
+            <div class="ia-diag">{diag}</div>
           </div>
         )}
 

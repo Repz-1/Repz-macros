@@ -404,6 +404,7 @@ button{cursor:pointer}
 .vocal-mic.actif svg{stroke:#fff}
 .vocal-mic:disabled{opacity:.55}
 .vocal-msg.ecoute{color:#DE2F14}
+.ia-diag{margin-top:14px;font-size:10.5px;font-weight:600;color:#A79E8C;letter-spacing:.02em}
 .ia-erreur{margin:12px auto 0;max-width:340px;background:#FDECEA;border:1px solid #F5C6BF;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;color:#B3261E;line-height:1.45;text-align:left}
 @keyframes pulseMic{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .vocal-msg{margin-top:14px;font-weight:700;font-size:14px;color:#6a6558;min-height:20px}
