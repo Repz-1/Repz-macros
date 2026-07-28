@@ -4,7 +4,7 @@
 html, body { overflow-x: hidden; max-width: 100%; }
 /* Palette BELFIT : fond #F8F8F8, structure #181818, or #F7B500 (actions primaires uniquement) */
 *{box-sizing:border-box}
-html,body{margin:0;background:#F8F8F8;font-family:'Manrope',sans-serif;color:#181818}
+html,body{margin:0;background:#EBE6DA;font-family:'Manrope',sans-serif;color:#181818}
 input,button{font-family:inherit}
 button{cursor:pointer}
 
@@ -548,9 +548,9 @@ button{cursor:pointer}
 @keyframes pmPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 .premium-modal .pm-icon{font-size:44px;margin-bottom:12px}
 .premium-modal h3{font-size:20px;font-weight:800;margin-bottom:10px}
-.premium-modal p{font-size:14px;color:#6b7280;line-height:1.55;margin-bottom:22px}
+.premium-modal p{font-size:14px;color:#6B6455;line-height:1.55;margin-bottom:22px}
 .premium-modal .pm-btn{display:block;width:100%;background:#DFA004;color:#fff;border:none;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px;font-family:inherit;cursor:pointer}
-.premium-modal .pm-close{background:none;border:none;color:#6b7280;font-size:14px;font-weight:600;cursor:pointer;padding:6px;font-family:inherit}
+.premium-modal .pm-close{background:none;border:none;color:#6B6455;font-size:14px;font-weight:600;cursor:pointer;padding:6px;font-family:inherit}
 /* Connexion Google (meme flux que la v1) */
 .login-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px;border:1.5px solid #e5e1d6;border-radius:12px;background:#fff;font-family:inherit;font-size:14px;font-weight:700;color:#181818;cursor:pointer;margin-bottom:8px}
 .login-google:active{background:#faf9f5}

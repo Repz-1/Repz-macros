@@ -11,15 +11,15 @@
 
 :root {
   /* ---------- Surfaces ---------- */
-  --fond: #FAF9F6;              /* fond de page, creme tres leger */
+  --fond: #EBE6DA;              /* papier chaud, franchement plus sombre que les cartes : le blanc claque dessus */
   --carte: #FFFFFF;
-  --bordure: #E7E2D9;           /* bordure de carte, beige chaud */
+  --bordure: #DDD6C6;           /* bordure de carte, lisible sur le papier sombre */
   --bordure-fine: #ECE8DF;      /* separateurs internes, plus clair */
-  --piste: #EFEADD;             /* fond des barres de progression */
+  --piste: #EDE7D8;             /* fond des barres de progression */
 
   /* ---------- Texte ---------- */
   --texte: #191919;             /* titres et valeurs */
-  --texte-2: #6B7280;           /* secondaire */
+  --texte-2: #6B6455;           /* secondaire, chaud (l'ancien 6B7280 etait un gris bleu etranger) */
   --texte-3: #8A8580;           /* descriptions, unites, labels */
   --texte-nav: #8A8375;         /* onglets au repos */
 

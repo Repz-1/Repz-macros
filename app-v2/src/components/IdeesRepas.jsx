@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { createPortal } from 'preact/compat';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
@@ -223,8 +223,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
   const setOuvert = (v) => { ideesOuvertes.value = v; };
   const [cat, setCat] = useState(null);
   const [fiche, setFiche] = useState(null);
-  const filRef = useRef(null);
-  const [index, setIndex] = useState(0);
+  const [voirTout, setVoirTout] = useState(false);
 
   // MEME chiffre que la carte Calories (kcalRestantes, base sur les
   // totaux affiches) : le panneau disait 577 quand la carte disait 576,
@@ -295,7 +294,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       <div class="eat-cats">
         {CATEGORIES_IDEES.map(c => (
           <button key={c.k} class={'eat-cat' + (cat === c.k ? ' active' : '')}
-                  onClick={() => { setIndex(0); if (filRef.current) filRef.current.scrollTo({ left: 0 }); setCat(cat === c.k ? null : c.k); }}>
+                  onClick={() => { setVoirTout(false); setCat(cat === c.k ? null : c.k); }}>
             {c.label}
           </button>
         ))}
@@ -326,60 +325,38 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
           return <div class="eat-note">{t('eat_none_fit')}</div>;
         }
 
-        // Carrousel a glissement (Raci) : toutes les recettes retenues
-        // se parcourent au doigt, l'algorithme ayant deja mis la
-        // meilleure en premiere position. Les fleches restent pour le
-        // bureau et defilent le meme fil.
-        const pos = Math.min(index, retenues.length - 1);
+        // Pile VERTICALE (Raci) : le carrousel horizontal se battait
+        // avec le glissement de page entre onglets. Les trois
+        // meilleures d'abord — le tri a deja fait le travail — et le
+        // reste sur demande, dans le sens de defilement de la page.
+        const visibles = voirTout ? retenues : retenues.slice(0, 3);
+        const cachees = retenues.length - visibles.length;
 
         return (
         <div class="eat-une">
-          <div
-            class="eat-fil"
-            ref={filRef}
-            onScroll={e => {
-              const el = e.currentTarget;
-              const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
-              if (i !== index && i >= 0 && i < retenues.length) setIndex(i);
-            }}
-          >
-            {retenues.map(({ idee, p }, i) => (
-              <div class="eat-slide" key={idee.nom}>
-                <div class="eat-idea" onClick={() => setFiche({ liste: retenues, pos: i })}>
-                  <div class="eat-idea-name">{idee.nom}</div>
-                  <div class="eat-idea-ex">{p.texte}</div>
-                  <div class="eat-idea-kcal">
-                    ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
-                  </div>
-                  {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
-                  {p.over && (
-                    <div class="eat-over">
-                      {t('eat_over').replace('{m}', t('macro_' + p.over.m)).replace('{n}', p.over.n)}
-                    </div>
-                  )}
-                  <span class="eat-open">{t('eat_see')}</span>
+          <div class="eat-liste">
+            {visibles.map(({ idee, p }, i) => (
+              <div class="eat-idea" key={idee.nom} onClick={() => setFiche({ liste: retenues, pos: i })}>
+                <div class="eat-idea-name">{idee.nom}</div>
+                <div class="eat-idea-ex">{p.texte}</div>
+                <div class="eat-idea-kcal">
+                  ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
                 </div>
+                {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
+                {p.over && (
+                  <div class="eat-over">
+                    {t('eat_over').replace('{m}', t('macro_' + p.over.m)).replace('{n}', p.over.n)}
+                  </div>
+                )}
+                <span class="eat-open">{t('eat_see')}</span>
               </div>
             ))}
           </div>
 
-          {/* Curseur (Raci) : le fil se parcourt au doigt, les points
-              montrent ou l'on est et servent aussi de commande — plus
-              de bouton Suivante a marteler. */}
-          {retenues.length > 1 && (
-            <div class="eat-points" role="tablist">
-              {retenues.map((_, i) => (
-                <button
-                  key={i}
-                  class={'eat-point' + (i === pos ? ' actif' : '')}
-                  aria-label={'Recette ' + (i + 1)}
-                  onClick={() => {
-                    setIndex(i);
-                    if (filRef.current) filRef.current.scrollTo({ left: i * filRef.current.clientWidth, behavior: 'smooth' });
-                  }}
-                />
-              ))}
-            </div>
+          {cachees > 0 && (
+            <button class="eat-plus" onClick={() => setVoirTout(true)}>
+              {t('eat_more').replace('{n}', cachees)}
+            </button>
           )}
         </div>
         );
