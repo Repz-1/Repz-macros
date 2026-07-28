@@ -57,6 +57,9 @@ export function TdeeCalculator({ montre, fermer }) {
     <>
       <div class={`voile ${montre ? 'montre' : ''}`} onClick={fermer} />
       <div class={`modale modale-calc ${montre ? 'montre' : ''}`}>
+        {/* La feuille occupe quasi tout l'ecran : le voile n'est plus une
+            sortie atteignable, il faut une croix explicite. */}
+        <button class="calc-fermer" onClick={fermer} aria-label="Fermer">✕</button>
         <h3>Mes besoins</h3>
 
         <div class="calc-modes" role="group">
