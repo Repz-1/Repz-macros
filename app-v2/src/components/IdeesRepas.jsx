@@ -35,16 +35,6 @@ function macrosIdee(idee) {
 // ============================================================
 const RATIO_MIN = 0.35;
 const RATIO_MAX = 1.4;
-const MARGE = { prot: 8, carbs: 10, lip: 6 };
-// Quand une macro est deja depassee, on tolere un apport modere
-// plutot que de ne rien proposer du tout.
-const PLANCHER = { prot: 30, carbs: 20, lip: 8 };
-
-function limite(reste, marge, plancher) {
-  if (reste === null) return Infinity;          // objectif non defini
-  return reste > 0 ? reste + marge : plancher;
-}
-
 /** Calcule les quantites d'une idee pour un ratio donne. */
 function quantites(idee, ratio) {
   const parts = [];
@@ -78,48 +68,30 @@ function quantites(idee, ratio) {
  * Adapte une idee aux macros restantes.
  * Retourne null si elle ne rentre pas, meme a portion minimale.
  */
-// Les kcal restantes sont la boussole ; les macros sont des GUIDES, pas
-// des murs. Chaque macro tolere un depassement de 8 % de son objectif
-// journalier (+ la petite marge fixe) : viser 218 g de proteines et
-// finir a 232 n'a jamais gache une journee — bloquer un repas de 550
-// kcal parce qu'il en reste 11, si. Quand une macro reste la contrainte
-// qui rabote la portion, on la NOMME au lieu de laisser l'utilisateur
-// croire que l'app ne sait pas compter.
-const TOLERANCE_OBJ = 0.08;
-
-function adapter(idee, restes, cible, obj) {
-  const plafond = (m) => {
-    if (!obj || !(obj[m] > 0)) return Infinity;      // objectif non defini
-    const souple = obj[m] * TOLERANCE_OBJ + MARGE[m];
-    return restes[m] > 0 ? restes[m] + souple : Math.max(PLANCHER[m], souple);
-  };
-  const plafonds = { prot: plafond('prot'), carbs: plafond('carbs'), lip: plafond('lip') };
-  const depasse = (c) => ['prot', 'carbs', 'lip'].filter(m => c[m] > plafonds[m]);
-
+// Decision Raci : les macros ne bloquent NI ne reduisent jamais une
+// portion — la seule boussole est le reste calorique, et si une macro
+// depasse, c'est a l'utilisateur d'ajuster. L'app se contente de le
+// dire, sobrement. Seul garde-fou conserve : une recette qui, meme a
+// portion minimale, exploserait largement le reste est ecartee.
+function adapter(idee, restes, cible) {
   const base = quantites(idee, 1);
-  const ratioIdeal = base.kcal > 0
+  const ratio = base.kcal > 0
     ? Math.max(RATIO_MIN, Math.min(RATIO_MAX, cible / base.kcal))
     : 1;
-  let ratio = ratioIdeal;
-  let calc = quantites(idee, ratio);
-  let liante = depasse(calc);
+  const calc = quantites(idee, ratio);
+  if (calc.kcal > cible * 1.35 + 60) return null;   // trop grosse, meme reduite
 
-  while (liante.length && ratio > RATIO_MIN) {
-    ratio = Math.max(RATIO_MIN, ratio - 0.1);
-    calc = quantites(idee, ratio);
-    liante = depasse(calc);
-  }
-  if (liante.length) return null;               // ecartee, meme au minimum
+  // Portion revue a la baisse pour tenir dans le reste calorique :
+  // c'est le badge d'origine, celui que l'utilisateur comprenait.
+  const reduite = ratio <= 0.95;
 
-  const reduite = ratio < ratioIdeal - 0.05;
-  // La macro qui a impose la reduction : celle qui deborderait au
-  // premier cran superieur.
-  let motif = null;
-  if (reduite) {
-    const cran = quantites(idee, Math.min(RATIO_MAX, ratio + 0.1));
-    motif = depasse(cran)[0] || null;
-  }
-  return { ...calc, reduite, motif };
+  // Depassement de macro le plus marque, purement informatif.
+  const over = ['prot', 'carbs', 'lip']
+    .filter(mac => restes[mac] !== null && calc[mac] > restes[mac] + 2)
+    .map(mac => ({ m: mac, n: Math.round(calc[mac] - restes[mac]) }))
+    .sort((a, b) => b.n - a.n)[0] || null;
+
+  return { ...calc, reduite, over };
 }
 
 
@@ -273,7 +245,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       ? Math.max(150, reste)
       : Math.max(250, Math.min(700, reste > 0 ? reste * 0.28 : 400));
     return CATEGORIES_IDEES.some(c =>
-      EAT_IDEAS[c.k].some(idee => adapter(idee, restes, cible, obj) !== null));
+      EAT_IDEAS[c.k].some(idee => adapter(idee, restes, cible) !== null));
   })();
 
   // Rangee flottante : la pilule seule.
@@ -344,7 +316,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
           : Math.max(250, Math.min(700, reste > 0 ? reste * 0.28 : 400));
 
         const retenues = EAT_IDEAS[cat]
-          .map(idee => ({ idee, p: adapter(idee, restes, cible, obj) }))
+          .map(idee => ({ idee, p: adapter(idee, restes, cible) }))
           .filter(x => x.p !== null)
           // Priorite a ce qui remplit la cible calorique ; les proteines
           // departagent ensuite.
@@ -379,9 +351,10 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
                   <div class="eat-idea-kcal">
                     ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
                   </div>
-                  {p.reduite && (
-                    <div class="eat-adapt">
-                      ✓ {p.motif ? t('eat_limited').replace('{m}', t('macro_' + p.motif)) : t('eat_adapted')}
+                  {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
+                  {p.over && (
+                    <div class="eat-over">
+                      {t('eat_over').replace('{m}', t('macro_' + p.over.m)).replace('{n}', p.over.n)}
                     </div>
                   )}
                   <span class="eat-open">{t('eat_see')}</span>
