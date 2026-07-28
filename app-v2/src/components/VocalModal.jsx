@@ -52,10 +52,24 @@ export function VocalModal({ fermer }) {
   const [msg, setMsg] = useState('');
   const rec = useRef(null), flux = useRef(null), morceaux = useRef([]);
 
+  const [erreur, setErreur] = useState('');
+
   const demarrer = async () => {
+    setErreur('');
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setErreur('Micro indisponible dans ce navigateur.');
+      return;
+    }
     try {
       flux.current = await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (e) { setMsg('Micro refusé'); return; }
+    } catch (e) {
+      // NotAllowedError sans invite = le site est BLOQUE dans Chrome :
+      // aucune demande ne s'affichera tant que le reglage n'est pas leve.
+      setErreur(e && e.name === 'NotAllowedError'
+        ? 'Micro bloqué pour belfit.be. Dans Chrome : ⋮ → Paramètres du site → Micro → Autoriser, puis recharge.'
+        : 'Micro inaccessible (' + ((e && e.name) || 'erreur') + ').');
+      return;
+    }
     morceaux.current = [];
     let mime = 'audio/webm';
     if (!MediaRecorder.isTypeSupported(mime)) mime = MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '';
@@ -111,9 +125,10 @@ export function VocalModal({ fermer }) {
   return createPortal(
     <>
       <div class="voile montre" onClick={fermer} />
-      <div class="modale montre">
-        <h3>🎤 Ajout vocal</h3>
-        <p class="idees-intro">Dis ce que tu as mangé, naturellement.</p>
+      <div class="modale modale-ia montre">
+        <button class="calc-fermer" onClick={fermer} aria-label="Fermer">✕</button>
+        <h3>Ajout vocal</h3>
+        <p class="ia-sous">Dis ce que tu as mangé, naturellement — « 150 grammes de riz et un œuf ».</p>
 
         {etat !== 'resultat' && (
           <div class="vocal-zone">
@@ -121,8 +136,17 @@ export function VocalModal({ fermer }) {
               class={`vocal-mic ${etat === 'ecoute' ? 'actif' : ''}`}
               disabled={etat === 'analyse'}
               onClick={etat === 'ecoute' ? arreter : demarrer}
-            >🎤</button>
-            <div class="vocal-msg">{msg || 'Tape pour parler'}</div>
+              aria-label={etat === 'ecoute' ? 'Arrêter' : 'Parler'}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="9.4" y="2.6" width="5.2" height="10.2" rx="2.6" />
+                <path d="M6 11.5a6 6 0 0012 0" />
+                <path d="M12 17.5v3.4" />
+                <path d="M8.8 20.9h6.4" />
+              </svg>
+            </button>
+            <div class={`vocal-msg ${etat === 'ecoute' ? 'ecoute' : ''}`}>{msg || 'Appuie et parle'}</div>
+            {erreur && <div class="ia-erreur">{erreur}</div>}
           </div>
         )}
 

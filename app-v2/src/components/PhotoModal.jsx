@@ -93,9 +93,10 @@ export function PhotoModal({ fermer }) {
   return createPortal(
     <>
       <div class="voile montre" onClick={fermer} />
-      <div class="modale montre">
-        <h3>📷 Photo d'assiette</h3>
-        <p class="idees-intro">Prends ton assiette en photo — les quantités sont estimées, ajuste-les avant d'ajouter.</p>
+      <div class="modale modale-ia montre">
+        <button class="calc-fermer" onClick={fermer} aria-label="Fermer">✕</button>
+        <h3>Photo d'assiette</h3>
+        <p class="ia-sous">Prends ton assiette en photo — les quantités sont estimées, ajuste-les avant d'ajouter.</p>
 
         <input ref={champ} type="file" accept="image/*" capture="environment" style="display:none" onChange={analyser} />
 
@@ -105,8 +106,14 @@ export function PhotoModal({ fermer }) {
               class="vocal-mic"
               disabled={etat === 'analyse'}
               onClick={() => champ.current && champ.current.click()}
-            >📷</button>
-            <div class="vocal-msg">{msg || 'Tape pour photographier'}</div>
+              aria-label="Photographier"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3.5 8.5A2.5 2.5 0 016 6h1.9l1.2-1.9a1.6 1.6 0 011.36-.75h3.08c.55 0 1.06.28 1.36.75L16.1 6H18a2.5 2.5 0 012.5 2.5v8A2.5 2.5 0 0118 19H6a2.5 2.5 0 01-2.5-2.5v-8z" />
+                <circle cx="12" cy="12.4" r="3.6" />
+              </svg>
+            </button>
+            <div class="vocal-msg">{msg || 'Appuie pour photographier'}</div>
           </div>
         )}
 

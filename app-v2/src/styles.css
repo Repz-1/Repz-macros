@@ -384,7 +384,7 @@ button{cursor:pointer}
 .vocal-micro.actif{background:#DE2F14;animation:pulseMic 1.2s ease-in-out infinite}
 @keyframes pulseMic{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 .vocal-micro:disabled{opacity:.5}
-.vocal-msg{text-align:center;font-weight:700;font-size:14px;color:#6a6558;min-height:20px;margin-bottom:8px}
+.vocal-msg{text-align:center;font-weight:700;font-size:14.5px;color:#4A4436;min-height:20px;margin:12px 0 4px}
 .vocal-prop{display:flex;justify-content:space-between;padding:11px;border:1px solid #f0ede4;border-radius:11px;margin-bottom:7px;font-size:14px;font-weight:600}
 .vocal-prop .inconnu{color:#b5b0a4;text-decoration:line-through}
 .qa-vocal{width:100%;padding:13px;border:1px solid #e9e4d6;border-radius:16px;background:#fff;font-weight:700;font-size:14.5px;font-family:inherit;margin-bottom:14px;position:relative}
@@ -392,10 +392,19 @@ button{cursor:pointer}
 
 /* ---- Vocal ---- */
 .vocal-lien{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 14px;padding:12px;background:#fff;border:1px solid #e9e4d6;border-radius:16px;color:#6a6558;font-weight:700;font-size:14.5px;font-family:inherit}
-.vocal-zone{text-align:center;padding:14px 0 6px}
-.vocal-mic{width:84px;height:84px;border-radius:50%;border:none;background:#F7B500;font-size:34px;box-shadow:0 6px 20px rgba(247,181,0,.4)}
+/* Feuille des modales IA : meme recette de contraste que le calculateur
+   (fond creme soutenu, ilots blancs, l'or reste la seule action). */
+.modale-ia{background:#F6F1E6}
+.ia-sous{font-size:13.5px;color:#6E6753;line-height:1.5;margin:0 0 6px;text-align:center}
+.vocal-zone{text-align:center;padding:18px 0 10px}
+.vocal-mic{width:92px;height:92px;border-radius:50%;border:none;background:#F7B500;box-shadow:0 6px 20px rgba(185,138,0,.35);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform .15s}
+.vocal-mic svg{width:40px;height:40px;fill:none;stroke:#3A2E00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.vocal-mic:active{transform:scale(.94)}
 .vocal-mic.actif{background:#DE2F14;animation:pulseMic 1.2s ease-in-out infinite}
+.vocal-mic.actif svg{stroke:#fff}
 .vocal-mic:disabled{opacity:.55}
+.vocal-msg.ecoute{color:#DE2F14}
+.ia-erreur{margin:12px auto 0;max-width:340px;background:#FDECEA;border:1px solid #F5C6BF;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;color:#B3261E;line-height:1.45;text-align:left}
 @keyframes pulseMic{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .vocal-msg{margin-top:14px;font-weight:700;font-size:14px;color:#6a6558;min-height:20px}
 
