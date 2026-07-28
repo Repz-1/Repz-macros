@@ -60,9 +60,13 @@ export function VocalModal({ fermer }) {
       setErreur('Micro indisponible dans ce navigateur.');
       return;
     }
+    // Chaque etape annonce ce qu'elle fait : un blocage cesse d'etre
+    // un mystere, il a un nom a l'ecran.
+    setMsg('Demande du micro…');
     try {
       flux.current = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
+      setMsg('');
       // NotAllowedError sans invite = le site est BLOQUE dans Chrome :
       // aucune demande ne s'affichera tant que le reglage n'est pas leve.
       setErreur(e && e.name === 'NotAllowedError'
@@ -70,20 +74,36 @@ export function VocalModal({ fermer }) {
         : 'Micro inaccessible (' + ((e && e.name) || 'erreur') + ').');
       return;
     }
-    morceaux.current = [];
-    let mime = 'audio/webm';
-    if (!MediaRecorder.isTypeSupported(mime)) mime = MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '';
-    rec.current = mime ? new MediaRecorder(flux.current, { mimeType: mime }) : new MediaRecorder(flux.current);
-    rec.current.ondataavailable = e => { if (e.data.size) morceaux.current.push(e.data); };
-    rec.current.onstop = envoyer;
-    rec.current.start();
-    setEtat('ecoute'); setMsg("Je t'écoute…");
+    try {
+      morceaux.current = [];
+      let mime = 'audio/webm';
+      if (typeof MediaRecorder === 'undefined') throw new Error('MediaRecorder absent de ce navigateur');
+      if (!MediaRecorder.isTypeSupported(mime)) mime = MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '';
+      rec.current = mime ? new MediaRecorder(flux.current, { mimeType: mime }) : new MediaRecorder(flux.current);
+      rec.current.ondataavailable = e => { if (e.data.size) morceaux.current.push(e.data); };
+      rec.current.onstop = () => { envoyer().catch(err => { setEtat('pret'); setMsg(''); setErreur('Analyse impossible : ' + ((err && err.message) || err)); }); };
+      rec.current.start();
+      setEtat('ecoute'); setMsg("Je t'écoute… (appuie pour terminer)");
+    } catch (e) {
+      flux.current && flux.current.getTracks().forEach(t => t.stop());
+      setMsg('');
+      setErreur('Enregistreur en échec : ' + ((e && (e.name + ' — ' + e.message)) || e));
+    }
   };
 
   const arreter = () => {
-    try { rec.current?.state !== 'inactive' && rec.current.stop(); } catch (e) {}
-    flux.current?.getTracks().forEach(t => t.stop());
     setEtat('analyse'); setMsg('Analyse en cours…');
+    let stoppe = false;
+    try {
+      if (rec.current && rec.current.state !== 'inactive') { rec.current.stop(); stoppe = true; }
+    } catch (e) {
+      setEtat('pret'); setMsg('');
+      setErreur('Arrêt en échec : ' + ((e && e.name) || e));
+    }
+    try { flux.current && flux.current.getTracks().forEach(t => t.stop()); } catch (e) {}
+    // stop() sans enregistreur actif : onstop ne viendra jamais, on ne
+    // laisse pas l'ecran en 'analyse' pour l'eternite.
+    if (!stoppe) { setEtat('pret'); if (!erreur) { setMsg(''); setErreur("Rien n'a été enregistré."); } }
   };
 
   const envoyer = async () => {
@@ -100,8 +120,13 @@ export function VocalModal({ fermer }) {
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
         body: JSON.stringify({ audioBase64: b64, mimeType: type }),
       });
-      if (rep.status === 403) { setMsg('Fonction Premium'); setEtat('pret'); return; }
-      if (!rep.ok) { setMsg('Erreur, réessaie'); setEtat('pret'); return; }
+      if (rep.status === 403) { setMsg(''); setEtat('pret'); setErreur('Réservé Premium (serveur).'); return; }
+      if (!rep.ok) {
+        let corps = ''; try { corps = (await rep.text()).slice(0, 140); } catch (e) {}
+        setMsg(''); setEtat('pret');
+        setErreur('Serveur en échec (HTTP ' + rep.status + ')' + (corps ? ' : ' + corps : ''));
+        return;
+      }
       const { aliments } = await rep.json();
       const trouves = (aliments || []).map(a => {
         const cle = trouverAliment(a.aliment);
