@@ -841,6 +841,7 @@
   font-size: 13.5px; color: #6E6753; margin: 0 0 14px;
 }
 .pg-journal .eat-intro b { color: #8F6200; font-size: 15px; }
+.pg-journal .eat-fini { margin: 2px 0; text-align: center; font-weight: 700; color: #4B4A47; }
 
 .pg-journal .eat-cats {
   display: grid; grid-template-columns: repeat(2, 1fr);
@@ -896,10 +897,9 @@
   font-size: 13px; color: #6E6753; margin-top: 5px; line-height: 1.5;
 }
 .pg-journal .eat-idea-kcal {
-  display: inline-block; margin-top: 9px;
-  background: #F3EDDB; color: #6E5A1D;
-  font-size: 12px; font-weight: 800;
-  padding: 3px 10px; border-radius: 20px;
+  /* Fini le chip beige : la valeur parle en encre grasse, les
+     proteines en or fonce — un seul accent dore par ligne. */
+  margin-top: 7px; font-size: 13.5px; font-weight: 800; color: #191919;
 }
 .pg-journal .eat-prot { font-weight: 700; }
 .pg-journal .eat-prot.ok { color: #8F6200; }

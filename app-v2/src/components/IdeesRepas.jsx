@@ -240,6 +240,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       carbs: obj.carbs > 0 ? obj.carbs - tot.carbs : null,
       lip:   obj.lip   > 0 ? obj.lip   - tot.lip   : null,
     };
+    if (reste <= 120) return false;      // journee complete : rien a suggerer
     const cible = reste > 0 && reste <= 800
       ? Math.max(150, reste)
       : Math.max(250, Math.min(700, reste > 0 ? reste * 0.28 : 400));
@@ -286,7 +287,13 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
         </div>
       )}
 
-      {ouvert && estPremium.value && (
+      {ouvert && estPremium.value && reste <= 120 && (
+        <div class="eat-panneau">
+          <p class="eat-intro eat-fini">{t('eat_done')}</p>
+        </div>
+      )}
+
+      {ouvert && estPremium.value && reste > 120 && (
     <div class="eat-panneau">
       <p class="eat-intro"
          dangerouslySetInnerHTML={{ __html: t('eat_left').replace('{n}', Math.max(0, reste)) }} />
@@ -331,6 +338,9 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
         // reste sur demande, dans le sens de defilement de la page.
         const visibles = voirTout ? retenues : retenues.slice(0, 3);
         const cachees = retenues.length - visibles.length;
+        // Un badge porte par TOUTES les cartes ne distingue plus rien :
+        // quand l'ajustement est uniforme, il se tait.
+        const toutesReduites = visibles.length > 1 && visibles.every(x => x.p.reduite);
 
         return (
         <div class="eat-une">
@@ -342,7 +352,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
                 <div class="eat-idea-kcal">
                   ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
                 </div>
-                {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
+                {p.reduite && !toutesReduites && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
                 {p.over && (
                   <div class="eat-over">
                     {t('eat_over').replace('{m}', t('macro_' + p.over.m)).replace('{n}', p.over.n)}

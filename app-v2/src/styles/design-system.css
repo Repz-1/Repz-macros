@@ -32,7 +32,9 @@
 
   --proteines: #1F1F1F;
   --glucides: #F5A800;
-  --lipides: #DE2F14;
+  /* Orange fonce (Raci) : le rouge est reserve a l'etat « depasse »,
+     une macro sous l'objectif ne peut plus avoir l'air en faute. */
+  --lipides: #E4610B;
 
   --hydratation: #0EA5E9;
   --hydratation-active: #0284C7;
