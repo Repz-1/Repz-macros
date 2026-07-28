@@ -864,6 +864,16 @@
 /* Navigation explicite : deux libelles et la position. Une icone de
    rafraichissement laissait croire a un rechargement, et on ne
    pouvait pas revenir en arriere. */
+/* Fil de recettes : defilement horizontal a crans, une carte par ecran.
+   La barre de defilement est masquee, les fleches restent pour le bureau. */
+.pg-journal .eat-fil {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  gap: 10px; margin: 0 -14px; padding: 0 14px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.pg-journal .eat-fil::-webkit-scrollbar { display: none; }
+.pg-journal .eat-slide { flex: 0 0 100%; scroll-snap-align: center; }
+
 .pg-journal .eat-nav {
   display: flex; align-items: center; justify-content: space-between;
   gap: 8px; padding: 2px;

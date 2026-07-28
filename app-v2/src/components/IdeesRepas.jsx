@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { createPortal } from 'preact/compat';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
 import { DB } from '../data/aliments.js';
 import { IDEA_PREP } from '../data/preparations.js';
-import { objectifs, totauxJour } from '../store/journal.js';
+import { objectifs, totauxJour, kcalRestantes } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -230,9 +230,17 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
   const setOuvert = (v) => { ideesOuvertes.value = v; };
   const [cat, setCat] = useState(null);
   const [fiche, setFiche] = useState(null);
+  const filRef = useRef(null);
+  const defiler = (sens) => {
+    const el = filRef.current;
+    if (el) el.scrollBy({ left: sens * el.clientWidth, behavior: 'smooth' });
+  };
   const [index, setIndex] = useState(0);
 
-  const reste = Math.round(objectifs.value.kcal - totauxJour.value.kcal);
+  // MEME chiffre que la carte Calories (kcalRestantes, base sur les
+  // totaux affiches) : le panneau disait 577 quand la carte disait 576,
+  // car il recalculait depuis les totaux exacts non arrondis.
+  const reste = kcalRestantes.value;
 
   // Etat contextuel de la pilule : au moins une recette rentre-t-elle
   // dans les macros restantes ? (premium uniquement, calcul leger)
@@ -296,7 +304,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       <div class="eat-cats">
         {CATEGORIES_IDEES.map(c => (
           <button key={c.k} class={'eat-cat' + (cat === c.k ? ' active' : '')}
-                  onClick={() => { setIndex(0); setCat(cat === c.k ? null : c.k); }}>
+                  onClick={() => { setIndex(0); if (filRef.current) filRef.current.scrollTo({ left: 0 }); setCat(cat === c.k ? null : c.k); }}>
             {c.label}
           </button>
         ))}
@@ -321,42 +329,51 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
           return <div class="eat-note">{t('eat_none_fit')}</div>;
         }
 
-        // Une seule suggestion a la fois : l'algorithme a deja classe
-        // les recettes, autant assumer de proposer la meilleure.
-        const posCourante = index % retenues.length;
-        const { idee, p } = retenues[posCourante];
-        // La fiche recoit la liste complete : elle peut ainsi passer
-        // d'une recette a l'autre sans repasser par le panneau.
-        const ouvrirFiche = () => setFiche({ liste: retenues, pos: posCourante });
+        // Carrousel a glissement (Raci) : toutes les recettes retenues
+        // se parcourent au doigt, l'algorithme ayant deja mis la
+        // meilleure en premiere position. Les fleches restent pour le
+        // bureau et defilent le meme fil.
+        const pos = Math.min(index, retenues.length - 1);
 
         return (
         <div class="eat-une">
-          <div class="eat-idea" onClick={ouvrirFiche}>
-            <div class="eat-idea-name">{idee.nom}</div>
-            <div class="eat-idea-ex">{p.texte}</div>
-            <div class="eat-idea-kcal">
-              ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
-            </div>
-            {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
-            <span class="eat-open">{t('eat_see')}</span>
+          <div
+            class="eat-fil"
+            ref={filRef}
+            onScroll={e => {
+              const el = e.currentTarget;
+              const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
+              if (i !== index && i >= 0 && i < retenues.length) setIndex(i);
+            }}
+          >
+            {retenues.map(({ idee, p }, i) => (
+              <div class="eat-slide" key={idee.nom}>
+                <div class="eat-idea" onClick={() => setFiche({ liste: retenues, pos: i })}>
+                  <div class="eat-idea-name">{idee.nom}</div>
+                  <div class="eat-idea-ex">{p.texte}</div>
+                  <div class="eat-idea-kcal">
+                    ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
+                  </div>
+                  {p.reduite && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
+                  <span class="eat-open">{t('eat_see')}</span>
+                </div>
+              </div>
+            ))}
           </div>
 
-          {retenues.length > 1 && (() => {
-            const pos = posCourante;
-            return (
-              <div class="eat-nav">
-                <button
-                  onClick={() => setIndex(index - 1)}
-                  disabled={pos === 0}
-                >← {t('eat_prev')}</button>
-                <span class="eat-compteur">{pos + 1} / {retenues.length}</span>
-                <button
-                  onClick={() => setIndex(index + 1)}
-                  disabled={pos === retenues.length - 1}
-                >{t('eat_next')} →</button>
-              </div>
-            );
-          })()}
+          {retenues.length > 1 && (
+            <div class="eat-nav">
+              <button
+                onClick={() => defiler(-1)}
+                disabled={pos === 0}
+              >← {t('eat_prev')}</button>
+              <span class="eat-compteur">{pos + 1} / {retenues.length}</span>
+              <button
+                onClick={() => defiler(1)}
+                disabled={pos === retenues.length - 1}
+              >{t('eat_next')} →</button>
+            </div>
+          )}
         </div>
         );
       })()}
