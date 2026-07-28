@@ -28,7 +28,9 @@ function encoderWav(samples, sr) {
 
 async function versWav(blob) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const ab = await ctx.decodeAudioData(await blob.arrayBuffer());
+  const decode = ctx.decodeAudioData(await blob.arrayBuffer());
+  const garde = new Promise((_, rej) => setTimeout(() => rej(new Error('decode>5s')), 5000));
+  const ab = await Promise.race([decode, garde]).catch(e => { try { ctx.close(); } catch (x) {} throw e; });
   const cible = 16000, canal = ab.getChannelData(0), ratio = ab.sampleRate / cible;
   const n = Math.floor(canal.length / ratio), out = new Float32Array(n);
   for (let i = 0; i < n; i++) out[i] = canal[Math.floor(i * ratio)];
@@ -125,18 +127,27 @@ export function VocalModal({ fermer }) {
       setErreur("Micro ouvert mais aucun son capté — vérifie qu'une autre app n'occupe pas le micro.");
       return;
     }
+    // L'analyse annonce chaque etape : si ca coince, l'ecran dit OU.
+    setMsg('Conversion audio…');
     let blob = new Blob(morceaux.current, { type: rec.current?.mimeType || 'audio/webm' });
     let type = 'audio/wav';
     try { blob = await versWav(blob); } catch (e) { type = (rec.current?.mimeType || 'audio/webm').split(';')[0]; }
     const b64 = await new Promise(r => { const f = new FileReader(); f.onloadend = () => r(String(f.result).split(',')[1] || ''); f.readAsDataURL(blob); });
+    setMsg('Envoi (' + Math.round(b64.length * 0.75 / 1024) + ' Ko)…');
     let token = '';
     try { token = await auth.currentUser.getIdToken(); } catch (e) {}
     try {
+      // 30 s maximum : un serveur qui ne repond pas devient une erreur
+      // nommee, plus jamais une roue qui tourne pour l'eternite.
+      const coupe = new AbortController();
+      const minuteur = setTimeout(() => coupe.abort(), 30000);
       const rep = await fetch(API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
         body: JSON.stringify({ audioBase64: b64, mimeType: type }),
-      });
+        signal: coupe.signal,
+      }).finally(() => clearTimeout(minuteur));
+      setMsg('Analyse en cours…');
       if (rep.status === 403) { setMsg(''); setEtat('pret'); setErreur('Réservé Premium (serveur).'); return; }
       if (!rep.ok) {
         let corps = ''; try { corps = (await rep.text()).slice(0, 140); } catch (e) {}
@@ -156,7 +167,9 @@ export function VocalModal({ fermer }) {
       setProps(trouves); setEtat('resultat'); setMsg('');
     } catch (e) {
       setMsg(''); setEtat('pret');
-      setErreur('Envoi impossible : ' + ((e && (e.name + ' — ' + e.message)) || e));
+      setErreur(e && e.name === 'AbortError'
+        ? 'Le serveur n\'a pas répondu en 30 s (fonction froide ou en panne).'
+        : 'Envoi impossible : ' + ((e && (e.name + ' — ' + e.message)) || e));
     }
   };
 
