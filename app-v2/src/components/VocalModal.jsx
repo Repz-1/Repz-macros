@@ -54,12 +54,22 @@ export function VocalModal({ fermer }) {
   const [props, setProps] = useState([]);
   const [msg, setMsg] = useState('');
   const rec = useRef(null), flux = useRef(null), morceaux = useRef([]);
+  const minuteurAuto = useRef(null);
+
+  // Fermer la modale (croix, voile) coupait l'interface mais PAS le
+  // micro : l'enregistrement continuait en arriere-plan, notification
+  // systeme a l'appui. Le demontage arrete tout, sans envoyer.
+  useEffect(() => () => {
+    clearTimeout(minuteurAuto.current);
+    try { if (rec.current && rec.current.state !== 'inactive') { rec.current.onstop = null; rec.current.stop(); } } catch (e) {}
+    try { flux.current && flux.current.getTracks().forEach(t => t.stop()); } catch (e) {}
+  }, []);
 
   const [erreur, setErreur] = useState('');
   const [diag, setDiag] = useState('');
 
   useEffect(() => {
-    const morceauxDiag = ['v' + VERSION_APP];
+    const morceauxDiag = ['v' + VERSION_APP, location.host];
     morceauxDiag.push(navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? 'API ✓' : 'API ✗');
     morceauxDiag.push(typeof MediaRecorder !== 'undefined' ? 'Enreg. ✓' : 'Enreg. ✗');
     if (navigator.permissions && navigator.permissions.query) {
@@ -99,6 +109,10 @@ export function VocalModal({ fermer }) {
       rec.current.onstop = () => { envoyer().catch(err => { setEtat('pret'); setMsg(''); setErreur('Analyse impossible : ' + ((err && err.message) || err)); }); };
       rec.current.start();
       setEtat('ecoute'); setMsg("Je t'écoute… (appuie pour terminer)");
+      // Personne ne doit pouvoir laisser le micro ouvert : 15 s maximum,
+      // puis l'analyse part toute seule.
+      clearTimeout(minuteurAuto.current);
+      minuteurAuto.current = setTimeout(() => { if (rec.current && rec.current.state === 'recording') arreter(); }, 15000);
     } catch (e) {
       flux.current && flux.current.getTracks().forEach(t => t.stop());
       setMsg('');
@@ -107,6 +121,7 @@ export function VocalModal({ fermer }) {
   };
 
   const arreter = () => {
+    clearTimeout(minuteurAuto.current);
     setEtat('analyse'); setMsg('Analyse en cours…');
     let stoppe = false;
     try {
@@ -196,12 +211,18 @@ export function VocalModal({ fermer }) {
               onClick={etat === 'ecoute' ? arreter : demarrer}
               aria-label={etat === 'ecoute' ? 'Arrêter' : 'Parler'}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="9.4" y="2.6" width="5.2" height="10.2" rx="2.6" />
-                <path d="M6 11.5a6 6 0 0012 0" />
-                <path d="M12 17.5v3.4" />
-                <path d="M8.8 20.9h6.4" />
-              </svg>
+              {etat === 'ecoute' ? (
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="7.5" y="7.5" width="9" height="9" rx="1.6" fill="currentColor" stroke="none" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="9.4" y="2.6" width="5.2" height="10.2" rx="2.6" />
+                  <path d="M6 11.5a6 6 0 0012 0" />
+                  <path d="M12 17.5v3.4" />
+                  <path d="M8.8 20.9h6.4" />
+                </svg>
+              )}
             </button>
             <div class={`vocal-msg ${etat === 'ecoute' ? 'ecoute' : ''}`}>{msg || 'Appuie et parle'}</div>
             {erreur && <div class="ia-erreur">{erreur}</div>}
