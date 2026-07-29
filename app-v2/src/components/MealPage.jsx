@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { repas, totauxRepas, fourchetteRepas, renommerRepas } from '../store/journal.js';
 import { macrosOf } from '../data/aliments.js';
 import { enregistrerPlat } from '../store/perso.js';
@@ -84,8 +84,56 @@ export function MealPage() {
     setGarde(true); setTimeout(() => setGarde(false), 2200);
   };
 
+  // ---- Retour par glissement (Raci) ----------------------------
+  // La page suit le doigt vers la droite et se referme au-dela d'un
+  // tiers d'ecran (ou sur un geste vif). Verrou exigeant : un
+  // defilement vertical ou un depart sur un champ n'enclenche rien,
+  // et le rail des onglets ignore desormais cette couche.
+  const gl = useRef(null);
+  const [dx, setDx] = useState(0);
+  const [glisse, setGlisse] = useState(false);
+
+  const debut = (e) => {
+    if (e.touches.length !== 1) return;
+    if (e.target.closest && e.target.closest('input, select, textarea, .mc-resultats, .fr-plein, .cp-overlay')) return;
+    gl.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, verrou: null, t: Date.now(), dx: 0 };
+  };
+  const bouge = (e) => {
+    const g = gl.current;
+    if (!g || e.touches.length !== 1) return;
+    const ex = e.touches[0].clientX - g.x, ey = e.touches[0].clientY - g.y;
+    if (!g.verrou) {
+      if (Math.abs(ey) > 12 && Math.abs(ey) > Math.abs(ex)) { gl.current = null; return; }
+      if (ex > 14 && Math.abs(ex) > Math.abs(ey) * 1.6) { g.verrou = 'h'; setGlisse(true); }
+      else return;
+    }
+    g.dx = Math.max(0, ex);
+    setDx(g.dx);
+  };
+  const fin = () => {
+    const g = gl.current;
+    gl.current = null;
+    setGlisse(false);
+    if (!g || g.verrou !== 'h') { setDx(0); return; }
+    const vif = g.dx > 60 && (Date.now() - g.t) < 320;
+    if (g.dx > window.innerWidth / 3 || vif) {
+      setDx(window.innerWidth);
+      setTimeout(() => { repasOuvertId.value = null; setDx(0); }, 180);
+    } else setDx(0);
+  };
+
   return (
-    <div class="app-scroll couche-repas pg-journal">
+    <div
+      class="app-scroll couche-repas pg-journal"
+      onTouchStart={debut}
+      onTouchMove={bouge}
+      onTouchEnd={fin}
+      onTouchCancel={fin}
+      style={dx ? {
+        transform: 'translateX(' + dx + 'px)',
+        transition: glisse ? 'none' : 'transform 180ms cubic-bezier(.22,.8,.28,1)',
+      } : undefined}
+    >
       <div class="rp-colonne">
 
         {/* Topbar : retour + titre (crayon pour renommer) */}

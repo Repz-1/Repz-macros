@@ -1738,6 +1738,9 @@
    en dur (#FBF7F2) datait d'avant le papier sombre et creait une
    couture a 320 px, la ou le halo creme du haut s'arrete. */
 .pg-journal.couche-repas { background: var(--fond); }
+/* Pendant le retour par glissement, la couche se decolle du journal :
+   l'ombre a gauche donne la profondeur qui rend le geste lisible. */
+.couche-repas { box-shadow: -14px 0 34px rgba(24, 20, 12, .10); }
 
 /* ---------- Topbar : retour | titre centre | Terminer ---------- */
 .pg-journal .rp-topbar {

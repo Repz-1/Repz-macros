@@ -209,7 +209,7 @@ function App() {
     if (e.target.closest && e.target.closest(
       '.modale, .voile, .cp-overlay, .fr-plein, .ml-overlay, .water-modal, .modal-overlay, ' +
       '.premium-overlay, .v2-timer-container, .v2-timer-overlay, .bn, ' +
-      '.prog-onglets, .idees-cats, input, select, textarea'
+      '.prog-onglets, .idees-cats, input, select, textarea, .couche-repas'
     )) return;
     geste.current = {
       x: e.touches[0].clientX, y: e.touches[0].clientY,
