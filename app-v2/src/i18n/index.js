@@ -71,6 +71,7 @@ const T = {
     conf_spam: 'Le message peut mettre une minute à arriver.',
     chargement: 'Chargement de ton journal…',
     aujourdhui: "Aujourd'hui", consommees: 'Consommées', objectif: 'Objectif',
+    today_prefix: "Aujourd'hui,", total_jour: 'Total du jour', rl_vide: 'Rien encodé',
 
     calc_besoins_court: 'Calculateur', vocal_court: 'Vocal',
 
@@ -130,6 +131,7 @@ const T = {
     conf_spam: 'The message can take a minute to arrive.',
     chargement: 'Loading your journal…',
     aujourdhui: 'Today', consommees: 'Consumed', objectif: 'Target',
+    today_prefix: 'Today,', total_jour: 'Day total', rl_vide: 'Nothing logged',
 
     calc_besoins_court: 'Calculator', vocal_court: 'Voice',
 
@@ -189,6 +191,7 @@ const T = {
     conf_spam: 'Het bericht kan een minuut onderweg zijn.',
     chargement: 'Je dagboek laden…',
     aujourdhui: 'Vandaag', consommees: 'Verbruikt', objectif: 'Doel',
+    today_prefix: 'Vandaag,', total_jour: 'Dagtotaal', rl_vide: 'Niets gelogd',
 
     calc_besoins_court: 'Calculator', vocal_court: 'Spraak',
 

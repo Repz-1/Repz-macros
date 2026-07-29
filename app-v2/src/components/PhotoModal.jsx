@@ -36,7 +36,7 @@ function trouverAliment(nom) {
   return contient || null;
 }
 
-export function PhotoModal({ fermer }) {
+export function PhotoModal({ fermer, repasId }) {
   const [etat, setEtat] = useState('pret'); // pret | analyse | resultat
   const [props, setProps] = useState([]);
   const [msg, setMsg] = useState('');
@@ -84,7 +84,9 @@ export function PhotoModal({ fermer }) {
   };
 
   const ajouterTout = () => {
-    const cible = repas.value[repas.value.length - 1];
+    const cible = repasId
+      ? repas.value.find(x => x.id === repasId)
+      : repas.value[repas.value.length - 1];
     if (!cible) return;
     props.forEach(p => { if (p.portion > 0) ajouterIngredient(cible.id, p.cle, p.portion); });
     fermer();

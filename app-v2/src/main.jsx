@@ -6,8 +6,8 @@ import './styles/journal-socle.css';
 import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
-import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
-import { DayDashboard, ouvrirCalcDemande } from './components/DayDashboard.jsx';
+import { repas, objectifs, donneesPretes, calculBaseFait, totauxJourAff, totauxRepas } from './store/journal.js';
+import { DayDashboard, RappelRecalcul, ouvrirCalcDemande } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
@@ -29,7 +29,7 @@ import { Entete, voletProfil } from './components/Entete.jsx';
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
-import { ActionsRapides } from './components/ActionsRapides.jsx';
+import { MealRow } from './components/MealCard.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
 import { MealPage } from './components/MealPage.jsx';
 import { repasOuvertId } from './components/MealCard.jsx';
@@ -39,10 +39,21 @@ import { MesPlats } from './components/MesPlats.jsx';
 
 function OngletJournal() {
   const [modale, setModale] = useState(false);
+  const totAffiche = totauxJourAff.value;
+  if (import.meta.env.DEV) {
+    // Garde-fou (§10 du cahier) : le pied DOIT etre la somme des lignes.
+    const somme = repas.value.reduce((a, r) => a + Math.round(totauxRepas(r).kcal), 0);
+    console.assert(somme === totAffiche.kcal, 'Total du jour desynchronise', somme, totAffiche.kcal);
+  }
   const [calc, setCalc] = useState(false);
   // Le rappel de recalcul (carte Calories) demande l'ouverture par signal :
   // le composant ne possede pas l'etat de la modale, main.jsx si.
-  if (ouvrirCalcDemande.value) { ouvrirCalcDemande.value = false; setCalc(true); }
+  if (ouvrirCalcDemande.value) {
+    ouvrirCalcDemande.value = false;
+    // Meme gating que l'ancien raccourci : 1er calcul offert, ensuite PRO.
+    if (estPremium.value || !calculBaseFait.value) setCalc(true);
+    else ongletActif.value = 'premium';
+  }
   const [vocal, setVocal] = useState(false);
   const [photo, setPhoto] = useState(false);
   // Colonne unique, ordre de lecture descendant :
@@ -52,21 +63,33 @@ function OngletJournal() {
     <div class="pg-journal">
       <div class="colonne">
         <Entete />
+
+        {/* Refonte densite (maquette validee) : la journee entiere sans
+            defilement. Resume compact, pilule IA, panneau, rappel,
+            pesee en ligne, puis la liste des repas en carte unique. */}
         <DayDashboard />
-        {/* La pilule vit dans la carte Calories ; ici, uniquement le
-            panneau qui se deplie, juste sous elle. */}
+
+        <div class="zone-pilule"><IdeesRepas pilulSeule /></div>
         <IdeesRepas panneauSeul />
-        <ActionsRapides ouvrirCalc={() => { if (estPremium.value || !calculBaseFait.value) setCalc(true); else { ongletActif.value = 'premium'; } }} ouvrirVocal={() => setVocal(true)} ouvrirPhoto={() => { if (estPremium.value) setPhoto(true); else { ongletActif.value = 'premium'; } }} />
+        <RappelRecalcul />
         <WeightNote />
-        {repas.value.map(r => <MealCard key={r.id} r={r} />)}
-        {/* L'ajout d'un repas vit desormais dans le flux, sous le
-            dernier repas — plus de bouton flottant jaune (Raci). */}
-        <div class="ajout-repas-rang">
-          <button class="ajout-repas" onClick={() => setModale(true)}>
-            <svg viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13" /></svg>
-            {t('add_meal_btn')}
+
+        <section class="carte carte--relief repas-carte">
+          {repas.value.map(r => <MealRow key={r.id} r={r} />)}
+          <button class="repas-ligne repas-ligne--ajout" onClick={() => setModale(true)}>
+            <span class="rl-nom">+ {t('add_meal_btn')}</span>
+            <span class="rl-kcal rl-kcal--vide">—</span>
           </button>
-        </div>
+          <div class="repas-pied">
+            <span class="rp-t">{t('total_jour')}</span>
+            <span class="rp-v">{totAffiche.kcal}<small> / {Math.round(objectifs.value.kcal)} kcal</small></span>
+          </div>
+        </section>
+
+        <button class="courses-ligne" onClick={() => { ongletActif.value = 'courses'; }}>
+          <svg viewBox="0 0 24 24"><path d="M4 5h2l1.6 9.2a1.6 1.6 0 001.58 1.3h7.6a1.6 1.6 0 001.57-1.26L20 8H6.4" /><circle cx="9.6" cy="19.4" r="1.4" /><circle cx="16.8" cy="19.4" r="1.4" /></svg>
+          {t('qa_courses')}
+        </button>
       </div>
 
       <div class="fab-rangee">
@@ -312,6 +335,7 @@ function App() {
           <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
         ))}
       </div>
+      <button class="profil-calc" onClick={() => { voletProfil.value = false; ouvrirCalcDemande.value = true; }}>{t('qa_calc')}</button>
       <button onClick={deconnexion}>{t('deconnexion')}</button>
     </div>
   ) : null;

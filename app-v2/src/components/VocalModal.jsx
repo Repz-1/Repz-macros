@@ -49,7 +49,7 @@ function trouverAliment(nom) {
   return contient || null;
 }
 
-export function VocalModal({ fermer }) {
+export function VocalModal({ fermer, repasId }) {
   const [etat, setEtat] = useState('pret'); // pret | ecoute | analyse | resultat
   const [props, setProps] = useState([]);
   const [msg, setMsg] = useState('');
@@ -189,7 +189,9 @@ export function VocalModal({ fermer }) {
   };
 
   const ajouterTout = () => {
-    const cible = repas.value[repas.value.length - 1];
+    const cible = repasId
+      ? repas.value.find(x => x.id === repasId)
+      : repas.value[repas.value.length - 1];
     if (!cible) return;
     props.forEach(p => ajouterIngredient(cible.id, p.cle, p.portion));
     fermer();

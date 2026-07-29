@@ -43,11 +43,11 @@
   width: 100%;
   max-width: 640px;          /* au-dela, la ligne devient illisible */
   margin: 0 auto;
-  padding: calc(18px + env(safe-area-inset-top)) var(--marge-page)
-           calc(var(--hauteur-nav) + 82px + env(safe-area-inset-bottom));
+  padding: calc(10px + env(safe-area-inset-top)) var(--marge-page)
+           calc(var(--hauteur-nav) + 16px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: var(--espace);
+  gap: 12px;
 }
 
 /* ============================================================
@@ -2551,3 +2551,87 @@
   fill: none; stroke: #B7860B; stroke-width: 2.4; stroke-linecap: round;
 }
 .pg-journal .ajout-repas:active { background: #FAF8F3; transform: scale(.98); }
+
+/* ============================================================
+   REFONTE DENSITE — maquette validee par Raci.
+   La journee entiere sans defilement : resume 120 px, pilule,
+   lignes discretes, liste des repas en carte unique.
+   ============================================================ */
+.pg-journal .j-date {
+  font-size: 12px; font-weight: 800; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--texte-2, #6B6455);
+}
+
+.pg-journal .rj {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 14px 14px 12px;
+}
+.pg-journal .rj .cal-anneau { flex: none; width: 88px; height: 88px; }
+.pg-journal .rj-num { font-size: 20px; font-weight: 800; line-height: 1; }
+.pg-journal .rj-num-lb { font-size: 9.5px; font-weight: 700; color: var(--texte-3, #8A8580); margin-top: 2px; letter-spacing: .02em; }
+.pg-journal .rj-macros { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 9px; }
+.pg-journal .rj-mac { display: flex; flex-direction: column; gap: 3px; }
+.pg-journal .rj-mac-l1 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.pg-journal .rj-mac-nom { font-size: 10.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--texte-2, #6B6455); }
+.pg-journal .rj-mac-val { font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pg-journal .rj-mac-val small { font-weight: 600; color: var(--texte-3, #8A8580); font-size: 11px; }
+.pg-journal .rj-mac-plus { font-style: normal; font-size: 10px; font-weight: 800; color: var(--alerte); margin-left: 4px; }
+.pg-journal .rj-mac-piste { height: 6px; border-radius: 3px; background: var(--piste); overflow: hidden; }
+.pg-journal .rj-mac-jauge { height: 100%; border-radius: 3px; transition: width .5s cubic-bezier(.22,.8,.28,1); }
+
+.pg-journal .zone-pilule { display: flex; justify-content: center; }
+
+.pg-journal .pesee-ligne {
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 32px; padding: 0 6px; cursor: pointer;
+}
+.pg-journal .pesee-ligne span { font-size: 13px; color: var(--texte-2, #6B6455); }
+.pg-journal .pesee-ligne b { font-size: 13px; font-weight: 800; color: var(--or-fonce); }
+
+.pg-journal .repas-carte { padding: 0; overflow: hidden; }
+.pg-journal .repas-ligne {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  min-height: 58px; padding: 0 16px;
+  background: none; border: none; font-family: inherit; text-align: left;
+  cursor: pointer;
+}
+.pg-journal .repas-ligne + .repas-ligne { border-top: 1px solid var(--bordure-fine, #ECE8DF); }
+.pg-journal .repas-ligne:active { background: #F6F2EA; }
+.pg-journal .rl-g { flex: 1; min-width: 0; }
+.pg-journal .rl-nom {
+  display: block; font-size: 15px; font-weight: 700; color: var(--texte, #191919);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.25;
+}
+.pg-journal .rl-nom--vide { color: var(--texte-3, #8A8580); font-weight: 600; }
+.pg-journal .rl-sous {
+  display: block; font-size: 11px; font-weight: 600; color: var(--texte-2, #6B6455);
+  margin-top: 3px; font-variant-numeric: tabular-nums;
+}
+.pg-journal .rl-sous i { font-style: normal; color: var(--texte-3, #8A8580); font-weight: 700; margin: 0 1px; }
+.pg-journal .rl-kcal { font-size: 14px; font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pg-journal .rl-kcal small { font-weight: 600; color: var(--texte-3, #8A8580); font-size: 11px; }
+.pg-journal .rl-kcal--vide { color: var(--texte-3, #8A8580); }
+.pg-journal .repas-ligne--ajout .rl-nom { color: var(--or-fonce); font-weight: 800; }
+
+.pg-journal .repas-pied {
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 44px; padding: 0 16px;
+  background: #FBF8F1; border-top: 1px solid var(--bordure-fine, #ECE8DF);
+}
+.pg-journal .repas-pied .rp-t { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--texte-2, #6B6455); }
+.pg-journal .repas-pied .rp-v { font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.pg-journal .repas-pied .rp-v small { font-size: 11px; font-weight: 600; color: var(--texte-3, #8A8580); }
+
+.pg-journal .courses-ligne {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; min-height: 36px; margin-top: 0;
+  background: none; border: none; font-family: inherit; cursor: pointer;
+  font-size: 13px; font-weight: 800; color: var(--texte-2, #6B6455);
+}
+.pg-journal .courses-ligne svg {
+  width: 17px; height: 17px; fill: none; stroke: currentColor;
+  stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .courses-ligne:active { color: var(--texte, #191919); }
+
+.profil-volet .profil-calc { color: var(--or-fonce, #8F6200) !important; text-decoration: none !important; }
