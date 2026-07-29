@@ -86,14 +86,14 @@ function OngletJournal() {
           </div>
         </section>
 
-        <button class="courses-ligne" onClick={() => { ongletActif.value = 'courses'; }}>
+        <div class="bande-bas">
+          <WaterTracker />
+          <button class="courses-ligne" onClick={() => { ongletActif.value = 'courses'; }}>
           <svg viewBox="0 0 24 24"><path d="M4 5h2l1.6 9.2a1.6 1.6 0 001.58 1.3h7.6a1.6 1.6 0 001.57-1.26L20 8H6.4" /><circle cx="9.6" cy="19.4" r="1.4" /><circle cx="16.8" cy="19.4" r="1.4" /></svg>
           {t('qa_courses')}
-        </button>
-      </div>
-
-      <div class="fab-rangee">
-        <WaterTracker />
+          </button>
+          <span aria-hidden="true" />
+        </div>
       </div>
 
       {modale && <AddMealModal montre={true} fermer={() => setModale(false)} />}

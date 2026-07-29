@@ -547,17 +547,17 @@
    Meme couche, meme hauteur, mais independants. La rangee ne
    capte pas les clics : seuls les boutons le font.
    ============================================================ */
-.pg-journal .fab-rangee {
-  position: fixed; z-index: 80;
-  bottom: calc(var(--hauteur-nav) + 22px + env(safe-area-inset-bottom));
-  left: 12px; right: 12px;
-  max-width: 448px; margin: 0 auto;
-  /* Le bouton jaune « Ajouter » ayant quitte la rangee (Raci), la goutte
-     est seule : space-between n'avait plus de sens, elle se cale a gauche. */
-  display: flex; align-items: center; justify-content: flex-start; gap: 10px;
-  pointer-events: none;
+/* La goutte a quitte le positionnement fixe : une position en pixels ne
+   pouvait pas etre juste sur tous les ecrans (chevauchement du Total
+   chez Raci, centre en labo). Elle vit desormais DANS LE FLUX, rangee
+   partagee avec la ligne Courses : [goutte | courses centre | vide],
+   alignee par la mise en page elle-meme — juste partout, a jamais. */
+.pg-journal .bande-bas {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; min-height: 46px;
 }
-.pg-journal .fab-rangee > * { pointer-events: auto; }
+.pg-journal .bande-bas .courses-ligne { grid-column: 2; }
+.pg-journal .bande-bas .water-fab { justify-self: start; }
 /* Le bouton Ajouter adopte la meme discretion que la goutte :
    semi-transparent au repos, pleinement opaque au contact. */
 .pg-journal .fab-rangee > .fab { opacity: .72; transition: transform .15s, opacity .15s, background .15s; }
