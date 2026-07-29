@@ -11,17 +11,17 @@
 
 :root {
   /* ---------- Surfaces ---------- */
-  --fond: #F5F6F8;              /* base NEUTRE (V1) : le dore vit dans le halo du haut, pas sur toute la page */
+  --fond: #F4F3F0;              /* base neutre CHAUDE : le dore vit dans le halo du haut, pas sur toute la page */
   --carte: #FFFFFF;
-  --bordure: #DDD6C6;           /* bordure de carte, lisible sur le papier sombre */
-  --bordure-fine: #ECE8DF;      /* separateurs internes, plus clair */
-  --piste: #EDE7D8;             /* fond des barres de progression */
+  --bordure: #E5E3DE;           /* bordure de carte */
+  --bordure-fine: #EDEBE6;      /* separateurs internes, plus clair */
+  --piste: #EAE8E3;             /* fond des barres de progression */
 
   /* ---------- Texte ---------- */
   --texte: #191919;             /* titres et valeurs */
-  --texte-2: #6B6455;           /* secondaire, chaud (l'ancien 6B7280 etait un gris bleu etranger) */
-  --texte-3: #8A8580;           /* descriptions, unites, labels */
-  --texte-nav: #8A8375;         /* onglets au repos */
+  --texte-2: #63615C;           /* secondaire — gris neutre chaud, meme famille que le fond */
+  --texte-3: #8E8B85;           /* descriptions, unites, labels */
+  --texte-nav: #8E8B85;         /* onglets au repos */
 
   /* ---------- Couleurs de marque ----------
      Une couleur = un sens. Ne jamais en creer de proche. */
