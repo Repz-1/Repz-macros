@@ -44,7 +44,7 @@
   max-width: 640px;          /* au-dela, la ligne devient illisible */
   margin: 0 auto;
   padding: calc(10px + env(safe-area-inset-top)) var(--marge-page)
-           calc(var(--hauteur-nav) + 30px + env(safe-area-inset-bottom));
+           calc(var(--hauteur-nav) + 16px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 12px;
