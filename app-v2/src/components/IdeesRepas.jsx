@@ -34,7 +34,22 @@ function macrosIdee(idee) {
 // en exces de lipides est un contresens.
 // ============================================================
 const RATIO_MIN = 0.35;
-const RATIO_MAX = 1.4;
+// 1.4 bridait les portions a ~740 kcal maximum : impossible d'honorer
+// un reste de 900. Porte a 2.0, toujours realiste (une recette de base
+// a 350 kcal plafonne a 700).
+const RATIO_MAX = 2.0;
+
+/**
+ * Cible calorique d'une suggestion : TOUJOURS ce qu'il reste, plafonne a
+ * une taille de repas plausible pour l'objectif du jour (28 %).
+ * L'ancien seuil a 800 kcal basculait sur une « regle du quart » qui
+ * proposait 252 kcal quand il en restait 901 — un quart de journee, pas
+ * un repas. Plus de seuil, plus de rupture.
+ */
+function cibleRepas(reste, objKcal) {
+  const plafond = objKcal > 0 ? objKcal * 0.28 : 800;
+  return Math.max(150, Math.min(reste > 0 ? reste : plafond, plafond));
+}
 /** Calcule les quantites d'une idee pour un ratio donne. */
 function quantites(idee, ratio) {
   const parts = [];
@@ -241,9 +256,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
       lip:   obj.lip   > 0 ? obj.lip   - tot.lip   : null,
     };
     if (reste <= 120) return false;      // journee complete : rien a suggerer
-    const cible = reste > 0 && reste <= 800
-      ? Math.max(150, reste)
-      : Math.max(250, Math.min(700, reste > 0 ? reste * 0.28 : 400));
+    const cible = cibleRepas(reste, obj.kcal);
     return CATEGORIES_IDEES.some(c =>
       EAT_IDEAS[c.k].some(idee => adapter(idee, restes, cible) !== null));
   })();
@@ -314,12 +327,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
           carbs: obj.carbs > 0 ? obj.carbs - tot.carbs : null,
           lip:   obj.lip   > 0 ? obj.lip   - tot.lip   : null,
         };
-        // Journee entamee, moins de ~800 kcal devant soi : la suggestion
-        // doit FINIR la journee, pas en proposer un quart. Sinon, regle
-        // du quart comme avant.
-        const cible = reste > 0 && reste <= 800
-          ? Math.max(150, reste)
-          : Math.max(250, Math.min(700, reste > 0 ? reste * 0.28 : 400));
+        const cible = cibleRepas(reste, obj.kcal);
 
         const retenues = EAT_IDEAS[cat]
           .map(idee => ({ idee, p: adapter(idee, restes, cible) }))

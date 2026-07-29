@@ -23,7 +23,7 @@ export const EAT_IDEAS = {
         { nom:'Skyr + avoine + beurre cacahuète + banane', ings:[{n:'Skyr',q:350,l:'skyr'},{n:'Avoine',q:40,l:'avoine'},{n:'Beurre cacahuète',q:15,l:'beurre cacahuète'},{n:'Banane',q:120,l:'banane'}] },
         { nom:'Wrap thon + crudités', ings:[{n:'Wrap/Tortilla',q:60,l:'tortilla'},{n:'Thon naturel boite',q:140,l:'thon'},{n:'Tomate',q:80,l:'tomate'},{n:'Salade verte',q:40,l:'salade'}] },
         { nom:'Thon + pâtes + tomate', ings:[{n:'Thon naturel boite',q:100,l:'thon'},{n:'Pâtes blanches cuites',q:200,l:'pâtes cuites'},{n:'Tomate',q:100,l:'tomate'}] },
-        { nom:'Jambon de dinde + œufs + pain complet', ings:[{n:'Jambon de dinde',q:60,l:'jambon de dinde'},{n:'Oeuf entier M (50g)',q:100,l:'œufs'},{n:'Pain complet',q:60,l:'pain complet'}] },
+        { nom:'Jambon de dinde + œufs + pain complet', ings:[{n:'Jambon de dinde',q:60,l:'jambon de dinde'},{n:'Oeuf entier M (50g)',q:2,l:'œuf'},{n:'Pain complet',q:60,l:'pain complet'}] },
         { nom:'Wrap poulet crudités', ings:[{n:'Wrap/Tortilla',q:60,l:'tortilla'},{n:'Poulet cuit',q:100,l:'poulet cuit'},{n:'Tomate',q:50,l:'tomate'}] },
         { nom:'Fromage blanc + avoine + banane', ings:[{n:'Fromage blanc 0%',q:250,l:'fromage blanc'},{n:'Flocons avoine',q:40,l:'avoine'},{n:'Banane',q:100,l:'banane'}] },
         { nom:'Galettes de riz + beurre cacahuète + banane', ings:[{n:'Galette de riz',q:30,l:'galettes de riz'},{n:'Beurre cacahuète',q:20,l:'beurre cacahuète'},{n:'Banane',q:100,l:'banane'}] }
@@ -36,7 +36,7 @@ export const EAT_IDEAS = {
         { nom:'Chili con carne', ings:[{n:'Boeuf hache 5% cuit',q:150,l:'bœuf haché 5% cuit'},{n:'Haricots rouges (cuits)',q:150,l:'haricots rouges cuits'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Sauce tomate',q:80,l:'sauce tomate'}] },
         { nom:'Pâtes bolognaise dinde', ings:[{n:'Dinde hachée cuite',q:150,l:'dinde hachée cuite'},{n:'Pâtes blanches cuites',q:200,l:'pâtes cuites'},{n:'Tomate',q:80,l:'tomate'}] },
         { nom:'Wrap poulet mozzarella', ings:[{n:'Wrap/Tortilla',q:60,l:'tortilla'},{n:'Poulet cuit',q:120,l:'poulet cuit'},{n:'Mozzarella',q:40,l:'mozzarella'}] },
-        { nom:'Riz sauté crevettes + œuf', ings:[{n:'Riz cuit',q:200,l:'riz cuit'},{n:'Crevettes',q:100,l:'crevettes'},{n:'Oeuf entier M (50g)',q:50,l:'œuf'}] },
+        { nom:'Riz sauté crevettes + œuf', ings:[{n:'Riz cuit',q:200,l:'riz cuit'},{n:'Crevettes',q:100,l:'crevettes'},{n:'Oeuf entier M (50g)',q:1,l:'œuf'}] },
         { nom:'Burger dinde maison', ings:[{n:'Pain blanc',q:80,l:'pain'},{n:'Dinde hachée cuite',q:130,l:'dinde hachée cuite'},{n:'Mozzarella',q:30,l:'mozzarella'}] },
         { nom:'Bowl saumon fumé + riz', ings:[{n:'Saumon fume',q:80,l:'saumon fumé'},{n:'Riz cuit',q:200,l:'riz cuit'},{n:'Tomate',q:60,l:'tomate'}] }
     ],
@@ -48,7 +48,7 @@ export const EAT_IDEAS = {
         { nom:'Omelette feta + épinards + pain', ings:[{n:'Oeuf entier M (50g)',q:3,l:'œuf'},{n:'Feta',q:40,l:'feta'},{n:'Épinards frais',q:80,l:'épinards'},{n:'Pain complet',q:50,l:'pain complet'}] },
         { nom:'Tofu + riz + brocoli', ings:[{n:'Tofu',q:150,l:'tofu'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Brocoli',q:150,l:'brocoli'}] },
         { nom:'Pois chiches + riz + épinards', ings:[{n:'Pois chiches cuits',q:200,l:'pois chiches cuits'},{n:'Riz cuit',q:150,l:'riz cuit'},{n:'Épinards',q:80,l:'épinards'}] },
-        { nom:'Œufs + haricots rouges + tomate', ings:[{n:'Oeuf entier M (50g)',q:150,l:'œufs'},{n:'Haricots rouges',q:150,l:'haricots rouges'},{n:'Tomate',q:80,l:'tomate'}] },
+        { nom:'Œufs + haricots rouges + tomate', ings:[{n:'Oeuf entier M (50g)',q:3,l:'œuf'},{n:'Haricots rouges',q:150,l:'haricots rouges'},{n:'Tomate',q:80,l:'tomate'}] },
         { nom:'Poêlée haricots noirs + patate douce + œuf', ings:[{n:'Haricots noirs',q:150,l:'haricots noirs'},{n:'Patate douce (cuite)',q:200,l:'patate douce cuite'},{n:'Oeuf entier M (50g)',q:2,l:'œuf'}] },
         { nom:'Fromage blanc + avoine + amandes + miel', ings:[{n:'Fromage blanc 0%',q:250,l:'fromage blanc'},{n:'Flocons avoine',q:40,l:'avoine'},{n:'Amandes',q:15,l:'amandes'},{n:'Miel',q:15,l:'miel'}] }
     ]
