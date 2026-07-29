@@ -20,7 +20,7 @@
 
   background: var(--fond);
   color: var(--texte);
-  font-family: 'DM Sans', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Satoshi', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   min-height: 100vh;
 }
 
@@ -80,15 +80,15 @@
    Une seule famille, quatre niveaux. Au-dela, la page perd
    sa hierarchie.
    ============================================================ */
-.pg-journal .t-titre    { font-size: 17px;   font-weight: 800; color: var(--texte); letter-spacing: -.01em; }
+.pg-journal .t-titre    { font-size: 17px;   font-weight: 500; color: var(--texte); letter-spacing: -.01em; }
 .pg-journal .t-sous     { font-size: 14.5px; font-weight: 600; color: var(--texte-2); }
 .pg-journal .t-info     { font-size: 13.5px; font-weight: 500; color: var(--texte-2); }
 .pg-journal .t-desc     { font-size: 12.5px; font-weight: 500; color: var(--texte-3); line-height: 1.55; }
 .pg-journal .t-etiquette {
-  font-size: 11.5px; font-weight: 800; color: var(--texte-3);
+  font-size: 11.5px; font-weight: 500; color: var(--texte-3);
   text-transform: uppercase; letter-spacing: .06em;
 }
-.pg-journal .t-chiffre  { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+.pg-journal .t-chiffre  { font-size: 30px; font-weight: 500; line-height: 1; letter-spacing: -.02em; }
 
 /* ============================================================
    ELEMENTS FIXES
@@ -214,7 +214,7 @@
 .pg-journal .cal-date {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   margin-bottom: 8px; padding-top: 2px;
-  font-size: 15px; font-weight: 800; letter-spacing: .06em;
+  font-size: 15px; font-weight: 500; letter-spacing: .06em;
   color: #6B6660; text-transform: uppercase;
 }
 .pg-journal .cal-date-ic {
@@ -240,7 +240,7 @@
   white-space: nowrap; overflow: visible;
 }
 .pg-journal .cal-cote-val {
-  font-size: 22px; font-weight: 800; color: #191919;
+  font-size: 22px; font-weight: 500; color: #191919;
   margin-top: 2px; letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;   /* les chiffres ne dansent pas */
 }
@@ -262,7 +262,7 @@
 }
 .pg-journal .cal-num {
   font-size: 48px;
-  font-weight: 800; line-height: 1; color: #191919;
+  font-weight: 300; line-height: 1; color: #191919;   /* Satoshi Light (Raci) */
   letter-spacing: -1.5px; font-variant-numeric: tabular-nums;
 }
 /* Depassement : trois paliers, du plus doux au plus alarmant. */
@@ -288,15 +288,15 @@
 }
 .pg-journal .cal-macro { min-width: 0; }
 .pg-journal .cal-macro-nom {
-  font-size: 13.5px; font-weight: 800; color: var(--texte);
+  font-size: 13.5px; font-weight: 500; color: var(--texte);
 }
 .pg-journal .cal-macro-val {
-  font-size: 12.5px; font-weight: 800; color: #191919;
+  font-size: 12.5px; font-weight: 500; color: #191919;
   margin: 6px 0 8px; white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 .pg-journal .cal-macro-val span { color: #9CA3AF; font-weight: 700; }
-.pg-journal .cal-macro-val b { font-weight: 800; }
+.pg-journal .cal-macro-val b { font-weight: 500; }
 .pg-journal .cal-macro-piste {
   height: 7px; background: var(--mac-piste); border-radius: 6px; overflow: hidden;
 }
@@ -410,7 +410,7 @@
   position: absolute; top: 5px; right: 7px;
   display: flex; align-items: center; gap: 2px;
   background: var(--or); color: #5A3E00;
-  font-size: 8.5px; font-weight: 800; letter-spacing: .4px;
+  font-size: 8.5px; font-weight: 500; letter-spacing: .4px;
   padding: 2px 6px; border-radius: 7px;
 }
 .pg-journal .qa-pro::before { content: '\2726'; font-size: 7.5px; line-height: 1; }
@@ -499,11 +499,11 @@
 /* --- Zone 2 : contenu --- */
 .pg-journal .mc-info { flex: 1; min-width: 0; }
 .pg-journal .mc-titre {
-  font-size: 18px; font-weight: 800; color: var(--texte);
+  font-size: 18px; font-weight: 500; color: var(--texte);
   margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pg-journal .mc-titre-champ {
-  font-size: 18px; font-weight: 800; color: var(--texte);
+  font-size: 18px; font-weight: 500; color: var(--texte);
   border: none; background: #F1EFE9; border-radius: 6px;
   width: 100%; padding: 0 4px; font-family: inherit;
 }
@@ -606,13 +606,13 @@
   padding: 22px 20px calc(24px + env(safe-area-inset-bottom));
   text-align: center;
 }
-.water-feuille h3 { font-size: 17px; font-weight: 800; margin-bottom: 12px; }
-.water-total { font-size: 34px; font-weight: 800; color: #0284C7; margin-bottom: 18px; }
+.water-feuille h3 { font-size: 17px; font-weight: 500; margin-bottom: 12px; }
+.water-total { font-size: 34px; font-weight: 500; color: #0284C7; margin-bottom: 18px; }
 .water-btns { display: flex; gap: 10px; }
 .water-btns button {
   flex: 1; padding: 14px; border: none; border-radius: var(--rayon-puce);
   background: #E0F2FE; color: #0369A1;
-  font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
+  font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer;
 }
 .water-btns button:active { transform: scale(.97); background: #BAE6FD; }
 
@@ -670,7 +670,7 @@
 }
 
 .pg-journal .mc-ing-macros { text-align: right; line-height: 1.2; min-width: 0; }
-.pg-journal .mc-ing-kcal { font-size: 14px; font-weight: 800; color: #1A1A1A; white-space: nowrap; }
+.pg-journal .mc-ing-kcal { font-size: 14px; font-weight: 500; color: #1A1A1A; white-space: nowrap; }
 .pg-journal .mc-ing-sub {
   font-size: 10px; font-weight: 500; color: var(--texte-3);
   margin-top: 2px; white-space: nowrap;
@@ -719,7 +719,7 @@
 .pg-journal .mc-scan-pro {
   position: absolute; top: -6px; right: -5px;
   background: var(--or); color: #5A3E00;
-  font-size: 8px; font-weight: 800; font-style: normal;
+  font-size: 8px; font-weight: 500; font-style: normal;
   padding: 1.5px 5px; border-radius: 6px;
 }
 
@@ -777,7 +777,7 @@
   to   { transform: translateY(0); opacity: 1; }
 }
 .mtype-titre {
-  font-size: 16px; font-weight: 800; color: #1A1A1A;
+  font-size: 16px; font-weight: 500; color: #1A1A1A;
   text-align: center; margin-bottom: 14px;
 }
 .mtype-grille {
@@ -787,7 +787,7 @@
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   background: #FFFFFF; border: 1.5px solid var(--bordure); border-radius: 16px;
   padding: 16px 8px; cursor: pointer;
-  font-size: 14px; font-weight: 800; color: #1A1A1A; font-family: inherit;
+  font-size: 14px; font-weight: 500; color: #1A1A1A; font-family: inherit;
   transition: transform var(--transition), border-color var(--transition), background var(--transition);
 }
 .mtype-opt:active {
@@ -875,7 +875,7 @@
 .pg-journal .eat-plus {
   margin-top: 12px; padding: 11px; width: 100%;
   background: none; border: 1.5px solid var(--bordure); border-radius: 14px;
-  font-family: inherit; font-size: 13px; font-weight: 800; color: #191919;
+  font-family: inherit; font-size: 13px; font-weight: 500; color: #191919;
   cursor: pointer;
 }
 .pg-journal .eat-plus:active { background: #FAF7EF; }
@@ -894,7 +894,7 @@
   cursor: pointer;
 }
 .pg-journal .eat-idea-name {
-  font-size: 16px; font-weight: 800; color: #1A1A1A; line-height: 1.25; letter-spacing: -0.01em;
+  font-size: 16px; font-weight: 500; color: #1A1A1A; line-height: 1.25; letter-spacing: -0.01em;
 }
 .pg-journal .eat-idea-ex {
   font-size: 13px; color: #6B6259; margin-top: 5px; line-height: 1.5;
@@ -902,13 +902,13 @@
 .pg-journal .eat-idea-kcal {
   /* Fini le chip beige : la valeur parle en encre grasse, les
      proteines en or fonce — un seul accent dore par ligne. */
-  margin-top: 7px; font-size: 13.5px; font-weight: 800; color: #191919;
+  margin-top: 7px; font-size: 13.5px; font-weight: 500; color: #191919;
 }
 .pg-journal .eat-prot { font-weight: 700; }
 .pg-journal .eat-prot.ok { color: #2E7D4F; }
 .pg-journal .eat-open {
   display: block; text-align: right; margin-top: 8px;
-  font-size: 13px; font-weight: 800; color: #191919;
+  font-size: 13px; font-weight: 500; color: #191919;
 }
 
 /* ============================================================
@@ -987,7 +987,7 @@
 /* ---------- En-tete ---------- */
 .fr-tete { padding: 20px 20px 18px; }
 .fr-titre {
-  font-size: 25px; font-weight: 800; line-height: 1.2;
+  font-size: 25px; font-weight: 500; line-height: 1.2;
   letter-spacing: -.02em; color: #191919; margin: 0;
 }
 .fr-meta {
@@ -1007,7 +1007,7 @@
 /* ---------- Corps ---------- */
 .fr-corps { padding: 20px; }
 .fr-sec {
-  font-size: 12px; font-weight: 800; letter-spacing: .1em;
+  font-size: 12px; font-weight: 500; letter-spacing: .1em;
   text-transform: uppercase; color: #A8A297;
   margin: 0 0 12px;
 }
@@ -1025,7 +1025,7 @@
   font-size: 14.5px; font-weight: 500; color: #3D3A35;
   padding: 7px 0; line-height: 1.55;
 }
-.fr-steps li::marker { font-weight: 800; color: #DFA004; }
+.fr-steps li::marker { font-weight: 500; color: #DFA004; }
 
 .fr-tip {
   background: #FFF6DD; border-radius: 14px;
@@ -1040,7 +1040,7 @@
    FAVORIS DANS LA RECHERCHE
    ============================================================ */
 .pg-journal .mc-res-titre {
-  font-size: 11px; font-weight: 800; letter-spacing: .07em;
+  font-size: 11px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; color: #A8A297;
   padding: 10px 14px 4px;
 }
@@ -1089,7 +1089,7 @@
   width: 100%; max-width: 340px; background: #FFFFFF;
   border-radius: 22px; padding: 24px 20px; text-align: center;
 }
-.cp-boite h3 { font-size: 18px; font-weight: 800; margin: 0 0 4px; }
+.cp-boite h3 { font-size: 18px; font-weight: 500; margin: 0 0 4px; }
 .cp-sous { font-size: 13.5px; color: var(--texte-2); margin: 0 0 18px; }
 .cp-compteur {
   display: flex; align-items: center; justify-content: center; gap: 20px;
@@ -1102,14 +1102,14 @@
 }
 .cp-compteur button:active { background: #F5F2EC; }
 .cp-compteur span {
-  font-size: 30px; font-weight: 800; min-width: 56px;
+  font-size: 30px; font-weight: 500; min-width: 56px;
   font-variant-numeric: tabular-nums;
 }
 .cp-total { font-size: 14px; font-weight: 700; color: #8F6200; margin-bottom: 20px; }
 .cp-valider {
   width: 100%; padding: 14px; border: none; border-radius: 14px;
   background: var(--or); color: #181818;
-  font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
+  font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer;
 }
 .cp-valider:active { transform: scale(.98); }
 
@@ -1124,7 +1124,7 @@
   display: flex; align-items: center; gap: 12px;
   padding: calc(16px + env(safe-area-inset-top)) 17px 12px;
 }
-.mp-entete h2 { font-size: 20px; font-weight: 800; margin: 0; }
+.mp-entete h2 { font-size: 20px; font-weight: 500; margin: 0; }
 .mp-x {
   width: 38px; height: 38px; border-radius: 50%; flex: none;
   border: none; background: #F2F0EA; color: #4B4B4B;
@@ -1144,7 +1144,7 @@
 .mp-champ input:focus { outline: none; border-color: var(--or); }
 
 .mp-sec {
-  font-size: 12px; font-weight: 800; letter-spacing: .08em;
+  font-size: 12px; font-weight: 500; letter-spacing: .08em;
   text-transform: uppercase; color: #A8A297; margin: 22px 0 6px;
 }
 .mp-aide { font-size: 12.5px; color: var(--texte-3); margin: 0 0 12px; line-height: 1.5; }
@@ -1198,7 +1198,7 @@
   font-size: 20px; line-height: 1; font-family: inherit; cursor: pointer;
 }
 .mp-compteur span {
-  font-size: 26px; font-weight: 800; min-width: 40px; text-align: center;
+  font-size: 26px; font-weight: 500; min-width: 40px; text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1216,7 +1216,7 @@
 .mp-valider {
   width: 100%; padding: 15px; border: none; border-radius: 14px;
   background: var(--or); color: #181818;
-  font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
+  font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer;
 }
 .mp-valider:disabled { background: var(--bordure-fine); color: var(--texte-3); cursor: default; }
 .mp-supprimer {
@@ -1231,7 +1231,7 @@
   padding: 16px; margin-bottom: 10px; font-family: inherit; cursor: pointer;
 }
 .mp-carte:active { transform: scale(.99); }
-.mp-carte-nom { font-size: 16px; font-weight: 800; color: #191919; }
+.mp-carte-nom { font-size: 16px; font-weight: 500; color: #191919; }
 .mp-carte-detail { font-size: 13px; color: var(--texte-3); margin-top: 4px; }
 .mp-nouveau {
   width: 100%; padding: 15px; margin-top: 6px;
@@ -1250,7 +1250,7 @@
 .crs { padding: 4px 0 0; }
 
 .crs-entete { margin-bottom: 18px; }
-.crs-entete h2 { font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -.02em; }
+.crs-entete h2 { font-size: 24px; font-weight: 500; margin: 0; letter-spacing: -.02em; }
 .crs-entete p { font-size: 14px; color: var(--texte-3); margin: 6px 0 0; }
 
 /* ---------- Preparation ---------- */
@@ -1259,7 +1259,7 @@
   padding: 18px; margin-bottom: 18px;
   box-shadow: 0 8px 24px rgba(24, 24, 24, .06);
 }
-.crs-prep h3 { font-size: 15px; font-weight: 800; margin: 0 0 14px; }
+.crs-prep h3 { font-size: 15px; font-weight: 500; margin: 0 0 14px; }
 .crs-prep-ligne { margin-bottom: 14px; }
 .crs-lbl { font-size: 13px; font-weight: 700; color: var(--texte-2); margin-bottom: 8px; }
 
@@ -1275,7 +1275,7 @@
 .crs-generer {
   width: 100%; margin-top: 4px;
   background: var(--or); color: #191919; border: none; border-radius: 14px;
-  padding: 15px; font-size: 15px; font-weight: 800;
+  padding: 15px; font-size: 15px; font-weight: 500;
   font-family: inherit; cursor: pointer;
   box-shadow: 0 8px 20px rgba(247, 181, 0, .3);
 }
@@ -1293,7 +1293,7 @@
 .crs-rayon { margin-bottom: 18px; }
 .crs-rayon-tete {
   display: flex; align-items: center; gap: 9px;
-  font-size: 15px; font-weight: 800; margin: 0 4px 9px;
+  font-size: 15px; font-weight: 500; margin: 0 4px 9px;
 }
 .crs-emo { font-size: 19px; }
 .crs-nb {
@@ -1313,7 +1313,7 @@
   width: 26px; height: 26px; flex: none; border-radius: 8px;
   border: 2px solid #DCDCDC; background: none;
   display: flex; align-items: center; justify-content: center;
-  color: #FFFFFF; font-size: 15px; font-weight: 800;
+  color: #FFFFFF; font-size: 15px; font-weight: 500;
   cursor: pointer; font-family: inherit;
 }
 .crs-item.fait .crs-check { background: #10B981; border-color: #10B981; }
@@ -1351,7 +1351,7 @@
   display: flex; align-items: center; justify-content: center; gap: 9px;
   width: 100%; padding: 15px; border: none; border-radius: 14px;
   background: #191919; color: #FFFFFF;
-  font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
+  font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer;
 }
 .crs-partager .ic {
   width: 18px; height: 18px;
@@ -1464,7 +1464,7 @@
     background:#fff; border-radius:22px; padding:24px; max-width:340px; width:100%;
     text-align:center; box-shadow:0 12px 40px rgba(0,0,0,.25);
 }
-.water-box h3 { font-size:19px; font-weight:800; margin:0 0 4px; }
+.water-box h3 { font-size:19px; font-weight:500; margin:0 0 4px; }
 .water-box .wb-sub { font-size:13px; color:#6b7280; margin-bottom:18px; }
 
 /* La bouteille */
@@ -1503,14 +1503,14 @@
 }
 .bottle-pct {
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-size:22px; font-weight:800; color:#0369a1; z-index:2;
+    font-size:22px; font-weight:500; color:#0369a1; z-index:2;
 }
 .water-tap-hint { font-size:13px; color:#0ea5e9; font-weight:600; margin-bottom:16px; }
 
 .water-modal .water-total {
     background:#f0f9ff; border-radius:12px; padding:14px; margin-bottom:16px;
 }
-.water-modal .water-total .wt-v { font-size:26px; font-weight:800; color:#0ea5e9; }
+.water-modal .water-total .wt-v { font-size:26px; font-weight:500; color:#0ea5e9; }
 .water-modal .water-total .wt-l { font-size:12px; color:#6b7280; margin-top:2px; }
 
 .water-actions { display:flex; gap:8px; }
@@ -1784,7 +1784,7 @@
 }
 .pg-journal .rp-resume-txt { flex: 1; min-width: 84px; }
 .pg-journal .rp-kcal {
-  font-size: 28px; font-weight: 800; color: #191919; line-height: 1; white-space: nowrap;
+  font-size: 28px; font-weight: 500; color: #191919; line-height: 1; white-space: nowrap;
   letter-spacing: -.03em; font-variant-numeric: tabular-nums;
 }
 .pg-journal .rp-kcal span { font-size: 15px; font-weight: 600; color: var(--texte-3); letter-spacing: 0; margin-left: 3px; }
@@ -1800,7 +1800,7 @@
 .pg-journal .rp-macro { text-align: center; padding: 0 6px; }
 .pg-journal .rp-macro + .rp-macro { border-left: 1px solid #F3EFE8; }
 .pg-journal .rp-macro b {
-  display: block; font-size: 17px; font-weight: 800; color: #191919;
+  display: block; font-size: 17px; font-weight: 500; color: #191919;
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
 .pg-journal .rp-macro b i { font-style: normal; font-size: 12px; font-weight: 600; color: var(--texte-3); margin-left: 1px; }
@@ -1832,7 +1832,7 @@
   border-top: 1px solid var(--piste); padding: 13px 0 8px; margin-top: 2px;
 }
 .pg-journal .rp-total-lb { font-size: 16px; font-weight: 600; color: #4A4642; }
-.pg-journal .rp-total-val { font-size: 19px; font-weight: 800; color: #191919; font-variant-numeric: tabular-nums; }
+.pg-journal .rp-total-val { font-size: 19px; font-weight: 500; color: #191919; font-variant-numeric: tabular-nums; }
 .pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: var(--texte-3); margin-left: 3px; }
 
 /* ---------- Boutons de bas de page ---------- */
@@ -1946,7 +1946,7 @@
   stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-journal .rp-colonne .dn-lb { font-size: 16px; font-weight: 500; color: #2C2A27; }
-.pg-journal .rp-colonne .dn-val { font-size: 17px; font-weight: 800; color: #191919; }
+.pg-journal .rp-colonne .dn-val { font-size: 17px; font-weight: 500; color: #191919; }
 
 /* Chevron de navigation : la carte repas mene a une page */
 .pg-journal .mc-chevron--nav { font-size: 22px; transform: none; margin-top: -2px; }
@@ -2043,7 +2043,7 @@
 .pg-journal .j-prenom,
 .pg-entrainer .j-prenom {
   justify-self: center;
-  font-size: 17px; font-weight: 800; color: #191919;
+  font-size: 17px; font-weight: 500; color: #191919;
   letter-spacing: -.01em; white-space: nowrap;
   max-width: 42vw; overflow: hidden; text-overflow: ellipsis;
 }
@@ -2063,16 +2063,16 @@
   gap: 10px; margin-bottom: 10px;
 }
 .pg-journal .dn-titre {
-  font-size: 11.5px; font-weight: 800; color: var(--texte-3);
+  font-size: 11.5px; font-weight: 500; color: var(--texte-3);
   text-transform: uppercase; letter-spacing: .06em;
 }
 .pg-journal .dn-offert {
-  font-size: 10.5px; font-weight: 800; color: #15803D;
+  font-size: 10.5px; font-weight: 500; color: #15803D;
   background: #E9F7EF; border-radius: 999px; padding: 3px 8px;
   white-space: nowrap;
 }
 .pg-journal .dn-pro {
-  font-size: 10.5px; font-weight: 800; color: #8F6200;
+  font-size: 10.5px; font-weight: 500; color: #8F6200;
   background: #FFF4CC; border-radius: 999px; padding: 3px 8px;
 }
 .pg-journal .dn-ligne {
@@ -2082,7 +2082,7 @@
 .pg-journal .dn-ligne:first-child { border-top: none; padding-top: 2px; }
 .pg-journal .dn-lb { font-size: 13.5px; font-weight: 600; color: var(--texte-2); }
 .pg-journal .dn-val {
-  font-size: 14px; font-weight: 800; color: #191919;
+  font-size: 14px; font-weight: 500; color: #191919;
   font-variant-numeric: tabular-nums;
 }
 .pg-journal .dn-cadenas {
@@ -2102,7 +2102,7 @@
 .pg-journal .dn-cta {
   width: 100%; margin-top: 12px; padding: 11px 0;
   border: none; border-radius: 12px; cursor: pointer; font-family: inherit;
-  font-size: 13.5px; font-weight: 800; color: #181818;
+  font-size: 13.5px; font-weight: 500; color: #181818;
   background: linear-gradient(135deg, #FFD86B, #F7B500);
   box-shadow: 0 4px 14px rgba(247, 181, 0, .28);
 }
@@ -2144,7 +2144,7 @@
 }
 .bv-tete { margin-bottom: 6px; }
 .bv-badge {
-  display: inline-block; font-size: 12px; font-weight: 800;
+  display: inline-block; font-size: 12px; font-weight: 500;
   padding: 5px 12px; border-radius: 999px; letter-spacing: .01em;
 }
 .bv-barres { display: flex; gap: 6px; margin-top: 10px; }
@@ -2159,7 +2159,7 @@
 }
 .bv-logo { width: 54px; height: auto; margin: 8px 0 14px; }
 .bv-titre {
-  font-size: 24px; font-weight: 800; letter-spacing: -.02em;
+  font-size: 24px; font-weight: 500; letter-spacing: -.02em;
   color: #191919; margin: 0 0 8px; line-height: 1.2;
 }
 .bv-just {
@@ -2178,7 +2178,7 @@
 .bv-carte--choisie { border-color: #F7B500; box-shadow: 0 4px 14px rgba(247, 181, 0, .16); }
 .bv-emo { font-size: 22px; flex: none; }
 .bv-carte-txt { display: flex; flex-direction: column; gap: 2px; }
-.bv-carte-txt b { font-size: 15px; font-weight: 800; color: #191919; }
+.bv-carte-txt b { font-size: 15px; font-weight: 500; color: #191919; }
 .bv-carte-txt i { font-style: normal; font-size: 12.5px; font-weight: 500; color: var(--texte-3); }
 
 /* Pilules (sexe) et tuiles (nombres) */
@@ -2193,7 +2193,7 @@
 .bv-tuile {
   padding: 16px 0; border-radius: 14px; cursor: pointer;
   background: #fff; border: 1.5px solid var(--bordure); font-family: inherit;
-  font-size: 15px; font-weight: 800; color: #191919;
+  font-size: 15px; font-weight: 500; color: #191919;
 }
 .bv-tuile--choisie { border-color: #F7B500; background: #FFFFFF; }
 
@@ -2211,7 +2211,7 @@
   margin-top: auto; padding: 15px 0; border: none; border-radius: 999px;
   /* Le CTA porte l'or de la marque, comme sur l'ecran de connexion v1 */
   background: linear-gradient(135deg, #FFD86B, #F7B500); color: #181818;
-  font-family: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer;
+  font-family: inherit; font-size: 15.5px; font-weight: 500; cursor: pointer;
   box-shadow: 0 1px 2px rgba(24, 24, 24, .10), 0 10px 26px rgba(247, 181, 0, .32);
   transition: opacity .15s, transform .08s;
 }
@@ -2236,7 +2236,7 @@
   padding: 22px 20px; text-align: center; margin-bottom: 20px;
 }
 .bv-res-kcal {
-  font-size: 44px; font-weight: 800; color: #191919; line-height: 1;
+  font-size: 44px; font-weight: 500; color: #191919; line-height: 1;
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
 .bv-res-kcal span { font-size: 15px; font-weight: 700; color: var(--texte-3); letter-spacing: 0; }
@@ -2246,7 +2246,7 @@
   padding-top: 16px; border-top: 1px solid var(--bordure-fine);
 }
 .bv-res-m { display: flex; flex-direction: column; }
-.bv-res-m b { font-size: 20px; font-weight: 800; color: #191919; font-variant-numeric: tabular-nums; }
+.bv-res-m b { font-size: 20px; font-weight: 500; color: #191919; font-variant-numeric: tabular-nums; }
 .bv-res-m span { font-size: 11.5px; font-weight: 700; color: var(--texte-3); }
 .bv-note {
   font-size: 12.5px; font-weight: 500; color: var(--texte-3);
@@ -2260,13 +2260,13 @@
   background: #fff; border: 1.5px solid var(--bordure); border-radius: 16px; padding: 13px 15px;
 }
 .bv-prem-l span:last-child { display: flex; flex-direction: column; gap: 2px; }
-.bv-prem-l b { font-size: 14.5px; font-weight: 800; color: #191919; }
+.bv-prem-l b { font-size: 14.5px; font-weight: 500; color: #191919; }
 .bv-prem-l i { font-style: normal; font-size: 12.5px; font-weight: 500; color: var(--texte-3); line-height: 1.4; }
 .bv-prem-prix {
   text-align: center; font-size: 14px; font-weight: 700; color: var(--texte-2);
   margin-bottom: 16px;
 }
-.bv-prem-prix b { font-size: 22px; font-weight: 800; color: #191919; }
+.bv-prem-prix b { font-size: 22px; font-weight: 500; color: #191919; }
 .bv-prem-prix span { display: block; font-size: 12.5px; font-weight: 600; color: #8F6200; margin-top: 4px; }
 .bv-suivant--or {
   background: linear-gradient(135deg, #FFD86B, #F7B500); color: #181818;
@@ -2313,7 +2313,7 @@
   box-shadow: 0 2px 6px rgba(24, 24, 24, .05), 0 14px 34px rgba(24, 24, 24, .07);
 }
 .bv-jalon-titre {
-  font-size: 27px; font-weight: 800; letter-spacing: -.02em;
+  font-size: 27px; font-weight: 500; letter-spacing: -.02em;
   color: #191919; margin: 0 0 10px; line-height: 1.22;
 }
 .bv-jalon-titre span { color: #DFA004; }
@@ -2338,7 +2338,7 @@
 /* Wordmark du logo : « Bel » noir, « Fit » en degrade or -> rouge,
    l'italique penche du logo — sans baseline. */
 .bv-marque {
-  font-size: 52px; font-weight: 800; font-style: italic;
+  font-size: 52px; font-weight: 500; font-style: italic;
   letter-spacing: -.01em; color: #191919; line-height: 1;
 }
 .bv-marque span {
@@ -2361,10 +2361,10 @@
 .bv-promesse-libre {
   font-size: 14.5px; font-weight: 500; color: var(--texte-2); line-height: 1.55; margin: 0 0 18px;
 }
-.bv-promesse-libre b { font-weight: 800; color: #191919; }
+.bv-promesse-libre b { font-weight: 500; color: #191919; }
 .bv-acc-bas .bv-suivant { margin-top: 0; }
 .bv-acc-bas .bv-lien { margin-top: 14px; color: #6B6862; font-weight: 600; }
-.bv-acc-bas .bv-lien b { color: #8F6200; font-weight: 800; }
+.bv-acc-bas .bv-lien b { color: #8F6200; font-weight: 500; }
 
 /* Revelation progressive du profil : chaque champ entre en douceur */
 .bv-revele { animation: bv-entre 240ms cubic-bezier(.22, .8, .28, 1) both; }
@@ -2400,7 +2400,7 @@
   fill: none; stroke: currentColor; stroke-width: 1.9;
   stroke-linecap: round; stroke-linejoin: round;
 }
-.modal.wm .wm-titre { margin: 0; font-size: 18.5px; font-weight: 800; color: #191919; letter-spacing: -.01em; }
+.modal.wm .wm-titre { margin: 0; font-size: 18.5px; font-weight: 500; color: #191919; letter-spacing: -.01em; }
 
 /* Grand champ : le chiffre est la vedette, l'unite integree */
 .modal.wm .wm-saisie {
@@ -2411,7 +2411,7 @@
 .modal.wm .wm-saisie:focus-within { border-color: #E0A21C; box-shadow: 0 0 0 3px rgba(224, 162, 28, .15); }
 .modal.wm .wm-saisie input {
   width: 130px; border: none; background: none; padding: 0; margin: 0;
-  font-family: inherit; font-size: 40px; font-weight: 800; color: #191919;
+  font-family: inherit; font-size: 40px; font-weight: 500; color: #191919;
   text-align: right; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
 .modal.wm .wm-saisie input:focus { outline: none; }
@@ -2426,8 +2426,8 @@
   text-align: center; font-size: 13.5px; font-weight: 500; color: var(--texte-2);
   margin-top: 12px;
 }
-.modal.wm .wm-prec b { color: #191919; font-weight: 800; }
-.modal.wm .wm-delta { margin-left: 8px; font-weight: 800; }
+.modal.wm .wm-prec b { color: #191919; font-weight: 500; }
+.modal.wm .wm-delta { margin-left: 8px; font-weight: 500; }
 .modal.wm .wm-delta.baisse { color: #2E7D4F; }
 .modal.wm .wm-delta.hausse { color: #191919; }
 
@@ -2469,7 +2469,7 @@
 
 /* Le chiffre est la page */
 .wm2-valeur {
-  text-align: center; font-size: 46px; font-weight: 800; color: #181818;
+  text-align: center; font-size: 46px; font-weight: 500; color: #181818;
   letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums;
 }
 /* La valeur est aussi un bouton : un appui ouvre la saisie clavier */
@@ -2529,7 +2529,7 @@
   display: block; width: 100%; padding: 15px; border-radius: 16px;
   background: linear-gradient(180deg, #FFC93C, #F0A90A);
   border: none; color: #181818;
-  font-family: inherit; font-size: 15.5px; font-weight: 800; letter-spacing: .01em;
+  font-family: inherit; font-size: 15.5px; font-weight: 500; letter-spacing: .01em;
   cursor: pointer; margin-top: 18px;
   box-shadow: 0 8px 20px rgba(240, 169, 10, .32);
 }
@@ -2566,7 +2566,7 @@
   display: flex; align-items: center; justify-content: center; gap: 8px;
   width: fit-content; margin: 0 auto; min-height: 40px; padding: 0 14px;
   background: none; border: none; font-family: inherit; cursor: pointer;
-  font-size: 13px; font-weight: 800; color: var(--texte-2);
+  font-size: 13px; font-weight: 500; color: var(--texte-2);
 }
 .pg-journal .courses-ligne svg {
   width: 17px; height: 17px; fill: none; stroke: currentColor;
@@ -2574,4 +2574,27 @@
 }
 .pg-journal .courses-ligne:active { color: #191919; }
 
-.profil-volet .profil-calc { color: #8F6200 !important; text-decoration: none !important; font-weight: 800 !important; }
+.profil-volet .profil-calc { color: #8F6200 !important; text-decoration: none !important; font-weight: 500 !important; }
+
+/* ============================================================
+   TYPOGRAPHIE — specification de Raci.
+   Satoshi porte l'interface (500 titres / 400 secondaire /
+   300 grand chiffre) ; les VALEURS CHIFFREES passent en
+   monospace, comme sur l'ecran de reference : les colonnes de
+   chiffres s'alignent et le contraste de nature separe la
+   donnee de son libelle.
+   ============================================================ */
+.pg-journal .cal-macro-val,
+.pg-journal .cal-cote-val,
+.pg-journal .mc-sous,
+.pg-journal .rp-total-val,
+.pg-journal .eat-idea-kcal {
+  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 400;
+  letter-spacing: -.02em;
+}
+.pg-journal .cal-cote-val { font-weight: 500; }
+/* Les libelles restent en Satoshi : seule la donnee est monospace. */
+.pg-journal .cal-macro-nom,
+.pg-journal .cal-cote-lb,
+.pg-journal .mc-titre { font-family: inherit; font-weight: 500; }
