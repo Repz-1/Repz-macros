@@ -2,6 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { createPortal } from 'preact/compat';
 import { EAT_IDEAS, CATEGORIES_IDEES } from '../data/idees.js';
+import { limitesPortion } from '../data/portions.js';
 import { DB } from '../data/aliments.js';
 import { IDEA_PREP } from '../data/preparations.js';
 import { objectifs, totauxJourAff, kcalRestantes } from '../store/journal.js';
@@ -57,13 +58,17 @@ function quantites(idee, ratio) {
   idee.ings.forEach(i => {
     const d = DB[i.n];
     if (!d) return;
+    // Plafonds humains : le budget calorique ne peut plus etre atteint
+    // en gonflant les grammages (275 g de poulet, 430 g de patate, 6 oeufs).
+    const lim = limitesPortion(i.n);
     let q, grammes, libelle;
     if (d.unit) {
-      q = Math.max(1, Math.round(i.q * ratio));
+      q = Math.min(lim.max, Math.max(lim.min, Math.round(i.q * ratio)));
       grammes = q * d.unit;
       libelle = q + ' ' + i.l + (q > 1 ? 's' : '');
     } else {
-      q = Math.max(5, Math.round(i.q * ratio / 5) * 5);
+      const brut = Math.round(i.q * ratio / lim.step) * lim.step;
+      q = Math.min(lim.max, Math.max(lim.min, brut));
       grammes = q;
       libelle = q + 'g ' + i.l;
     }
@@ -80,33 +85,82 @@ function quantites(idee, ratio) {
 }
 
 /**
- * Adapte une idee aux macros restantes.
- * Retourne null si elle ne rentre pas, meme a portion minimale.
+ * Adapte une idee au budget calorique restant, PORTIONS PLAFONNEES.
+ *
+ * Le budget ne peut plus etre atteint en gonflant les grammages : quand
+ * les plafonds humains empechent d'y arriver, on l'assume et on le dit
+ * (« te laisserait ~N kcal ») au lieu de servir 430 g de patate douce.
+ *
+ * Les macros ne bloquent ni ne reduisent jamais une portion (decision
+ * Raci) ; un depassement notable est signale, hierarchise.
  */
-// Decision Raci : les macros ne bloquent NI ne reduisent jamais une
-// portion — la seule boussole est le reste calorique, et si une macro
-// depasse, c'est a l'utilisateur d'ajuster. L'app se contente de le
-// dire, sobrement. Seul garde-fou conserve : une recette qui, meme a
-// portion minimale, exploserait largement le reste est ecartee.
-function adapter(idee, restes, cible) {
+const TOLERANCE_BASSE = 0.85;   // en-deca, on annonce le reliquat
+
+/** Un ecart merite-t-il d'etre dit ? 'none' | 'info' | 'warn'. */
+function classerEcart(macro, ecart, objectif) {
+  if (ecart <= 0) return 'none';
+  // Depasser ses proteines n'a quasi jamais d'importance : on ne le
+  // mentionne qu'a partir d'un quart de l'objectif journalier.
+  if (macro === 'prot') return objectif > 0 && ecart / objectif > 0.25 ? 'info' : 'none';
+  if (!(objectif > 0)) return 'info';
+  return ecart / objectif <= 0.10 ? 'info' : 'warn';
+}
+
+/** Famille de l'ingredient dominant (proteine) et de la base glucidique. */
+function marqueurs(idee) {
+  const cles = idee.ings.map(i => limitesPortion(i.n).cle);
+  const PROT = ['oeuf', 'thon_boite', 'poisson', 'boeuf', 'volaille', 'tofu', 'charcuterie', 'fromage_fort', 'fromage_frais', 'laitage', 'whey', 'legumineuse'];
+  const GLUC = ['pain', 'cereale_sec', 'feculent_cru', 'feculent', 'pdt'];
+  return {
+    prot: cles.find(c => PROT.includes(c)) || null,
+    gluc: cles.find(c => GLUC.includes(c)) || null,
+  };
+}
+
+function diversifier(liste) {
+  const sortie = [], reste = liste.slice();
+  while (reste.length) {
+    const fenetre = sortie.slice(-2).map(x => marqueurs(x.idee));
+    let i = reste.findIndex(x => {
+      const m = marqueurs(x.idee);
+      const memeProt = m.prot && fenetre.some(f => f.prot === m.prot);
+      const glucDejaDeux = m.gluc && fenetre.filter(f => f.gluc === m.gluc).length >= 2;
+      return !memeProt && !glucDejaDeux;
+    });
+    if (i === -1) i = 0;                     // vivier trop maigre : on relache
+    sortie.push(reste.splice(i, 1)[0]);
+  }
+  return sortie;
+}
+
+function adapter(idee, restes, cible, objectifs) {
   const base = quantites(idee, 1);
   const ratio = base.kcal > 0
     ? Math.max(RATIO_MIN, Math.min(RATIO_MAX, cible / base.kcal))
     : 1;
   const calc = quantites(idee, ratio);
-  if (calc.kcal > cible * 1.35 + 60) return null;   // trop grosse, meme reduite
+  if (calc.kcal > cible * 1.15 + 60) return null;   // trop grosse, meme calee
 
-  // Portion revue a la baisse pour tenir dans le reste calorique :
-  // c'est le badge d'origine, celui que l'utilisateur comprenait.
-  const reduite = ratio <= 0.95;
+  // Les plafonds ont empeche d'atteindre le budget : on l'annonce.
+  const reliquat = calc.kcal < cible * TOLERANCE_BASSE
+    ? Math.round(cible - calc.kcal)
+    : 0;
+  // Symetrique : les MINIMA de portion peuvent faire depasser un petit
+  // reste. Une portion humaine ne se coupe pas en deux, on le dit.
+  const surplus = calc.kcal > cible * 1.05
+    ? Math.round(calc.kcal - cible)
+    : 0;
 
-  // Depassement de macro le plus marque, purement informatif.
-  const over = ['prot', 'carbs', 'lip']
-    .filter(mac => restes[mac] !== null && calc[mac] > restes[mac] + 2)
-    .map(mac => ({ m: mac, n: Math.round(calc[mac] - restes[mac]) }))
-    .sort((a, b) => b.n - a.n)[0] || null;
+  // Ecart de macro le plus notable, avec son niveau.
+  const ecarts = ['prot', 'carbs', 'lip']
+    .map(m => {
+      const ecart = restes[m] === null ? 0 : Math.round(calc[m] - restes[m]);
+      return { m, n: ecart, niveau: classerEcart(m, ecart, objectifs ? objectifs[m] : 0) };
+    })
+    .filter(e => e.niveau !== 'none')
+    .sort((a, b) => (b.niveau === 'warn') - (a.niveau === 'warn') || b.n - a.n);
 
-  return { ...calc, reduite, over };
+  return { ...calc, reliquat, surplus, ecart: ecarts[0] || null };
 }
 
 
@@ -258,7 +312,7 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
     if (reste <= 120) return false;      // journee complete : rien a suggerer
     const cible = cibleRepas(reste, obj.kcal);
     return CATEGORIES_IDEES.some(c =>
-      EAT_IDEAS[c.k].some(idee => adapter(idee, restes, cible) !== null));
+      EAT_IDEAS[c.k].some(idee => adapter(idee, restes, cible, obj) !== null));
   })();
 
   // Rangee flottante : la pilule seule.
@@ -329,12 +383,18 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
         };
         const cible = cibleRepas(reste, obj.kcal);
 
-        const retenues = EAT_IDEAS[cat]
-          .map(idee => ({ idee, p: adapter(idee, restes, cible) }))
+        const classees = EAT_IDEAS[cat]
+          .map(idee => ({ idee, p: adapter(idee, restes, cible, obj) }))
           .filter(x => x.p !== null)
           // Priorite a ce qui remplit la cible calorique ; les proteines
           // departagent ensuite.
           .sort((a, b) => (Math.abs(a.p.kcal - cible) - Math.abs(b.p.kcal - cible)) || (b.p.prot - a.p.prot));
+
+        // Diversite : trois variantes de thon d'affilee n'aident personne.
+        // Par fenetre de 3, jamais deux fois la meme proteine principale
+        // ni plus de deux fois la meme base glucidique. Si le vivier ne
+        // le permet pas, on relache plutot que de ne rien montrer.
+        const retenues = diversifier(classees);
 
         if (!retenues.length) {
           return <div class="eat-note">{t('eat_none_fit')}</div>;
@@ -346,9 +406,6 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
         // reste sur demande, dans le sens de defilement de la page.
         const visibles = voirTout ? retenues : retenues.slice(0, 3);
         const cachees = retenues.length - visibles.length;
-        // Un badge porte par TOUTES les cartes ne distingue plus rien :
-        // quand l'ajustement est uniforme, il se tait.
-        const toutesReduites = visibles.length > 1 && visibles.every(x => x.p.reduite);
 
         return (
         <div class="eat-une">
@@ -360,10 +417,16 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
                 <div class="eat-idea-kcal">
                   ≈ {p.kcal} kcal · <span class="eat-prot ok">{p.prot} g prot</span>
                 </div>
-                {p.reduite && !toutesReduites && <div class="eat-adapt">✓ {t('eat_adapted')}</div>}
-                {p.over && (
-                  <div class="eat-over">
-                    {t('eat_over').replace('{m}', t('macro_' + p.over.m)).replace('{n}', p.over.n)}
+                {p.reliquat > 0 && (
+                  <div class="eat-note-ligne">{t('eat_reste').replace('{n}', p.reliquat)}</div>
+                )}
+                {p.surplus > 0 && (
+                  <div class="eat-note-ligne">{t('eat_surplus').replace('{n}', p.surplus)}</div>
+                )}
+                {p.ecart && (
+                  <div class={'eat-ecart eat-ecart--' + p.ecart.niveau}>
+                    {p.ecart.niveau === 'warn' && <span class="eat-pt">•</span>}
+                    {t('eat_over').replace('{m}', t('macro_' + p.ecart.m)).replace('{n}', p.ecart.n)}
                   </div>
                 )}
                 <span class="eat-open">{t('eat_see')}</span>

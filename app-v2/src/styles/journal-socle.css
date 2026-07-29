@@ -879,22 +879,26 @@
   cursor: pointer;
 }
 .pg-journal .eat-plus:active { background: #FAF7EF; }
-.pg-journal .eat-over {
-  font-size: 11.5px; font-weight: 600; color: #8A8474; margin-top: 4px;
-}
+.pg-journal .eat-ecart { font-size: 12.5px; font-weight: 600; margin-top: 5px; line-height: 1.4; }
+.pg-journal .eat-ecart--info { color: #6B6259; }
+/* Ambre, jamais rouge : une suggestion n'est pas une erreur. */
+.pg-journal .eat-ecart--warn { color: #C77E1A; }
+.pg-journal .eat-pt { margin-right: 5px; }
+.pg-journal .eat-note-ligne { font-size: 12.5px; font-weight: 600; color: #6B6259; margin-top: 5px; }
 
 
 .pg-journal .eat-idea {
   position: relative;
-  padding: 14px 2px 14px 14px;
-  border-left: 4px solid #F7B500;
+  /* Barre jaune decorative supprimee (§4.2) : le filet de separation
+     suffit, aucun aplat colore purement ornemental sur cet ecran. */
+  padding: 14px 2px;
   cursor: pointer;
 }
 .pg-journal .eat-idea-name {
   font-size: 16px; font-weight: 800; color: #1A1A1A; line-height: 1.25; letter-spacing: -0.01em;
 }
 .pg-journal .eat-idea-ex {
-  font-size: 13px; color: #6E6753; margin-top: 5px; line-height: 1.5;
+  font-size: 13px; color: #6B6259; margin-top: 5px; line-height: 1.5;
 }
 .pg-journal .eat-idea-kcal {
   /* Fini le chip beige : la valeur parle en encre grasse, les
