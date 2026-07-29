@@ -1731,7 +1731,10 @@
   display: flex; flex-direction: column; gap: 14px;
 }
 /* Fond creme propre a la page repas (maquette) */
-.pg-journal.couche-repas { background: #FBF7F2; }
+/* Le fond de la page repas SUIT le jeton du papier : la valeur codee
+   en dur (#FBF7F2) datait d'avant le papier sombre et creait une
+   couture a 320 px, la ou le halo creme du haut s'arrete. */
+.pg-journal.couche-repas { background: var(--fond); }
 
 /* ---------- Topbar : retour | titre centre | Terminer ---------- */
 .pg-journal .rp-topbar {
