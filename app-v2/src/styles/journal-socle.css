@@ -2566,17 +2566,17 @@
   display: flex; align-items: center; gap: 14px;
   padding: 14px 14px 14px 12px;
 }
-.pg-journal .rj .cal-anneau { flex: none; width: 88px; height: 88px; }
-.pg-journal .rj-num { font-size: 20px; font-weight: 800; line-height: 1; }
-.pg-journal .rj-num-lb { font-size: 9.5px; font-weight: 700; color: var(--texte-3, #8A8580); margin-top: 2px; letter-spacing: .02em; }
+.pg-journal .rj .cal-anneau { flex: none; width: 96px; height: 96px; }
+.pg-journal .rj-num { font-size: 24px; font-weight: 800; line-height: 1; letter-spacing: -.01em; }
+.pg-journal .rj-num-lb { font-size: 10px; font-weight: 700; color: var(--texte-3, #8A8580); margin-top: 2px; letter-spacing: .02em; }
 .pg-journal .rj-macros { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 9px; }
 .pg-journal .rj-mac { display: flex; flex-direction: column; gap: 3px; }
 .pg-journal .rj-mac-l1 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.pg-journal .rj-mac-nom { font-size: 10.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--texte-2, #6B6455); }
-.pg-journal .rj-mac-val { font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.pg-journal .rj-mac-val small { font-weight: 600; color: var(--texte-3, #8A8580); font-size: 11px; }
+.pg-journal .rj-mac-nom { font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--texte-2, #6B6455); }
+.pg-journal .rj-mac-val { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pg-journal .rj-mac-val small { font-weight: 600; color: var(--texte-3, #8A8580); font-size: 11.5px; }
 .pg-journal .rj-mac-plus { font-style: normal; font-size: 10px; font-weight: 800; color: var(--alerte); margin-left: 4px; }
-.pg-journal .rj-mac-piste { height: 6px; border-radius: 3px; background: var(--piste); overflow: hidden; }
+.pg-journal .rj-mac-piste { height: 7px; border-radius: 3px; background: var(--piste); overflow: hidden; }
 .pg-journal .rj-mac-jauge { height: 100%; border-radius: 3px; transition: width .5s cubic-bezier(.22,.8,.28,1); }
 
 .pg-journal .zone-pilule { display: flex; justify-content: center; }

@@ -80,7 +80,7 @@ function Anneau({ ratio, palier, enfant }) {
 
   return (
     <div class="cal-anneau">
-      <svg width="88" height="88" viewBox="0 0 190 190" class="cal-anneau-svg">
+      <svg width="96" height="96" viewBox="0 0 190 190" class="cal-anneau-svg">
         <defs>
           {/* Nuances du meme vert / meme rouge : richesse sans changer la teinte */}
           <linearGradient id="calJauge" x1="0%" y1="0%" x2="100%" y2="100%">
