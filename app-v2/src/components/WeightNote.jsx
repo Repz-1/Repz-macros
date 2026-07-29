@@ -18,11 +18,11 @@ export function WeightNote() {
 
   return (
     <>
-      {/* Refonte densite : la carte devient une ligne discrete —
-          l'information conditionnelle ne merite pas une carte. */}
-      <div class="pesee-ligne" onClick={() => setModale(true)}>
-        <span>{t('weigh_note')}</span>
-        <b>{t('weigh_add')}</b>
+      <div class="weight-note" onClick={() => setModale(true)}>
+        <span class="wn-txt">
+          <span class="wn-title">{t('weigh_note')}</span>
+        </span>
+        <span class="wn-cta">{t('weigh_add')}</span>
       </div>
       {modale && createPortal(<WeightModal fermer={() => setModale(false)} />, document.body)}
     </>

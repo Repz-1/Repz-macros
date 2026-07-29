@@ -8,6 +8,7 @@ import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul } f
 import { weightLog } from '../store/stats.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
+import { IdeesRepas } from './IdeesRepas.jsx';
 import { t } from '../i18n/index.js';
 
 // ============================================================
@@ -80,7 +81,7 @@ function Anneau({ ratio, palier, enfant }) {
 
   return (
     <div class="cal-anneau">
-      <svg width="96" height="96" viewBox="0 0 190 190" class="cal-anneau-svg">
+      <svg width="184" height="184" viewBox="0 0 190 190" class="cal-anneau-svg">
         <defs>
           {/* Nuances du meme vert / meme rouge : richesse sans changer la teinte */}
           <linearGradient id="calJauge" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -128,20 +129,16 @@ function Macro({ nom, valeur, cible, teinte }) {
   const ratio = cible > 0 ? Math.min(1, valeur / cible) : 0;
   const depasse = cible > 0 && valeur > cible;
 
-  const surplus = depasse ? Math.round(valeur - cible) : 0;
   return (
-    <div class="rj-mac">
-      <div class="rj-mac-l1">
-        <span class="rj-mac-nom">{nom}</span>
-        <span class="rj-mac-val">
-          <b style={{ color: depasse ? 'var(--alerte)' : teinte }}>{affiche}</b>
-          <small> / {Math.round(cible)} g</small>
-          {depasse && <i class="rj-mac-plus">+{surplus}</i>}
-        </span>
+    <div class="cal-macro">
+      <div class="cal-macro-nom">{nom}</div>
+      <div class="cal-macro-val">
+        <b style={{ color: depasse ? 'var(--alerte)' : teinte }}>{affiche}g</b>
+        <span> / {Math.round(cible)}g</span>
       </div>
-      <div class="rj-mac-piste">
+      <div class="cal-macro-piste">
         <div
-          class="rj-mac-jauge"
+          class="cal-macro-jauge"
           style={{ width: (ratio * 100) + '%', background: depasse ? 'var(--alerte)' : teinte }}
         />
       </div>
@@ -165,25 +162,63 @@ export function DayDashboard() {
   const consommees = useNombreAnime(Math.round(tot.kcal));
   const ratio = obj.kcal > 0 ? tot.kcal / obj.kcal : 0;
 
-  // Refonte densite (maquette validee) : anneau 88 px a gauche, trois
-  // macros compactes a droite, ~120 px tout compris. La logique des
-  // paliers de depassement et l'affichage honnete du surplus sont
-  // strictement conserves ; seule la geometrie change.
-  return (
-    <section class={'carte carte--relief rj' + (pret ? '' : ' cal--chargement')}>
-      <Anneau ratio={ratio} palier={palier} enfant={
-        <>
-          <div class={'rj-num' + (palier ? ' cal-num--' + palier : '')}>{chiffre}</div>
-          <div class="rj-num-lb">
-            {vide ? t('kcal_left') : depasse ? t('kcal_over') : atteint ? t('kcal_reached') : t('kcal_left')}
-          </div>
-        </>
-      } />
+  // Date du jour, en majuscules et abregee : elle situe sans s'imposer.
+  const d = new Date();
+  const jours = t('days_long').split('|');
+  const moisCourt = t('months_min').split('|');
+  const dateTexte = `${t('today')}, ${d.getDate()} ${moisCourt[d.getMonth()] || ''}`;
 
-      <div class="rj-macros">
+  return (
+    <section class={'carte carte--relief cal' + (pret ? '' : ' cal--chargement')}>
+
+      {/* Ligne date */}
+      <div class="cal-date">
+        <svg viewBox="0 0 24 24" class="cal-date-ic" aria-hidden="true">
+          <rect x="3" y="4.5" width="18" height="17" rx="3" />
+          <path d="M3 10h18M8 2.5v4M16 2.5v4" />
+        </svg>
+        <span>{dateTexte}</span>
+      </div>
+
+      {/* Compteur : consommees | anneau | objectif */}
+      <div class="cal-corps">
+        <div class="cal-cote">
+          <div class="cal-cote-lb">{t('consumed')}</div>
+          <div class="cal-cote-val">{consommees}</div>
+        </div>
+
+        <Anneau ratio={ratio} palier={palier} enfant={
+          <>
+            <div class={'cal-num' + (palier ? ' cal-num--' + palier : '')}>{chiffre}</div>
+            <div class="cal-num-lb">
+              {vide ? t('kcal_left') : depasse ? t('kcal_over') : atteint ? t('kcal_reached') : t('kcal_left')}
+            </div>
+          </>
+        } />
+
+        <div class="cal-cote">
+          <div class="cal-cote-lb">{t('goal')}</div>
+          <div class="cal-cote-val">{Math.round(obj.kcal)}</div>
+        </div>
+      </div>
+
+      <div class="cal-trait" />
+
+      {/* Macros : trois colonnes strictement identiques */}
+      <div class="cal-macros">
         <Macro nom={t('proteins')} valeur={tot.prot}  cible={obj.prot}  teinte="var(--mac-prot)" />
         <Macro nom={t('carbs')}    valeur={tot.carbs} cible={obj.carbs} teinte="var(--mac-carbs)" />
         <Macro nom={t('fats')}     valeur={tot.lip}   cible={obj.lip}   teinte="var(--mac-lip)" />
+      </div>
+
+      {/* Action principale du jour : « Repas intelligent » (Raci). Elle
+          remplace l'ancien « Commencer une nouvelle journee », desormais
+          automatique au changement de date. La pilule seule vit ici ; le
+          panneau deplie s'ouvre sous la carte (etat partage par signal). */}
+      <RappelRecalcul />
+
+      <div class="cal-action">
+        <IdeesRepas pilulSeule />
       </div>
     </section>
   );
@@ -199,7 +234,7 @@ export function DayDashboard() {
 // ============================================================
 const SEUIL_RECALCUL_KG = 3;
 
-export function RappelRecalcul() {
+function RappelRecalcul() {
   const base = poidsCalcul.value;
   const log = weightLog.value;
   if (!base || !log.length) return null;

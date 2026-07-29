@@ -1,6 +1,5 @@
 import { signal } from '@preact/signals';
 import { utilisateur } from '../services/firebase.js';
-import { t, langue } from '../i18n/index.js';
 
 // Etat du volet profil, partage entre l'en-tete de chaque onglet.
 export const voletProfil = signal(false);
@@ -19,13 +18,6 @@ function prenom() {
 // appartient a la personne, plutot que d'un service qui l'accueille.
 // Trois colonnes (1fr / auto / 1fr) : le centre reste centre quelle que
 // soit la largeur des deux bords.
-function dateDuJour() {
-  const brut = new Date().toLocaleDateString(
-    langue.value === 'en' ? 'en-GB' : langue.value === 'nl' ? 'nl-BE' : 'fr-BE',
-    { day: 'numeric', month: 'short' });
-  return t('today_prefix') + ' ' + brut;
-}
-
 export function Entete() {
   const p = prenom();
   return (
@@ -39,10 +31,7 @@ export function Entete() {
         alt="BELFIT"
       />
 
-      {/* Refonte densite : la date remplace le prenom au centre (le
-          prenom vit dans le volet profil). L'ecran gagne la ligne
-          entiere que la carte Calories depensait pour l'afficher. */}
-      <div class="j-date">{dateDuJour()}</div>
+      {p && <div class="j-prenom">{p}</div>}
 
       <div class="j-entete-actions">
         <button class="j-btn-icone" onClick={ouvrirProfil} aria-label="Profil">
