@@ -43,11 +43,11 @@
   width: 100%;
   max-width: 640px;          /* au-dela, la ligne devient illisible */
   margin: 0 auto;
-  padding: calc(18px + env(safe-area-inset-top)) var(--marge-page)
+  padding: calc(12px + env(safe-area-inset-top)) var(--marge-page)
            calc(var(--hauteur-nav) + 82px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: var(--espace);
+  gap: 14px;
 }
 
 /* ============================================================
@@ -2554,3 +2554,22 @@
   fill: none; stroke: #B7860B; stroke-width: 2.4; stroke-linecap: round;
 }
 .pg-journal .ajout-repas:active { background: #FAF8F3; transform: scale(.98); }
+
+/* ============================================================
+   REDISTRIBUTION DES RACCOURCIS (Raci) : la rangee a disparu.
+   Calculateur -> volet profil ; Vocal/Photo/Scan -> barre
+   d'ajout d'aliment ; Courses -> ligne discrete tout en bas.
+   ============================================================ */
+.pg-journal .courses-ligne {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: fit-content; margin: 0 auto; min-height: 40px; padding: 0 14px;
+  background: none; border: none; font-family: inherit; cursor: pointer;
+  font-size: 13px; font-weight: 800; color: #6B6455;
+}
+.pg-journal .courses-ligne svg {
+  width: 17px; height: 17px; fill: none; stroke: currentColor;
+  stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .courses-ligne:active { color: #191919; }
+
+.profil-volet .profil-calc { color: #8F6200 !important; text-decoration: none !important; font-weight: 800 !important; }
