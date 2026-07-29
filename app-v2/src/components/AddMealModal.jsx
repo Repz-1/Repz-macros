@@ -11,7 +11,7 @@ import { createPortal } from 'preact/compat';
 
 const TYPES = [
   {
-    k: 'repas', label: 'type_meal', teinte: 'var(--or)',
+    k: 'repas', label: 'type_meal', teinte: '#F7B500',
     trace: ['M7 3v7a2 2 0 002 2v9', 'M5 3v4', 'M9 3v4', 'M17 3c-1.5 0-3 2-3 5v4h3v9'],
   },
   {

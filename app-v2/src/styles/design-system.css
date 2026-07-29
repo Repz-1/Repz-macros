@@ -11,32 +11,24 @@
 
 :root {
   /* ---------- Surfaces ---------- */
-  --fond: #F6F5F2;              /* base NEUTRE, aucun sous-ton jaune (cahier v3) */
+  --fond: #EBE6DA;              /* papier chaud, franchement plus sombre que les cartes : le blanc claque dessus */
   --carte: #FFFFFF;
-  --bordure: #E4E2DC;
-  --bordure-fine: var(--bordure-fine);      /* separateurs internes, plus clair */
-  --piste: #EFEEEA;             /* fonds secondaires : pistes, pills inactives */
+  --bordure: #DDD6C6;           /* bordure de carte, lisible sur le papier sombre */
+  --bordure-fine: #ECE8DF;      /* separateurs internes, plus clair */
+  --piste: #EDE7D8;             /* fond des barres de progression */
 
   /* ---------- Texte ---------- */
-  --texte: #141414;             /* l'ENCRE porte l'interface (comme le noir du logo) */
-  --texte-2: #5C5A55;           /* secondaire — >= 4.5:1 sur surface et fond */
-  --texte-3: var(--texte-3);           /* placeholders, desactive */
-  --texte-nav: var(--texte-3);         /* onglets au repos */
+  --texte: #191919;             /* titres et valeurs */
+  --texte-2: #6B6455;           /* secondaire, chaud (l'ancien 6B7280 etait un gris bleu etranger) */
+  --texte-3: #8A8580;           /* descriptions, unites, labels */
+  --texte-nav: #8A8375;         /* onglets au repos */
 
   /* ---------- Couleurs de marque ----------
      Une couleur = un sens. Ne jamais en creer de proche. */
-  /* Le jaune du LOGO, franc — et il claque UNE fois par ecran :
-     CTA principal (texte encre, jamais blanc) et remplissage de la
-     progression kcal. Rien d'autre. */
-  --or: #FFD500;
-  /* Les liens et actions secondaires sont a l'ENCRE desormais :
-     l'ancien or-fonce y renvoie pour que tous les consommateurs
-     suivent sans exception. */
-  --or-fonce: #141414;
-  --or-pale: #EFEEEA;
-  --or-creme: #FFFFFF;
-  --ok: #2E7D4F;                /* dans la cible */
-  --near: #C77E1A;              /* 90-100 % de l'objectif, avertissements doux */
+  --or: #F7B500;                /* action principale, Premium */
+  --or-fonce: #8F6200;          /* texte sur fond clair dore */
+  --or-pale: #FFF4CC;           /* fond d'icone */
+  --or-creme: #FFFBEF;          /* degrade de carte */
 
   --proteines: #1F1F1F;
   --glucides: #F5A800;
@@ -52,7 +44,7 @@
 
   --succes: #10B981;
   --succes-pale: #DCECDF;
-  --alerte: #D63A23;            /* semantique pure — assombri d'un cran : le #E23D28 du cahier rendait 4.26:1, sous son propre seuil */
+  --alerte: #DE2F14;
   --alerte-douce: #F87171;
 
   /* ---------- Geometrie ----------
@@ -119,7 +111,7 @@ input, select, textarea { min-width: 0; }
 /* Principal : meme style que « Ajouter » */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  background: var(--or); color: var(--texte); border: none; font-weight: 800;
+  background: var(--or); color: #181818; border: none;
   padding: 12px 18px; border-radius: var(--rayon-puce);
   font-size: 14px; font-weight: 800; font-family: inherit; cursor: pointer;
   transition: transform var(--transition), box-shadow var(--transition);

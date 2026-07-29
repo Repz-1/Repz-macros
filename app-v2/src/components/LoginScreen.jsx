@@ -208,7 +208,7 @@ export function LoginScreen() {
                 class="login-pw-bar"
                 style={{
                   width: mdp ? ['25%', '45%', '70%', '100%'][Math.max(0, scoreMdp(mdp) - 1)] : '0',
-                  background: ['#DC2626', '#F97316', 'var(--or)', '#10B981'][Math.max(0, scoreMdp(mdp) - 1)],
+                  background: ['#DC2626', '#F97316', '#F7B500', '#10B981'][Math.max(0, scoreMdp(mdp) - 1)],
                 }}
               />
             </div>
