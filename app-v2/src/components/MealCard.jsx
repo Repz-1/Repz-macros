@@ -458,6 +458,7 @@ export function MealRow({ r }) {
   const vide = m.kcal < 1;
   return (
     <button class="repas-ligne" onClick={() => { repasOuvertId.value = r.id; }}>
+      <span class="rl-vignette" dangerouslySetInnerHTML={{ __html: illustration(r) }} />
       <span class="rl-g">
         <span class={'rl-nom' + (vide ? ' rl-nom--vide' : '')}>{r.nom}</span>
         <span class="rl-sous">

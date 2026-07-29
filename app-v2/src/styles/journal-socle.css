@@ -2597,6 +2597,12 @@
 }
 .pg-journal .repas-ligne + .repas-ligne { border-top: 1px solid var(--bordure-fine, #ECE8DF); }
 .pg-journal .repas-ligne:active { background: #F6F2EA; }
+.pg-journal .rl-vignette {
+  flex: none; width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: #F6F2E9; overflow: hidden;
+}
+.pg-journal .rl-vignette svg { width: 22px; height: 22px; }
 .pg-journal .rl-g { flex: 1; min-width: 0; }
 .pg-journal .rl-nom {
   display: block; font-size: 15px; font-weight: 700; color: var(--texte, #191919);
