@@ -4,7 +4,7 @@
 html, body { overflow-x: hidden; max-width: 100%; }
 /* Palette BELFIT : fond #F8F8F8, structure #181818, or #F7B500 (actions primaires uniquement) */
 *{box-sizing:border-box}
-html,body{margin:0;background:#F4F3F0;font-family:'Manrope',sans-serif;color:#181818}
+html,body{margin:0;background:#F4F3F0;font-family:'DM Sans','Manrope',sans-serif;color:#181818}
 input,button{font-family:inherit}
 button{cursor:pointer}
 
