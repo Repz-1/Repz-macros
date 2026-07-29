@@ -20,7 +20,7 @@
 
   background: var(--fond);
   color: var(--texte);
-  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Poppins', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   min-height: 100vh;
 }
 
@@ -501,7 +501,7 @@
 /* --- Zone 2 : contenu --- */
 .pg-journal .mc-info { flex: 1; min-width: 0; }
 .pg-journal .mc-titre {
-  font-size: 18px; font-weight: 800; color: var(--texte);
+  font-size: 16px; font-weight: 700; color: var(--texte);
   margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pg-journal .mc-titre-champ {
@@ -511,7 +511,8 @@
 }
 .pg-journal .mc-titre-champ:focus { outline: none; }
 .pg-journal .mc-sous {
-  font-size: 13px; color: #8A8580; margin: 2px 0 0;
+  font-size: 11.5px; color: var(--texte-3); margin: 2px 0 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 /* --- Zone 3 : actions ---
@@ -2605,7 +2606,7 @@
   font-size: 11.5px; font-weight: 700; color: var(--texte-3);
 }
 .pg-journal .heros-cote-val {
-  font-size: 19px; font-weight: 800; margin-top: 2px;
+  font-size: 17px; font-weight: 800; margin-top: 2px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -2618,12 +2619,12 @@
   box-shadow: 0 3px 10px rgba(40, 36, 28, .05);
 }
 .pg-journal .mini-mac-nom {
-  font-size: 10.5px; font-weight: 800; letter-spacing: .04em;
+  font-size: 9.5px; font-weight: 800; letter-spacing: .04em;
   text-transform: uppercase; color: var(--texte-2);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pg-journal .mini-mac-val {
-  font-size: 14px; font-weight: 800; margin-top: 3px;
+  font-size: 13px; font-weight: 800; margin-top: 3px;
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .pg-journal .mini-mac-val small { font-weight: 600; color: var(--texte-3); font-size: 11px; }
@@ -2642,7 +2643,7 @@
 
 /* Titre de section : remplace la carte-conteneur */
 .pg-journal .titre-sec {
-  font-size: 12.5px; font-weight: 800; letter-spacing: .1em;
+  font-size: 11.5px; font-weight: 800; letter-spacing: .1em;
   text-transform: uppercase; color: var(--texte-2);
   margin: 4px 2px -2px;
 }
