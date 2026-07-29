@@ -257,7 +257,7 @@ export function Questionnaire() {
     // 3 tours (Raci, version definitive) : l'ARC change de couleur a
     // chaque tour — il se remplit en NOIR, puis en ROUGE par-dessus le
     // noir, puis en JAUNE par-dessus le rouge, et le resultat suit.
-    const COULEURS = ['#1F1F1F', '#DE2F14', '#F7B500'];
+    const COULEURS = ['#1F1F1F', 'var(--alerte)', 'var(--or)'];
     const tour = Math.min(2, Math.floor((calcul - 1) / 100));
     const dansTour = Math.min(100, calcul - tour * 100);
     const arc = COULEURS[tour];
@@ -282,7 +282,7 @@ export function Questionnaire() {
             <div class="qz-calc-pct">{Math.round(calcul / 3)}<span>%</span></div>
           </div>
           <div class="qz-calc-txt" key={tour}
-            style={{ color: ['#1F1F1F', '#DE2F14', '#C98A00'][tour] }}>
+            style={{ color: ['#1F1F1F', 'var(--alerte)', '#C98A00'][tour] }}>
             {TEXTES[tour]}
           </div>
         </div>

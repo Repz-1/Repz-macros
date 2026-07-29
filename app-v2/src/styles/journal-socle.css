@@ -12,7 +12,7 @@
 .pg-journal {
   /* Les jetons viennent de design-system.css.
      Seules les valeurs propres a cet ecran sont definies ici. */
-  --bordure-carte-cal: #C9EFE1;   /* liseré vert de la carte Calories */
+  --bordure-carte-cal: var(--bordure);   /* liseré vert de la carte Calories */
   --mac-prot: var(--proteines);
   --mac-carbs: var(--glucides);
   --mac-lip: var(--lipides);
@@ -34,7 +34,7 @@
 .pg-journal::before {
   content: '';
   position: fixed; top: 0; left: 0; right: 0; height: 320px;
-  background: linear-gradient(180deg, #FBF0DC 0%, #FAF6EC 34%, var(--fond) 100%);
+  background: linear-gradient(180deg, var(--piste) 0%, var(--piste) 34%, var(--fond) 100%);
   pointer-events: none; z-index: 0;
 }
 .pg-journal > * { position: relative; z-index: 1; }
@@ -44,7 +44,7 @@
   max-width: 640px;          /* au-dela, la ligne devient illisible */
   margin: 0 auto;
   padding: calc(10px + env(safe-area-inset-top)) var(--marge-page)
-           calc(var(--hauteur-nav) + 30px + env(safe-area-inset-bottom));
+           calc(var(--hauteur-nav) + 16px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -59,7 +59,7 @@
 /* Variante mise en avant : releve par une ombre doree, pas par
    une bordure epaisse ni une couleur de fond saturee. */
 .pg-journal .carte--relief {
-  background: linear-gradient(160deg, #FFFBEF 0%, #FFFFFF 42%, #FFFFFF 100%);
+  background: linear-gradient(160deg, #FFFFFF 0%, #FFFFFF 42%, #FFFFFF 100%);
   box-shadow: var(--ombre-relief);
   border: 1.5px solid var(--bordure-carte-cal);
 }
@@ -196,7 +196,7 @@
 .pg-journal .fab {
   width: 58px; height: 58px; border-radius: 50%;
   border: none; cursor: pointer;
-  background: var(--or); color: #181818;
+  background: var(--or); color: var(--texte);
   font-size: 30px; font-weight: 300; line-height: 1;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 22px rgba(247, 181, 0, .38);
@@ -215,10 +215,10 @@
   display: flex; align-items: center; justify-content: center; gap: 8px;
   margin-bottom: 8px; padding-top: 2px;
   font-size: 15px; font-weight: 800; letter-spacing: .06em;
-  color: #6B6660; text-transform: uppercase;
+  color: var(--texte-2); text-transform: uppercase;
 }
 .pg-journal .cal-date-ic {
-  width: 17px; height: 17px; flex: none; color: #A8A297;
+  width: 17px; height: 17px; flex: none; color: var(--texte-3);
   fill: none; stroke: currentColor; stroke-width: 1.8;
   stroke-linecap: round; stroke-linejoin: round;
 }
@@ -236,11 +236,11 @@
   position: relative; z-index: 1;
 }
 .pg-journal .cal-cote-lb {
-  font-size: 12.5px; font-weight: 600; color: #8A8580;
+  font-size: 12.5px; font-weight: 600; color: var(--texte-3);
   white-space: nowrap; overflow: visible;
 }
 .pg-journal .cal-cote-val {
-  font-size: 22px; font-weight: 800; color: #191919;
+  font-size: 22px; font-weight: 800; color: var(--texte);
   margin-top: 2px; letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;   /* les chiffres ne dansent pas */
 }
@@ -262,15 +262,15 @@
 }
 .pg-journal .cal-num {
   font-size: 48px;
-  font-weight: 800; line-height: 1; color: #191919;
+  font-weight: 800; line-height: 1; color: var(--texte);
   letter-spacing: -1.5px; font-variant-numeric: tabular-nums;
 }
 /* Depassement : trois paliers, du plus doux au plus alarmant. */
-.pg-journal .cal-num--jaune  { color: #B7860B; }
-.pg-journal .cal-num--orange { color: #D2691E; }
+.pg-journal .cal-num--jaune  { color: var(--near); }
+.pg-journal .cal-num--orange { color: var(--near); }
 .pg-journal .cal-num--rouge  { color: var(--alerte); }
 .pg-journal .cal-num-lb {
-  font-size: 12.5px; font-weight: 700; color: #8A8580;
+  font-size: 12.5px; font-weight: 700; color: var(--texte-3);
   margin-top: 5px; text-align: center; line-height: 1.3;
   max-width: 86%;
 }
@@ -278,7 +278,7 @@
 /* ---------- Separateur ---------- */
 /* Trait plein, pleine largeur : v1 (.nutri-macros border-top) */
 .pg-journal .cal-trait {
-  height: 1px; background: #ECE8DF; margin: 18px 0 0;
+  height: 1px; background: var(--bordure-fine); margin: 18px 0 0;
 }
 
 /* ---------- Macros ---------- */
@@ -291,11 +291,11 @@
   font-size: 13.5px; font-weight: 800; color: var(--texte);
 }
 .pg-journal .cal-macro-val {
-  font-size: 12.5px; font-weight: 800; color: #191919;
+  font-size: 12.5px; font-weight: 800; color: var(--texte);
   margin: 6px 0 8px; white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
-.pg-journal .cal-macro-val span { color: #9CA3AF; font-weight: 700; }
+.pg-journal .cal-macro-val span { color: var(--texte-3); font-weight: 700; }
 .pg-journal .cal-macro-val b { font-weight: 800; }
 .pg-journal .cal-macro-piste {
   height: 7px; background: var(--mac-piste); border-radius: 6px; overflow: hidden;
@@ -310,7 +310,7 @@
   display: flex; align-items: center; justify-content: center; gap: 6px;
   width: auto; margin: 12px auto 0; padding: 8px 14px;
   background: none; border: none; cursor: pointer; font-family: inherit;
-  font-size: 12.5px; font-weight: 600; color: #8a857c;
+  font-size: 12.5px; font-weight: 600; color: var(--texte-3);
   border-radius: var(--rayon-puce);
   transition: color var(--transition), background var(--transition), transform var(--transition);
 }
@@ -328,12 +328,12 @@
 .pg-journal .cal-rappel {
   display: flex; align-items: flex-start; gap: 8px;
   width: 100%; margin: 14px 0 0; padding: 10px 12px;
-  background: #FDF6E4; border: 1px solid #F2E2B6; border-radius: 12px;
+  background: var(--piste); border: 1px solid var(--bordure); border-radius: 12px;
   cursor: pointer; font-family: inherit; text-align: left;
-  font-size: 12.5px; font-weight: 600; color: #8F6200; line-height: 1.45;
+  font-size: 12.5px; font-weight: 600; color: var(--or-fonce); line-height: 1.45;
   transition: background var(--transition), transform var(--transition);
 }
-.pg-journal .cal-rappel:active { background: #FBEFCB; transform: scale(.99); }
+.pg-journal .cal-rappel:active { background: var(--bordure-fine); transform: scale(.99); }
 .pg-journal .cal-rappel svg {
   width: 15px; height: 15px; flex: none; margin-top: 1px;
   fill: none; stroke: currentColor; stroke-width: 1.9;
@@ -371,7 +371,7 @@
 .pg-journal .qa {
   display: flex;
   background: var(--carte);
-  border: 1px solid #ECE8DF;
+  border: 1px solid var(--bordure-fine);
   border-radius: 20px;
   overflow: visible;
   box-shadow: 0 2px 10px rgba(24, 24, 24, .04);
@@ -384,15 +384,15 @@
   cursor: pointer; font-family: inherit;
 }
 /* Trait vertical entre les colonnes, jamais sur les bords exterieurs */
-.pg-journal .qa-btn + .qa-btn { border-left: 1px solid #ECE8DF; }
+.pg-journal .qa-btn + .qa-btn { border-left: 1px solid var(--bordure-fine); }
 .pg-journal .qa-btn:first-child { border-radius: 20px 0 0 20px; }
 .pg-journal .qa-btn:last-child  { border-radius: 0 20px 20px 0; }
-.pg-journal .qa-btn:active { background: #F5F6F8; }
+.pg-journal .qa-btn:active { background: var(--piste); }
 
 /* Icones a nu (maquette 25/07) : trait noir franc + accent dore,
    sans tuile de fond — la carte blanche et les filets suffisent. */
 .pg-journal .qa-ic {
-  width: 34px; height: 34px; color: #181818;
+  width: 34px; height: 34px; color: var(--texte);
   background: transparent; border-radius: 0;   /* neutralise la tuile posee par la regle globale .qa-ic de styles.css */
   display: inline-flex; align-items: center; justify-content: center;
 }
@@ -402,14 +402,14 @@
   stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-journal .qa-lb {
-  font-size: 12.5px; font-weight: 600; color: #2C2A27; letter-spacing: .01em;
+  font-size: 12.5px; font-weight: 600; color: var(--texte); letter-spacing: .01em;
   max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 /* Badge Premium : deborde legerement dans le coin superieur droit */
 .pg-journal .qa-pro {
   position: absolute; top: 5px; right: 7px;
   display: flex; align-items: center; gap: 2px;
-  background: var(--or); color: #5A3E00;
+  background: var(--or); color: var(--texte);
   font-size: 8.5px; font-weight: 800; letter-spacing: .4px;
   padding: 2px 6px; border-radius: 7px;
 }
@@ -427,21 +427,23 @@
 .pg-journal .eat-toggle {
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   width: fit-content; max-width: 86%; margin: 0 auto;
-  background: linear-gradient(160deg, #8A7BD6 0%, #7E62BD 58%, #8A5CAE 100%);
-  color: #FFFFFF; border: none;
+  /* v3 : le CTA signature porte le JAUNE DU LOGO, texte encre —
+     le degrade violet 'IA' est retire, l'ecran n'a qu'un jaune. */
+  background: var(--or);
+  color: var(--texte); border: none;
   padding: 9px 16px; border-radius: 999px;
   font-size: 13px; font-weight: 700; letter-spacing: .01em; font-family: inherit;
   cursor: pointer;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .22),
+    inset 0 1px 0 rgba(255,255,255,.35),
     0 1px 2px rgba(24, 24, 24, .06),
-    0 5px 14px rgba(126, 98, 189, .20);
+    0 5px 14px rgba(20,20,20,.12);
   transition: transform 180ms cubic-bezier(.22, .8, .28, 1), box-shadow 180ms ease;
 }
 .pg-journal .eat-toggle:active {
   transform: translateY(-1px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .22),
+    inset 0 1px 0 rgba(255,255,255,.35),
     0 1px 2px rgba(24, 24, 24, .05),
     0 3px 10px rgba(126, 98, 189, .16);
 }
@@ -451,15 +453,15 @@
   stroke-linecap: round; stroke-linejoin: round;
 }
 /* Etat contextuel : point de presence + libelle discret */
-.pg-journal .eat-sep { width: 1px; height: 12px; background: rgba(255, 255, 255, .28); }
+.pg-journal .eat-sep { width: 1px; height: 12px; background: rgba(20, 20, 20, .22); }
 .pg-journal .eat-etat {
   display: inline-flex; align-items: center; gap: 6px;
-  font-size: 11.5px; font-weight: 600; color: rgba(255, 255, 255, .85);
+  font-size: 11.5px; font-weight: 700; color: rgba(20, 20, 20, .78);
   white-space: nowrap;
 }
 .pg-journal .eat-etat::before {
   content: ''; width: 5px; height: 5px; border-radius: 50%;
-  background: #C9F7B8; box-shadow: 0 0 6px rgba(201, 247, 184, .8);
+  background: var(--ok); box-shadow: none;
 }
 .pg-journal .eat-fleche { font-size: 11px; line-height: 1; }
 
@@ -477,7 +479,7 @@
 .pg-journal .mc {
   position: relative;
   background: var(--carte);
-  border: 1.5px solid #E7E2D9;
+  border: 1.5px solid var(--bordure);
   border-radius: 18px;
   box-shadow: 0 4px 14px rgba(60, 50, 40, .05);
 }
@@ -491,7 +493,7 @@
 /* --- Zone 1 : vignette --- */
 .pg-journal .mc-vignette {
   width: 58px; height: 58px; border-radius: 16px;
-  background: #F2EFE9;
+  background: var(--piste);
   display: flex; align-items: center; justify-content: center;
   font-size: 30px; flex-shrink: 0;
 }
@@ -504,12 +506,12 @@
 }
 .pg-journal .mc-titre-champ {
   font-size: 18px; font-weight: 800; color: var(--texte);
-  border: none; background: #F1EFE9; border-radius: 6px;
+  border: none; background: var(--piste); border-radius: 6px;
   width: 100%; padding: 0 4px; font-family: inherit;
 }
 .pg-journal .mc-titre-champ:focus { outline: none; }
 .pg-journal .mc-sous {
-  font-size: 13px; color: #8A8580; margin: 2px 0 0;
+  font-size: 13px; color: var(--texte-3); margin: 2px 0 0;
 }
 
 /* --- Zone 3 : actions ---
@@ -520,7 +522,7 @@
 }
 .pg-journal .mc-crayon {
   background: none; border: none; padding: 4px; cursor: pointer;
-  color: #C2BDB2; display: flex;
+  color: var(--texte-3); display: flex;
 }
 .pg-journal .mc-crayon svg {
   width: 15px; height: 15px;
@@ -531,13 +533,13 @@
 /* Croix de suppression : uniquement sur les repas ajoutes (non fixes),
    comme la v1 (.mh-del). Discrete au repos, rouge au contact. */
 .pg-journal .mc-suppr {
-  background: none; border: none; color: #cbd5e1; font-size: 16px; line-height: 1;
+  background: none; border: none; color: var(--bordure); font-size: 16px; line-height: 1;
   padding: 6px; cursor: pointer; flex-shrink: 0; font-family: inherit;
 }
 .pg-journal .mc-suppr:active { color: #ef4444; }
 
 .pg-journal .mc-chevron {
-  color: #B7B1A8; font-size: 18px; line-height: 1;
+  color: var(--texte-3); font-size: 18px; line-height: 1;
   flex-shrink: 0; transition: transform 200ms ease;
 }
 .pg-journal .mc--ouvert .mc-chevron { transform: rotate(180deg); }
@@ -579,7 +581,7 @@
 /* ---------- Ajouter ---------- */
 .pg-journal .fab {
   display: flex; align-items: center; gap: 5px;
-  background: #F7B500; color: #181818; border: none;
+  background: var(--or); color: var(--texte); border: none;
   padding: 10px 15px; border-radius: 30px; cursor: pointer;
   box-shadow: 0 6px 16px rgba(247, 181, 0, .35);
   font-size: 13.5px; font-weight: 700; font-family: inherit;
@@ -587,7 +589,7 @@
   transition: transform .15s, box-shadow .15s;
 }
 .pg-journal .fab:active {
-  transform: scale(.94); background: #E85D2A;
+  transform: scale(.94); background: var(--lipides);
   box-shadow: 0 4px 16px rgba(255, 140, 0, .5);
 }
 .pg-journal .fab-plus { font-size: 18px; line-height: 1; }
@@ -625,7 +627,7 @@
 /* ---------- Ligne alimentaire ---------- */
 .pg-journal .mc-ing {
   background: #FFFFFF;
-  border: 1px solid #EEF1F5;
+  border: 1px solid var(--piste);
   border-radius: 10px;
   padding: 10px; margin-bottom: 6px;
   display: grid; grid-template-columns: 1fr 54px 10px 72px 18px;
@@ -636,16 +638,16 @@
    que les lignes restent alignees. */
 .pg-journal .mc-ing-vignette {
   width: 34px; height: 34px; border-radius: 8px; object-fit: cover;
-  background: #F4F1EA; display: block;
+  background: var(--piste); display: block;
 }
-.pg-journal .mc-ing-vignette--vide { background: #F4F1EA; }
+.pg-journal .mc-ing-vignette--vide { background: var(--piste); }
 .pg-journal .mc-ing-info { min-width: 0; }
 .pg-journal .mc-ing-nom {
-  font-size: 13.5px; font-weight: 600; color: #1A1A1A; line-height: 1.25;
+  font-size: 13.5px; font-weight: 600; color: var(--texte); line-height: 1.25;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pg-journal .mc-ing-base {
-  font-size: 10.5px; color: #A39A8C; margin-top: 2px;
+  font-size: 10.5px; color: var(--texte-3); margin-top: 2px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
@@ -654,8 +656,8 @@
   width: 100%; min-width: 0; padding: 6px 2px;
   /* Meme langage que la page repas : un champ se voit (bord chaud franc,
      ombre interne), la palette slate froide detonnait sur le fond creme. */
-  border: 1.5px solid #D9CFBB; border-radius: 8px;
-  background: #FFFDF8; color: #1A1A1A;
+  border: 1.5px solid #D6D3CC; border-radius: 8px;
+  background: #FFFFFF; color: var(--texte);
   box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
   font-size: 14px; font-weight: 700; text-align: center; font-family: inherit;
   scroll-margin: 140px;
@@ -666,13 +668,13 @@
   box-shadow: inset 0 1px 2px rgba(60, 50, 40, .04), 0 0 0 3px rgba(247, 181, 0, .14);
 }
 .pg-journal .mc-ing-unite {
-  font-size: 12px; font-weight: 500; color: #A39A8C;
+  font-size: 12px; font-weight: 500; color: var(--texte-3);
 }
 
 .pg-journal .mc-ing-macros { text-align: right; line-height: 1.2; min-width: 0; }
-.pg-journal .mc-ing-kcal { font-size: 14px; font-weight: 800; color: #1A1A1A; white-space: nowrap; }
+.pg-journal .mc-ing-kcal { font-size: 14px; font-weight: 800; color: var(--texte); white-space: nowrap; }
 .pg-journal .mc-ing-sub {
-  font-size: 10px; font-weight: 500; color: #A39A8C;
+  font-size: 10px; font-weight: 500; color: var(--texte-3);
   margin-top: 2px; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
@@ -681,7 +683,7 @@
   background: none; border: none; cursor: pointer;
   /* 2px de padding = cible de ~18px, sous le minimum tactile. */
   padding: 10px; margin: -8px; border-radius: 10px;
-  color: #B9B0A3; font-size: 14px; line-height: 1; font-family: inherit;
+  color: var(--texte-3); font-size: 14px; line-height: 1; font-family: inherit;
 }
 .pg-journal .mc-ing-del:active { color: #EF4444; }
 
@@ -690,7 +692,7 @@
 .pg-journal .mc-ajout {
   display: flex; align-items: center;
   margin-top: 10px;
-  background: #FFFDF8; border: 1.5px solid #D9CFBB; border-radius: 14px;
+  background: #FFFFFF; border: 1.5px solid #D6D3CC; border-radius: 14px;
   box-shadow: inset 0 1px 2px rgba(60, 50, 40, .04);
   padding: 4px 4px 4px 0;
   transition: border-color .15s, background .15s, box-shadow .15s;
@@ -711,14 +713,14 @@
   position: relative; flex-shrink: 0;
   width: 52px; height: 40px; padding: 0;
   border: none; border-radius: 10px;
-  background: #FFF4CC; color: #181818; cursor: pointer;
+  background: #FFF4CC; color: var(--texte); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
 .pg-journal .mc-scan .ic { width: 22px; height: 22px; stroke-width: 1.7; }
-.pg-journal .mc-scan:active { background: #FBEFC7; }
+.pg-journal .mc-scan:active { background: var(--piste); }
 .pg-journal .mc-scan-pro {
   position: absolute; top: -6px; right: -5px;
-  background: var(--or); color: #5A3E00;
+  background: var(--or); color: var(--texte);
   font-size: 8px; font-weight: 800; font-style: normal;
   padding: 1.5px 5px; border-radius: 6px;
 }
@@ -726,7 +728,7 @@
 /* ---------- Resultats de recherche ---------- */
 .pg-journal .mc-resultats {
   position: absolute; top: 100%; left: 0; right: 0; z-index: 300;
-  background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px;
+  background: #FFFFFF; border: 1px solid var(--bordure); border-radius: 8px;
   margin-top: 4px; overflow-y: auto;
   /* La hauteur est calculee en JS sur l'espace reellement visible
      (clavier ouvert ou replie, barre du bas). Valeur de repli ici. */
@@ -745,7 +747,7 @@
 }
 .pg-journal .mc-resultats > button:last-child { border-bottom: none; }
 .pg-journal .mc-resultats > button:active { background: #EFF6FF; }
-.pg-journal .mc-resultats .kc { color: #A39A8C; font-size: 12.5px; flex: none; }
+.pg-journal .mc-resultats .kc { color: var(--texte-3); font-size: 12.5px; flex: none; }
 
 /* ---------- Bandeau recapitulatif ---------- */
 .pg-journal .mc-bandeau {
@@ -777,7 +779,7 @@
   to   { transform: translateY(0); opacity: 1; }
 }
 .mtype-titre {
-  font-size: 16px; font-weight: 800; color: #1A1A1A;
+  font-size: 16px; font-weight: 800; color: var(--texte);
   text-align: center; margin-bottom: 14px;
 }
 .mtype-grille {
@@ -785,9 +787,9 @@
 }
 .mtype-opt {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
-  background: #FFFFFF; border: 1.5px solid #E7E2D9; border-radius: 16px;
+  background: #FFFFFF; border: 1.5px solid var(--bordure); border-radius: 16px;
   padding: 16px 8px; cursor: pointer;
-  font-size: 14px; font-weight: 800; color: #1A1A1A; font-family: inherit;
+  font-size: 14px; font-weight: 800; color: var(--texte); font-family: inherit;
   transition: transform var(--transition), border-color var(--transition), background var(--transition);
 }
 .mtype-opt:active {
@@ -830,32 +832,32 @@
    Mesures relevees sur la reference.
    ============================================================ */
 .pg-journal .eat-panneau {
-  background: #F6F1E6;
-  border: 1.5px solid #E6DCC4;
+  background: var(--carte);
+  border: 1.5px solid var(--bordure);
   border-radius: 18px;
   box-shadow: 0 6px 18px rgba(96, 78, 40, .07);
   padding: 16px 14px 18px;
   text-align: left;
 }
 .pg-journal .eat-intro {
-  font-size: 13.5px; color: #6E6753; margin: 0 0 14px;
+  font-size: 13.5px; color: var(--texte-2); margin: 0 0 14px;
 }
-.pg-journal .eat-intro b { color: #8F6200; font-size: 15px; }
-.pg-journal .eat-fini { margin: 2px 0; text-align: center; font-weight: 700; color: #4B4A47; }
+.pg-journal .eat-intro b { color: var(--or-fonce); font-size: 15px; }
+.pg-journal .eat-fini { margin: 2px 0; text-align: center; font-weight: 700; color: var(--texte); }
 
 .pg-journal .eat-cats {
   display: grid; grid-template-columns: repeat(2, 1fr);
   gap: 10px; margin-bottom: 14px;
 }
 .pg-journal .eat-cat {
-  background: #FFFFFF; border: 1.5px solid #DDD2B8; color: #1A1A1A;
+  background: #FFFFFF; border: 1.5px solid #D6D3CC; color: var(--texte);
   padding: 13px; border-radius: 12px;
   font-size: 14px; font-weight: 700; font-family: inherit;
   cursor: pointer; transition: all .12s;
 }
 .pg-journal .eat-cat.active,
 .pg-journal .eat-cat:active {
-  background: #191919; border-color: #191919; color: #FFFFFF;
+  background: var(--texte); border-color: var(--texte); color: #FFFFFF;
 }
 
 /* ---------- Cartes de recettes ---------- */
@@ -871,20 +873,20 @@
    glissement de page entre onglets (Raci). Le defilement des recettes
    epouse desormais celui de la page, aucun geste concurrent. */
 .pg-journal .eat-liste { display: flex; flex-direction: column; }
-.pg-journal .eat-liste .eat-idea + .eat-idea { border-top: 1px solid var(--bordure-fine, #ECE8DF); }
+.pg-journal .eat-liste .eat-idea + .eat-idea { border-top: 1px solid var(--bordure-fine, var(--bordure-fine)); }
 .pg-journal .eat-plus {
   margin-top: 12px; padding: 11px; width: 100%;
-  background: none; border: 1.5px dashed #CFC6B0; border-radius: 14px;
-  font-family: inherit; font-size: 13px; font-weight: 800; color: #8F6200;
+  background: none; border: 1.5px dashed #D6D3CC; border-radius: 14px;
+  font-family: inherit; font-size: 13px; font-weight: 800; color: var(--or-fonce);
   cursor: pointer;
 }
-.pg-journal .eat-plus:active { background: #FAF7EF; }
+.pg-journal .eat-plus:active { background: var(--piste); }
 .pg-journal .eat-ecart { font-size: 12.5px; font-weight: 600; margin-top: 5px; line-height: 1.4; }
-.pg-journal .eat-ecart--info { color: #6B6259; }
+.pg-journal .eat-ecart--info { color: var(--texte-2); }
 /* Ambre, jamais rouge : une suggestion n'est pas une erreur. */
 .pg-journal .eat-ecart--warn { color: #C77E1A; }
 .pg-journal .eat-pt { margin-right: 5px; }
-.pg-journal .eat-note-ligne { font-size: 12.5px; font-weight: 600; color: #6B6259; margin-top: 5px; }
+.pg-journal .eat-note-ligne { font-size: 12.5px; font-weight: 600; color: var(--texte-2); margin-top: 5px; }
 
 
 .pg-journal .eat-idea {
@@ -895,21 +897,21 @@
   cursor: pointer;
 }
 .pg-journal .eat-idea-name {
-  font-size: 16px; font-weight: 800; color: #1A1A1A; line-height: 1.25; letter-spacing: -0.01em;
+  font-size: 16px; font-weight: 800; color: var(--texte); line-height: 1.25; letter-spacing: -0.01em;
 }
 .pg-journal .eat-idea-ex {
-  font-size: 13px; color: #6B6259; margin-top: 5px; line-height: 1.5;
+  font-size: 13px; color: var(--texte-2); margin-top: 5px; line-height: 1.5;
 }
 .pg-journal .eat-idea-kcal {
   /* Fini le chip beige : la valeur parle en encre grasse, les
      proteines en or fonce — un seul accent dore par ligne. */
-  margin-top: 7px; font-size: 13.5px; font-weight: 800; color: #191919;
+  margin-top: 7px; font-size: 13.5px; font-weight: 800; color: var(--texte);
 }
 .pg-journal .eat-prot { font-weight: 700; }
-.pg-journal .eat-prot.ok { color: #8F6200; }
+.pg-journal .eat-prot.ok { color: var(--or-fonce); }
 .pg-journal .eat-open {
   display: block; text-align: right; margin-top: 8px;
-  font-size: 13px; font-weight: 800; color: #8F6200;
+  font-size: 13px; font-weight: 800; color: var(--or-fonce);
 }
 
 /* ============================================================
@@ -934,18 +936,18 @@
 .fr-banniere {
   position: relative;
   width: 100%; aspect-ratio: 3 / 2;
-  background: #F2EFE9; overflow: hidden;
+  background: var(--piste); overflow: hidden;
 }
 .fr-banniere img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* Sans photo : degrade sobre et embleme, jamais d'image cassee. */
 .fr-banniere--vide {
-  background: linear-gradient(150deg, #FFF4CC 0%, #F7E7B8 45%, #F2EFE9 100%);
+  background: linear-gradient(150deg, #FFF4CC 0%, var(--bordure) 45%, var(--piste) 100%);
   display: flex; align-items: center; justify-content: center;
 }
 .fr-embleme {
   width: 74px; height: 74px;
-  fill: none; stroke: #DFA004; stroke-width: 1.4;
+  fill: none; stroke: var(--or-fonce); stroke-width: 1.4;
   stroke-linecap: round; stroke-linejoin: round;
   opacity: .55;
 }
@@ -989,49 +991,49 @@
 .fr-tete { padding: 20px 20px 18px; }
 .fr-titre {
   font-size: 25px; font-weight: 800; line-height: 1.2;
-  letter-spacing: -.02em; color: #191919; margin: 0;
+  letter-spacing: -.02em; color: var(--texte); margin: 0;
 }
 .fr-meta {
   display: flex; flex-wrap: wrap; gap: 16px;
   margin-top: 12px;
-  font-size: 14.5px; font-weight: 600; color: #6B6455;
+  font-size: 14.5px; font-weight: 600; color: var(--texte-2);
 }
 .fr-meta span { display: inline-flex; align-items: center; gap: 6px; }
 .fr-meta .ic {
-  width: 16px; height: 16px; color: #A8A297;
+  width: 16px; height: 16px; color: var(--texte-3);
   fill: none; stroke: currentColor; stroke-width: 1.9;
   stroke-linecap: round; stroke-linejoin: round;
 }
 
-.fr-sep { height: 1px; background: #F0EDE6; margin: 0 20px; }
+.fr-sep { height: 1px; background: var(--piste); margin: 0 20px; }
 
 /* ---------- Corps ---------- */
 .fr-corps { padding: 20px; }
 .fr-sec {
   font-size: 12px; font-weight: 800; letter-spacing: .1em;
-  text-transform: uppercase; color: #A8A297;
+  text-transform: uppercase; color: var(--texte-3);
   margin: 0 0 12px;
 }
 .fr-corps .fr-sec:not(:first-child) { margin-top: 28px; }
 
 .fr-ings { list-style: none; padding: 0; margin: 0; }
 .fr-ings li {
-  font-size: 15px; font-weight: 600; color: #191919;
-  padding: 11px 0; border-bottom: 1px solid #F4F1EA;
+  font-size: 15px; font-weight: 600; color: var(--texte);
+  padding: 11px 0; border-bottom: 1px solid var(--piste);
 }
 .fr-ings li:last-child { border-bottom: none; }
 
 .fr-steps { padding-left: 22px; margin: 0; }
 .fr-steps li {
-  font-size: 14.5px; font-weight: 500; color: #3D3A35;
+  font-size: 14.5px; font-weight: 500; color: var(--texte);
   padding: 7px 0; line-height: 1.55;
 }
-.fr-steps li::marker { font-weight: 800; color: #DFA004; }
+.fr-steps li::marker { font-weight: 800; color: var(--or-fonce); }
 
 .fr-tip {
-  background: #FFF6DD; border-radius: 14px;
+  background: var(--piste); border-radius: 14px;
   padding: 14px 16px; margin-top: 24px;
-  font-size: 13.5px; font-weight: 600; color: #7A5600; line-height: 1.5;
+  font-size: 13.5px; font-weight: 600; color: var(--near); line-height: 1.5;
 }
 .fr-tip::before { content: '💡 '; }
 
@@ -1042,7 +1044,7 @@
    ============================================================ */
 .pg-journal .mc-res-titre {
   font-size: 11px; font-weight: 800; letter-spacing: .07em;
-  text-transform: uppercase; color: #A8A297;
+  text-transform: uppercase; color: var(--texte-3);
   padding: 10px 14px 4px;
 }
 .pg-journal .mc-res-ligne {
@@ -1065,14 +1067,14 @@
 .pg-journal .mc-resultats .mc-res-fav {
   flex: 0 0 42px; width: 42px;
   background: none; border: none; cursor: pointer;
-  color: #D8D3C8; font-size: 17px; line-height: 1; font-family: inherit;
+  color: var(--bordure); font-size: 17px; line-height: 1; font-family: inherit;
 }
 .pg-journal .mc-res-fav.on { color: var(--or); }
 
 .pg-journal .mc-res-plat {
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
   width: 100%; padding: 11px 14px;
-  background: #FFFBEF; border: none; border-bottom: 1px solid #F1E7CC;
+  background: #FFFFFF; border: none; border-bottom: 1px solid var(--bordure);
   font-size: 14px; font-family: inherit; text-align: left; cursor: pointer;
 }
 .pg-journal .mc-res-plat:active { background: #FFF4CC; }
@@ -1091,25 +1093,25 @@
   border-radius: 22px; padding: 24px 20px; text-align: center;
 }
 .cp-boite h3 { font-size: 18px; font-weight: 800; margin: 0 0 4px; }
-.cp-sous { font-size: 13.5px; color: #6B6455; margin: 0 0 18px; }
+.cp-sous { font-size: 13.5px; color: var(--texte-2); margin: 0 0 18px; }
 .cp-compteur {
   display: flex; align-items: center; justify-content: center; gap: 20px;
   margin-bottom: 14px;
 }
 .cp-compteur button {
   width: 46px; height: 46px; border-radius: 50%;
-  border: 1.5px solid #E7E2D9; background: #FFFFFF;
-  font-size: 22px; line-height: 1; color: #191919; font-family: inherit; cursor: pointer;
+  border: 1.5px solid var(--bordure); background: #FFFFFF;
+  font-size: 22px; line-height: 1; color: var(--texte); font-family: inherit; cursor: pointer;
 }
-.cp-compteur button:active { background: #F5F2EC; }
+.cp-compteur button:active { background: var(--piste); }
 .cp-compteur span {
   font-size: 30px; font-weight: 800; min-width: 56px;
   font-variant-numeric: tabular-nums;
 }
-.cp-total { font-size: 14px; font-weight: 700; color: #8F6200; margin-bottom: 20px; }
+.cp-total { font-size: 14px; font-weight: 700; color: var(--or-fonce); margin-bottom: 20px; }
 .cp-valider {
   width: 100%; padding: 14px; border: none; border-radius: 14px;
-  background: var(--or); color: #181818;
+  background: var(--or); color: var(--texte);
   font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
 }
 .cp-valider:active { transform: scale(.98); }
@@ -1118,7 +1120,7 @@
    MES PLATS
    ============================================================ */
 .mp-plein {
-  position: fixed; inset: 0; z-index: 310; background: var(--fond, #FAF9F6);
+  position: fixed; inset: 0; z-index: 310; background: var(--fond, var(--fond));
 }
 .mp-defile { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .mp-entete {
@@ -1128,57 +1130,57 @@
 .mp-entete h2 { font-size: 20px; font-weight: 800; margin: 0; }
 .mp-x {
   width: 38px; height: 38px; border-radius: 50%; flex: none;
-  border: none; background: #F2F0EA; color: #4B4B4B;
+  border: none; background: var(--piste); color: var(--texte-2);
   font-size: 16px; line-height: 1; cursor: pointer; font-family: inherit;
 }
 .mp-corps { padding: 4px 17px calc(30px + env(safe-area-inset-bottom)); }
 
 .mp-champ { display: block; margin-bottom: 22px; }
 .mp-champ span {
-  display: block; font-size: 13px; font-weight: 700; color: #6A6558; margin-bottom: 6px;
+  display: block; font-size: 13px; font-weight: 700; color: var(--texte-2); margin-bottom: 6px;
 }
 .mp-champ input {
   width: 100%; height: 48px; padding: 0 14px;
-  border: 1px solid #E8E4D8; border-radius: 12px; background: #FFFFFF;
+  border: 1px solid var(--bordure); border-radius: 12px; background: #FFFFFF;
   font-size: 15px; font-weight: 700; font-family: inherit;
 }
 .mp-champ input:focus { outline: none; border-color: var(--or); }
 
 .mp-sec {
   font-size: 12px; font-weight: 800; letter-spacing: .08em;
-  text-transform: uppercase; color: #A8A297; margin: 22px 0 6px;
+  text-transform: uppercase; color: var(--texte-3); margin: 22px 0 6px;
 }
-.mp-aide { font-size: 12.5px; color: #8A8580; margin: 0 0 12px; line-height: 1.5; }
+.mp-aide { font-size: 12.5px; color: var(--texte-3); margin: 0 0 12px; line-height: 1.5; }
 
 .mp-ing {
   display: flex; align-items: center; gap: 8px;
-  background: #FFFFFF; border: 1px solid #EEF1F5; border-radius: 12px;
+  background: #FFFFFF; border: 1px solid var(--piste); border-radius: 12px;
   padding: 10px 12px; margin-bottom: 8px;
 }
 .mp-ing-nom { flex: 1; min-width: 0; font-size: 14px; font-weight: 600;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mp-ing input {
   width: 64px; padding: 7px 4px; text-align: center;
-  border: 1.5px solid #D9CFBB; border-radius: 8px; background: #FFFDF8;
+  border: 1.5px solid #D6D3CC; border-radius: 8px; background: #FFFFFF;
   box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
   font-size: 14px; font-weight: 700; font-family: inherit;
 }
-.mp-ing-unite { font-size: 12px; color: #A39A8C; }
+.mp-ing-unite { font-size: 12px; color: var(--texte-3); }
 .mp-ing-x {
-  background: none; border: none; color: #CBD5E1;
+  background: none; border: none; color: var(--bordure);
   font-size: 14px; cursor: pointer; padding: 4px; font-family: inherit;
 }
 
 .mp-recherche { position: relative; margin-top: 4px; }
 .mp-recherche input {
   width: 100%; padding: 12px 14px;
-  border: 1.5px solid #D9CFBB; border-radius: 14px; background: #FFFDF8;
+  border: 1.5px solid #D6D3CC; border-radius: 14px; background: #FFFFFF;
   font-size: 14px; font-family: inherit;
 }
 .mp-recherche input:focus { outline: none; border-color: var(--or); background: #FFFFFF; }
 .mp-resultats {
   position: absolute; top: 100%; left: 0; right: 0; z-index: 5;
-  background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px;
+  background: #FFFFFF; border: 1px solid var(--bordure); border-radius: 10px;
   margin-top: 4px; max-height: 240px; overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
 }
@@ -1188,14 +1190,14 @@
   background: none; border: none; border-bottom: 1px solid #F1F5F9;
   font-size: 14px; font-family: inherit; text-align: left; cursor: pointer;
 }
-.mp-resultats .kc { color: #A39A8C; font-size: 12.5px; flex: none; }
+.mp-resultats .kc { color: var(--texte-3); font-size: 12.5px; flex: none; }
 
 .mp-compteur {
   display: flex; align-items: center; gap: 18px; margin-bottom: 4px;
 }
 .mp-compteur button {
   width: 44px; height: 44px; border-radius: 50%;
-  border: 1.5px solid #E7E2D9; background: #FFFFFF;
+  border: 1.5px solid var(--bordure); background: #FFFFFF;
   font-size: 20px; line-height: 1; font-family: inherit; cursor: pointer;
 }
 .mp-compteur span {
@@ -1204,22 +1206,22 @@
 }
 
 .mp-bilan {
-  background: #FFFBEF; border: 1px solid #F3E2A8; border-radius: 14px;
+  background: #FFFFFF; border: 1px solid #F3E2A8; border-radius: 14px;
   padding: 6px 14px; margin: 22px 0 20px;
 }
 .mp-bilan-ligne {
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
-  padding: 10px 0; font-size: 13.5px; color: #8F6200;
+  padding: 10px 0; font-size: 13.5px; color: var(--or-fonce);
 }
 .mp-bilan-ligne + .mp-bilan-ligne { border-top: 1px solid #F3E2A8; }
 .mp-bilan-ligne--fort b { font-size: 15px; }
 
 .mp-valider {
   width: 100%; padding: 15px; border: none; border-radius: 14px;
-  background: var(--or); color: #181818;
+  background: var(--or); color: var(--texte);
   font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
 }
-.mp-valider:disabled { background: #EDE9E1; color: #B5B0A4; cursor: default; }
+.mp-valider:disabled { background: var(--bordure-fine); color: var(--texte-3); cursor: default; }
 .mp-supprimer {
   width: 100%; padding: 13px; margin-top: 10px;
   background: none; border: none; color: #DC2626;
@@ -1228,19 +1230,19 @@
 
 .mp-carte {
   display: block; width: 100%; text-align: left;
-  background: #FFFFFF; border: 1.5px solid #E7E2D9; border-radius: 16px;
+  background: #FFFFFF; border: 1.5px solid var(--bordure); border-radius: 16px;
   padding: 16px; margin-bottom: 10px; font-family: inherit; cursor: pointer;
 }
 .mp-carte:active { transform: scale(.99); }
-.mp-carte-nom { font-size: 16px; font-weight: 800; color: #191919; }
-.mp-carte-detail { font-size: 13px; color: #8A8580; margin-top: 4px; }
+.mp-carte-nom { font-size: 16px; font-weight: 800; color: var(--texte); }
+.mp-carte-detail { font-size: 13px; color: var(--texte-3); margin-top: 4px; }
 .mp-nouveau {
   width: 100%; padding: 15px; margin-top: 6px;
-  background: none; border: 1.5px dashed #D8D3CA; border-radius: 16px;
-  color: #8A8580; font-size: 14.5px; font-weight: 700; font-family: inherit; cursor: pointer;
+  background: none; border: 1.5px dashed var(--bordure); border-radius: 16px;
+  color: var(--texte-3); font-size: 14.5px; font-weight: 700; font-family: inherit; cursor: pointer;
 }
 .mp-rien {
-  font-size: 14px; color: #8A8580; line-height: 1.6;
+  font-size: 14px; color: var(--texte-3); line-height: 1.6;
   padding: 20px 4px; text-align: center;
 }
 
@@ -1252,41 +1254,41 @@
 
 .crs-entete { margin-bottom: 18px; }
 .crs-entete h2 { font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -.02em; }
-.crs-entete p { font-size: 14px; color: #8A8580; margin: 6px 0 0; }
+.crs-entete p { font-size: 14px; color: var(--texte-3); margin: 6px 0 0; }
 
 /* ---------- Preparation ---------- */
 .crs-prep {
-  background: #FFFFFF; border: 1px solid #EDE9E1; border-radius: 20px;
+  background: #FFFFFF; border: 1px solid var(--bordure-fine); border-radius: 20px;
   padding: 18px; margin-bottom: 18px;
   box-shadow: 0 8px 24px rgba(24, 24, 24, .06);
 }
 .crs-prep h3 { font-size: 15px; font-weight: 800; margin: 0 0 14px; }
 .crs-prep-ligne { margin-bottom: 14px; }
-.crs-lbl { font-size: 13px; font-weight: 700; color: #6B6455; margin-bottom: 8px; }
+.crs-lbl { font-size: 13px; font-weight: 700; color: var(--texte-2); margin-bottom: 8px; }
 
 .crs-seg { display: flex; gap: 8px; flex-wrap: wrap; }
 .crs-seg button {
   flex: 1; min-width: 60px; padding: 11px 8px;
-  border: 1.5px solid #E6E6E6; border-radius: 12px; background: #FFFFFF;
-  font-size: 14px; font-weight: 700; color: #191919;
+  border: 1.5px solid var(--bordure); border-radius: 12px; background: #FFFFFF;
+  font-size: 14px; font-weight: 700; color: var(--texte);
   font-family: inherit; cursor: pointer;
 }
-.crs-seg button.on { background: #FFF4CC; border-color: var(--or); color: #8A6400; }
+.crs-seg button.on { background: #FFF4CC; border-color: var(--or); color: var(--near); }
 
 .crs-generer {
   width: 100%; margin-top: 4px;
-  background: var(--or); color: #191919; border: none; border-radius: 14px;
+  background: var(--or); color: var(--texte); border: none; border-radius: 14px;
   padding: 15px; font-size: 15px; font-weight: 800;
   font-family: inherit; cursor: pointer;
   box-shadow: 0 8px 20px rgba(247, 181, 0, .3);
 }
 .crs-generer:active { transform: scale(.99); }
-.crs-generer:disabled { background: #EDE9E1; color: #B5B0A4; box-shadow: none; cursor: default; }
-.crs-note { font-size: 12px; font-weight: 600; color: #A39A8C; margin: 10px 0 0; line-height: 1.5; }
+.crs-generer:disabled { background: var(--bordure-fine); color: var(--texte-3); box-shadow: none; cursor: default; }
+.crs-note { font-size: 12px; font-weight: 600; color: var(--texte-3); margin: 10px 0 0; line-height: 1.5; }
 
 /* ---------- Compteur global ---------- */
 .crs-compte {
-  font-size: 13px; font-weight: 700; color: #8A8580;
+  font-size: 13px; font-weight: 700; color: var(--texte-3);
   margin: 0 4px 14px;
 }
 
@@ -1299,20 +1301,20 @@
 .crs-emo { font-size: 19px; }
 .crs-nb {
   font-style: normal; font-size: 12px; font-weight: 700;
-  color: #8A8580; margin-left: auto;
+  color: var(--texte-3); margin-left: auto;
 }
 .crs-carte {
-  background: #FFFFFF; border: 1px solid #EDE9E1; border-radius: 18px;
+  background: #FFFFFF; border: 1px solid var(--bordure-fine); border-radius: 18px;
   overflow: hidden; box-shadow: 0 6px 18px rgba(24, 24, 24, .05);
 }
 .crs-item {
   display: flex; align-items: center; gap: 13px;
-  padding: 13px 15px; border-bottom: 1px solid #EDE9E1;
+  padding: 13px 15px; border-bottom: 1px solid var(--bordure-fine);
 }
 .crs-item:last-child { border-bottom: none; }
 .crs-check {
   width: 26px; height: 26px; flex: none; border-radius: 8px;
-  border: 2px solid #DCDCDC; background: none;
+  border: 2px solid var(--bordure); background: none;
   display: flex; align-items: center; justify-content: center;
   color: #FFFFFF; font-size: 15px; font-weight: 800;
   cursor: pointer; font-family: inherit;
@@ -1323,11 +1325,11 @@
   font-size: 14.5px; font-weight: 700;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.crs-qty { font-size: 13px; font-weight: 700; color: #8A6400; margin-top: 1px; }
-.crs-item.fait .crs-nom { text-decoration: line-through; color: #B3B3B3; }
-.crs-item.fait .crs-qty { color: #C7C7C7; }
+.crs-qty { font-size: 13px; font-weight: 700; color: var(--near); margin-top: 1px; }
+.crs-item.fait .crs-nom { text-decoration: line-through; color: var(--texte-3); }
+.crs-item.fait .crs-qty { color: var(--bordure); }
 .crs-del {
-  flex: none; background: none; border: none; color: #CFCFCF;
+  flex: none; background: none; border: none; color: var(--bordure);
   font-size: 20px; cursor: pointer; padding: 2px 4px; font-family: inherit;
 }
 .crs-del:active { color: #EF4444; }
@@ -1336,13 +1338,13 @@
 .crs-ajout { display: flex; gap: 8px; margin-top: 8px; }
 .crs-ajout input {
   flex: 1; min-width: 0; padding: 13px 15px;
-  border: 1px solid #EDE9E1; border-radius: 14px; background: #FFFFFF;
+  border: 1px solid var(--bordure-fine); border-radius: 14px; background: #FFFFFF;
   font-size: 14.5px; font-family: inherit;
 }
 .crs-ajout input:focus { outline: none; border-color: var(--or); }
 .crs-ajout button {
   flex: none; width: 52px; border: none; border-radius: 14px;
-  background: #191919; color: #FFFFFF;
+  background: var(--texte); color: #FFFFFF;
   font-size: 20px; font-family: inherit; cursor: pointer;
 }
 
@@ -1351,7 +1353,7 @@
 .crs-partager {
   display: flex; align-items: center; justify-content: center; gap: 9px;
   width: 100%; padding: 15px; border: none; border-radius: 14px;
-  background: #191919; color: #FFFFFF;
+  background: var(--texte); color: #FFFFFF;
   font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
 }
 .crs-partager .ic {
@@ -1361,11 +1363,11 @@
 }
 .crs-decocher {
   width: 100%; padding: 13px; border: none; background: none;
-  color: #8A8580; font-size: 14px; font-weight: 700;
+  color: var(--texte-3); font-size: 14px; font-weight: 700;
   font-family: inherit; cursor: pointer;
 }
 .crs-vide {
-  font-size: 14px; color: #8A8580; text-align: center;
+  font-size: 14px; color: var(--texte-3); text-align: center;
   padding: 24px 4px; line-height: 1.6;
 }
 
@@ -1410,7 +1412,7 @@
 /* Vignette : leger degrade + lumiere interieure, l'illustration
    gagne en presence sans changer de taille. */
 .pg-journal .mc-vignette {
-  background: linear-gradient(160deg, #F7F4ED 0%, #EFEBE1 100%);
+  background: linear-gradient(160deg, var(--piste) 0%, var(--piste) 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -1px 2px rgba(60, 50, 40, .05);
 }
 
@@ -1423,12 +1425,12 @@
    L'appui enfonce (translateY + ombre resserree) au lieu de
    seulement retrecir : sensation physique, pas d'effet flash. */
 .pg-journal .fab {
-  background: linear-gradient(180deg, #FFC933 0%, #F7B500 100%);
+  background: linear-gradient(180deg, #FFC933 0%, var(--or) 100%);
   box-shadow: 0 1px 2px rgba(24,24,24,.08), 0 6px 16px rgba(247, 181, 0, .35);
 }
 .pg-journal .fab:active {
   transform: translateY(1px) scale(.96);
-  background: linear-gradient(180deg, #F7B500 0%, #E9A800 100%);
+  background: linear-gradient(180deg, var(--or) 0%, var(--glucides) 100%);
   box-shadow: 0 1px 2px rgba(24,24,24,.10), 0 3px 8px rgba(247, 181, 0, .30);
 }
 
@@ -1466,7 +1468,7 @@
     text-align:center; box-shadow:0 12px 40px rgba(0,0,0,.25);
 }
 .water-box h3 { font-size:19px; font-weight:800; margin:0 0 4px; }
-.water-box .wb-sub { font-size:13px; color:#6b7280; margin-bottom:18px; }
+.water-box .wb-sub { font-size:13px; color:var(--texte-2); margin-bottom:18px; }
 
 /* La bouteille */
 .wb-tailles {
@@ -1499,7 +1501,7 @@
 }
 .bottle-fill {
     position:absolute; bottom:0; left:0; right:0;
-    background:linear-gradient(180deg,#38bdf8,#0ea5e9);
+    background:linear-gradient(180deg,#0EA5E9,#0ea5e9);
     transition:height .35s cubic-bezier(.34,1.3,.64,1);
 }
 .bottle-pct {
@@ -1512,14 +1514,14 @@
     background:#f0f9ff; border-radius:12px; padding:14px; margin-bottom:16px;
 }
 .water-modal .water-total .wt-v { font-size:26px; font-weight:800; color:#0ea5e9; }
-.water-modal .water-total .wt-l { font-size:12px; color:#6b7280; margin-top:2px; }
+.water-modal .water-total .wt-l { font-size:12px; color:var(--texte-2); margin-top:2px; }
 
 .water-actions { display:flex; gap:8px; }
 .water-actions button {
     flex:1; padding:12px; border:none; border-radius:11px; font-weight:700; font-size:14px; cursor:pointer;
     font-family:inherit;
 }
-.wa-reset { background:#f1f5f9; color:#475569; }
+.wa-reset { background:#f1f5f9; color:var(--texte-2); }
 .wa-close { background:#0ea5e9; color:#fff; }
 
 /* ============================================================
@@ -1563,7 +1565,7 @@
 .rail-pan .premium-overlay { position: absolute !important; }
 
 /* Couche Courses (hors nav) au-dessus du rail */
-.couche-courses { z-index: 5; background: #F8F8F8; }
+.couche-courses { z-index: 5; background: var(--fond); }
 
 /* Page qui vient de se poser apres un glissement : pas de cascade. */
 .sans-entree .colonne > * { animation: none !important; opacity: 1 !important; transform: none !important; }
@@ -1605,12 +1607,12 @@
 .pg-journal .mc-plat { padding: 0 16px 12px; }
 .pg-journal .mc-plat-btn {
   display: inline-flex; align-items: center; gap: 7px;
-  background: #FFFBEF; border: 1px solid #F0E4BE; color: #8F6200;
+  background: #FFFFFF; border: 1px solid var(--bordure); color: var(--or-fonce);
   border-radius: 999px; padding: 9px 15px;
   font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
   transition: transform var(--transition), background var(--transition);
 }
-.pg-journal .mc-plat-btn:active { transform: scale(.97); background: #FBF3DC; }
+.pg-journal .mc-plat-btn:active { transform: scale(.97); background: var(--piste); }
 .pg-journal .mc-plat-btn svg {
   width: 15px; height: 15px; flex: none;
   fill: none; stroke: currentColor; stroke-width: 1.7;
@@ -1619,22 +1621,22 @@
 .pg-journal .mc-plat-saisie { display: flex; align-items: center; gap: 7px; }
 .pg-journal .mc-plat-champ {
   flex: 1; min-width: 0; padding: 11px 13px;
-  border: 1px solid #E8E4D8; border-radius: 12px;
-  font-size: 14px; font-family: inherit; background: #FAF9F5;
+  border: 1px solid var(--bordure); border-radius: 12px;
+  font-size: 14px; font-family: inherit; background: var(--piste);
 }
 .pg-journal .mc-plat-champ:focus { outline: none; border-color: var(--or); }
 .pg-journal .mc-plat-ok-btn {
-  border: none; border-radius: 12px; background: #181818; color: #fff;
+  border: none; border-radius: 12px; background: var(--texte); color: #fff;
   padding: 11px 15px; font-size: 13.5px; font-weight: 700; font-family: inherit; cursor: pointer;
 }
 .pg-journal .mc-plat-ok-btn:disabled { opacity: .45; }
 .pg-journal .mc-plat-annul {
-  border: none; background: none; color: #B5B0A4;
+  border: none; background: none; color: var(--texte-3);
   font-size: 16px; padding: 8px; cursor: pointer; font-family: inherit;
 }
 .pg-journal .mc-plat-ok {
-  font-size: 13px; font-weight: 700; color: #0F9D58;
-  background: #EFF9F2; border-radius: 12px; padding: 10px 13px;
+  font-size: 13px; font-weight: 700; color: var(--ok);
+  background: var(--succes-pale); border-radius: 12px; padding: 10px 13px;
 }
 
 /* ============================================================
@@ -1668,12 +1670,12 @@
 /* Acces discret a la bibliotheque de plats, en pied de liste. */
 .pg-journal .mc-res-gerer {
   display: block; width: 100%;
-  background: #FAF9F5; border: none; border-top: 1px solid #EFEBE1;
+  background: var(--piste); border: none; border-top: 1px solid var(--piste);
   padding: 12px 14px; text-align: center;
-  font-size: 12.5px; font-weight: 700; color: #8F6200;
+  font-size: 12.5px; font-weight: 700; color: var(--or-fonce);
   font-family: inherit; cursor: pointer;
 }
-.pg-journal .mc-res-gerer:active { background: #FFF6DC; }
+.pg-journal .mc-res-gerer:active { background: var(--piste); }
 
 /* Espace entre deux cartes repas : 12px, v1 (.meal-card) */
 .pg-journal .mc + .mc { margin-top: calc(12px - var(--espace)); }
@@ -1685,13 +1687,13 @@
    blanche, icone au trait noir avec accent dore, texte encre. */
 .pg-journal .weight-note {
     display:flex; align-items:center; gap:12px; cursor:pointer;
-    background:var(--carte); border:1px solid #ECE8DF;
+    background:var(--carte); border:1px solid var(--bordure-fine);
     border-radius:20px; padding:14px 16px; margin:0;
     box-shadow:0 2px 10px rgba(24,24,24,.04);
 }
-.pg-journal .weight-note:active { transform:scale(.99); background:#FDFBF6; }
+.pg-journal .weight-note:active { transform:scale(.99); background:var(--piste); }
 .pg-journal .weight-note .wn-ic {
-    flex:none; color:#181818; display:flex; align-items:center; justify-content:center;
+    flex:none; color:var(--texte); display:flex; align-items:center; justify-content:center;
 }
 .pg-journal .weight-note .wn-ic svg {
     width:26px; height:26px;
@@ -1699,10 +1701,10 @@
     stroke-linecap:round; stroke-linejoin:round;
 }
 .pg-journal .weight-note .wn-txt { flex:1; }
-.pg-journal .weight-note .wn-title { font-size:14px; font-weight:600; color:#8A8580; letter-spacing:.01em; }
+.pg-journal .weight-note .wn-title { font-size:14px; font-weight:600; color:var(--texte-3); letter-spacing:.01em; }
 .pg-journal .weight-note .wn-cta {
-  flex:none; font-size:13.5px; font-weight:700; color:#B7860B;
-  background:none; border:1.5px solid #E4CE96;
+  flex:none; font-size:13.5px; font-weight:700; color:var(--near);
+  background:none; border:1.5px solid var(--bordure);
   padding:8px 16px; border-radius:999px;
 }
 
@@ -1715,7 +1717,7 @@
    ============================================================ */
 .couche-repas {
   z-index: 6;                       /* au-dessus du rail et de Courses */
-  background: var(--fond, #F8F8F8);
+  background: var(--fond, var(--fond));
 }
 @media (prefers-reduced-motion: no-preference) {
   .couche-repas { animation: rp-entre 220ms cubic-bezier(.22, .8, .28, 1) both; }
@@ -1732,7 +1734,7 @@
   display: flex; flex-direction: column; gap: 14px;
 }
 /* Fond creme propre a la page repas (maquette) */
-.pg-journal.couche-repas { background: #FBF7F2; }
+.pg-journal.couche-repas { background: var(--piste); }
 
 /* ---------- Topbar : retour | titre centre | Terminer ---------- */
 .pg-journal .rp-topbar {
@@ -1742,7 +1744,7 @@
 .pg-journal .rp-retour {
   width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: #fff; border: none; color: #191919;
+  background: #fff; border: none; color: var(--texte);
   box-shadow: 0 2px 8px rgba(60, 50, 40, .08); cursor: pointer;
 }
 .pg-journal .rp-retour svg { width: 20px; height: 20px; }
@@ -1750,20 +1752,20 @@
 .pg-journal .rp-titre {
   margin: 0; text-align: center;
   font-size: 12.5px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: #A9A49C;
+  text-transform: uppercase; color: var(--texte-3);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pg-journal .rp-titre-champ {
   width: 100%; text-align: center;
-  font-size: 13px; font-weight: 700; letter-spacing: .06em; color: #4A4642;
-  border: none; background: #F1EDE6; border-radius: 8px;
+  font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--texte);
+  border: none; background: var(--piste); border-radius: 8px;
   padding: 3px 8px; font-family: inherit;
 }
 .pg-journal .rp-titre-champ:focus { outline: none; }
 .pg-journal .rp-terminer-esp { width: 44px; flex: none; } /* equilibre la fleche retour */
 .pg-journal .rp-terminer {
   background: none; border: none; cursor: pointer; padding: 6px 2px;
-  font-family: inherit; font-size: 16px; font-weight: 700; color: #B7860B;
+  font-family: inherit; font-size: 16px; font-weight: 700; color: var(--near);
 }
 .pg-journal .rp-terminer:active { opacity: .6; }
 
@@ -1778,37 +1780,37 @@
 .pg-journal .rp-anneau svg { width: 62px; height: 62px; display: block; transform: rotate(-90deg); }
 .pg-journal .rp-anneau-c { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .pg-journal .rp-anneau-c span {
-  width: 34px; height: 34px; border-radius: 50%; background: #FDF3E0;
+  width: 34px; height: 34px; border-radius: 50%; background: var(--piste);
   display: block;
 }
 .pg-journal .rp-resume-txt { flex: 1; min-width: 84px; }
 .pg-journal .rp-kcal {
-  font-size: 28px; font-weight: 800; color: #191919; line-height: 1; white-space: nowrap;
+  font-size: 28px; font-weight: 800; color: var(--texte); line-height: 1; white-space: nowrap;
   letter-spacing: -.03em; font-variant-numeric: tabular-nums;
 }
-.pg-journal .rp-kcal span { font-size: 15px; font-weight: 600; color: #8A8580; letter-spacing: 0; margin-left: 3px; }
+.pg-journal .rp-kcal span { font-size: 15px; font-weight: 600; color: var(--texte-3); letter-spacing: 0; margin-left: 3px; }
 .pg-journal .rp-reco { margin-top: 5px; min-height: 16px; line-height: 1.35; }
-.pg-journal .rp-reco span { display: block; font-size: 11px; font-weight: 600; color: #A39D95; text-transform: uppercase; letter-spacing: .04em; }
-.pg-journal .rp-reco b { display: block; font-size: 13px; font-weight: 700; color: #6E6961; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pg-journal .rp-reco span { display: block; font-size: 11px; font-weight: 600; color: var(--texte-3); text-transform: uppercase; letter-spacing: .04em; }
+.pg-journal .rp-reco b { display: block; font-size: 13px; font-weight: 700; color: var(--texte-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 /* Trio de macros, separe par un filet, avec pastille de couleur */
 .pg-journal .rp-macros {
   flex: none; display: flex; align-items: stretch;
-  border-left: 1px solid #EFEAE2; padding-left: 10px; margin-left: 0;
+  border-left: 1px solid var(--piste); padding-left: 10px; margin-left: 0;
 }
 .pg-journal .rp-macro { text-align: center; padding: 0 6px; }
-.pg-journal .rp-macro + .rp-macro { border-left: 1px solid #F3EFE8; }
+.pg-journal .rp-macro + .rp-macro { border-left: 1px solid var(--piste); }
 .pg-journal .rp-macro b {
-  display: block; font-size: 17px; font-weight: 800; color: #191919;
+  display: block; font-size: 17px; font-weight: 800; color: var(--texte);
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
-.pg-journal .rp-macro b i { font-style: normal; font-size: 12px; font-weight: 600; color: #8A8580; margin-left: 1px; }
-.pg-journal .rp-macro em { font-style: normal; display: block; font-size: 11px; font-weight: 500; color: #6B6763; margin-top: 2px; white-space: nowrap; }
+.pg-journal .rp-macro b i { font-style: normal; font-size: 12px; font-weight: 600; color: var(--texte-3); margin-left: 1px; }
+.pg-journal .rp-macro em { font-style: normal; display: block; font-size: 11px; font-weight: 500; color: var(--texte-2); margin-top: 2px; white-space: nowrap; }
 .pg-journal .rp-macro s { display: block; width: 6px; height: 6px; border-radius: 50%; margin: 4px auto 0; }
 
 /* ---------- Section « Dans ce repas » ---------- */
 .pg-journal .rp-section-titre {
-  font-size: 12.5px; font-weight: 700; color: #A9A49C;
+  font-size: 12.5px; font-weight: 700; color: var(--texte-3);
   text-transform: uppercase; letter-spacing: .1em;
   margin: 4px 4px 8px;
 }
@@ -1820,7 +1822,7 @@
 /* Lignes sans carte individuelle : filets internes, facon maquette */
 .pg-journal .rp-liste .mc-ing {
   background: none; border: none; border-radius: 0;
-  border-top: 1px solid #F2EEE7; box-shadow: none;
+  border-top: 1px solid var(--piste); box-shadow: none;
   padding: 12px 0; margin: 0;
 }
 .pg-journal .rp-liste .mc-ing:first-child { border-top: none; }
@@ -1828,22 +1830,22 @@
 /* Total du repas, au pied de la carte */
 .pg-journal .rp-total {
   display: flex; align-items: center; justify-content: space-between;
-  border-top: 1px solid #F2EEE7; padding: 13px 0 8px; margin-top: 2px;
+  border-top: 1px solid var(--piste); padding: 13px 0 8px; margin-top: 2px;
 }
-.pg-journal .rp-total-lb { font-size: 16px; font-weight: 600; color: #4A4642; }
-.pg-journal .rp-total-val { font-size: 19px; font-weight: 800; color: #191919; font-variant-numeric: tabular-nums; }
-.pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: #8A8580; margin-left: 3px; }
+.pg-journal .rp-total-lb { font-size: 16px; font-weight: 600; color: var(--texte); }
+.pg-journal .rp-total-val { font-size: 19px; font-weight: 800; color: var(--texte); font-variant-numeric: tabular-nums; }
+.pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: var(--texte-3); margin-left: 3px; }
 
 /* ---------- Boutons de bas de page ---------- */
 .pg-journal .rp-actions { display: flex; flex-direction: column; gap: 11px; margin-top: 4px; }
 .pg-journal .rp-btn-plat {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 16px; border-radius: 16px;
-  background: #fff; border: 1.5px solid #E4CE96; color: #B7860B;
+  background: #fff; border: 1.5px solid var(--bordure); color: var(--near);
   font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
 }
 .pg-journal .rp-btn-plat svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.pg-journal .rp-btn-plat:active { background: #FFFBF2; }
+.pg-journal .rp-btn-plat:active { background: var(--piste); }
 .pg-journal .rp-btn-fin {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 17px; border-radius: 999px;
@@ -1899,14 +1901,14 @@
   background: #fff; box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
 }
 .pg-journal .rp-colonne .mc-scan .ic { width: 26px; height: 26px; stroke-width: 2.1; }
-.pg-journal .rp-colonne .mc-scan:active { background: #FBF7F2; }
+.pg-journal .rp-colonne .mc-scan:active { background: var(--piste); }
 
 /* --- Quantite dans un cadre arrondi --- */
 .pg-journal .rp-liste .mc-ing-champ {
-  /* Le liseret fantome #E9E3D9 se fondait dans la carte : la zone ou
+  /* Le liseret fantome var(--bordure-fine) se fondait dans la carte : la zone ou
      ecrire etait invisible. Bord franc, ombre interne legere, or au focus. */
-  border: 1.5px solid #D9CFBB; border-radius: 12px;
-  background: #FFFDF8; padding: 3px 4px;
+  border: 1.5px solid #D6D3CC; border-radius: 12px;
+  background: #FFFFFF; padding: 3px 4px;
   box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
   transition: border-color .15s, box-shadow .15s;
 }
@@ -1927,25 +1929,25 @@
   padding: 16px 18px 8px;
 }
 .pg-journal .rp-colonne .dn-titre {
-  font-size: 13px; font-weight: 700; color: #6B6763;
+  font-size: 13px; font-weight: 700; color: var(--texte-2);
   text-transform: uppercase; letter-spacing: .09em;
 }
 .pg-journal .rp-colonne .dn-ligne {
   display: grid; grid-template-columns: 38px 1fr auto;
   align-items: center; gap: 12px;
-  border-top: 1px solid #F2EEE7; padding: 12px 0;
+  border-top: 1px solid var(--piste); padding: 12px 0;
 }
 .pg-journal .rp-colonne .dn-lignes > .dn-ligne:first-child { border-top: none; }
 .pg-journal .rp-colonne .dn-ic {
-  width: 38px; height: 38px; border-radius: 50%; background: #FAF5EC;
+  width: 38px; height: 38px; border-radius: 50%; background: var(--piste);
   display: flex; align-items: center; justify-content: center;
 }
 .pg-journal .rp-colonne .dn-ic svg {
-  width: 19px; height: 19px; fill: none; stroke: #6B6763;
+  width: 19px; height: 19px; fill: none; stroke: var(--texte-2);
   stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
 }
-.pg-journal .rp-colonne .dn-lb { font-size: 16px; font-weight: 500; color: #2C2A27; }
-.pg-journal .rp-colonne .dn-val { font-size: 17px; font-weight: 800; color: #191919; }
+.pg-journal .rp-colonne .dn-lb { font-size: 16px; font-weight: 500; color: var(--texte); }
+.pg-journal .rp-colonne .dn-val { font-size: 17px; font-weight: 800; color: var(--texte); }
 
 /* Chevron de navigation : la carte repas mene a une page */
 .pg-journal .mc-chevron--nav { font-size: 22px; transform: none; margin-top: -2px; }
@@ -1976,30 +1978,30 @@
     box-shadow:0 -10px 14px -10px rgba(0,0,0,.10);
 }
 .modal h3 { margin-bottom:16px; font-size:17px; padding-right:38px; }
-.modal label { display:block; font-size:13px; font-weight:600; margin:10px 0 4px; color:#475569; }
-.modal input { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:15px; }
+.modal label { display:block; font-size:13px; font-weight:600; margin:10px 0 4px; color:var(--texte-2); }
+.modal input { width:100%; padding:10px; border:1px solid var(--bordure); border-radius:6px; font-size:15px; }
 .modal-btns { display:flex; gap:8px; margin-top:18px; }
 .modal-btns button { flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:inherit; }
-.modal-save { background:#181818; color:#fff; }
-.modal-cancel { background:#e2e8f0; color:#475569; }
+.modal-save { background:var(--texte); color:#fff; }
+.modal-cancel { background:var(--bordure); color:var(--texte-2); }
 .modal .modal-h3-ic { display:flex; align-items:center; gap:8px; }
-.modal .modal-h3-ic .ic { width:20px; height:20px; flex:none; color:#F7B500; }
-.modal .wm-last { font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
-.modal .wm-last b { color:#191919; }
+.modal .modal-h3-ic .ic { width:20px; height:20px; flex:none; color:var(--or); }
+.modal .wm-last { font-size:12.5px; color:var(--texte-3); font-weight:600; margin-top:6px; }
+.modal .wm-last b { color:var(--texte); }
 
 /* Nom d'utilisateur : etat de disponibilite sous le champ.
    Couleurs reprises de la v1 (index.html, #pseudoHint). */
 .login-pseudo-note {
-  font-size: 12px; font-weight: 600; color: #9aa0aa;
+  font-size: 12px; font-weight: 600; color: var(--texte-3);
   margin: -6px 2px 2px; line-height: 1.4; min-height: 17px;
 }
 .login-pseudo-note--invalide,
 .login-pseudo-note--pris { color: #dc2626; }
-.login-pseudo-note--libre { color: #15803d; }
+.login-pseudo-note--libre { color: var(--ok); }
 
 /* Force du mot de passe : jauge v1 (index.html, .pw-meter / .pw-bar) */
 .login-pw-jauge {
-  height: 5px; background: #EEF0F3; border-radius: 5px;
+  height: 5px; background: var(--piste); border-radius: 5px;
   margin: -6px 2px 0; overflow: hidden;
 }
 .login-pw-bar {
@@ -2010,14 +2012,14 @@
 /* Consentement RGPD : case + texte, alignes en haut */
 .login-consent {
   display: flex; gap: 9px; align-items: flex-start;
-  font-size: 11.5px; color: #4b4a47; line-height: 1.35;
+  font-size: 11.5px; color: var(--texte); line-height: 1.35;
   margin: 2px 2px 0; cursor: pointer; text-align: left;
 }
 .login-consent input {
   width: 18px; height: 18px; margin: 1px 0 0;
-  accent-color: #F7B500; flex-shrink: 0;
+  accent-color: var(--or); flex-shrink: 0;
 }
-.login-consent a { color: #8F6200; font-weight: 700; }
+.login-consent a { color: var(--or-fonce); font-weight: 700; }
 
 /* ============================================================
    EN-TETE PERSONNELLE
@@ -2042,7 +2044,7 @@
 .pg-journal .j-prenom,
 .pg-entrainer .j-prenom {
   justify-self: center;
-  font-size: 17px; font-weight: 800; color: #191919;
+  font-size: 17px; font-weight: 800; color: var(--texte);
   letter-spacing: -.01em; white-space: nowrap;
   max-width: 42vw; overflow: hidden; text-overflow: ellipsis;
 }
@@ -2053,7 +2055,7 @@
    prolongement du repas, pas un encart promotionnel.
    ============================================================ */
 .pg-journal .dn {
-  background: #fff; border: 1.5px solid #E7E2D9; border-radius: 18px;
+  background: #fff; border: 1.5px solid var(--bordure); border-radius: 18px;
   box-shadow: 0 4px 14px rgba(60, 50, 40, .05);
   padding: 14px 16px;
 }
@@ -2062,47 +2064,47 @@
   gap: 10px; margin-bottom: 10px;
 }
 .pg-journal .dn-titre {
-  font-size: 11.5px; font-weight: 800; color: #8A8580;
+  font-size: 11.5px; font-weight: 800; color: var(--texte-3);
   text-transform: uppercase; letter-spacing: .06em;
 }
 .pg-journal .dn-offert {
-  font-size: 10.5px; font-weight: 800; color: #15803D;
-  background: #E9F7EF; border-radius: 999px; padding: 3px 8px;
+  font-size: 10.5px; font-weight: 800; color: var(--ok);
+  background: var(--succes-pale); border-radius: 999px; padding: 3px 8px;
   white-space: nowrap;
 }
 .pg-journal .dn-pro {
-  font-size: 10.5px; font-weight: 800; color: #8F6200;
+  font-size: 10.5px; font-weight: 800; color: var(--or-fonce);
   background: #FFF4CC; border-radius: 999px; padding: 3px 8px;
 }
 .pg-journal .dn-ligne {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; padding: 9px 0; border-top: 1px solid #F2EFE9;
+  gap: 12px; padding: 9px 0; border-top: 1px solid var(--piste);
 }
 .pg-journal .dn-ligne:first-child { border-top: none; padding-top: 2px; }
-.pg-journal .dn-lb { font-size: 13.5px; font-weight: 600; color: #4B4A47; }
+.pg-journal .dn-lb { font-size: 13.5px; font-weight: 600; color: var(--texte); }
 .pg-journal .dn-val {
-  font-size: 14px; font-weight: 800; color: #191919;
+  font-size: 14px; font-weight: 800; color: var(--texte);
   font-variant-numeric: tabular-nums;
 }
 .pg-journal .dn-cadenas {
-  width: 26px; height: 26px; border-radius: 50%; background: #F2EFE9;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--piste);
   display: flex; align-items: center; justify-content: center;
 }
 .pg-journal .dn-cadenas svg {
-  width: 14px; height: 14px; fill: none; stroke: #A8A29A;
+  width: 14px; height: 14px; fill: none; stroke: var(--texte-3);
   stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-journal .dn-partiel,
 .pg-journal .dn-absent {
-  font-size: 11.5px; font-weight: 500; color: #8A8580;
+  font-size: 11.5px; font-weight: 500; color: var(--texte-3);
   line-height: 1.45; margin: 10px 0 0;
 }
 .pg-journal .dn-absent { margin-top: 0; }
 .pg-journal .dn-cta {
   width: 100%; margin-top: 12px; padding: 11px 0;
   border: none; border-radius: 12px; cursor: pointer; font-family: inherit;
-  font-size: 13.5px; font-weight: 800; color: #181818;
-  background: linear-gradient(135deg, #FFD86B, #F7B500);
+  font-size: 13.5px; font-weight: 800; color: var(--texte);
+  background: linear-gradient(135deg, #FFD86B, var(--or));
   box-shadow: 0 4px 14px rgba(247, 181, 0, .28);
 }
 .pg-journal .dn-cta:active { transform: scale(.99); }
@@ -2113,18 +2115,18 @@
 .pg-journal .mc-ing-cuisson {
   display: inline-flex; align-items: center; gap: 0;
   margin-top: 5px; padding: 2px; border: none; cursor: pointer;
-  background: #F1EFE9; border-radius: 999px; font-family: inherit;
+  background: var(--piste); border-radius: 999px; font-family: inherit;
 }
 .pg-journal .mc-ing-cuisson span {
-  font-size: 10.5px; font-weight: 700; color: #A8A29A;
+  font-size: 10.5px; font-weight: 700; color: var(--texte-3);
   padding: 3px 9px; border-radius: 999px; line-height: 1.2;
   transition: background .15s, color .15s;
 }
 .pg-journal .mc-ing-cuisson span.actif {
-  background: #fff; color: #191919;
+  background: #fff; color: var(--texte);
   box-shadow: 0 1px 3px rgba(60, 50, 40, .12);
 }
-.pg-journal .mc-ing-cuisson.est-cuit span.actif { color: #8F6200; }
+.pg-journal .mc-ing-cuisson.est-cuit span.actif { color: var(--or-fonce); }
 
 /* ============================================================
    PARCOURS D'ACCUEIL — questionnaire avant inscription.
@@ -2136,7 +2138,7 @@
   position: fixed; inset: 0; z-index: 5;
   /* Le degrade chaud de la v1 : on arrive chez BELFIT, pas sur un
      formulaire gris. */
-  background: linear-gradient(180deg, #FDF3D8 0%, #FAF7EF 34%, #F8F8F8 62%);
+  background: linear-gradient(180deg, var(--piste) 0%, var(--piste) 34%, var(--fond) 62%);
   overflow-y: auto; -webkit-overflow-scrolling: touch;
   display: flex; flex-direction: column;
   padding: calc(14px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
@@ -2148,7 +2150,7 @@
 }
 .bv-barres { display: flex; gap: 6px; margin-top: 10px; }
 .bv-barre {
-  flex: 1; height: 4px; border-radius: 4px; background: #E9E5DC; overflow: hidden;
+  flex: 1; height: 4px; border-radius: 4px; background: var(--bordure-fine); overflow: hidden;
 }
 .bv-barre-plein { height: 100%; border-radius: 4px; transition: width .25s ease; }
 
@@ -2159,57 +2161,57 @@
 .bv-logo { width: 54px; height: auto; margin: 8px 0 14px; }
 .bv-titre {
   font-size: 24px; font-weight: 800; letter-spacing: -.02em;
-  color: #191919; margin: 0 0 8px; line-height: 1.2;
+  color: var(--texte); margin: 0 0 8px; line-height: 1.2;
 }
 .bv-just {
-  font-size: 13.5px; font-weight: 500; color: #8A8580;
+  font-size: 13.5px; font-weight: 500; color: var(--texte-3);
   line-height: 1.5; margin: 0 0 18px;
 }
 
 /* Cartes de reponse : blanches, choix marque a l'or */
 .bv-carte {
   display: flex; align-items: center; gap: 13px; text-align: left;
-  background: #fff; border: 1.5px solid #E7E2D9; border-radius: 16px;
+  background: #fff; border: 1.5px solid var(--bordure); border-radius: 16px;
   padding: 14px 15px; margin-bottom: 10px; cursor: pointer; font-family: inherit;
   transition: border-color .12s, transform .08s;
 }
 .bv-carte:active { transform: scale(.99); }
-.bv-carte--choisie { border-color: #F7B500; box-shadow: 0 4px 14px rgba(247, 181, 0, .16); }
+.bv-carte--choisie { border-color: var(--or); box-shadow: 0 4px 14px rgba(247, 181, 0, .16); }
 .bv-emo { font-size: 22px; flex: none; }
 .bv-carte-txt { display: flex; flex-direction: column; gap: 2px; }
-.bv-carte-txt b { font-size: 15px; font-weight: 800; color: #191919; }
-.bv-carte-txt i { font-style: normal; font-size: 12.5px; font-weight: 500; color: #8A8580; }
+.bv-carte-txt b { font-size: 15px; font-weight: 800; color: var(--texte); }
+.bv-carte-txt i { font-style: normal; font-size: 12.5px; font-weight: 500; color: var(--texte-3); }
 
 /* Pilules (sexe) et tuiles (nombres) */
 .bv-rangee { display: flex; gap: 10px; margin-bottom: 16px; }
 .bv-pilule {
   flex: 1; padding: 13px 0; border-radius: 999px; cursor: pointer;
-  background: #fff; border: 1.5px solid #E7E2D9; font-family: inherit;
-  font-size: 14.5px; font-weight: 700; color: #191919;
+  background: #fff; border: 1.5px solid var(--bordure); font-family: inherit;
+  font-size: 14.5px; font-weight: 700; color: var(--texte);
 }
-.bv-pilule--choisie { border-color: #F7B500; background: #FFFBEF; }
+.bv-pilule--choisie { border-color: var(--or); background: #FFFFFF; }
 .bv-grille { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 .bv-tuile {
   padding: 16px 0; border-radius: 14px; cursor: pointer;
-  background: #fff; border: 1.5px solid #E7E2D9; font-family: inherit;
-  font-size: 15px; font-weight: 800; color: #191919;
+  background: #fff; border: 1.5px solid var(--bordure); font-family: inherit;
+  font-size: 15px; font-weight: 800; color: var(--texte);
 }
-.bv-tuile--choisie { border-color: #F7B500; background: #FFFBEF; }
+.bv-tuile--choisie { border-color: var(--or); background: #FFFFFF; }
 
 /* Champs */
-.bv-label { font-size: 13px; font-weight: 700; color: #4B4A47; margin: 6px 2px 6px; }
+.bv-label { font-size: 13px; font-weight: 700; color: var(--texte); margin: 6px 2px 6px; }
 .bv-champ {
   width: 100%; padding: 14px; border-radius: 14px; margin-bottom: 12px;
-  border: 1.5px solid #E7E2D9; background: #fff; font-family: inherit;
-  font-size: 16px; font-weight: 600; color: #191919;
+  border: 1.5px solid var(--bordure); background: #fff; font-family: inherit;
+  font-size: 16px; font-weight: 600; color: var(--texte);
 }
-.bv-champ:focus { outline: none; border-color: #F7B500; }
+.bv-champ:focus { outline: none; border-color: var(--or); }
 
 /* Boutons */
 .bv-suivant {
   margin-top: auto; padding: 15px 0; border: none; border-radius: 999px;
   /* Le CTA porte l'or de la marque, comme sur l'ecran de connexion v1 */
-  background: linear-gradient(135deg, #FFD86B, #F7B500); color: #181818;
+  background: linear-gradient(135deg, #FFD86B, var(--or)); color: var(--texte);
   font-family: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer;
   box-shadow: 0 1px 2px rgba(24, 24, 24, .10), 0 10px 26px rgba(247, 181, 0, .32);
   transition: opacity .15s, transform .08s;
@@ -2218,37 +2220,37 @@
 .bv-suivant:active:not(:disabled) { transform: scale(.99); }
 .bv-lien {
   margin-top: 14px; background: none; border: none; cursor: pointer;
-  font-family: inherit; font-size: 13.5px; font-weight: 700; color: #8F6200;
+  font-family: inherit; font-size: 13.5px; font-weight: 700; color: var(--or-fonce);
 }
 .bv-retour {
   position: fixed; left: 16px; bottom: calc(18px + env(safe-area-inset-bottom));
   width: 44px; height: 44px; border-radius: 50%;
-  background: #fff; border: 1px solid #ececec; color: #191919;
+  background: #fff; border: 1px solid var(--bordure-fine); color: var(--texte);
   font-size: 19px; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
 }
 
 /* Resultat : le vrai calcul */
 .bv-resultat {
-  background: linear-gradient(160deg, #FFFBEF 0%, #FFFFFF 45%);
+  background: linear-gradient(160deg, #FFFFFF 0%, #FFFFFF 45%);
   border: 1.5px solid #F3E2A8; border-radius: 20px;
   box-shadow: 0 10px 30px rgba(247, 181, 0, .12);
   padding: 22px 20px; text-align: center; margin-bottom: 20px;
 }
 .bv-res-kcal {
-  font-size: 44px; font-weight: 800; color: #191919; line-height: 1;
+  font-size: 44px; font-weight: 800; color: var(--texte); line-height: 1;
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
-.bv-res-kcal span { font-size: 15px; font-weight: 700; color: #8A8580; letter-spacing: 0; }
-.bv-res-detail { font-size: 12.5px; font-weight: 600; color: #8A8580; margin-top: 10px; line-height: 1.5; }
+.bv-res-kcal span { font-size: 15px; font-weight: 700; color: var(--texte-3); letter-spacing: 0; }
+.bv-res-detail { font-size: 12.5px; font-weight: 600; color: var(--texte-3); margin-top: 10px; line-height: 1.5; }
 .bv-res-macros {
   display: flex; justify-content: center; gap: 26px; margin-top: 16px;
-  padding-top: 16px; border-top: 1px solid #ECE8DF;
+  padding-top: 16px; border-top: 1px solid var(--bordure-fine);
 }
 .bv-res-m { display: flex; flex-direction: column; }
-.bv-res-m b { font-size: 20px; font-weight: 800; color: #191919; font-variant-numeric: tabular-nums; }
-.bv-res-m span { font-size: 11.5px; font-weight: 700; color: #8A8580; }
+.bv-res-m b { font-size: 20px; font-weight: 800; color: var(--texte); font-variant-numeric: tabular-nums; }
+.bv-res-m span { font-size: 11.5px; font-weight: 700; color: var(--texte-3); }
 .bv-note {
-  font-size: 12.5px; font-weight: 500; color: #8A8580;
+  font-size: 12.5px; font-weight: 500; color: var(--texte-3);
   text-align: center; line-height: 1.5; margin: 12px 0 0;
 }
 
@@ -2256,25 +2258,25 @@
 .bv-prem { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
 .bv-prem-l {
   display: flex; align-items: flex-start; gap: 13px;
-  background: #fff; border: 1.5px solid #E7E2D9; border-radius: 16px; padding: 13px 15px;
+  background: #fff; border: 1.5px solid var(--bordure); border-radius: 16px; padding: 13px 15px;
 }
 .bv-prem-l span:last-child { display: flex; flex-direction: column; gap: 2px; }
-.bv-prem-l b { font-size: 14.5px; font-weight: 800; color: #191919; }
-.bv-prem-l i { font-style: normal; font-size: 12.5px; font-weight: 500; color: #8A8580; line-height: 1.4; }
+.bv-prem-l b { font-size: 14.5px; font-weight: 800; color: var(--texte); }
+.bv-prem-l i { font-style: normal; font-size: 12.5px; font-weight: 500; color: var(--texte-3); line-height: 1.4; }
 .bv-prem-prix {
-  text-align: center; font-size: 14px; font-weight: 700; color: #4B4A47;
+  text-align: center; font-size: 14px; font-weight: 700; color: var(--texte);
   margin-bottom: 16px;
 }
-.bv-prem-prix b { font-size: 22px; font-weight: 800; color: #191919; }
-.bv-prem-prix span { display: block; font-size: 12.5px; font-weight: 600; color: #8F6200; margin-top: 4px; }
+.bv-prem-prix b { font-size: 22px; font-weight: 800; color: var(--texte); }
+.bv-prem-prix span { display: block; font-size: 12.5px; font-weight: 600; color: var(--or-fonce); margin-top: 4px; }
 .bv-suivant--or {
-  background: linear-gradient(135deg, #FFD86B, #F7B500); color: #181818;
+  background: linear-gradient(135deg, #FFD86B, var(--or)); color: var(--texte);
   box-shadow: 0 4px 14px rgba(247, 181, 0, .28);
 }
 .bv-standard {
   margin-top: 10px; padding: 13px 0; border-radius: 999px; cursor: pointer;
-  background: #fff; border: 1.5px solid #E7E2D9; font-family: inherit;
-  font-size: 14.5px; font-weight: 700; color: #191919;
+  background: #fff; border: 1.5px solid var(--bordure); font-family: inherit;
+  font-size: 14.5px; font-weight: 700; color: var(--texte);
 }
 
 /* Offre Premium post-inscription : « Plus tard » en haut a droite,
@@ -2283,17 +2285,17 @@
 .op-plustard {
   position: absolute; top: calc(14px + env(safe-area-inset-top)); right: 18px;
   background: none; border: none; cursor: pointer; font-family: inherit;
-  font-size: 14px; font-weight: 700; color: #8A8580; padding: 8px;
+  font-size: 14px; font-weight: 700; color: var(--texte-3); padding: 8px;
 }
 .op-ecran .bv-corps { justify-content: center; }
 
 /* Fin de decouverte qui approche : badge orange + rappel une ligne */
-.pg-journal .dn-offert--fin { color: #B45309; background: #FEF3E2; }
+.pg-journal .dn-offert--fin { color: var(--near); background: var(--piste); }
 .pg-journal .dn-rappel {
   width: 100%; margin-top: 12px; padding: 10px 12px;
   border: 1.5px solid #F3E2A8; border-radius: 12px; cursor: pointer;
-  background: #FFFBEF; font-family: inherit; text-align: left;
-  font-size: 12.5px; font-weight: 700; color: #8F6200; line-height: 1.4;
+  background: #FFFFFF; font-family: inherit; text-align: left;
+  font-size: 12.5px; font-weight: 700; color: var(--or-fonce); line-height: 1.4;
 }
 .pg-journal .dn-rappel:active { transform: scale(.99); }
 
@@ -2313,35 +2315,35 @@
 }
 .bv-jalon-titre {
   font-size: 27px; font-weight: 800; letter-spacing: -.02em;
-  color: #191919; margin: 0 0 10px; line-height: 1.22;
+  color: var(--texte); margin: 0 0 10px; line-height: 1.22;
 }
-.bv-jalon-titre span { color: #DFA004; }
-.bv-jalon-trait { width: 34px; height: 4px; border-radius: 4px; background: #F7B500; margin: 0 0 12px; }
-.bv-jalon-sous { font-size: 14.5px; font-weight: 500; color: #8A8580; line-height: 1.5; margin: 0 0 18px; }
-.bv-jalon-sous b { color: #191919; font-weight: 700; }
+.bv-jalon-titre span { color: var(--or-fonce); }
+.bv-jalon-trait { width: 34px; height: 4px; border-radius: 4px; background: var(--or); margin: 0 0 12px; }
+.bv-jalon-sous { font-size: 14.5px; font-weight: 500; color: var(--texte-3); line-height: 1.5; margin: 0 0 18px; }
+.bv-jalon-sous b { color: var(--texte); font-weight: 700; }
 .bv-deco { position: fixed; border-radius: 50%; pointer-events: none; z-index: -1; }
 .bv-deco--or {
   width: 46vw; height: 46vw; right: -16vw; top: -10vw;
-  background: radial-gradient(circle at 35% 65%, #FFD86B, #F7B500);
+  background: radial-gradient(circle at 35% 65%, #FFD86B, var(--or));
   opacity: .5; filter: blur(2px);
 }
 .bv-deco--noir {
   width: 30vw; height: 30vw; left: -14vw; top: 30vh;
-  background: #191919; opacity: .06;
+  background: var(--texte); opacity: .06;
 }
 .bv-deco--rouge {
   width: 20vw; height: 20vw; right: -6vw; bottom: 18vh;
-  background: #E23A2E; opacity: .14; filter: blur(1px);
+  background: var(--alerte); opacity: .14; filter: blur(1px);
 }
 .bv-acc-haut { }
 /* Wordmark du logo : « Bel » noir, « Fit » en degrade or -> rouge,
    l'italique penche du logo — sans baseline. */
 .bv-marque {
   font-size: 52px; font-weight: 800; font-style: italic;
-  letter-spacing: -.01em; color: #191919; line-height: 1;
+  letter-spacing: -.01em; color: var(--texte); line-height: 1;
 }
 .bv-marque span {
-  background: linear-gradient(100deg, #FFC400 0%, #FF7A00 55%, #E23A2E 100%);
+  background: linear-gradient(100deg, #FFC400 0%, var(--lipides) 55%, var(--alerte) 100%);
   -webkit-background-clip: text; background-clip: text;
   color: transparent; -webkit-text-fill-color: transparent;
   padding-right: .06em;   /* l'italique du « t » ne se rogne pas */
@@ -2358,18 +2360,18 @@
 @media (prefers-reduced-motion: reduce) { .bv-acc-logo { animation: none; } }
 .bv-acc-bas { display: flex; flex-direction: column; }
 .bv-promesse-libre {
-  font-size: 14.5px; font-weight: 500; color: #4B4A47; line-height: 1.55; margin: 0 0 18px;
+  font-size: 14.5px; font-weight: 500; color: var(--texte); line-height: 1.55; margin: 0 0 18px;
 }
-.bv-promesse-libre b { font-weight: 800; color: #191919; }
+.bv-promesse-libre b { font-weight: 800; color: var(--texte); }
 .bv-acc-bas .bv-suivant { margin-top: 0; }
-.bv-acc-bas .bv-lien { margin-top: 14px; color: #6B6862; font-weight: 600; }
-.bv-acc-bas .bv-lien b { color: #8F6200; font-weight: 800; }
+.bv-acc-bas .bv-lien { margin-top: 14px; color: var(--texte-2); font-weight: 600; }
+.bv-acc-bas .bv-lien b { color: var(--or-fonce); font-weight: 800; }
 
 /* Revelation progressive du profil : chaque champ entre en douceur */
 .bv-revele { animation: bv-entre 240ms cubic-bezier(.22, .8, .28, 1) both; }
-.bv-champ--plein { background: #FFF4CC; border-color: #F3D06B; }
+.bv-champ--plein { background: #FFF4CC; border-color: var(--or); }
 .bv-repere {
-  font-size: 12.5px; font-weight: 600; color: #8F6200; margin: -4px 2px 12px;
+  font-size: 12.5px; font-weight: 600; color: var(--or-fonce); margin: -4px 2px 12px;
 }
 
 /* Entree en douceur : chaque ecran du parcours glisse a sa place */
@@ -2383,7 +2385,7 @@
 
 /* Portion editable dans les resultats de la photo d'assiette */
 .pg-journal .photo-portion{
-  width:52px; padding:2px 5px; border:1px solid #ECE8DF; border-radius:7px;
+  width:52px; padding:2px 5px; border:1px solid var(--bordure-fine); border-radius:7px;
   font:inherit; font-size:12.5px; text-align:right; background:#fff;
 }
 
@@ -2393,50 +2395,50 @@
    ============================================================ */
 .modal.wm { padding: 22px 20px 18px; border-radius: 24px; }
 .modal.wm .wm-tete { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; }
-.modal.wm .wm-ic { flex: none; color: #181818; display: flex; }
+.modal.wm .wm-ic { flex: none; color: var(--texte); display: flex; }
 .modal.wm .wm-ic svg {
   width: 27px; height: 27px;
   fill: none; stroke: currentColor; stroke-width: 1.9;
   stroke-linecap: round; stroke-linejoin: round;
 }
-.modal.wm .wm-titre { margin: 0; font-size: 18.5px; font-weight: 800; color: #191919; letter-spacing: -.01em; }
+.modal.wm .wm-titre { margin: 0; font-size: 18.5px; font-weight: 800; color: var(--texte); letter-spacing: -.01em; }
 
 /* Grand champ : le chiffre est la vedette, l'unite integree */
 .modal.wm .wm-saisie {
   display: flex; align-items: baseline; justify-content: center; gap: 8px;
-  background: #FBF7F0; border: 1.5px solid #EFE7D8; border-radius: 18px;
+  background: var(--piste); border: 1.5px solid var(--piste); border-radius: 18px;
   padding: 14px 16px;
 }
-.modal.wm .wm-saisie:focus-within { border-color: #E0A21C; box-shadow: 0 0 0 3px rgba(224, 162, 28, .15); }
+.modal.wm .wm-saisie:focus-within { border-color: var(--or); box-shadow: 0 0 0 3px rgba(224, 162, 28, .15); }
 .modal.wm .wm-saisie input {
   width: 130px; border: none; background: none; padding: 0; margin: 0;
-  font-family: inherit; font-size: 40px; font-weight: 800; color: #191919;
+  font-family: inherit; font-size: 40px; font-weight: 800; color: var(--texte);
   text-align: right; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
 .modal.wm .wm-saisie input:focus { outline: none; }
-.modal.wm .wm-saisie input::placeholder { color: #D8D2C6; }
+.modal.wm .wm-saisie input::placeholder { color: var(--bordure); }
 /* Les fleches de champ nombre gachent le grand chiffre */
 .modal.wm .wm-saisie input::-webkit-outer-spin-button,
 .modal.wm .wm-saisie input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .modal.wm .wm-saisie input[type="number"] { -moz-appearance: textfield; }
-.modal.wm .wm-unite { font-size: 19px; font-weight: 700; color: #8A8580; }
+.modal.wm .wm-unite { font-size: 19px; font-weight: 700; color: var(--texte-3); }
 
 .modal.wm .wm-prec {
-  text-align: center; font-size: 13.5px; font-weight: 500; color: #6B6763;
+  text-align: center; font-size: 13.5px; font-weight: 500; color: var(--texte-2);
   margin-top: 12px;
 }
-.modal.wm .wm-prec b { color: #191919; font-weight: 800; }
+.modal.wm .wm-prec b { color: var(--texte); font-weight: 800; }
 .modal.wm .wm-delta { margin-left: 8px; font-weight: 800; }
 .modal.wm .wm-delta.baisse { color: #2E7D4F; }
-.modal.wm .wm-delta.hausse { color: #191919; }
+.modal.wm .wm-delta.hausse { color: var(--texte); }
 
 .modal.wm .wm-btns { display: flex; gap: 10px; margin-top: 20px; }
 .modal.wm .wm-annuler {
   flex: 1; padding: 14px; border-radius: 999px;
-  background: none; border: none; color: #8A8580;
+  background: none; border: none; color: var(--texte-3);
   font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
 }
-.modal.wm .wm-annuler:active { background: #F5F2EC; }
+.modal.wm .wm-annuler:active { background: var(--piste); }
 .modal.wm .wm-ok {
   flex: 1.6; display: flex; align-items: center; justify-content: center; gap: 9px;
   padding: 14px; border-radius: 999px;
@@ -2468,7 +2470,7 @@
 
 /* Le chiffre est la page */
 .wm2-valeur {
-  text-align: center; font-size: 46px; font-weight: 800; color: #181818;
+  text-align: center; font-size: 46px; font-weight: 800; color: var(--texte);
   letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums;
 }
 /* La valeur est aussi un bouton : un appui ouvre la saisie clavier */
@@ -2478,39 +2480,39 @@
 }
 .wm2-valeur--champ { width: 150px; }
 .wm2-valeur--champ input {
-  width: 150px; border: none; background: #FAF8F3; border-radius: 14px;
+  width: 150px; border: none; background: var(--piste); border-radius: 14px;
   padding: 4px 10px; margin: 0;
-  font-family: inherit; font-size: 38px; font-weight: 700; color: #2C2A27;
+  font-family: inherit; font-size: 38px; font-weight: 700; color: var(--texte);
   text-align: center; letter-spacing: -.03em; font-variant-numeric: tabular-nums;
   box-shadow: 0 0 0 2.5px rgba(224, 162, 28, .5);
 }
 .wm2-valeur--champ input:focus { outline: none; }
 .wm2-valeur--champ input::-webkit-outer-spin-button,
 .wm2-valeur--champ input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.wm2-valeur span { font-size: 15px; font-weight: 700; color: #B5B0A4; letter-spacing: .04em; margin-left: 6px; text-transform: uppercase; }
+.wm2-valeur span { font-size: 15px; font-weight: 700; color: var(--texte-3); letter-spacing: .04em; margin-left: 6px; text-transform: uppercase; }
 /* Rang du stepper : - / valeur / + */
 .wm2-rang { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
 .wm2-pas {
   flex: none; width: 50px; height: 50px; border-radius: 50%;
-  background: #fff; border: 1.5px solid #E7E2D8; color: #181818;
+  background: #fff; border: 1.5px solid var(--bordure); color: var(--texte);
   cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation;
   display: flex; align-items: center; justify-content: center; padding: 0;
   box-shadow: 0 1px 3px rgba(24, 24, 24, .06);
   transition: background .12s, border-color .12s;
 }
 .wm2-pas svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
-.wm2-pas:active { background: #F7F5F0; border-color: #D9D3C6; transform: scale(.95); }
+.wm2-pas:active { background: var(--piste); border-color: var(--bordure); transform: scale(.95); }
 .wm2-delta-zone {
   text-align: center; margin: 16px 0 0; min-height: 20px;
-  padding-bottom: 18px; border-bottom: 1px solid #F2EFE8;
+  padding-bottom: 18px; border-bottom: 1px solid var(--piste);
 }
 .wm2-delta { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; }
 .wm2-delta::before { font-size: 10px; }
 .wm2-delta.baisse { color: #2E7D4F; }
 .wm2-delta.baisse::before { content: '\25BC'; }
-.wm2-delta.hausse { color: #6B6763; }
+.wm2-delta.hausse { color: var(--texte-2); }
 .wm2-delta.hausse::before { content: '\25B2'; }
-.wm2-delta.neutre { color: #B5B0A4; }
+.wm2-delta.neutre { color: var(--texte-3); }
 
 /* --- Regle graduee --- */
 .wm2-regle { position: relative; height: 92px; margin: 8px -20px 6px; }
@@ -2526,8 +2528,8 @@
 
 .wm2-ok {
   display: block; width: 100%; padding: 15px; border-radius: 16px;
-  background: linear-gradient(180deg, #FFC93C, #F0A90A);
-  border: none; color: #181818;
+  background: linear-gradient(180deg, #FFC93C, var(--glucides));
+  border: none; color: var(--texte);
   font-family: inherit; font-size: 15.5px; font-weight: 800; letter-spacing: .01em;
   cursor: pointer; margin-top: 18px;
   box-shadow: 0 8px 20px rgba(240, 169, 10, .32);
@@ -2535,7 +2537,7 @@
 .wm2-ok:active { transform: translateY(1px); box-shadow: 0 4px 12px rgba(240, 169, 10, .28); }
 .wm2-annuler {
   display: block; width: 100%; padding: 12px; margin-top: 2px;
-  background: none; border: none; color: #8A8580;
+  background: none; border: none; color: var(--texte-3);
   font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
 }
 
@@ -2545,16 +2547,16 @@
 .pg-journal .ajout-repas-rang { display: flex; justify-content: flex-end; margin-top: 2px; }
 .pg-journal .ajout-repas {
   display: inline-flex; align-items: center; gap: 8px;
-  background: #FFFFFF; border: 1px solid #ECE8DF; border-radius: 999px;
+  background: #FFFFFF; border: 1px solid var(--bordure-fine); border-radius: 999px;
   padding: 11px 18px; cursor: pointer;
-  font-family: inherit; font-size: 14px; font-weight: 700; color: #181818;
+  font-family: inherit; font-size: 14px; font-weight: 700; color: var(--texte);
   box-shadow: 0 2px 8px rgba(24, 24, 24, .05);
 }
 .pg-journal .ajout-repas svg {
   width: 16px; height: 16px;
-  fill: none; stroke: #B7860B; stroke-width: 2.4; stroke-linecap: round;
+  fill: none; stroke: var(--near); stroke-width: 2.4; stroke-linecap: round;
 }
-.pg-journal .ajout-repas:active { background: #FAF8F3; transform: scale(.98); }
+.pg-journal .ajout-repas:active { background: var(--piste); transform: scale(.98); }
 
 /* ============================================================
    REFONTE DENSITE — maquette validee par Raci.
@@ -2563,7 +2565,7 @@
    ============================================================ */
 .pg-journal .j-date {
   font-size: 12px; font-weight: 800; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--texte-2, #6B6455);
+  text-transform: uppercase; color: var(--texte-2, var(--texte-2));
 }
 
 .pg-journal .rj {
@@ -2573,16 +2575,16 @@
 .pg-journal .rj .cal-anneau { flex: none; width: 96px; height: 96px; }
 .pg-journal .rj-num { font-size: 24px; font-weight: 800; line-height: 1; letter-spacing: -.01em; }
 .pg-journal .rj-num-lb {
-  font-size: 9.5px; font-weight: 700; color: var(--texte-3, #8A8580);
+  font-size: 9.5px; font-weight: 700; color: var(--texte-3, var(--texte-3));
   margin-top: 2px; letter-spacing: .02em;
   max-width: 58px; text-align: center; line-height: 1.15;
 }
 .pg-journal .rj-macros { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 9px; }
 .pg-journal .rj-mac { display: flex; flex-direction: column; gap: 3px; }
 .pg-journal .rj-mac-l1 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.pg-journal .rj-mac-nom { font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--texte-2, #6B6455); }
+.pg-journal .rj-mac-nom { font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--texte-2, var(--texte-2)); }
 .pg-journal .rj-mac-val { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.pg-journal .rj-mac-val small { font-weight: 600; color: var(--texte-3, #8A8580); font-size: 11.5px; }
+.pg-journal .rj-mac-val small { font-weight: 600; color: var(--texte-3, var(--texte-3)); font-size: 11.5px; }
 .pg-journal .rj-mac-plus { font-style: normal; font-size: 10px; font-weight: 800; color: var(--alerte); margin-left: 4px; }
 .pg-journal .rj-mac-piste { height: 7px; border-radius: 3px; background: var(--piste); overflow: hidden; }
 .pg-journal .rj-mac-jauge { height: 100%; border-radius: 3px; transition: width .5s cubic-bezier(.22,.8,.28,1); }
@@ -2593,7 +2595,7 @@
   display: flex; align-items: center; justify-content: space-between;
   min-height: 32px; padding: 0 6px; cursor: pointer;
 }
-.pg-journal .pesee-ligne span { font-size: 13px; color: var(--texte-2, #6B6455); }
+.pg-journal .pesee-ligne span { font-size: 13px; color: var(--texte-2, var(--texte-2)); }
 .pg-journal .pesee-ligne b { font-size: 13px; font-weight: 800; color: var(--or-fonce); }
 
 .pg-journal .repas-carte { padding: 0; overflow: hidden; }
@@ -2603,49 +2605,49 @@
   background: none; border: none; font-family: inherit; text-align: left;
   cursor: pointer;
 }
-.pg-journal .repas-ligne + .repas-ligne { border-top: 1px solid var(--bordure-fine, #ECE8DF); }
-.pg-journal .repas-ligne:active { background: #F6F2EA; }
+.pg-journal .repas-ligne + .repas-ligne { border-top: 1px solid var(--bordure-fine, var(--bordure-fine)); }
+.pg-journal .repas-ligne:active { background: var(--piste); }
 .pg-journal .rl-vignette {
   flex: none; width: 34px; height: 34px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  background: #F6F2E9; overflow: hidden;
+  background: var(--piste); overflow: hidden;
 }
 .pg-journal .rl-vignette svg { width: 22px; height: 22px; }
 .pg-journal .rl-g { flex: 1; min-width: 0; }
 .pg-journal .rl-nom {
-  display: block; font-size: 15px; font-weight: 700; color: var(--texte, #191919);
+  display: block; font-size: 15px; font-weight: 700; color: var(--texte, var(--texte));
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.25;
 }
-.pg-journal .rl-nom--vide { color: var(--texte-3, #8A8580); font-weight: 600; }
+.pg-journal .rl-nom--vide { color: var(--texte-3, var(--texte-3)); font-weight: 600; }
 .pg-journal .rl-sous {
-  display: block; font-size: 11px; font-weight: 600; color: var(--texte-2, #6B6455);
+  display: block; font-size: 11px; font-weight: 600; color: var(--texte-2, var(--texte-2));
   margin-top: 3px; font-variant-numeric: tabular-nums;
 }
-.pg-journal .rl-sous i { font-style: normal; color: var(--texte-3, #8A8580); font-weight: 700; margin: 0 1px; }
+.pg-journal .rl-sous i { font-style: normal; color: var(--texte-3, var(--texte-3)); font-weight: 700; margin: 0 1px; }
 .pg-journal .rl-kcal { font-size: 14px; font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.pg-journal .rl-kcal small { font-weight: 600; color: var(--texte-3, #8A8580); font-size: 11px; }
-.pg-journal .rl-kcal--vide { color: var(--texte-3, #8A8580); }
+.pg-journal .rl-kcal small { font-weight: 600; color: var(--texte-3, var(--texte-3)); font-size: 11px; }
+.pg-journal .rl-kcal--vide { color: var(--texte-3, var(--texte-3)); }
 .pg-journal .repas-ligne--ajout .rl-nom { color: var(--or-fonce); font-weight: 800; }
 
 .pg-journal .repas-pied {
   display: flex; align-items: center; justify-content: space-between;
   min-height: 44px; padding: 0 16px;
-  background: #FBF8F1; border-top: 1px solid var(--bordure-fine, #ECE8DF);
+  background: var(--piste); border-top: 1px solid var(--bordure-fine, var(--bordure-fine));
 }
-.pg-journal .repas-pied .rp-t { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--texte-2, #6B6455); }
+.pg-journal .repas-pied .rp-t { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--texte-2, var(--texte-2)); }
 .pg-journal .repas-pied .rp-v { font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.pg-journal .repas-pied .rp-v small { font-size: 11px; font-weight: 600; color: var(--texte-3, #8A8580); }
+.pg-journal .repas-pied .rp-v small { font-size: 11px; font-weight: 600; color: var(--texte-3, var(--texte-3)); }
 
 .pg-journal .courses-ligne {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   width: fit-content; margin: 0 auto; min-height: 36px; padding: 0 14px;
   background: none; border: none; font-family: inherit; cursor: pointer;
-  font-size: 13px; font-weight: 800; color: var(--texte-2, #6B6455);
+  font-size: 13px; font-weight: 800; color: var(--texte-2, var(--texte-2));
 }
 .pg-journal .courses-ligne svg {
   width: 17px; height: 17px; fill: none; stroke: currentColor;
   stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
 }
-.pg-journal .courses-ligne:active { color: var(--texte, #191919); }
+.pg-journal .courses-ligne:active { color: var(--texte, var(--texte)); }
 
-.profil-volet .profil-calc { color: var(--or-fonce, #8F6200) !important; text-decoration: none !important; }
+.profil-volet .profil-calc { color: var(--or-fonce, var(--or-fonce)) !important; text-decoration: none !important; }

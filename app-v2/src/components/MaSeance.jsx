@@ -81,7 +81,7 @@ function sauverSeries(exos) {
 
 function lancerConfettis() {
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const cols = ['#F7B500', '#181818', '#ffffff', '#DFA004', '#FFE28A'];
+  const cols = ['var(--or)', '#141414', '#ffffff', 'var(--or)', '#FFE28A'];
   for (let i = 0; i < 60; i++) {
     const c = document.createElement('div');
     c.className = 'confetti';
