@@ -70,7 +70,7 @@ const T = {
     conf_autre: 'Ce n\'est pas la bonne adresse ?',
     conf_spam: 'Le message peut mettre une minute à arriver.',
     chargement: 'Chargement de ton journal…',
-    aujourdhui: "Aujourd'hui", consommees: 'Consommées', objectif: 'Objectif',
+    aujourdhui: "Aujourd'hui", consommees: 'Consommées', objectif: 'Objectif', tes_repas: 'Tes repas',
     today_prefix: "Aujourd'hui,", total_jour: 'Total du jour', rl_vide: 'Rien encodé',
     qa_courses: 'Liste de courses', qa_calc: 'Calculer mes besoins',
 
@@ -131,7 +131,7 @@ const T = {
     conf_autre: 'Wrong address?',
     conf_spam: 'The message can take a minute to arrive.',
     chargement: 'Loading your journal…',
-    aujourdhui: 'Today', consommees: 'Consumed', objectif: 'Target',
+    aujourdhui: 'Today', consommees: 'Consumed', objectif: 'Target', tes_repas: 'Your meals',
     today_prefix: 'Today,', total_jour: 'Day total', rl_vide: 'Nothing logged',
     qa_courses: 'Grocery list', qa_calc: 'Calculate my needs',
 
@@ -192,7 +192,7 @@ const T = {
     conf_autre: 'Verkeerd adres?',
     conf_spam: 'Het bericht kan een minuut onderweg zijn.',
     chargement: 'Je dagboek laden…',
-    aujourdhui: 'Vandaag', consommees: 'Verbruikt', objectif: 'Doel',
+    aujourdhui: 'Vandaag', consommees: 'Verbruikt', objectif: 'Doel', tes_repas: 'Je maaltijden',
     today_prefix: 'Vandaag,', total_jour: 'Dagtotaal', rl_vide: 'Niets gelogd',
     qa_courses: 'Boodschappenlijst', qa_calc: 'Bereken mijn behoeften',
 

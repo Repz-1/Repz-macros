@@ -414,14 +414,16 @@ export function MealCard({ r }) {
           ) : (
             <h3 class="mc-titre">{r.nom}</h3>
           )}
-          <p class="mc-sous">{
-            !vide ? `${tot.kcal.toFixed(0)} kcal`
-              : (() => {
-                  const f = fourchetteRepas(r.cle);
-                  return f ? `${t('mc_reco')} ${f.min} – ${f.max} kcal` : t('mc_empty');
-                })()
-          }</p>
+          <p class="mc-sous">{(() => {
+            const f = fourchetteRepas(r.cle);
+            return f ? `${t('mc_reco')} ${f.min} – ${f.max} kcal` : (vide ? t('mc_empty') : '');
+          })()}</p>
         </div>
+
+        {/* Maquette : la valeur du repas a droite, ou un + s'il est vide. */}
+        {vide
+          ? <span class="mc-plus" aria-hidden="true">+</span>
+          : <span class="mc-kcal">{tot.kcal.toFixed(0)}<small> kcal</small></span>}
 
         <div class="mc-actions">
           <button
@@ -438,7 +440,6 @@ export function MealCard({ r }) {
               aria-label="Supprimer ce repas"
             >✕</button>
           )}
-          <span class="mc-chevron mc-chevron--nav" aria-hidden="true">›</span>
         </div>
       </div>
 

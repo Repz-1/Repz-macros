@@ -52,10 +52,11 @@ function OngletJournal() {
       <div class="colonne">
         <Entete />
         <DayDashboard />
-        {/* La pilule vit dans la carte Calories ; ici, uniquement le
-            panneau qui se deplie, juste sous elle. */}
+        {/* Le panneau deplie suit la pilule, qui vit dans le heros. */}
         <IdeesRepas panneauSeul />
         <WeightNote />
+
+        <div class="titre-sec">{t('tes_repas')}</div>
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
         {/* L'ajout d'un repas vit desormais dans le flux, sous le
             dernier repas — plus de bouton flottant jaune (Raci). */}

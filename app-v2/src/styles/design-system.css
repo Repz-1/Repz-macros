@@ -11,7 +11,7 @@
 
 :root {
   /* ---------- Surfaces ---------- */
-  --fond: #EBE6DA;              /* papier chaud, franchement plus sombre que les cartes : le blanc claque dessus */
+  --fond: #F5F6F8;              /* base NEUTRE (V1) : le dore vit dans le halo du haut, pas sur toute la page */
   --carte: #FFFFFF;
   --bordure: #DDD6C6;           /* bordure de carte, lisible sur le papier sombre */
   --bordure-fine: #ECE8DF;      /* separateurs internes, plus clair */
