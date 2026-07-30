@@ -2693,3 +2693,46 @@
 .pg-journal.couche-repas {
   background: linear-gradient(180deg, #FDF1E1 0, #F9F2E7 200px, #F7F1E7 100%);
 }
+
+/* ============================================================
+   PISTE D — CARTE ENCRE (page repas seulement)
+   La page reste creme ; seule la carte resume passe en encre.
+   Deux raisons, dans cet ordre :
+   1. Hierarchie. Quatre rectangles blancs de poids egal ne
+      hierarchisaient rien. Un seul objet sombre en haut suffit.
+   2. Contraste. Le jaune et l'orange du logo tombent a 1,45:1 et
+      2,67:1 sur creme ; sur cette encre ils remontent a 11,27:1
+      et 6,13:1. C'est la seule surface ou la palette tient.
+   Reversible : tout ce bloc se retire d'un coup.
+   ============================================================ */
+.couche-repas .rp-resume {
+  position: relative;
+  background: #17150F;
+  box-shadow: 0 10px 30px rgba(23, 21, 15, .28);
+  /* Jetons redefinis pour la carte : la piste de l'anneau et le
+     point des proteines sont poses en style inline depuis le JSX,
+     ils lisent donc la variable au niveau de cet element. */
+  --rp-piste: #332E23;
+  --proteines: #F1EBDD;
+}
+/* Halo de l'anneau. z-index 0 impose : un pseudo-element positionne
+   passerait sinon au-dessus du contenu non positionne. */
+.couche-repas .rp-resume::before {
+  content: ''; position: absolute; z-index: 0;
+  left: 22px; top: 8px; width: 100px; height: 100px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(248, 106, 12, .55) 0, transparent 70%);
+  filter: blur(16px); pointer-events: none;
+}
+.couche-repas .rp-resume > * { position: relative; z-index: 1; }
+
+.couche-repas .rp-resume .rp-anneau-c span { background: #2A2418; }
+
+.couche-repas .rp-resume .rp-kcal { color: #FBF6EC; }
+.couche-repas .rp-resume .rp-kcal span,
+.couche-repas .rp-resume .rp-reco span,
+.couche-repas .rp-resume .rp-macro b i,
+.couche-repas .rp-resume .rp-macro em { color: #9A9384; }
+.couche-repas .rp-resume .rp-reco b { color: #D9D1BF; }
+.couche-repas .rp-resume .rp-macro b { color: #FBF6EC; }
+.couche-repas .rp-resume .rp-macros,
+.couche-repas .rp-resume .rp-macro + .rp-macro { border-color: #322D22; }
