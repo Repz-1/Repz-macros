@@ -2648,7 +2648,6 @@
   text-overflow: ellipsis;
 }
 .couche-repas .mc-ajout input::placeholder { font-size: 14px; }
-.couche-repas .mc-scan { width: 44px; }
 
 /* ------------------------------------------------------------
    Ordre de lecture du repere. « RECOMMANDE » place juste sous le
@@ -2660,3 +2659,24 @@
 .couche-repas .rp-resume-txt { padding-top: 4px; }
 .couche-repas .rp-reco { margin-top: 3px; }
 .couche-repas .rp-reco b { margin-bottom: 1px; }
+
+/* ------------------------------------------------------------
+   Les trois tuiles d'action etaient blanches sur le blanc du champ :
+   rien ne disait qu'on pouvait appuyer dessus. Elles prennent donc
+   le fond pale de l'accent et une icone orange foncee.
+   Specificite : il faut au moins (0,3,0) pour passer devant
+   .pg-journal .rp-colonne .mc-scan, sinon la regle ne s'applique pas.
+   Largeur ramenee de 60 a 50 px : 30 px rendus au libelle, qui etait
+   la vraie cause de sa troncature.
+   ------------------------------------------------------------ */
+.couche-repas .rp-colonne .mc-scan {
+  width: 50px;
+  background: var(--or-pale);
+  color: var(--or-fonce);
+  box-shadow: none;
+}
+.couche-repas .rp-colonne .mc-scan:active { background: #FFE2C0; }
+/* Le halo de focus etait code en dur en dore, il ignorait le jeton. */
+.couche-repas .rp-colonne .mc-ajout:focus-within {
+  box-shadow: 0 0 0 2px rgba(248, 106, 12, .30), 0 2px 12px rgba(60, 50, 40, .06);
+}
