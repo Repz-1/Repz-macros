@@ -163,3 +163,65 @@ input, select, textarea { min-width: 0; }
 @media (prefers-reduced-motion: reduce) {
   .entree, .carte--action, .btn { animation: none; transition: none; }
 }
+
+/* ============================================================
+   JETONS DE COULEUR — extraction du 30/07.
+   Le nom dit un ROLE, jamais une valeur : basculer le theme se
+   fera en changeant ce bloc, pas 454 declarations.
+   Les valeurs sont exactement celles qui etaient en dur : cette
+   extraction ne change rien a l'ecran, et c'est verifiable.
+   Prefixes srf- / txt- / brd- : --texte-2 et --texte-3 existent
+   deja plus haut avec d'autres valeurs, les reutiliser aurait
+   silencieusement modifie les regles qui s'en servent.
+   A fusionner plus tard : quatre noirs a 1 % d'ecart, quatre cremes.
+   ============================================================ */
+:root {
+  /* surface */
+  --srf-accent: #f7b500;
+  --srf-accent-clair: #ffd86b;
+  --srf-accent-pale: #fff4cc;
+  --srf-alerte: #de2f14;
+  --srf-carte: #fff;
+  --srf-carte-2: #ffffff;
+  --srf-creme: #f6f1e6;
+  --srf-creme-2: #f4f0e6;
+  --srf-creme-3: #f0ede4;
+  --srf-creme-4: #ece5d3;
+  --srf-info: #0ea5e9;
+  --srf-inverse: #181818;
+  --srf-inverse-2: #191919;
+  --srf-page: #faf9f5;
+  /* texte */
+  --txt-1: #191919;
+  --txt-1-chaud: #2c2a27;
+  --txt-1-doux: #1a1a1a;
+  --txt-1-fonce: #181818;
+  --txt-2: #6a6558;
+  --txt-2-chaud: #6b6259;
+  --txt-3: #8a8a8a;
+  --txt-4: #a8a297;
+  --txt-5: #c9c4b8;
+  --txt-accent: #8f6200;
+  --txt-accent-fonce: #5a3e00;
+  --txt-accent-nav: #dfa004;
+  --txt-accent-or: #b7860b;
+  --txt-accent-or-2: #b98a00;
+  --txt-accent-vif: #f7b500;
+  --txt-alerte: #de2f14;
+  --txt-alerte-vif: #ef4444;
+  --txt-ardoise: #9ca3af;
+  --txt-ardoise-clair: #cbd5e1;
+  --txt-ardoise-fonce: #475569;
+  --txt-inverse: #fff;
+  --txt-inverse-2: #ffffff;
+  --txt-succes: #2e7d4f;
+  /* bordure */
+  --brd-1: #e8e4d8;
+  --brd-1-bis: #e9e4d6;
+  --brd-2: #f0ede4;
+  --brd-accent: #f7b500;
+  --brd-accent-pale: #f3e2a8;
+  --brd-ardoise: #cbd5e1;
+  --brd-ardoise-clair: #f1f5f9;
+  --brd-champ: #d9cfbb;
+}
