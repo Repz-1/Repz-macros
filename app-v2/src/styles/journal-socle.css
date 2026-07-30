@@ -2736,3 +2736,208 @@
 .couche-repas .rp-resume .rp-macro b { color: #FBF6EC; }
 .couche-repas .rp-resume .rp-macros,
 .couche-repas .rp-resume .rp-macro + .rp-macro { border-color: #322D22; }
+
+/* ============================================================
+   PAGE REPAS — MODE SOMBRE BELFIT (D4)
+   Portee a la seule couche repas. V1 et le reste de V2 sont
+   intacts : tout ce bloc se retire d'un seul coup.
+
+   Cinq regles, dans cet ordre de priorite :
+   1. Une source de lumiere unique, en haut a gauche.
+   2. La profondeur vient de la lumiere, pas de la teinte.
+   3. La trace : un point de lumiere a la pointe de ce qui
+      progresse, respiration 5,5 s.
+   4. L'orange ne decore jamais : progression, action, focus.
+   5. La donnee domine, le libelle s'efface.
+   ============================================================ */
+.pg-journal.couche-repas {
+  --d4-fond: #171A20;
+  --d4-n1:   #262D38;
+  --d4-n2:   #2A313D;
+  --d4-n3:   #2F3745;
+  --d4-sep:  rgba(255,255,255,.045);
+  --d4-t1:   #F7F8FA;
+  --d4-t2:   #9CA3AF;
+  --d4-t3:   #7C8595;
+  --d4-t4:   #7A8494;
+  --d4-acc:  #F86A0C;
+  --el1: inset 0 1px 0 rgba(255,255,255,.045), 0 1px 2px rgba(0,0,0,.22), 0 6px 16px rgba(0,0,0,.22);
+  --el2: inset 0 1px 0 rgba(255,255,255,.06),  0 2px 5px rgba(0,0,0,.26), 0 10px 26px rgba(0,0,0,.28);
+  --el3: inset 0 1px 0 rgba(255,255,255,.085), 0 4px 10px rgba(0,0,0,.30), 0 18px 44px rgba(0,0,0,.38);
+  --ios: cubic-bezier(.32,.72,0,1);
+
+  background:
+    radial-gradient(120% 40% at 18% 0%, rgba(255,255,255,.03) 0, transparent 60%),
+    var(--d4-fond);
+}
+
+/* ---------- Barre de titre ---------- */
+.couche-repas .rp-retour {
+  background: var(--d4-n1); color: var(--d4-t1); border: none; box-shadow: var(--el1);
+}
+.couche-repas .rp-titre { color: var(--d4-t3); }
+.couche-repas .rp-titre-champ { background: var(--d4-n2); color: var(--d4-t1); border-color: transparent; }
+.couche-repas .rp-terminer { color: var(--d4-acc); }
+
+/* ---------- Carte calories : niveau 3 ---------- */
+.couche-repas .rp-resume {
+  background:
+    radial-gradient(130% 100% at 12% 0%, rgba(255,255,255,.035) 0, transparent 58%),
+    var(--d4-n3);
+  box-shadow: var(--el3);
+  --rp-piste: #39414F;
+  --proteines: #F7F8FA;
+}
+/* Regle 3 : la trace, a la pointe de l'arc, pas au centre de la carte. */
+.couche-repas .rp-resume::before {
+  content: ''; position: absolute; z-index: 0;
+  left: 18px; top: 20px; width: 54px; height: 54px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(248,180,0,.36) 0, rgba(248,106,12,.17) 45%, transparent 72%);
+  filter: blur(11px); animation: d4-respire 5.5s ease-in-out infinite; pointer-events: none;
+}
+@keyframes d4-respire { 0%, 100% { opacity: .82; } 50% { opacity: 1; } }
+.couche-repas .rp-anneau-c span { background: #242B38; box-shadow: inset 0 1px 3px rgba(0,0,0,.34); }
+.couche-repas .rp-kcal { color: #FFFFFF; }
+.couche-repas .rp-kcal span { color: var(--d4-t3); }
+.couche-repas .rp-reco b { color: var(--d4-t2); }
+.couche-repas .rp-reco span { color: var(--d4-t4); }
+.couche-repas .rp-macros,
+.couche-repas .rp-macro + .rp-macro { border-color: var(--d4-sep); }
+.couche-repas .rp-macro b { color: var(--d4-t1); }
+.couche-repas .rp-macro b i,
+.couche-repas .rp-macro em { color: var(--d4-t4); }
+
+/* ---------- Recherche et tuiles : niveau 2 ---------- */
+.couche-repas .rp-colonne .mc-ajout {
+  background: var(--d4-n2); border: none; box-shadow: var(--el2);
+}
+.couche-repas .rp-colonne .mc-ajout:focus-within {
+  background: var(--d4-n2);
+  box-shadow: var(--el2), 0 0 0 2px rgba(248,106,12,.55);
+}
+.couche-repas .mc-ajout input { color: var(--d4-t1); }
+.couche-repas .mc-ajout input::placeholder { color: var(--d4-t3); }
+.couche-repas .rp-colonne .mc-scan {
+  background: var(--d4-n2); color: var(--d4-acc); box-shadow: var(--el2);
+}
+.couche-repas .rp-colonne .mc-scan:active { background: #323A47; }
+.couche-repas .mc-scan-pro { color: var(--d4-acc); }
+
+/* ---------- Listes et cartes : niveau 1 ---------- */
+.couche-repas .rp-section-titre { color: var(--d4-t4); }
+.couche-repas .rp-liste,
+.couche-repas .rp-colonne .dn {
+  background: var(--d4-n1); border: none; box-shadow: var(--el1);
+}
+.couche-repas .mc-ing { background: transparent; border-color: var(--d4-sep); }
+.couche-repas .mc-ing-nom { color: var(--d4-t1); }
+.couche-repas .mc-ing-base,
+.couche-repas .mc-ing-unite,
+.couche-repas .mc-ing-sub { color: var(--d4-t4); }
+.couche-repas .mc-ing-kcal { color: var(--d4-t1); }
+.couche-repas .mc-ing-del { color: #5F6877; }
+.couche-repas .mc-ing-del:active { color: #FF6B5A; }
+/* Champ quantite : un composant, pas un input. Lumiere du haut en creux. */
+.couche-repas .rp-liste .mc-ing-champ,
+.couche-repas .rp-liste .mc-ing-champ:focus-within {
+  background: var(--d4-n2); border-color: transparent;
+  box-shadow: inset 0 1.5px 3px rgba(0,0,0,.34), inset 0 -1px 0 rgba(255,255,255,.05);
+}
+.couche-repas .rp-liste .mc-ing-champ:focus-within {
+  box-shadow: inset 0 1.5px 3px rgba(0,0,0,.34), 0 0 0 2px rgba(248,106,12,.55);
+}
+.couche-repas .mc-ing-champ input { background: transparent; color: var(--d4-t1); border: none; }
+.couche-repas .rp-total-lb { color: var(--d4-t3); }
+.couche-repas .rp-total-val { color: var(--d4-t1); letter-spacing: -.025em; }
+.couche-repas .rp-total-val span { color: var(--d4-t4); }
+
+/* Bascule cru / cuit */
+.couche-repas .mc-ing-cuisson { background: var(--d4-n2); }
+.couche-repas .mc-ing-cuisson span { color: var(--d4-t4); }
+.couche-repas .mc-ing-cuisson span.actif { background: #39414F; color: var(--d4-t1); }
+.couche-repas .mc-ing-cuisson.est-cuit span.actif { color: var(--d4-acc); }
+
+/* ---------- Detail nutritionnel ---------- */
+.couche-repas .dn-titre { color: var(--d4-t4); }
+.couche-repas .rp-colonne .dn-ic { background: var(--d4-n2); box-shadow: inset 0 1px 0 rgba(255,255,255,.05); }
+.couche-repas .rp-colonne .dn-lb { color: var(--d4-t2); }
+.couche-repas .rp-colonne .dn-val,
+.couche-repas .dn-val { color: var(--d4-t1); }
+.couche-repas .dn-absent,
+.couche-repas .dn-partiel { color: var(--d4-t4); }
+.couche-repas .dn-pro { background: rgba(248,106,12,.16); color: #F8A055; }
+.couche-repas .dn-offert { background: rgba(76,175,80,.14); color: #7BD08A; }
+.couche-repas .dn-rappel { background: var(--d4-n2); border-color: transparent; color: #F8A055; }
+.couche-repas .dn-cta { background: var(--d4-acc); color: #17150F; }
+
+/* ---------- Enregistrer comme plat ---------- */
+.couche-repas .mc-plat-btn,
+.couche-repas .rp-btn-plat {
+  background: var(--d4-n1); border: none; color: var(--d4-acc); box-shadow: var(--el1);
+}
+.couche-repas .mc-plat-btn:active,
+.couche-repas .rp-btn-plat:active {
+  background: var(--d4-n1);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 1px 3px rgba(0,0,0,.3);
+}
+.couche-repas .mc-plat-champ { background: var(--d4-n2); border-color: transparent; color: var(--d4-t1); }
+.couche-repas .mc-plat-ok-btn { background: var(--d4-acc); color: #17150F; }
+.couche-repas .mc-plat-ok { background: rgba(76,175,80,.14); color: #7BD08A; }
+.couche-repas .mc-plat-annul { color: var(--d4-t3); }
+
+/* ---------- Bouton principal : OBSIDIENNE ----------
+   Profondeur interne plutot que surface : la matiere s'eclaire du
+   haut a gauche et s'eteint vers le bas a droite. Le reflet est un
+   lisere d'un pixel qui suit toute la courbure haute — obtenu par
+   masque, donc il s'enroule sur les epaules au lieu de s'arreter
+   net comme un trait dessine. Son coeur est BLANC : une lumiere
+   neutre reste neutre a son point le plus vif ; seule la retombee
+   prend la teinte BelFit. */
+.couche-repas .rp-btn-fin {
+  position: relative; overflow: hidden; border: none;
+  background: radial-gradient(120% 150% at 26% -30%, #262B33 0%, #191D23 42%, #101317 78%), #101317;
+  color: #FFFFFF;
+  box-shadow: 0 20px 44px rgba(0,0,0,.58), 0 4px 10px rgba(0,0,0,.4),
+              inset 0 -1px 0 rgba(255,255,255,.03);
+  transition: box-shadow 190ms var(--ios);
+}
+.couche-repas .rp-btn-fin::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit;
+  padding: 1px; pointer-events: none;
+  background: linear-gradient(102deg,
+    rgba(255,255,255,0) 0%, rgba(255,255,255,.16) 12%, rgba(255,255,255,.82) 30%,
+    rgba(255,206,31,.62) 46%, rgba(248,160,10,.34) 64%, rgba(248,106,12,.13) 80%,
+    rgba(248,106,12,0) 94%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: opacity 190ms var(--ios);
+}
+.couche-repas .rp-btn-fin::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 26px; z-index: 1;
+  background: linear-gradient(180deg, rgba(255,255,255,.045) 0, transparent 100%);
+  pointer-events: none;
+}
+.couche-repas .rp-btn-fin > * { position: relative; z-index: 2; }
+/* A l'appui il s'enfonce : l'ombre portee devient interne et le
+   reflet faiblit, parce que la face s'incline. */
+.couche-repas .rp-btn-fin:active {
+  box-shadow: inset 0 4px 10px rgba(0,0,0,.72), 0 2px 6px rgba(0,0,0,.34);
+}
+.couche-repas .rp-btn-fin:active::before { opacity: .45; }
+
+/* ---------- Navigation, tant qu'un repas est ouvert ----------
+   La barre est un frere de la couche : sans ca, un rail blanc
+   resterait colle sous une page sombre. */
+.couche-repas ~ .bn {
+  background: rgba(29,33,40,.88);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4);
+  border-top-color: rgba(255,255,255,.05);
+}
+.couche-repas ~ .bn .bn-item { color: #7B8494; }
+.couche-repas ~ .bn .bn-item--actif { color: var(--d4-acc); }
+
+@media (prefers-reduced-motion: reduce) {
+  .couche-repas .rp-resume::before { animation: none; opacity: .9; }
+}
