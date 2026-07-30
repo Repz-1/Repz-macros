@@ -188,7 +188,7 @@ export function MealPage() {
         </div>
 
         {/* Recherche : la meme brique que la carte, avec tout l'ecran pour elle */}
-        <Recherche repasId={r.id} />
+        <Recherche repasId={r.id} phCourt />
 
         {/* Aliments deja encodes */}
         {!vide && (

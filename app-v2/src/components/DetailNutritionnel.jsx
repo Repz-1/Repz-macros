@@ -28,6 +28,16 @@ const LIBELLES = {
   sel: 'Sel',
 };
 
+// Une trace non nulle arrondie a 0,0 g se lit comme une absence de
+// sel ou de sucre, ce qui est faux. On distingue donc trois cas :
+// zero exact, trace sous le seuil d'affichage, et valeur normale.
+function valeur(v) {
+  if (v === 0) return '0 g';
+  if (v < 0.05) return '< 0,1 g';
+  if (v < 10) return v.toFixed(1).replace('.', ',') + ' g';
+  return Math.round(v) + ' g';
+}
+
 export function DetailNutritionnel({ ings }) {
   const { total, connus, nbAliments } = detailTotal(ings);
   const dispos = CLES_DETAIL.filter(k => connus[k] > 0);
@@ -66,9 +76,7 @@ export function DetailNutritionnel({ ings }) {
             <span class="dn-ic" aria-hidden="true">{ICONES[k] || null}</span>
             <span class="dn-lb">{LIBELLES[k]}</span>
             {ouvert ? (
-              <span class="dn-val">
-                {total[k] < 10 ? total[k].toFixed(1).replace('.', ',') : Math.round(total[k])} g
-              </span>
+              <span class="dn-val">{valeur(total[k])}</span>
             ) : (
               <span class="dn-cadenas" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 018 0v3" /></svg>

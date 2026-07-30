@@ -174,7 +174,7 @@ export function LigneIngredient({ repasId, ing }) {
   );
 }
 
-export function Recherche({ repasId }) {
+export function Recherche({ repasId, phCourt }) {
   const [iaVocal, setIaVocal] = useState(false);
   const [iaPhoto, setIaPhoto] = useState(false);
   const champRef = useRef(null);
@@ -291,7 +291,7 @@ export function Recherche({ repasId }) {
       <div class="mc-ajout">
         <input
           ref={champRef}
-          placeholder={t('mc_add_ph')}
+          placeholder={t(phCourt ? 'mc_add_ph_court' : 'mc_add_ph')}
           value={q}
           onInput={e => { setQ(e.currentTarget.value); setActif(true); }}
           onFocus={() => setActif(true)}

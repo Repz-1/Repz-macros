@@ -1826,16 +1826,21 @@ Object.assign(STRINGS_V1.nl, {
 
 Object.assign(STRINGS_V1.fr, {
   mc_add_ph: 'Ajouter un aliment...',
+  // Page repas : trois boutons d'action mangent la largeur, le
+  // libelle long se faisait couper en plein mot.
+  mc_add_ph_court: 'Ajouter un aliment',
   mc_empty: 'Vide'
 });
 
 Object.assign(STRINGS_V1.en, {
   mc_add_ph: 'Add a food...',
+  mc_add_ph_court: 'Add a food',
   mc_empty: 'Empty'
 });
 
 Object.assign(STRINGS_V1.nl, {
   mc_add_ph: 'Voeg een voedingsmiddel toe...',
+  mc_add_ph_court: 'Toevoegen',
   mc_empty: 'Leeg'
 });
 
