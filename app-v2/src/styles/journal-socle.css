@@ -2629,7 +2629,23 @@
 .couche-repas .rp-btn-plat:active { background: var(--or-creme); }
 /* Le placeholder ne doit jamais se faire couper en plein mot par
    les trois boutons d'action : il se termine proprement. */
-.couche-repas .mc-ajout input::placeholder {
-  text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+
+/* ------------------------------------------------------------
+   Total a quatre chiffres. La colonne du total ne dispose que
+   d'environ 85 px : « 2441 kcal » a 28 px la depassait et
+   recouvrait le filet et les macros. Deux leviers, dans l'ordre :
+   on resserre le trio de macros, puis on reduit le nombre au-dela
+   de 999. Meme parti pris que J8 et J13 : taille adaptative
+   plutot que troncature.
+   ------------------------------------------------------------ */
+.couche-repas .rp-macro { padding: 0 4px; }
+.couche-repas .rp-kcal--long { font-size: 22px; }
+.couche-repas .rp-kcal--long span { font-size: 13px; }
+
+/* L'ellipse doit porter sur le champ lui-meme : sur ::placeholder
+   elle n'a aucun effet, le libelle se coupait donc en plein mot. */
+.couche-repas .mc-ajout input {
+  text-overflow: ellipsis;
 }
-.couche-repas .mc-scan { width: 46px; }
+.couche-repas .mc-ajout input::placeholder { font-size: 14px; }
+.couche-repas .mc-scan { width: 44px; }
