@@ -172,7 +172,7 @@ export function MealPage() {
           <AnneauRepas kcal={tot.kcal} cible={f} />
           <div class="rp-resume-txt">
             <div class={'rp-kcal' + (totAff.kcal > 999 ? ' rp-kcal--long' : '')}>{totAff.kcal}<span>kcal</span></div>
-            <div class="rp-reco">{f ? <><span>{t('mc_reco')}</span><b>{f.min}–{f.max} kcal</b></> : ' '}</div>
+            <div class="rp-reco">{f ? <><b>{f.min}–{f.max} kcal</b><span>{t('mc_reco')}</span></> : ' '}</div>
           </div>
           <div class="rp-macros">
             <div class="rp-macro">
