@@ -3005,3 +3005,64 @@ html body .pg-journal { background: #171A20; }
 .pg-journal .dn-offert { background: rgba(76,175,80,.14); }
 .pg-journal .t-approche { color: #F0B429; }
 .pg-journal .t-warn { color: #F8A055; }
+
+/* ============================================================
+   LUMIERE DU CADRAN — la matiere plutot que l'air.
+
+   Principe : une couche posee en `normal` recouvre la surface et
+   se voit — c'est un halo. En `soft-light` elle module la surface
+   existante : elle eclaircit ce qui est deja clair, laisse le
+   sombre sombre, et fait ressortir le grain, le degrade et les
+   aretes de la carte. La lumiere revele le materiau au lieu de
+   flotter autour du cadran.
+
+   La teinte n'est jamais ecrite deux fois : --cal-lum est posee
+   par le palier courant, et les quatre couches la lisent. Le
+   cadran change de couleur, la lumiere suit par construction.
+   ============================================================ */
+.pg-journal .cal {
+  position: relative;
+  overflow: hidden;
+  --cal-lum: 52, 211, 153;     /* vert : dans l'objectif */
+}
+.pg-journal .cal[data-palier="jaune"]  { --cal-lum: 252, 211, 77; }
+.pg-journal .cal[data-palier="orange"] { --cal-lum: 253, 186, 116; }
+.pg-journal .cal[data-palier="alerte"] { --cal-lum: 252, 165, 165; }
+.pg-journal .cal > *:not(.cal-capte):not(.cal-eclats) { position: relative; z-index: 2; }
+
+/* 1. Captation de surface : le coeur du dispositif. */
+.pg-journal .cal-capte {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
+  mix-blend-mode: soft-light;
+  background:
+    radial-gradient(58% 46% at 50% 46%, rgba(var(--cal-lum), .58) 0%,
+                    rgba(var(--cal-lum), .24) 38%, transparent 72%),
+    radial-gradient(96% 68% at 50% 46%, rgba(var(--cal-lum), .12) 0%, transparent 76%);
+  animation: cal-pulse 7s ease-in-out infinite;
+}
+@keyframes cal-pulse { 0%, 100% { opacity: .93; } 50% { opacity: 1; } }
+
+/* 2. Eclats la ou la lumiere rase la matiere. Tres faibles : ils ne
+      s'expliquent pas, ils se remarquent quand ils manquent. */
+.pg-journal .cal-eclats {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(30px 18px at 13% 11%, rgba(var(--cal-lum), .09) 0%, transparent 70%),
+    radial-gradient(26px 16px at 87% 11%, rgba(var(--cal-lum), .06) 0%, transparent 70%),
+    radial-gradient(46px 14px at 50% 97%, rgba(var(--cal-lum), .05) 0%, transparent 74%);
+}
+
+/* 3. Diffusion residuelle : une copie floutee de l'ARC, pas un
+      cercle. Sa forme designe sa source. Reglee serre — au-dela,
+      elle redevient un halo identifiable. */
+.pg-journal .cal-anneau-svg { overflow: visible; }
+.pg-journal .cal-anneau-lueur { filter: blur(5px); opacity: .42; }
+
+/* 4. La piste du cadran etait un vert clair de theme clair : sur
+      fond sombre elle formait un anneau lumineux parasite. */
+.pg-journal .cal-anneau-piste { stroke: #2A3340; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-journal .cal-capte { animation: none; }
+}

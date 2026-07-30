@@ -115,6 +115,15 @@ function Anneau({ ratio, palier, enfant }) {
           stroke-linecap="round"
           stroke-dasharray={`${(trace * ARC).toFixed(1)} ${CIRC}`}
           transform="rotate(140 95 95)"
+          class="cal-anneau-lueur"
+          aria-hidden="true"
+        />
+        <circle
+          cx="95" cy="95" r="82" fill="none"
+          stroke={palier ? DEGRADE[palier] : 'url(#calJauge)'} stroke-width="13"
+          stroke-linecap="round"
+          stroke-dasharray={`${(trace * ARC).toFixed(1)} ${CIRC}`}
+          transform="rotate(140 95 95)"
           class="cal-anneau-trace"
         />
       </svg>
@@ -169,7 +178,13 @@ export function DayDashboard() {
   const dateTexte = `${t('today')}, ${d.getDate()} ${moisCourt[d.getMonth()] || ''}`;
 
   return (
-    <section class={'carte carte--relief cal' + (pret ? '' : ' cal--chargement')}>
+    <section class={'carte carte--relief cal' + (pret ? '' : ' cal--chargement')}
+             data-palier={palier || 'ok'}>
+      {/* Reponse de la matiere a la lumiere du cadran. Deux couches
+          decoratives, aucune information : elles modulent la surface
+          de la carte au lieu d'ajouter un halo dans l'air. */}
+      <span class="cal-capte" aria-hidden="true" />
+      <span class="cal-eclats" aria-hidden="true" />
 
       {/* Ligne date */}
       <div class="cal-date">
