@@ -2680,3 +2680,16 @@
 .couche-repas .rp-colonne .mc-ajout:focus-within {
   box-shadow: 0 0 0 2px rgba(248, 106, 12, .30), 0 2px 12px rgba(60, 50, 40, .06);
 }
+
+/* ------------------------------------------------------------
+   Fond de la page repas. Le blanc des cartes ne ressortait pas :
+   sur un fond quasi neutre (#F4F3F0), tout se lisait comme une
+   seule surface. On pose la creme du logo, avec un halo tiede en
+   haut qui s'efface en 200 px. Volontairement discret : la couleur
+   sert a detacher les cartes, pas a se faire remarquer.
+   Selecteur (0,2,0) place apres celui de la ligne 1734, sinon
+   var(--fond) reprend la main.
+   ------------------------------------------------------------ */
+.pg-journal.couche-repas {
+  background: linear-gradient(180deg, #FDF1E1 0, #F9F2E7 200px, #F7F1E7 100%);
+}
