@@ -358,7 +358,7 @@ render(<App />, document.getElementById('app'));
     s.classList.add('parti');
     setTimeout(() => s.remove(), 300);
     const tc = document.querySelector('meta[name="theme-color"]');
-    if (tc) tc.setAttribute('content', '#F8F8F8');
+    if (tc) tc.setAttribute('content', '#171A20');
   };
   setTimeout(partir, 400);
 })();

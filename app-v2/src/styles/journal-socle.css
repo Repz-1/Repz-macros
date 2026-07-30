@@ -2941,3 +2941,67 @@
 @media (prefers-reduced-motion: reduce) {
   .couche-repas .rp-resume::before { animation: none; opacity: .9; }
 }
+
+/* ============================================================
+   THEME SOMBRE — reprises hors jetons.
+   Les 45 jetons couvrent l'essentiel ; il reste une traine de
+   valeurs employees une ou deux fois, ecrites en dur. On ne
+   reprend ici que celles qui sont VISIBLES en permanence dans le
+   Journal : les etats presses restent pour l'instant.
+   Selecteurs volontairement plus specifiques que l'original,
+   sinon la regle claire l'emporte (cf. J-tuiles blanches).
+   ============================================================ */
+.pg-journal.pg-journal { background: #171A20; min-height: 100%; }
+html body .pg-journal { background: #171A20; }
+
+/* Carte Calories */
+.pg-journal .cal-rappel { background: #2E2A1E; border-color: #4A3A1C; }
+.pg-journal .cal-num--orange { color: #F8A055; }
+.pg-journal .tableau-bord { border-color: #333B47; }
+.pg-journal .tb-mini { background: #39414F; }
+.pg-journal .nutri-card { border-color: #333B47; }
+.pg-journal .mbar { background: #2F3642; }
+
+/* Actions rapides */
+.pg-journal .qa-btn { border-right-color: #2F3642; }
+.pg-journal .qa-ic { background: #2A313D; }
+
+/* Cartes repas */
+.pg-journal .mc-titre-champ { background: #2A313D; color: #F7F8FA; }
+.pg-journal .mc-ing { border-color: #2F3642; }
+.pg-journal .mc-ing-cuisson { background: #2A313D; }
+.pg-journal .total-repas { background: #2E2A1E; }
+.pg-journal .mc-res-fav { color: #5F6877; }
+.pg-journal .mc-res-plat { border-bottom-color: #333B47; }
+.pg-journal .mc-plat-btn { border-color: #4A3A1C; }
+.pg-journal .mc-plat-ok { background: rgba(76,175,80,.14); }
+.pg-journal .resultats { border-bottom-color: #2F3642; }
+
+/* Idees repas */
+.pg-journal .eat-panneau { border-color: #333B47; }
+.pg-journal .eat-cat { border-color: #39414F; }
+.pg-journal .fr-sep { background: #2F3642; }
+.pg-journal .fr-tip { background: #2E2A1E; }
+
+/* Hydratation */
+.pg-journal .water-btns button { background: #1E2A33; }
+.pg-journal .wbt { border-color: #2F4350; }
+.pg-journal .bottle-body,
+.pg-journal .water-total { background: #16222B; }
+.pg-journal .eau { background: #16222B; }
+
+/* Poids */
+.pg-journal .wn-cta { border-color: #4A3A1C; }
+.pg-journal .wm-saisie { background: #2A313D; border-color: #39414F; }
+.pg-journal .wm2-valeur--champ { background: #2A313D; }
+.pg-journal .wm2-pas { border-color: #39414F; }
+.pg-journal .wm2-delta-zone { border-bottom-color: #2F3642; }
+
+/* Bandeaux et profil */
+.pg-journal .bandeau-invite { background: #2E2A1E; border-color: #4A3A1C; }
+.pg-journal .bandeau-conf { border-color: #4A3A1C; }
+.pg-journal .profil-volet { border-color: #333B47; }
+.pg-journal .profil-statut { background: #3A2A14; }
+.pg-journal .dn-offert { background: rgba(76,175,80,.14); }
+.pg-journal .t-approche { color: #F0B429; }
+.pg-journal .t-warn { color: #F8A055; }
