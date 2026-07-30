@@ -25,9 +25,17 @@ function AnneauRepas({ kcal, cible }) {
   return (
     <div class="rp-anneau">
       <svg viewBox="0 0 74 74">
-        <circle cx="37" cy="37" r={R} fill="none" stroke="#F1ECE3" stroke-width="6" />
+        {/* Degrade jaune -> orange du logo. Un id fixe suffit : la page
+            repas n'est montee qu'une fois a la fois. */}
+        <defs>
+          <linearGradient id="rp-degrade" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="var(--rp-jaune)" />
+            <stop offset="100%" stop-color="var(--or)" />
+          </linearGradient>
+        </defs>
+        <circle cx="37" cy="37" r={R} fill="none" stroke="var(--rp-piste)" stroke-width="6" />
         <circle
-          cx="37" cy="37" r={R} fill="none" stroke="#E0A21C" stroke-width="6"
+          cx="37" cy="37" r={R} fill="none" stroke="url(#rp-degrade)" stroke-width="6"
           stroke-linecap="round"
           stroke-dasharray={`${(part * C).toFixed(1)} ${C.toFixed(1)}`}
         />

@@ -2598,3 +2598,38 @@
 .pg-journal .cal-macro-nom,
 .pg-journal .cal-cote-lb,
 .pg-journal .mc-titre { font-family: inherit; font-weight: 500; }
+
+
+/* ============================================================
+   ACCENT REPAS (pilote) — orange du logo, porte a la seule page
+   d'encodage d'un repas. Ailleurs le dore reste en place.
+   Les jetons sont surcharges sur .couche-repas : aucun fichier
+   partage n'est touche, la v1 et le reste de la v2 sont intacts.
+
+   Regle de contraste : jaune et orange en REMPLISSAGE seulement.
+   Des qu'il s'agit de texte ou de bordure, --or-fonce (4,6:1 sur
+   creme). #FAC408 sur creme tombe a 1,7:1, illisible.
+   ============================================================ */
+.couche-repas {
+  --or:        #F86A0C;   /* remplissages, focus, selections */
+  --or-fonce:  #B34700;   /* texte et bordures */
+  --or-pale:   #FFEFD8;   /* fond d'icone */
+  --or-creme:  #FFFAF2;
+  --rp-jaune:  #FAC408;   /* depart du degrade de l'anneau */
+  --rp-piste:  #EFE6D8;   /* portion vide de l'anneau */
+}
+.couche-repas .mc-ajout:focus-within {
+  box-shadow: 0 0 0 3px rgba(248, 106, 12, .14);
+}
+/* Bouton secondaire « Enregistrer comme plat » : bordure et texte
+   orange fonce, fond blanc conserve (demande de Raci). */
+.couche-repas .rp-btn-plat {
+  color: var(--or-fonce); border-color: var(--or);
+}
+.couche-repas .rp-btn-plat:active { background: var(--or-creme); }
+/* Le placeholder ne doit jamais se faire couper en plein mot par
+   les trois boutons d'action : il se termine proprement. */
+.couche-repas .mc-ajout input::placeholder {
+  text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+}
+.couche-repas .mc-scan { width: 46px; }

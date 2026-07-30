@@ -17,7 +17,7 @@ Statut : `observé` = relevé, non soumis · `soumis` = proposé à Raci ·
 | J2 | Cartes repas | « Snacks » en anglais parmi des libellés français | **validé** — devient « Collations » (FR) et « Tussendoortjes » (NL) |
 | J3 | Bouton hydratation | Opacité 0,72, plus pâle que le bouton Ajouter | **conservé** — hiérarchie voulue : Ajouter est l'action principale |
 | J4 | Carte Calories | Liseré vert pâle absent du document mais visible sur la capture | **conservé** — la capture fait foi |
-| J5 | Navigation | Étoile Premium en rouge quand active, les autres onglets en noir | **conservé** — règle explicite dans le CSS de référence |
+| J5 | Navigation | ~~Étoile Premium en rouge quand active, les autres onglets en noir~~ **Relevé faux (30/07)** : `styles.css` donne quatre couleurs d'onglet actif — Journal `#181818`, S'entraîner `#DFA004`, Stats `#DE2F14`, Premium `#3D7E5C` (vert sauge). Le rouge appartient à Stats, pas à Premium. | **corrigé** — Raci confirme le 30/07 que Stats garde son rouge |
 | J6 | Colonne | Largeur plafonnée à 640 px en v2 contre 900 px en v1 : sur tablette, 900 px donne des lignes trop longues | **observé** |
 | J7 | Idées recettes | En v2, la pilule était remplacée par une carte verrouillée pour les comptes gratuits ; la capture montre la pilule normale | **validé** — pilule toujours visible, gating au dépliage |
 

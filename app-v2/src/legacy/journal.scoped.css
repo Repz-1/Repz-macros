@@ -717,8 +717,6 @@
 .pg-journal .scan-manual input{ flex:1; padding:11px; border:1.5px solid #e5e7eb; border-radius:9px; font-size:15px; }
 .pg-journal .scan-manual button{ padding:11px 16px; border:none; border-radius:9px; background:#8F6200; color:#fff; font-weight:700; cursor:pointer; }
 .pg-journal .scan-close{ width:100%; padding:13px; border:none; border-radius:11px; background:#374151; color:#fff; font-weight:700; font-size:15px; cursor:pointer; }
-.pg-journal .bn-premium{ color:#d4af37; }
-.pg-journal .bn-premium.is-premium svg{ fill:#d4af37; }
 .pg-journal .bottom-nav{
     position:fixed; bottom:0; left:0; right:0; z-index:80;
     background:#ffffff; border-top:1px solid #e9edf2;
@@ -733,7 +731,6 @@
 }
 .pg-journal .bn-item svg{ width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .pg-journal .bn-item span{ font-size:10.5px; font-weight:700; }
-.pg-journal .bn-item.active{ color:#181818; }
 .pg-journal .bn-item:active{ transform:scale(.94); }
 .pg-journal #repzSplash{position:fixed;inset:0;z-index:99999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-journal #repzSplash.hide{opacity:0;pointer-events:none;}
