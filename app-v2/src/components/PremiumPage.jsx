@@ -61,6 +61,7 @@ effect(() => {
 
 import { useState } from 'preact/hooks';
 import '../legacy/premium.scoped.css';
+import '../styles/premium-theme.css';
 
 // Formules — liens LemonSqueezy repris tels quels du v1 (plans.html)
 const FORMULES = {
