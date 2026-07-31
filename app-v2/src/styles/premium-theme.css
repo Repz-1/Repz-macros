@@ -415,3 +415,40 @@
   letter-spacing: -.005em; color: var(--pr-tx2); text-wrap: pretty;
 }
 .pg-premium.pg-premium .prem-hero .prem-sig { margin: 0 auto 20px; }
+
+/* ------------------------------------------------------------
+   CTA — orange BelFit.
+   L'or annoncait un prix eleve alors que l'offre est a 3,99 €.
+   Le bouton contredisait donc l'argument. L'orange ne porte
+   aucune promesse de coût : c'est la couleur des applications
+   grand public, pas des maisons de luxe.
+
+   La regle qui en decoule, et qu'il faut tenir : sur cette page
+   l'OR dit la valeur — anneau, plaque, prix, badge — et il ne
+   bouge pas ; l'ORANGE dit l'action, et lui seul se touche.
+   ------------------------------------------------------------ */
+.pg-premium.pg-premium .continuer {
+  background: linear-gradient(168deg, #FF8A32 0%, #F86A0C 52%, #DB5504 100%);
+  color: #FFFFFF; border: none;
+  box-shadow:
+    0 1px 2px rgba(58,44,24,.16),
+    0 8px 18px rgba(190,80,10,.24),
+    0 24px 48px rgba(190,80,10,.24),
+    inset 0 1px 0 rgba(255,255,255,.30);
+}
+.pg-premium.pg-premium .continuer small { color: rgba(255,255,255,.72); }
+.pg-premium.pg-premium .continuer::after {
+  background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.34), rgba(255,255,255,0));
+}
+.pg-premium.pg-premium .continuer:active {
+  box-shadow: inset 0 3px 10px rgba(120,50,0,.34), 0 2px 5px rgba(58,44,24,.2);
+}
+
+/* La coche retrouve son anneau : meme geste que l'anneau du hero,
+   a la plus petite echelle. */
+.pg-premium.pg-premium .ck svg circle { fill: none; stroke-width: 1.9; }
+.pg-premium.pg-premium .ck svg path { fill: none; stroke-width: 2.2; }
+.pg-premium.pg-premium .c-cell .ck svg circle { stroke: rgba(255,255,255,.16); }
+.pg-premium.pg-premium .c-cell .ck svg path { stroke: var(--pr-tx3); }
+.pg-premium.pg-premium .c-prem .ck svg circle { stroke: rgba(var(--pr-or-rvb),.55); }
+.pg-premium.pg-premium .c-prem .ck svg path { stroke: var(--pr-or); }

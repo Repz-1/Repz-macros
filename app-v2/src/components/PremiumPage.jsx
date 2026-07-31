@@ -109,7 +109,7 @@ export function PremiumPage() {
   try { prenom = localStorage.getItem('repz_firstName') || ''; } catch (e) {}
 
   const Check = () => (
-    <span class="ck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" /></svg></span>
+    <span class="ck"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M8.4 12.3l2.4 2.4 4.6-5" /></svg></span>
   );
   const Ligne = ({ nom, note, gratuit }) => (
     <div class="cmp-ligne">
