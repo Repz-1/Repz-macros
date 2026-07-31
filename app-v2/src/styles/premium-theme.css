@@ -365,3 +365,53 @@
 .pg-premium.pg-premium .cmp-corps { overflow: visible; max-height: none; }
 /* Le lien legal se cassait en trois lignes. */
 .pg-premium.pg-premium .l-liens { display: block; margin-top: 4px; white-space: nowrap; }
+
+/* ------------------------------------------------------------
+   HERO. L'anneau et le titre etaient poses a nu sur le creme :
+   l'ecran n'avait alors aucun objet sombre en haut, donc aucun
+   point d'entree. La carte graphite leur rend ce contraste — c'est
+   elle qui porte les cinq premieres secondes.
+   ------------------------------------------------------------ */
+.pg-premium.pg-premium .prem-hero {
+  position: relative; overflow: hidden; text-align: center;
+  border-radius: 24px; padding: 32px 20px 32px; margin: 8px 0 24px;
+  background:
+    linear-gradient(152deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.02) 30%,
+                    rgba(255,255,255,0) 52%, rgba(0,0,0,.16) 100%),
+    radial-gradient(120% 130% at 50% -22%, #303645 0%, #1F2530 46%, #151920 100%);
+  box-shadow:
+    0 1px 2px rgba(58,44,24,.11), 0 5px 14px rgba(58,44,24,.10),
+    0 18px 40px rgba(58,44,24,.12), 0 46px 96px rgba(58,44,24,.14);
+}
+.pg-premium.pg-premium .prem-hero::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  pointer-events: none; background: var(--pr-rim);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+}
+/* La lumiere de l'anneau se pose sur la matiere, en soft-light. */
+.pg-premium.pg-premium .prem-hero-capte {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
+  mix-blend-mode: soft-light;
+  background: radial-gradient(54% 40% at 50% 24%, rgba(var(--pr-or-rvb),.34) 0%,
+              rgba(var(--pr-or-rvb),.11) 44%, transparent 76%);
+  animation: premSouffle 7s ease-in-out infinite;
+}
+.pg-premium.pg-premium .prem-hero > *:not(.prem-hero-capte) { position: relative; z-index: 2; }
+
+/* Dans la carte, le titre passe en clair. */
+.pg-premium.pg-premium .prem-hero .prem-titre {
+  color: var(--pr-tx); margin: 0 auto 11px; max-width: 17ch;
+  font-size: 27px; font-weight: 700; line-height: 1.14; letter-spacing: -.04em;
+  text-wrap: balance;
+}
+.pg-premium.pg-premium .prem-hero .prem-titre em {
+  background: linear-gradient(168deg, #FFF6DC 0%, #F5C24A 58%, #D28A22 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.pg-premium.pg-premium .prem-sous {
+  margin: 0 auto; max-width: 32ch; font-size: 14px; line-height: 1.6;
+  letter-spacing: -.005em; color: var(--pr-tx2); text-wrap: pretty;
+}
+.pg-premium.pg-premium .prem-hero .prem-sig { margin: 0 auto 20px; }

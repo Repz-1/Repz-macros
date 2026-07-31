@@ -130,26 +130,33 @@ export function PremiumPage() {
         <span style="width:38px"></span>
       </div>
 
-      <div class="prem-sig" aria-hidden="true">
-        <svg viewBox="0 0 120 120">
-          <defs>
-            <linearGradient id="premOr" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FFE9AE" />
-              <stop offset="54%" stop-color="#F5C24A" />
-              <stop offset="100%" stop-color="#D28A22" />
-            </linearGradient>
-          </defs>
-          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="7" />
-          <circle cx="60" cy="60" r="50" fill="none" stroke="url(#premOr)" stroke-width="7"
-                  stroke-linecap="round" transform="rotate(-90 60 60)"
-                  stroke-dasharray="272 314.2" class="prem-sig-arc" />
-        </svg>
-        <span class="prem-sig-mono">B</span>
-      </div>
+      <section class="prem-hero">
+        <span class="prem-hero-capte" aria-hidden="true" />
+        <div class="prem-sig" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="premOr" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FFE9AE" />
+                <stop offset="54%" stop-color="#F5C24A" />
+                <stop offset="100%" stop-color="#D28A22" />
+              </linearGradient>
+            </defs>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="7" />
+            <circle cx="60" cy="60" r="50" fill="none" stroke="url(#premOr)" stroke-width="7"
+                    stroke-linecap="round" transform="rotate(-90 60 60)"
+                    stroke-dasharray="272 314.2" class="prem-sig-arc" />
+          </svg>
+          <span class="prem-sig-mono">B</span>
+        </div>
 
-      <h1 class="prem-titre">
-        {prenom ? prenom + ', ton' : 'Ton'} plan sur mesure t'attend avec <em>Premium</em>
-      </h1>
+        <h1 class="prem-titre">
+          {prenom ? prenom + ', ton' : 'Ton'} plan sur mesure t'attend avec <em>Premium</em>
+        </h1>
+        <p class="prem-sous">
+          Un plan alimentaire écrit pour toi, et une application qui ne te
+          laisse plus rien calculer à la main.
+        </p>
+      </section>
 
       {/* Ce que Premium change au quotidien. Formule en promesses,
           pas en liste de fonctionnalites : une fonctionnalite se
