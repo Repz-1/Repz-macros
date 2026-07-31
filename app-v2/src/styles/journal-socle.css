@@ -3237,3 +3237,25 @@ html body .pg-journal { background: #171A20; }
   box-shadow: inset 0 3px 9px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.3);
 }
 .couche-repas .rp-btn-fin:active::before { opacity: .5; }
+
+/* ------------------------------------------------------------
+   Hierarchie des actions. « Terminer » passe en premier : c'est
+   ce que l'utilisateur est venu faire. « Enregistrer comme plat »
+   reste dessous, offert sans etre propose.
+   Le secondaire recule par la HAUTEUR et le CONTRASTE, jamais par
+   la couleur : il garde l'orange, sinon il cesserait d'etre lu
+   comme une action.
+   ------------------------------------------------------------ */
+.couche-repas .rp-btn-plat {
+  padding: 12px;              /* 49 -> 44 px : nettement moins haut */
+  font-size: 14.5px; font-weight: 600;
+  background: transparent;
+  border: 1px solid rgba(248,106,12,.28);
+  color: #E08A45;             /* orange retenu, plus doux que l'accent plein */
+  box-shadow: none;
+}
+.couche-repas .rp-btn-plat svg { width: 16px; height: 16px; stroke-width: 1.7; opacity: .85; }
+.couche-repas .rp-btn-plat:active {
+  background: rgba(248,106,12,.08);
+  border-color: rgba(248,106,12,.42); box-shadow: none;
+}
