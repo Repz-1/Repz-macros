@@ -452,3 +452,32 @@
 .pg-premium.pg-premium .c-cell .ck svg path { stroke: var(--pr-tx3); }
 .pg-premium.pg-premium .c-prem .ck svg circle { stroke: rgba(var(--pr-or-rvb),.55); }
 .pg-premium.pg-premium .c-prem .ck svg path { stroke: var(--pr-or); }
+
+/* ------------------------------------------------------------
+   CTA — orange BelFit.
+   L'or annoncait un prix eleve au moment ou la page en affiche un
+   bas : le bouton contredisait l'offre. L'orange est la couleur
+   de marque et d'action ; il ne promet aucun tarif.
+   ------------------------------------------------------------ */
+.pg-premium.pg-premium .continuer {
+  background: linear-gradient(168deg, #FF8A32 0%, #F86A0C 52%, #DB5504 100%);
+  color: #FFFFFF;
+  box-shadow:
+    0 1px 2px rgba(58,44,24,.16),
+    0 8px 18px rgba(190,80,10,.24),
+    0 24px 48px rgba(190,80,10,.24),
+    inset 0 1px 0 rgba(255,255,255,.30);
+}
+.pg-premium.pg-premium .continuer small { color: rgba(255,255,255,.72); }
+.pg-premium.pg-premium .continuer::after {
+  background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.34), rgba(255,255,255,0));
+}
+
+/* La coche du comparatif : anneau + trait, comme la signature. */
+.pg-premium.pg-premium .ck svg {
+  fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-premium.pg-premium .c-cell .ck svg circle { stroke: rgba(255,255,255,.16); }
+.pg-premium.pg-premium .c-cell .ck svg path { stroke: var(--pr-tx3); }
+.pg-premium.pg-premium .c-prem .ck svg circle { stroke: rgba(var(--pr-or-rvb),.55); }
+.pg-premium.pg-premium .c-prem .ck svg path { stroke: var(--pr-or); }
