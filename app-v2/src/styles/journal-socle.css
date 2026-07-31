@@ -2685,57 +2685,10 @@
 /* (bloc creme du theme clair retire le 30/07) */
 
 /* ============================================================
-   CARTE RESUME — CREME PREMIUM (page repas seulement)
-   Remplace la carte encre. Celle-ci existait pour deux raisons ;
-   toutes deux se resolvent en clair :
-   1. Hierarchie. Elle ne vient plus de l'opposition clair/sombre
-      mais de la MATIERE : cette carte a un degrade, un lisere de
-      crete et une ombre portee plus profonde que les autres. Elle
-      se detache sans changer de camp.
-   2. Contraste. Le jaune et l'orange tombaient a 1,45:1 et 2,67:1
-      sur creme — vrai, et c'est pourquoi ils ne portent ici AUCUN
-      texte : ils ne servent qu'au remplissage de l'anneau. Tout ce
-      qui se lit passe par --or-fonce ou les jetons de texte.
+   CARTE RESUME — GRAPHITE (page repas)
+   Carte d'analyse : elle ne se remplit pas, elle rend un verdict.
+   Voir la section SYSTEME HYBRIDE en fin de fichier.
    ============================================================ */
-.couche-repas .rp-resume {
-  position: relative;
-  background:
-    linear-gradient(168deg, #FFFDF9 0%, #FEFAF3 52%, #FCF5EA 100%);
-  border: 1px solid #F1E9DC;
-  border-radius: 22px;
-  padding: 18px 18px 17px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .95),
-    0 1px 2px rgba(58, 44, 24, .045),
-    0 6px 18px rgba(58, 44, 24, .055),
-    0 16px 34px rgba(58, 44, 24, .045);
-}
-/* Lueur tiede derriere l'anneau : ce qui reste de l'accent BelFit
-   sur cette carte. Assez pour que le coin superieur gauche soit
-   vivant, trop faible pour se lire comme une couleur de fond. */
-.couche-repas .rp-resume::before {
-  content: ''; position: absolute; z-index: 0;
-  left: 10px; top: 2px; width: 110px; height: 110px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(250, 196, 8, .16) 0, transparent 68%);
-  filter: blur(18px); pointer-events: none;
-}
-.couche-repas .rp-resume > * { position: relative; z-index: 1; }
-
-/* Le disque central de l'anneau prend la teinte de la carte, pas
-   le blanc pur : sinon il se detache comme une pastille rapportee. */
-.couche-repas .rp-resume .rp-anneau-c span { background: #FFFDF9; }
-
-/* Textes : hierarchie a trois niveaux, aucune couleur de marque. */
-.couche-repas .rp-resume .rp-kcal { color: #1A1712; }
-.couche-repas .rp-resume .rp-macro b { color: #1A1712; }
-.couche-repas .rp-resume .rp-kcal span,
-.couche-repas .rp-resume .rp-reco span,
-.couche-repas .rp-resume .rp-macro b i,
-.couche-repas .rp-resume .rp-macro em { color: #78706A; }  /* 4,7:1 — AA sur la creme */
-.couche-repas .rp-resume .rp-reco b { color: #5E574C; }
-/* Filets : presents, jamais lus. */
-.couche-repas .rp-resume .rp-macros,
-.couche-repas .rp-resume .rp-macro + .rp-macro { border-color: #F0E8DA; }
 
 /* ------------------------------------------------------------
    TUILES SCANNER / VOIX / PHOTO — retrait.
@@ -3100,3 +3053,168 @@
   content: ' \2192'; color: var(--or-fonce); font-weight: 600;
 }
 .pg-journal.couche-repas .dn-rappel:active { transform: none; opacity: .6; }
+
+/* ============================================================
+   SYSTEME HYBRIDE BELFIT
+   ------------------------------------------------------------
+   Une seule regle, tenue partout : la MATIERE dit la NATURE.
+
+     blanc    -> j'agis      (listes, champs, formulaires)
+     graphite -> j'analyse   (cartes qui rendent un verdict)
+     orange   -> j'interagis (accent, jamais surface)
+
+   Le fond creme reste le plateau sur lequel les deux matieres
+   se posent. Une carte sombre n'est plus un effet : c'est une
+   affirmation que ce qu'elle contient a ete calcule, pas saisi.
+   Le graphite #1E232D est a un point du --pr-sur de la page
+   Premium (#1E242D) : les surfaces d'analyse et les surfaces
+   Premium lisent comme le meme materiau.
+   ============================================================ */
+.pg-journal {
+  --gr-sur:    #1E232D;
+  --gr-haut:   #252B36;   /* crete du degrade */
+  --gr-bas:    #191E26;   /* pied du degrade */
+  --gr-tx:     #F4F6F8;   /* 15,2:1 — le chiffre */
+  --gr-tx2:    #AAB1BC;   /* 7,3:1  — le libelle */
+  --gr-tx3:    #868E99;   /* 4,7:1  — la mention */
+  --gr-filet:  rgba(255, 255, 255, .085);
+  --gr-piste:  rgba(255, 255, 255, .11);
+  --bf-orange: #F86A0C;   /* accent, remplissage et lumiere */
+  --bf-orange-lis: #B34700; /* 5,5:1 sur blanc — texte et bordure */
+}
+
+/* ------------------------------------------------------------
+   1. CARTE CALORIES — la seule carte que l'oeil doit trouver
+   sans la chercher. L'impact ne vient pas du noir mais du
+   CONTRASTE DE MATIERE : elle est la seule surface sombre d'un
+   plateau creme. La lueur orange ne colore pas la carte, elle
+   emane de l'anneau — une carte sombre est le seul endroit ou
+   une emission peut exister.
+   ------------------------------------------------------------ */
+.pg-journal .cal {
+  background: linear-gradient(168deg, var(--gr-haut) 0%, var(--gr-sur) 58%, var(--gr-bas) 100%);
+  border: 1px solid rgba(255, 255, 255, .06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .07),
+    0 2px 6px rgba(18, 22, 28, .16),
+    0 14px 34px rgba(18, 22, 28, .20);
+}
+.pg-journal .cal .cal-date,
+.pg-journal .cal .cal-cote-lb,
+.pg-journal .cal .cal-num-lb { color: var(--gr-tx3); }
+.pg-journal .cal .cal-cote-val,
+.pg-journal .cal .cal-num { color: var(--gr-tx); }
+.pg-journal .cal .cal-date-ic { color: var(--gr-tx3); opacity: .9; }
+.pg-journal .cal .cal-trait { background: var(--gr-filet); border-color: var(--gr-filet); }
+
+/* L'anneau : piste sourde, trace vive, halo tenu court. Un halo
+   large deviendrait un fond colore — ce qu'on veut est une source
+   ponctuelle, pas un eclairage d'ambiance. */
+.pg-journal .cal .cal-anneau-piste { stroke: var(--gr-piste); opacity: 1; }
+.pg-journal .cal .cal-anneau-lueur {
+  background: radial-gradient(circle,
+    rgba(248, 106, 12, .30) 0%,
+    rgba(248, 106, 12, .11) 44%,
+    transparent 70%);
+  filter: blur(16px); opacity: 1;
+}
+/* Macros : le nom recule, la valeur reste pleine. */
+.pg-journal .cal .cal-macro-nom { color: var(--gr-tx2); }
+.pg-journal .cal .cal-macro-val { color: var(--gr-tx); }
+.pg-journal .cal .cal-macro-piste { background: var(--gr-piste); }
+
+/* ------------------------------------------------------------
+   2. RESUME DU REPAS — meme nature, donc meme matiere.
+   Elle totalise, elle ne recoit aucune saisie.
+   ------------------------------------------------------------ */
+.couche-repas .rp-resume {
+  position: relative;
+  background: linear-gradient(168deg, var(--gr-haut) 0%, var(--gr-sur) 58%, var(--gr-bas) 100%);
+  border: 1px solid rgba(255, 255, 255, .06);
+  border-radius: 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .07),
+    0 2px 6px rgba(18, 22, 28, .16),
+    0 12px 28px rgba(18, 22, 28, .18);
+}
+.couche-repas .rp-resume .rp-kcal,
+.couche-repas .rp-resume .rp-macro b { color: var(--gr-tx); }
+.couche-repas .rp-resume .rp-kcal span,
+.couche-repas .rp-resume .rp-macro b i,
+.couche-repas .rp-resume .rp-macro em { color: var(--gr-tx2); }
+.couche-repas .rp-resume .rp-reco b { color: var(--gr-tx2); }
+.couche-repas .rp-resume .rp-reco span { color: var(--gr-tx3); }
+.couche-repas .rp-resume .rp-macros,
+.couche-repas .rp-resume .rp-macro + .rp-macro { border-color: var(--gr-filet); }
+.couche-repas .rp-resume .rp-anneau-c span { background: var(--gr-sur); }
+.couche-repas .rp-resume { --rp-piste: rgba(255, 255, 255, .11); }
+
+/* ------------------------------------------------------------
+   3. SURFACES DE SAISIE — blanches, papier premium.
+   Tres peu d'ombre : une feuille posee ne projette presque rien.
+   Un seul rayon pour les cartes, un seul pour les commandes —
+   c'est la coherence des coins qui fait l'objet fabrique.
+   ------------------------------------------------------------ */
+.couche-repas .rp-liste,
+.couche-repas .rp-plat,
+.couche-repas .rp-colonne .dn,
+.couche-repas .rp-colonne .mc-resultats {
+  background: #FFFFFF;
+  border: 1px solid rgba(28, 24, 18, .055);
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+}
+.couche-repas .rp-colonne .mc-ajout,
+.couche-repas .rp-liste .mc-ing-champ,
+.couche-repas .rp-colonne .mc-scan { border-radius: 13px; }
+.couche-repas .rp-colonne .mc-ajout {
+  background: #FFFFFF;
+  border: 1px solid rgba(28, 24, 18, .055);
+  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+}
+.couche-repas .rp-colonne .mc-scan {
+  background: #FFFFFF;
+  border: 1px solid rgba(28, 24, 18, .05);
+}
+
+/* ------------------------------------------------------------
+   4. DETAIL NUTRITIONNEL — epure.
+   Les pastilles rondes derriere les icones etaient de la
+   decoration : elles ajoutaient une forme sans ajouter de sens.
+   L'icone seule suffit ; la hierarchie se joue entre le libelle
+   et la valeur, et nulle part ailleurs.
+   ------------------------------------------------------------ */
+.couche-repas .rp-colonne .dn-ic {
+  background: none; box-shadow: none;
+  width: 22px; height: 22px;
+}
+.couche-repas .rp-colonne .dn-ligne { grid-template-columns: 22px 1fr auto; }
+.couche-repas .rp-colonne .dn-ic svg { stroke: #9A938A; stroke-width: 1.5; }
+.couche-repas .rp-colonne .dn-lb { color: #6E675E; }
+.couche-repas .rp-colonne .dn-val { color: #16130F; font-weight: 650; }
+.couche-repas .rp-colonne .dn-ligne { border-top-color: rgba(28, 24, 18, .06); }
+
+/* ------------------------------------------------------------
+   5. NAVIGATION — un seul accent, l'orange BelFit.
+   Le texte de l'onglet actif prend #B34700 et non #F86A0C :
+   l'orange vif tombe a 2,9:1 sur blanc, sous le seuil. Meme
+   teinte, meme lecture, mais lisible — l'icone et le point
+   gardent le vif, ils ne portent pas de texte.
+   ------------------------------------------------------------ */
+.bn {
+  border-radius: 26px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .9),
+    0 1px 2px rgba(40, 32, 22, .05),
+    0 10px 26px rgba(40, 32, 22, .07),
+    0 26px 52px rgba(40, 32, 22, .07);
+}
+/* La barre vit HORS de .pg-journal : les jetons definis plus haut ne
+   l'atteignent pas, et styles.css (l.536-539) est charge apres ce
+   fichier. D'ou les valeurs en dur et le selecteur a trois classes. */
+.bn .bn-item--journal.bn-item--actif,
+.bn .bn-item--entrainer.bn-item--actif,
+.bn .bn-item--stats.bn-item--actif,
+.bn .bn-item--premium.bn-item--actif { color: #B34700; }
+.bn .bn-item--actif svg { color: #F86A0C; stroke: #F86A0C; }
+.bn .bn-point { background: #F86A0C; box-shadow: 0 0 0 1px rgba(179, 71, 0, .30); }
