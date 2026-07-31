@@ -3290,3 +3290,65 @@ html body .pg-journal { background: #171A20; }
   border-color: rgba(248,106,12,.34);
   box-shadow: inset 0 2px 6px rgba(0,0,0,.42);
 }
+
+/* ============================================================
+   BARRE DE NAVIGATION — refonte.
+
+   Ce qu'elle etait : un bandeau colle au bas de l'ecran, fond
+   quasi blanc, et quatre couleurs d'onglet actif — noir, or,
+   rouge, vert sauge. Quatre couleurs pour un seul etat, c'est
+   quatre fois la meme information dite differemment ; et le vert
+   sauge ne correspondait plus a rien depuis le passage au sombre.
+
+   Ce qu'elle devient : un objet pose au-dessus du contenu, en
+   graphite legerement plus clair que le fond, arrondi sur ses
+   quatre coins, avec une arete claire en crete et son ombre en
+   dessous. Un seul etat actif : blanc plein, plus un point jaune
+   BelFit de 4 px. L'accent designe, il ne colore pas.
+   ============================================================ */
+.bn {
+  left: 12px; right: 12px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  border-radius: 26px; border: 1px solid rgba(255,255,255,.055);
+  background: rgba(28, 32, 40, .88);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  padding: 10px 6px 9px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 1px 2px rgba(0,0,0,.30),
+    0 8px 20px rgba(0,0,0,.32),
+    0 22px 48px rgba(0,0,0,.34);
+}
+.bn-item {
+  position: relative; gap: 5px; padding: 4px 0 2px;
+  color: #8A929E;                     /* inactif : 4,9:1 sur la barre */
+  transition: color 220ms cubic-bezier(.32,.72,0,1),
+              transform 220ms cubic-bezier(.32,.72,0,1);
+}
+.bn-item:active { transform: scale(.94); }
+/* +10 % de taille, trait epaissi, meme finition sur les quatre. */
+.bn-item svg { width: 25px; height: 25px; stroke-width: 2; }
+.bn-item span { font-size: 10px; font-weight: 600; letter-spacing: .015em; }
+
+/* Un seul etat actif, quel que soit l'onglet. */
+.bn-item--journal.bn-item--actif,
+.bn-item--entrainer.bn-item--actif,
+.bn-item--stats.bn-item--actif,
+.bn-item--premium.bn-item--actif { color: #FFFFFF; }
+
+/* L'accent : un point de 4 px, seul endroit jaune de la barre. */
+.bn-point {
+  display: block; width: 4px; height: 4px; border-radius: 50%;
+  background: #FCD200; opacity: 0; transform: scale(.4);
+  transition: opacity 220ms cubic-bezier(.32,.72,0,1),
+              transform 220ms cubic-bezier(.32,.72,0,1);
+}
+.bn-item--actif .bn-point { opacity: 1; transform: scale(1); }
+
+/* La barre flotte : le contenu doit s'arreter plus haut qu'avant. */
+:root { --hauteur-nav: 92px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bn-item, .bn-point { transition: none; }
+}

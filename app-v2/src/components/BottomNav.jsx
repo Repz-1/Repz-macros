@@ -29,9 +29,9 @@ export function allerOnglet(cle) {
 
 // ============================================================
 // BARRE DE NAVIGATION
-// Quatre onglets de largeur egale. L'etat actif se marque
-// uniquement par un assombrissement : ni pastille, ni fond,
-// ni soulignement. Trace des icones repris a l'identique.
+// Quatre onglets de largeur egale. L'etat actif se marque par un
+// blanc plein et un point jaune BelFit de 4 px sous le libelle :
+// l'accent designe, il ne colore pas. Trace des icones inchange.
 // ============================================================
 const ONGLETS = [
   {
@@ -68,6 +68,7 @@ export function BottomNav() {
               {o.trace.map((d, i) => <path key={i} d={d} />)}
             </svg>
             <span>{t(o.label)}</span>
+            <i class="bn-point" aria-hidden="true" />
           </button>
         );
       })}
