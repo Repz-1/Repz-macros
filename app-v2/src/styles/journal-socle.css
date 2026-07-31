@@ -3190,3 +3190,50 @@ html body .pg-journal { background: #171A20; }
 .pg-journal .rp-colonne .dn-lb { font-size: 14px; }
 .pg-journal .rp-colonne .dn-partiel,
 .pg-journal .rp-colonne .dn-absent { margin-top: 8px; line-height: 1.45; }
+
+/* ============================================================
+   BOUTON TERMINER — finition.
+   Trois corrections, dans l'ordre d'importance.
+
+   1. Le reflet traversant en boucle est coupe. Une lumiere qui
+      repasse toutes les 4 secondes est une animation publicitaire :
+      elle attire l'oeil sans rien dire. Le bouton doit se tenir
+      tranquille et ne repondre qu'au doigt.
+   2. La matiere quitte le noir pur. Un #141414 au milieu de
+      cartes bleu-gris se lit comme un corps etranger — c'est ce
+      qui le faisait paraitre generique. Il prend la meme famille
+      que les cartes, en plus dense : il appartient a la page.
+   3. La masse baisse. Hauteur ramenee de 56 a 49 px, au-dessus
+      du seuil tactile de 48, et l'ombre portee s'allege.
+   ============================================================ */
+.couche-repas .rp-btn-fin {
+  padding: 14.5px;
+  font-size: 15.5px; letter-spacing: -.005em;
+  background: linear-gradient(168deg, #242B36 0%, #1B212B 46%, #141920 100%);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.34),
+    0 8px 20px rgba(0,0,0,.42),
+    0 20px 44px rgba(0,0,0,.30);
+}
+/* Le lisere speculaire : creme au sommet, froid en bas a droite,
+   comme les cartes. Peak abaisse de .82 a .58 — a ce niveau on ne
+   le voit plus, on voit seulement que l'arete existe. */
+.couche-repas .rp-btn-fin::before {
+  background: linear-gradient(102deg,
+    rgba(255,255,255,0) 0%, rgba(240,226,200,.16) 12%, rgba(255,255,255,.58) 30%,
+    rgba(255,201,60,.34) 46%, rgba(248,106,12,.16) 64%,
+    rgba(96,132,196,.12) 86%, rgba(96,132,196,.20) 100%);
+}
+/* La nappe sous l'arete reprend toute la largeur et cesse de
+   bouger : la regle de base la reduisait a 38 % et l'animait. */
+.couche-repas .rp-btn-fin::after {
+  left: 0; right: 0; width: 100%; height: 22px;
+  transform: none; animation: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.035) 0, transparent 100%);
+}
+.couche-repas .rp-btn-fin svg { width: 17.5px; height: 17.5px; stroke-width: 1.8; }
+.couche-repas .rp-btn-fin:active {
+  transform: none; opacity: 1;
+  box-shadow: inset 0 3px 9px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.3);
+}
+.couche-repas .rp-btn-fin:active::before { opacity: .5; }
