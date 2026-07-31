@@ -3259,3 +3259,34 @@ html body .pg-journal { background: #171A20; }
   background: rgba(248,106,12,.08);
   border-color: rgba(248,106,12,.42); box-shadow: none;
 }
+
+/* ------------------------------------------------------------
+   Bouton secondaire — juste assez de presence.
+   Le contour seul le faisait disparaitre : sur fond sombre, une
+   ligne de 1 px a 28 % ne suffit pas a poser un objet. Il lui
+   faut une SURFACE. On lui donne donc la meme matiere que les
+   cartes, a peine tiedie d'orange, plutot que de remonter le
+   contraste du texte — l'objet apparait, la voix ne monte pas.
+   Ecart entre les deux boutons porte de 11 a 20 px : c'est le
+   vide qui dit « ceci est autre chose », pas la difference de
+   style.
+   ------------------------------------------------------------ */
+.couche-repas .rp-actions { gap: 20px; }
+.couche-repas .rp-btn-plat {
+  background:
+    linear-gradient(168deg, rgba(255,255,255,.045) 0%, rgba(255,255,255,.008) 46%,
+                    rgba(0,0,0,.06) 100%),
+    linear-gradient(180deg, #262C36 0%, #212630 100%);
+  border: 1px solid rgba(248,106,12,.20);
+  color: #EC9A5C;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.055),
+    0 1px 2px rgba(0,0,0,.22),
+    0 5px 14px rgba(0,0,0,.22);
+}
+.couche-repas .rp-btn-plat svg { opacity: 1; }
+.couche-repas .rp-btn-plat:active {
+  background: linear-gradient(180deg, #222831, #1D222B);
+  border-color: rgba(248,106,12,.34);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.42);
+}
