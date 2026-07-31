@@ -29,9 +29,9 @@
   --pr-sur: #1E242D; --pr-sur-h: #242B35;
   --pr-tx: #F2F4F7; --pr-tx2: #A2A9B4; --pr-tx3: #838B96; --pr-tx4: #7C8490;
   --pr-page-tx: #1B1B19; --pr-page-tx2: #6E6960; --pr-page-tx3: #8B857A;
-  --pr-or: #F86A0C; --pr-or-rvb: 248, 106, 12;
+  --pr-or: #FCD200; --pr-or-rvb: 252, 210, 0;
   --pr-filet: rgba(255,255,255,.032);
-  --pr-rim: linear-gradient(152deg, rgba(255,201,160,.44) 0%, rgba(248,106,12,.18) 18%,
+  --pr-rim: linear-gradient(152deg, rgba(255,239,184,.44) 0%, rgba(252,210,0,.18) 18%,
             rgba(255,255,255,.035) 42%, rgba(255,255,255,0) 60%,
             rgba(96,132,196,.16) 84%, rgba(96,132,196,.26) 100%);
   /* Une ombre prend la couleur de la piece : sur creme elle est
@@ -43,7 +43,7 @@
 
   position: relative;
   background:
-    radial-gradient(38% 26% at 26% 8%,  rgba(198,96,26,.16) 0%, transparent 68%),
+    radial-gradient(38% 26% at 26% 8%,  rgba(198,150,20,.16) 0%, transparent 68%),
     radial-gradient(30% 22% at 78% 22%, rgba(214,122,58,.09) 0%, transparent 70%),
     radial-gradient(42% 30% at 62% 74%, rgba(120,140,190,.10) 0%, transparent 72%),
     var(--pr-fond);
@@ -68,7 +68,7 @@
 .pg-premium.pg-premium .prem-sig-mono {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   font-size: 30px; font-weight: 900; letter-spacing: -.05em;
-  background: linear-gradient(168deg, #FFE7D4 0%, #F86A0C 58%, #B8480A 100%);
+  background: linear-gradient(168deg, #FFF6DC 0%, #FCD200 58%, #B08600 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 /* Le cercle eclaire la matiere autour de lui, en soft-light :
@@ -88,7 +88,7 @@
   margin: 0 auto 24px;
 }
 .pg-premium.pg-premium .prem-titre em { font-style: normal;
-  background: linear-gradient(168deg, #C2530A 0%, #8F3A06 72%);
+  background: linear-gradient(168deg, #8A6600 0%, #6E5200 72%);
   -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* ---------- Materiau graphite, commun ---------- */
@@ -135,13 +135,13 @@
 .pg-premium.pg-premium .fo-mois small { font-size: 10.5px; font-weight: 500; color: var(--pr-tx4); }
 .pg-premium.pg-premium .fo-eco {
   display: inline-block; margin-top: 10px; padding: 5px 10px; border-radius: 999px;
-  font-size: 10.5px; font-weight: 700; color: #FFC79A;
+  font-size: 10.5px; font-weight: 700; color: #FFE49A;
   background: linear-gradient(160deg, rgba(var(--pr-or-rvb),.20), rgba(var(--pr-or-rvb),.08));
-  box-shadow: inset 0 1px 0 rgba(255,216,190,.22);
+  box-shadow: inset 0 1px 0 rgba(255,244,205,.22);
 }
 .pg-premium.pg-premium .fo-badge {
   font-size: 8px; font-weight: 700; letter-spacing: .16em; color: #1A1509;
-  background: linear-gradient(160deg, #FFD8B4, #F0873A);
+  background: linear-gradient(160deg, #FFEDB6, #F0C63A);
   box-shadow: 0 3px 10px rgba(var(--pr-or-rvb),.26);
 }
 /* La formule retenue avance d'un plan : matiere plus claire,
@@ -155,13 +155,13 @@
   box-shadow: var(--pr-omb-f), 0 0 36px rgba(var(--pr-or-rvb),.08);
 }
 .pg-premium.pg-premium .fo.sel::before {
-  background: linear-gradient(152deg, rgba(255,201,160,.85) 0%, rgba(248,106,12,.42) 22%,
+  background: linear-gradient(152deg, rgba(255,239,184,.85) 0%, rgba(252,210,0,.42) 22%,
               rgba(255,255,255,.06) 46%, rgba(255,255,255,0) 62%,
               rgba(var(--pr-or-rvb),.20) 84%, rgba(var(--pr-or-rvb),.36) 100%);
 }
 .pg-premium.pg-premium .fo.sel .fo-mois {
   font-size: 30px; letter-spacing: -.045em;
-  background: linear-gradient(168deg, #FFE7D4 0%, #F86A0C 56%, #C24B04 100%);
+  background: linear-gradient(168deg, #FFF6DC 0%, #FCD200 56%, #B08600 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .pg-premium.pg-premium .fo.sel .fo-mois small { -webkit-text-fill-color: var(--pr-tx4); }
@@ -174,9 +174,9 @@
 .pg-premium.pg-premium .continuer {
   position: relative; overflow: hidden; border: none; border-radius: 999px;
   color: #1A1509;
-  background: linear-gradient(168deg, #FF9A4E 0%, #F86A0C 48%, #DB5504 100%);
-  box-shadow: 0 1px 2px rgba(58,44,24,.16), 0 8px 18px rgba(190,80,10,.20),
-              0 22px 44px rgba(190,80,10,.22), inset 0 1px 0 rgba(255,255,255,.62);
+  background: linear-gradient(168deg, #FFDA52 0%, #FCD200 48%, #D8A800 100%);
+  box-shadow: 0 1px 2px rgba(58,44,24,.16), 0 8px 18px rgba(170,135,0,.20),
+              0 22px 44px rgba(170,135,0,.22), inset 0 1px 0 rgba(255,255,255,.62);
   animation: premVit 8s ease-in-out infinite;
 }
 @keyframes premVit { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.03); } }
@@ -274,9 +274,9 @@
 .pg-premium.pg-premium .fo.sel .fo-mois { font-size: 30px; letter-spacing: -.045em; }
 .pg-premium.pg-premium .fo .fo-eco {
   display: inline-block; margin-top: 10px; padding: 5px 10px; border-radius: 999px;
-  font-size: 10.5px; font-weight: 700; color: #FFC79A;
+  font-size: 10.5px; font-weight: 700; color: #FFE49A;
   background: linear-gradient(160deg, rgba(var(--pr-or-rvb),.20), rgba(var(--pr-or-rvb),.08));
-  box-shadow: inset 0 1px 0 rgba(255,216,190,.22);
+  box-shadow: inset 0 1px 0 rgba(255,244,205,.22);
 }
 .pg-premium.pg-premium .fo.sel .fo-eco { color: #FFE9B8; }
 .pg-premium.pg-premium .fo .fo-badge { top: -10px; padding: 4px 11px; }
@@ -296,7 +296,7 @@
                     rgba(255,255,255,0) 60%, rgba(0,0,0,.07) 100%),
     linear-gradient(180deg, rgba(var(--pr-or-rvb),.16) 0%, rgba(var(--pr-or-rvb),.07) 46%,
                     rgba(var(--pr-or-rvb),.018) 100%);
-  box-shadow: inset 0 1px 0 rgba(255,216,190,.30),
+  box-shadow: inset 0 1px 0 rgba(255,244,205,.30),
               inset 0 -10px 20px rgba(0,0,0,.16), 0 6px 16px rgba(0,0,0,.20);
 }
 .pg-premium.pg-premium .cmp-tete, .pg-premium .cmp-ligne {
@@ -346,12 +346,12 @@
 }
 .pg-premium.pg-premium .prem-titre em {
   font-style: normal;
-  background: linear-gradient(168deg, #C2530A 0%, #8F3A06 72%);
+  background: linear-gradient(168deg, #8A6600 0%, #6E5200 72%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 /* Le CTA restait vert plein. */
 .pg-premium.pg-premium .continuer {
-  background: linear-gradient(168deg, #FF9A4E 0%, #F86A0C 48%, #DB5504 100%);
+  background: linear-gradient(168deg, #FFDA52 0%, #FCD200 48%, #D8A800 100%);
   color: #1A1509; border: none;
 }
 .pg-premium.pg-premium .continuer small { color: rgba(26,21,9,.66); }
@@ -407,7 +407,7 @@
   text-wrap: balance;
 }
 .pg-premium.pg-premium .prem-hero .prem-titre em {
-  background: linear-gradient(168deg, #FFE7D4 0%, #F86A0C 58%, #C24B04 100%);
+  background: linear-gradient(168deg, #FFF6DC 0%, #FCD200 58%, #B08600 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .pg-premium.pg-premium .prem-sous {
@@ -428,15 +428,15 @@
    bouge pas ; l'ORANGE dit l'action, et lui seul se touche.
    ------------------------------------------------------------ */
 .pg-premium.pg-premium .continuer {
-  background: linear-gradient(168deg, #FF8A32 0%, #F86A0C 52%, #DB5504 100%);
-  color: #FFFFFF; border: none;
+  background: linear-gradient(168deg, #FFDE4A 0%, #FCD200 52%, #D8A800 100%);
+  color: #1A1509; border: none;
   box-shadow:
     0 1px 2px rgba(58,44,24,.16),
-    0 8px 18px rgba(190,80,10,.24),
-    0 24px 48px rgba(190,80,10,.24),
+    0 8px 18px rgba(170,135,0,.24),
+    0 24px 48px rgba(170,135,0,.24),
     inset 0 1px 0 rgba(255,255,255,.30);
 }
-.pg-premium.pg-premium .continuer small { color: rgba(255,255,255,.72); }
+.pg-premium.pg-premium .continuer small { color: rgba(26,21,9,.68); }
 .pg-premium.pg-premium .continuer::after {
   background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.34), rgba(255,255,255,0));
 }
@@ -460,15 +460,15 @@
    de marque et d'action ; il ne promet aucun tarif.
    ------------------------------------------------------------ */
 .pg-premium.pg-premium .continuer {
-  background: linear-gradient(168deg, #FF8A32 0%, #F86A0C 52%, #DB5504 100%);
-  color: #FFFFFF;
+  background: linear-gradient(168deg, #FFDE4A 0%, #FCD200 52%, #D8A800 100%);
+  color: #1A1509;
   box-shadow:
     0 1px 2px rgba(58,44,24,.16),
-    0 8px 18px rgba(190,80,10,.24),
-    0 24px 48px rgba(190,80,10,.24),
+    0 8px 18px rgba(170,135,0,.24),
+    0 24px 48px rgba(170,135,0,.24),
     inset 0 1px 0 rgba(255,255,255,.30);
 }
-.pg-premium.pg-premium .continuer small { color: rgba(255,255,255,.72); }
+.pg-premium.pg-premium .continuer small { color: rgba(26,21,9,.68); }
 .pg-premium.pg-premium .continuer::after {
   background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.34), rgba(255,255,255,0));
 }
