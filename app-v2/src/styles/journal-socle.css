@@ -2737,294 +2737,145 @@
 
 
 /* ============================================================
-   THEME SOMBRE — reprises hors jetons.
-   Les 45 jetons couvrent l'essentiel ; il reste une traine de
-   valeurs employees une ou deux fois, ecrites en dur. On ne
-   reprend ici que celles qui sont VISIBLES en permanence dans le
-   Journal : les etats presses restent pour l'instant.
-   Selecteurs volontairement plus specifiques que l'original,
-   sinon la regle claire l'emporte (cf. J-tuiles blanches).
+   REPRISES HORS JETONS — theme clair.
+   Ce bloc etait la traine du theme sombre. Les COULEURS sont
+   revenues au clair ; la DENSITE et la GEOMETRIE acquises pendant
+   cette periode sont conservees, elles ne dependaient pas du fond.
+   Aucune regle ne force plus le fond de page : .pg-journal suit
+   var(--fond).
    ============================================================ */
-.pg-journal.pg-journal { background: #171A20; min-height: 100%; }
-html body .pg-journal { background: #171A20; }
+.pg-journal.pg-journal { min-height: 100%; }
 
-/* Carte Calories */
-.pg-journal .cal-rappel { background: var(--carte); border-color: rgba(255,255,255,.08); }
-.pg-journal .cal-num--orange { color: #D2691E; }
-.pg-journal .tableau-bord { border-color: #333B47; }
-.pg-journal .tb-mini { background: #39414F; }
-.pg-journal .nutri-card { border-color: #333B47; }
-.pg-journal .mbar { background: #2F3642; }
-
-/* Actions rapides */
-.pg-journal .qa-btn { border-right-color: #2F3642; }
-.pg-journal .qa-ic { background: #2A313D; }
-
-/* Cartes repas */
-.pg-journal .mc-titre-champ { background: #2A313D; color: #F7F8FA; }
-.pg-journal .mc-ing { border-color: #2F3642; }
-.pg-journal .mc-ing-cuisson { background: #2A313D; }
-.pg-journal .total-repas { background: var(--carte); }
-.pg-journal .mc-res-fav { color: #5F6877; }
-.pg-journal .mc-res-plat { border-bottom-color: #333B47; }
-.pg-journal .mc-plat-btn { border-color: rgba(255,255,255,.08); }
-.pg-journal .mc-plat-ok { background: #EFF9F2; }
-.pg-journal .resultats { border-bottom-color: #2F3642; }
-
-/* Idees repas */
-.pg-journal .eat-panneau { border-color: #333B47; }
-.pg-journal .eat-cat { border-color: #39414F; }
-.pg-journal .fr-sep { background: #2F3642; }
-.pg-journal .fr-tip { background: var(--carte); }
-
-/* Hydratation */
-.pg-journal .water-btns button { background: #1E2A33; }
-.pg-journal .wbt { border-color: #2F4350; }
-.pg-journal .bottle-body,
-.pg-journal .water-total { background: #16222B; }
-.pg-journal .eau { background: #16222B; }
-
-/* Poids */
-.pg-journal .wn-cta { border-color: rgba(255,255,255,.08); }
-.pg-journal .wm-saisie { background: #2A313D; border-color: #39414F; }
-.pg-journal .wm2-valeur--champ { background: #2A313D; }
-.pg-journal .wm2-pas { border-color: #39414F; }
-.pg-journal .wm2-delta-zone { border-bottom-color: #2F3642; }
-
-/* Bandeaux et profil */
-.pg-journal .bandeau-invite { background: var(--carte); border-color: rgba(255,255,255,.08); }
-.pg-journal .bandeau-conf { border-color: rgba(255,255,255,.08); }
-.pg-journal .profil-volet { border-color: #333B47; }
-.pg-journal .profil-statut { background: var(--carte); }
-.pg-journal .dn-offert { background: #E9F7EF; }
-.pg-journal .t-approche { color: #F0B429; }
-.pg-journal .t-warn { color: #F8A055; }
-
+/* La piste des barres vaut var(--carte) dans styles.css, soit
+   #FFFFFF en clair : elle disparaissait sur la carte blanche. */
+.pg-journal .nutri-macros .mbar { background: var(--piste); }
 
 /* ============================================================
-   LISTE DE RESULTATS — hierarchie de lisibilite.
-   Le defaut n'etait pas le fond sombre mais l'ecart : nom,
-   calories et filets vivaient tous dans la meme plage. On
-   n'eclaircit pas l'interface, on ecarte les trois niveaux.
-     nom      #F2F4F7  600   — lu en premier, sans effort
-     calories #AEB4BF  500   — lu ensuite, s'il le faut
-     filets   .07            — presents, jamais lus
+   LISTE DE RESULTATS — hierarchie de lisibilite. CONSERVEE.
+   Le sujet n'a jamais ete le fond mais l'ecart entre les trois
+   niveaux : nom lu en premier, valeur ensuite, filets jamais.
    ============================================================ */
 .pg-journal .mc-resultats {
-  background: #222932;
-  border: 1px solid rgba(255,255,255,.07);
-  box-shadow: 0 14px 34px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.34);
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+  box-shadow: 0 14px 34px rgba(58,44,24,.10), 0 2px 6px rgba(58,44,24,.06);
 }
 .pg-journal .mc-resultats > button,
-.pg-journal .mc-res-ligne { border-bottom-color: rgba(255,255,255,.07); }
+.pg-journal .mc-res-ligne { border-bottom-color: var(--bordure-fine); }
 
-/* Le nom : presque blanc, c'est lui qu'on cherche. */
+/* Le nom : c'est lui qu'on cherche. */
 .pg-journal .mc-resultats .mc-res-choix > span:first-child,
 .pg-journal .mc-resultats > button > span:first-child,
 .pg-journal .mc-res-nom {
-  color: #F2F4F7; font-weight: 600; letter-spacing: -.005em;
+  color: var(--texte); font-weight: 600; letter-spacing: -.005em;
 }
 /* La valeur : lisible sans concurrencer le nom. */
 .pg-journal .mc-resultats .kc {
-  color: #AEB4BF; font-weight: 500; font-variant-numeric: tabular-nums;
+  color: var(--texte-2); font-weight: 500; font-variant-numeric: tabular-nums;
 }
-/* Aucun texte secondaire ne descend sous ce seuil. */
-.pg-journal .mc-res-titre { color: #8D94A1; font-weight: 600; }
+.pg-journal .mc-res-titre { color: var(--texte-3); font-weight: 600; }
 
-/* Etoiles : l'inactive doit se voir sans se disputer la ligne. */
-.pg-journal .mc-res-fav { color: #79818F; }
+.pg-journal .mc-res-fav { color: var(--texte-3); }
 .pg-journal .mc-res-fav.on { color: var(--or); }
 
-/* Etat tactile : une nappe a peine perceptible, pas une carte.
-   Le survol reste plus faible que l'appui pour garder l'ordre. */
+/* Etat tactile : une nappe a peine perceptible, pas une carte. */
 .pg-journal .mc-resultats > button:active,
-.pg-journal .mc-res-choix:active { background: rgba(255,255,255,.055); }
+.pg-journal .mc-res-choix:active { background: rgba(24,20,12,.045); }
 .pg-journal .mc-res-plat {
-  background: transparent; border-bottom-color: rgba(255,255,255,.07);
+  background: transparent; border-bottom-color: var(--bordure-fine);
 }
-.pg-journal .mc-res-plat:active { background: rgba(255,255,255,.055); }
-.pg-journal .mc-res-gerer:active { background: rgba(255,255,255,.055); }
+.pg-journal .mc-res-plat:active { background: rgba(24,20,12,.045); }
+.pg-journal .mc-res-gerer:active { background: rgba(24,20,12,.045); }
 
 /* ============================================================
-   DETAIL NUTRITIONNEL — retrait.
-   Ordre de lecture vise : les aliments, le total du repas, le
-   bouton, puis seulement cette section. Ce n'est pas une
-   information moins juste, c'est une information qu'on va
-   chercher — elle doit donc attendre qu'on la cherche.
-
-   Les VALEURS ne bougent pas : elles restent le seul element
-   pleinement contraste du bloc. Tout ce qui les entoure recule.
+   DETAIL NUTRITIONNEL — mise en retrait et densite. CONSERVEES.
+   Les deux passes sombres sont fondues ici en leurs valeurs
+   finales. La hauteur reste inferieure d'environ 17 % a l'origine
+   sans qu'aucune valeur ne perde en lisibilite : tout est repris
+   sur ce qui ENTOURE l'information, jamais sur l'information.
    ============================================================ */
 .pg-journal .rp-colonne .dn {
-  /* Un cran d'elevation en dessous des cartes de contenu. */
-  box-shadow: 0 1px 2px rgba(0,0,0,.20), 0 4px 12px rgba(0,0,0,.18);
-  padding-top: 15px; padding-bottom: 13px;
+  box-shadow: 0 1px 2px rgba(58,44,24,.05), 0 4px 12px rgba(58,44,24,.05);
+  padding-top: 13px; padding-bottom: 11px;
 }
 .pg-journal .rp-colonne .dn-titre {
-  font-size: 9.5px;          /* 13 -> 9,5 : -27 % */
-  font-weight: 600;
-  color: #79818F;
-  letter-spacing: .06em;     /* .09 -> .06 */
-  margin-bottom: 4px;
+  font-size: 9.5px; font-weight: 600; color: var(--texte-3);
+  letter-spacing: .06em; margin-bottom: 3px;
 }
 .pg-journal .rp-colonne .dn-ligne {
-  grid-template-columns: 33px 1fr auto;
-  gap: 11px;
-  padding: 9px 0;            /* resserre */
-  border-top: 1px solid rgba(255,255,255,.05);
+  grid-template-columns: 27px 1fr auto;
+  gap: 10px; padding: 7px 0;
+  border-top: 1px solid var(--bordure-fine);
 }
 .pg-journal .rp-colonne .dn-ic {
-  width: 33px; height: 33px;  /* 38 -> 33 : -13 % */
-  background: rgba(255,255,255,.035);
+  width: 27px; height: 27px;
+  background: rgba(24,20,12,.035);
   box-shadow: none;
 }
 .pg-journal .rp-colonne .dn-ic svg {
-  width: 16.5px; height: 16.5px; stroke: #79818F; stroke-width: 1.5;
+  width: 14.5px; height: 14.5px; stroke: var(--texte-3); stroke-width: 1.45;
 }
 /* Le libelle recule, la valeur reste pleine. */
-.pg-journal .rp-colonne .dn-lb {
-  font-size: 14.5px; font-weight: 500; color: #9CA3AF;
-}
+.pg-journal .rp-colonne .dn-lb { font-size: 14px; font-weight: 500; color: var(--texte-2); }
 .pg-journal .rp-colonne .dn-val {
-  font-size: 16px; font-weight: 600; color: #F2F4F7;
-  font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+  font-size: 15.5px; font-weight: 600; color: var(--texte);
+  font-variant-numeric: tabular-nums; letter-spacing: -.015em;
 }
 /* Note de bas de page : lisible, jamais lue en premier. */
 .pg-journal .rp-colonne .dn-partiel,
 .pg-journal .rp-colonne .dn-absent {
-  font-size: 11px; color: #79818F; line-height: 1.5; margin-top: 9px;
+  font-size: 11px; color: var(--texte-3); line-height: 1.45; margin-top: 8px;
 }
-
-/* ------------------------------------------------------------
-   Detail nutritionnel — densite. Fiche technique, pas liste.
-   La hauteur descend d'environ 17 % sans qu'aucune valeur ne
-   perde en lisibilite : tout est repris sur ce qui entoure
-   l'information, jamais sur l'information.
-     ligne    18 -> 14 px de respiration
-     cercle   33 -> 27 px  (-18 %)
-     icone    16,5 -> 14,5 (-12 %)
-     filet    .05 -> .035  presque imperceptible
-   ------------------------------------------------------------ */
-.pg-journal .rp-colonne .dn { padding-top: 13px; padding-bottom: 11px; }
-.pg-journal .rp-colonne .dn-titre { margin-bottom: 3px; }
-.pg-journal .rp-colonne .dn-ligne {
-  grid-template-columns: 27px 1fr auto;
-  gap: 10px;
-  padding: 7px 0;
-  border-top: 1px solid rgba(255,255,255,.035);
-}
-.pg-journal .rp-colonne .dn-ic {
-  width: 27px; height: 27px;
-  background: rgba(255,255,255,.028);
-}
-.pg-journal .rp-colonne .dn-ic svg {
-  width: 14.5px; height: 14.5px; stroke-width: 1.45;
-}
-/* La valeur mene la ligne : chasse tabulaire et approche serree,
-   c'est ce qui donne le ton « fiche technique ». */
-.pg-journal .rp-colonne .dn-val { font-size: 15.5px; letter-spacing: -.015em; }
-.pg-journal .rp-colonne .dn-lb { font-size: 14px; }
-.pg-journal .rp-colonne .dn-partiel,
-.pg-journal .rp-colonne .dn-absent { margin-top: 8px; line-height: 1.45; }
 
 /* ============================================================
-   BOUTON TERMINER — finition.
-   Trois corrections, dans l'ordre d'importance.
-
-   1. Le reflet traversant en boucle est coupe. Une lumiere qui
-      repasse toutes les 4 secondes est une animation publicitaire :
-      elle attire l'oeil sans rien dire. Le bouton doit se tenir
-      tranquille et ne repondre qu'au doigt.
-   2. La matiere quitte le noir pur. Un #141414 au milieu de
-      cartes bleu-gris se lit comme un corps etranger — c'est ce
-      qui le faisait paraitre generique. Il prend la meme famille
-      que les cartes, en plus dense : il appartient a la page.
-   3. La masse baisse. Hauteur ramenee de 56 a 49 px, au-dessus
-      du seuil tactile de 48, et l'ombre portee s'allege.
+   BOUTON TERMINER — finition. CONSERVEE.
+   Deux acquis de la periode sombre survivent, parce qu'ils ne
+   tenaient pas au fond :
+     1. le reflet traversant en boucle reste coupe — une lumiere
+        qui repasse toutes les 4 secondes attire l'oeil sans rien
+        dire ;
+     2. la masse baisse, hauteur de 56 a 49 px, au-dessus du seuil
+        tactile de 48.
+   La MATIERE revient au noir d'origine : le gradient bleu-gris
+   n'existait que pour s'accorder aux cartes sombres.
    ============================================================ */
 .couche-repas .rp-btn-fin {
   padding: 14.5px;
   font-size: 15.5px; letter-spacing: -.005em;
-  background: linear-gradient(168deg, #242B36 0%, #1B212B 46%, #141920 100%);
-  box-shadow:
-    0 1px 2px rgba(0,0,0,.34),
-    0 8px 20px rgba(0,0,0,.42),
-    0 20px 44px rgba(0,0,0,.30);
+  background: #141414;
+  box-shadow: 0 1px 2px rgba(58,44,24,.10), 0 6px 16px rgba(58,44,24,.14);
 }
-/* Le lisere speculaire : creme au sommet, froid en bas a droite,
-   comme les cartes. Peak abaisse de .82 a .58 — a ce niveau on ne
-   le voit plus, on voit seulement que l'arete existe. */
-.couche-repas .rp-btn-fin::before {
-  background: linear-gradient(102deg,
-    rgba(255,255,255,0) 0%, rgba(240,226,200,.16) 12%, rgba(255,255,255,.58) 30%,
-    rgba(255,201,60,.34) 46%, rgba(248,106,12,.16) 64%,
-    rgba(96,132,196,.12) 86%, rgba(96,132,196,.20) 100%);
-}
-/* La nappe sous l'arete reprend toute la largeur et cesse de
-   bouger : la regle de base la reduisait a 38 % et l'animait. */
-.couche-repas .rp-btn-fin::after {
-  left: 0; right: 0; width: 100%; height: 22px;
-  transform: none; animation: none;
-  background: linear-gradient(180deg, rgba(255,255,255,.035) 0, transparent 100%);
-}
+.couche-repas .rp-btn-fin::after { animation: none; display: none; }
 .couche-repas .rp-btn-fin svg { width: 17.5px; height: 17.5px; stroke-width: 1.8; }
 .couche-repas .rp-btn-fin:active {
   transform: none; opacity: 1;
-  box-shadow: inset 0 3px 9px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.3);
-}
-.couche-repas .rp-btn-fin:active::before { opacity: .5; }
-
-/* ------------------------------------------------------------
-   Hierarchie des actions. « Terminer » passe en premier : c'est
-   ce que l'utilisateur est venu faire. « Enregistrer comme plat »
-   reste dessous, offert sans etre propose.
-   Le secondaire recule par la HAUTEUR et le CONTRASTE, jamais par
-   la couleur : il garde l'orange, sinon il cesserait d'etre lu
-   comme une action.
-   ------------------------------------------------------------ */
-.couche-repas .rp-btn-plat {
-  padding: 12px;              /* 49 -> 44 px : nettement moins haut */
-  font-size: 14.5px; font-weight: 600;
-  background: transparent;
-  border: 1px solid rgba(248,106,12,.28);
-  color: #E08A45;             /* orange retenu, plus doux que l'accent plein */
-  box-shadow: none;
-}
-.couche-repas .rp-btn-plat svg { width: 16px; height: 16px; stroke-width: 1.7; opacity: .85; }
-.couche-repas .rp-btn-plat:active {
-  background: rgba(248,106,12,.08);
-  border-color: rgba(248,106,12,.42); box-shadow: none;
+  box-shadow: inset 0 3px 9px rgba(0,0,0,.28), 0 1px 3px rgba(58,44,24,.12);
 }
 
 /* ------------------------------------------------------------
-   Bouton secondaire — juste assez de presence.
-   Le contour seul le faisait disparaitre : sur fond sombre, une
-   ligne de 1 px a 28 % ne suffit pas a poser un objet. Il lui
-   faut une SURFACE. On lui donne donc la meme matiere que les
-   cartes, a peine tiedie d'orange, plutot que de remonter le
-   contraste du texte — l'objet apparait, la voix ne monte pas.
-   Ecart entre les deux boutons porte de 11 a 20 px : c'est le
-   vide qui dit « ceci est autre chose », pas la difference de
-   style.
+   Hierarchie des actions. « Terminer » d'abord : c'est ce que
+   l'utilisateur est venu faire. « Enregistrer comme plat » reste
+   dessous, offert sans etre propose — il recule par la HAUTEUR et
+   l'ecart, jamais par la couleur : il garde l'orange, sinon il
+   cesserait d'etre lu comme une action.
+   L'ecart entre les deux passe a 20 px : c'est le vide qui dit
+   « ceci est autre chose », pas la difference de style.
+   Sur fond clair le contour suffit a poser l'objet — la surface
+   ajoutee en sombre n'a plus lieu d'etre.
    ------------------------------------------------------------ */
 .couche-repas .rp-actions { gap: 20px; }
 .couche-repas .rp-btn-plat {
-  background:
-    linear-gradient(168deg, rgba(255,255,255,.045) 0%, rgba(255,255,255,.008) 46%,
-                    rgba(0,0,0,.06) 100%),
-    linear-gradient(180deg, #262C36 0%, #212630 100%);
-  border: 1px solid rgba(248,106,12,.20);
-  color: #EC9A5C;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.055),
-    0 1px 2px rgba(0,0,0,.22),
-    0 5px 14px rgba(0,0,0,.22);
+  padding: 12px;
+  font-size: 14.5px; font-weight: 600;
+  background: #FFFFFF;
+  border: 1px solid var(--or);
+  color: var(--or-fonce);
+  box-shadow: none;
 }
-.couche-repas .rp-btn-plat svg { opacity: 1; }
+.couche-repas .rp-btn-plat svg { width: 16px; height: 16px; stroke-width: 1.7; opacity: 1; }
 .couche-repas .rp-btn-plat:active {
-  background: linear-gradient(180deg, #222831, #1D222B);
-  border-color: rgba(248,106,12,.34);
-  box-shadow: inset 0 2px 6px rgba(0,0,0,.42);
+  background: var(--or-creme);
+  border-color: var(--or-fonce); box-shadow: none;
 }
 
 /* ============================================================
