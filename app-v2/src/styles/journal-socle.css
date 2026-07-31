@@ -3108,3 +3108,53 @@ html body .pg-journal { background: #171A20; }
 }
 .pg-journal .mc-res-plat:active { background: rgba(255,255,255,.055); }
 .pg-journal .mc-res-gerer:active { background: rgba(255,255,255,.055); }
+
+/* ============================================================
+   DETAIL NUTRITIONNEL — retrait.
+   Ordre de lecture vise : les aliments, le total du repas, le
+   bouton, puis seulement cette section. Ce n'est pas une
+   information moins juste, c'est une information qu'on va
+   chercher — elle doit donc attendre qu'on la cherche.
+
+   Les VALEURS ne bougent pas : elles restent le seul element
+   pleinement contraste du bloc. Tout ce qui les entoure recule.
+   ============================================================ */
+.pg-journal .rp-colonne .dn {
+  /* Un cran d'elevation en dessous des cartes de contenu. */
+  box-shadow: 0 1px 2px rgba(0,0,0,.20), 0 4px 12px rgba(0,0,0,.18);
+  padding-top: 15px; padding-bottom: 13px;
+}
+.pg-journal .rp-colonne .dn-titre {
+  font-size: 9.5px;          /* 13 -> 9,5 : -27 % */
+  font-weight: 600;
+  color: #79818F;
+  letter-spacing: .06em;     /* .09 -> .06 */
+  margin-bottom: 4px;
+}
+.pg-journal .rp-colonne .dn-ligne {
+  grid-template-columns: 33px 1fr auto;
+  gap: 11px;
+  padding: 9px 0;            /* resserre */
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+.pg-journal .rp-colonne .dn-ic {
+  width: 33px; height: 33px;  /* 38 -> 33 : -13 % */
+  background: rgba(255,255,255,.035);
+  box-shadow: none;
+}
+.pg-journal .rp-colonne .dn-ic svg {
+  width: 16.5px; height: 16.5px; stroke: #79818F; stroke-width: 1.5;
+}
+/* Le libelle recule, la valeur reste pleine. */
+.pg-journal .rp-colonne .dn-lb {
+  font-size: 14.5px; font-weight: 500; color: #9CA3AF;
+}
+.pg-journal .rp-colonne .dn-val {
+  font-size: 16px; font-weight: 600; color: #F2F4F7;
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+}
+/* Note de bas de page : lisible, jamais lue en premier. */
+.pg-journal .rp-colonne .dn-partiel,
+.pg-journal .rp-colonne .dn-absent {
+  font-size: 11px; color: #79818F; line-height: 1.5; margin-top: 9px;
+}
