@@ -3158,3 +3158,35 @@ html body .pg-journal { background: #171A20; }
 .pg-journal .rp-colonne .dn-absent {
   font-size: 11px; color: #79818F; line-height: 1.5; margin-top: 9px;
 }
+
+/* ------------------------------------------------------------
+   Detail nutritionnel — densite. Fiche technique, pas liste.
+   La hauteur descend d'environ 17 % sans qu'aucune valeur ne
+   perde en lisibilite : tout est repris sur ce qui entoure
+   l'information, jamais sur l'information.
+     ligne    18 -> 14 px de respiration
+     cercle   33 -> 27 px  (-18 %)
+     icone    16,5 -> 14,5 (-12 %)
+     filet    .05 -> .035  presque imperceptible
+   ------------------------------------------------------------ */
+.pg-journal .rp-colonne .dn { padding-top: 13px; padding-bottom: 11px; }
+.pg-journal .rp-colonne .dn-titre { margin-bottom: 3px; }
+.pg-journal .rp-colonne .dn-ligne {
+  grid-template-columns: 27px 1fr auto;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1px solid rgba(255,255,255,.035);
+}
+.pg-journal .rp-colonne .dn-ic {
+  width: 27px; height: 27px;
+  background: rgba(255,255,255,.028);
+}
+.pg-journal .rp-colonne .dn-ic svg {
+  width: 14.5px; height: 14.5px; stroke-width: 1.45;
+}
+/* La valeur mene la ligne : chasse tabulaire et approche serree,
+   c'est ce qui donne le ton « fiche technique ». */
+.pg-journal .rp-colonne .dn-val { font-size: 15.5px; letter-spacing: -.015em; }
+.pg-journal .rp-colonne .dn-lb { font-size: 14px; }
+.pg-journal .rp-colonne .dn-partiel,
+.pg-journal .rp-colonne .dn-absent { margin-top: 8px; line-height: 1.45; }
