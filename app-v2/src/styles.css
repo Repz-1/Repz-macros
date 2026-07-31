@@ -4,7 +4,7 @@
 html, body { overflow-x: hidden; max-width: 100%; }
 /* Palette BELFIT : fond #F8F8F8, structure #181818, or #F7B500 (actions primaires uniquement) */
 *{box-sizing:border-box}
-html,body{margin:0;background:#383327;font-family:'Satoshi','Manrope',sans-serif;color:var(--txt-1-fonce)}
+html,body{margin:0;background:var(--fond);font-family:'Satoshi','Manrope',sans-serif;color:var(--txt-1-fonce)}
 input,button{font-family:inherit}
 button{cursor:pointer}
 
@@ -56,11 +56,11 @@ button{cursor:pointer}
 .recherche input{width:100%;padding:13px 16px;border:1px solid var(--brd-1);border-radius:14px;font-size:15px;background:var(--srf-page)}
 .resultats{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--srf-carte);border:1px solid rgba(255,255,255,.06);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.10);max-height:260px;overflow:auto;z-index:30}
 .resultats button{display:flex;justify-content:space-between;width:100%;padding:12px 14px;border:none;background:none;text-align:left;font-size:14.5px;border-bottom:1px solid rgba(255,255,255,.06)}
-.resultats button:hover{background:#473F26}
+.resultats button:hover{background:#2F3745}
 .resultats .kc{color:var(--texte-3);font-size:13px}
 
 /* ---- Total repas ---- */
-.total-repas{margin-top:12px;padding:10px 14px;background:#42391C;border-radius:12px;color:#9a7b00;font-weight:700;font-size:13.5px}
+.total-repas{margin-top:12px;padding:10px 14px;background:var(--carte);border-radius:12px;color:#9a7b00;font-weight:700;font-size:13.5px}
 
 /* ---- Bouton Ajouter + modale ---- */
 .voile{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
@@ -146,7 +146,7 @@ button{cursor:pointer}
 .login-btn:disabled{opacity:.6}
 .login-bascule{background:none;border:none;color:var(--txt-3);font-weight:600;font-size:13.5px;margin-top:12px;text-decoration:underline}
 /* Message de reussite : memes teintes que la v1 (.success). */
-.login-ok{background:#423A1C;color:var(--texte);border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
+.login-ok{background:var(--carte);color:var(--texte);border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
 /* « Mot de passe oublie » reste volontairement en retrait (v1). */
 .login-oubli{background:none;border:none;color:#a5a19a;font-weight:600;font-size:12px;margin-top:5px;text-decoration:underline}
 /* Ecran de confirmation d'adresse : texte explicatif et ligne d'aide. */
@@ -284,7 +284,7 @@ button{cursor:pointer}
 .prog-onglets button{padding:8px 14px;border:1.5px solid var(--brd-1);border-radius:999px;background:var(--srf-carte);font-weight:700;font-size:13px;font-family:inherit;white-space:nowrap}
 .prog-onglets button.actif{background:var(--srf-inverse);border-color:#181818;color:var(--txt-inverse)}
 .prog-carte{border:1px solid var(--brd-2);border-radius:14px;margin-bottom:10px;overflow:hidden}
-.prog-carte.choisi{border-color:var(--brd-accent);background:#42391C}
+.prog-carte.choisi{border-color:var(--brd-accent);background:var(--carte)}
 .prog-tete{display:flex;align-items:center;gap:10px;padding:13px}
 .prog-info{flex:1}
 .prog-tag{display:inline-block;background:var(--srf-accent);color:var(--txt-accent-fonce);font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:6px;margin-bottom:4px}
@@ -334,7 +334,7 @@ button{cursor:pointer}
 /* ---- Page Premium ---- */
 .prem-liste{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
 .prem-liste li{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--texte)}
-.prem-liste li span{width:19px;height:19px;border-radius:50%;background:#42381C;color:var(--txt-accent-or-2);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prem-liste li span{width:19px;height:19px;border-radius:50%;background:var(--carte);color:var(--txt-accent-or-2);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .prem-formule{text-align:center;position:relative}
 .prem-tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--srf-accent);color:var(--txt-accent-fonce);font-size:10px;font-weight:800;padding:3px 10px;border-radius:8px;white-space:nowrap}
 .prem-nom{font-weight:800;font-size:16px;color:var(--txt-2)}
@@ -411,10 +411,10 @@ button{cursor:pointer}
 
 /* ---- Mode invite ---- */
 .login-sep{display:flex;align-items:center;gap:10px;width:100%;margin:18px 0 12px;color:var(--txt-5);font-size:12px;font-weight:700}
-.login-sep::before,.login-sep::after{content:'';flex:1;height:1px;background:#383327}
+.login-sep::before,.login-sep::after{content:'';flex:1;height:1px;background:var(--carte)}
 .login-invite{width:100%;padding:14px;border:1.5px solid var(--brd-1);border-radius:14px;background:var(--srf-carte);font-weight:800;font-size:15px;font-family:inherit;color:var(--txt-1-fonce)}
 .login-invite-note{font-size:12px;color:var(--texte-3);font-weight:600;margin:9px 0 0;text-align:center}
-.bandeau-invite{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#42381C;border:1px solid #F3E2AE;border-radius:13px;padding:10px 13px;margin-bottom:12px}
+.bandeau-invite{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--carte);border:1px solid #F3E2AE;border-radius:13px;padding:10px 13px;margin-bottom:12px}
 .bandeau-invite span{font-size:12.5px;font-weight:700;color:var(--texte)}
 .bandeau-invite button{background:var(--srf-accent);border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:800;font-family:inherit;color:var(--txt-accent-fonce);text-decoration:none}
 
@@ -441,7 +441,7 @@ button{cursor:pointer}
 .qa-rangee{display:grid;grid-template-columns:repeat(3,1fr);background:var(--srf-carte);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
 .qa-btn{position:relative;background:none;border:none;border-right:1px solid rgba(255,255,255,.06);padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-family:inherit}
 .qa-btn:last-child{border-right:none}
-.qa-ic{width:38px;height:38px;border-radius:12px;background:#42381C;display:flex;align-items:center;justify-content:center;color:var(--texte)}
+.qa-ic{width:38px;height:38px;border-radius:12px;background:var(--carte);display:flex;align-items:center;justify-content:center;color:var(--texte)}
 .qa-ic svg{width:20px;height:20px}
 .qa-lb{font-size:12.5px;font-weight:700;color:var(--txt-1-fonce)}
 .qa-pro{position:absolute;top:7px;right:9px;background:var(--srf-accent);color:var(--txt-accent-fonce);font-size:8px;font-weight:800;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal}
@@ -489,7 +489,7 @@ button{cursor:pointer}
 .nutri-macros .m-name{font-size:13.5px;font-weight:800}
 .nutri-macros .m-val{font-size:12.5px;color:var(--txt-1);font-weight:800;margin:6px 0 8px}
 .nutri-macros .m-tg{color:var(--txt-ardoise);font-weight:700}
-.nutri-macros .mbar{height:7px;border-radius:6px;background:#393326;overflow:hidden}
+.nutri-macros .mbar{height:7px;border-radius:6px;background:var(--carte);overflow:hidden}
 .nutri-macros .mbar span{display:block;height:100%;border-radius:6px;transition:width .4s ease,background .3s}
 /* Actions rapides : dimensions exactes de l'app actuelle */
 .qa-rangee{display:flex;background:var(--srf-carte);border:1px solid var(--bordure-fine);border-radius:20px;overflow:hidden;margin:2px 0 18px;box-shadow:0 2px 10px rgba(24,24,24,.04)}
@@ -502,7 +502,7 @@ button{cursor:pointer}
 /* ---- Fleche retour des vues empilees (equivalent nav v1) ---- */
 .v2-retour{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.06);background:var(--srf-carte);
   display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--txt-1-fonce);margin-bottom:12px}
-.v2-retour:active{background:#413C2D}
+.v2-retour:active{background:#2F3745}
 
 /* ============================================================
    BARRE DE NAVIGATION
@@ -556,9 +556,9 @@ button{cursor:pointer}
 .login-google:active{background:var(--srf-page)}
 .login-google svg{width:19px;height:19px;flex:none}
 .login-ou{display:flex;align-items:center;gap:12px;color:var(--texte-3);font-size:12px;font-weight:700;margin-bottom:8px}
-.login-ou::before,.login-ou::after{content:'';flex:1;height:1px;background:#383327}
+.login-ou::before,.login-ou::after{content:'';flex:1;height:1px;background:var(--carte)}
 /* Croix de fermeture du scanner (meme habillage que la v1 .vm-x) */
-.scan-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:#383327;color:var(--texte);font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;z-index:2}
-.scan-x:active{background:#413B2D}
+.scan-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:var(--carte);color:var(--texte);font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;z-index:2}
+.scan-x:active{background:#2F3745}
 /* Statut du compte dans le panneau profil */
-.profil-statut{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.04em;color:var(--txt-accent);background:#42381C;border:1px solid var(--brd-accent-pale);border-radius:999px;padding:3px 10px;margin-top:6px}
+.profil-statut{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.04em;color:var(--txt-accent);background:var(--carte);border:1px solid var(--brd-accent-pale);border-radius:999px;padding:3px 10px;margin-top:6px}

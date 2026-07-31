@@ -34,7 +34,7 @@
 .pg-journal::before {
   content: '';
   position: fixed; top: 0; left: 0; right: 0; height: 420px;
-  background: radial-gradient(150% 380px at 50% 0, #42381C 0%, var(--fond) 100%);
+  background: radial-gradient(150% 380px at 50% 0, var(--carte) 0%, var(--fond) 100%);
   pointer-events: none; z-index: 0;
 }
 .pg-journal > * { position: relative; z-index: 1; }
@@ -328,12 +328,12 @@
 .pg-journal .cal-rappel {
   display: flex; align-items: flex-start; gap: 8px;
   width: 100%; margin: 14px 0 0; padding: 10px 12px;
-  background: #42371C; border: 1px solid #F2E2B6; border-radius: 12px;
+  background: var(--carte); border: 1px solid #F2E2B6; border-radius: 12px;
   cursor: pointer; font-family: inherit; text-align: left;
   font-size: 12.5px; font-weight: 600; color: var(--txt-accent); line-height: 1.45;
   transition: background var(--transition), transform var(--transition);
 }
-.pg-journal .cal-rappel:active { background: #4D4221; transform: scale(.99); }
+.pg-journal .cal-rappel:active { background: #2F3745; transform: scale(.99); }
 .pg-journal .cal-rappel svg {
   width: 15px; height: 15px; flex: none; margin-top: 1px;
   fill: none; stroke: currentColor; stroke-width: 1.9;
@@ -504,7 +504,7 @@
 }
 .pg-journal .mc-titre-champ {
   font-size: 18px; font-weight: 500; color: var(--texte);
-  border: none; background: #383327; border-radius: 6px;
+  border: none; background: var(--carte); border-radius: 6px;
   width: 100%; padding: 0 4px; font-family: inherit;
 }
 .pg-journal .mc-titre-champ:focus { outline: none; }
@@ -654,16 +654,16 @@
   width: 100%; min-width: 0; padding: 6px 2px;
   /* Meme langage que la page repas : un champ se voit (bord chaud franc,
      ombre interne), la palette slate froide detonnait sur le fond creme. */
-  border: 1.5px solid #D9CFBB; border-radius: 8px;
-  background: var(--srf-carte-2); color: var(--txt-1-doux);
-  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
+  border: 1px solid rgba(255,255,255,.06); border-radius: 10px;
+  background: #2A313D; color: var(--txt-1-doux);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.42), inset 0 -1px 0 rgba(255,255,255,.05);
   font-size: 14px; font-weight: 700; text-align: center; font-family: inherit;
   scroll-margin: 140px;
   transition: border-color .15s, box-shadow .15s;
 }
 .pg-journal .mc-ing-champ input:focus {
-  outline: none; border-color: var(--or); background: var(--srf-carte-2);
-  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .04), 0 0 0 3px rgba(247, 181, 0, .14);
+  outline: none; border-color: rgba(248,106,12,.55); background: #2A313D;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.42), 0 0 0 2px rgba(248,106,12,.30);
 }
 .pg-journal .mc-ing-unite {
   font-size: 12px; font-weight: 500; color: var(--texte-3);
@@ -715,7 +715,7 @@
   display: flex; align-items: center; justify-content: center;
 }
 .pg-journal .mc-scan .ic { width: 22px; height: 22px; stroke-width: 1.7; }
-.pg-journal .mc-scan:active { background: #4D4321; }
+.pg-journal .mc-scan:active { background: #2F3745; }
 .pg-journal .mc-scan-pro {
   position: absolute; top: -6px; right: -5px;
   background: var(--or); color: var(--txt-accent-fonce);
@@ -878,7 +878,7 @@
   font-family: inherit; font-size: 13px; font-weight: 500; color: var(--txt-1);
   cursor: pointer;
 }
-.pg-journal .eat-plus:active { background: #473E27; }
+.pg-journal .eat-plus:active { background: #2F3745; }
 .pg-journal .eat-ecart { font-size: 12.5px; font-weight: 600; margin-top: 5px; line-height: 1.4; }
 .pg-journal .eat-ecart--info { color: var(--txt-2-chaud); }
 /* Ambre, jamais rouge : une suggestion n'est pas une erreur. */
@@ -939,7 +939,7 @@
 
 /* Sans photo : degrade sobre et embleme, jamais d'image cassee. */
 .fr-banniere--vide {
-  background: linear-gradient(150deg, var(--srf-accent-pale) 0%, #42381C 45%, var(--piste) 100%);
+  background: linear-gradient(150deg, var(--srf-accent-pale) 0%, var(--carte) 45%, var(--piste) 100%);
   display: flex; align-items: center; justify-content: center;
 }
 .fr-embleme {
@@ -1002,7 +1002,7 @@
   stroke-linecap: round; stroke-linejoin: round;
 }
 
-.fr-sep { height: 1px; background: #383327; margin: 0 20px; }
+.fr-sep { height: 1px; background: var(--carte); margin: 0 20px; }
 
 /* ---------- Corps ---------- */
 .fr-corps { padding: 20px; }
@@ -1028,7 +1028,7 @@
 .fr-steps li::marker { font-weight: 500; color: var(--txt-accent-nav); }
 
 .fr-tip {
-  background: #42381C; border-radius: 14px;
+  background: var(--carte); border-radius: 14px;
   padding: 14px 16px; margin-top: 24px;
   font-size: 13.5px; font-weight: 600; color: var(--texte); line-height: 1.5;
 }
@@ -1100,7 +1100,7 @@
   border: 1.5px solid var(--bordure); background: var(--srf-carte-2);
   font-size: 22px; line-height: 1; color: var(--txt-1); font-family: inherit; cursor: pointer;
 }
-.cp-compteur button:active { background: #413A2D; }
+.cp-compteur button:active { background: #2F3745; }
 .cp-compteur span {
   font-size: 30px; font-weight: 500; min-width: 56px;
   font-variant-numeric: tabular-nums;
@@ -1117,7 +1117,7 @@
    MES PLATS
    ============================================================ */
 .mp-plein {
-  position: fixed; inset: 0; z-index: 310; background: var(--fond, #383327);
+  position: fixed; inset: 0; z-index: 310; background: var(--fond, var(--carte));
 }
 .mp-defile { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .mp-entete {
@@ -1127,7 +1127,7 @@
 .mp-entete h2 { font-size: 20px; font-weight: 500; margin: 0; }
 .mp-x {
   width: 38px; height: 38px; border-radius: 50%; flex: none;
-  border: none; background: #383327; color: var(--texte);
+  border: none; background: var(--carte); color: var(--texte);
   font-size: 16px; line-height: 1; cursor: pointer; font-family: inherit;
 }
 .mp-corps { padding: 4px 17px calc(30px + env(safe-area-inset-bottom)); }
@@ -1609,7 +1609,7 @@
   font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
   transition: transform var(--transition), background var(--transition);
 }
-.pg-journal .mc-plat-btn:active { transform: scale(.97); background: #4D4121; }
+.pg-journal .mc-plat-btn:active { transform: scale(.97); background: #2F3745; }
 .pg-journal .mc-plat-btn svg {
   width: 15px; height: 15px; flex: none;
   fill: none; stroke: currentColor; stroke-width: 1.7;
@@ -1672,7 +1672,7 @@
   font-size: 12.5px; font-weight: 700; color: var(--txt-accent);
   font-family: inherit; cursor: pointer;
 }
-.pg-journal .mc-res-gerer:active { background: #4D4121; }
+.pg-journal .mc-res-gerer:active { background: #2F3745; }
 
 /* Espace entre deux cartes repas : 12px, v1 (.meal-card) */
 .pg-journal .mc + .mc { margin-top: calc(12px - var(--espace)); }
@@ -1688,7 +1688,7 @@
     border-radius:20px; padding:14px 16px; margin:0;
     box-shadow:0 2px 10px rgba(24,24,24,.04);
 }
-.pg-journal .weight-note:active { transform:scale(.99); background:#4A3F24; }
+.pg-journal .weight-note:active { transform:scale(.99); background:#2F3745; }
 .pg-journal .weight-note .wn-ic {
     flex:none; color:var(--txt-1-fonce); display:flex; align-items:center; justify-content:center;
 }
@@ -1757,7 +1757,7 @@
 .pg-journal .rp-titre-champ {
   width: 100%; text-align: center;
   font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--texte);
-  border: none; background: #383127; border-radius: 8px;
+  border: none; background: var(--carte); border-radius: 8px;
   padding: 3px 8px; font-family: inherit;
 }
 .pg-journal .rp-titre-champ:focus { outline: none; }
@@ -1779,7 +1779,7 @@
 .pg-journal .rp-anneau svg { width: 62px; height: 62px; display: block; transform: rotate(-90deg); }
 .pg-journal .rp-anneau-c { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .pg-journal .rp-anneau-c span {
-  width: 34px; height: 34px; border-radius: 50%; background: #42351C;
+  width: 34px; height: 34px; border-radius: 50%; background: var(--carte);
   display: block;
 }
 .pg-journal .rp-resume-txt { flex: 1; min-width: 84px; }
@@ -1844,7 +1844,7 @@
   font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
 }
 .pg-journal .rp-btn-plat svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.pg-journal .rp-btn-plat:active { background: #4D3F21; }
+.pg-journal .rp-btn-plat:active { background: #2F3745; }
 .pg-journal .rp-btn-fin {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 17px; border-radius: 999px;
@@ -1900,20 +1900,20 @@
   background: var(--srf-carte); box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
 }
 .pg-journal .rp-colonne .mc-scan .ic { width: 26px; height: 26px; stroke-width: 2.1; }
-.pg-journal .rp-colonne .mc-scan:active { background: #473927; }
+.pg-journal .rp-colonne .mc-scan:active { background: #2F3745; }
 
 /* --- Quantite dans un cadre arrondi --- */
 .pg-journal .rp-liste .mc-ing-champ {
   /* Le liseret fantome #E9E3D9 se fondait dans la carte : la zone ou
      ecrire etait invisible. Bord franc, ombre interne legere, or au focus. */
-  border: 1.5px solid #D9CFBB; border-radius: 12px;
-  background: var(--srf-carte-2); padding: 3px 4px;
-  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
+  border: 1px solid rgba(255,255,255,.06); border-radius: 13px;
+  background: #2A313D; padding: 3px 4px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.42), inset 0 -1px 0 rgba(255,255,255,.05);
   transition: border-color .15s, box-shadow .15s;
 }
 .pg-journal .rp-liste .mc-ing-champ:focus-within {
-  border-color: var(--or); background: var(--srf-carte-2);
-  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .04), 0 0 0 3px rgba(247, 181, 0, .14);
+  border-color: rgba(248,106,12,.55); background: #2A313D;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.42), 0 0 0 2px rgba(248,106,12,.30);
 }
 .pg-journal .rp-liste .mc-ing-champ input {
   font-size: 16px; font-weight: 700; text-align: center;
@@ -1938,7 +1938,7 @@
 }
 .pg-journal .rp-colonne .dn-lignes > .dn-ligne:first-child { border-top: none; }
 .pg-journal .rp-colonne .dn-ic {
-  width: 38px; height: 38px; border-radius: 50%; background: #3E3320;
+  width: 38px; height: 38px; border-radius: 50%; background: var(--carte);
   display: flex; align-items: center; justify-content: center;
 }
 .pg-journal .rp-colonne .dn-ic svg {
@@ -2114,7 +2114,7 @@
 .pg-journal .mc-ing-cuisson {
   display: inline-flex; align-items: center; gap: 0;
   margin-top: 5px; padding: 2px; border: none; cursor: pointer;
-  background: #383327; border-radius: 999px; font-family: inherit;
+  background: var(--carte); border-radius: 999px; font-family: inherit;
 }
 .pg-journal .mc-ing-cuisson span {
   font-size: 10.5px; font-weight: 700; color: #A8A29A;
@@ -2149,7 +2149,7 @@
 }
 .bv-barres { display: flex; gap: 6px; margin-top: 10px; }
 .bv-barre {
-  flex: 1; height: 4px; border-radius: 4px; background: #383227; overflow: hidden;
+  flex: 1; height: 4px; border-radius: 4px; background: var(--carte); overflow: hidden;
 }
 .bv-barre-plein { height: 100%; border-radius: 4px; transition: width .25s ease; }
 
@@ -2289,7 +2289,7 @@
 .op-ecran .bv-corps { justify-content: center; }
 
 /* Fin de decouverte qui approche : badge orange + rappel une ligne */
-.pg-journal .dn-offert--fin { color: #B45309; background: #42331C; }
+.pg-journal .dn-offert--fin { color: #B45309; background: var(--carte); }
 .pg-journal .dn-rappel {
   width: 100%; margin-top: 12px; padding: 10px 12px;
   border: 1.5px solid var(--brd-accent-pale); border-radius: 12px; cursor: pointer;
@@ -2405,7 +2405,7 @@
 /* Grand champ : le chiffre est la vedette, l'unite integree */
 .modal.wm .wm-saisie {
   display: flex; align-items: baseline; justify-content: center; gap: 8px;
-  background: #3E3320; border: 1.5px solid rgba(255,255,255,.06); border-radius: 18px;
+  background: var(--carte); border: 1.5px solid rgba(255,255,255,.06); border-radius: 18px;
   padding: 14px 16px;
 }
 .modal.wm .wm-saisie:focus-within { border-color: #E0A21C; box-shadow: 0 0 0 3px rgba(224, 162, 28, .15); }
@@ -2437,7 +2437,7 @@
   background: none; border: none; color: var(--texte-3);
   font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
 }
-.modal.wm .wm-annuler:active { background: #413A2D; }
+.modal.wm .wm-annuler:active { background: #2F3745; }
 .modal.wm .wm-ok {
   flex: 1.6; display: flex; align-items: center; justify-content: center; gap: 9px;
   padding: 14px; border-radius: 999px;
@@ -2479,7 +2479,7 @@
 }
 .wm2-valeur--champ { width: 150px; }
 .wm2-valeur--champ input {
-  width: 150px; border: none; background: #3A3424; border-radius: 14px;
+  width: 150px; border: none; background: var(--carte); border-radius: 14px;
   padding: 4px 10px; margin: 0;
   font-family: inherit; font-size: 38px; font-weight: 700; color: var(--txt-1-chaud);
   text-align: center; letter-spacing: -.03em; font-variant-numeric: tabular-nums;
@@ -2500,7 +2500,7 @@
   transition: background .12s, border-color .12s;
 }
 .wm2-pas svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
-.wm2-pas:active { background: #413B2D; border-color: #D9D3C6; transform: scale(.95); }
+.wm2-pas:active { background: #2F3745; border-color: #D9D3C6; transform: scale(.95); }
 .wm2-delta-zone {
   text-align: center; margin: 16px 0 0; min-height: 20px;
   padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.06);
@@ -2555,7 +2555,7 @@
   width: 16px; height: 16px;
   fill: none; stroke: #B7860B; stroke-width: 2.4; stroke-linecap: round;
 }
-.pg-journal .ajout-repas:active { background: #433C2A; transform: scale(.98); }
+.pg-journal .ajout-repas:active { background: #2F3745; transform: scale(.98); }
 
 /* ============================================================
    REDISTRIBUTION DES RACCOURCIS (Raci) : la rangee a disparu.
@@ -2690,9 +2690,7 @@
    Selecteur (0,2,0) place apres celui de la ligne 1734, sinon
    var(--fond) reprend la main.
    ------------------------------------------------------------ */
-.pg-journal.couche-repas {
-  background: linear-gradient(180deg, #FDF1E1 0, #F9F2E7 200px, #F7F1E7 100%);
-}
+/* (bloc creme du theme clair retire le 30/07) */
 
 /* ============================================================
    PISTE D — CARTE ENCRE (page repas seulement)
@@ -2955,7 +2953,7 @@
 html body .pg-journal { background: #171A20; }
 
 /* Carte Calories */
-.pg-journal .cal-rappel { background: #2E2A1E; border-color: #4A3A1C; }
+.pg-journal .cal-rappel { background: var(--carte); border-color: rgba(255,255,255,.08); }
 .pg-journal .cal-num--orange { color: #F8A055; }
 .pg-journal .tableau-bord { border-color: #333B47; }
 .pg-journal .tb-mini { background: #39414F; }
@@ -2970,10 +2968,10 @@ html body .pg-journal { background: #171A20; }
 .pg-journal .mc-titre-champ { background: #2A313D; color: #F7F8FA; }
 .pg-journal .mc-ing { border-color: #2F3642; }
 .pg-journal .mc-ing-cuisson { background: #2A313D; }
-.pg-journal .total-repas { background: #2E2A1E; }
+.pg-journal .total-repas { background: var(--carte); }
 .pg-journal .mc-res-fav { color: #5F6877; }
 .pg-journal .mc-res-plat { border-bottom-color: #333B47; }
-.pg-journal .mc-plat-btn { border-color: #4A3A1C; }
+.pg-journal .mc-plat-btn { border-color: rgba(255,255,255,.08); }
 .pg-journal .mc-plat-ok { background: rgba(76,175,80,.14); }
 .pg-journal .resultats { border-bottom-color: #2F3642; }
 
@@ -2981,7 +2979,7 @@ html body .pg-journal { background: #171A20; }
 .pg-journal .eat-panneau { border-color: #333B47; }
 .pg-journal .eat-cat { border-color: #39414F; }
 .pg-journal .fr-sep { background: #2F3642; }
-.pg-journal .fr-tip { background: #2E2A1E; }
+.pg-journal .fr-tip { background: var(--carte); }
 
 /* Hydratation */
 .pg-journal .water-btns button { background: #1E2A33; }
@@ -2991,17 +2989,17 @@ html body .pg-journal { background: #171A20; }
 .pg-journal .eau { background: #16222B; }
 
 /* Poids */
-.pg-journal .wn-cta { border-color: #4A3A1C; }
+.pg-journal .wn-cta { border-color: rgba(255,255,255,.08); }
 .pg-journal .wm-saisie { background: #2A313D; border-color: #39414F; }
 .pg-journal .wm2-valeur--champ { background: #2A313D; }
 .pg-journal .wm2-pas { border-color: #39414F; }
 .pg-journal .wm2-delta-zone { border-bottom-color: #2F3642; }
 
 /* Bandeaux et profil */
-.pg-journal .bandeau-invite { background: #2E2A1E; border-color: #4A3A1C; }
-.pg-journal .bandeau-conf { border-color: #4A3A1C; }
+.pg-journal .bandeau-invite { background: var(--carte); border-color: rgba(255,255,255,.08); }
+.pg-journal .bandeau-conf { border-color: rgba(255,255,255,.08); }
 .pg-journal .profil-volet { border-color: #333B47; }
-.pg-journal .profil-statut { background: #3A2A14; }
+.pg-journal .profil-statut { background: var(--carte); }
 .pg-journal .dn-offert { background: rgba(76,175,80,.14); }
 .pg-journal .t-approche { color: #F0B429; }
 .pg-journal .t-warn { color: #F8A055; }
