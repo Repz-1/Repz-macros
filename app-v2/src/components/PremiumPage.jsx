@@ -164,7 +164,7 @@ export function PremiumPage() {
           </span>
           <div>
             <h3>Un plan écrit pour toi</h3>
-            <p>Ton coach construit ton plan alimentaire à partir de tes chiffres et de tes habitudes. Livré sous 24 à 48 h.</p>
+            <p>Ton coach construit ton plan alimentaire à partir de tes chiffres et de tes habitudes. Livré sous 24 à 48 h.</p>
           </div>
         </div>
         <div class="pp">
@@ -201,6 +201,7 @@ export function PremiumPage() {
 
       <p class="prem-lb">En détail</p>
       <div class="cmp">
+        <span class="cmp-plaque" aria-hidden="true" />
         <div class="cmp-tete"><span></span><span class="h-gratuit">GRATUIT</span><span class="h-prem">PREMIUM</span></div>
         <div class="cmp-corps ouvert">
           <Ligne nom="Journal & macros" gratuit={true} />
@@ -228,11 +229,13 @@ export function PremiumPage() {
               const f = FORMULES[k];
               return (
                 <div key={k} class={'fo' + (formule === k ? ' sel' : '')} onClick={() => setFormule(k)}>
-                  {k === 'annuel' && <span class="fo-badge">RECOMMANDÉ</span>}
-                  <div class="fo-dur">{f.duree}</div>
-                  <div class="fo-mois">{f.parMois} €<small> /mois</small></div>
-                  <div class="fo-total">{f.total}</div>
-                  {f.eco && <div class="fo-eco">{f.eco}</div>}
+                  {k === 'annuel' && <span class="fo-badge">LE PLUS CHOISI</span>}
+                  <div class="fo-gauche">
+                    <div class="fo-dur">{f.duree}</div>
+                    <div class="fo-total">{f.total}</div>
+                    {f.eco && <div class="fo-eco">{f.eco}</div>}
+                  </div>
+                  <div class="fo-mois">{f.parMois}&nbsp;€<small>/mois</small></div>
                 </div>
               );
             })}

@@ -794,3 +794,98 @@ button{cursor:pointer}
   line-height: 1.28; letter-spacing: -.012em; color: var(--pr-tx); }
 .pg-premium .pp p { margin: 0; font-size: 13px; line-height: 1.55;
   letter-spacing: -.003em; color: var(--pr-tx3); }
+
+/* ============================================================
+   PREMIUM — execution. Onze corrections relevees sur appareil,
+   plus l'alignement de la mise en page des formules sur la
+   maquette validee. Aucune couleur nouvelle.
+   ============================================================ */
+
+/* --- FORMULES : une colonne, pas trois ---
+   Le socle legacy posait une grille 1fr 1.15fr 1fr : trois cartes
+   cote a cote sur 358 px, soit ~110 px chacune. Le prix a 30 px n'y
+   tenait pas. La maquette validee empile les trois cartes, ce qui
+   donne au prix la place d'etre le premier element lu. */
+.pg-premium .formules {
+  display: flex; flex-direction: column; gap: 12px;
+  margin-top: 18px; margin-bottom: 24px;
+}
+.pg-premium .fo {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px;
+  padding: 16px; text-align: left; border-radius: 20px;
+}
+.pg-premium .fo--reco, .pg-premium .fo.sel { padding: 20px 16px 16px; }
+.pg-premium .fo .fo-dur { font-size: 15px; font-weight: 600; line-height: 1.2;
+  color: var(--pr-tx); letter-spacing: -.012em; }
+.pg-premium .fo .fo-total { font-size: 12px; font-weight: 400; margin-top: 4px;
+  color: var(--pr-tx3); line-height: 1.35; }
+.pg-premium .fo .fo-mois {
+  display: inline-flex; align-items: baseline; margin: 0;
+  font-size: 20px; font-weight: 700; letter-spacing: -.04em; line-height: 1;
+  white-space: nowrap; color: var(--pr-tx);
+}
+.pg-premium .fo .fo-mois small { margin-left: 3px; font-size: 10.5px; color: var(--pr-tx4); }
+.pg-premium .fo.sel .fo-mois { font-size: 30px; letter-spacing: -.045em; }
+.pg-premium .fo .fo-eco {
+  display: inline-block; margin-top: 10px; padding: 5px 10px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700; color: #FFE1A0;
+  background: linear-gradient(160deg, rgba(var(--pr-or-rvb),.20), rgba(var(--pr-or-rvb),.08));
+  box-shadow: inset 0 1px 0 rgba(255,240,205,.22);
+}
+.pg-premium .fo.sel .fo-eco { color: #FFE9B8; }
+.pg-premium .fo .fo-badge { top: -10px; padding: 4px 11px; }
+
+/* --- COMPARATIF ---
+   1. La colonne Premium devient une plaque en relief : matiere,
+      arete, creux. La regle legacy la peignait en vert plein.
+   2. Les filets traversent la ligne entiere.
+   3. Hauteur minimale commune : quatre libelles passaient sur deux
+      lignes, les autres sur une, le rythme sautait. */
+.pg-premium .cmp { position: relative; overflow: hidden; }
+.pg-premium .cmp-plaque {
+  position: absolute; z-index: 1; top: 12px; right: 10px; bottom: 12px; width: 78px;
+  border-radius: 16px; pointer-events: none;
+  background:
+    linear-gradient(158deg, rgba(255,255,255,.085) 0%, rgba(255,255,255,.018) 34%,
+                    rgba(255,255,255,0) 60%, rgba(0,0,0,.07) 100%),
+    linear-gradient(180deg, rgba(var(--pr-or-rvb),.16) 0%, rgba(var(--pr-or-rvb),.07) 46%,
+                    rgba(var(--pr-or-rvb),.018) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,240,205,.30),
+              inset 0 -10px 20px rgba(0,0,0,.16), 0 6px 16px rgba(0,0,0,.20);
+}
+.pg-premium .cmp-tete, .pg-premium .cmp-ligne {
+  position: relative; z-index: 2; grid-template-columns: 1fr 58px 78px;
+}
+.pg-premium .cmp-tete .h-prem { background: none; color: var(--pr-or); border-radius: 0; }
+.pg-premium .cmp-ligne { border-top: none; min-height: 56px; }
+.pg-premium .cmp-ligne + .cmp-ligne::before {
+  content: ''; position: absolute; left: 16px; right: 16px; top: 0; height: 1px;
+  background: rgba(255,255,255,.032); pointer-events: none;
+}
+.pg-premium .cmp-ligne .c-nom { font-size: 13.5px; line-height: 1.35; padding: 8px 12px 8px 16px; }
+.pg-premium .cmp-ligne .c-prem { background: none; }
+/* La coche reprend la signature : un anneau, pas une pastille pleine. */
+.pg-premium .ck { width: 19px; height: 19px; background: none; border-radius: 0; }
+.pg-premium .ck svg { width: 19px; height: 19px; stroke-width: 2.2; }
+.pg-premium .c-cell .ck svg { stroke: var(--pr-tx3); }
+.pg-premium .c-prem .ck svg { stroke: var(--pr-or);
+  filter: drop-shadow(0 0 4px rgba(var(--pr-or-rvb),.26)); }
+
+/* --- TYPOGRAPHIE --- */
+.pg-premium .prem-titre { max-width: 19ch; text-wrap: balance; }
+.pg-premium .pp p, .pg-premium .c-nom, .pg-premium .fo-total { text-wrap: pretty; }
+
+/* --- MENTION LEGALE : une grille, pas un flux --- */
+.pg-premium .legal { display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: start; }
+.pg-premium .l-bouclier { margin-top: 2px; }
+.pg-premium .l-liens { display: block; margin-top: 4px; }
+
+/* --- CTA : la bande du reflet part hors champ --- */
+.pg-premium .continuer::after { left: -80%; width: 28%;
+  background: linear-gradient(100deg, rgba(255,248,225,0) 0%,
+              rgba(255,248,225,.5) 50%, rgba(255,248,225,0) 100%); }
+@keyframes premPassage { 0%,78% { left: -80%; } 98%,100% { left: 150%; } }
+
+/* --- Correction optique : l'arc est ouvert en bas, sa masse tire
+       vers le haut. Le monogramme descend d'un pixel. --- */
+.pg-premium .prem-sig-mono { transform: translateY(-1px); }
