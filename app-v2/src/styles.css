@@ -755,3 +755,42 @@ button{cursor:pointer}
   .pg-premium .continuer, .pg-premium .continuer::after { animation: none; }
   .pg-premium .prem-sig-arc { stroke-dashoffset: 0; }
 }
+
+/* ---------- Premium · promesses ----------
+   Meme materiau graphite que les autres cartes, et la signature
+   en arc a l'echelle de l'icone : quatrieme et derniere taille
+   du meme geste. */
+.pg-premium .prem-lb {
+  font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--pr-page-tx3); margin: 0 0 12px 4px;
+}
+.pg-premium .prem-promesses { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.pg-premium .pp {
+  position: relative; display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px; border-radius: 24px;
+  background:
+    linear-gradient(158deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.015) 34%,
+                    rgba(255,255,255,0) 58%, rgba(0,0,0,.10) 100%),
+    linear-gradient(180deg, var(--pr-sur-h) 0%, var(--pr-sur) 62%, #191E26 100%);
+  box-shadow: var(--pr-omb);
+}
+.pg-premium .pp::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  pointer-events: none; background: var(--pr-rim); opacity: .62;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+}
+.pg-premium .pp-ic {
+  position: relative; width: 40px; height: 40px; flex: none;
+  display: flex; align-items: center; justify-content: center; color: var(--pr-or);
+}
+.pg-premium .pp-arc { position: absolute; inset: 0; width: 40px; height: 40px; }
+.pg-premium .pp-ic > svg:not(.pp-arc) {
+  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-premium .pp h3 { margin: 0 0 6px; font-size: 15px; font-weight: 600;
+  line-height: 1.28; letter-spacing: -.012em; color: var(--pr-tx); }
+.pg-premium .pp p { margin: 0; font-size: 13px; line-height: 1.55;
+  letter-spacing: -.003em; color: var(--pr-tx3); }

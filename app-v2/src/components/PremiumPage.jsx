@@ -150,6 +150,56 @@ export function PremiumPage() {
         {prenom ? prenom + ', ton' : 'Ton'} plan sur mesure t'attend avec <em>Premium</em>
       </h1>
 
+      {/* Ce que Premium change au quotidien. Formule en promesses,
+          pas en liste de fonctionnalites : une fonctionnalite se
+          compare, une promesse se ressent. Le delai annonce ici est
+          celui deja affiche dans le tableau ci-dessous — aucune
+          nouvelle promesse n'est faite. */}
+      <p class="prem-lb">Ce que ça change</p>
+      <div class="prem-promesses">
+        <div class="pp">
+          <span class="pp-ic">
+            <svg class="pp-arc" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18.5" fill="none" stroke="url(#premOr)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="86 116.2" transform="rotate(-90 20 20)" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 20.5V8.4a2 2 0 012-2h9a2 2 0 012 2v12.1" /><path d="M9 6.4V4.6a3 3 0 016 0v1.8" /><path d="M9.5 12.6h5M9.5 16.2h3" /></svg>
+          </span>
+          <div>
+            <h3>Un plan écrit pour toi</h3>
+            <p>Ton coach construit ton plan alimentaire à partir de tes chiffres et de tes habitudes. Livré sous 24 à 48 h.</p>
+          </div>
+        </div>
+        <div class="pp">
+          <span class="pp-ic">
+            <svg class="pp-arc" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18.5" fill="none" stroke="url(#premOr)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="86 116.2" transform="rotate(-90 20 20)" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 8.8A2 2 0 015.5 6.8h1.8l1.2-2h7l1.2 2h1.8a2 2 0 012 2v8.4a2 2 0 01-2 2h-13a2 2 0 01-2-2z" /><circle cx="12" cy="13" r="3.4" /></svg>
+          </span>
+          <div>
+            <h3>Encoder sans y penser</h3>
+            <p>Photo, voix ou code-barres. Un repas complet se saisit en quelques secondes, pas en trois minutes.</p>
+          </div>
+        </div>
+        <div class="pp">
+          <span class="pp-ic">
+            <svg class="pp-arc" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18.5" fill="none" stroke="url(#premOr)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="86 116.2" transform="rotate(-90 20 20)" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5v-6.2" /><path d="M9.8 19.5V4.5" /><path d="M15.1 19.5v-9.4" /><path d="M20.4 19.5v-3.4" /></svg>
+          </span>
+          <div>
+            <h3>Comprendre ce que tu manges</h3>
+            <p>Fibres, sucres, graisses saturées, sel. Et des statistiques sans limite de durée pour voir ce qui marche vraiment.</p>
+          </div>
+        </div>
+        <div class="pp">
+          <span class="pp-ic">
+            <svg class="pp-arc" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18.5" fill="none" stroke="url(#premOr)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="86 116.2" transform="rotate(-90 20 20)" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h2l1.6 9.2a1.6 1.6 0 001.58 1.3h7.6a1.6 1.6 0 001.57-1.26L20 8H6.4" /><circle cx="9.6" cy="19.4" r="1.4" /><circle cx="16.8" cy="19.4" r="1.4" /></svg>
+          </span>
+          <div>
+            <h3>Ne plus improviser tes courses</h3>
+            <p>Des idées de repas qui collent à tes macros restantes, et une liste de courses qui se construit toute seule.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="prem-lb">En détail</p>
       <div class="cmp">
         <div class="cmp-tete"><span></span><span class="h-gratuit">GRATUIT</span><span class="h-prem">PREMIUM</span></div>
         <div class="cmp-corps ouvert">
