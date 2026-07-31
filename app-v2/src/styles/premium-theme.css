@@ -29,9 +29,13 @@
   --pr-sur: #1E242D; --pr-sur-h: #242B35;
   --pr-tx: #F2F4F7; --pr-tx2: #A2A9B4; --pr-tx3: #838B96; --pr-tx4: #7C8490;
   --pr-page-tx: #1B1B19; --pr-page-tx2: #6E6960; --pr-page-tx3: #8B857A;
-  --pr-or: #FCD200; --pr-or-rvb: 252, 210, 0;
+  /* Orange BelFit : l'accent Premium suit desormais le logo, plus l'or
+     historique. Sur graphite #1E242D il tient 5,1:1, largement au-dessus
+     du seuil. Le jaune #FAC408 ne disparait pas — il ouvre les degrades,
+     en remplissage seulement, jamais en texte. */
+  --pr-or: #F86A0C; --pr-or-rvb: 248, 106, 12;
   --pr-filet: rgba(255,255,255,.032);
-  --pr-rim: linear-gradient(152deg, rgba(255,239,184,.44) 0%, rgba(252,210,0,.18) 18%,
+  --pr-rim: linear-gradient(152deg, rgba(255,226,190,.44) 0%, rgba(248,106,12,.18) 18%,
             rgba(255,255,255,.035) 42%, rgba(255,255,255,0) 60%,
             rgba(96,132,196,.16) 84%, rgba(96,132,196,.26) 100%);
   /* Une ombre prend la couleur de la piece : sur creme elle est
@@ -68,7 +72,7 @@
 .pg-premium.pg-premium .prem-sig-mono {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   font-size: 30px; font-weight: 900; letter-spacing: -.05em;
-  background: linear-gradient(168deg, #FFF6DC 0%, #FCD200 58%, #B08600 100%);
+  background: linear-gradient(168deg, #FFE9C4 0%, #FAC408 34%, #F86A0C 72%, #B34700 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 /* Le cercle eclaire la matiere autour de lui, en soft-light :
@@ -161,7 +165,7 @@
 }
 .pg-premium.pg-premium .fo.sel .fo-mois {
   font-size: 30px; letter-spacing: -.045em;
-  background: linear-gradient(168deg, #FFF6DC 0%, #FCD200 56%, #B08600 100%);
+  background: linear-gradient(168deg, #FFE9C4 0%, #FAC408 32%, #F86A0C 70%, #B34700 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .pg-premium.pg-premium .fo.sel .fo-mois small { -webkit-text-fill-color: var(--pr-tx4); }
@@ -174,7 +178,7 @@
 .pg-premium.pg-premium .continuer {
   position: relative; overflow: hidden; border: none; border-radius: 999px;
   color: #1A1509;
-  background: linear-gradient(168deg, #FFDA52 0%, #FCD200 48%, #D8A800 100%);
+  background: linear-gradient(168deg, #FBCF3A 0%, #F98A18 46%, #E0550A 100%);
   box-shadow: 0 1px 2px rgba(58,44,24,.16), 0 8px 18px rgba(170,135,0,.20),
               0 22px 44px rgba(170,135,0,.22), inset 0 1px 0 rgba(255,255,255,.62);
   animation: premVit 8s ease-in-out infinite;
@@ -351,7 +355,7 @@
 }
 /* Le CTA restait vert plein. */
 .pg-premium.pg-premium .continuer {
-  background: linear-gradient(168deg, #FFDA52 0%, #FCD200 48%, #D8A800 100%);
+  background: linear-gradient(168deg, #FBCF3A 0%, #F98A18 46%, #E0550A 100%);
   color: #1A1509; border: none;
 }
 .pg-premium.pg-premium .continuer small { color: rgba(26,21,9,.66); }
@@ -407,7 +411,7 @@
   text-wrap: balance;
 }
 .pg-premium.pg-premium .prem-hero .prem-titre em {
-  background: linear-gradient(168deg, #FFF6DC 0%, #FCD200 58%, #B08600 100%);
+  background: linear-gradient(168deg, #FFE9C4 0%, #FAC408 34%, #F86A0C 72%, #B34700 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .pg-premium.pg-premium .prem-sous {
@@ -428,7 +432,7 @@
    bouge pas ; l'ORANGE dit l'action, et lui seul se touche.
    ------------------------------------------------------------ */
 .pg-premium.pg-premium .continuer {
-  background: linear-gradient(168deg, #FFDE4A 0%, #FCD200 52%, #D8A800 100%);
+  background: linear-gradient(168deg, #FBCF3A 0%, #F98A18 46%, #E0550A 100%);
   color: #1A1509; border: none;
   box-shadow:
     0 1px 2px rgba(58,44,24,.16),
@@ -460,7 +464,7 @@
    de marque et d'action ; il ne promet aucun tarif.
    ------------------------------------------------------------ */
 .pg-premium.pg-premium .continuer {
-  background: linear-gradient(168deg, #FFDE4A 0%, #FCD200 52%, #D8A800 100%);
+  background: linear-gradient(168deg, #FBCF3A 0%, #F98A18 46%, #E0550A 100%);
   color: #1A1509;
   box-shadow:
     0 1px 2px rgba(58,44,24,.16),
