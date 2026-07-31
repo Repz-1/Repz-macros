@@ -3064,3 +3064,47 @@ html body .pg-journal { background: #171A20; }
 @media (prefers-reduced-motion: reduce) {
   .pg-journal .cal-capte { animation: none; }
 }
+
+/* ============================================================
+   LISTE DE RESULTATS — hierarchie de lisibilite.
+   Le defaut n'etait pas le fond sombre mais l'ecart : nom,
+   calories et filets vivaient tous dans la meme plage. On
+   n'eclaircit pas l'interface, on ecarte les trois niveaux.
+     nom      #F2F4F7  600   — lu en premier, sans effort
+     calories #AEB4BF  500   — lu ensuite, s'il le faut
+     filets   .07            — presents, jamais lus
+   ============================================================ */
+.pg-journal .mc-resultats {
+  background: #222932;
+  border: 1px solid rgba(255,255,255,.07);
+  box-shadow: 0 14px 34px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.34);
+}
+.pg-journal .mc-resultats > button,
+.pg-journal .mc-res-ligne { border-bottom-color: rgba(255,255,255,.07); }
+
+/* Le nom : presque blanc, c'est lui qu'on cherche. */
+.pg-journal .mc-resultats .mc-res-choix > span:first-child,
+.pg-journal .mc-resultats > button > span:first-child,
+.pg-journal .mc-res-nom {
+  color: #F2F4F7; font-weight: 600; letter-spacing: -.005em;
+}
+/* La valeur : lisible sans concurrencer le nom. */
+.pg-journal .mc-resultats .kc {
+  color: #AEB4BF; font-weight: 500; font-variant-numeric: tabular-nums;
+}
+/* Aucun texte secondaire ne descend sous ce seuil. */
+.pg-journal .mc-res-titre { color: #8D94A1; font-weight: 600; }
+
+/* Etoiles : l'inactive doit se voir sans se disputer la ligne. */
+.pg-journal .mc-res-fav { color: #79818F; }
+.pg-journal .mc-res-fav.on { color: var(--or); }
+
+/* Etat tactile : une nappe a peine perceptible, pas une carte.
+   Le survol reste plus faible que l'appui pour garder l'ordre. */
+.pg-journal .mc-resultats > button:active,
+.pg-journal .mc-res-choix:active { background: rgba(255,255,255,.055); }
+.pg-journal .mc-res-plat {
+  background: transparent; border-bottom-color: rgba(255,255,255,.07);
+}
+.pg-journal .mc-res-plat:active { background: rgba(255,255,255,.055); }
+.pg-journal .mc-res-gerer:active { background: rgba(255,255,255,.055); }
