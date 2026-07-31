@@ -226,4 +226,77 @@ input, select, textarea { min-width: 0; }
   --brd-champ: #d9cfbb;
 }
 
+/* ============================================================
+   THEME SOMBRE BELFIT — bascule des 45 jetons.
+   Porte a .pg-journal, qui est la racine du Journal comme de la
+   couche repas. Aucune declaration n'est reecrite ici : on ne
+   change que la valeur des jetons extraits juste avant.
+   Retirer ce bloc rend l'app claire, a l'identique.
+   ============================================================ */
+.pg-journal {
+  /* surfaces — trois niveaux, la profondeur vient de la lumiere */
+  --srf-carte:          #262D38;
+  --srf-carte-2:        #262D38;
+  --srf-page:           #171A20;
+  --srf-creme:          #2A313D;
+  --srf-creme-2:        #2A313D;
+  --srf-creme-3:        #262D38;
+  --srf-creme-4:        #2F3745;
+  /* surfaces deja sombres en clair : elles le restent */
+  --srf-inverse:        #101317;
+  --srf-inverse-2:      #101317;
+  /* l'or de remplissage devient l'orange BelFit */
+  --srf-accent:         #F86A0C;
+  --srf-accent-pale:    #3A2A14;
+  --srf-accent-clair:   #F8A00A;
+  --srf-info:           #38A8E8;
+  --srf-alerte:         #F4533A;
+
+  /* textes — la donnee domine, le libelle s'efface */
+  --txt-1:              #F7F8FA;
+  --txt-1-fonce:        #F7F8FA;
+  --txt-1-doux:         #F7F8FA;
+  --txt-1-chaud:        #EDEFF3;
+  --txt-2:              #9CA3AF;
+  --txt-2-chaud:        #9CA3AF;
+  --txt-3:              #7C8595;
+  --txt-4:              #7A8494;
+  --txt-5:              #6B7482;
+  /* texte pose sur une surface restee sombre : il reste clair */
+  --txt-inverse:        #FFFFFF;
+  --txt-inverse-2:      #FFFFFF;
+  --txt-accent:         #F8A055;
+  --txt-accent-fonce:   #F8B54A;
+  --txt-accent-or:      #F0B429;
+  --txt-accent-or-2:    #F0B429;
+  --txt-accent-nav:     #F0B429;
+  --txt-accent-vif:     #F8B400;
+  --txt-alerte:         #FF6B5A;
+  --txt-alerte-vif:     #FF6B5A;
+  --txt-succes:         #7BD08A;
+  --txt-ardoise:        #9CA3AF;
+  --txt-ardoise-clair:  #8A93A3;
+  --txt-ardoise-fonce:  #B4BCC8;
+
+  /* bordures : un support, jamais un trait */
+  --brd-1:              #333B47;
+  --brd-1-bis:          #333B47;
+  --brd-2:              #2F3642;
+  --brd-champ:          #39414F;
+  --brd-accent-pale:    #4A3A1C;
+  --brd-accent:         #F86A0C;
+  --brd-ardoise:        #3A4352;
+  --brd-ardoise-clair:  #2F3642;
+
+  /* jetons historiques du socle, alignes sur le meme theme */
+  --fond:               #171A20;
+  --carte:              #262D38;
+  --texte:              #F7F8FA;
+  --texte-2:            #9CA3AF;
+  --texte-3:            #7C8595;
+  --bordure:            #333B47;
+  --bordure-fine:       #2F3642;
+
+  background: #171A20;
+}
 
