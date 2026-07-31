@@ -333,7 +333,7 @@
   font-size: 12.5px; font-weight: 600; color: var(--txt-accent); line-height: 1.45;
   transition: background var(--transition), transform var(--transition);
 }
-.pg-journal .cal-rappel:active { background: #2F3745; transform: scale(.99); }
+.pg-journal .cal-rappel:active { background: #FBEFCB; transform: scale(.99); }
 .pg-journal .cal-rappel svg {
   width: 15px; height: 15px; flex: none; margin-top: 1px;
   fill: none; stroke: currentColor; stroke-width: 1.9;
@@ -387,7 +387,7 @@
 .pg-journal .qa-btn + .qa-btn { border-left: 1px solid var(--bordure-fine); }
 .pg-journal .qa-btn:first-child { border-radius: 20px 0 0 20px; }
 .pg-journal .qa-btn:last-child  { border-radius: 0 20px 20px 0; }
-.pg-journal .qa-btn:active { background: #2D3441; }
+.pg-journal .qa-btn:active { background: #F5F6F8; }
 
 /* Icones a nu (maquette 25/07) : trait noir franc + accent dore,
    sans tuile de fond — la carte blanche et les filets suffisent. */
@@ -459,7 +459,7 @@
 }
 .pg-journal .eat-etat::before {
   content: ''; width: 5px; height: 5px; border-radius: 50%;
-  background: #26421C; box-shadow: 0 0 6px rgba(201, 247, 184, .8);
+  background: #C9F7B8; box-shadow: 0 0 6px rgba(201, 247, 184, .8);
 }
 .pg-journal .eat-fleche { font-size: 11px; line-height: 1; }
 
@@ -611,10 +611,10 @@
 .water-btns { display: flex; gap: 10px; }
 .water-btns button {
   flex: 1; padding: 14px; border: none; border-radius: var(--rayon-puce);
-  background: #1C3342; color: #0369A1;
+  background: #E0F2FE; color: #0369A1;
   font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer;
 }
-.water-btns button:active { transform: scale(.97); background: #213E4D; }
+.water-btns button:active { transform: scale(.97); background: #BAE6FD; }
 
 /* ============================================================
    CARTE REPAS OUVERTE
@@ -625,7 +625,7 @@
 /* ---------- Ligne alimentaire ---------- */
 .pg-journal .mc-ing {
   background: var(--srf-carte-2);
-  border: 1px solid rgba(255,255,255,.06);
+  border: 1px solid #EEF1F5;
   border-radius: 10px;
   padding: 10px; margin-bottom: 6px;
   display: grid; grid-template-columns: 1fr 54px 10px 72px 18px;
@@ -654,16 +654,16 @@
   width: 100%; min-width: 0; padding: 6px 2px;
   /* Meme langage que la page repas : un champ se voit (bord chaud franc,
      ombre interne), la palette slate froide detonnait sur le fond creme. */
-  border: 1px solid rgba(255,255,255,.06); border-radius: 10px;
-  background: #2A313D; color: var(--txt-1-doux);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,.42), inset 0 -1px 0 rgba(255,255,255,.05);
+  border: 1.5px solid #D9CFBB; border-radius: 10px;
+  background: var(--srf-carte-2); color: var(--txt-1-doux);
+  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
   font-size: 14px; font-weight: 700; text-align: center; font-family: inherit;
   scroll-margin: 140px;
   transition: border-color .15s, box-shadow .15s;
 }
 .pg-journal .mc-ing-champ input:focus {
-  outline: none; border-color: rgba(248,106,12,.55); background: #2A313D;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,.42), 0 0 0 2px rgba(248,106,12,.30);
+  outline: none; border-color: var(--or); background: var(--srf-carte-2);
+  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .04), 0 0 0 3px rgba(247, 181, 0, .14);
 }
 .pg-journal .mc-ing-unite {
   font-size: 12px; font-weight: 500; color: var(--texte-3);
@@ -715,7 +715,7 @@
   display: flex; align-items: center; justify-content: center;
 }
 .pg-journal .mc-scan .ic { width: 22px; height: 22px; stroke-width: 1.7; }
-.pg-journal .mc-scan:active { background: #2F3745; }
+.pg-journal .mc-scan:active { background: #FBEFC7; }
 .pg-journal .mc-scan-pro {
   position: absolute; top: -6px; right: -5px;
   background: var(--or); color: var(--txt-accent-fonce);
@@ -744,7 +744,7 @@
   font-size: 14px; font-family: inherit; text-align: left; cursor: pointer;
 }
 .pg-journal .mc-resultats > button:last-child { border-bottom: none; }
-.pg-journal .mc-resultats > button:active { background: #21344D; }
+.pg-journal .mc-resultats > button:active { background: #EFF6FF; }
 .pg-journal .mc-resultats .kc { color: var(--texte-3); font-size: 12.5px; flex: none; }
 
 /* ---------- Bandeau recapitulatif ---------- */
@@ -878,7 +878,7 @@
   font-family: inherit; font-size: 13px; font-weight: 500; color: var(--txt-1);
   cursor: pointer;
 }
-.pg-journal .eat-plus:active { background: #2F3745; }
+.pg-journal .eat-plus:active { background: #FAF7EF; }
 .pg-journal .eat-ecart { font-size: 12.5px; font-weight: 600; margin-top: 5px; line-height: 1.4; }
 .pg-journal .eat-ecart--info { color: var(--txt-2-chaud); }
 /* Ambre, jamais rouge : une suggestion n'est pas une erreur. */
@@ -1060,7 +1060,7 @@
    sans cela l'etoile pouvait se superposer au libelle. */
 .pg-journal .mc-res-choix > span:first-child { flex: 1 1 auto; min-width: 0; }
 .pg-journal .mc-res-choix > .kc { flex: 0 0 auto; white-space: nowrap; }
-.pg-journal .mc-res-choix:active { background: #21344D; }
+.pg-journal .mc-res-choix:active { background: #EFF6FF; }
 .pg-journal .mc-resultats .mc-res-fav {
   flex: 0 0 42px; width: 42px;
   background: none; border: none; cursor: pointer;
@@ -1071,7 +1071,7 @@
 .pg-journal .mc-res-plat {
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
   width: 100%; padding: 11px 14px;
-  background: var(--srf-carte-2); border: none; border-bottom: 1px solid rgba(255,255,255,.06);
+  background: var(--srf-carte-2); border: none; border-bottom: 1px solid #F1E7CC;
   font-size: 14px; font-family: inherit; text-align: left; cursor: pointer;
 }
 .pg-journal .mc-res-plat:active { background: var(--srf-accent-pale); }
@@ -1100,7 +1100,7 @@
   border: 1.5px solid var(--bordure); background: var(--srf-carte-2);
   font-size: 22px; line-height: 1; color: var(--txt-1); font-family: inherit; cursor: pointer;
 }
-.cp-compteur button:active { background: #2F3745; }
+.cp-compteur button:active { background: #F5F2EC; }
 .cp-compteur span {
   font-size: 30px; font-weight: 500; min-width: 56px;
   font-variant-numeric: tabular-nums;
@@ -1151,7 +1151,7 @@
 
 .mp-ing {
   display: flex; align-items: center; gap: 8px;
-  background: var(--srf-carte-2); border: 1px solid rgba(255,255,255,.06); border-radius: 12px;
+  background: var(--srf-carte-2); border: 1px solid #EEF1F5; border-radius: 12px;
   padding: 10px 12px; margin-bottom: 8px;
 }
 .mp-ing-nom { flex: 1; min-width: 0; font-size: 14px; font-weight: 600;
@@ -1266,7 +1266,7 @@
 .crs-seg { display: flex; gap: 8px; flex-wrap: wrap; }
 .crs-seg button {
   flex: 1; min-width: 60px; padding: 11px 8px;
-  border: 1.5px solid rgba(255,255,255,.06); border-radius: 12px; background: var(--srf-carte-2);
+  border: 1.5px solid #E6E6E6; border-radius: 12px; background: var(--srf-carte-2);
   font-size: 14px; font-weight: 700; color: var(--txt-1);
   font-family: inherit; cursor: pointer;
 }
@@ -1311,7 +1311,7 @@
 .crs-item:last-child { border-bottom: none; }
 .crs-check {
   width: 26px; height: 26px; flex: none; border-radius: 8px;
-  border: 2px solid rgba(255,255,255,.06); background: none;
+  border: 2px solid #DCDCDC; background: none;
   display: flex; align-items: center; justify-content: center;
   color: var(--txt-inverse-2); font-size: 15px; font-weight: 500;
   cursor: pointer; font-family: inherit;
@@ -1473,7 +1473,7 @@
 }
 .wbt {
   padding: 7px 12px; border-radius: 20px; cursor: pointer;
-  border: 1.5px solid rgba(255,255,255,.06); background: var(--srf-carte-2);
+  border: 1.5px solid #D6E8F2; background: var(--srf-carte-2);
   font-size: 12.5px; font-weight: 700; color: #4A6B7C; font-family: inherit;
   transition: background .15s, border-color .15s, color .15s;
 }
@@ -1489,12 +1489,12 @@
     margin:0 auto;
 }
 .bottle-neck {
-    width:30px; height:16px; background:#1C3542; margin:0 auto;
+    width:30px; height:16px; background: #bae6fd; margin:0 auto;
 }
 .bottle-body {
     width:110px; height:185px; margin:0 auto; position:relative;
-    border:3px solid rgba(255,255,255,.06); border-radius:14px 14px 22px 22px; overflow:hidden;
-    background:#1C3342;
+    border: 3px solid #bae6fd; border-radius:14px 14px 22px 22px; overflow:hidden;
+    background: #f0f9ff;
 }
 .bottle-fill {
     position:absolute; bottom:0; left:0; right:0;
@@ -1508,7 +1508,7 @@
 .water-tap-hint { font-size:13px; color:#0ea5e9; font-weight:600; margin-bottom:16px; }
 
 .water-modal .water-total {
-    background:#1C3342; border-radius:12px; padding:14px; margin-bottom:16px;
+    background: #f0f9ff; border-radius:12px; padding:14px; margin-bottom:16px;
 }
 .water-modal .water-total .wt-v { font-size:26px; font-weight:500; color:#0ea5e9; }
 .water-modal .water-total .wt-l { font-size:12px; color:#6b7280; margin-top:2px; }
@@ -1518,7 +1518,7 @@
     flex:1; padding:12px; border:none; border-radius:11px; font-weight:700; font-size:14px; cursor:pointer;
     font-family:inherit;
 }
-.wa-reset { background:#252F3A; color:var(--txt-ardoise-fonce); }
+.wa-reset { background: #f1f5f9; color:var(--txt-ardoise-fonce); }
 .wa-close { background:var(--srf-info); color:var(--txt-inverse); }
 
 /* ============================================================
@@ -1609,7 +1609,7 @@
   font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
   transition: transform var(--transition), background var(--transition);
 }
-.pg-journal .mc-plat-btn:active { transform: scale(.97); background: #2F3745; }
+.pg-journal .mc-plat-btn:active { transform: scale(.97); background: #FBF3DC; }
 .pg-journal .mc-plat-btn svg {
   width: 15px; height: 15px; flex: none;
   fill: none; stroke: currentColor; stroke-width: 1.7;
@@ -1672,7 +1672,7 @@
   font-size: 12.5px; font-weight: 700; color: var(--txt-accent);
   font-family: inherit; cursor: pointer;
 }
-.pg-journal .mc-res-gerer:active { background: #2F3745; }
+.pg-journal .mc-res-gerer:active { background: #FFF6DC; }
 
 /* Espace entre deux cartes repas : 12px, v1 (.meal-card) */
 .pg-journal .mc + .mc { margin-top: calc(12px - var(--espace)); }
@@ -1688,7 +1688,7 @@
     border-radius:20px; padding:14px 16px; margin:0;
     box-shadow:0 2px 10px rgba(24,24,24,.04);
 }
-.pg-journal .weight-note:active { transform:scale(.99); background:#2F3745; }
+.pg-journal .weight-note:active { transform:scale(.99); background: #FDFBF6; }
 .pg-journal .weight-note .wn-ic {
     flex:none; color:var(--txt-1-fonce); display:flex; align-items:center; justify-content:center;
 }
@@ -1795,10 +1795,10 @@
 /* Trio de macros, separe par un filet, avec pastille de couleur */
 .pg-journal .rp-macros {
   flex: none; display: flex; align-items: stretch;
-  border-left: 1px solid rgba(255,255,255,.06); padding-left: 10px; margin-left: 0;
+  border-left: 1px solid #EFEAE2; padding-left: 10px; margin-left: 0;
 }
 .pg-journal .rp-macro { text-align: center; padding: 0 6px; }
-.pg-journal .rp-macro + .rp-macro { border-left: 1px solid rgba(255,255,255,.06); }
+.pg-journal .rp-macro + .rp-macro { border-left: 1px solid #F3EFE8; }
 .pg-journal .rp-macro b {
   display: block; font-size: 17px; font-weight: 500; color: var(--txt-1);
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
@@ -1844,7 +1844,7 @@
   font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
 }
 .pg-journal .rp-btn-plat svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.pg-journal .rp-btn-plat:active { background: #2F3745; }
+.pg-journal .rp-btn-plat:active { background: #FFFBF2; }
 .pg-journal .rp-btn-fin {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 17px; border-radius: 999px;
@@ -1900,20 +1900,20 @@
   background: var(--srf-carte); box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
 }
 .pg-journal .rp-colonne .mc-scan .ic { width: 26px; height: 26px; stroke-width: 2.1; }
-.pg-journal .rp-colonne .mc-scan:active { background: #2F3745; }
+.pg-journal .rp-colonne .mc-scan:active { background: #FBF7F2; }
 
 /* --- Quantite dans un cadre arrondi --- */
 .pg-journal .rp-liste .mc-ing-champ {
   /* Le liseret fantome #E9E3D9 se fondait dans la carte : la zone ou
      ecrire etait invisible. Bord franc, ombre interne legere, or au focus. */
-  border: 1px solid rgba(255,255,255,.06); border-radius: 13px;
-  background: #2A313D; padding: 3px 4px;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,.42), inset 0 -1px 0 rgba(255,255,255,.05);
+  border: 1.5px solid #D9CFBB; border-radius: 13px;
+  background: var(--srf-carte-2); padding: 3px 4px;
+  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
   transition: border-color .15s, box-shadow .15s;
 }
 .pg-journal .rp-liste .mc-ing-champ:focus-within {
-  border-color: rgba(248,106,12,.55); background: #2A313D;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,.42), 0 0 0 2px rgba(248,106,12,.30);
+  border-color: var(--or); background: var(--srf-carte-2);
+  box-shadow: inset 0 1px 2px rgba(60, 50, 40, .04), 0 0 0 3px rgba(247, 181, 0, .14);
 }
 .pg-journal .rp-liste .mc-ing-champ input {
   font-size: 16px; font-weight: 700; text-align: center;
@@ -1982,7 +1982,7 @@
 .modal-btns { display:flex; gap:8px; margin-top:18px; }
 .modal-btns button { flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:inherit; }
 .modal-save { background:var(--srf-inverse); color:var(--txt-inverse); }
-.modal-cancel { background:#272E38; color:var(--txt-ardoise-fonce); }
+.modal-cancel { background: #e2e8f0; color:var(--txt-ardoise-fonce); }
 .modal .modal-h3-ic { display:flex; align-items:center; gap:8px; }
 .modal .modal-h3-ic .ic { width:20px; height:20px; flex:none; color:var(--txt-accent-vif); }
 .modal .wm-last { font-size:12.5px; color:var(--texte-3); font-weight:600; margin-top:6px; }
@@ -2000,7 +2000,7 @@
 
 /* Force du mot de passe : jauge v1 (index.html, .pw-meter / .pw-bar) */
 .login-pw-jauge {
-  height: 5px; background: #272D38; border-radius: 5px;
+  height: 5px; background: #EEF0F3; border-radius: 5px;
   margin: -6px 2px 0; overflow: hidden;
 }
 .login-pw-bar {
@@ -2224,7 +2224,7 @@
 .bv-retour {
   position: fixed; left: 16px; bottom: calc(18px + env(safe-area-inset-bottom));
   width: 44px; height: 44px; border-radius: 50%;
-  background: var(--srf-carte); border: 1px solid rgba(255,255,255,.06); color: var(--txt-1);
+  background: var(--srf-carte); border: 1px solid #ececec; color: var(--txt-1);
   font-size: 19px; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
 }
 
@@ -2405,7 +2405,7 @@
 /* Grand champ : le chiffre est la vedette, l'unite integree */
 .modal.wm .wm-saisie {
   display: flex; align-items: baseline; justify-content: center; gap: 8px;
-  background: var(--carte); border: 1.5px solid rgba(255,255,255,.06); border-radius: 18px;
+  background: var(--carte); border: 1.5px solid #EFE7D8; border-radius: 18px;
   padding: 14px 16px;
 }
 .modal.wm .wm-saisie:focus-within { border-color: #E0A21C; box-shadow: 0 0 0 3px rgba(224, 162, 28, .15); }
@@ -2437,7 +2437,7 @@
   background: none; border: none; color: var(--texte-3);
   font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
 }
-.modal.wm .wm-annuler:active { background: #2F3745; }
+.modal.wm .wm-annuler:active { background: #F5F2EC; }
 .modal.wm .wm-ok {
   flex: 1.6; display: flex; align-items: center; justify-content: center; gap: 9px;
   padding: 14px; border-radius: 999px;
@@ -2493,17 +2493,17 @@
 .wm2-rang { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
 .wm2-pas {
   flex: none; width: 50px; height: 50px; border-radius: 50%;
-  background: var(--srf-carte); border: 1.5px solid rgba(255,255,255,.06); color: var(--txt-1-fonce);
+  background: var(--srf-carte); border: 1.5px solid #E7E2D8; color: var(--txt-1-fonce);
   cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation;
   display: flex; align-items: center; justify-content: center; padding: 0;
   box-shadow: 0 1px 3px rgba(24, 24, 24, .06);
   transition: background .12s, border-color .12s;
 }
 .wm2-pas svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
-.wm2-pas:active { background: #2F3745; border-color: #D9D3C6; transform: scale(.95); }
+.wm2-pas:active { background: #F7F5F0; border-color: #D9D3C6; transform: scale(.95); }
 .wm2-delta-zone {
   text-align: center; margin: 16px 0 0; min-height: 20px;
-  padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.06);
+  padding-bottom: 18px; border-bottom: 1px solid #F2EFE8;
 }
 .wm2-delta { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; }
 .wm2-delta::before { font-size: 10px; }
@@ -2555,7 +2555,7 @@
   width: 16px; height: 16px;
   fill: none; stroke: #B7860B; stroke-width: 2.4; stroke-linecap: round;
 }
-.pg-journal .ajout-repas:active { background: #2F3745; transform: scale(.98); }
+.pg-journal .ajout-repas:active { background: #FAF8F3; transform: scale(.98); }
 
 /* ============================================================
    REDISTRIBUTION DES RACCOURCIS (Raci) : la rangee a disparu.
@@ -2735,210 +2735,6 @@
 .couche-repas .rp-resume .rp-macros,
 .couche-repas .rp-resume .rp-macro + .rp-macro { border-color: #322D22; }
 
-/* ============================================================
-   PAGE REPAS — MODE SOMBRE BELFIT (D4)
-   Portee a la seule couche repas. V1 et le reste de V2 sont
-   intacts : tout ce bloc se retire d'un seul coup.
-
-   Cinq regles, dans cet ordre de priorite :
-   1. Une source de lumiere unique, en haut a gauche.
-   2. La profondeur vient de la lumiere, pas de la teinte.
-   3. La trace : un point de lumiere a la pointe de ce qui
-      progresse, respiration 5,5 s.
-   4. L'orange ne decore jamais : progression, action, focus.
-   5. La donnee domine, le libelle s'efface.
-   ============================================================ */
-.pg-journal.couche-repas {
-  --d4-fond: #171A20;
-  --d4-n1:   #262D38;
-  --d4-n2:   #2A313D;
-  --d4-n3:   #2F3745;
-  --d4-sep:  rgba(255,255,255,.045);
-  --d4-t1:   #F7F8FA;
-  --d4-t2:   #9CA3AF;
-  --d4-t3:   #7C8595;
-  --d4-t4:   #7A8494;
-  --d4-acc:  #F86A0C;
-  --el1: inset 0 1px 0 rgba(255,255,255,.045), 0 1px 2px rgba(0,0,0,.22), 0 6px 16px rgba(0,0,0,.22);
-  --el2: inset 0 1px 0 rgba(255,255,255,.06),  0 2px 5px rgba(0,0,0,.26), 0 10px 26px rgba(0,0,0,.28);
-  --el3: inset 0 1px 0 rgba(255,255,255,.085), 0 4px 10px rgba(0,0,0,.30), 0 18px 44px rgba(0,0,0,.38);
-  --ios: cubic-bezier(.32,.72,0,1);
-
-  background:
-    radial-gradient(120% 40% at 18% 0%, rgba(255,255,255,.03) 0, transparent 60%),
-    var(--d4-fond);
-}
-
-/* ---------- Barre de titre ---------- */
-.couche-repas .rp-retour {
-  background: var(--d4-n1); color: var(--d4-t1); border: none; box-shadow: var(--el1);
-}
-.couche-repas .rp-titre { color: var(--d4-t3); }
-.couche-repas .rp-titre-champ { background: var(--d4-n2); color: var(--d4-t1); border-color: transparent; }
-.couche-repas .rp-terminer { color: var(--d4-acc); }
-
-/* ---------- Carte calories : niveau 3 ---------- */
-.couche-repas .rp-resume {
-  background:
-    radial-gradient(130% 100% at 12% 0%, rgba(255,255,255,.035) 0, transparent 58%),
-    var(--d4-n3);
-  box-shadow: var(--el3);
-  --rp-piste: #39414F;
-  --proteines: #F7F8FA;
-}
-/* Regle 3 : la trace, a la pointe de l'arc, pas au centre de la carte. */
-.couche-repas .rp-resume::before {
-  content: ''; position: absolute; z-index: 0;
-  left: 18px; top: 20px; width: 54px; height: 54px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(248,180,0,.36) 0, rgba(248,106,12,.17) 45%, transparent 72%);
-  filter: blur(11px); animation: d4-respire 5.5s ease-in-out infinite; pointer-events: none;
-}
-@keyframes d4-respire { 0%, 100% { opacity: .82; } 50% { opacity: 1; } }
-.couche-repas .rp-anneau-c span { background: #242B38; box-shadow: inset 0 1px 3px rgba(0,0,0,.34); }
-.couche-repas .rp-kcal { color: var(--txt-inverse-2); }
-.couche-repas .rp-kcal span { color: var(--d4-t3); }
-.couche-repas .rp-reco b { color: var(--d4-t2); }
-.couche-repas .rp-reco span { color: var(--d4-t4); }
-.couche-repas .rp-macros,
-.couche-repas .rp-macro + .rp-macro { border-color: var(--d4-sep); }
-.couche-repas .rp-macro b { color: var(--d4-t1); }
-.couche-repas .rp-macro b i,
-.couche-repas .rp-macro em { color: var(--d4-t4); }
-
-/* ---------- Recherche et tuiles : niveau 2 ---------- */
-.couche-repas .rp-colonne .mc-ajout {
-  background: var(--d4-n2); border: none; box-shadow: var(--el2);
-}
-.couche-repas .rp-colonne .mc-ajout:focus-within {
-  background: var(--d4-n2);
-  box-shadow: var(--el2), 0 0 0 2px rgba(248,106,12,.55);
-}
-.couche-repas .mc-ajout input { color: var(--d4-t1); }
-.couche-repas .mc-ajout input::placeholder { color: var(--d4-t3); }
-.couche-repas .rp-colonne .mc-scan {
-  background: var(--d4-n2); color: var(--d4-acc); box-shadow: var(--el2);
-}
-.couche-repas .rp-colonne .mc-scan:active { background: #323A47; }
-.couche-repas .mc-scan-pro { color: var(--d4-acc); }
-
-/* ---------- Listes et cartes : niveau 1 ---------- */
-.couche-repas .rp-section-titre { color: var(--d4-t4); }
-.couche-repas .rp-liste,
-.couche-repas .rp-colonne .dn {
-  background: var(--d4-n1); border: none; box-shadow: var(--el1);
-}
-.couche-repas .mc-ing { background: transparent; border-color: var(--d4-sep); }
-.couche-repas .mc-ing-nom { color: var(--d4-t1); }
-.couche-repas .mc-ing-base,
-.couche-repas .mc-ing-unite,
-.couche-repas .mc-ing-sub { color: var(--d4-t4); }
-.couche-repas .mc-ing-kcal { color: var(--d4-t1); }
-.couche-repas .mc-ing-del { color: #5F6877; }
-.couche-repas .mc-ing-del:active { color: #FF6B5A; }
-/* Champ quantite : un composant, pas un input. Lumiere du haut en creux. */
-.couche-repas .rp-liste .mc-ing-champ,
-.couche-repas .rp-liste .mc-ing-champ:focus-within {
-  background: var(--d4-n2); border-color: transparent;
-  box-shadow: inset 0 1.5px 3px rgba(0,0,0,.34), inset 0 -1px 0 rgba(255,255,255,.05);
-}
-.couche-repas .rp-liste .mc-ing-champ:focus-within {
-  box-shadow: inset 0 1.5px 3px rgba(0,0,0,.34), 0 0 0 2px rgba(248,106,12,.55);
-}
-.couche-repas .mc-ing-champ input { background: transparent; color: var(--d4-t1); border: none; }
-.couche-repas .rp-total-lb { color: var(--d4-t3); }
-.couche-repas .rp-total-val { color: var(--d4-t1); letter-spacing: -.025em; }
-.couche-repas .rp-total-val span { color: var(--d4-t4); }
-
-/* Bascule cru / cuit */
-.couche-repas .mc-ing-cuisson { background: var(--d4-n2); }
-.couche-repas .mc-ing-cuisson span { color: var(--d4-t4); }
-.couche-repas .mc-ing-cuisson span.actif { background: #39414F; color: var(--d4-t1); }
-.couche-repas .mc-ing-cuisson.est-cuit span.actif { color: var(--d4-acc); }
-
-/* ---------- Detail nutritionnel ---------- */
-.couche-repas .dn-titre { color: var(--d4-t4); }
-.couche-repas .rp-colonne .dn-ic { background: var(--d4-n2); box-shadow: inset 0 1px 0 rgba(255,255,255,.05); }
-.couche-repas .rp-colonne .dn-lb { color: var(--d4-t2); }
-.couche-repas .rp-colonne .dn-val,
-.couche-repas .dn-val { color: var(--d4-t1); }
-.couche-repas .dn-absent,
-.couche-repas .dn-partiel { color: var(--d4-t4); }
-.couche-repas .dn-pro { background: rgba(248,106,12,.16); color: #F8A055; }
-.couche-repas .dn-offert { background: rgba(76,175,80,.14); color: #7BD08A; }
-.couche-repas .dn-rappel { background: var(--d4-n2); border-color: transparent; color: #F8A055; }
-.couche-repas .dn-cta { background: var(--d4-acc); color: #17150F; }
-
-/* ---------- Enregistrer comme plat ---------- */
-.couche-repas .mc-plat-btn,
-.couche-repas .rp-btn-plat {
-  background: var(--d4-n1); border: none; color: var(--d4-acc); box-shadow: var(--el1);
-}
-.couche-repas .mc-plat-btn:active,
-.couche-repas .rp-btn-plat:active {
-  background: var(--d4-n1);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 1px 3px rgba(0,0,0,.3);
-}
-.couche-repas .mc-plat-champ { background: var(--d4-n2); border-color: transparent; color: var(--d4-t1); }
-.couche-repas .mc-plat-ok-btn { background: var(--d4-acc); color: #17150F; }
-.couche-repas .mc-plat-ok { background: rgba(76,175,80,.14); color: #7BD08A; }
-.couche-repas .mc-plat-annul { color: var(--d4-t3); }
-
-/* ---------- Bouton principal : OBSIDIENNE ----------
-   Profondeur interne plutot que surface : la matiere s'eclaire du
-   haut a gauche et s'eteint vers le bas a droite. Le reflet est un
-   lisere d'un pixel qui suit toute la courbure haute — obtenu par
-   masque, donc il s'enroule sur les epaules au lieu de s'arreter
-   net comme un trait dessine. Son coeur est BLANC : une lumiere
-   neutre reste neutre a son point le plus vif ; seule la retombee
-   prend la teinte BelFit. */
-.couche-repas .rp-btn-fin {
-  position: relative; overflow: hidden; border: none;
-  background: radial-gradient(120% 150% at 26% -30%, #262B33 0%, #191D23 42%, #101317 78%), #101317;
-  color: var(--txt-inverse-2);
-  box-shadow: 0 20px 44px rgba(0,0,0,.58), 0 4px 10px rgba(0,0,0,.4),
-              inset 0 -1px 0 rgba(255,255,255,.03);
-  transition: box-shadow 190ms var(--ios);
-}
-.couche-repas .rp-btn-fin::before {
-  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit;
-  padding: 1px; pointer-events: none;
-  background: linear-gradient(102deg,
-    rgba(255,255,255,0) 0%, rgba(255,255,255,.16) 12%, rgba(255,255,255,.82) 30%,
-    rgba(255,206,31,.62) 46%, rgba(248,160,10,.34) 64%, rgba(248,106,12,.13) 80%,
-    rgba(248,106,12,0) 94%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  transition: opacity 190ms var(--ios);
-}
-.couche-repas .rp-btn-fin::after {
-  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 26px; z-index: 1;
-  background: linear-gradient(180deg, rgba(255,255,255,.045) 0, transparent 100%);
-  pointer-events: none;
-}
-.couche-repas .rp-btn-fin > * { position: relative; z-index: 2; }
-/* A l'appui il s'enfonce : l'ombre portee devient interne et le
-   reflet faiblit, parce que la face s'incline. */
-.couche-repas .rp-btn-fin:active {
-  box-shadow: inset 0 4px 10px rgba(0,0,0,.72), 0 2px 6px rgba(0,0,0,.34);
-}
-.couche-repas .rp-btn-fin:active::before { opacity: .45; }
-
-/* ---------- Navigation, tant qu'un repas est ouvert ----------
-   La barre est un frere de la couche : sans ca, un rail blanc
-   resterait colle sous une page sombre. */
-.couche-repas ~ .bn {
-  background: rgba(29,33,40,.88);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4);
-  border-top-color: rgba(255,255,255,.05);
-}
-.couche-repas ~ .bn .bn-item { color: #7B8494; }
-.couche-repas ~ .bn .bn-item--actif { color: var(--d4-acc); }
-
-@media (prefers-reduced-motion: reduce) {
-  .couche-repas .rp-resume::before { animation: none; opacity: .9; }
-}
 
 /* ============================================================
    THEME SOMBRE — reprises hors jetons.
@@ -2954,7 +2750,7 @@ html body .pg-journal { background: #171A20; }
 
 /* Carte Calories */
 .pg-journal .cal-rappel { background: var(--carte); border-color: rgba(255,255,255,.08); }
-.pg-journal .cal-num--orange { color: #F8A055; }
+.pg-journal .cal-num--orange { color: #D2691E; }
 .pg-journal .tableau-bord { border-color: #333B47; }
 .pg-journal .tb-mini { background: #39414F; }
 .pg-journal .nutri-card { border-color: #333B47; }
@@ -2972,7 +2768,7 @@ html body .pg-journal { background: #171A20; }
 .pg-journal .mc-res-fav { color: #5F6877; }
 .pg-journal .mc-res-plat { border-bottom-color: #333B47; }
 .pg-journal .mc-plat-btn { border-color: rgba(255,255,255,.08); }
-.pg-journal .mc-plat-ok { background: rgba(76,175,80,.14); }
+.pg-journal .mc-plat-ok { background: #EFF9F2; }
 .pg-journal .resultats { border-bottom-color: #2F3642; }
 
 /* Idees repas */
@@ -3000,70 +2796,10 @@ html body .pg-journal { background: #171A20; }
 .pg-journal .bandeau-conf { border-color: rgba(255,255,255,.08); }
 .pg-journal .profil-volet { border-color: #333B47; }
 .pg-journal .profil-statut { background: var(--carte); }
-.pg-journal .dn-offert { background: rgba(76,175,80,.14); }
+.pg-journal .dn-offert { background: #E9F7EF; }
 .pg-journal .t-approche { color: #F0B429; }
 .pg-journal .t-warn { color: #F8A055; }
 
-/* ============================================================
-   LUMIERE DU CADRAN — la matiere plutot que l'air.
-
-   Principe : une couche posee en `normal` recouvre la surface et
-   se voit — c'est un halo. En `soft-light` elle module la surface
-   existante : elle eclaircit ce qui est deja clair, laisse le
-   sombre sombre, et fait ressortir le grain, le degrade et les
-   aretes de la carte. La lumiere revele le materiau au lieu de
-   flotter autour du cadran.
-
-   La teinte n'est jamais ecrite deux fois : --cal-lum est posee
-   par le palier courant, et les quatre couches la lisent. Le
-   cadran change de couleur, la lumiere suit par construction.
-   ============================================================ */
-.pg-journal .cal {
-  position: relative;
-  overflow: hidden;
-  --cal-lum: 52, 211, 153;     /* vert : dans l'objectif */
-}
-.pg-journal .cal[data-palier="jaune"]  { --cal-lum: 252, 211, 77; }
-.pg-journal .cal[data-palier="orange"] { --cal-lum: 253, 186, 116; }
-.pg-journal .cal[data-palier="alerte"] { --cal-lum: 252, 165, 165; }
-.pg-journal .cal > *:not(.cal-capte):not(.cal-eclats) { position: relative; z-index: 2; }
-
-/* 1. Captation de surface : le coeur du dispositif. */
-.pg-journal .cal-capte {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
-  mix-blend-mode: soft-light;
-  background:
-    radial-gradient(58% 46% at 50% 46%, rgba(var(--cal-lum), .58) 0%,
-                    rgba(var(--cal-lum), .24) 38%, transparent 72%),
-    radial-gradient(96% 68% at 50% 46%, rgba(var(--cal-lum), .12) 0%, transparent 76%);
-  animation: cal-pulse 7s ease-in-out infinite;
-}
-@keyframes cal-pulse { 0%, 100% { opacity: .93; } 50% { opacity: 1; } }
-
-/* 2. Eclats la ou la lumiere rase la matiere. Tres faibles : ils ne
-      s'expliquent pas, ils se remarquent quand ils manquent. */
-.pg-journal .cal-eclats {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
-  mix-blend-mode: screen;
-  background:
-    radial-gradient(30px 18px at 13% 11%, rgba(var(--cal-lum), .09) 0%, transparent 70%),
-    radial-gradient(26px 16px at 87% 11%, rgba(var(--cal-lum), .06) 0%, transparent 70%),
-    radial-gradient(46px 14px at 50% 97%, rgba(var(--cal-lum), .05) 0%, transparent 74%);
-}
-
-/* 3. Diffusion residuelle : une copie floutee de l'ARC, pas un
-      cercle. Sa forme designe sa source. Reglee serre — au-dela,
-      elle redevient un halo identifiable. */
-.pg-journal .cal-anneau-svg { overflow: visible; }
-.pg-journal .cal-anneau-lueur { filter: blur(5px); opacity: .42; }
-
-/* 4. La piste du cadran etait un vert clair de theme clair : sur
-      fond sombre elle formait un anneau lumineux parasite. */
-.pg-journal .cal-anneau-piste { stroke: #2A3340; }
-
-@media (prefers-reduced-motion: reduce) {
-  .pg-journal .cal-capte { animation: none; }
-}
 
 /* ============================================================
    LISTE DE RESULTATS — hierarchie de lisibilite.
@@ -3351,4 +3087,34 @@ html body .pg-journal { background: #171A20; }
 
 @media (prefers-reduced-motion: reduce) {
   .bn-item, .bn-point { transition: none; }
+}
+
+/* ============================================================
+   NAVIGATION — variante claire.
+   La barre garde sa forme flottante, ses arrondis, son etat actif
+   unique et son point d'accent : seule la matiere change. Sur fond
+   clair, l'elevation ne vient plus d'une crete lumineuse mais
+   d'une ombre chaude et d'un liseré sombre tres fin.
+   ============================================================ */
+.bn {
+  background: rgba(255, 255, 255, .90);
+  border: 1px solid rgba(28, 26, 22, .07);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    0 1px 2px rgba(58,44,24,.07),
+    0 8px 20px rgba(58,44,24,.08),
+    0 22px 48px rgba(58,44,24,.10);
+}
+.bn-item { color: #8B857B; }                      /* 4,6:1 sur la barre */
+.bn-item--journal.bn-item--actif,
+.bn-item--entrainer.bn-item--actif,
+.bn-item--stats.bn-item--actif,
+.bn-item--premium.bn-item--actif { color: #1A1A18; }
+/* Le point garde le jaune officiel : sur blanc il ne porte aucun
+   texte, seulement une position — 1,2:1 suffit pour une pastille
+   de 4 px cernee de blanc. On l'entoure d'un liseré pour qu'il ne
+   disparaisse pas. */
+.bn-point {
+  background: #FCD200;
+  box-shadow: 0 0 0 1px rgba(150, 120, 0, .35);
 }

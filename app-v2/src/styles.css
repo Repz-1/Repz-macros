@@ -14,7 +14,7 @@ button{cursor:pointer}
 .conteneur--nu{max-width:none;padding:0}
 
 /* ---- Dashboard du jour ---- */
-.tableau-bord{background:var(--srf-carte);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:16px 18px 14px;margin-bottom:14px}
+.tableau-bord{background:var(--srf-carte);border: 1px solid #e9f3ec;border-radius:24px;padding:16px 18px 14px;margin-bottom:14px}
 .tb-kcal{display:flex;align-items:baseline;gap:8px}
 .tb-kcal .gros{font-size:40px;font-weight:800;color:var(--txt-accent-vif)}
 .tb-kcal .label{color:var(--txt-3);font-weight:600}
@@ -54,9 +54,9 @@ button{cursor:pointer}
 /* ---- Recherche ---- */
 .recherche{position:relative;margin-top:12px}
 .recherche input{width:100%;padding:13px 16px;border:1px solid var(--brd-1);border-radius:14px;font-size:15px;background:var(--srf-page)}
-.resultats{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--srf-carte);border:1px solid rgba(255,255,255,.06);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.10);max-height:260px;overflow:auto;z-index:30}
-.resultats button{display:flex;justify-content:space-between;width:100%;padding:12px 14px;border:none;background:none;text-align:left;font-size:14.5px;border-bottom:1px solid rgba(255,255,255,.06)}
-.resultats button:hover{background:#2F3745}
+.resultats{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--srf-carte);border: 1px solid #eee;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.10);max-height:260px;overflow:auto;z-index:30}
+.resultats button{display:flex;justify-content:space-between;width:100%;padding:12px 14px;border:none;background:none;text-align:left;font-size:14.5px;border-bottom: 1px solid #f6f4ee}
+.resultats button:hover{background: #faf7ee}
 .resultats .kc{color:var(--texte-3);font-size:13px}
 
 /* ---- Total repas ---- */
@@ -69,7 +69,7 @@ button{cursor:pointer}
 .modale.montre{transform:translateY(0)}
 .modale h3{margin:0 0 20px;font-size:21px;font-weight:800;text-align:center;color:var(--txt-1);letter-spacing:-.01em}
 .types{display:flex;gap:12px}
-.types button{flex:1;padding:20px 8px;border:1px solid rgba(255,255,255,.06);border-radius:18px;background:var(--srf-carte);font-size:15px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:8px}
+.types button{flex:1;padding:20px 8px;border: 1px solid #eee;border-radius:18px;background:var(--srf-carte);font-size:15px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:8px}
 .types .ic{font-size:26px}
 
 /* ---- Nouvelle journee ---- */
@@ -80,7 +80,7 @@ button{cursor:pointer}
 .titre-edit{font-size:18px;font-weight:800;padding:6px 10px;border:1px solid var(--brd-accent);border-radius:10px;width:100%;max-width:240px}
 
 /* ---- Eau ---- */
-.eau{display:flex;align-items:center;gap:10px;background:#1C3442;border-radius:18px;padding:12px 16px;margin-bottom:14px}
+.eau{display:flex;align-items:center;gap:10px;background: #EAF6FD;border-radius:18px;padding:12px 16px;margin-bottom:14px}
 .eau .goutte{font-size:22px}
 .eau .val{font-weight:800;font-size:17px;color:#1878b0;flex:1}
 .eau button{border:none;background:var(--srf-carte);border-radius:10px;padding:8px 14px;font-weight:800;color:#1878b0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
@@ -141,7 +141,7 @@ button{cursor:pointer}
 .pw-eye{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt-ardoise);padding:0}
 .pw-eye svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .pw-eye:active{color:var(--txt-1-fonce)}
-.login-erreur{background:#42201C;color:#B3261E;border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
+.login-erreur{background: #FDECEA;color:#B3261E;border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
 .login-btn{background:var(--srf-accent);border:none;border-radius:12px;padding:12px;font-weight:800;font-size:15px;margin-top:2px}
 .login-btn:disabled{opacity:.6}
 .login-bascule{background:none;border:none;color:var(--txt-3);font-weight:600;font-size:13.5px;margin-top:12px;text-decoration:underline}
@@ -255,8 +255,8 @@ button{cursor:pointer}
 .v2-timer-btn{flex:1;max-width:100px;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
 .v2-timer-btn.start{background:var(--srf-accent);color:var(--txt-inverse)}
 .v2-timer-btn.start:active{transform:scale(.95)}
-.v2-timer-btn.reset{background:#272C38;color:var(--txt-1-doux);border:1px solid rgba(255,255,255,.06)}
-.v2-timer-btn.reset:active{background:#2D3441}
+.v2-timer-btn.reset{background: #f3f4f6;color:var(--txt-1-doux);border: 1px solid #e5e7eb}
+.v2-timer-btn.reset:active{background: #e5e7eb}
 .v2-chrono-fab{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));right:8px;z-index:66;width:60px;height:60px;border-radius:50%;background:var(--srf-accent);color:var(--txt-1-fonce);border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(247,181,0,.55);transition:transform .15s,background .2s;-webkit-tap-highlight-color:transparent}
 .v2-chrono-fab svg{width:30px;height:30px}
 .v2-chrono-fab:active{transform:scale(.94)}
@@ -367,7 +367,7 @@ button{cursor:pointer}
 .crs-reglages label{flex:1;font-size:12.5px;font-weight:700;color:var(--txt-2);display:flex;flex-direction:column;gap:5px}
 .crs-reglages input{padding:11px;border:1px solid var(--brd-1);border-radius:11px;font-weight:700;font-size:15px;font-family:inherit;text-align:center}
 .crs-rayon{font-weight:800;font-size:15px;margin-bottom:9px}
-.crs-item{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid rgba(255,255,255,.06)}
+.crs-item{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom: 1px solid #f6f4ee}
 .crs-item:last-child{border-bottom:none}
 .crs-item input{width:19px;height:19px;accent-color:#F7B500}
 .crs-nom{flex:1;font-size:14px;font-weight:600}
@@ -405,7 +405,7 @@ button{cursor:pointer}
 .vocal-mic:disabled{opacity:.55}
 .vocal-msg.ecoute{color:var(--txt-alerte)}
 .ia-diag{margin-top:14px;font-size:10.5px;font-weight:600;color:#A79E8C;letter-spacing:.02em}
-.ia-erreur{margin:12px auto 0;max-width:340px;background:#42201C;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;color:#B3261E;line-height:1.45;text-align:left}
+.ia-erreur{margin:12px auto 0;max-width:340px;background: #FDECEA;border: 1px solid #F5C6BF;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;color:#B3261E;line-height:1.45;text-align:left}
 @keyframes pulseMic{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .vocal-msg{margin-top:14px;font-weight:700;font-size:14px;color:var(--txt-2);min-height:20px}
 
@@ -439,7 +439,7 @@ button{cursor:pointer}
 
 /* ---- Rangee d'actions rapides (comme l'app actuelle) ---- */
 .qa-rangee{display:grid;grid-template-columns:repeat(3,1fr);background:var(--srf-carte);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
-.qa-btn{position:relative;background:none;border:none;border-right:1px solid rgba(255,255,255,.06);padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-family:inherit}
+.qa-btn{position:relative;background:none;border:none;border-right: 1px solid #f2efe6;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-family:inherit}
 .qa-btn:last-child{border-right:none}
 .qa-ic{width:38px;height:38px;border-radius:12px;background:var(--carte);display:flex;align-items:center;justify-content:center;color:var(--texte)}
 .qa-ic svg{width:20px;height:20px}
@@ -466,12 +466,12 @@ button{cursor:pointer}
 .entete .lang-choix{margin-left:auto}
 .entete-profil{background:none;border:none;color:var(--txt-accent-or-2);padding:4px}
 .entete-profil svg{width:26px;height:26px}
-.profil-volet{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--srf-carte);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:11px 14px;margin-bottom:12px}
+.profil-volet{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--srf-carte);border: 1px solid #ece8dc;border-radius:14px;padding:11px 14px;margin-bottom:12px}
 .profil-volet span{font-size:13px;color:var(--txt-3);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .profil-volet button{background:none;border:none;color:var(--txt-alerte);font-weight:700;font-size:13px;font-family:inherit;text-decoration:underline;flex-shrink:0}
 
 /* ===== Dashboard : styles EXACTS de l'app actuelle ===== */
-.nutri-card{background:var(--srf-carte);border:1px solid rgba(255,255,255,.06);border-radius:22px;padding:16px 18px 14px;margin-bottom:16px;box-shadow:0 4px 14px rgba(60,50,40,.05)}
+.nutri-card{background:var(--srf-carte);border: 1px solid #e9f3ec;border-radius:22px;padding:16px 18px 14px;margin-bottom:16px;box-shadow:0 4px 14px rgba(60,50,40,.05)}
 .nutri-datebar{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;padding-top:2px}
 .nutri-datebar .ndb-cal{display:inline-flex;color:var(--txt-4)}
 .nutri-datebar .ndb-cal svg{width:17px;height:17px}
@@ -500,9 +500,9 @@ button{cursor:pointer}
 .qa-btn + .qa-btn{border-left:1px solid var(--bordure-fine);border-right:none}
 
 /* ---- Fleche retour des vues empilees (equivalent nav v1) ---- */
-.v2-retour{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.06);background:var(--srf-carte);
+.v2-retour{width:40px;height:40px;border-radius:50%;border: 1px solid #efefef;background:var(--srf-carte);
   display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--txt-1-fonce);margin-bottom:12px}
-.v2-retour:active{background:#2F3745}
+.v2-retour:active{background: #F6F4EE}
 
 /* ============================================================
    BARRE DE NAVIGATION
@@ -552,14 +552,14 @@ button{cursor:pointer}
 .premium-modal .pm-btn{display:block;width:100%;background:#DFA004;color:var(--txt-inverse);border:none;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px;font-family:inherit;cursor:pointer}
 .premium-modal .pm-close{background:none;border:none;color:var(--texte-2);font-size:14px;font-weight:600;cursor:pointer;padding:6px;font-family:inherit}
 /* Connexion Google (meme flux que la v1) */
-.login-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px;border:1.5px solid rgba(255,255,255,.06);border-radius:12px;background:var(--srf-carte);font-family:inherit;font-size:14px;font-weight:700;color:var(--txt-1-fonce);cursor:pointer;margin-bottom:8px}
+.login-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px;border: 1.5px solid #e5e1d6;border-radius:12px;background:var(--srf-carte);font-family:inherit;font-size:14px;font-weight:700;color:var(--txt-1-fonce);cursor:pointer;margin-bottom:8px}
 .login-google:active{background:var(--srf-page)}
 .login-google svg{width:19px;height:19px;flex:none}
 .login-ou{display:flex;align-items:center;gap:12px;color:var(--texte-3);font-size:12px;font-weight:700;margin-bottom:8px}
 .login-ou::before,.login-ou::after{content:'';flex:1;height:1px;background:var(--carte)}
 /* Croix de fermeture du scanner (meme habillage que la v1 .vm-x) */
 .scan-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:var(--carte);color:var(--texte);font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;z-index:2}
-.scan-x:active{background:#2F3745}
+.scan-x:active{background: #E6E3DB}
 /* Statut du compte dans le panneau profil */
 .profil-statut{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.04em;color:var(--txt-accent);background:var(--carte);border:1px solid var(--brd-accent-pale);border-radius:999px;padding:3px 10px;margin-top:6px}
 
