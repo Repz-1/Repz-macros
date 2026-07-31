@@ -2747,34 +2747,43 @@
    .pg-journal .rp-colonne .mc-scan.
    ------------------------------------------------------------ */
 .couche-repas .rp-colonne .mc-scan {
-  width: 50px;
-  background: linear-gradient(168deg, #FFFDF9 0%, #FDF8F0 100%);
-  border: 1px solid #F1E9DC;
+  /* Meme creme que le champ : c'est ce qui les fait lire comme un
+     seul composant plutot que comme trois boutons poses a cote. */
+  width: 46px;
+  background: #FFFDF9;
+  border: 1px solid #F3ECE2;
+  border-radius: 13px;
   color: var(--or-fonce);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .9),
-    0 1px 2px rgba(58, 44, 24, .04),
-    0 4px 12px rgba(58, 44, 24, .05);
+  box-shadow: 0 1px 2px rgba(58, 44, 24, .035);
 }
-.couche-repas .rp-colonne .mc-scan .ic { stroke-width: 1.9; opacity: .92; }
+/* La hauteur exacte du champ vient de align-self: stretch, deja pose
+   sur la regle de base — rien a recalculer, rien a figer en dur. */
+.couche-repas .rp-colonne .mc-scan .ic {
+  width: 20px; height: 20px; stroke-width: 1.85; opacity: 1;
+}
+/* Les tuiles vivent DANS .mc-ajout, pas a cote : leur ecart vient du
+   gap de la barre elle-meme. 8 px -> 6 px, le groupe se resserre sans
+   que les cibles tactiles se touchent. */
+.couche-repas .rp-colonne .mc-ajout { gap: 6px; }
+/* Les pastilles PRO disparaissent : trois accents satures pour signaler
+   un statut, au-dessus d'outils secondaires, sur une page dont le sujet
+   est le repas. Le verrouillage reste porte par le comportement. */
+.couche-repas .rp-colonne .mc-scan-pro { display: none; }
 .couche-repas .rp-colonne .mc-scan:active {
   background: var(--or-creme);
   box-shadow: inset 0 1px 3px rgba(58, 44, 24, .10);
 }
 /* Le badge PRO cesse d'etre une pastille orange pleine posee sur
    une tuile deja orange : contour fin, texte fonce, fond creme. */
-.couche-repas .rp-colonne .mc-scan-pro {
-  background: var(--or-pale); color: var(--or-fonce);
-  box-shadow: inset 0 0 0 1px rgba(179, 71, 0, .18);
-}
+
 
 /* ------------------------------------------------------------
    CHAMP D'AJOUT — meme matiere que les tuiles, et un halo de
    focus qui indique sans alerter (l'ancien montait a 30 %).
    ------------------------------------------------------------ */
 .couche-repas .rp-colonne .mc-ajout {
-  background: linear-gradient(168deg, #FFFDF9 0%, #FDF8F0 100%);
-  border: 1px solid #F1E9DC;
+  background: #FFFDF9;
+  border: 1px solid #F3ECE2;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .9),
     0 1px 2px rgba(58, 44, 24, .04),
@@ -3071,3 +3080,23 @@
   background: #FCD200;
   box-shadow: 0 0 0 1px rgba(150, 120, 0, .35);
 }
+
+/* ------------------------------------------------------------
+   RAPPEL PREMIUM — ligne de statut.
+   C'etait une banniere encadree et coloree au milieu d'une page
+   d'encodage. Elle ne devient pas invisible, elle change de nature :
+   une information de statut se lit quand on la cherche, une
+   publicite s'impose quand on ne la cherche pas. Plus de fond, plus
+   de bordure, plus d'ombre, plus de gras — seule la fleche garde
+   l'orange, parce qu'elle est la seule partie cliquable.
+   ------------------------------------------------------------ */
+.pg-journal.couche-repas .dn-rappel {
+  width: auto; margin-top: 10px; padding: 2px 0;
+  border: none; background: none; box-shadow: none;
+  font-size: 11.5px; font-weight: 500; color: var(--texte-3);
+  letter-spacing: 0; line-height: 1.4;
+}
+.pg-journal.couche-repas .dn-rappel::after {
+  content: ' \2192'; color: var(--or-fonce); font-weight: 600;
+}
+.pg-journal.couche-repas .dn-rappel:active { transform: none; opacity: .6; }

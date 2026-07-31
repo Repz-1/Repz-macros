@@ -92,11 +92,11 @@ export function DetailNutritionnel({ ings }) {
         </p>
       )}
 
-      {/* Moment n°2 : la fin de la fenetre approche. Un rappel doux,
-          une seule ligne, sans pop-up — la perte annoncee suffit. */}
+      {/* Moment n°2 : la fin de la fenetre approche. Ligne de statut,
+          pas banniere — la fleche seule signale que c'est cliquable. */}
       {ouvert && enDecouverte.value && joursRestantsDecouverte.value <= 2 && (
         <button class="dn-rappel" onClick={() => { repasOuvertId.value = null; ongletActif.value = 'premium'; }}>
-          Ton accès se termine dans {joursRestantsDecouverte.value} j — garde-le dès 3,99 €/mois →
+          Accès Premium : {joursRestantsDecouverte.value} jour{joursRestantsDecouverte.value > 1 ? 's' : ''} restant{joursRestantsDecouverte.value > 1 ? 's' : ''}
         </button>
       )}
 
