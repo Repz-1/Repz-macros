@@ -1,5 +1,6 @@
 import { signal } from '@preact/signals';
 import { utilisateur } from '../services/firebase.js';
+import { ongletActif } from './BottomNav.jsx';
 
 // Etat du volet profil, partage entre l'en-tete de chaque onglet.
 export const voletProfil = signal(false);
@@ -26,7 +27,7 @@ function prenom() {
 // appartient a la personne, plutot que d'un service qui l'accueille.
 // Trois colonnes (1fr / auto / 1fr) : le centre reste centre quelle que
 // soit la largeur des deux bords.
-export function Entete() {
+export function Entete({ retour } = {}) {
   const p = prenom();
   return (
     <header class="j-entete j-entete--perso">
@@ -42,7 +43,23 @@ export function Entete() {
           differents selon l'etat du stockage local, et des pages qui
           semblaient depareillees d'un onglet a l'autre. Le symbole
           reste, le centre reste (vide au pire), la grille reste. */}
-      <img class="j-symbole" src="/belfit-logo-b.png" alt="BELFIT" />
+      {retour ? (
+        /* Fleche retour a la place du symbole : demande pour les
+           onglets secondaires. Meme gabarit que les boutons de
+           droite, la grille ne bouge pas. ongletActif n'est lu que
+           dans le gestionnaire — le cycle d'import BottomNav ->
+           PremiumPage -> Entete -> BottomNav reste inerte au
+           chargement, comme dans BelfitPlus. */
+        <button
+          class="j-btn-icone j-retour"
+          onClick={() => { ongletActif.value = 'journal'; }}
+          aria-label="Retour au journal"
+        >
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+      ) : (
+        <img class="j-symbole" src="/belfit-logo-b.png" alt="BELFIT" />
+      )}
 
       <div class="j-prenom">{p}</div>
 

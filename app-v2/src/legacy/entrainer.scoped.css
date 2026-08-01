@@ -497,3 +497,10 @@
    (variable partagee) : l'en-tete doit rester identique d'un onglet
    a l'autre, c'est le meme objet. */
 .pg-entrainer .j-btn-icone { color: #8F6200; }
+
+/* Fleche retour : cale a gauche comme le symbole qu'elle remplace,
+   noire — c'est une navigation, pas une action doree. */
+.pg-entrainer .j-retour{ justify-self:start; margin-left:-10px; color:#16130F; }
+/* Ecart haut d'ecran -> premiere carte : 73 pt, mesure sur la carte
+   Calories du Journal. */
+.pg-entrainer .choices{ margin-top:18px; }
