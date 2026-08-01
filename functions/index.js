@@ -977,6 +977,17 @@ function modeleProgramme(prog, langue) {
         ${macro(prog.lip + " g", T.lip)}
       </tr></table>
     </td></tr>
+    ${(prog.repas || []).map((r) => `
+    <tr><td style="padding:22px 22px 0">
+      <div style="font:600 10px/1 Helvetica,Arial,sans-serif;color:#B34700;letter-spacing:1.4px">${e(r.nom).toUpperCase()}</div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:9px">
+        ${r.ings.map((i) => `
+        <tr>
+          <td style="font:400 14px/1.5 Helvetica,Arial,sans-serif;color:#16130F;padding:5px 0;border-bottom:1px solid rgba(28,24,18,.07)">${e(i.name)}</td>
+          <td align="right" style="font:600 14px/1.5 Helvetica,Arial,sans-serif;color:#57514A;padding:5px 0;border-bottom:1px solid rgba(28,24,18,.07);white-space:nowrap">${e(i.portion)}</td>
+        </tr>`).join("")}
+      </table>
+    </td></tr>`).join("")}
     ${prog.note ? `<tr><td style="padding:20px 26px 0">
       <div style="font:600 10px/1 Helvetica,Arial,sans-serif;color:#B34700;letter-spacing:1.4px">${e(T.note).toUpperCase()}</div>
       <p style="font:400 14px/1.6 Helvetica,Arial,sans-serif;color:#57514A;margin:8px 0 0">${e(prog.note)}</p>
@@ -1063,6 +1074,25 @@ exports.deposerProgramme = onRequest(
           prog.carbs === null || prog.lip === null) {
         res.status(400).json({ok: false, motif: "valeurs"}); return;
       }
+      // Les repas : c'est le programme lui-meme. Les totaux ci-dessus
+      // en sont la consequence, calcules par la page a partir de la
+      // meme base d'aliments que l'app — on ne les recalcule pas ici,
+      // on les borne seulement.
+      const repasBruts = Array.isArray(b.repas) ? b.repas : [];
+      const repas = repasBruts.slice(0, 12).map((r) => ({
+        nom: String((r && r.nom) || "Repas").slice(0, 60),
+        ings: (Array.isArray(r && r.ings) ? r.ings : []).slice(0, 40)
+          .map((i) => ({
+            name: String((i && i.name) || "").slice(0, 90),
+            portion: Math.max(0, Math.round(Number(i && i.portion) || 0)),
+          }))
+          .filter((i) => i.name && i.portion > 0),
+      })).filter((r) => r.ings.length);
+
+      if (!repas.length) {
+        res.status(400).json({ok: false, motif: "repas"}); return;
+      }
+      prog.repas = repas;
       prog.note = String(b.note || "").slice(0, 600);
       prog.livreLe = new Date().toISOString();
       prog.parCoach = coach.uid;

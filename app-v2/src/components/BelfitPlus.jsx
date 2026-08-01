@@ -3,7 +3,8 @@ import { signal } from '@preact/signals';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApps } from 'firebase/app';
 import { utilisateur } from '../services/firebase.js';
-import { setObjectifs, objectifs } from '../store/journal.js';
+import { setObjectifs, objectifs, repas } from '../store/journal.js';
+import { macrosOf, DB } from '../data/aliments.js';
 import { ongletActif } from './BottomNav.jsx';
 import { ideesOuvertes } from './IdeesRepas.jsx';
 import { Entete } from './Entete.jsx';
@@ -31,6 +32,17 @@ export const programme = signal(null);
 export const programmeCharge = signal(false);
 
 export function chargerProgramme() {
+  // Apercu local : le meme drapeau que l'apercu Premium sert a poser
+  // un programme de demonstration sans passer par Firestore.
+  try {
+    const faux = localStorage.getItem('belfit_v2_apercu_programme');
+    if (faux) {
+      programme.value = JSON.parse(faux);
+      programmeCharge.value = true;
+      return;
+    }
+  } catch (e) { /* stockage indisponible : on suit le chemin normal */ }
+
   const u = utilisateur.value;
   if (!u || !getApps().length) { programmeCharge.value = true; return; }
   getDoc(doc(getFirestore(getApps()[0]), 'users', u.uid))
@@ -54,6 +66,32 @@ function depuis(iso) {
   return m === 1 ? 'il y a un mois' : `il y a ${m} mois`;
 }
 
+const CLE_CHARGE = 'belfit_prog_charge';
+
+/** Ce programme-ci a-t-il deja ete charge dans le journal ?
+ *  On repere la version par sa date de livraison : un nouveau
+ *  programme repart d'une ardoise propre, sans avertissement. */
+function dejaCharge(pr) {
+  try { return localStorage.getItem(CLE_CHARGE) === String(pr.livreLe); }
+  catch (e) { return false; }
+}
+function marquerCharge(pr) {
+  try { localStorage.setItem(CLE_CHARGE, String(pr.livreLe)); } catch (e) {}
+}
+
+/** Calories d'un repas du programme, calculees avec la base commune. */
+function kcalRepas(r) {
+  return (r.ings || []).reduce((t, i) => t + macrosOf(i).kcal, 0);
+}
+
+/** Unite affichee : piece pour les aliments comptes (oeufs, doses),
+ *  gramme sinon. macrosOf ne renvoie pas cette information, elle vit
+ *  sur l'entree de la base. */
+function unite(nom) {
+  const d = DB[nom];
+  return d && d.unit ? (d.unitLabel || 'p') : 'g';
+}
+
 const Fleche = () => (
   <span class="bp-fleche" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" /></svg>
@@ -62,7 +100,7 @@ const Fleche = () => (
 
 export function BelfitPlus() {
   const [ouvertProg, setOuvertProg] = useState(false);
-  const [applique, setApplique] = useState(false);
+  const [charge, setCharge] = useState(false);
 
   useEffect(() => { if (!programmeCharge.value) chargerProgramme(); }, []);
 
@@ -75,11 +113,37 @@ export function BelfitPlus() {
   const o = objectifs.value;
   const dejaApplique = pr && o.kcal === pr.kcal && o.prot === pr.prot
     && o.carbs === pr.carbs && o.lip === pr.lip;
+  // Ecart : le programme a ete charge un jour, puis les objectifs ont
+  // bouge. Tant qu'il n'a jamais ete charge, il n'y a pas d'ecart —
+  // seulement un plan qui attend.
+  // La trace du chargement est persistee : sans cela l'avertissement
+  // disparaitrait au premier rechargement de la page, c'est-a-dire
+  // exactement quand il devient utile.
+  const ecart = pr && !dejaApplique && (charge || dejaCharge(pr));
 
-  const appliquer = () => {
+  const aRepas = !!(pr && pr.repas && pr.repas.length);
+
+  /** Charge le programme dans le journal du jour : objectifs ET repas.
+   *  Les repas existants sont remplaces — un programme est un tout,
+   *  le melanger avec une saisie partielle ne donnerait ni l'un ni
+   *  l'autre. L'avertissement le dit avant le clic. */
+  const charger = () => {
     if (!pr) return;
     setObjectifs({ kcal: pr.kcal, prot: pr.prot, carbs: pr.carbs, lip: pr.lip });
-    setApplique(true);
+    if (aRepas) {
+      let n = 0;
+      repas.value = pr.repas.map((r) => ({
+        id: ++n,
+        nom: r.nom,
+        type: 'repas',
+        cle: null,
+        fixe: false,
+        ouvert: false,
+        ings: r.ings.map((i, k) => ({ id: n * 1000 + k, name: i.name, portion: i.portion })),
+      }));
+    }
+    marquerCharge(pr);
+    setCharge(true);
   };
 
   // Sous-titre de la carte programme : trois etats distincts, jamais
@@ -127,13 +191,52 @@ export function BelfitPlus() {
             <div><b>{pr.carbs} g</b><em>glucides</em></div>
             <div><b>{pr.lip} g</b><em>lipides</em></div>
           </div>
+
+          {/* Le plan lui-meme, repas par repas. Consultable en
+              permanence : c'est le document que le client a achete. */}
+          {(pr.repas || []).map((r, i) => (
+            <div class="bp-repas" key={i}>
+              <div class="bp-repas-tete">
+                <span>{r.nom}</span>
+                <em>{Math.round(kcalRepas(r))} kcal</em>
+              </div>
+              {r.ings.map((ing, j) => (
+                <div class="bp-ing" key={j}>
+                  <span>{ing.name}</span>
+                  <em>{ing.portion} {unite(ing.name)}</em>
+                </div>
+              ))}
+            </div>
+          ))}
+
           {pr.note && <p class="bp-note">{pr.note}</p>}
-          {dejaApplique ? (
-            <p class="bp-etat">Ces objectifs sont ceux de ton journal.</p>
-          ) : (
-            <button class="bp-appliquer" onClick={appliquer}>
-              {applique ? 'Objectifs appliqués' : 'Appliquer à mon journal'}
+
+          {/* Ecart avec le programme. Le client PEUT modifier ses
+              objectifs — c'est son application. Mais il doit savoir
+              qu'il quitte alors le plan pour lequel le coach a
+              travaille. On informe, on ne bloque pas, et on ne
+              recorrige rien dans son dos. */}
+          {ecart && (
+            <p class="bp-ecart">
+              Tes objectifs actuels ({o.kcal} kcal) ne sont plus ceux de ton
+              programme ({pr.kcal} kcal). Tu es sorti de l'objectif pour lequel
+              ce plan a été construit — recharge-le, ou demande un ajustement à
+              ton coach.
+            </p>
+          )}
+
+          {/* Le programme n'est pas modifiable ici : un ajustement se
+              demande au coach, qui en renvoie un. Le seul geste offert
+              est de le charger dans le journal. */}
+          {aRepas && (
+            <button class="bp-appliquer" onClick={charger}>
+              {charge ? 'Programme chargé dans ton journal' : 'Charger dans mon journal'}
             </button>
+          )}
+          {aRepas && (
+            <p class="bp-avis">
+              Tes repas du jour seront remplacés par ceux du programme.
+            </p>
           )}
         </div>
       )}

@@ -29,8 +29,19 @@ for (const page of pages) {
   blocs.forEach((m, i) => {
     const code = m[1];
     if (!code.trim()) return;
+    // Un bloc type="module" a sa propre grammaire : import et export y
+    // sont legitimes, et vm.Script les refuse. On verifie sa syntaxe
+    // avec vm.SourceTextModule quand il est disponible, sinon on se
+    // contente de constater qu'il est bien declare comme module.
+    const estModule = /\btype\s*=\s*["']module["']/.test(m[0]);
     try {
-      new vm.Script(code, { filename: `${page} (bloc ${i + 1})` });
+      if (estModule) {
+        if (typeof vm.SourceTextModule === 'function') {
+          new vm.SourceTextModule(code, { identifier: `${page} (bloc ${i + 1})` });
+        }
+      } else {
+        new vm.Script(code, { filename: `${page} (bloc ${i + 1})` });
+      }
     } catch (e) {
       erreurs++;
       console.error(`\u274c ${page} — bloc ${i + 1} : ${e.message}`);
