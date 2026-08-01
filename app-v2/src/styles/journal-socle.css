@@ -155,7 +155,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0;
-  min-height: 40px;
+  min-height: 44px;
   background: none;
   border: none;
   box-shadow: none;
@@ -180,7 +180,7 @@
 .pg-journal .j-btn-icone,
 .pg-entrainer .j-btn-icone,
 .pg-plus .j-btn-icone {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 47px; height: 47px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   color: var(--or-fonce);
   text-decoration: none;
@@ -908,7 +908,7 @@
 
 .fr-x {
   position: absolute; top: calc(14px + env(safe-area-inset-top)); left: 14px;
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 47px; height: 47px; border-radius: 50%;
   border: none; cursor: pointer; font-family: inherit;
   background: rgba(20, 20, 20, .55); color: var(--txt-inverse-2);
   -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
@@ -921,7 +921,7 @@
    Meme habillage que le bouton fermer : pastille sombre floutee. */
 .fr-nav {
   position: absolute; top: 50%; transform: translateY(-50%);
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 47px; height: 47px; border-radius: 50%;
   border: none; cursor: pointer; font-family: inherit;
   background: rgba(20, 20, 20, .55); color: var(--txt-inverse-2);
   -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
@@ -1690,7 +1690,7 @@
   align-items: center; gap: 10px; padding: 2px 0 6px;
 }
 .pg-journal .rp-retour {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 47px; height: 47px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   background: var(--srf-carte); border: none; color: var(--txt-1);
   box-shadow: 0 2px 8px rgba(60, 50, 40, .08); cursor: pointer;
@@ -1986,7 +1986,7 @@
 .pg-entrainer .j-entete--perso .j-symbole,
 .pg-premium .j-entete--perso .j-symbole,
 .pg-plus .j-entete--perso .j-symbole {
-  height: 28px; width: auto; display: block; justify-self: start;
+  height: 34px; width: auto; display: block; justify-self: start;
   filter: drop-shadow(0 4px 16px rgba(247, 181, 0, .15));
 }
 .pg-journal .j-entete--perso .j-entete-actions,
@@ -1998,7 +1998,7 @@
 .pg-premium .j-prenom,
 .pg-plus .j-prenom {
   justify-self: center;
-  font-size: 16px; font-weight: 500; color: var(--txt-1);
+  font-size: 17px; font-weight: 500; color: var(--txt-1);
   letter-spacing: -.01em; white-space: nowrap;
   max-width: 42vw; overflow: hidden; text-overflow: ellipsis;
 }
@@ -2271,7 +2271,7 @@
    ============================================================ */
 .pg-journal .courses-ligne {
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: fit-content; margin: 0 auto; min-height: 40px; padding: 0 14px;
+  width: fit-content; margin: 0 auto; min-height: 44px; padding: 0 14px;
   background: none; border: none; font-family: inherit; cursor: pointer;
   font-size: 13px; font-weight: 500; color: var(--texte-2);
 }

@@ -212,7 +212,7 @@
 }
 .pg-premium.pg-premium .pp-arc { position: absolute; inset: 0; width: 40px; height: 40px; }
 .pg-premium.pg-premium .pp-ic > svg:not(.pp-arc) {
-  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  width: 23px; height: 23px; fill: none; stroke: currentColor;
   stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-premium.pg-premium .pp h3 { margin: 0 0 6px; font-size: 15px; font-weight: 600;
@@ -676,12 +676,12 @@
   display: flex; align-items: center; gap: 8px; margin-right: -8px;
 }
 .pg-premium .j-btn-icone {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 47px; height: 47px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   color: var(--or-fonce); background: none; border: none; padding: 0;
 }
 .pg-premium .j-btn-icone svg {
-  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  width: 23px; height: 23px; fill: none; stroke: currentColor;
   stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
 }
 /* Meme respiration que le Journal entre l'en-tete et le contenu. */
