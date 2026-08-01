@@ -376,9 +376,6 @@
 .pg-entrainer .j-entete{ display:flex; align-items:center; justify-content:space-between; padding:0; min-height:44px; background:none; border:none; box-shadow:none; margin-bottom:4px; }
 .pg-entrainer .j-entete-actions{ display:flex; align-items:center; gap:8px; margin-right:-8px; }
 .pg-entrainer .j-logo{ height:55px; width:auto; display:block; filter:drop-shadow(0 4px 16px rgba(247,181,0,.15)); }
-.pg-entrainer .j-btn-icone{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#B34700; text-decoration:none; background:none; border:none; padding:0; cursor:pointer; font-family:inherit; -webkit-tap-highlight-color:transparent; transition:background .2s; }
-.pg-entrainer .j-btn-icone:active{ background:rgba(247,181,0,.14); transform:scale(.94); }
-.pg-entrainer .j-btn-icone svg{ width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 
 
 
@@ -496,7 +493,6 @@
    L'alignement de palette de la page avait deteint sur elles
    (variable partagee) : l'en-tete doit rester identique d'un onglet
    a l'autre, c'est le meme objet. */
-.pg-entrainer .j-btn-icone { color: #8F6200; }
 
 /* Fleche retour : cale a gauche comme le symbole qu'elle remplace,
    noire — c'est une navigation, pas une action doree. */

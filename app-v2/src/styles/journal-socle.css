@@ -204,7 +204,11 @@
 .pg-journal .j-btn-icone svg,
 .pg-entrainer .j-btn-icone svg,
 .pg-plus .j-btn-icone svg {
-  width: 27px; height: 27px;
+  /* 23 px : la taille de S'entrainer, prise pour reference et
+     appliquee partout. Cette regle etait la SECONDE declaration du
+     meme selecteur (27 px) et gagnait sur la premiere — c'est elle
+     qui faisait diverger les pages. */
+  width: 23px; height: 23px;
   fill: none; stroke: currentColor; stroke-width: 1.8;
   stroke-linecap: round; stroke-linejoin: round;
 }
