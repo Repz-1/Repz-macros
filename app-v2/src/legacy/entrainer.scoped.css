@@ -426,13 +426,13 @@
   content: ''; position: absolute; z-index: 1; inset: 0;
   border-radius: inherit; pointer-events: none;
   background: linear-gradient(90deg,
-    #FBF7F1 0%, #FBF7F1 33%, rgba(251,247,241,.85) 46%,
-    rgba(251,247,241,.38) 62%, rgba(251,247,241,0) 84%);
+    #FBF7F1 0%, #FBF7F1 42%, rgba(251,247,241,.92) 56%,
+    rgba(251,247,241,.42) 72%, rgba(251,247,241,0) 90%);
 }
 .pg-entrainer .choice.ph > * { position: relative; z-index: 2; }
 
 .pg-entrainer .choice.ph h3,
-.pg-entrainer .choice.ph > p { max-width: 58%; }
+.pg-entrainer .choice.ph > p { max-width: 55%; }
 
 .pg-entrainer .choice.ph .ch-icon {
   display: flex; align-items: center; justify-content: center;
@@ -453,7 +453,9 @@
   margin: 0 0 5px;
 }
 .pg-entrainer .choice.ph > p {
-  color: #6E675E; font-size: 13px; font-weight: 400;
+  /* Noir, comme le titre : la maquette distingue par la GRAISSE,
+     pas par la couleur (corps mesure a 2,2,2). */
+  color: #16130F; font-size: 13px; font-weight: 400;
   line-height: 1.42; text-shadow: none; margin: 0 0 14px;
 }
 
