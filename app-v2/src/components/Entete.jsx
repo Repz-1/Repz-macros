@@ -24,10 +24,14 @@ export function Entete() {
     <header class={'j-entete' + (p ? ' j-entete--perso' : '')}>
       {/* Le symbole compact est le B BELFIT (belfit-logo-b.png), le meme
           que le splash v1 — logo-symbol.png etait un reste de l'epoque
-          REPZ (feuille verte), jamais rebrande. */}
+          REPZ (feuille verte), jamais rebrande.
+          CHEMIN ABSOLU obligatoire : en relatif ('../'), le navigateur
+          resout une URL differente de celle de index.html et de
+          LoginScreen, qui pointent en '/'. Deux URL = deux entrees de
+          cache = le logo telecharge deux fois par visite. */}
       <img
         class={p ? 'j-symbole' : 'j-logo'}
-        src={p ? '../belfit-logo-b.png' : '../belfit-logo-header.png'}
+        src={p ? '/belfit-logo-b.png' : '/belfit-logo-header.png'}
         alt="BELFIT"
       />
 
