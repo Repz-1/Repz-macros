@@ -5,12 +5,20 @@ import { utilisateur } from '../services/firebase.js';
 export const voletProfil = signal(false);
 export const ouvrirProfil = () => { voletProfil.value = !voletProfil.value; };
 
-/** Prenom de la personne connectee, sinon rien. */
+/** Prenom de la personne connectee, sinon rien.
+ *  Trois sources, dans l'ordre : le compte Firebase, la cle posee a
+ *  la connexion, puis le profil local — un compte ancien peut n'avoir
+ *  que la troisieme. */
 function prenom() {
   const u = utilisateur.value;
   const nom = (u && u.displayName) || '';
   if (nom) return nom.split(' ')[0];
-  try { return localStorage.getItem('repz_firstName') || ''; } catch (e) { return ''; }
+  try {
+    const cle = localStorage.getItem('repz_firstName');
+    if (cle) return cle;
+    const prof = JSON.parse(localStorage.getItem('repz_profile') || '{}');
+    return (prof && prof.prenom) || '';
+  } catch (e) { return ''; }
 }
 
 // En-tete commun : marque a gauche, prenom au centre, profil + reglages
@@ -21,7 +29,7 @@ function prenom() {
 export function Entete() {
   const p = prenom();
   return (
-    <header class={'j-entete' + (p ? ' j-entete--perso' : '')}>
+    <header class="j-entete j-entete--perso">
       {/* Le symbole compact est le B BELFIT (belfit-logo-b.png), le meme
           que le splash v1 — logo-symbol.png etait un reste de l'epoque
           REPZ (feuille verte), jamais rebrande.
@@ -29,13 +37,14 @@ export function Entete() {
           resout une URL differente de celle de index.html et de
           LoginScreen, qui pointent en '/'. Deux URL = deux entrees de
           cache = le logo telecharge deux fois par visite. */}
-      <img
-        class={p ? 'j-symbole' : 'j-logo'}
-        src={p ? '/belfit-logo-b.png' : '/belfit-logo-header.png'}
-        alt="BELFIT"
-      />
+      {/* UNE SEULE STRUCTURE, prenom ou pas. L'ancienne variante sans
+          prenom basculait sur un grand logo-bandeau : deux en-tetes
+          differents selon l'etat du stockage local, et des pages qui
+          semblaient depareillees d'un onglet a l'autre. Le symbole
+          reste, le centre reste (vide au pire), la grille reste. */}
+      <img class="j-symbole" src="/belfit-logo-b.png" alt="BELFIT" />
 
-      {p && <div class="j-prenom">{p}</div>}
+      <div class="j-prenom">{p}</div>
 
       <div class="j-entete-actions">
         <button class="j-btn-icone" onClick={ouvrirProfil} aria-label="Profil">
