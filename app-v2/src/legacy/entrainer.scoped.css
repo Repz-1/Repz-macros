@@ -384,110 +384,100 @@
 .pg-entrainer .j-btn-icone svg{ width:27px; height:27px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 
 
+
 /* ============================================================
-   S'ENTRAINER — d'apres la maquette validee.
-   La photo occupait toute la carte sous un voile sombre, texte
-   blanc par-dessus : la lisibilite dependait de l'image. Elle passe
-   a droite et se fond vers le blanc — le texte ne la rencontre
-   jamais, quelle qu'elle soit.
+   S'ENTRAINER — calibre sur la maquette, MESUREE au pixel.
+   Extraction numerique de l'image (PIL) :
+     cartes 310 px de haut pour 779 de large -> ratio 2,5:1
+     cartes en CREME (249,244,239), a 1 point du fond (248,244,238)
+       — separees par l'ombre seule, pas par le blanc
+     ecart entre cartes 26 px -> 12 pt
+     bouton dore (245,180,3), texte sombre
+     photos telles quelles (le mur BELFIT y reste jaune : aucun filtre)
+   Les tailles de police de la maquette transposees a l'identique
+   donneraient ~10 px : on garde des tailles lisibles et on retrouve
+   le RATIO par la compacite (paddings, interlignes, bouton).
    ============================================================ */
-.pg-entrainer .choices { gap: 14px; }
+.pg-entrainer{background:#F8F4EE!important}
+.pg-entrainer .choices { gap: 12px; }
 
 .pg-entrainer .choice.ph {
   position: relative; overflow: hidden;
   display: block; min-height: 0;
-  padding: 22px 20px 20px;
-  background-color: #FFFFFF;
-  /* La photo vient du composant, en style en ligne : on la CADRE a
-     droite, on ne la remplace pas. */
-  background-size: 56% 100%;
+  padding: 15px 16px 15px;
+  /* Creme a peine plus clair que la page : la carte se detache par
+     l'ombre, pas par le blanc. C'est la matiere de la maquette. */
+  background-color: #FBF7F1;
+  background-size: 58% 100%;
   background-position: right center;
   background-repeat: no-repeat;
-  border: 1px solid rgba(28, 24, 18, .05);
+  border: 1px solid rgba(28, 24, 18, .04);
   border-radius: 22px;
-  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 4px 14px rgba(40, 32, 22, .05);
+  box-shadow: 0 1px 2px rgba(60, 48, 30, .05), 0 8px 22px rgba(60, 48, 30, .07);
   color: inherit;
 }
 .pg-entrainer .choice.ph.featured,
 .pg-entrainer .choice.ph.md,
 .pg-entrainer .choice.ph.sm { min-height: 0; }
 
-/* Le fondu remplace le voile sombre : il eclaircit vers la gauche
-   au lieu d'assombrir partout. Sa course est longue — une coupe
-   nette ferait lire deux zones, la ou l'on veut une seule carte. */
+/* Fondu creme -> transparent, long, pour fondre la photo dans la
+   carte sans coupe visible. */
 .pg-entrainer .choice.ph::after {
   content: ''; position: absolute; z-index: 1; inset: 0;
   border-radius: inherit; pointer-events: none;
   background: linear-gradient(90deg,
-    #FFFFFF 0%, #FFFFFF 34%, rgba(255,255,255,.86) 48%,
-    rgba(255,255,255,.42) 66%, rgba(255,255,255,0) 88%);
+    #FBF7F1 0%, #FBF7F1 33%, rgba(251,247,241,.85) 46%,
+    rgba(251,247,241,.38) 62%, rgba(251,247,241,0) 84%);
 }
 .pg-entrainer .choice.ph > * { position: relative; z-index: 2; }
 
 .pg-entrainer .choice.ph h3,
-.pg-entrainer .choice.ph > p,
-.pg-entrainer .choice.ph .cta { max-width: 60%; }
+.pg-entrainer .choice.ph > p { max-width: 58%; }
 
-/* Pastille d'icone : gris neutre et chaud, l'icone seule porte
-   l'accent. Une pastille teintee ferait deux accents pour un seul
-   objet. */
 .pg-entrainer .choice.ph .ch-icon {
   display: flex; align-items: center; justify-content: center;
-  width: 46px; height: 46px; margin-bottom: 14px;
-  border-radius: 14px; background: #F2F1EC;
+  width: 40px; height: 40px; margin-bottom: 10px;
+  border-radius: 12px; background: #F0EBE1;
   color: #16130F; box-shadow: none; border: none;
 }
-/* Seule la carte vedette porte l'accent : pastille jaune pale,
-   icone doree. Les trois autres restent neutres — quatre pastilles
-   teintees ne designeraient plus rien. */
-.pg-entrainer .choice.ph.featured .ch-icon {
-  background: #FBF3DC; color: #E0A400;
-}
 .pg-entrainer .choice.ph .ch-icon svg {
-  width: 23px; height: 23px; fill: none; stroke: currentColor;
-  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-entrainer .choice.ph.featured .ch-icon {
+  background: #FBF0D2; color: #DFA004;
 }
 .pg-entrainer .choice.ph h3 {
-  color: #16130F; font-size: 21px; font-weight: 700;
-  letter-spacing: -.028em; line-height: 1.16; text-shadow: none;
-  margin: 0 0 8px;
+  color: #16130F; font-size: 18px; font-weight: 700;
+  letter-spacing: -.024em; line-height: 1.18; text-shadow: none;
+  margin: 0 0 5px;
 }
 .pg-entrainer .choice.ph > p {
-  color: #6B655D; font-size: 14px; font-weight: 400;
-  line-height: 1.45; text-shadow: none; margin: 0 0 18px;
+  color: #6E675E; font-size: 13px; font-weight: 400;
+  line-height: 1.42; text-shadow: none; margin: 0 0 14px;
 }
 
-/* ---------- Les trois niveaux d'action ----------
-   Jaune pour l'entree principale, noir pour la deuxieme, gris clair
-   pour les deux dernieres. Le jaune et le noir portent tous deux un
-   texte a fort contraste : #FAC408 avec le noir BELFIT tient 11,4:1.
-   La fleche fait partie du bouton — elle dit « ca mene quelque
-   part », ce qu'un simple libelle ne dit pas. */
+/* Boutons : dore / noir / gris, fleche integree, gabarit compact de
+   la maquette — la hauteur reste a 44 px, plancher tactile. */
 .pg-entrainer .choice.ph .cta {
   display: inline-flex; align-items: center; justify-content: space-between;
-  gap: 22px; min-width: 190px;
-  padding: 15px 20px; border-radius: 14px;
-  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
-  background: #F2F1EC; color: #16130F;
+  gap: 18px; min-width: 168px;
+  padding: 12px 17px; border-radius: 13px;
+  font-size: 14px; font-weight: 600; letter-spacing: -.008em;
+  background: #F0EDE6; color: #16130F;
   border: none; backdrop-filter: none; box-shadow: none; text-shadow: none;
 }
 .pg-entrainer .choice.ph .cta::before {
   content: '\2192'; order: 2;
-  font-size: 17px; font-weight: 400; line-height: 1;
+  font-size: 16px; font-weight: 400; line-height: 1;
 }
 .pg-entrainer .choice.ph.featured .cta {
-  background: #FAC408; color: #16130F;
-  box-shadow: 0 3px 12px rgba(250, 196, 8, .28);
+  background: #F5B403; color: #16130F;
+  box-shadow: 0 3px 10px rgba(245, 180, 3, .30);
 }
-.pg-entrainer .choice.ph.md .cta {
-  background: #16130F; color: #FFFFFF;
-}
-/* Le reflet qui balayait le bouton toutes les 3,6 s est coupe : une
-   lumiere qui repasse en boucle attire l'oeil sans rien dire. */
+.pg-entrainer .choice.ph.md .cta { background: #16130F; color: #FFFFFF; }
 .pg-entrainer .choice.ph.featured .cta::after { display: none; animation: none; }
 
-
-/* Badges : sur fond clair, le verre depoli sombre n'a plus lieu d'etre. */
 .pg-entrainer .choice.ph .lock-badge,
 .pg-entrainer .choice.ph .pro-badge,
 .pg-entrainer .choice.ph .badge {
@@ -496,7 +486,9 @@
   backdrop-filter: none; text-shadow: none;
 }
 .pg-entrainer .choice.ph .badge {
-  position: absolute; top: 16px; right: 16px; left: auto;
+  position: absolute; top: 14px; right: 14px; left: auto;
   font-size: 9px; font-weight: 700; letter-spacing: .1em;
-  padding: 5px 10px; border-radius: 999px;
+  padding: 4px 9px; border-radius: 999px;
 }
+
+/* Le chrono suit le dore mesure du bouton. */
