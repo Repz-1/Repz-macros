@@ -645,3 +645,18 @@
 }
 .pg-premium.pg-premium .cmp-tete { padding: 12px 15px 8px; }
 .pg-premium.pg-premium .cmp-tete span { font-size: 8px; letter-spacing: .15em; }
+
+/* --- PRIX DE LA FORMULE RETENUE ---
+   Le degrade jaune-orange-brun peint sur le chiffre est retire :
+   c'est le seul texte de l'app a etre colore de cette maniere, et
+   un prix peint se lit comme une promotion, pas comme un tarif.
+   Il reste dominant par la TAILLE — 30 px contre 20 pour les
+   autres — ce qui suffit largement a le designer. */
+.pg-premium.pg-premium .fo.sel .fo-mois {
+  background: none;
+  -webkit-background-clip: border-box; background-clip: border-box;
+  color: var(--pr-tx); -webkit-text-fill-color: var(--pr-tx);
+}
+.pg-premium.pg-premium .fo.sel .fo-mois small {
+  color: var(--pr-tx4); -webkit-text-fill-color: var(--pr-tx4);
+}
