@@ -1,23 +1,25 @@
-.pg-stats{background:#F5F6F8!important;margin:0}
-.pg-stats{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}
+/* Fond : creme BELFIT, comme toutes les autres pages. Le gris-bleu
+   #F4F3F0 et le halo dore en haut venaient du V1 et n'appartenaient
+   a aucune palette de la marque. */
+.pg-stats{background:#F4F3F0!important;margin:0!important}
 /* body v1 : min-height plein ecran + padding-top safe-area */
 .pg-stats{min-height:100vh;padding-top:max(12px,env(safe-area-inset-top));}
-.pg-stats .weight-add-btn{display:block;width:100%;margin-top:14px;padding:12px;background:#fff;border:1.5px solid #F7B500;border-radius:12px;color:#B98A00;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;transition:background .15s;}
-.pg-stats .weight-add-btn:active{background:#FFF9E6;}
+.pg-stats .weight-add-btn{display:block;width:100%;margin-top:14px;padding:12px;background:#fff;border:1px solid rgba(179,71,0,.28);border-radius:13px;color:#B34700;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;transition:background .15s;}
+.pg-stats .weight-add-btn:active{background:#FFF6EC;}
 .pg-stats{
-    --orange:#F7B500; --noir:#181818; --gold:#F7B500;
-    --text:#1a1a1a; --text-dim:#6b7280; --line:#e5e7eb;
-    --card:#ffffff; --bg:#F5F6F8;
+    --orange:#F86A0C; --noir:#16130F; --gold:#B34700;
+    --text:#16130F; --text-dim:#6B655D; --line:rgba(28,24,18,.055);
+    --card:#ffffff; --bg:#F4F3F0;
 }
 .pg-stats *{ margin:0; padding:0; box-sizing:border-box; }
 .pg-stats{
-    font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-family:'Satoshi','Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
 }
 .pg-stats .topbar{
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px;
-    background:linear-gradient(160deg,#F7B500 0%,#DFA004 100%);
+    background:linear-gradient(160deg,#F86A0C 0%,#B34700 100%);
 }
 .pg-stats .topbar-home{
     width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
@@ -28,8 +30,8 @@
 .pg-stats .page-title{ font-size:24px; font-weight:800; margin:8px 2px 4px; }
 .pg-stats .page-sub{ font-size:14px; color:var(--text-dim); margin:0 2px 20px; }
 .pg-stats .stat-card{
-    position:relative; background:#F5F6F8;
-    border:1.5px solid #e7e2d9; border-radius:20px; padding:20px;
+    position:relative; background:#F4F3F0;
+    border:1.5px solid rgba(28,24,18,.055); border-radius:20px; padding:20px;
     box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:16px; overflow:hidden;
 }
 .pg-stats .stat-card::before{
@@ -37,7 +39,7 @@
     background:var(--orange); border-radius:4px 0 0 4px;
 }
 .pg-stats .stat-card h2{ font-size:17px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
-.pg-stats .stat-card h2 .h2ic{ width:20px; height:20px; stroke:#DFA004; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+.pg-stats .stat-card h2 .h2ic{ width:20px; height:20px; stroke:#B34700; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
 .pg-stats .stat-card .card-sub{ font-size:13px; color:var(--text-dim); margin-bottom:16px; }
 .pg-stats .stat-summary{ display:flex; gap:10px; margin-bottom:16px; }
 .pg-stats .stat-box{ flex:1; background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center; }
@@ -46,13 +48,13 @@
 .pg-stats .chart{ display:flex; align-items:flex-end; gap:6px; height:130px; padding-top:10px; }
 .pg-stats .chart-bar-wrap{ flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%; justify-content:flex-end; }
 .pg-stats .chart-bar{
-    width:100%; max-width:34px; background:linear-gradient(180deg,#DFA004,#F7B500);
+    width:100%; max-width:34px; background:linear-gradient(180deg,#B34700,#F86A0C);
     border-radius:6px 6px 0 0; min-height:4px; transition:height .4s ease;
 }
-.pg-stats .chart-bar.weight{ background:linear-gradient(180deg,#181818,#4a4a4a); }
-.pg-stats .chart-bar.charge{ background:linear-gradient(180deg,#DFA004,#F7B500); }
+.pg-stats .chart-bar.weight{ background:linear-gradient(180deg,#16130F,#4a4a4a); }
+.pg-stats .chart-bar.charge{ background:linear-gradient(180deg,#B34700,#F86A0C); }
 .pg-stats .exo-select{ width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:12px; font-size:14px; font-weight:700; font-family:inherit; background:#fff; color:var(--text); margin-bottom:14px; -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; }
-.pg-stats .exo-select:focus{ outline:none; border-color:#F7B500; }
+.pg-stats .exo-select:focus{ outline:none; border-color:#F86A0C; }
 .pg-stats .exo-pr{ display:flex; gap:10px; margin-bottom:14px; }
 .pg-stats .exo-pr-box{ flex:1; background:#FFF9E8; border:1px solid #F3D98A; border-radius:12px; padding:10px 12px; text-align:center; }
 .pg-stats .exo-pr-box .v{ font-size:19px; font-weight:800; color:#B98A00; }
@@ -76,7 +78,7 @@
 .pg-stats .score-row{ display:flex; align-items:center; gap:10px; }
 .pg-stats .score-row .sr-lbl{ width:118px; font-size:12.5px; font-weight:700; color:rgba(255,255,255,.85); flex-shrink:0; }
 .pg-stats .score-row .sr-bar{ flex:1; height:7px; background:rgba(255,255,255,.14); border-radius:5px; overflow:hidden; }
-.pg-stats .score-row .sr-fill{ height:100%; border-radius:5px; background:linear-gradient(90deg,#DFA004,#F7B500); }
+.pg-stats .score-row .sr-fill{ height:100%; border-radius:5px; background:linear-gradient(90deg,#B34700,#F86A0C); }
 .pg-stats .score-row .sr-val{ width:38px; text-align:right; font-size:12.5px; font-weight:800; font-variant-numeric:tabular-nums; }
 .pg-stats .stat-card.acc-green::before{ background:#10B981; }
 .pg-stats .stat-card.acc-green h2 .h2ic{ stroke:#10B981; }
@@ -84,8 +86,8 @@
 .pg-stats .stat-card.acc-orange h2 .h2ic{ stroke:#F97316; }
 .pg-stats .stat-card.acc-blue::before{ background:#3B82F6; }
 .pg-stats .stat-card.acc-blue h2 .h2ic{ stroke:#3B82F6; }
-.pg-stats .stat-card.acc-gold::before{ background:#F7B500; }
-.pg-stats .stat-card.acc-gold h2 .h2ic{ stroke:#DFA004; }
+.pg-stats .stat-card.acc-gold::before{ background:#F86A0C; }
+.pg-stats .stat-card.acc-gold h2 .h2ic{ stroke:#B34700; }
 .pg-stats .stat-card.acc-violet::before{ background:#8B5CF6; }
 .pg-stats .stat-card.acc-violet h2 .h2ic{ stroke:#8B5CF6; }
 .pg-stats .chart-bar.weight{ background:linear-gradient(180deg,#059669,#34D399) !important; }
@@ -96,28 +98,28 @@
 .pg-stats .chart-empty .ce-ic svg{ width:19px; height:19px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .pr-rank{ width:26px; height:26px; flex-shrink:0; border-radius:50%; background:#F5F3FF; color:#8B5CF6; font-size:12.5px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .pg-stats .pr-rank.r1{ background:#8B5CF6; color:#fff; }
-.pg-stats .ce-btn{ display:inline-block; margin-top:8px; background:#F7B500; color:#181818; text-decoration:none; font-size:12.5px; font-weight:800; padding:8px 14px; border-radius:11px; }
+.pg-stats .ce-btn{ display:inline-block; margin-top:8px; background:#F86A0C; color:#16130F; text-decoration:none; font-size:12.5px; font-weight:800; padding:8px 14px; border-radius:11px; }
 .pg-stats .stat-card.acc-red::before{ background:#EF4444; }
 .pg-stats .stat-card.acc-red h2 .h2ic{ stroke:#EF4444; }
-.pg-stats .repart-periode{ font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.05em; margin:2px 0 14px; }
-.pg-stats .repart-vide{ font-size:13px; color:#64748b; font-weight:600; line-height:1.5; }
-.pg-stats .rt-btn{ flex:1; padding:8px 6px; border:1.5px solid #E6E8EC; background:#fff; border-radius:11px; font-size:12px; font-weight:700; color:#6b7280; font-family:inherit; cursor:pointer; }
-.pg-stats .rt-btn.active{ background:#FFF4CC; border-color:#F7B500; color:#8F6200; }
+.pg-stats .repart-periode{ font-size:12px; font-weight:700; color:#8A8279; text-transform:uppercase; letter-spacing:.05em; margin:2px 0 14px; }
+.pg-stats .repart-vide{ font-size:13px; color:#6B655D; font-weight:600; line-height:1.5; }
+.pg-stats .rt-btn{ flex:1; padding:8px 6px; border:1.5px solid #E6E8EC; background:#fff; border-radius:11px; font-size:12px; font-weight:700; color:#6B655D; font-family:inherit; cursor:pointer; }
+.pg-stats .rt-btn.active{ background:#FFF4CC; border-color:#F86A0C; color:#B34700; }
 .pg-stats .repart-layout{ display:flex; gap:16px; align-items:center; }
 .pg-stats .repart-body{ flex:1; min-width:0; }
 .pg-stats .rep-row{ display:flex; align-items:center; gap:9px; margin-bottom:9px; }
 .pg-stats .rep-lbl{ width:66px; font-size:12px; font-weight:700; color:#4b5563; flex-shrink:0; }
 .pg-stats .rep-track{ flex:1; height:9px; background:#F1F2F5; border-radius:6px; overflow:hidden; }
 .pg-stats .rep-fill{ height:100%; border-radius:6px; transition:width .5s ease; }
-.pg-stats .rep-val{ width:22px; text-align:right; font-size:12px; font-weight:800; color:#6b7280; font-variant-numeric:tabular-nums; }
-.pg-stats .repart-note{ font-size:12.5px; color:#8F6200; background:#FFF9E8; border:1px solid #F3D98A; border-radius:12px; padding:10px 13px; margin-top:6px; font-weight:600; display:flex; align-items:flex-start; gap:8px; }
-.pg-stats .repart-note .rn-ic{ width:16px; height:16px; flex-shrink:0; margin-top:1px; fill:none; stroke:#DFA004; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.pg-stats .rep-val{ width:22px; text-align:right; font-size:12px; font-weight:800; color:#6B655D; font-variant-numeric:tabular-nums; }
+.pg-stats .repart-note{ font-size:12.5px; color:#B34700; background:#FFF9E8; border:1px solid #F3D98A; border-radius:12px; padding:10px 13px; margin-top:6px; font-weight:600; display:flex; align-items:flex-start; gap:8px; }
+.pg-stats .repart-note .rn-ic{ width:16px; height:16px; flex-shrink:0; margin-top:1px; fill:none; stroke:#B34700; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .repart-note.alert{ background:#FEF2F2; border-color:#FECACA; color:#B91C1C; }
 .pg-stats .repart-note.alert .rn-ic{ stroke:#DC2626; }
 .pg-stats .bodymap{ width:118px; flex-shrink:0; }
 .pg-stats .bodymap svg{ width:100%; height:auto; display:block; }
-.pg-stats .bodymap .bp{ fill:#E9EBEF; stroke:#D4D7DE; stroke-width:.6; transition:fill .4s; }
-.pg-stats .bodymap-legend{ display:flex; align-items:center; justify-content:center; gap:5px; font-size:10.5px; color:#9aa0aa; margin-top:6px; font-weight:600; }
+.pg-stats .bodymap .bp{ fill:rgba(28,24,18,.06); stroke:rgba(28,24,18,.10); stroke-width:.6; transition:fill .4s; }
+.pg-stats .bodymap-legend{ display:flex; align-items:center; justify-content:center; gap:5px; font-size:10.5px; color:#8A8279; margin-top:6px; font-weight:600; }
 .pg-stats .bodymap-legend i{ width:11px; height:11px; border-radius:3px; display:inline-block; }
 .pg-stats .pr-row{ display:flex; align-items:center; gap:12px; padding:11px 0; border-top:1px solid var(--line); }
 .pg-stats .pr-row:first-child{ border-top:none; }
@@ -131,7 +133,7 @@
     text-align:center; margin-bottom:16px;
 }
 .pg-stats .premium-invite .pi-icon{ margin-bottom:10px; }
-.pg-stats .premium-invite .pi-icon svg{ width:40px; height:40px; stroke:#DFA004; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pg-stats .premium-invite .pi-icon svg{ width:40px; height:40px; stroke:#B34700; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .premium-invite h3{ font-size:18px; font-weight:800; margin-bottom:8px; }
 .pg-stats .premium-invite p{ font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:18px; }
 .pg-stats .premium-invite .pi-btn{
@@ -160,7 +162,7 @@
 .pg-stats .bn-item svg{ width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .bn-item span{ font-size:10.5px; font-weight:700; }
 .pg-stats .bn-item:active{ transform:scale(.94); }
-.pg-stats #repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-stats #repzSplash{position:fixed;inset:0;z-index:99999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-stats #repzSplash.hide{opacity:0;pointer-events:none;}
 .pg-stats #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 .pg-stats #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -169,11 +171,11 @@
 .pg-stats .ah-logo{ height:55px; width:auto; display:block; }
 .pg-stats .ah-actions{ display:flex; align-items:center; gap:8px; }
 .pg-stats .ah-btn{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
-.pg-stats .ah-btn svg{ width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pg-stats .ah-btn svg{ width:27px; height:27px; stroke:#B34700; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
 
 /* --- styles inline du body v1 --- */
-.pg-stats #repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-stats #repzSplash{position:fixed;inset:0;z-index:99999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-stats #repzSplash.hide{opacity:0;pointer-events:none;}
 .pg-stats #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 .pg-stats #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -182,13 +184,13 @@
 .pg-stats .ah-logo{ height:55px; width:auto; display:block; }
 .pg-stats .ah-actions{ display:flex; align-items:center; gap:8px; }
 .pg-stats .ah-btn{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
-.pg-stats .ah-btn svg{ width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pg-stats .ah-btn svg{ width:27px; height:27px; stroke:#B34700; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
 /* ===== MODIFIER LES MUSCLES DU JOUR (copie v1 mes-stats.html) ===== */
 .pg-stats .rep-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:2px; }
 .pg-stats .rep-edit{
     flex:none; display:flex; align-items:center; gap:6px;
-    background:#FFF6DC; color:#8F6200; border:1px solid #F3E2A8;
+    background:#FFF6EC; color:#B34700; border:1px solid #F3E2A8;
     border-radius:20px; padding:7px 13px;
     font-size:12.5px; font-weight:800; font-family:inherit; cursor:pointer;
 }
@@ -201,16 +203,16 @@
 .pg-stats .ml-date{ font-size:17px; font-weight:800; margin-bottom:6px; text-transform:capitalize; }
 .pg-stats .ml-sub{ font-size:12.5px; color:#8a8580; font-weight:600; margin-bottom:16px; }
 .pg-stats .ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
-.pg-stats .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid #e7e2d9; background:#fff; color:#6b7280; cursor:pointer; font-family:inherit; }
-.pg-stats .ml-chip.on{ background:#DFA004; border-color:#DFA004; color:#fff; }
-.pg-stats .ml-chip.repos.on{ background:#64748b; border-color:#64748b; }
+.pg-stats .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid rgba(28,24,18,.055); background:#fff; color:#6B655D; cursor:pointer; font-family:inherit; }
+.pg-stats .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
+.pg-stats .ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }
 .pg-stats .ml-chip:active{ transform:scale(.96); }
 .pg-stats .ml-nav{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
-.pg-stats .ml-nav button{ background:#F5F3EE; border:none; border-radius:10px; width:38px; height:38px; font-size:18px; color:#181818; cursor:pointer; font-family:inherit; }
+.pg-stats .ml-nav button{ background:#F5F3EE; border:none; border-radius:10px; width:38px; height:38px; font-size:18px; color:#16130F; cursor:pointer; font-family:inherit; }
 .pg-stats .ml-nav button:disabled{ opacity:.35; }
 .pg-stats .ml-btns{ display:flex; gap:10px; }
 .pg-stats .ml-btns button{ flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; }
-.pg-stats .ml-clear{ background:#f1f5f9; color:#64748b; }
+.pg-stats .ml-clear{ background:#f1f5f9; color:#6B655D; }
 .pg-stats .ml-save{ background:#1a1a1a; color:#F5A800; }
 
 /* ===== MODALE POIDS (copie v1 app.html) ===== */
@@ -235,14 +237,122 @@
 }
 .pg-stats .modal h3{ margin-bottom:16px; font-size:17px; padding-right:38px; }
 .pg-stats .modal-h3-ic{ display:flex; align-items:center; gap:8px; }
-.pg-stats .modal-h3-ic .ic{ width:20px; height:20px; color:#F7B500; }
+.pg-stats .modal-h3-ic .ic{ width:20px; height:20px; color:#F86A0C; }
 .pg-stats .modal label{ display:block; font-size:13px; font-weight:600; margin:10px 0 4px; color:#475569; }
 .pg-stats .modal input{ width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:15px; }
 .pg-stats .modal-btns{ display:flex; gap:8px; margin-top:18px; }
 .pg-stats .modal-btns button{ flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:inherit; }
-.pg-stats .modal-save{ background:#181818; color:#fff; }
+.pg-stats .modal-save{ background:#16130F; color:#fff; }
 .pg-stats .modal-cancel{ background:#e2e8f0; color:#475569; }
 .pg-stats .wm-last{ font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
 .pg-stats .wm-last b{ color:#191919; }
 /* .ce-btn est un <button> en v2 (lien en v1) : neutraliser le style bouton natif */
 .pg-stats .ce-btn{ border:none; cursor:pointer; font-family:inherit; }
+
+/* ============================================================
+   STATS — alignement sur le langage BELFIT.
+   Meme matiere que le Journal, la page repas et BelFit+ : creme au
+   fond, cartes blanches a 18 px, bordure sous le seuil de lecture,
+   ombre a deux couches, orange en accent.
+
+   Ce qui vient de la maquette S'entrainer : l'en-tete (grand titre
+   plus phrase grise), la pastille d'icone a gauche, le rythme des
+   espacements. Ce qui n'en vient PAS : la structure en menu. Une
+   page de stats montre des donnees, elle n'ouvre pas des portes —
+   chaque carte garde son graphique au lieu d'un bouton « Ouvrir ».
+   ============================================================ */
+.pg-stats { background: #F4F3F0; }
+.pg-stats .container { padding: 4px 16px 100px; }
+
+/* ---------- En-tete ---------- */
+.pg-stats .page-title {
+  font-size: 28px; font-weight: 700; letter-spacing: -.035em;
+  line-height: 1.08; color: #16130F; margin: 14px 0 6px;
+}
+.pg-stats .page-sub {
+  font-size: 14.5px; line-height: 1.45; color: #6B655D;
+  margin: 0 0 20px; max-width: 30ch;
+}
+
+/* ---------- Cartes ----------
+   Le filet orange colle au bord gauche disparait : il datait d'une
+   epoque ou les cartes n'avaient pas de matiere propre. L'ombre et
+   la bordure suffisent a poser l'objet. */
+.pg-stats .stat-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(28, 24, 18, .055);
+  border-radius: 18px;
+  padding: 16px 16px 18px;
+  margin-bottom: 11px;
+  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+}
+.pg-stats .stat-card::before { display: none; }
+
+/* Titre : pastille d'icone a gauche, comme sur les cartes BelFit+. */
+.pg-stats .stat-card h2 {
+  font-size: 15.5px; font-weight: 600; letter-spacing: -.015em;
+  color: #16130F; margin: 0 0 3px; gap: 10px;
+}
+.pg-stats .stat-card h2 .h2ic {
+  width: 34px; height: 34px; flex: none;
+  padding: 8px; border-radius: 11px;
+  background: rgba(248, 106, 12, .07);
+  stroke: #B34700; stroke-width: 1.75;
+  box-sizing: border-box;
+}
+.pg-stats .stat-card .card-sub {
+  font-size: 12.5px; line-height: 1.4; color: #6B655D;
+  margin: 0 0 15px; padding-left: 44px;
+}
+
+/* Les accents de couleur par carte passent tous a l'orange BELFIT :
+   vert, bleu, violet et rouge n'appartenaient a aucune palette de
+   la marque. */
+.pg-stats .stat-card.acc-green h2 .h2ic,
+.pg-stats .stat-card.acc-orange h2 .h2ic,
+.pg-stats .stat-card.acc-blue h2 .h2ic,
+.pg-stats .stat-card.acc-red h2 .h2ic,
+.pg-stats .stat-card.acc-violet h2 .h2ic { stroke: #B34700; }
+
+/* ---------- Chiffres de synthese ----------
+   Fond creme plutot que blanc sur blanc : la boite se detache par
+   la matiere, pas par une bordure de plus. */
+.pg-stats .stat-box {
+  background: #FAF8F4;
+  border: 1px solid rgba(28, 24, 18, .05);
+  border-radius: 13px; padding: 13px 10px;
+}
+.pg-stats .stat-box .sb-val {
+  font-size: 21px; font-weight: 650; letter-spacing: -.025em;
+  color: #16130F; font-variant-numeric: tabular-nums;
+}
+.pg-stats .stat-box .sb-lbl {
+  font-size: 10.5px; color: #8A8279; margin-top: 3px;
+}
+
+/* ---------- Graphiques ---------- */
+.pg-stats .chart-bar {
+  border-radius: 7px 7px 3px 3px;
+  background: linear-gradient(180deg, #F8A05A, #F86A0C);
+}
+.pg-stats .chart-bar.weight {
+  background: linear-gradient(180deg, #3A414D, #1E232D);
+}
+.pg-stats .chart-bar.charge {
+  background: linear-gradient(180deg, #F8A05A, #F86A0C);
+}
+.pg-stats .chart-val {
+  font-size: 10px; font-weight: 600; color: #16130F;
+  font-variant-numeric: tabular-nums;
+}
+.pg-stats .chart-day { font-size: 10px; color: #8A8279; }
+.pg-stats .chart-empty {
+  color: #8A8279; font-size: 13px; line-height: 1.5;
+}
+
+
+/* Les liens de la page suivent l'accent BELFIT : sans regle, le
+   navigateur les peint en bleu par defaut, seule couleur de la page
+   a n'appartenir a aucune palette. */
+.pg-stats a { color: #B34700; }
+.pg-stats a.ce-btn, .pg-stats a[style] { color: inherit; }
