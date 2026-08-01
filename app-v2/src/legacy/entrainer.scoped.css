@@ -376,31 +376,29 @@
 .pg-entrainer .j-btn-icone:active{ background:rgba(247,181,0,.14); transform:scale(.94); }
 .pg-entrainer .j-btn-icone svg{ width:27px; height:27px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 
+
 /* ============================================================
-   S'ENTRAINER — cartes sur le langage BELFIT.
-   La photo occupait toute la carte sous un voile sombre, avec du
-   texte blanc par-dessus : la lisibilite dependait alors de
-   l'image, et chaque carte etait un bloc sombre isole sur le
-   creme. Elle passe a droite et se fond vers le blanc — le texte
-   ne rencontre plus jamais la photo, quelle qu'elle soit.
-   Meme matiere que le Journal, la page repas, BelFit+ et Stats.
+   S'ENTRAINER — d'apres la maquette validee.
+   La photo occupait toute la carte sous un voile sombre, texte
+   blanc par-dessus : la lisibilite dependait de l'image. Elle passe
+   a droite et se fond vers le blanc — le texte ne la rencontre
+   jamais, quelle qu'elle soit.
    ============================================================ */
-.pg-entrainer .choices { gap: 11px; }
+.pg-entrainer .choices { gap: 14px; }
 
 .pg-entrainer .choice.ph {
   position: relative; overflow: hidden;
   display: block; min-height: 0;
-  padding: 0;
+  padding: 22px 20px 20px;
   background-color: #FFFFFF;
-  /* La photo reste posee par le composant (style en ligne) : on ne la
-     remplace pas, on la CADRE a droite. Un background-image: none
-     ici l'aurait effacee, le composant etant la source. */
-  background-size: 66% 100%;
+  /* La photo vient du composant, en style en ligne : on la CADRE a
+     droite, on ne la remplace pas. */
+  background-size: 56% 100%;
   background-position: right center;
   background-repeat: no-repeat;
-  border: 1px solid rgba(28, 24, 18, .055);
-  border-radius: 18px;
-  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+  border: 1px solid rgba(28, 24, 18, .05);
+  border-radius: 22px;
+  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 4px 14px rgba(40, 32, 22, .05);
   color: inherit;
 }
 .pg-entrainer .choice.ph.featured,
@@ -408,81 +406,94 @@
 .pg-entrainer .choice.ph.sm { min-height: 0; }
 
 /* Le fondu remplace le voile sombre : il eclaircit vers la gauche
-   au lieu d'assombrir partout. */
+   au lieu d'assombrir partout. Sa course est longue — une coupe
+   nette ferait lire deux zones, la ou l'on veut une seule carte. */
 .pg-entrainer .choice.ph::after {
   content: ''; position: absolute; z-index: 1; inset: 0;
   border-radius: inherit; pointer-events: none;
   background: linear-gradient(90deg,
-    #FFFFFF 0%, rgba(255,255,255,.94) 30%,
-    rgba(255,255,255,.38) 64%, rgba(255,255,255,0) 100%);
+    #FFFFFF 0%, #FFFFFF 34%, rgba(255,255,255,.86) 48%,
+    rgba(255,255,255,.42) 66%, rgba(255,255,255,0) 88%);
 }
 .pg-entrainer .choice.ph > * { position: relative; z-index: 2; }
 
-/* Contenu : tout tient a gauche, jamais sur la photo. */
-.pg-entrainer .choice.ph {
-  padding: 16px 15px 17px;
-}
 .pg-entrainer .choice.ph h3,
 .pg-entrainer .choice.ph > p,
-.pg-entrainer .choice.ph .cta { max-width: 62%; }
+.pg-entrainer .choice.ph .cta { max-width: 60%; }
 
-/* L'icone revient : elle etait masquee sur les cartes a photo. */
+/* Pastille d'icone : gris neutre et chaud, l'icone seule porte
+   l'accent. Une pastille teintee ferait deux accents pour un seul
+   objet. */
 .pg-entrainer .choice.ph .ch-icon {
   display: flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px; margin-bottom: 10px;
-  border-radius: 11px; background: rgba(248, 106, 12, .07);
-  color: #B34700; box-shadow: none;
+  width: 46px; height: 46px; margin-bottom: 14px;
+  border-radius: 14px; background: #F2F1EC;
+  color: #E0A400; box-shadow: none; border: none;
 }
 .pg-entrainer .choice.ph .ch-icon svg {
-  width: 18px; height: 18px; fill: none; stroke: currentColor;
-  stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+  width: 23px; height: 23px; fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-entrainer .choice.ph h3 {
-  color: #16130F; font-size: 17px; font-weight: 600;
-  letter-spacing: -.02em; line-height: 1.2; text-shadow: none;
-  margin: 0 0 5px;
+  color: #16130F; font-size: 21px; font-weight: 700;
+  letter-spacing: -.028em; line-height: 1.16; text-shadow: none;
+  margin: 0 0 8px;
 }
 .pg-entrainer .choice.ph > p {
-  color: #6B655D; font-size: 12.5px; font-weight: 400;
-  line-height: 1.42; text-shadow: none; margin: 0 0 13px;
+  color: #6B655D; font-size: 14px; font-weight: 400;
+  line-height: 1.45; text-shadow: none; margin: 0 0 18px;
 }
 
-/* Les trois niveaux d'action de la maquette, dans notre palette :
-   orange plein pour l'entree principale, graphite pour la
-   deuxieme, contour discret pour les deux dernieres. */
+/* ---------- Les trois niveaux d'action ----------
+   Jaune pour l'entree principale, noir pour la deuxieme, gris clair
+   pour les deux dernieres. Le jaune et le noir portent tous deux un
+   texte a fort contraste : #FAC408 avec le noir BELFIT tient 11,4:1.
+   La fleche fait partie du bouton — elle dit « ca mene quelque
+   part », ce qu'un simple libelle ne dit pas. */
 .pg-entrainer .choice.ph .cta {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 11px 17px; border-radius: 12px;
-  font-size: 13.5px; font-weight: 600; letter-spacing: -.005em;
-  background: #FFFFFF; color: #16130F;
-  border: 1px solid rgba(28, 24, 18, .10);
-  backdrop-filter: none; box-shadow: none; text-shadow: none;
+  display: inline-flex; align-items: center; justify-content: space-between;
+  gap: 22px; min-width: 190px;
+  padding: 15px 20px; border-radius: 14px;
+  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+  background: #F2F1EC; color: #16130F;
+  border: none; backdrop-filter: none; box-shadow: none; text-shadow: none;
+}
+.pg-entrainer .choice.ph .cta::before {
+  content: '\2192'; order: 2;
+  font-size: 17px; font-weight: 400; line-height: 1;
 }
 .pg-entrainer .choice.ph.featured .cta {
-  /* Texte fonce sur l'orange : #F86A0C avec du blanc tombe a 3,4:1,
-     avec le noir BELFIT il tient 5,0:1. */
-  background: #F86A0C; color: #16130F; border: none;
-  box-shadow: 0 2px 8px rgba(248, 106, 12, .22);
+  background: #FAC408; color: #16130F;
+  box-shadow: 0 3px 12px rgba(250, 196, 8, .28);
 }
 .pg-entrainer .choice.ph.md .cta {
-  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
-  color: #F4F6F8; border: none;
+  background: #16130F; color: #FFFFFF;
 }
 /* Le reflet qui balayait le bouton toutes les 3,6 s est coupe : une
    lumiere qui repasse en boucle attire l'oeil sans rien dire. */
 .pg-entrainer .choice.ph.featured .cta::after { display: none; animation: none; }
 
+/* Les photos sont desaturees : en couleur, quatre images differentes
+   tiraient chacune la carte vers sa propre dominante. En gris, elles
+   deviennent une matiere commune et l'accent reste au bouton. */
+.pg-entrainer .choice.ph { filter: none; }
+.pg-entrainer .choice.ph::before {
+  content: ''; position: absolute; z-index: 0; inset: 0;
+  border-radius: inherit; pointer-events: none;
+  background: inherit; background-color: transparent;
+  filter: grayscale(1) contrast(1.04);
+}
+
 /* Badges : sur fond clair, le verre depoli sombre n'a plus lieu d'etre. */
 .pg-entrainer .choice.ph .lock-badge,
-.pg-entrainer .choice.ph .pro-badge {
+.pg-entrainer .choice.ph .pro-badge,
+.pg-entrainer .choice.ph .badge {
   background: #FFF6EC; color: #B34700;
   border: 1px solid rgba(179, 71, 0, .20);
   backdrop-filter: none; text-shadow: none;
 }
 .pg-entrainer .choice.ph .badge {
-  position: absolute; top: 14px; right: 14px; left: auto;
-  background: #FFF6EC; color: #B34700;
-  border: 1px solid rgba(179, 71, 0, .20);
+  position: absolute; top: 16px; right: 16px; left: auto;
   font-size: 9px; font-weight: 700; letter-spacing: .1em;
-  padding: 4px 9px; border-radius: 999px; text-shadow: none;
+  padding: 5px 10px; border-radius: 999px;
 }
