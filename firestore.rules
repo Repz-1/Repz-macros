@@ -24,14 +24,6 @@ service cloud.firestore {
       allow delete: if request.auth != null && request.auth.uid == uid;
     }
 
-    // Liste des coachs : totalement fermée au client, en lecture comme
-    // en écriture. Seule la console peut y ajouter un uid — un coach ne
-    // peut donc pas s'auto-déclarer, et personne ne peut savoir qui
-    // dispose du droit de déposer un programme.
-    match /coachs/{uid} {
-      allow read, write: if false;
-    }
-
     // Table des pseudonymes : totalement fermée au client.
     // Elle relie un pseudo à un compte ; la rendre lisible permettrait
     // d'énumérer les utilisateurs. Seules les Cloud Functions y accèdent.

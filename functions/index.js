@@ -867,10 +867,29 @@ exports.mailReinitialisation = onRequest(
 // programme chez n'importe quel autre compte : la page n'est qu'une
 // commodite, la regle est ce fichier.
 //
-// La liste des coachs vit dans coachs/{uid}. Ce document n'est
-// jamais lisible par le client (regle Firestore), et seule la
-// console peut l'ecrire — un coach ne peut donc pas s'auto-declarer.
+// Qui est coach ? Une liste d'adresses ecrite ICI, dans le code.
+// Choix assume : une liste en base serait plus souple, mais elle
+// obligerait a manipuler des identifiants techniques dans la
+// console. Ici, ajouter un coach = ajouter une ligne ci-dessous et
+// redeployer. La liste n'est jamais exposee au client — ce fichier
+// tourne sur le serveur.
+//
+// L'adresse doit etre CONFIRMEE : sans cela, quelqu'un pourrait
+// creer un compte avec l'adresse d'un coach sans y avoir acces et
+// recuperer le droit de deposer.
 // ============================================================
+
+/** Adresses autorisees a deposer un programme. */
+const COACHS = [
+  "coach@belfit.be",
+  "contact@belfit.be",
+];
+
+/** Vrai si ce compte a le droit de deposer un programme. */
+function estCoachAutorise(compte) {
+  if (!compte || !compte.email || !compte.emailVerified) return false;
+  return COACHS.includes(compte.email.toLowerCase());
+}
 
 /** Page de destination annoncee dans le courriel. */
 const PAGE_APP = "https://belfit.be/v2/";
@@ -1002,14 +1021,16 @@ exports.deposerProgramme = onRequest(
 
       let coach;
       try {
-        coach = await admin.auth().verifyIdToken(jeton);
+        const decode = await admin.auth().verifyIdToken(jeton);
+        coach = await admin.auth().getUser(decode.uid);
       } catch (e) {
         res.status(401).json({ok: false}); return;
       }
 
-      // 2. Est-il coach ? Seule la console ecrit coachs/{uid}.
-      const estCoach = (await db.collection("coachs").doc(coach.uid).get()).exists;
-      if (!estCoach) { res.status(403).json({ok: false, motif: "acces"}); return; }
+      // 2. Est-il coach ? Adresse dans la liste ET confirmee.
+      if (!estCoachAutorise(coach)) {
+        res.status(403).json({ok: false, motif: "acces"}); return;
+      }
 
       // 3. Quel client ? Par courriel ou par pseudo, au choix.
       const cible = String((req.body && req.body.client) || "").trim();
