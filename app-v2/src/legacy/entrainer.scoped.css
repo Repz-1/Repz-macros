@@ -108,14 +108,7 @@
     l'AIR qui se resserre : 16+18 pt autour contre 12 sur le
     Journal. */
 .pg-entrainer{ padding-top: max(8px, env(safe-area-inset-top)) !important; }
-.pg-entrainer .intro{ text-align:left; padding:8px 2px 12px; }
-.pg-entrainer .intro-titre{
-  margin:0 0 6px; font-size:31px; font-weight:700;
-  letter-spacing:-.035em; line-height:1.05; color:#16130F;
-}
-.pg-entrainer .intro-sous{
-  margin:0; font-size:15px; line-height:1.5; color:#8A8279; max-width:32ch;
-}
+.pg-entrainer .intro{ display:none; }
 .pg-entrainer .intro-eyebrow{ font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--noir); }
 .pg-entrainer .intro-eyebrow em{ font-style:normal; color:var(--gold); }
 .pg-entrainer .intro h2{ font-size:26px; font-weight:800; line-height:1.15; letter-spacing:-.02em; margin-bottom:6px; color:var(--noir); }
