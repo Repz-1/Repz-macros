@@ -171,63 +171,26 @@ export function RestTimer() {
   };
   const reset = () => setEtat(e => ({ ...e, endAt: null, total: e.preset }));
 
-  // ---- FAB deplaçable ----
+  // ---- FAB : fixe au-dessus de la barre ----
+  // Il etait deplaçable, avec sa position gardee en memoire. Deux
+  // defauts : la position enregistree pouvait le loger DERRIERE la
+  // barre de navigation, sans moyen de l'en sortir ; et le glissement
+  // se declenchait parfois au lieu du clic. Le CSS le pose desormais
+  // seul, a 74 px du bas — juste au-dessus de la barre, en toute
+  // circonstance. Il flotte, il ne bouge plus.
   useEffect(() => {
     const fab = fabRef.current;
     if (!fab) return;
-    try {
-      const p = JSON.parse(localStorage.getItem(CLE_POS) || 'null');
-      if (p) {
-        const w = fab.offsetWidth || 60;
-        const snapX = (p.x + w / 2 < window.innerWidth / 2) ? 16 : window.innerWidth - w - 16;
-        poser(snapX, p.y);
-      }
-    } catch {}
 
-    let sx = 0, sy = 0, ox = 0, oy = 0, drag = false;
+    // Une position enregistree par l'ancienne version resterait
+    // appliquee en style en ligne : on la neutralise une fois.
+    try { localStorage.removeItem(CLE_POS); } catch (e) {}
+    fab.style.left = ''; fab.style.top = '';
+    fab.style.right = ''; fab.style.bottom = '';
 
-    function poser(x, y) {
-      const maxX = window.innerWidth - fab.offsetWidth - 4;
-      const maxY = window.innerHeight - fab.offsetHeight - 4;
-      x = Math.min(Math.max(4, x), maxX);
-      y = Math.min(Math.max(4, y), maxY);
-      fab.style.left = x + 'px'; fab.style.top = y + 'px';
-      fab.style.right = 'auto'; fab.style.bottom = 'auto';
-      return { x, y };
-    }
-    const ts = (e) => {
-      const tc = e.touches[0]; sx = tc.clientX; sy = tc.clientY;
-      const r = fab.getBoundingClientRect(); ox = r.left; oy = r.top; drag = false;
-    };
-    const tm = (e) => {
-      const tc = e.touches[0];
-      const dx = tc.clientX - sx, dy = tc.clientY - sy;
-      if (!drag && Math.hypot(dx, dy) > 10) drag = true;
-      if (drag) { e.preventDefault(); poser(ox + dx, oy + dy); }
-    };
-    const te = () => {
-      if (drag) {
-        const r = fab.getBoundingClientRect();
-        const snapX = (r.left + r.width / 2 < window.innerWidth / 2) ? 16 : window.innerWidth - r.width - 16;
-        const p = poser(snapX, r.top);
-        fab.style.transition = 'left .22s ease, top .22s ease';
-        setTimeout(() => { fab.style.transition = ''; }, 250);
-        try { localStorage.setItem(CLE_POS, JSON.stringify(p)); } catch {}
-      } else {
-        setOuvert(o => !o);
-      }
-    };
-    fab.addEventListener('touchstart', ts, { passive: true });
-    fab.addEventListener('touchmove', tm, { passive: false });
-    fab.addEventListener('touchend', te);
-    const clic = (e) => { if (e.detail && !('ontouchstart' in window)) setOuvert(o => !o); };
-    fab.addEventListener('click', clic);
-    return () => {
-      fab.removeEventListener('touchstart', ts);
-      fab.removeEventListener('touchmove', tm);
-      fab.removeEventListener('touchend', te);
-      fab.removeEventListener('click', clic);
-    };
+    const basculer = () => setOuvert(o => !o);
+    fab.addEventListener('click', basculer);
+    return () => { fab.removeEventListener('click', basculer); };
   }, []);
 
   const fabTime = enCours ? `${mm}:${ss}` : '';

@@ -257,7 +257,7 @@ button{cursor:pointer}
 .v2-timer-btn.start:active{transform:scale(.95)}
 .v2-timer-btn.reset{background: #f3f4f6;color:var(--txt-1-doux);border: 1px solid #e5e7eb}
 .v2-timer-btn.reset:active{background: #e5e7eb}
-.v2-chrono-fab{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));right:8px;z-index:66;width:60px;height:60px;border-radius:50%;background:var(--srf-accent);color:var(--txt-1-fonce);border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(247,181,0,.55);transition:transform .15s,background .2s;-webkit-tap-highlight-color:transparent}
+.v2-chrono-fab{position:fixed;bottom:calc(90px + env(safe-area-inset-bottom));right:12px;z-index:82;width:60px;height:60px;border-radius:50%;background:var(--srf-accent);color:var(--txt-1-fonce);border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(247,181,0,.55);transition:transform .15s,background .2s;-webkit-tap-highlight-color:transparent}
 .v2-chrono-fab svg{width:30px;height:30px}
 .v2-chrono-fab:active{transform:scale(.94)}
 .v2-chrono-fab-time{font-size:11px;font-weight:800;line-height:1;margin-top:2px;font-variant-numeric:tabular-nums}
