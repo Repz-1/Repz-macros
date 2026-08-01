@@ -104,7 +104,14 @@
     font-size:20px; color:var(--text); text-decoration:none;
 }
 .pg-entrainer .top h1{ font-size:22px; font-weight:800; letter-spacing:-.02em; }
-.pg-entrainer .intro{ text-align:left; padding:18px 6px 14px; }
+.pg-entrainer .intro{ text-align:left; padding:14px 2px 18px; }
+.pg-entrainer .intro-titre{
+  margin:0 0 8px; font-size:34px; font-weight:700;
+  letter-spacing:-.035em; line-height:1.05; color:#16130F;
+}
+.pg-entrainer .intro-sous{
+  margin:0; font-size:15px; line-height:1.5; color:#8A8279; max-width:32ch;
+}
 .pg-entrainer .intro-eyebrow{ font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--noir); }
 .pg-entrainer .intro-eyebrow em{ font-style:normal; color:var(--gold); }
 .pg-entrainer .intro h2{ font-size:26px; font-weight:800; line-height:1.15; letter-spacing:-.02em; margin-bottom:6px; color:var(--noir); }
@@ -428,7 +435,13 @@
   display: flex; align-items: center; justify-content: center;
   width: 46px; height: 46px; margin-bottom: 14px;
   border-radius: 14px; background: #F2F1EC;
-  color: #E0A400; box-shadow: none; border: none;
+  color: #16130F; box-shadow: none; border: none;
+}
+/* Seule la carte vedette porte l'accent : pastille jaune pale,
+   icone doree. Les trois autres restent neutres — quatre pastilles
+   teintees ne designeraient plus rien. */
+.pg-entrainer .choice.ph.featured .ch-icon {
+  background: #FBF3DC; color: #E0A400;
 }
 .pg-entrainer .choice.ph .ch-icon svg {
   width: 23px; height: 23px; fill: none; stroke: currentColor;
@@ -473,16 +486,6 @@
    lumiere qui repasse en boucle attire l'oeil sans rien dire. */
 .pg-entrainer .choice.ph.featured .cta::after { display: none; animation: none; }
 
-/* Les photos sont desaturees : en couleur, quatre images differentes
-   tiraient chacune la carte vers sa propre dominante. En gris, elles
-   deviennent une matiere commune et l'accent reste au bouton. */
-.pg-entrainer .choice.ph { filter: none; }
-.pg-entrainer .choice.ph::before {
-  content: ''; position: absolute; z-index: 0; inset: 0;
-  border-radius: inherit; pointer-events: none;
-  background: inherit; background-color: transparent;
-  filter: grayscale(1) contrast(1.04);
-}
 
 /* Badges : sur fond clair, le verre depoli sombre n'a plus lieu d'etre. */
 .pg-entrainer .choice.ph .lock-badge,

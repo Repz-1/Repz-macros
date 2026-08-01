@@ -244,8 +244,12 @@ export function Entrainer() {
   return (
     <div class="pg-entrainer">
       <Entete />
+      {/* En-tete de page, d'apres la maquette : le nom de l'onglet en
+          grand, une phrase grise dessous. « BelFit Training » disait le
+          nom de la marque a quelqu'un qui est deja dedans. */}
       <div class="intro">
-        <span class="intro-eyebrow">BelFit <em>Training</em></span>
+        <h1 class="intro-titre">{t('nav_entrainer')}</h1>
+        <p class="intro-sous">{t('tr_page_sub')}</p>
       </div>
 
       <div class="choices">
