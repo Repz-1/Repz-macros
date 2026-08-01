@@ -149,12 +149,9 @@ export function PremiumPage() {
           <span class="prem-sig-mono">B</span>
         </div>
 
-        <h1 class="prem-titre">
-          {prenom ? prenom + ', ton' : 'Ton'} plan sur mesure t'attend avec <em>Premium</em>
-        </h1>
+        <h1 class="prem-titre">Premium</h1>
         <p class="prem-sous">
-          Un plan alimentaire écrit pour toi, et une application qui ne te
-          laisse plus rien calculer à la main.
+          {prenom ? prenom + ', ton' : 'Ton'} coach nutrition personnel.
         </p>
       </section>
 

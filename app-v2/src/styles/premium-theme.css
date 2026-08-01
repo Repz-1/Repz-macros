@@ -485,3 +485,150 @@
 .pg-premium.pg-premium .c-cell .ck svg path { stroke: var(--pr-tx3); }
 .pg-premium.pg-premium .c-prem .ck svg circle { stroke: rgba(var(--pr-or-rvb),.55); }
 .pg-premium.pg-premium .c-prem .ck svg path { stroke: var(--pr-or); }
+
+/* ============================================================
+   PREMIUM — SIMPLIFICATION.
+   La page mesurait 2323 px, soit 2,75 ecrans. Le probleme n'etait
+   pas l'esthetique mais le RYTHME : elle argumentait trop long.
+   Rien n'est retire de ce qu'elle dit — seulement de ce qu'elle
+   met pour le dire. Aucune fonctionnalite, aucune ligne du
+   comparatif, aucune formule ne disparait.
+   ============================================================ */
+
+/* --- 1. HERO ---
+   Le cadran reste, seul element fort. Le titre passe de trois
+   lignes a un mot et le sous-titre a une phrase : c'est le texte
+   qui faisait la hauteur, pas le cercle.
+   Le degrade dore sur le titre disparait — un mot de sept lettres
+   n'a pas besoin d'etre peint pour etre lu, et un texte en
+   gradient est le marqueur le plus sur d'une landing page. */
+/* Le hero est une CARTE GRAPHITE, pas le fond creme : le titre y
+   reste clair. Trois classes pour passer devant
+   .prem-hero .prem-titre, qui fixait 27 px et 17ch. */
+.pg-premium.pg-premium .prem-hero .prem-titre {
+  font-size: 30px; letter-spacing: -.035em;
+  margin: 0 auto 6px; max-width: none;
+  color: var(--pr-tx);
+}
+/* Le mot n'est plus peint : un titre en gradient est le marqueur le
+   plus sur d'une landing page. Le em ne contient plus rien depuis
+   que le titre est reduit a « Premium », mais la regle reste au cas
+   ou le texte reevolue. */
+.pg-premium.pg-premium .prem-hero .prem-titre em {
+  background: none; -webkit-background-clip: border-box; background-clip: border-box;
+  color: inherit;
+}
+.pg-premium.pg-premium .prem-hero .prem-sous,
+.pg-premium.pg-premium .prem-sous {
+  font-size: 14.5px; line-height: 1.45; max-width: 26ch;
+  margin: 0 auto; color: var(--pr-tx2);
+}
+.pg-premium.pg-premium .prem-hero { padding-bottom: 4px; }
+.pg-premium.pg-premium .prem-sig { width: 92px; height: 92px; margin: 2px auto 14px; }
+.pg-premium.pg-premium .prem-sig svg { width: 92px; height: 92px; }
+.pg-premium.pg-premium .prem-sig-mono { font-size: 25px; }
+/* La lumiere se resserre et cesse de respirer : une pulsation de
+   sept secondes est un effet, pas une matiere. */
+.pg-premium.pg-premium .prem-sig::after {
+  inset: -26px; filter: blur(12px); animation: none; opacity: .85;
+  background: radial-gradient(circle, rgba(var(--pr-or-rvb),.26) 0%,
+              rgba(var(--pr-or-rvb),.08) 48%, transparent 70%);
+}
+
+/* --- 2. PROMESSES ---
+   Contenu intact. Elles cessent d'etre des cartes pour devenir des
+   lignes : le rayon tombe, le relief s'attenue, l'icone se reduit.
+   Quatre objets en relief empiles se lisent comme quatre encarts ;
+   les memes en lignes se lisent comme une liste. */
+.pg-premium.pg-premium .prem-promesses { gap: 8px; margin-bottom: 18px; }
+.pg-premium.pg-premium .pp {
+  gap: 13px; padding: 12px 14px; border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(18,22,28,.10), 0 4px 12px rgba(18,22,28,.10);
+}
+.pg-premium.pg-premium .pp::before { opacity: .38; }
+.pg-premium.pg-premium .pp-ic, .pg-premium.pg-premium .pp-arc { width: 32px; height: 32px; }
+.pg-premium.pg-premium .pp-ic > svg:not(.pp-arc) { width: 17px; height: 17px; }
+.pg-premium.pg-premium .pp h3 { font-size: 14px; margin-bottom: 3px; }
+.pg-premium.pg-premium .pp p { font-size: 12.5px; line-height: 1.45; }
+
+/* --- 3. COMPARATIF ---
+   La meilleure partie : on la garde entiere, on la resserre.
+   Aucune ligne supprimee. */
+.pg-premium.pg-premium .cmp { margin-bottom: 18px; border-radius: 20px; }
+.pg-premium.pg-premium .cmp-tete { padding: 14px 16px 9px; }
+.pg-premium.pg-premium .cmp-ligne { min-height: 46px; }
+.pg-premium.pg-premium .cmp-ligne .c-nom {
+  font-size: 13px; line-height: 1.3; padding: 7px 12px 7px 16px;
+}
+
+/* --- 4. TARIFS ---
+   Le prix reste dominant : il ne bouge pas. Ce sont les badges qui
+   reculent. Le fond orange des remises devient un simple texte
+   cerne — une remise est une information, pas une recompense. */
+.pg-premium.pg-premium .formules { gap: 9px; margin-top: 14px; margin-bottom: 18px; }
+.pg-premium.pg-premium .fo { padding: 13px 15px; border-radius: 17px; }
+.pg-premium.pg-premium .fo--reco, .pg-premium.pg-premium .fo.sel { padding: 16px 15px 13px; }
+.pg-premium.pg-premium .fo .fo-eco {
+  margin-top: 7px; padding: 3px 8px;
+  font-size: 10px; font-weight: 600; letter-spacing: .01em;
+  color: var(--pr-tx3); background: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.13);
+}
+.pg-premium.pg-premium .fo.sel .fo-eco { color: var(--pr-tx2); }
+/* « Le plus choisi » : filet et petites capitales au lieu d'une
+   pastille pleine. Il designe, il ne recompense pas. */
+.pg-premium.pg-premium .fo .fo-badge {
+  top: -9px; padding: 3px 10px;
+  font-size: 8.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--pr-or); background: var(--pr-sur);
+  box-shadow: inset 0 0 0 1px rgba(var(--pr-or-rvb),.34);
+}
+
+/* --- 5. BOUTON FINAL ---
+   Graphite profond, accent orange tenu au filet et a la fleche.
+   Un aplat orange pleine largeur est le geste d'une page qui
+   pousse a acheter ; le graphite est celui d'une page qui propose.
+   Il reste la surface la plus foncee de la page, donc la plus
+   visible — l'attention vient du contraste, pas de la saturation. */
+.pg-premium.pg-premium .continuer {
+  background: linear-gradient(168deg, #262D38 0%, #1E232D 58%, #171C24 100%);
+  color: #F4F6F8;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--pr-or-rvb),.30),
+    inset 0 1px 0 rgba(255,255,255,.07),
+    0 2px 6px rgba(18,22,28,.18),
+    0 10px 24px rgba(18,22,28,.20);
+}
+.pg-premium.pg-premium .continuer small { color: var(--pr-tx3); }
+/* Le reflet qui traversait le bouton en boucle est coupe. */
+.pg-premium.pg-premium .continuer::after { display: none; animation: none; }
+
+/* --- 6. RYTHME ---
+   Les intertitres cessent d'etre des respirations de landing page
+   pour devenir des etiquettes de section. */
+.pg-premium.pg-premium .prem-lb { margin: 2px 0 8px; font-size: 10px; }
+.pg-premium.pg-premium .legal { font-size: 10.5px; line-height: 1.5; }
+
+/* --- SECONDE PASSE ---
+   Apres la premiere passe la page tenait 1942 px, soit -16 %.
+   Le comparatif etait devenu le bloc dominant a 665 px : dix
+   lignes dont la hauteur etait fixee par un plancher de 46 px,
+   alors que le libelle en fait 17. C'est le plancher qui portait
+   la hauteur, pas le texte — aucune ligne n'est retiree. */
+.pg-premium.pg-premium .cmp-ligne { min-height: 40px; }
+.pg-premium.pg-premium .cmp-ligne .c-nom { padding: 6px 12px 6px 16px; }
+.pg-premium.pg-premium .cmp-tete { padding: 12px 16px 8px; }
+.pg-premium.pg-premium .cmp { margin-bottom: 14px; }
+
+/* Les promesses passent de 403 a ~340 px : le texte de description
+   se resserre, le titre garde sa taille. On lit le titre, on
+   survole la description. */
+.pg-premium.pg-premium .pp { padding: 11px 13px; gap: 12px; }
+.pg-premium.pg-premium .pp p { font-size: 12px; line-height: 1.4; }
+.pg-premium.pg-premium .prem-promesses { gap: 7px; margin-bottom: 14px; }
+
+/* Formules et pied : dernieres respirations superflues. */
+.pg-premium.pg-premium .formules { margin-top: 12px; margin-bottom: 14px; gap: 8px; }
+.pg-premium.pg-premium .fo { padding: 12px 15px; }
+.pg-premium.pg-premium .fo--reco, .pg-premium.pg-premium .fo.sel { padding: 15px 15px 12px; }
+.pg-premium.pg-premium .legal { font-size: 10px; line-height: 1.45; }
