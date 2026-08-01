@@ -492,3 +492,9 @@
 }
 
 /* Le chrono suit le dore mesure du bouton. */
+
+/* En-tete : les icones profil/reglages au DORE du Journal.
+   L'alignement de palette de la page avait deteint sur elles
+   (variable partagee) : l'en-tete doit rester identique d'un onglet
+   a l'autre, c'est le meme objet. */
+.pg-entrainer .j-btn-icone { color: #8F6200; }

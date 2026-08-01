@@ -260,3 +260,6 @@
   box-shadow: inset 0 0 0 1px rgba(28, 83, 52, .12); }
 .pg-plus .bp-ajust-ko { color: #7A4A08; background: #FDF4E3;
   box-shadow: inset 0 0 0 1px rgba(179, 113, 8, .16); }
+
+/* Meme en-tete que le Journal, jusqu'aux icones. */
+.pg-plus .j-btn-icone { color: #8F6200; }
