@@ -130,29 +130,21 @@ export function PremiumPage() {
         <span style="width:38px"></span>
       </div>
 
-      <section class="prem-hero">
-        <span class="prem-hero-capte" aria-hidden="true" />
-        <div class="prem-sig" aria-hidden="true">
-          <svg viewBox="0 0 120 120">
-            <defs>
-              <linearGradient id="premOr" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#FFE9AE" />
-                <stop offset="54%" stop-color="#F5C24A" />
-                <stop offset="100%" stop-color="#D28A22" />
-              </linearGradient>
-            </defs>
-            <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="7" />
-            <circle cx="60" cy="60" r="50" fill="none" stroke="url(#premOr)" stroke-width="7"
-                    stroke-linecap="round" transform="rotate(-90 60 60)"
-                    stroke-dasharray="272 314.2" class="prem-sig-arc" />
-          </svg>
-          <span class="prem-sig-mono">B</span>
-        </div>
-
+      {/* Ouverture : le titre, une phrase, rien d'autre. Le cadran,
+          son halo et le fond sombre sont retires — c'etait une
+          banniere, pas un debut de page produit. */}
+      <section class="prem-ouverture">
+        <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+          <defs>
+            <linearGradient id="premOr" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FAC408" />
+              <stop offset="54%" stop-color="#F86A0C" />
+              <stop offset="100%" stop-color="#B34700" />
+            </linearGradient>
+          </defs>
+        </svg>
         <h1 class="prem-titre">Premium</h1>
-        <p class="prem-sous">
-          {prenom ? prenom + ', ton' : 'Ton'} coach nutrition personnel.
-        </p>
+        <p class="prem-sous">Le meilleur de BelFit.</p>
       </section>
 
       {/* Ce que Premium change au quotidien. Formule en promesses,

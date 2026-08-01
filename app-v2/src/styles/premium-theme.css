@@ -63,29 +63,6 @@
 .pg-premium.pg-premium > * { position: relative; z-index: 1; }
 
 .pg-premium.pg-premium .topbar-home { color: var(--pr-page-tx2); background: rgba(27,27,25,.055); }
-
-/* ---------- Signature ---------- */
-.pg-premium.pg-premium .prem-sig { position: relative; width: 116px; height: 116px; margin: 8px auto 20px; }
-.pg-premium.pg-premium .prem-sig svg { width: 116px; height: 116px; display: block; }
-.pg-premium.pg-premium .prem-sig-arc { stroke-dashoffset: 272; animation: premArc 1.6s cubic-bezier(.32,.72,0,1) .1s forwards; }
-@keyframes premArc { to { stroke-dashoffset: 0; } }
-.pg-premium.pg-premium .prem-sig-mono {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-size: 30px; font-weight: 900; letter-spacing: -.05em;
-  background: linear-gradient(168deg, #FFE9C4 0%, #FAC408 34%, #F86A0C 72%, #B34700 100%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-/* Le cercle eclaire la matiere autour de lui, en soft-light :
-   il module la surface au lieu de la recouvrir. */
-.pg-premium.pg-premium .prem-sig::after {
-  content: ''; position: absolute; z-index: -1; inset: -44px; border-radius: 50%;
-  pointer-events: none; mix-blend-mode: soft-light;
-  background: radial-gradient(circle, rgba(var(--pr-or-rvb),.42) 0%,
-              rgba(var(--pr-or-rvb),.13) 46%, transparent 72%);
-  filter: blur(14px); animation: premSouffle 7s ease-in-out infinite;
-}
-@keyframes premSouffle { 0%,100% { opacity: .92; } 50% { opacity: 1; } }
-
 .pg-premium.pg-premium .prem-titre {
   font-size: 27px; font-weight: 700; line-height: 1.14; letter-spacing: -.04em;
   color: var(--pr-page-tx); text-align: center; max-width: 17ch;
@@ -201,9 +178,7 @@
 .pg-premium.pg-premium .dp-sub { margin-top: 8px; font-size: 13.5px; line-height: 1.55; color: var(--pr-tx2); }
 
 @media (prefers-reduced-motion: reduce) {
-  .pg-premium.pg-premium .prem-sig-arc, .pg-premium .prem-sig::after,
   .pg-premium.pg-premium .continuer, .pg-premium .continuer::after { animation: none; }
-  .pg-premium.pg-premium .prem-sig-arc { stroke-dashoffset: 0; }
 }
 
 /* ---------- Premium · promesses ----------
@@ -336,10 +311,6 @@
               rgba(255,248,225,.5) 50%, rgba(255,248,225,0) 100%); }
 @keyframes premPassage { 0%,78% { left: -80%; } 98%,100% { left: 150%; } }
 
-/* --- Correction optique : l'arc est ouvert en bas, sa masse tire
-       vers le haut. Le monogramme descend d'un pixel. --- */
-.pg-premium.pg-premium .prem-sig-mono { transform: translateY(-1px); }
-
 /* ------------------------------------------------------------
    Restes du theme legacy que la feuille scoped imposait encore.
    ------------------------------------------------------------ */
@@ -369,56 +340,10 @@
 .pg-premium.pg-premium .cmp-corps { overflow: visible; max-height: none; }
 /* Le lien legal se cassait en trois lignes. */
 .pg-premium.pg-premium .l-liens { display: block; margin-top: 4px; white-space: nowrap; }
-
-/* ------------------------------------------------------------
-   HERO. L'anneau et le titre etaient poses a nu sur le creme :
-   l'ecran n'avait alors aucun objet sombre en haut, donc aucun
-   point d'entree. La carte graphite leur rend ce contraste — c'est
-   elle qui porte les cinq premieres secondes.
-   ------------------------------------------------------------ */
-.pg-premium.pg-premium .prem-hero {
-  position: relative; overflow: hidden; text-align: center;
-  border-radius: 24px; padding: 32px 20px 32px; margin: 8px 0 24px;
-  background:
-    linear-gradient(152deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.02) 30%,
-                    rgba(255,255,255,0) 52%, rgba(0,0,0,.16) 100%),
-    radial-gradient(120% 130% at 50% -22%, #303645 0%, #1F2530 46%, #151920 100%);
-  box-shadow:
-    0 1px 2px rgba(58,44,24,.11), 0 5px 14px rgba(58,44,24,.10),
-    0 18px 40px rgba(58,44,24,.12), 0 46px 96px rgba(58,44,24,.14);
-}
-.pg-premium.pg-premium .prem-hero::before {
-  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
-  pointer-events: none; background: var(--pr-rim);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
-}
-/* La lumiere de l'anneau se pose sur la matiere, en soft-light. */
-.pg-premium.pg-premium .prem-hero-capte {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
-  mix-blend-mode: soft-light;
-  background: radial-gradient(54% 40% at 50% 24%, rgba(var(--pr-or-rvb),.34) 0%,
-              rgba(var(--pr-or-rvb),.11) 44%, transparent 76%);
-  animation: premSouffle 7s ease-in-out infinite;
-}
-.pg-premium.pg-premium .prem-hero > *:not(.prem-hero-capte) { position: relative; z-index: 2; }
-
-/* Dans la carte, le titre passe en clair. */
-.pg-premium.pg-premium .prem-hero .prem-titre {
-  color: var(--pr-tx); margin: 0 auto 11px; max-width: 17ch;
-  font-size: 27px; font-weight: 700; line-height: 1.14; letter-spacing: -.04em;
-  text-wrap: balance;
-}
-.pg-premium.pg-premium .prem-hero .prem-titre em {
-  background: linear-gradient(168deg, #FFE9C4 0%, #FAC408 34%, #F86A0C 72%, #B34700 100%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
 .pg-premium.pg-premium .prem-sous {
   margin: 0 auto; max-width: 32ch; font-size: 14px; line-height: 1.6;
   letter-spacing: -.005em; color: var(--pr-tx2); text-wrap: pretty;
 }
-.pg-premium.pg-premium .prem-hero .prem-sig { margin: 0 auto 20px; }
 
 /* ------------------------------------------------------------
    CTA — orange BelFit.
@@ -485,54 +410,9 @@
 .pg-premium.pg-premium .c-cell .ck svg path { stroke: var(--pr-tx3); }
 .pg-premium.pg-premium .c-prem .ck svg circle { stroke: rgba(var(--pr-or-rvb),.55); }
 .pg-premium.pg-premium .c-prem .ck svg path { stroke: var(--pr-or); }
-
-/* ============================================================
-   PREMIUM — SIMPLIFICATION.
-   La page mesurait 2323 px, soit 2,75 ecrans. Le probleme n'etait
-   pas l'esthetique mais le RYTHME : elle argumentait trop long.
-   Rien n'est retire de ce qu'elle dit — seulement de ce qu'elle
-   met pour le dire. Aucune fonctionnalite, aucune ligne du
-   comparatif, aucune formule ne disparait.
-   ============================================================ */
-
-/* --- 1. HERO ---
-   Le cadran reste, seul element fort. Le titre passe de trois
-   lignes a un mot et le sous-titre a une phrase : c'est le texte
-   qui faisait la hauteur, pas le cercle.
-   Le degrade dore sur le titre disparait — un mot de sept lettres
-   n'a pas besoin d'etre peint pour etre lu, et un texte en
-   gradient est le marqueur le plus sur d'une landing page. */
-/* Le hero est une CARTE GRAPHITE, pas le fond creme : le titre y
-   reste clair. Trois classes pour passer devant
-   .prem-hero .prem-titre, qui fixait 27 px et 17ch. */
-.pg-premium.pg-premium .prem-hero .prem-titre {
-  font-size: 30px; letter-spacing: -.035em;
-  margin: 0 auto 6px; max-width: none;
-  color: var(--pr-tx);
-}
-/* Le mot n'est plus peint : un titre en gradient est le marqueur le
-   plus sur d'une landing page. Le em ne contient plus rien depuis
-   que le titre est reduit a « Premium », mais la regle reste au cas
-   ou le texte reevolue. */
-.pg-premium.pg-premium .prem-hero .prem-titre em {
-  background: none; -webkit-background-clip: border-box; background-clip: border-box;
-  color: inherit;
-}
-.pg-premium.pg-premium .prem-hero .prem-sous,
 .pg-premium.pg-premium .prem-sous {
   font-size: 14.5px; line-height: 1.45; max-width: 26ch;
   margin: 0 auto; color: var(--pr-tx2);
-}
-.pg-premium.pg-premium .prem-hero { padding-bottom: 4px; }
-.pg-premium.pg-premium .prem-sig { width: 92px; height: 92px; margin: 2px auto 14px; }
-.pg-premium.pg-premium .prem-sig svg { width: 92px; height: 92px; }
-.pg-premium.pg-premium .prem-sig-mono { font-size: 25px; }
-/* La lumiere se resserre et cesse de respirer : une pulsation de
-   sept secondes est un effet, pas une matiere. */
-.pg-premium.pg-premium .prem-sig::after {
-  inset: -26px; filter: blur(12px); animation: none; opacity: .85;
-  background: radial-gradient(circle, rgba(var(--pr-or-rvb),.26) 0%,
-              rgba(var(--pr-or-rvb),.08) 48%, transparent 70%);
 }
 
 /* --- 2. PROMESSES ---
@@ -632,3 +512,136 @@
 .pg-premium.pg-premium .fo { padding: 12px 15px; }
 .pg-premium.pg-premium .fo--reco, .pg-premium.pg-premium .fo.sel { padding: 15px 15px 12px; }
 .pg-premium.pg-premium .legal { font-size: 10px; line-height: 1.45; }
+
+/* ============================================================
+   PREMIUM — PAGE PRODUIT.
+   Le graphite ne disparait pas, il change de role : il ne marque
+   plus « ceci est Premium » (tout l'est, sur cette page — le
+   signal ne signalait rien), il marque la ZONE DE DECISION. Tout
+   ce qui informe est clair ; seuls les prix et le bouton sont
+   sombres. Le lecteur voit ou il doit choisir avant de lire.
+   Matieres reprises telles quelles de la page principale : meme
+   blanc, meme bordure, meme ombre a deux couches, memes rayons.
+   ============================================================ */
+.pg-premium.pg-premium {
+  --pp-blanc:   #FFFFFF;
+  --pp-bord:    rgba(28, 24, 18, .055);
+  --pp-filet:   rgba(28, 24, 18, .07);
+  --pp-omb:     0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+  --pp-tx:      #16130F;
+  --pp-tx2:     #57514A;
+  --pp-tx3:     #8A8279;
+  background: #F4F3F0;
+}
+
+/* --- 1. OUVERTURE ---
+   Titre, phrase, blanc. Aucune decoration : c'est la seule
+   maniere de ne pas ressembler a une page de vente. */
+.pg-premium.pg-premium .prem-ouverture {
+  padding: 26px 0 22px; text-align: left;
+}
+.pg-premium.pg-premium .prem-ouverture .prem-titre {
+  font-size: 32px; font-weight: 700; letter-spacing: -.035em; line-height: 1.05;
+  color: var(--pp-tx); margin: 0 0 7px; max-width: none; text-align: left;
+  background: none; -webkit-background-clip: border-box; background-clip: border-box;
+}
+.pg-premium.pg-premium .prem-ouverture .prem-sous {
+  font-size: 16px; line-height: 1.4; letter-spacing: -.01em;
+  color: var(--pp-tx2); margin: 0; max-width: 30ch; text-align: left;
+}
+
+/* --- 2. LES QUATRE BENEFICES ---
+   Contenu inchange. Ils cessent d'etre quatre objets separes pour
+   devenir UNE liste : un seul cadre, des filets entre les lignes.
+   C'est ce qui les fait lire comme de l'interface et non comme
+   quatre encarts publicitaires empiles. */
+.pg-premium.pg-premium .prem-promesses {
+  display: block; margin-bottom: 18px;
+  background: var(--pp-blanc);
+  border: 1px solid var(--pp-bord); border-radius: 18px;
+  box-shadow: var(--pp-omb); overflow: hidden;
+}
+.pg-premium.pg-premium .pp {
+  gap: 13px; padding: 14px 15px; border-radius: 0;
+  background: none; box-shadow: none;
+}
+.pg-premium.pg-premium .pp + .pp { border-top: 1px solid var(--pp-filet); }
+.pg-premium.pg-premium .pp::before { display: none; }   /* plus de lisere */
+.pg-premium.pg-premium .pp-ic, .pg-premium.pg-premium .pp-arc { width: 30px; height: 30px; }
+.pg-premium.pg-premium .pp-ic { color: var(--or-fonce, #B34700); }
+.pg-premium.pg-premium .pp-ic > svg:not(.pp-arc) { width: 16px; height: 16px; stroke-width: 1.7; }
+.pg-premium.pg-premium .pp h3 {
+  font-size: 14.5px; font-weight: 600; margin-bottom: 3px; color: var(--pp-tx);
+}
+.pg-premium.pg-premium .pp p { font-size: 12.5px; line-height: 1.45; color: #6B655D; }  /* 5,4:1 sur blanc */
+
+/* --- 3. COMPARATIF ---
+   La meilleure partie : structure intacte, dix lignes conservees.
+   Seules changent la matiere et les finitions. La colonne Premium
+   se distingue par une nappe a peine teintee, pas par une plaque
+   en relief : sur fond clair, une teinte suffit. */
+.pg-premium.pg-premium .cmp {
+  background: var(--pp-blanc);
+  border: 1px solid var(--pp-bord); border-radius: 18px;
+  box-shadow: var(--pp-omb); margin-bottom: 18px;
+}
+.pg-premium.pg-premium .cmp::before { display: none; }
+.pg-premium.pg-premium .cmp-plaque {
+  background: rgba(248, 106, 12, .035);
+  border-left: 1px solid rgba(248, 106, 12, .10);
+  box-shadow: none;
+}
+.pg-premium.pg-premium .cmp-tete { padding: 13px 16px 9px; }
+.pg-premium.pg-premium .cmp-tete span { color: var(--pp-tx3); }
+.pg-premium.pg-premium .cmp-tete .h-gratuit { color: var(--pp-tx3); }
+.pg-premium.pg-premium .cmp-tete .h-prem { color: var(--or-fonce, #B34700); }
+.pg-premium.pg-premium .cmp-ligne { min-height: 42px; }
+.pg-premium.pg-premium .cmp-ligne + .cmp-ligne::before { background: var(--pp-filet); }
+.pg-premium.pg-premium .cmp-ligne .c-nom {
+  font-size: 13px; line-height: 1.3; color: var(--pp-tx2);
+  padding: 7px 12px 7px 16px;
+}
+.pg-premium.pg-premium .cmp-ligne .c-note { color: var(--pp-tx3); }
+.pg-premium.pg-premium .c-cell .ck svg { stroke: var(--or-fonce, #B34700); filter: none; }
+.pg-premium.pg-premium .c-cell .tiret { color: #C6C0B7; }
+
+/* --- 4. ZONE DE DECISION ---
+   Le seul bloc sombre restant. Les formules gardent leur style,
+   qui fonctionne ; seuls les badges reculent. */
+.pg-premium.pg-premium .formules { margin-top: 14px; }
+.pg-premium.pg-premium .fo .fo-eco {
+  margin-top: 6px; padding: 2px 7px;
+  font-size: 9.5px; font-weight: 600; letter-spacing: .01em;
+  color: var(--pr-tx3); background: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
+}
+.pg-premium.pg-premium .fo .fo-badge {
+  top: -8px; padding: 2.5px 9px;
+  font-size: 8px; letter-spacing: .12em;
+}
+.pg-premium.pg-premium .legal { color: var(--pp-tx3); }
+.pg-premium.pg-premium .prem-lb { color: var(--pp-tx3); margin: 2px 0 8px; }
+
+/* --- COMPARATIF : finitions ---
+   Structure et dix lignes intactes. Trois reglages seulement :
+   1. Les libelles qui passaient sur deux lignes tenaient la hauteur
+      du tableau. En reduisant l'interligne et en laissant la
+      colonne respirer, la plupart repassent sur une ligne.
+   2. Les filets ne traversent plus toute la largeur : ils
+      s'arretent avant le bord, ce qui donne au cadre son arete.
+   3. Les colonnes GRATUIT / PREMIUM se resserrent : elles ne
+      portent qu'une coche ou un tiret.
+   ------------------------------------------------------------ */
+.pg-premium.pg-premium .cmp-ligne { min-height: 40px; }
+.pg-premium.pg-premium .cmp-ligne .c-nom {
+  font-size: 12.5px; line-height: 1.25; letter-spacing: -.008em;
+  padding: 6px 8px 6px 15px;
+}
+.pg-premium.pg-premium .cmp-ligne .c-note {
+  font-size: 10.5px; line-height: 1.3; margin-top: 1px;
+}
+.pg-premium.pg-premium .cmp-ligne + .cmp-ligne::before {
+  left: 15px; right: 15px;
+}
+.pg-premium.pg-premium .cmp-tete { padding: 12px 15px 8px; }
+.pg-premium.pg-premium .cmp-tete span { font-size: 8px; letter-spacing: .15em; }
