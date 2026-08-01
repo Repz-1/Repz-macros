@@ -1,19 +1,20 @@
-.pg-entrainer{background:#F5F6F8!important;margin:0}
-.pg-entrainer{margin:0!important;background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%)!important}
+/* Fond : creme BELFIT uni. Le halo dore en haut venait du V1 et
+   n'appartenait a aucune palette de la marque. */
+.pg-entrainer{background:#F4F3F0!important;margin:0!important}
 .pg-entrainer *{ margin:0; padding:0; box-sizing:border-box; }
 .pg-entrainer{
-    --orange:#F7B500;   
-    --bg:#F5F6F8;
+    --orange:#F86A0C;   
+    --bg:#F4F3F0;
     --card:#ffffff;
     --dark:#1f2937;
-    --line:#e5e7eb;
-    --text:#1a1a1a;
-    --text-dim:#6b7280;
-    --gold:#F7B500;
-    --noir:#181818;
-    --ok:#DFA004;        
+    --line:rgba(28,24,18,.055);
+    --text:#16130F;
+    --text-dim:#6B655D;
+    --gold:#F86A0C;
+    --noir:#16130F;
+    --ok:#B34700;        
     --logo-red:#DE2F14;  
-    --green:#8F6200;
+    --green:#B34700;
     --radius:22px;
 }
 .pg-entrainer{
@@ -32,38 +33,38 @@
 .pg-entrainer .wlog-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
 .pg-entrainer .wlog-title{ font-size:17px; font-weight:800; }
 .pg-entrainer .wlog-sub{ font-size:12.5px; color:var(--text-dim); margin-top:2px; }
-.pg-entrainer .wlog-today{ flex-shrink:0; background:#DFA004; color:#fff; border:none; border-radius:20px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
+.pg-entrainer .wlog-today{ flex-shrink:0; background:#B34700; color:#fff; border:none; border-radius:20px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
 .pg-entrainer .wlog-today:active{ transform:scale(.96); }
 .pg-entrainer .wlog-list{ display:flex; flex-direction:column; }
 .pg-entrainer .wlog-sum{ display:flex; flex-wrap:wrap; gap:6px; padding:12px 2px 10px; border-bottom:1px solid var(--line); }
 .pg-entrainer .wlog-cal-head{ display:flex; align-items:center; justify-content:space-between; padding:12px 2px 8px; }
 .pg-entrainer .wlog-cal-titre{ font-size:14.5px; font-weight:800; text-transform:capitalize; }
-.pg-entrainer .wlog-nav{ width:32px; height:32px; border-radius:50%; border:none; background:#F5F6F8; color:#1a1a1a; font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.pg-entrainer .wlog-nav{ width:32px; height:32px; border-radius:50%; border:none; background:#F4F3F0; color:#16130F; font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .pg-entrainer .wlog-nav:active{ transform:scale(.94); }
 .pg-entrainer .wlog-nav.off{ opacity:.3; }
 .pg-entrainer .wlog-nav.info{ font-size:13px; font-style:italic; font-family:Georgia, serif; }
-.pg-entrainer .wlog-nav.info.actif{ background:#F7B500; color:#fff; }
+.pg-entrainer .wlog-nav.info.actif{ background:#F86A0C; color:#fff; }
 .pg-entrainer .wlog-more{ position:absolute; top:-3px; right:-3px; width:13px; height:13px; border-radius:50%; background:#fff; color:#334155; font-size:10px; font-weight:800; font-style:normal; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.2); }
 .pg-entrainer .wlog-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:7px 4px; padding-bottom:8px; }
-.pg-entrainer .wlog-wd{ text-align:center; font-size:10.5px; font-weight:800; color:#94a3b8; }
+.pg-entrainer .wlog-wd{ text-align:center; font-size:10.5px; font-weight:800; color:#8A8279; }
 .pg-entrainer .wlog-cell{ aspect-ratio:1; width:100%; max-width:38px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:12.5px; font-weight:700; color:#334155; cursor:pointer; position:relative; }
 .pg-entrainer .wlog-cell:active{ transform:scale(.92); }
 .pg-entrainer .wlog-cell.seance{ color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.35); }
-.pg-entrainer .wlog-cell.repos{ background:#EDEFF2; color:#94a3b8; }
-.pg-entrainer .wlog-cell.today{ box-shadow:0 0 0 2px #F7B500; }
-.pg-entrainer .wlog-cell.today.seance{ box-shadow:0 0 0 2px #fff, 0 0 0 4px #F7B500; }
+.pg-entrainer .wlog-cell.repos{ background:#EDEFF2; color:#8A8279; }
+.pg-entrainer .wlog-cell.today{ box-shadow:0 0 0 2px #F86A0C; }
+.pg-entrainer .wlog-cell.today.seance{ box-shadow:0 0 0 2px #fff, 0 0 0 4px #F86A0C; }
 .pg-entrainer .wlog-cell.futur{ color:#CBD5E1; cursor:default; }
 .pg-entrainer .wlog-cell.futur:active{ transform:none; }
-.pg-entrainer .wlog-legende{ display:flex; flex-wrap:wrap; gap:6px 12px; padding:2px 2px 12px; font-size:11px; font-weight:700; color:#64748b; }
+.pg-entrainer .wlog-legende{ display:flex; flex-wrap:wrap; gap:6px 12px; padding:2px 2px 12px; font-size:11px; font-weight:700; color:#6B655D; }
 .pg-entrainer .wlog-legende .dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; }
 .pg-entrainer .wlog-legende .dot.repos{ background:#E2E6EA; }
-.pg-entrainer .wlog-legende .dot.today{ background:#fff; box-shadow:0 0 0 2px #F7B500; width:7px; height:7px; }
+.pg-entrainer .wlog-legende .dot.today{ background:#fff; box-shadow:0 0 0 2px #F86A0C; width:7px; height:7px; }
 .pg-entrainer .ml-stats{ margin:-4px 0 12px; }
-.pg-entrainer .ml-stats-ligne{ font-size:12.5px; font-weight:700; color:#64748b; background:#F5F6F8; border-radius:10px; padding:9px 12px; margin-bottom:8px; }
+.pg-entrainer .ml-stats-ligne{ font-size:12.5px; font-weight:700; color:#6B655D; background:#F4F3F0; border-radius:10px; padding:9px 12px; margin-bottom:8px; }
 .pg-entrainer .ml-exo{ display:flex; align-items:center; justify-content:space-between; font-size:13px; padding:7px 2px; border-bottom:1px solid #F1F3F5; color:#334155; }
 .pg-entrainer .ml-exo:last-child{ border-bottom:none; }
-.pg-entrainer .ml-exo b{ font-weight:700; color:#64748b; font-size:12px; flex-shrink:0; margin-left:10px; }
-.pg-entrainer .wlog-sum-pill{ font-size:11.5px; font-weight:700; background:#F5F6F8; color:#475569; padding:4px 10px; border-radius:8px; white-space:nowrap; }
+.pg-entrainer .ml-exo b{ font-weight:700; color:#6B655D; font-size:12px; flex-shrink:0; margin-left:10px; }
+.pg-entrainer .wlog-sum-pill{ font-size:11.5px; font-weight:700; background:#F4F3F0; color:#57514A; padding:4px 10px; border-radius:8px; white-space:nowrap; }
 .pg-entrainer .wlog-list{ max-height:0; overflow:hidden; transition:max-height .4s ease; }
 .pg-entrainer .wlog-list.expanded{ max-height:1000px; margin-top:16px; }
 .pg-entrainer .ml-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
@@ -72,13 +73,13 @@
 .pg-entrainer .ml-date{ font-size:17px; font-weight:800; margin-bottom:16px; text-transform:capitalize; }
 .pg-entrainer .ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
 .pg-entrainer .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid var(--line); background:#fff; color:var(--text-dim); cursor:pointer; }
-.pg-entrainer .ml-chip.on{ background:#DFA004; border-color:#DFA004; color:#fff; }
-.pg-entrainer .ml-chip.repos.on{ background:#64748b; border-color:#64748b; }
+.pg-entrainer .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
+.pg-entrainer .ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }
 .pg-entrainer .ml-chip:active{ transform:scale(.96); }
 .pg-entrainer .ml-btns{ display:flex; gap:10px; }
 .pg-entrainer .ml-btns button{ flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; }
-.pg-entrainer .ml-clear{ background:#f1f5f9; color:#64748b; }
-.pg-entrainer .ml-save{ background:#1a1a1a; color:#F5A800; }
+.pg-entrainer .ml-clear{ background:#f1f5f9; color:#6B655D; }
+.pg-entrainer .ml-save{ background:#16130F; color:#F5A800; }
 .pg-entrainer .topbar-app{
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px;
@@ -111,7 +112,7 @@
 .pg-entrainer .choices{ display:flex; flex-direction:column; gap:24px; max-width:480px; margin:0 auto; }
 .pg-entrainer .choice{
     position:relative; display:block; border-radius:24px; padding:24px 22px;
-    background:#ffffff; border:1px solid #efefef; box-shadow:0 2px 10px rgba(24,24,24,.05);
+    background:#ffffff; border:1px solid rgba(28,24,18,.055); box-shadow:0 2px 10px rgba(24,24,24,.05);
     text-decoration:none; color:inherit;
     transition:transform .15s ease, box-shadow .15s ease;
 }
@@ -120,7 +121,7 @@
     border:none; overflow:hidden; min-height:200px;
     display:flex; flex-direction:column; justify-content:flex-end;
     background-size:cover; background-position:center;
-    background-color:#181818; /* fond sombre si l'image tarde a charger */
+    background-color:#16130F; /* fond sombre si l'image tarde a charger */
     box-shadow:0 8px 22px rgba(24,24,24,.16); color:#fff;
 }
 .pg-entrainer .choice.ph::after{
@@ -181,7 +182,7 @@
     box-shadow:0 8px 20px rgba(247,181,0,.35);
 }
 .pg-entrainer .choice.featured{
-    background:#ffffff; border:1px solid #efefef;
+    background:#ffffff; border:1px solid rgba(28,24,18,.055);
     box-shadow:0 6px 18px rgba(24,24,24,.09);
 }
 .pg-entrainer .badge{
@@ -201,7 +202,7 @@
 }
 .pg-entrainer .lock-badge{
     position:absolute; top:14px; right:14px; z-index:3;
-    background:#1a1a1a; color:#F5A800; font-size:11px; font-weight:800;
+    background:#16130F; color:#F5A800; font-size:11px; font-weight:800;
     padding:5px 11px; border-radius:20px; display:flex; align-items:center; gap:4px;
 }
 .pg-entrainer .choice.locked h3{ padding-right:0; }
@@ -249,7 +250,7 @@
     text-align:center; box-shadow:0 12px 40px rgba(0,0,0,.25);
 }
 .pg-entrainer .water-box h3{ font-size:19px; font-weight:800; margin-bottom:4px; }
-.pg-entrainer .water-box .wb-sub{ font-size:13px; color:#6b7280; margin-bottom:18px; }
+.pg-entrainer .water-box .wb-sub{ font-size:13px; color:#6B655D; margin-bottom:18px; }
 .pg-entrainer .bottle{
     width:120px; height:230px; margin:0 auto 18px; position:relative; cursor:pointer;
     -webkit-tap-highlight-color:transparent;
@@ -280,12 +281,12 @@
     background:#f0f9ff; border-radius:12px; padding:14px; margin-bottom:16px;
 }
 .pg-entrainer .water-total .wt-v{ font-size:26px; font-weight:800; color:#0ea5e9; }
-.pg-entrainer .water-total .wt-l{ font-size:12px; color:#6b7280; margin-top:2px; }
+.pg-entrainer .water-total .wt-l{ font-size:12px; color:#6B655D; margin-top:2px; }
 .pg-entrainer .water-actions{ display:flex; gap:8px; }
 .pg-entrainer .water-actions button{
     flex:1; padding:12px; border:none; border-radius:11px; font-weight:700; font-size:14px; cursor:pointer;
 }
-.pg-entrainer .wa-reset{ background:#f1f5f9; color:#475569; }
+.pg-entrainer .wa-reset{ background:#f1f5f9; color:#57514A; }
 .pg-entrainer .wa-close{ background:#0ea5e9; color:#fff; }
 .pg-entrainer .bn-premium{ color:#d4af37; }
 .pg-entrainer .bn-premium.is-premium svg{ fill:#d4af37; }
@@ -303,7 +304,7 @@
 }
 .pg-entrainer .bn-item svg{ width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .pg-entrainer .bn-item span{ font-size:10.5px; font-weight:700; }
-.pg-entrainer .bn-item.active{ color:#181818; }
+.pg-entrainer .bn-item.active{ color:#16130F; }
 .pg-entrainer .bn-item:active{ transform:scale(.94); }
 .pg-entrainer .timer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:64;}
 .pg-entrainer .timer-overlay.show{display:block;}
@@ -327,23 +328,23 @@
 .pg-entrainer .timer-btn{flex:1;max-width:100px;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
 .pg-entrainer .timer-btn.start{background:var(--orange);color:#fff;}
 .pg-entrainer .timer-btn.start:active{transform:scale(.95);}
-.pg-entrainer .timer-btn.reset{background:#f3f4f6;color:#1a1a1a;border:1px solid #e5e7eb;}
-.pg-entrainer .timer-btn.reset:active{background:#e5e7eb;}
+.pg-entrainer .timer-btn.reset{background:#f3f4f6;color:#16130F;border:1px solid rgba(28,24,18,.055);}
+.pg-entrainer .timer-btn.reset:active{background:rgba(28,24,18,.055);}
 .pg-entrainer .timer-wheels{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;height:150px;}
 .pg-entrainer .wheel-col{display:flex;flex-direction:column;align-items:center;}
 .pg-entrainer .wheel{height:150px;width:74px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;text-align:center;-ms-overflow-style:none;}
 .pg-entrainer .wheel::-webkit-scrollbar{display:none;}
 .pg-entrainer .wheel-item{height:50px;line-height:50px;scroll-snap-align:center;font-size:26px;font-weight:700;color:#cbd5e1;transition:color .15s,transform .15s;}
-.pg-entrainer .wheel-item.sel{color:#1a1a1a;font-size:30px;}
+.pg-entrainer .wheel-item.sel{color:#16130F;font-size:30px;}
 .pg-entrainer .wheel-unit{font-size:12px;color:#9ca3af;font-weight:600;margin-top:-6px;}
-.pg-entrainer .wheel-sep{font-size:28px;font-weight:800;color:#1a1a1a;align-self:flex-start;margin-top:54px;}
+.pg-entrainer .wheel-sep{font-size:28px;font-weight:800;color:#16130F;align-self:flex-start;margin-top:54px;}
 .pg-entrainer .wheel-highlight{position:absolute;top:50px;left:0;right:0;height:50px;border-top:1.5px solid var(--orange);border-bottom:1.5px solid var(--orange);pointer-events:none;opacity:.5;}
-.pg-entrainer .chrono-fab{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));right:8px;z-index:66;width:60px;height:60px;border-radius:50%;background:var(--gold);color:#181818;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(247,181,0,.55);opacity:1;transition:opacity .15s,transform .15s,background .2s;-webkit-tap-highlight-color:transparent;}
+.pg-entrainer .chrono-fab{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));right:8px;z-index:66;width:60px;height:60px;border-radius:50%;background:var(--gold);color:#16130F;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(247,181,0,.55);opacity:1;transition:opacity .15s,transform .15s,background .2s;-webkit-tap-highlight-color:transparent;}
 .pg-entrainer .chrono-fab svg{width:30px;height:30px;}
 .pg-entrainer .chrono-fab:active{opacity:1;transform:scale(.94);}
 .pg-entrainer .chrono-fab-time{font-size:11px;font-weight:800;line-height:1;margin-top:2px;font-variant-numeric:tabular-nums;}
-.pg-entrainer .chrono-fab.running{opacity:1;background:#181818;color:var(--gold);box-shadow:0 6px 20px rgba(0,0,0,.45);}
-.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-entrainer .chrono-fab.running{opacity:1;background:#16130F;color:var(--gold);box-shadow:0 6px 20px rgba(0,0,0,.45);}
+.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-entrainer #repzSplash.hide{opacity:0;pointer-events:none;}
 .pg-entrainer #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 .pg-entrainer #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -352,11 +353,11 @@
 .pg-entrainer .ah-logo{ height:55px; width:auto; display:block; }
 .pg-entrainer .ah-actions{ display:flex; align-items:center; gap:8px; }
 .pg-entrainer .ah-btn{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
-.pg-entrainer .ah-btn svg{ width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pg-entrainer .ah-btn svg{ width:27px; height:27px; stroke:#B34700; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pg-entrainer .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
 
 /* --- styles inline du body v1 --- */
-.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:#F5F6F8;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-entrainer #repzSplash.hide{opacity:0;pointer-events:none;}
 .pg-entrainer #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 .pg-entrainer #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -365,12 +366,123 @@
 .pg-entrainer .ah-logo{ height:55px; width:auto; display:block; }
 .pg-entrainer .ah-actions{ display:flex; align-items:center; gap:8px; }
 .pg-entrainer .ah-btn{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; }
-.pg-entrainer .ah-btn svg{ width:27px; height:27px; stroke:#8F6200; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pg-entrainer .ah-btn svg{ width:27px; height:27px; stroke:#B34700; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pg-entrainer .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
 /* En-tete commun (logo + profil + reglages) — transpose du v1 (.app-header) */
 .pg-entrainer .j-entete{ display:flex; align-items:center; justify-content:space-between; padding:0; min-height:44px; background:none; border:none; box-shadow:none; margin-bottom:4px; }
 .pg-entrainer .j-entete-actions{ display:flex; align-items:center; gap:8px; margin-right:-8px; }
 .pg-entrainer .j-logo{ height:55px; width:auto; display:block; filter:drop-shadow(0 4px 16px rgba(247,181,0,.15)); }
-.pg-entrainer .j-btn-icone{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#8F6200; text-decoration:none; background:none; border:none; padding:0; cursor:pointer; font-family:inherit; -webkit-tap-highlight-color:transparent; transition:background .2s; }
+.pg-entrainer .j-btn-icone{ width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#B34700; text-decoration:none; background:none; border:none; padding:0; cursor:pointer; font-family:inherit; -webkit-tap-highlight-color:transparent; transition:background .2s; }
 .pg-entrainer .j-btn-icone:active{ background:rgba(247,181,0,.14); transform:scale(.94); }
 .pg-entrainer .j-btn-icone svg{ width:27px; height:27px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ============================================================
+   S'ENTRAINER — cartes sur le langage BELFIT.
+   La photo occupait toute la carte sous un voile sombre, avec du
+   texte blanc par-dessus : la lisibilite dependait alors de
+   l'image, et chaque carte etait un bloc sombre isole sur le
+   creme. Elle passe a droite et se fond vers le blanc — le texte
+   ne rencontre plus jamais la photo, quelle qu'elle soit.
+   Meme matiere que le Journal, la page repas, BelFit+ et Stats.
+   ============================================================ */
+.pg-entrainer .choices { gap: 11px; }
+
+.pg-entrainer .choice.ph {
+  position: relative; overflow: hidden;
+  display: block; min-height: 0;
+  padding: 0;
+  background-color: #FFFFFF;
+  /* La photo reste posee par le composant (style en ligne) : on ne la
+     remplace pas, on la CADRE a droite. Un background-image: none
+     ici l'aurait effacee, le composant etant la source. */
+  background-size: 66% 100%;
+  background-position: right center;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(28, 24, 18, .055);
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+  color: inherit;
+}
+.pg-entrainer .choice.ph.featured,
+.pg-entrainer .choice.ph.md,
+.pg-entrainer .choice.ph.sm { min-height: 0; }
+
+/* Le fondu remplace le voile sombre : il eclaircit vers la gauche
+   au lieu d'assombrir partout. */
+.pg-entrainer .choice.ph::after {
+  content: ''; position: absolute; z-index: 1; inset: 0;
+  border-radius: inherit; pointer-events: none;
+  background: linear-gradient(90deg,
+    #FFFFFF 0%, rgba(255,255,255,.94) 30%,
+    rgba(255,255,255,.38) 64%, rgba(255,255,255,0) 100%);
+}
+.pg-entrainer .choice.ph > * { position: relative; z-index: 2; }
+
+/* Contenu : tout tient a gauche, jamais sur la photo. */
+.pg-entrainer .choice.ph {
+  padding: 16px 15px 17px;
+}
+.pg-entrainer .choice.ph h3,
+.pg-entrainer .choice.ph > p,
+.pg-entrainer .choice.ph .cta { max-width: 62%; }
+
+/* L'icone revient : elle etait masquee sur les cartes a photo. */
+.pg-entrainer .choice.ph .ch-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; margin-bottom: 10px;
+  border-radius: 11px; background: rgba(248, 106, 12, .07);
+  color: #B34700; box-shadow: none;
+}
+.pg-entrainer .choice.ph .ch-icon svg {
+  width: 18px; height: 18px; fill: none; stroke: currentColor;
+  stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-entrainer .choice.ph h3 {
+  color: #16130F; font-size: 17px; font-weight: 600;
+  letter-spacing: -.02em; line-height: 1.2; text-shadow: none;
+  margin: 0 0 5px;
+}
+.pg-entrainer .choice.ph > p {
+  color: #6B655D; font-size: 12.5px; font-weight: 400;
+  line-height: 1.42; text-shadow: none; margin: 0 0 13px;
+}
+
+/* Les trois niveaux d'action de la maquette, dans notre palette :
+   orange plein pour l'entree principale, graphite pour la
+   deuxieme, contour discret pour les deux dernieres. */
+.pg-entrainer .choice.ph .cta {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 17px; border-radius: 12px;
+  font-size: 13.5px; font-weight: 600; letter-spacing: -.005em;
+  background: #FFFFFF; color: #16130F;
+  border: 1px solid rgba(28, 24, 18, .10);
+  backdrop-filter: none; box-shadow: none; text-shadow: none;
+}
+.pg-entrainer .choice.ph.featured .cta {
+  /* Texte fonce sur l'orange : #F86A0C avec du blanc tombe a 3,4:1,
+     avec le noir BELFIT il tient 5,0:1. */
+  background: #F86A0C; color: #16130F; border: none;
+  box-shadow: 0 2px 8px rgba(248, 106, 12, .22);
+}
+.pg-entrainer .choice.ph.md .cta {
+  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
+  color: #F4F6F8; border: none;
+}
+/* Le reflet qui balayait le bouton toutes les 3,6 s est coupe : une
+   lumiere qui repasse en boucle attire l'oeil sans rien dire. */
+.pg-entrainer .choice.ph.featured .cta::after { display: none; animation: none; }
+
+/* Badges : sur fond clair, le verre depoli sombre n'a plus lieu d'etre. */
+.pg-entrainer .choice.ph .lock-badge,
+.pg-entrainer .choice.ph .pro-badge {
+  background: #FFF6EC; color: #B34700;
+  border: 1px solid rgba(179, 71, 0, .20);
+  backdrop-filter: none; text-shadow: none;
+}
+.pg-entrainer .choice.ph .badge {
+  position: absolute; top: 14px; right: 14px; left: auto;
+  background: #FFF6EC; color: #B34700;
+  border: 1px solid rgba(179, 71, 0, .20);
+  font-size: 9px; font-weight: 700; letter-spacing: .1em;
+  padding: 4px 9px; border-radius: 999px; text-shadow: none;
+}
