@@ -660,3 +660,29 @@
 .pg-premium.pg-premium .fo.sel .fo-mois small {
   color: var(--pr-tx4); -webkit-text-fill-color: var(--pr-tx4);
 }
+
+/* --- EN-TETE : identique au Journal ---
+   Les regles de mise en page (grille trois colonnes, symbole,
+   prenom) sont etendues a .pg-premium dans journal-socle.css.
+   Ne restent ici que les valeurs qui vivaient sur .pg-journal
+   sans variante, et l'ecart sous l'en-tete, aligne sur la page
+   principale. */
+.pg-premium .j-entete {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0; min-height: 44px;
+  background: none; border: none; box-shadow: none;
+}
+.pg-premium .j-entete-actions {
+  display: flex; align-items: center; gap: 8px; margin-right: -8px;
+}
+.pg-premium .j-btn-icone {
+  width: 47px; height: 47px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--or-fonce); background: none; border: none; padding: 0;
+}
+.pg-premium .j-btn-icone svg {
+  width: 23px; height: 23px; fill: none; stroke: currentColor;
+  stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
+/* Meme respiration que le Journal entre l'en-tete et le contenu. */
+.pg-premium.pg-premium .prem-ouverture { padding: 18px 0 20px; }

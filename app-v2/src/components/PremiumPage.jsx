@@ -3,7 +3,7 @@ import { utilisateur } from '../services/firebase.js';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApps } from 'firebase/app';
 import { t } from '../i18n/index.js';
-import { ongletActif } from './BottomNav.jsx';
+import { Entete } from './Entete.jsx';
 
 // Statut Premium lu depuis Firestore (ecrit par le webhook LemonSqueezy)
 export const estPremium = signal(false);
@@ -124,11 +124,11 @@ export function PremiumPage() {
 
   return (
     <div class="pg-premium">
-      <div class="topbar-app">
-        <a class="topbar-home" onClick={() => { ongletActif.value = 'journal'; }} aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6" /></svg></a>
-        <img src="../belfit-logo-header.png" class="tb-logo" alt="BelFit" />
-        <span style="width:38px"></span>
-      </div>
+      {/* Meme en-tete que le Journal : marque, prenom, profil et
+          reglages. La barre precedente (fleche + logo centre) etait
+          propre a cette page et faisait lire Premium comme un
+          ailleurs ; c'est un onglet de l'app, pas une destination. */}
+      <Entete />
 
       {/* Ouverture : le titre, une phrase, rien d'autre. Le cadran,
           son halo et le fond sombre sont retires — c'etait une

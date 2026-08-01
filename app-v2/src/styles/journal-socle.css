@@ -1955,20 +1955,24 @@
    meme si le symbole et les icones n'ont pas la meme largeur.
    ============================================================ */
 .pg-journal .j-entete--perso,
-.pg-entrainer .j-entete--perso {
+.pg-entrainer .j-entete--perso,
+.pg-premium .j-entete--perso {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
 }
 .pg-journal .j-entete--perso .j-symbole,
-.pg-entrainer .j-entete--perso .j-symbole {
+.pg-entrainer .j-entete--perso .j-symbole,
+.pg-premium .j-entete--perso .j-symbole {
   height: 34px; width: auto; display: block; justify-self: start;
   filter: drop-shadow(0 4px 16px rgba(247, 181, 0, .15));
 }
 .pg-journal .j-entete--perso .j-entete-actions,
-.pg-entrainer .j-entete--perso .j-entete-actions { justify-self: end; }
+.pg-entrainer .j-entete--perso .j-entete-actions,
+.pg-premium .j-entete--perso .j-entete-actions { justify-self: end; }
 .pg-journal .j-prenom,
-.pg-entrainer .j-prenom {
+.pg-entrainer .j-prenom,
+.pg-premium .j-prenom {
   justify-self: center;
   font-size: 17px; font-weight: 500; color: var(--txt-1);
   letter-spacing: -.01em; white-space: nowrap;
