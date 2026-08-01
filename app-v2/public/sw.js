@@ -8,7 +8,7 @@
 //    unique par version, ils sont donc immuables : aucun risque
 //    de servir du perime, et l'ouverture reste instantanee.
 // ============================================================
-const CACHE = 'belfit-v2-4';
+const CACHE = 'belfit-v2-5';
 
 self.addEventListener('install', () => self.skipWaiting());
 
@@ -31,7 +31,11 @@ self.addEventListener('fetch', (e) => {
   if (estDocument) {
     // Reseau d'abord : toujours la derniere version de l'app
     e.respondWith(
-      fetch(req)
+      // cache:'reload' : le reseau est interroge en ignorant le cache
+      // HTTP (GitHub Pages garde le HTML 10 minutes). Sans cela,
+      // chaque deploiement restait invisible pendant ce delai — la
+      // source de tous les « tu n'as rien fait » a repetition.
+      fetch(new Request(req, {cache: 'reload'}))
         .then(rep => {
           const copie = rep.clone();
           caches.open(CACHE).then(c => c.put(req, copie));
