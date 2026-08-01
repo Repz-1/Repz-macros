@@ -10,6 +10,9 @@ import { ideesOuvertes } from './IdeesRepas.jsx';
 import { Entete } from './Entete.jsx';
 import '../styles/belfit-plus.css';
 
+const URL_AJUSTEMENT =
+  'https://europe-west1-repz-baf60.cloudfunctions.net/demanderAjustement';
+
 // ============================================================
 // BELFIT+ — l'espace des membres.
 //
@@ -30,6 +33,8 @@ import '../styles/belfit-plus.css';
 //   { kcal, prot, carbs, lip, note, livreLe (ISO), version }
 export const programme = signal(null);
 export const programmeCharge = signal(false);
+/** Ajustements restants ce mois-ci, et quota de la formule. */
+export const ajustements = signal({restants: null, quota: null});
 
 export function chargerProgramme() {
   // Apercu local : le meme drapeau que l'apercu Premium sert a poser
@@ -38,6 +43,8 @@ export function chargerProgramme() {
     const faux = localStorage.getItem('belfit_v2_apercu_programme');
     if (faux) {
       programme.value = JSON.parse(faux);
+      const q = localStorage.getItem('belfit_v2_apercu_ajust');
+      ajustements.value = q ? JSON.parse(q) : {restants: 2, quota: 2};
       programmeCharge.value = true;
       return;
     }
@@ -49,6 +56,15 @@ export function chargerProgramme() {
     .then(s => {
       const d = s.exists() ? s.data() : null;
       programme.value = (d && d.programme) || null;
+      // Le quota suit la formule ; le compteur se remet a zero au
+      // changement de mois civil, cote serveur comme ici.
+      const QUOTA = {mensuel: 2, trimestriel: 3, annuel: 4};
+      const quota = QUOTA[d && d.formule] || 2;
+      const mois = new Date().getUTCFullYear() + '-' +
+        String(new Date().getUTCMonth() + 1).padStart(2, '0');
+      const suivi = (d && d.ajustements) || {};
+      const pris = suivi.mois === mois ? (suivi.utilises || 0) : 0;
+      ajustements.value = {restants: Math.max(0, quota - pris), quota};
     })
     .catch(() => { programme.value = null; })
     .finally(() => { programmeCharge.value = true; });
@@ -101,6 +117,8 @@ const Fleche = () => (
 export function BelfitPlus() {
   const [ouvertProg, setOuvertProg] = useState(false);
   const [charge, setCharge] = useState(false);
+  const [demande, setDemande] = useState(null);   // null | 'ouvert' | 'envoi' | 'ok' | 'erreur'
+  const [motDemande, setMotDemande] = useState('');
 
   useEffect(() => { if (!programmeCharge.value) chargerProgramme(); }, []);
 
@@ -122,6 +140,7 @@ export function BelfitPlus() {
   const ecart = pr && !dejaApplique && (charge || dejaCharge(pr));
 
   const aRepas = !!(pr && pr.repas && pr.repas.length);
+  const aj = ajustements.value;
 
   /** Charge le programme dans le journal du jour : objectifs ET repas.
    *  Les repas existants sont remplaces — un programme est un tout,
@@ -144,6 +163,31 @@ export function BelfitPlus() {
     }
     marquerCharge(pr);
     setCharge(true);
+  };
+
+  /** Demande d'ajustement. Le quota est verifie par le serveur ; ce
+   *  qu'on affiche ici n'est qu'un rappel. */
+  const envoyerDemande = async () => {
+    setDemande('envoi');
+    try {
+      const u = utilisateur.value;
+      const jeton = await u.getIdToken();
+      const r = await fetch(URL_AJUSTEMENT, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jeton},
+        body: JSON.stringify({message: motDemande.slice(0, 1000)}),
+      });
+      const d = await r.json();
+      if (d && d.ok) {
+        ajustements.value = {restants: d.restants, quota: d.quota};
+        setDemande('ok');
+        setMotDemande('');
+      } else {
+        setDemande(d && d.motif === 'quota' ? 'quota' : 'erreur');
+      }
+    } catch (e) {
+      setDemande('erreur');
+    }
   };
 
   // Sous-titre de la carte programme : trois etats distincts, jamais
@@ -238,6 +282,56 @@ export function BelfitPlus() {
               Tes repas du jour seront remplacés par ceux du programme.
             </p>
           )}
+
+          {/* Demander un ajustement. Le nombre restant est annonce sur
+              le bouton : un quota qu'on ne decouvre qu'en le depassant
+              est un quota cache. */}
+          <div class="bp-ajust">
+            {demande === 'ok' ? (
+              <p class="bp-ajust-ok">
+                Demande envoyée. Ton coach te répond sous 24 à 48 h.
+                {aj.restants !== null && ` Il te reste ${aj.restants} ${aj.restants > 1 ? 'ajustements' : 'ajustement'} ce mois-ci.`}
+              </p>
+            ) : demande === 'quota' ? (
+              <p class="bp-ajust-ko">
+                Tu as utilisé tes {aj.quota} ajustements du mois. Le compteur
+                repart le 1er. Écris à ton coach si c'est urgent.
+              </p>
+            ) : demande === 'ouvert' || demande === 'envoi' || demande === 'erreur' ? (
+              <>
+                <textarea
+                  class="bp-ajust-champ"
+                  maxLength={1000}
+                  placeholder="Ce qui ne va pas, ce que tu voudrais changer…"
+                  value={motDemande}
+                  onInput={(e) => setMotDemande(e.target.value)}
+                />
+                {demande === 'erreur' && (
+                  <p class="bp-ajust-ko">L'envoi a échoué. Réessaie.</p>
+                )}
+                <button
+                  class="bp-ajust-envoi"
+                  disabled={demande === 'envoi'}
+                  onClick={envoyerDemande}
+                >
+                  {demande === 'envoi' ? 'Envoi…' : 'Envoyer ma demande'}
+                </button>
+              </>
+            ) : (
+              <button
+                class="bp-ajust-btn"
+                disabled={aj.restants === 0}
+                onClick={() => setDemande('ouvert')}
+              >
+                Demander un ajustement
+                {aj.restants !== null && (
+                  <em>{aj.restants === 0
+                    ? 'aucun restant ce mois-ci'
+                    : `il t'en reste ${aj.restants} sur ${aj.quota} ce mois-ci`}</em>
+                )}
+              </button>
+            )}
+          </div>
         </div>
       )}
 

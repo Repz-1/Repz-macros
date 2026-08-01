@@ -13,14 +13,18 @@ service cloud.firestore {
       // À la création, le document ne peut pas contenir de pseudo.
       allow create: if request.auth != null && request.auth.uid == uid
                     && !("pseudo" in request.resource.data.keys())
-                    && !("programme" in request.resource.data.keys());
-      // À la mise à jour, pseudo et programme doivent rester inchangés.
+                    && !("programme" in request.resource.data.keys())
+                    && !("ajustements" in request.resource.data.keys());
+      // À la mise à jour, pseudo, programme et ajustements doivent rester
+      // inchangés. Sans la protection du compteur, le quota ne vaudrait rien :
+      // il suffirait de le remettre à zéro depuis le navigateur.
       // Le programme est déposé par le coach via deposerProgramme, qui
       // écrit en admin : sans cette règle, n'importe qui pourrait
       // s'attribuer un plan, et surtout en écrire un chez un autre.
       allow update: if request.auth != null && request.auth.uid == uid
                     && !("pseudo" in request.resource.data.diff(resource.data).affectedKeys())
-                    && !("programme" in request.resource.data.diff(resource.data).affectedKeys());
+                    && !("programme" in request.resource.data.diff(resource.data).affectedKeys())
+                    && !("ajustements" in request.resource.data.diff(resource.data).affectedKeys());
       allow delete: if request.auth != null && request.auth.uid == uid;
     }
 

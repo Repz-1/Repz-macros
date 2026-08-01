@@ -216,3 +216,47 @@
   background: #FDF4E3; border-radius: 12px;
   box-shadow: inset 0 0 0 1px rgba(179, 113, 8, .16);
 }
+
+/* ---------- Demander un ajustement ----------
+   Le nombre restant est annonce SUR le bouton : un quota qu'on ne
+   decouvre qu'en le depassant est un quota cache. */
+.pg-plus .bp-ajust { margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--bp-filet); }
+.pg-plus .bp-ajust-btn {
+  display: block; width: 100%; padding: 12px; font: inherit;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  color: var(--bp-or-lis); background: #fff;
+  border: 1px solid rgba(179, 71, 0, .28); border-radius: 13px;
+}
+.pg-plus .bp-ajust-btn em {
+  display: block; margin-top: 3px; font-style: normal;
+  font-size: 11.5px; font-weight: 500; color: var(--bp-tx3);
+}
+.pg-plus .bp-ajust-btn:disabled {
+  color: var(--bp-tx3); border-color: var(--bp-bord); cursor: default;
+}
+.pg-plus .bp-ajust-champ {
+  display: block; width: 100%; min-height: 84px; padding: 12px;
+  font: inherit; font-size: 14px; line-height: 1.5; color: var(--bp-tx);
+  background: #FFFDF9; border: 1px solid #EDE5D8; border-radius: 13px;
+  resize: vertical; outline: none; box-sizing: border-box;
+}
+.pg-plus .bp-ajust-champ:focus {
+  border-color: rgba(248, 106, 12, .38);
+  box-shadow: 0 0 0 2.5px rgba(248, 106, 12, .09);
+}
+.pg-plus .bp-ajust-envoi {
+  display: block; width: 100%; margin-top: 10px; padding: 13px;
+  font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
+  color: #F4F6F8; border: none; border-radius: 13px;
+  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
+}
+.pg-plus .bp-ajust-envoi:disabled { opacity: .55; cursor: default; }
+.pg-plus .bp-ajust-ok, .pg-plus .bp-ajust-ko {
+  margin: 0; padding: 11px 13px; font-size: 12.5px; line-height: 1.45;
+  border-radius: 12px;
+}
+.pg-plus .bp-ajust-ok { color: #1C5334; background: #E9F5EE;
+  box-shadow: inset 0 0 0 1px rgba(28, 83, 52, .12); }
+.pg-plus .bp-ajust-ko { color: #7A4A08; background: #FDF4E3;
+  box-shadow: inset 0 0 0 1px rgba(179, 113, 8, .16); }

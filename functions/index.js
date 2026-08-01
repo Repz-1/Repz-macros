@@ -79,14 +79,22 @@ exports.lemonWebhook = onRequest(
       }
 
       // 4) Identifier la formule : le quota d'ajustements en depend
-      //    (2 par mois en mensuel, 4 en annuel).
+      //    (voir QUOTA_AJUSTEMENTS plus bas).
       const libelle = [
         attr.variant_name, attr.product_name, attr.first_order_item &&
         attr.first_order_item.variant_name,
       ].filter(Boolean).join(" ").toLowerCase();
+      // L'ORDRE COMPTE : « 3 months » contient « month ». Teste avant
+      // le mensuel, le trimestriel serait sinon classe mensuel et
+      // perdrait un ajustement par mois.
       let formule = null;
-      if (/annuel|annual|yearly|year|jaar/.test(libelle)) formule = "annuel";
-      else if (/mensuel|monthly|month|maand/.test(libelle)) formule = "mensuel";
+      if (/annuel|annual|yearly|year|jaar/.test(libelle)) {
+        formule = "annuel";
+      } else if (/trimestr|quarter|3\s*mois|3\s*months|3\s*maanden/.test(libelle)) {
+        formule = "trimestriel";
+      } else if (/mensuel|monthly|month|maand/.test(libelle)) {
+        formule = "mensuel";
+      }
 
       // 5) Écrire sur le compte
       const maj = {
@@ -1138,6 +1146,131 @@ exports.deposerProgramme = onRequest(
       });
     } catch (e) {
       console.error("deposerProgramme :", e);
+      res.status(500).json({ok: false});
+    }
+  },
+);
+
+// ============================================================
+// DEMANDE D'AJUSTEMENT.
+//
+// Le client ne modifie pas son programme : il en demande un autre.
+// Le quota depend de la formule, proportionnellement a sa duree —
+// un abonne annuel ne paie pas quatre fois plus cher pour deux fois
+// moins de suivi.
+//
+// Le compteur est remis a zero au changement de mois civil. Il vit
+// dans users/{uid}.ajustements, ecrit uniquement par cette fonction :
+// les regles Firestore interdisent au client d'y toucher, sinon le
+// quota ne vaudrait rien.
+// ============================================================
+
+/** Ajustements inclus par mois, selon la formule. */
+const QUOTA_AJUSTEMENTS = {
+  mensuel: 2,
+  trimestriel: 3,
+  annuel: 4,
+};
+
+/** Quota d'un compte. Sans formule connue (code promo, ancien
+ *  compte), on applique le plancher plutot que de tout refuser. */
+function quotaDe(donnees) {
+  const f = donnees && donnees.formule;
+  return QUOTA_AJUSTEMENTS[f] || QUOTA_AJUSTEMENTS.mensuel;
+}
+
+/** Mois civil courant, au format AAAA-MM. */
+function moisCourant() {
+  const d = new Date();
+  return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0");
+}
+
+exports.demanderAjustement = onRequest(
+  {secrets: [RESEND_API_KEY], region: "europe-west1", cors: true},
+  async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+    if (req.method !== "POST") { res.status(405).json({ok: false}); return; }
+
+    try {
+      const entete = req.get("Authorization") || "";
+      const jeton = entete.startsWith("Bearer ") ? entete.slice(7) : "";
+      if (!jeton) { res.status(401).json({ok: false}); return; }
+
+      let compte;
+      try {
+        const decode = await admin.auth().verifyIdToken(jeton);
+        compte = await admin.auth().getUser(decode.uid);
+      } catch (e) {
+        res.status(401).json({ok: false}); return;
+      }
+
+      const ref = db.collection("users").doc(compte.uid);
+      const snap = await ref.get();
+      const d = snap.exists ? snap.data() : {};
+
+      if (d.premium !== true) {
+        res.status(403).json({ok: false, motif: "premium"}); return;
+      }
+
+      const quota = quotaDe(d);
+      const mois = moisCourant();
+      const suivi = d.ajustements || {};
+      const utilises = suivi.mois === mois ? (suivi.utilises || 0) : 0;
+
+      if (utilises >= quota) {
+        res.status(429).json({ok: false, motif: "quota", quota: quota, restants: 0});
+        return;
+      }
+
+      const message = String((req.body && req.body.message) || "").slice(0, 1000);
+
+      // Le compteur monte AVANT l'envoi : si le courriel echoue, le
+      // client peut reessayer, mais une demande partie deux fois
+      // couterait deux ajustements. On prefere l'inverse.
+      await ref.set({
+        ajustements: {mois: mois, utilises: utilises + 1,
+          dernierLe: new Date().toISOString()},
+      }, {merge: true});
+
+      // Le coach recoit la demande. Reponse directe au client :
+      // l'echange continue par courriel, sans intermediaire.
+      try {
+        const nom = compte.displayName || compte.email || compte.uid;
+        const prog = d.programme || null;
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${RESEND_API_KEY.value()}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: EXPEDITEUR,
+            reply_to: compte.email || REPONSE_A,
+            to: ["coach@belfit.be"],
+            subject: `Demande d'ajustement — ${nom}`,
+            html: `<div style="font:400 14px/1.6 Helvetica,Arial,sans-serif;color:#16130F">
+              <p><b>${nom}</b> demande un ajustement de son programme.</p>
+              <p style="color:#57514A">Compte : ${compte.email || "sans adresse"}<br>
+              Formule : ${d.formule || "inconnue"}<br>
+              Ajustement ${utilises + 1} sur ${quota} ce mois-ci</p>
+              ${prog ? `<p style="color:#57514A">Programme actuel :
+                ${prog.kcal} kcal · ${prog.prot} P · ${prog.carbs} C · ${prog.lip} L</p>` : ""}
+              ${message ? `<p style="background:#F4F3F0;padding:12px;border-radius:10px">
+                ${message.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>` : ""}
+              <p style="color:#8A8279;font-size:12px">Réponds à ce message pour
+              écrire directement au client.</p></div>`,
+          }),
+        });
+      } catch (e) {
+        console.error("Envoi de la demande :", e);
+      }
+
+      res.json({ok: true, restants: quota - utilises - 1, quota: quota});
+    } catch (e) {
+      console.error("demanderAjustement :", e);
       res.status(500).json({ok: false});
     }
   },
