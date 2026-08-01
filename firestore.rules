@@ -12,11 +12,24 @@ service cloud.firestore {
       // afin que l'unicité reste garantie et qu'un pseudo ne soit pas volé.
       // À la création, le document ne peut pas contenir de pseudo.
       allow create: if request.auth != null && request.auth.uid == uid
-                    && !("pseudo" in request.resource.data.keys());
-      // À la mise à jour, le champ pseudo doit rester inchangé.
+                    && !("pseudo" in request.resource.data.keys())
+                    && !("programme" in request.resource.data.keys());
+      // À la mise à jour, pseudo et programme doivent rester inchangés.
+      // Le programme est déposé par le coach via deposerProgramme, qui
+      // écrit en admin : sans cette règle, n'importe qui pourrait
+      // s'attribuer un plan, et surtout en écrire un chez un autre.
       allow update: if request.auth != null && request.auth.uid == uid
-                    && !("pseudo" in request.resource.data.diff(resource.data).affectedKeys());
+                    && !("pseudo" in request.resource.data.diff(resource.data).affectedKeys())
+                    && !("programme" in request.resource.data.diff(resource.data).affectedKeys());
       allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Liste des coachs : totalement fermée au client, en lecture comme
+    // en écriture. Seule la console peut y ajouter un uid — un coach ne
+    // peut donc pas s'auto-déclarer, et personne ne peut savoir qui
+    // dispose du droit de déposer un programme.
+    match /coachs/{uid} {
+      allow read, write: if false;
     }
 
     // Table des pseudonymes : totalement fermée au client.

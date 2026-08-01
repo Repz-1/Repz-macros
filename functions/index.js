@@ -854,3 +854,240 @@ exports.mailReinitialisation = onRequest(
     }
   },
 );
+
+// ============================================================
+// PROGRAMME DU COACH — depot et notification.
+//
+// Une seule action cote coach, deux canaux cote client : le plan
+// est ecrit dans users/{uid}.programme (l'app le lit et propose de
+// l'appliquer au journal) ET envoye par courriel.
+//
+// La verification « suis-je coach ? » est faite ICI, cote serveur.
+// Si elle vivait dans la page, n'importe qui pourrait ecrire un
+// programme chez n'importe quel autre compte : la page n'est qu'une
+// commodite, la regle est ce fichier.
+//
+// La liste des coachs vit dans coachs/{uid}. Ce document n'est
+// jamais lisible par le client (regle Firestore), et seule la
+// console peut l'ecrire — un coach ne peut donc pas s'auto-declarer.
+// ============================================================
+
+/** Page de destination annoncee dans le courriel. */
+const PAGE_APP = "https://belfit.be/v2/";
+
+/** Modele du courriel « ton programme est pret », en trois langues. */
+const TEXTES_PROG = {
+  fr: {
+    objet: "Ton programme BELFIT est prêt",
+    titre: "Ton programme est prêt",
+    intro: "Ton coach a terminé ton plan alimentaire. Voici tes " +
+      "objectifs quotidiens — ils t'attendent aussi dans l'application, " +
+      "où un bouton les applique à ton journal en une fois.",
+    bouton: "Ouvrir dans l'application",
+    rassure: "Une question sur ton plan ?<br>Réponds simplement à ce message.",
+    slogan: "Ton coach nutrition et entraînement",
+    pied: "Nous écrire",
+    kcal: "calories par jour", prot: "protéines",
+    carbs: "glucides", lip: "lipides", note: "Note de ton coach",
+  },
+  en: {
+    objet: "Your BELFIT programme is ready",
+    titre: "Your programme is ready",
+    intro: "Your coach has finished your nutrition plan. Here are your " +
+      "daily targets — they are waiting in the app too, where one button " +
+      "applies them to your journal.",
+    bouton: "Open in the app",
+    rassure: "A question about your plan?<br>Just reply to this message.",
+    slogan: "Your nutrition and training coach",
+    pied: "Contact us",
+    kcal: "calories per day", prot: "protein",
+    carbs: "carbs", lip: "fat", note: "Note from your coach",
+  },
+  nl: {
+    objet: "Je BELFIT-programma is klaar",
+    titre: "Je programma is klaar",
+    intro: "Je coach heeft je voedingsplan afgerond. Dit zijn je " +
+      "dagelijkse doelen — ze staan ook in de app, waar één knop ze " +
+      "in je dagboek toepast.",
+    bouton: "Openen in de app",
+    rassure: "Een vraag over je plan?<br>Antwoord gewoon op dit bericht.",
+    slogan: "Jouw coach voor voeding en training",
+    pied: "Contacteer ons",
+    kcal: "calorieën per dag", prot: "eiwitten",
+    carbs: "koolhydraten", lip: "vetten", note: "Notitie van je coach",
+  },
+};
+
+/** Message HTML du programme. Tables + styles en ligne, comme les
+ *  autres modeles : seule mise en forme fiable en messagerie. */
+function modeleProgramme(prog, langue) {
+  const T = TEXTES_PROG[langue] || TEXTES_PROG.fr;
+  const e = (s) => String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const macro = (val, lb) => `
+    <td align="center" style="padding:0 4px">
+      <div style="font:700 21px/1 Helvetica,Arial,sans-serif;color:#16130F">${e(val)}</div>
+      <div style="font:400 11px/1.4 Helvetica,Arial,sans-serif;color:#8A8279;padding-top:4px">${e(lb)}</div>
+    </td>`;
+  return `<!doctype html><html><body style="margin:0;padding:0;background:#F4F3F0">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F3F0;padding:28px 16px">
+<tr><td align="center">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+         style="max-width:520px;background:#FFFFFF;border:1px solid rgba(28,24,18,.06);border-radius:18px">
+    <tr><td style="padding:28px 26px 6px">
+      <div style="font:700 22px/1.2 Helvetica,Arial,sans-serif;color:#16130F;letter-spacing:-.5px">${e(T.titre)}</div>
+      <p style="font:400 14px/1.6 Helvetica,Arial,sans-serif;color:#57514A;margin:12px 0 0">${e(T.intro)}</p>
+    </td></tr>
+    <tr><td style="padding:20px 20px 4px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+             style="background:#1E232D;border-radius:14px">
+        <tr><td style="padding:18px 10px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+            <td align="center">
+              <div style="font:700 30px/1 Helvetica,Arial,sans-serif;color:#F4F6F8">${e(prog.kcal)}</div>
+              <div style="font:400 11px/1.4 Helvetica,Arial,sans-serif;color:#AAB1BC;padding-top:5px">${e(T.kcal)}</div>
+            </td>
+          </tr></table>
+        </td></tr>
+      </table>
+    </td></tr>
+    <tr><td style="padding:14px 20px 0">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+        ${macro(prog.prot + " g", T.prot)}
+        ${macro(prog.carbs + " g", T.carbs)}
+        ${macro(prog.lip + " g", T.lip)}
+      </tr></table>
+    </td></tr>
+    ${prog.note ? `<tr><td style="padding:20px 26px 0">
+      <div style="font:600 10px/1 Helvetica,Arial,sans-serif;color:#B34700;letter-spacing:1.4px">${e(T.note).toUpperCase()}</div>
+      <p style="font:400 14px/1.6 Helvetica,Arial,sans-serif;color:#57514A;margin:8px 0 0">${e(prog.note)}</p>
+    </td></tr>` : ""}
+    <tr><td align="center" style="padding:24px 26px 6px">
+      <a href="${PAGE_APP}" style="display:inline-block;background:#1E232D;color:#F4F6F8;
+         font:600 15px/1 Helvetica,Arial,sans-serif;text-decoration:none;
+         padding:15px 26px;border-radius:13px">${e(T.bouton)}</a>
+    </td></tr>
+    <tr><td align="center" style="padding:18px 26px 26px">
+      <p style="font:400 12px/1.6 Helvetica,Arial,sans-serif;color:#8A8279;margin:0">${T.rassure}</p>
+    </td></tr>
+  </table>
+  <p style="font:400 11px/1.6 Helvetica,Arial,sans-serif;color:#8A8279;margin:16px 0 0">
+    BELFIT — ${e(T.slogan)}<br>
+    <a href="mailto:${REPONSE_A}" style="color:#B34700">${e(T.pied)}</a>
+  </p>
+</td></tr></table></body></html>`;
+}
+
+/** Nombre fini et positif, borne — un plan a 90 000 kcal est une
+ *  faute de frappe, pas un objectif. */
+function nombreValide(v, min, max) {
+  const n = Number(v);
+  return Number.isFinite(n) && n >= min && n <= max ? Math.round(n) : null;
+}
+
+exports.deposerProgramme = onRequest(
+  {secrets: [RESEND_API_KEY], region: "europe-west1", cors: true},
+  async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+    if (req.method !== "POST") { res.status(405).json({ok: false}); return; }
+
+    try {
+      // 1. Qui appelle ?
+      const entete = req.get("Authorization") || "";
+      const jeton = entete.startsWith("Bearer ") ? entete.slice(7) : "";
+      if (!jeton) { res.status(401).json({ok: false}); return; }
+
+      let coach;
+      try {
+        coach = await admin.auth().verifyIdToken(jeton);
+      } catch (e) {
+        res.status(401).json({ok: false}); return;
+      }
+
+      // 2. Est-il coach ? Seule la console ecrit coachs/{uid}.
+      const estCoach = (await db.collection("coachs").doc(coach.uid).get()).exists;
+      if (!estCoach) { res.status(403).json({ok: false, motif: "acces"}); return; }
+
+      // 3. Quel client ? Par courriel ou par pseudo, au choix.
+      const cible = String((req.body && req.body.client) || "").trim();
+      if (!cible) { res.status(400).json({ok: false, motif: "client"}); return; }
+
+      let client = null;
+      if (cible.includes("@")) {
+        try { client = await admin.auth().getUserByEmail(cible.toLowerCase()); }
+        catch (e) { client = null; }
+      } else {
+        // La table des pseudos n'est pas lisible cote client, mais
+        // l'admin SDK la traverse : meme chemin que connexionParPseudo.
+        const p = await db.collection("usernames").doc(cible.toLowerCase()).get();
+        if (p.exists && p.data().uid) {
+          try { client = await admin.auth().getUser(p.data().uid); }
+          catch (e) { client = null; }
+        }
+      }
+      if (!client) { res.status(404).json({ok: false, motif: "introuvable"}); return; }
+
+      // 4. Le plan tient-il debout ?
+      const b = req.body || {};
+      const prog = {
+        kcal: nombreValide(b.kcal, 800, 8000),
+        prot: nombreValide(b.prot, 20, 600),
+        carbs: nombreValide(b.carbs, 20, 1200),
+        lip: nombreValide(b.lip, 10, 400),
+      };
+      if (prog.kcal === null || prog.prot === null ||
+          prog.carbs === null || prog.lip === null) {
+        res.status(400).json({ok: false, motif: "valeurs"}); return;
+      }
+      prog.note = String(b.note || "").slice(0, 600);
+      prog.livreLe = new Date().toISOString();
+      prog.parCoach = coach.uid;
+
+      // 5. Ecriture. C'est le seul chemin : la regle Firestore
+      //    interdit au client de toucher ce champ lui-meme.
+      await db.collection("users").doc(client.uid).set(
+        {programme: prog}, {merge: true},
+      );
+
+      // 6. Courriel. Un echec d'envoi ne doit PAS annuler le depot :
+      //    le plan est deja dans l'app, c'est le canal qui fait foi.
+      let mailEnvoye = false;
+      if (client.email) {
+        const langue = String(b.langue || "fr").slice(0, 2);
+        const T = TEXTES_PROG[langue] || TEXTES_PROG.fr;
+        try {
+          const envoi = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${RESEND_API_KEY.value()}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              from: EXPEDITEUR,
+              reply_to: "coach@belfit.be",
+              to: [client.email],
+              subject: T.objet,
+              html: modeleProgramme(prog, langue),
+            }),
+          });
+          mailEnvoye = envoi.ok;
+          if (!envoi.ok) console.error("Resend a refuse :", await envoi.text());
+        } catch (e) {
+          console.error("Envoi du programme :", e);
+        }
+      }
+
+      res.json({
+        ok: true,
+        client: {uid: client.uid, email: client.email || null},
+        mailEnvoye,
+      });
+    } catch (e) {
+      console.error("deposerProgramme :", e);
+      res.status(500).json({ok: false});
+    }
+  },
+);
