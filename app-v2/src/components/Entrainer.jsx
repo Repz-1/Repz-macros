@@ -118,7 +118,7 @@ function JournalEntrainement({ ouvrirJour }) {
   return (
     <div class="choice ph sm" style={'margin-top:24px;' + fond('card-journal.jpg')}>
       <div class="ch-icon">
-        <svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 10h18" /><path d="M9 16l2 2 4-4" /></svg>
+        <svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5" /><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5" /></svg>
       </div>
       <h3>{t('tr_log_title')}</h3>
       <p>{t('tr_log_sub')}</p>
@@ -257,7 +257,7 @@ export function Entrainer() {
         <a href="#" class={'choice ph featured' + locked} style={fond('card-creer.jpg')}
           onClick={(e) => verrou(e, 'questionnaire')}>
 
-          <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z" /></svg></span>
+          <span class="ch-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="13" r="7.5" /><circle cx="11" cy="13" r="3" /><path d="M21 3l-6.8 6.8M21 3h-4.6M21 3v4.6" /></svg></span>
           <h3>{t('tr_create_title')}</h3>
           <p>{t('tr_create_sub')}</p>
           <span class="cta">{t('tr_start')}</span>
@@ -276,7 +276,7 @@ export function Entrainer() {
         <a href="#" class={'choice ph sm' + lockedProgs} style={fond('card-programmes.jpg')}
           onClick={(e) => verrouProgs(e, 'programmes')}>
 
-          <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5" /><path d="M3.5 9h17M8 2.5v4M16 2.5v4" /></svg></span>
+          <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M3.5 7a2 2 0 012-2h4.2l2 2.4h7.3a2 2 0 012 2V18a2 2 0 01-2 2h-13.5a2 2 0 01-2-2z" /></svg></span>
           <h3>{t('tr_progs_title')}</h3>
           <p>{t('tr_progs_sub')}</p>
           <span class="cta">{t('open')}</span>
