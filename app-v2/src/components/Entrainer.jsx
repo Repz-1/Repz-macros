@@ -6,6 +6,25 @@ import { enDecouverte } from '../services/decouverte.js';
 import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
 import { t } from '../i18n/index.js';
+
+/* ------------------------------------------------------------
+   Fonds de cartes : charges a la PREMIERE visite de l'onglet.
+   Les quatre panneaux du rail sont montes des le demarrage — c'est
+   ce qui rend le glissement lateral instantane — donc ces quatre
+   jpg (658 ko) partaient au chargement du Journal, pour un ecran
+   que l'utilisateur n'avait pas encore ouvert.
+   On ne demonte pas le composant (cela casserait le geste) : on
+   retarde seulement l'attribut background-image.
+   Le drapeau est pose au niveau module et ne retombe jamais :
+   revenir sur l'onglet ne doit rien recharger ni reafficher de
+   fondu. loading="lazy" n'existe pas pour un fond CSS, d'ou ce
+   passage par le signal deja importe.
+   ------------------------------------------------------------ */
+let fondsVus = false;
+function fond(fichier) {
+  if (!fondsVus && ongletActif.value === 'entrainer') fondsVus = true;
+  return fondsVus ? `background-image:url('/img/${fichier}')` : '';
+}
 import '../legacy/entrainer.scoped.css';
 
 // ==========================================================
@@ -97,7 +116,7 @@ function JournalEntrainement({ ouvrirJour }) {
   }
 
   return (
-    <div class="choice ph sm" style="margin-top:24px; background-image:url('/img/card-journal.jpg')">
+    <div class="choice ph sm" style={'margin-top:24px;' + fond('card-journal.jpg')}>
       <div class="ch-icon">
         <svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 10h18" /><path d="M9 16l2 2 4-4" /></svg>
       </div>
@@ -231,7 +250,7 @@ export function Entrainer() {
 
       <div class="choices">
         {/* Carte vedette : programme sur mesure (Premium) */}
-        <a href="#" class={'choice ph featured' + locked} style="background-image:url('/img/card-creer.jpg')"
+        <a href="#" class={'choice ph featured' + locked} style={fond('card-creer.jpg')}
           onClick={(e) => verrou(e, 'questionnaire')}>
 
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z" /></svg></span>
@@ -242,7 +261,7 @@ export function Entrainer() {
         </a>
 
         {/* Seance libre (gratuit) */}
-        <a href="#" class="choice ph md" style="background-image:url('/img/card-libre.jpg')"
+        <a href="#" class="choice ph md" style={fond('card-libre.jpg')}
           onClick={(e) => { e.preventDefault(); allerVers('selection'); }}>
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11" /></svg></span>
           <h3>{t('tr_free_title')}</h3>
@@ -251,7 +270,7 @@ export function Entrainer() {
         </a>
 
         {/* Mes programmes (Premium) */}
-        <a href="#" class={'choice ph sm' + lockedProgs} style="background-image:url('/img/card-programmes.jpg')"
+        <a href="#" class={'choice ph sm' + lockedProgs} style={fond('card-programmes.jpg')}
           onClick={(e) => verrouProgs(e, 'programmes')}>
 
           <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5" /><path d="M3.5 9h17M8 2.5v4M16 2.5v4" /></svg></span>
