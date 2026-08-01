@@ -356,3 +356,11 @@
    a n'appartenir a aucune palette. */
 .pg-stats a { color: #B34700; }
 .pg-stats a.ce-btn, .pg-stats a[style] { color: inherit; }
+
+/* En-tete commun : fleche retour noire (meme regle que S'entrainer)
+   et ecart de 73 pt du haut d'ecran a la premiere carte, mesure sur
+   la carte Calories du Journal. L'ancien app-header ne se rend
+   plus ; ses regles restent inertes. */
+.pg-stats .j-retour{ justify-self:start; margin-left:-10px; color:#16130F; }
+.pg-stats .j-entete{ margin-bottom:14px; }
+.pg-stats .container{ padding-top:0; }

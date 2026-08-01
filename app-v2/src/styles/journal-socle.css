@@ -150,7 +150,8 @@
    ============================================================ */
 .pg-journal .j-entete,
 .pg-entrainer .j-entete,
-.pg-plus .j-entete {
+.pg-plus .j-entete,
+.pg-stats .j-entete {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -165,7 +166,8 @@
    des cartes. */
 .pg-journal .j-entete-actions,
 .pg-entrainer .j-entete-actions,
-.pg-plus .j-entete-actions { margin-right: -8px; }
+.pg-plus .j-entete-actions,
+.pg-stats .j-entete-actions { margin-right: -8px; }
 .pg-journal .j-logo,
 .pg-entrainer .j-logo,
 .pg-plus .j-logo {
@@ -176,10 +178,12 @@
 }
 .pg-journal .j-entete-actions,
 .pg-entrainer .j-entete-actions,
-.pg-plus .j-entete-actions { display: flex; align-items: center; gap: 8px; }
+.pg-plus .j-entete-actions,
+.pg-stats .j-entete-actions { display: flex; align-items: center; gap: 8px; }
 .pg-journal .j-btn-icone,
 .pg-entrainer .j-btn-icone,
-.pg-plus .j-btn-icone {
+.pg-plus .j-btn-icone,
+.pg-stats .j-btn-icone {
   width: 47px; height: 47px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   color: var(--or-fonce);
@@ -188,22 +192,27 @@
 }
 .pg-journal .j-btn-icone,
 .pg-entrainer .j-btn-icone,
-.pg-plus .j-btn-icone {
+.pg-plus .j-btn-icone,
+.pg-stats .j-btn-icone {
   background: none; border: none; padding: 0;
   cursor: pointer; font-family: inherit; -webkit-tap-highlight-color: transparent;
 }
 .pg-journal .j-btn-icone:focus,
 .pg-entrainer .j-btn-icone:focus,
-.pg-plus .j-btn-icone:focus { outline: none; }
+.pg-plus .j-btn-icone:focus,
+.pg-stats .j-btn-icone:focus { outline: none; }
 .pg-journal .j-btn-icone:focus-visible,
 .pg-entrainer .j-btn-icone:focus-visible,
-.pg-plus .j-btn-icone:focus-visible { outline: 2px solid var(--or); outline-offset: 2px; }
+.pg-plus .j-btn-icone:focus-visible,
+.pg-stats .j-btn-icone:focus-visible { outline: 2px solid var(--or); outline-offset: 2px; }
 .pg-journal .j-btn-icone:active,
 .pg-entrainer .j-btn-icone:active,
-.pg-plus .j-btn-icone:active { background: rgba(247, 181, 0, .14); transform: scale(.94); }
+.pg-plus .j-btn-icone:active,
+.pg-stats .j-btn-icone:active { background: rgba(247, 181, 0, .14); transform: scale(.94); }
 .pg-journal .j-btn-icone svg,
 .pg-entrainer .j-btn-icone svg,
-.pg-plus .j-btn-icone svg {
+.pg-plus .j-btn-icone svg,
+.pg-stats .j-btn-icone svg {
   /* 23 px : la taille de S'entrainer, prise pour reference et
      appliquee partout. Cette regle etait la SECONDE declaration du
      meme selecteur (27 px) et gagnait sur la premiere — c'est elle
@@ -1981,7 +1990,8 @@
 .pg-journal .j-entete--perso,
 .pg-entrainer .j-entete--perso,
 .pg-premium .j-entete--perso,
-.pg-plus .j-entete--perso {
+.pg-plus .j-entete--perso,
+.pg-stats .j-entete--perso {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -1989,18 +1999,21 @@
 .pg-journal .j-entete--perso .j-symbole,
 .pg-entrainer .j-entete--perso .j-symbole,
 .pg-premium .j-entete--perso .j-symbole,
-.pg-plus .j-entete--perso .j-symbole {
+.pg-plus .j-entete--perso .j-symbole,
+.pg-stats .j-entete--perso .j-symbole {
   height: 34px; width: auto; display: block; justify-self: start;
   filter: drop-shadow(0 4px 16px rgba(247, 181, 0, .15));
 }
 .pg-journal .j-entete--perso .j-entete-actions,
 .pg-entrainer .j-entete--perso .j-entete-actions,
 .pg-premium .j-entete--perso .j-entete-actions,
-.pg-plus .j-entete--perso .j-entete-actions { justify-self: end; }
+.pg-plus .j-entete--perso .j-entete-actions,
+.pg-stats .j-entete--perso .j-entete-actions { justify-self: end; }
 .pg-journal .j-prenom,
 .pg-entrainer .j-prenom,
 .pg-premium .j-prenom,
-.pg-plus .j-prenom {
+.pg-plus .j-prenom,
+.pg-stats .j-prenom {
   justify-self: center;
   font-size: 17px; font-weight: 500; color: var(--txt-1);
   letter-spacing: -.01em; white-space: nowrap;
