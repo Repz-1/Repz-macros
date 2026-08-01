@@ -258,7 +258,6 @@ export function Entrainer() {
           onClick={(e) => verrou(e, 'questionnaire')}>
 
           <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9H19l-4.3 3.1 1.6 5-4.3-3.1L7.7 16l1.6-5L5 7.9h5.4z" /></svg></span>
-          <span class="badge">{t('tr_badge_custom')}</span>
           <h3>{t('tr_create_title')}</h3>
           <p>{t('tr_create_sub')}</p>
           <span class="cta">{t('tr_start')}</span>
