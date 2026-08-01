@@ -104,9 +104,13 @@
     font-size:20px; color:var(--text); text-decoration:none;
 }
 .pg-entrainer .top h1{ font-size:22px; font-weight:800; letter-spacing:-.02em; }
-.pg-entrainer .intro{ text-align:left; padding:14px 2px 18px; }
+/* L'en-tete garde les metriques du Journal (34/17/47) ; c'est
+    l'AIR qui se resserre : 16+18 pt autour contre 12 sur le
+    Journal. */
+.pg-entrainer{ padding-top: max(8px, env(safe-area-inset-top)) !important; }
+.pg-entrainer .intro{ text-align:left; padding:8px 2px 12px; }
 .pg-entrainer .intro-titre{
-  margin:0 0 8px; font-size:34px; font-weight:700;
+  margin:0 0 6px; font-size:31px; font-weight:700;
   letter-spacing:-.035em; line-height:1.05; color:#16130F;
 }
 .pg-entrainer .intro-sous{
@@ -399,12 +403,12 @@
    le RATIO par la compacite (paddings, interlignes, bouton).
    ============================================================ */
 .pg-entrainer{background:#F8F4EE!important}
-.pg-entrainer .choices { gap: 12px; }
+.pg-entrainer .choices { gap: 11px; }
 
 .pg-entrainer .choice.ph {
   position: relative; overflow: hidden;
   display: block; min-height: 0;
-  padding: 15px 16px 15px;
+  padding: 12px 15px 12px;
   /* Creme a peine plus clair que la page : la carte se detache par
      l'ombre, pas par le blanc. C'est la matiere de la maquette. */
   background-color: #FBF7F1;
@@ -436,36 +440,36 @@
 
 .pg-entrainer .choice.ph .ch-icon {
   display: flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px; margin-bottom: 10px;
-  border-radius: 12px; background: #F0EBE1;
+  width: 34px; height: 34px; margin-bottom: 7px;
+  border-radius: 11px; background: #F0EBE1;
   color: #16130F; box-shadow: none; border: none;
 }
 .pg-entrainer .choice.ph .ch-icon svg {
-  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  width: 18px; height: 18px; fill: none; stroke: currentColor;
   stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-entrainer .choice.ph.featured .ch-icon {
   background: #FBF0D2; color: #DFA004;
 }
 .pg-entrainer .choice.ph h3 {
-  color: #16130F; font-size: 18px; font-weight: 700;
-  letter-spacing: -.024em; line-height: 1.18; text-shadow: none;
-  margin: 0 0 5px;
+  color: #16130F; font-size: 17px; font-weight: 700;
+  letter-spacing: -.022em; line-height: 1.16; text-shadow: none;
+  margin: 0 0 4px;
 }
 .pg-entrainer .choice.ph > p {
   /* Noir, comme le titre : la maquette distingue par la GRAISSE,
      pas par la couleur (corps mesure a 2,2,2). */
   color: #16130F; font-size: 13px; font-weight: 400;
-  line-height: 1.42; text-shadow: none; margin: 0 0 14px;
+  line-height: 1.38; text-shadow: none; margin: 0 0 11px;
 }
 
 /* Boutons : dore / noir / gris, fleche integree, gabarit compact de
    la maquette — la hauteur reste a 44 px, plancher tactile. */
 .pg-entrainer .choice.ph .cta {
   display: inline-flex; align-items: center; justify-content: space-between;
-  gap: 18px; min-width: 168px;
-  padding: 12px 17px; border-radius: 13px;
-  font-size: 14px; font-weight: 600; letter-spacing: -.008em;
+  gap: 16px; min-width: 156px;
+  padding: 10px 15px; border-radius: 12px;
+  font-size: 13.5px; font-weight: 600; letter-spacing: -.008em;
   background: #F0EDE6; color: #16130F;
   border: none; backdrop-filter: none; box-shadow: none; text-shadow: none;
 }
