@@ -1,0 +1,172 @@
+/* ============================================================
+   BELFIT+ — l'espace des membres.
+
+   Meme materiau que le reste de l'app : creme au fond, cartes
+   blanches, orange en accent. Ce n'est pas une page a part, c'est
+   un onglet — il doit se reconnaitre comme tel.
+
+   Les quatre cartes reprennent les quatre benefices vendus sur la
+   page Premium, dans le meme ordre. Ce qui a ete promis est livre
+   au meme endroit.
+   ============================================================ */
+.pg-plus {
+  --bp-blanc:  #FFFFFF;
+  --bp-bord:   rgba(28, 24, 18, .055);
+  --bp-filet:  rgba(28, 24, 18, .07);
+  --bp-omb:    0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+  --bp-tx:     #16130F;
+  --bp-tx2:    #57514A;
+  --bp-tx3:    #8A8279;
+  --bp-or:     #F86A0C;
+  --bp-or-lis: #B34700;
+  background: #F4F3F0;
+  min-height: 100%;
+  padding-bottom: 24px;
+}
+
+/* ---------- Ouverture ---------- */
+.pg-plus .bp-tete { padding: 18px 0 16px; }
+.pg-plus .bp-bonjour {
+  margin: 0 0 4px; font-size: 10px; font-weight: 700;
+  letter-spacing: .16em; color: var(--bp-or-lis);
+}
+.pg-plus .bp-titre {
+  margin: 0; font-size: 30px; font-weight: 700;
+  letter-spacing: -.035em; line-height: 1.05; color: var(--bp-tx);
+}
+
+/* ---------- Cartes ----------
+   Chaque carte est un bouton : elle mene quelque part. Le visuel
+   occupe la droite, le texte reste a gauche et lisible — une photo
+   derriere du texte est une photo qui empeche de lire. */
+.pg-plus .bp-carte {
+  position: relative; display: block; width: 100%;
+  padding: 0; margin: 0 0 10px; overflow: hidden;
+  text-align: left; font: inherit; cursor: pointer;
+  background: var(--bp-blanc);
+  border: 1px solid var(--bp-bord); border-radius: 18px;
+  box-shadow: var(--bp-omb);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.pg-plus .bp-carte:active { transform: scale(.988); box-shadow: 0 1px 2px rgba(40,32,22,.05); }
+
+.pg-plus .bp-corps {
+  position: relative; z-index: 1; display: block;
+  padding: 15px 15px 16px; max-width: 62%;
+}
+.pg-plus .bp-carte--large .bp-corps { max-width: 66%; padding: 17px 16px 18px; }
+
+.pg-plus .bp-ic {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; margin-bottom: 10px;
+  border-radius: 11px; background: rgba(248, 106, 12, .07);
+  color: var(--bp-or-lis);
+}
+.pg-plus .bp-ic svg {
+  width: 18px; height: 18px; fill: none; stroke: currentColor;
+  stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-plus .bp-nom {
+  display: block; font-size: 15px; font-weight: 600;
+  letter-spacing: -.015em; line-height: 1.25; color: var(--bp-tx);
+}
+.pg-plus .bp-carte--large .bp-nom { font-size: 17px; }
+.pg-plus .bp-sous {
+  display: block; margin-top: 5px;
+  font-size: 12.5px; line-height: 1.4; color: #6B655D;   /* 5,4:1 */
+}
+
+/* Fleche : elle indique, elle n'appelle pas. */
+.pg-plus .bp-fleche {
+  position: absolute; z-index: 2; left: 15px; bottom: 15px;
+  display: none;
+}
+.pg-plus .bp-carte--large .bp-fleche {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bp-blanc); border: 1px solid var(--bp-bord);
+  color: var(--bp-tx);
+}
+.pg-plus .bp-fleche svg {
+  width: 15px; height: 15px; fill: none; stroke: currentColor;
+  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-plus .bp-carte--large .bp-corps { padding-bottom: 60px; }
+
+/* Pastille sur la carte programme quand un plan neuf attend. */
+.pg-plus .bp-carte--neuf::after {
+  content: ''; position: absolute; z-index: 3; top: 14px; right: 14px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--bp-or); box-shadow: 0 0 0 3px rgba(248, 106, 12, .16);
+}
+
+/* ---------- Visuels ----------
+   Chaque carte porte une photo, posee en fond a droite et fondue
+   vers le blanc pour que le texte reste lisible quoi qu'il arrive.
+   Tant qu'une photo n'est pas fournie, la degradee tient seule :
+   la carte n'a jamais l'air cassee. */
+.pg-plus .bp-visuel {
+  position: absolute; inset: 0 0 0 38%; z-index: 0;
+  background-size: cover; background-position: center;
+  background-repeat: no-repeat;
+}
+.pg-plus .bp-carte--large .bp-visuel { inset: 0 0 0 34%; }
+/* Le fondu : sans lui, un texte fonce passerait sur une zone claire
+   de la photo et deviendrait illisible selon l'image. */
+.pg-plus .bp-visuel::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    #FFFFFF 0%, rgba(255,255,255,.92) 26%, rgba(255,255,255,.35) 62%, rgba(255,255,255,0) 100%);
+}
+.pg-plus .bp-visuel--programme { background-image: url('/img/plus-programme.webp'), linear-gradient(135deg, #FFE9C4, #F8C98A); }
+.pg-plus .bp-visuel--stats     { background-image: url('/img/plus-stats.webp'),     linear-gradient(135deg, #E7EDF3, #C9D6E4); }
+.pg-plus .bp-visuel--recettes  { background-image: url('/img/plus-recettes.webp'),  linear-gradient(135deg, #EDE7D8, #D8CBA8); }
+.pg-plus .bp-visuel--courses   { background-image: url('/img/plus-courses.webp'),   linear-gradient(135deg, #E4EDE2, #C3D8BE); }
+
+/* ---------- Detail du programme ---------- */
+.pg-plus .bp-detail {
+  margin: -4px 0 12px; padding: 15px 16px 16px;
+  background: var(--bp-blanc);
+  border: 1px solid var(--bp-bord); border-radius: 18px;
+  box-shadow: var(--bp-omb);
+}
+.pg-plus .bp-macros {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  padding-bottom: 13px; border-bottom: 1px solid var(--bp-filet);
+}
+.pg-plus .bp-macros div { text-align: center; }
+.pg-plus .bp-macros b {
+  display: block; font-size: 17px; font-weight: 650;
+  letter-spacing: -.02em; color: var(--bp-tx);
+  font-variant-numeric: tabular-nums;
+}
+.pg-plus .bp-macros em {
+  display: block; margin-top: 2px; font-style: normal;
+  font-size: 10.5px; color: var(--bp-tx3);
+}
+.pg-plus .bp-note {
+  margin: 12px 0 0; font-size: 13px; line-height: 1.5; color: var(--bp-tx2);
+}
+.pg-plus .bp-etat {
+  margin: 12px 0 0; font-size: 12.5px; color: var(--bp-tx3);
+}
+/* Le bouton d'application : graphite, comme toute action qui
+   engage dans l'app. */
+.pg-plus .bp-appliquer {
+  display: block; width: 100%; margin-top: 13px; padding: 13px;
+  font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
+  color: #F4F6F8; border: none; border-radius: 13px;
+  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 2px 6px rgba(18,22,28,.16);
+}
+.pg-plus .bp-appliquer:active { box-shadow: inset 0 3px 9px rgba(0,0,0,.30); }
+
+/* ---------- Pied ---------- */
+.pg-plus .bp-pied {
+  margin: 18px 0 0; font-size: 11.5px; color: var(--bp-tx3); text-align: center;
+}
+.pg-plus .bp-pied a { color: var(--bp-or-lis); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-plus .bp-carte { transition: none; }
+}

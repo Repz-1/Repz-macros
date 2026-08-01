@@ -4,6 +4,7 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApps } from 'firebase/app';
 import { t } from '../i18n/index.js';
 import { Entete } from './Entete.jsx';
+import { BelfitPlus } from './BelfitPlus.jsx';
 
 // Statut Premium lu depuis Firestore (ecrit par le webhook LemonSqueezy)
 export const estPremium = signal(false);
@@ -121,6 +122,9 @@ export function PremiumPage() {
       <span class="c-cell on c-prem"><Check /></span>
     </div>
   );
+
+  // Un abonne ne lit pas une page de vente : il entre dans son espace.
+  if (dejaPremium) return <BelfitPlus />;
 
   return (
     <div class="pg-premium">
