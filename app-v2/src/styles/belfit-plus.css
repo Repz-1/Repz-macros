@@ -228,6 +228,13 @@
 /* ---------- Demander un ajustement ----------
    Le nombre restant est annonce SUR le bouton : un quota qu'on ne
    decouvre qu'en le depassant est un quota cache. */
+.pg-plus .bp-attente { margin: 0; padding: 6px 2px 2px;
+  font-size: 13.5px; color: var(--encre-3); }
+.pg-plus .bp-sans-prog { padding: 2px 2px 4px; }
+.pg-plus .bp-sans-prog-titre { margin: 0 0 5px; font-size: 15.5px;
+  font-weight: 700; color: var(--encre); letter-spacing: -.01em; }
+.pg-plus .bp-sans-prog-txt { margin: 0; font-size: 13.5px;
+  line-height: 1.5; color: var(--encre-2); }
 .pg-plus .bp-ajust { margin-top: 14px; padding-top: 14px;
   border-top: 1px solid var(--bp-filet); }
 /* Modifier ses objectifs : meme gabarit que la demande d'ajustement,

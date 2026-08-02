@@ -279,8 +279,26 @@ export function BelfitPlus() {
         </button>
       </div>
 
-      {ouvertProg && pr && (
+      {/* Le panneau s'ouvre meme sans programme. Il ne s'affichait
+          qu'a la condition `ouvertProg && pr` : sans programme, le
+          bouton Mon programme basculait un etat sans rien montrer —
+          un bouton parfaitement inerte, qu'on appuie deux fois avant
+          de croire l'application cassee. */}
+      {ouvertProg && (
         <div class="bp-detail">
+          {!pret ? (
+            <p class="bp-attente">Chargement de ton programme…</p>
+          ) : !pr ? (
+            <div class="bp-sans-prog">
+              <p class="bp-sans-prog-titre">Pas encore de programme</p>
+              <p class="bp-sans-prog-txt">
+                Ton coach le construit à partir de tes objectifs et te
+                prévient par e-mail dès qu'il est prêt. En attendant, tu
+                peux ajuster tes objectifs toi-même ci-dessous.
+              </p>
+            </div>
+          ) : (
+          <>
           <div class="bp-macros">
             <div><b>{pr.kcal}</b><em>kcal</em></div>
             <div><b>{pr.prot} g</b><em>protéines</em></div>
@@ -335,6 +353,9 @@ export function BelfitPlus() {
             </p>
           )}
 
+          </>
+          )}
+
           {/* Modifier ses objectifs. Le bouton vivait dans le bandeau
               du profil, insere au-dessus de l'en-tete du Journal : il
               poussait la page vers le bas au lieu de s'ouvrir, et
@@ -351,9 +372,11 @@ export function BelfitPlus() {
             </button>
           </div>
 
-          {/* Demander un ajustement. Le nombre restant est annonce sur
-              le bouton : un quota qu'on ne decouvre qu'en le depassant
-              est un quota cache. */}
+          {/* Demander un ajustement : sans programme, il n'y a rien a
+              ajuster. Le quota restant est annonce sur le bouton — un
+              quota qu'on ne decouvre qu'en le depassant est un quota
+              cache. */}
+          {pr && (
           <div class="bp-ajust">
             {demande === 'ok' ? (
               <p class="bp-ajust-ok">
@@ -400,6 +423,7 @@ export function BelfitPlus() {
               </button>
             )}
           </div>
+          )}
         </div>
       )}
 
