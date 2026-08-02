@@ -53,8 +53,18 @@ export function Entete({ retour } = {}) {
            chargement, comme dans BelfitPlus. */
         <button
           class="j-btn-icone j-retour"
-          onClick={() => { ongletActif.value = 'journal'; }}
-          aria-label="Retour au journal"
+          onClick={() => {
+            // `retour` etait traite comme un simple drapeau : le bouton
+            // ramenait toujours a l'onglet Journal. Or les Reglages ne
+            // sont pas un onglet, ils recouvrent l'application entiere
+            // (main.jsx : `if (vueReglages.value) return <Reglages />`).
+            // Changer d'onglet ne les fermait donc pas : un appui ne
+            // faisait rien, et la personne finissait par utiliser le
+            // retour du telephone, qui quitte l'application.
+            if (typeof retour === 'function') retour();
+            else ongletActif.value = 'journal';
+          }}
+          aria-label="Retour"
         >
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
         </button>

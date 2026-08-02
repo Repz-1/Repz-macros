@@ -100,7 +100,7 @@ function EcranCompte({ retour }) {
 
   return (
     <div class="pg-reglages">
-      <Entete retour />
+      <Entete retour={retour} />
       <div class="rg-corps">
         <button class="rg-retour" onClick={retour}>← {t('set_title')}</button>
         <h1 class="rg-titre">{t('set_account')}</h1>
@@ -188,7 +188,7 @@ function EcranResilier({ retour }) {
 
   return (
     <div class="pg-reglages">
-      <Entete retour />
+      <Entete retour={retour} />
       <div class="rg-corps">
         <button class="rg-retour" onClick={retour}>← {t('set_title')}</button>
         <h1 class="rg-titre">{t('rs_title')}</h1>
@@ -276,7 +276,7 @@ export function Reglages() {
 
   return (
     <div class="pg-reglages">
-      <Entete retour />
+      <Entete retour={fermerReglages} />
       <div class="rg-corps">
         <h1 class="rg-titre">{t('set_title')}</h1>
 
