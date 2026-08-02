@@ -7,6 +7,7 @@ import { repas } from '../store/journal.js';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 import { t } from '../i18n/index.js';
+import { allerOnglet } from './BottomNav.jsx';
 
 // ============================================================
 // MES COURSES
@@ -146,12 +147,19 @@ export function Courses() {
     });
   };
 
+  /** Ajout au clavier : n'accepte QUE des aliments de la base. Une
+   *  liste de courses pour les repas n'a pas a contenir autre chose,
+   *  et un nom hors base arriverait sans quantite ni rayon. Si la
+   *  saisie correspond exactement a un aliment, on l'ajoute ; sinon
+   *  on laisse les suggestions faire leur travail. */
   const ajouterManuel = (e) => {
     e.preventDefault();
     const v = ajout.trim();
-    if (!v || c.manuels.includes(v)) { setAjout(''); return; }
-    maj({ manuels: [...c.manuels, v] });
-    setAjout('');
+    if (!v) return;
+    const exact = NOMS_ALIMENTS.find(n => n.toLowerCase() === v.toLowerCase());
+    if (exact) { ajouterDepuisBase(exact); return; }
+    const seule = suggestions.length === 1 ? suggestions[0] : null;
+    if (seule) ajouterDepuisBase(seule);
   };
 
   // Articles issus du journal, multiplies, moins ceux retires.
@@ -207,7 +215,7 @@ export function Courses() {
       {/* En-tete : titre centre entre deux boutons ronds, d'apres la
           maquette mesuree (bouton 36 pt, titre 20 pt). */}
       <div class="crs-barre">
-        <button class="crs-rond" onClick={() => { ongletActif.value = 'journal'; }} aria-label="Retour">
+        <button class="crs-rond" onClick={() => allerOnglet('journal')} aria-label="Retour">
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
         </button>
         <h2>{t('co_title')}</h2>
