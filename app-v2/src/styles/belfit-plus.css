@@ -21,7 +21,10 @@
   --bp-or-lis: #B34700;
   background: #F4F3F0;
   min-height: 100%;
-  padding-bottom: 24px;
+  /* La barre de navigation flotte au-dessus du contenu : sans cette
+     reserve, la derniere carte passe dessous. Meme valeur que le
+     Journal, plus la marge de securite du bas d'ecran. */
+  padding-bottom: calc(var(--hauteur-nav) + 24px + env(safe-area-inset-bottom));
 }
 
 /* ---------- Ouverture ---------- */
@@ -357,3 +360,9 @@
   background-size: cover; background-position: center;
   opacity: .96;
 }
+
+/* En-tete : meme traitement que Journal, S'entrainer et Stats —
+   fleche retour noire a gauche, et 73 pt du haut d'ecran a la
+   premiere carte (mesure sur la carte Calories du Journal). */
+.pg-plus .j-retour { justify-self: start; margin-left: -10px; color: #16130F; }
+.pg-plus .bp-hero { margin-top: 26px; }
