@@ -1,6 +1,6 @@
 /* Fond : creme BELFIT uni. Le halo dore en haut venait du V1 et
    n'appartenait a aucune palette de la marque. */
-.pg-entrainer{background:#F4F3F0!important;margin:0!important}
+.pg-entrainer{background:var(--fond)!important;margin:0!important}
 .pg-entrainer *{ margin:0; padding:0; box-sizing:border-box; }
 .pg-entrainer{
     --orange:#F86A0C;   
@@ -39,7 +39,7 @@
 .pg-entrainer .wlog-sum{ display:flex; flex-wrap:wrap; gap:6px; padding:12px 2px 10px; border-bottom:1px solid var(--line); }
 .pg-entrainer .wlog-cal-head{ display:flex; align-items:center; justify-content:space-between; padding:12px 2px 8px; }
 .pg-entrainer .wlog-cal-titre{ font-size:14.5px; font-weight:800; text-transform:capitalize; }
-.pg-entrainer .wlog-nav{ width:32px; height:32px; border-radius:50%; border:none; background:#F4F3F0; color:#16130F; font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.pg-entrainer .wlog-nav{ width:32px; height:32px; border-radius:50%; border:none; background:var(--fond); color:#16130F; font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .pg-entrainer .wlog-nav:active{ transform:scale(.94); }
 .pg-entrainer .wlog-nav.off{ opacity:.3; }
 .pg-entrainer .wlog-nav.info{ font-size:13px; font-style:italic; font-family:Georgia, serif; }
@@ -60,11 +60,11 @@
 .pg-entrainer .wlog-legende .dot.repos{ background:#E2E6EA; }
 .pg-entrainer .wlog-legende .dot.today{ background:#fff; box-shadow:0 0 0 2px #F86A0C; width:7px; height:7px; }
 .pg-entrainer .ml-stats{ margin:-4px 0 12px; }
-.pg-entrainer .ml-stats-ligne{ font-size:12.5px; font-weight:700; color:#6B655D; background:#F4F3F0; border-radius:10px; padding:9px 12px; margin-bottom:8px; }
+.pg-entrainer .ml-stats-ligne{ font-size:12.5px; font-weight:700; color:#6B655D; background:var(--fond); border-radius:10px; padding:9px 12px; margin-bottom:8px; }
 .pg-entrainer .ml-exo{ display:flex; align-items:center; justify-content:space-between; font-size:13px; padding:7px 2px; border-bottom:1px solid #F1F3F5; color:#334155; }
 .pg-entrainer .ml-exo:last-child{ border-bottom:none; }
 .pg-entrainer .ml-exo b{ font-weight:700; color:#6B655D; font-size:12px; flex-shrink:0; margin-left:10px; }
-.pg-entrainer .wlog-sum-pill{ font-size:11.5px; font-weight:700; background:#F4F3F0; color:#57514A; padding:4px 10px; border-radius:8px; white-space:nowrap; }
+.pg-entrainer .wlog-sum-pill{ font-size:11.5px; font-weight:700; background:var(--fond); color:#57514A; padding:4px 10px; border-radius:8px; white-space:nowrap; }
 .pg-entrainer .wlog-list{ max-height:0; overflow:hidden; transition:max-height .4s ease; }
 .pg-entrainer .wlog-list.expanded{ max-height:1000px; margin-top:16px; }
 .pg-entrainer .ml-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
@@ -116,7 +116,7 @@
 .pg-entrainer .choices{ display:flex; flex-direction:column; gap:24px; max-width:480px; margin:0 auto; }
 .pg-entrainer .choice{
     position:relative; display:block; border-radius:24px; padding:24px 22px;
-    background:#ffffff; border:1px solid rgba(28,24,18,.055); box-shadow:0 2px 10px rgba(24,24,24,.05);
+    background:var(--carte); border:1px solid rgba(28,24,18,.055); box-shadow:0 2px 10px rgba(24,24,24,.05);
     text-decoration:none; color:inherit;
     transition:transform .15s ease, box-shadow .15s ease;
 }
@@ -179,14 +179,14 @@
     display:inline-flex; align-items:center; justify-content:center;
     font-size:15px; font-weight:600; padding:13px 26px; border-radius:16px;
     
-    background:#ffffff; color:var(--noir); border:1.5px solid #E6E6E6; box-shadow:none;
+    background:var(--carte); color:var(--noir); border:1.5px solid #E6E6E6; box-shadow:none;
 }
 .pg-entrainer .choice.featured .cta{
     background:var(--gold); color:var(--noir); border:none;
     box-shadow:0 8px 20px rgba(247,181,0,.35);
 }
 .pg-entrainer .choice.featured{
-    background:#ffffff; border:1px solid rgba(28,24,18,.055);
+    background:var(--carte); border:1px solid rgba(28,24,18,.055);
     box-shadow:0 6px 18px rgba(24,24,24,.09);
 }
 .pg-entrainer .badge{
@@ -296,7 +296,7 @@
 .pg-entrainer .bn-premium.is-premium svg{ fill:#d4af37; }
 .pg-entrainer .bottom-nav{
     position:fixed; bottom:0; left:0; right:0; z-index:80;
-    background:#ffffff; border-top:1px solid #e9edf2;
+    background:var(--carte); border-top:1px solid #e9edf2;
     display:flex;
     padding-bottom:env(safe-area-inset-bottom);
     box-shadow:0 -2px 14px rgba(0,0,0,.06);
@@ -348,7 +348,7 @@
 .pg-entrainer .chrono-fab:active{opacity:1;transform:scale(.94);}
 .pg-entrainer .chrono-fab-time{font-size:11px;font-weight:800;line-height:1;margin-top:2px;font-variant-numeric:tabular-nums;}
 .pg-entrainer .chrono-fab.running{opacity:1;background:#16130F;color:var(--gold);box-shadow:0 6px 20px rgba(0,0,0,.45);}
-.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:var(--fond);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-entrainer #repzSplash.hide{opacity:0;pointer-events:none;}
 .pg-entrainer #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 .pg-entrainer #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -361,7 +361,7 @@
 .pg-entrainer .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
 
 /* --- styles inline du body v1 --- */
-.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-entrainer #repzSplash{position:fixed;inset:0;z-index:99999;background:var(--fond);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-entrainer #repzSplash.hide{opacity:0;pointer-events:none;}
 .pg-entrainer #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 .pg-entrainer #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -383,7 +383,7 @@
    S'ENTRAINER — calibre sur la maquette, MESUREE au pixel.
    Extraction numerique de l'image (PIL) :
      cartes 310 px de haut pour 779 de large -> ratio 2,5:1
-     cartes en CREME (249,244,239), a 1 point du fond (248,244,238)
+     cartes en CREME (249,244,239), a 1 point du fond (244,243,240)
        — separees par l'ombre seule, pas par le blanc
      ecart entre cartes 26 px -> 12 pt
      bouton dore (245,180,3), texte sombre
@@ -392,7 +392,7 @@
    donneraient ~10 px : on garde des tailles lisibles et on retrouve
    le RATIO par la compacite (paddings, interlignes, bouton).
    ============================================================ */
-.pg-entrainer{background:#F8F4EE!important}
+.pg-entrainer{background:var(--fond)!important}
 .pg-entrainer .choices { gap: 11px; }
 
 .pg-entrainer .choice.ph {
@@ -401,7 +401,7 @@
   padding: 12px 15px 12px;
   /* Creme a peine plus clair que la page : la carte se detache par
      l'ombre, pas par le blanc. C'est la matiere de la maquette. */
-  background-color: #FBF7F1;
+  background-color: var(--carte);
   background-size: 58% 100%;
   background-position: right center;
   background-repeat: no-repeat;
@@ -420,8 +420,8 @@
   content: ''; position: absolute; z-index: 1; inset: 0;
   border-radius: inherit; pointer-events: none;
   background: linear-gradient(90deg,
-    #FBF7F1 0%, #FBF7F1 42%, rgba(251,247,241,.92) 56%,
-    rgba(251,247,241,.42) 72%, rgba(251,247,241,0) 90%);
+    #FBF7F1 0%, #FBF7F1 42%, rgba(255,255,255,.92) 56%,
+    rgba(255,255,255,.42) 72%, rgba(255,255,255,0) 90%);
 }
 .pg-entrainer .choice.ph > * { position: relative; z-index: 2; }
 
@@ -471,7 +471,7 @@
   background: #F5B403; color: #16130F;
   box-shadow: 0 3px 10px rgba(245, 180, 3, .30);
 }
-.pg-entrainer .choice.ph.md .cta { background: #16130F; color: #FFFFFF; }
+.pg-entrainer .choice.ph.md .cta { background: #16130F; color: var(--carte); }
 .pg-entrainer .choice.ph.featured .cta::after { display: none; animation: none; }
 
 .pg-entrainer .choice.ph .lock-badge,

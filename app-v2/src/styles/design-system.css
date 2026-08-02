@@ -243,7 +243,13 @@ input, select, textarea { min-width: 0; }
   --srf-alerte: var(--alerte);
   --srf-carte: #fff;
   --srf-carte-2: var(--carte);
-  --srf-creme: #f6f1e6;
+  /* Etait #F6F1E6, un creme franc. Il servait de fond a la feuille du
+     calculateur, a la modale IA et au panneau des idees recettes :
+     trois surfaces beiges au milieu d'une application dont toutes les
+     autres cartes sont blanches. Raci a demande l'uniformite. Il
+     pointe desormais sur --carte ; les fonds creuses restent assures
+     par --srf-page et --fond, qui n'ont pas bouge. */
+  --srf-creme: var(--carte);
   --srf-creme-2: var(--brd-2);
   --srf-creme-3: var(--brd-2);
   --srf-creme-4: var(--bordure-chaude);

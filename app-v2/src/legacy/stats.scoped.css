@@ -1,7 +1,7 @@
 /* Fond : creme BELFIT, comme toutes les autres pages. Le gris-bleu
    #F4F3F0 et le halo dore en haut venaient du V1 et n'appartenaient
    a aucune palette de la marque. */
-.pg-stats{background:#F4F3F0!important;margin:0!important}
+.pg-stats{background:var(--fond)!important;margin:0!important}
 /* body v1 : min-height plein ecran + padding-top safe-area */
 .pg-stats{min-height:100vh;padding-top:max(12px,env(safe-area-inset-top));}
 .pg-stats .weight-add-btn{display:block;width:100%;margin-top:14px;padding:12px;background:#fff;border:1px solid rgba(179,71,0,.28);border-radius:13px;color:#B34700;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;transition:background .15s;}
@@ -30,7 +30,7 @@
 .pg-stats .page-title{ font-size:24px; font-weight:800; margin:8px 2px 4px; }
 .pg-stats .page-sub{ font-size:14px; color:var(--text-dim); margin:0 2px 20px; }
 .pg-stats .stat-card{
-    position:relative; background:#F4F3F0;
+    position:relative; background:var(--fond);
     border:1.5px solid rgba(28,24,18,.055); border-radius:20px; padding:20px;
     box-shadow:0 6px 18px rgba(60,50,40,.07); margin-bottom:16px; overflow:hidden;
 }
@@ -149,7 +149,7 @@
 }
 .pg-stats .bottom-nav{
     position:fixed; bottom:0; left:0; right:0; z-index:80;
-    background:#ffffff; border-top:1px solid #e9edf2;
+    background:var(--carte); border-top:1px solid #e9edf2;
     display:flex;
     padding-bottom:env(safe-area-inset-bottom);
     box-shadow:0 -2px 14px rgba(0,0,0,.06);
@@ -162,7 +162,7 @@
 .pg-stats .bn-item svg{ width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .bn-item span{ font-size:10.5px; font-weight:700; }
 .pg-stats .bn-item:active{ transform:scale(.94); }
-.pg-stats #repzSplash{position:fixed;inset:0;z-index:99999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-stats #repzSplash{position:fixed;inset:0;z-index:99999;background:var(--fond);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-stats #repzSplash.hide{opacity:0;pointer-events:none;}
 .pg-stats #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 .pg-stats #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -175,7 +175,7 @@
 .pg-stats .ah-btn:active{ background:rgba(247,181,0,.16); transform:scale(.94); }
 
 /* --- styles inline du body v1 --- */
-.pg-stats #repzSplash{position:fixed;inset:0;z-index:99999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+.pg-stats #repzSplash{position:fixed;inset:0;z-index:99999;background:var(--fond);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 .pg-stats #repzSplash.hide{opacity:0;pointer-events:none;}
 .pg-stats #repzSplash .sp-sym{width:200px;max-width:56%;height:auto;animation:spPop .6s ease-out both;}
 .pg-stats #repzSplash .sp-txt{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:150px;max-width:46%;height:auto;}
@@ -261,7 +261,7 @@
    page de stats montre des donnees, elle n'ouvre pas des portes —
    chaque carte garde son graphique au lieu d'un bouton « Ouvrir ».
    ============================================================ */
-.pg-stats { background: #F4F3F0; }
+.pg-stats { background: var(--fond); }
 .pg-stats .container { padding: 4px 16px 100px; }
 
 /* ---------- En-tete ---------- */
@@ -279,7 +279,7 @@
    epoque ou les cartes n'avaient pas de matiere propre. L'ombre et
    la bordure suffisent a poser l'objet. */
 .pg-stats .stat-card {
-  background: #FFFFFF;
+  background: var(--carte);
   border: 1px solid rgba(28, 24, 18, .055);
   border-radius: 18px;
   padding: 16px 16px 18px;
