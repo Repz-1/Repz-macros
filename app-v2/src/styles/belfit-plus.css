@@ -116,12 +116,18 @@
 }
 .pg-plus .bp-carte--large .bp-visuel { inset: 0 0 0 34%; }
 /* Le fondu : sans lui, un texte fonce passerait sur une zone claire
-   de la photo et deviendrait illisible selon l'image. */
+   de la photo et deviendrait illisible selon l'image.
+   Mesure : le texte de la carte s'arrete a 31 % du visuel. Le voile
+   tenait pourtant jusqu'a 88 % et ne laissait que 35 % du contraste
+   au tiers median de l'image — le sujet d'une photo cadree au centre
+   y devenait un fantome. Il reste opaque jusqu'a 36 % (marge prise
+   pour le neerlandais, plus long que le francais) puis s'efface d'un
+   coup a 60 %. Le texte garde 13,8:1, le sujet passe de 35 a 74 %. */
 .pg-plus .bp-visuel::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(90deg,
-    var(--carte) 0%, var(--carte) 16%, rgba(255,255,255,.88) 38%,
-    rgba(255,255,255,.42) 62%, rgba(255,255,255,0) 88%);
+    var(--carte) 0%, var(--carte) 22%, rgba(255,255,255,.88) 36%,
+    rgba(255,255,255,.28) 48%, rgba(255,255,255,0) 60%);
 }
 /* .bp-visuel--programme retiree : depuis que la carte programme a
    fusionne avec l'accueil, aucun element ne porte cette classe. */
