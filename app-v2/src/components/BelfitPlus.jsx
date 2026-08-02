@@ -6,6 +6,7 @@ import { utilisateur } from '../services/firebase.js';
 import { setObjectifs, objectifs, repas } from '../store/journal.js';
 import { macrosOf, DB } from '../data/aliments.js';
 import { ongletActif } from './BottomNav.jsx';
+import { statsAvOuvertes } from './StatsAvancees.jsx';
 import { ideesOuvertes } from './IdeesRepas.jsx';
 import { Entete } from './Entete.jsx';
 import '../styles/belfit-plus.css';
@@ -238,7 +239,7 @@ export function BelfitPlus() {
       <div class="bp-grille">
 
         {/* 2. Statistiques */}
-        <button class="bp-carte" onClick={() => { ongletActif.value = 'stats'; }}>
+        <button class="bp-carte" onClick={() => { statsAvOuvertes.value = true; }}>
           <span class="bp-visuel bp-visuel--stats" aria-hidden="true" />
           <span class="bp-corps">
             <span class="bp-ic" aria-hidden="true">

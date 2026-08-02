@@ -19,6 +19,7 @@ import { Questionnaire } from './components/Questionnaire.jsx';
 import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
 import { Reglages, vueReglages } from './components/Reglages.jsx';
+import { StatsAvancees, statsAvOuvertes } from './components/StatsAvancees.jsx';
 import { SeanceDetail } from './components/SeanceDetail.jsx';
 import { MaSeance } from './components/MaSeance.jsx';
 import { Stats } from './components/Stats.jsx';
@@ -325,6 +326,9 @@ function App() {
   // depuis l'en-tete, present sur les quatre onglets, et se ferment
   // en revenant exactement d'ou l'on vient.
   if (vueReglages.value) return <Reglages />;
+  if (statsAvOuvertes.value) {
+    return <StatsAvancees fermer={() => { statsAvOuvertes.value = false; }} />;
+  }
 
   return (
     <>

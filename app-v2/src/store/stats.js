@@ -10,9 +10,25 @@ import { chargerDonnees, sauvegarder } from '../services/sync.js';
 
 export const weightLog = signal([]);
 export const histoJours = signal({});
+
+// Apercu local : meme convention que belfit_v2_apercu_premium, pour
+// verifier les ecrans de statistiques sans dependre de Firestore.
+let apercuStats = false;
+try {
+  const faux = localStorage.getItem('belfit_v2_apercu_stats');
+  if (faux) {
+    const d = JSON.parse(faux);
+    if (d && d.histoJours) histoJours.value = d.histoJours;
+    if (d && d.weightLog) weightLog.value = d.weightLog;
+    apercuStats = true;
+  }
+} catch (e) { /* stockage indisponible : chemin normal */ }
 let uidSt = null, pretSt = false;
 
 effect(() => {
+  // En apercu, les donnees viennent du stockage local : la
+  // synchronisation les ecraserait au premier rendu.
+  if (apercuStats) return;
   const u = identite.value;
   if (!u) { uidSt = null; pretSt = false; return; }
   if (u === uidSt) return;
@@ -26,6 +42,7 @@ effect(() => {
 });
 
 effect(() => {
+  if (apercuStats) return;
   const w = weightLog.value, h = histoJours.value;
   const u = identite.value;
   if (!u || !pretSt) return;
