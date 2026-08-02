@@ -461,7 +461,14 @@
   gap: 16px; min-width: 156px;
   padding: 10px 15px; border-radius: 12px;
   font-size: 13.5px; font-weight: 600; letter-spacing: -.008em;
-  background: #F0EDE6; color: #16130F;
+  /* Un seul style de bouton sur les quatre cartes. Il y en avait
+     trois pour une meme action : dore plein, noir plein, et un beige
+     #F0EDE6 sur carte #FBF8F1 — soit 1,1:1, litteralement invisible.
+     On ne voyait que son libelle flotter dans le vide, et c'etait le
+     bouton principal de deux cartes sur quatre.
+     Le noir devient la regle (17,5:1). Le dore reste l'exception,
+     reserve a la seule action qu'on veut pousser. */
+  background: var(--encre); color: var(--carte);
   border: none; backdrop-filter: none; box-shadow: none; text-shadow: none;
 }
 .pg-entrainer .choice.ph .cta::before {
@@ -469,10 +476,12 @@
   font-size: 16px; font-weight: 400; line-height: 1;
 }
 .pg-entrainer .choice.ph.featured .cta {
-  background: #F5B403; color: #16130F;
-  box-shadow: 0 3px 10px rgba(245, 180, 3, .30);
+  /* #F5B403 etait l'un des seize jaunes ; ce fichier herite avait
+     echappe a l'unification. Il rejoint --or, le jaune du logo. */
+  background: var(--or); color: var(--encre);
+  box-shadow: 0 3px 10px rgba(var(--or-trait-rvb), .28);
 }
-.pg-entrainer .choice.ph.md .cta { background: #16130F; color: var(--carte); }
+/* .choice.ph.md : le noir est devenu la regle, cette exception n'a plus d'objet. */
 .pg-entrainer .choice.ph.featured .cta::after { display: none; animation: none; }
 
 .pg-entrainer .choice.ph .lock-badge,

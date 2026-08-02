@@ -33,6 +33,7 @@
   --or: #F8CF01;                /* aplats : boutons, FAB, anneau, pastilles */
   --or-clair: #FFDF4B;          /* haut de degrade uniquement */
   --or-trait: #B07400;          /* icones et texte sur fond clair (3,5:1) */
+  --or-trait-rvb: 176, 116, 0;  /* ombre doree sous un bouton dore */
   --or-fonce: #8F6200;          /* texte dore appuye (4,8:1) */
   --or-pale: #FFF4CC;           /* fond d'icone, tag */
   --or-creme: #FFFBEF;          /* degrade de carte */
