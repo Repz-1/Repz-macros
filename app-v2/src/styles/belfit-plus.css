@@ -123,7 +123,8 @@
     var(--carte) 0%, var(--carte) 16%, rgba(255,255,255,.88) 38%,
     rgba(255,255,255,.42) 62%, rgba(255,255,255,0) 88%);
 }
-.pg-plus .bp-visuel--programme { background-image: url('/img/plus-programme.webp'), linear-gradient(135deg, #FFE9C4, #F8C98A); }
+/* .bp-visuel--programme retiree : depuis que la carte programme a
+   fusionne avec l'accueil, aucun element ne porte cette classe. */
 .pg-plus .bp-visuel--stats     { background-image: url('/img/plus-stats.webp'),     linear-gradient(135deg, #E7EDF3, var(--brd-ardoise)); }
 .pg-plus .bp-visuel--recettes  { background-image: url('/img/plus-recettes.webp'),  linear-gradient(135deg, var(--bordure-chaude), #D8CBA8); }
 .pg-plus .bp-visuel--courses   { background-image: url('/img/plus-courses.webp'),   linear-gradient(135deg, #E4EDE2, #C3D8BE); }
