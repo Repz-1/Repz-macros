@@ -1,0 +1,191 @@
+/* ============================================================
+   REGLAGES — v2. Meme matiere que le reste de l'application :
+   creme au fond, cartes blanches a 18 px, bordure sous le seuil
+   de lecture, orange en accent, graphite pour ce qui engage.
+   La v1 vivait en gris-bleu #F5F6F8 avec des dores hors palette.
+   ============================================================ */
+.pg-reglages { background: #F4F3F0; min-height: 100%; }
+.pg-reglages .rg-corps {
+  padding: 0 16px calc(var(--hauteur-nav) + 24px + env(safe-area-inset-bottom));
+}
+.pg-reglages .rg-titre {
+  margin: 26px 0 18px; font-size: 28px; font-weight: 700;
+  letter-spacing: -.035em; color: #16130F;
+}
+.pg-reglages .rg-retour {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin: 14px 0 0; padding: 0; font: inherit; font-size: 13.5px;
+  font-weight: 600; color: #B34700; background: none; border: none;
+  cursor: pointer;
+}
+.pg-reglages .rg-section {
+  margin: 22px 0 8px; font-size: 10px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; color: #8A8279;
+}
+.pg-reglages .rg-carte {
+  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .055);
+  border-radius: 18px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+}
+.pg-reglages .rg-rangee {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 14px 15px; font: inherit; text-align: left;
+  background: none; border: none; cursor: pointer; color: inherit;
+  text-decoration: none;
+}
+.pg-reglages .rg-rangee + .rg-rangee { border-top: 1px solid rgba(28, 24, 18, .06); }
+.pg-reglages .rg-rangee--inerte { cursor: default; }
+.pg-reglages .rg-txt { flex: 1; min-width: 0; }
+.pg-reglages .rg-nom {
+  display: block; font-size: 14.5px; font-weight: 500; color: #16130F;
+  letter-spacing: -.01em;
+}
+.pg-reglages .rg-nom--danger { color: #A32B1C; }
+.pg-reglages .rg-sous {
+  display: block; margin-top: 2px; font-size: 12px; line-height: 1.35;
+  color: #8A8279;
+}
+.pg-reglages .rg-chev {
+  width: 17px; height: 17px; flex: none; fill: none;
+  stroke: #C2BAB0; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Segment de langue */
+.pg-reglages .rg-seg { display: flex; gap: 3px; background: #F2F1EC;
+  border-radius: 10px; padding: 3px; }
+.pg-reglages .rg-seg button {
+  padding: 6px 11px; font: inherit; font-size: 12px; font-weight: 600;
+  color: #6E675E; background: none; border: none; border-radius: 8px;
+  cursor: pointer;
+}
+.pg-reglages .rg-seg button.on { background: #FFFFFF; color: #16130F;
+  box-shadow: 0 1px 3px rgba(40, 32, 22, .10); }
+
+/* Bascule */
+.pg-reglages .rg-bascule { position: relative; flex: none;
+  width: 46px; height: 27px; }
+.pg-reglages .rg-bascule input { position: absolute; opacity: 0; width: 0; height: 0; }
+.pg-reglages .rg-bascule span {
+  position: absolute; inset: 0; border-radius: 999px;
+  background: #DDD8CF; transition: background 160ms ease;
+}
+.pg-reglages .rg-bascule span::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 21px; height: 21px; border-radius: 50%; background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(40, 32, 22, .22);
+  transition: transform 160ms ease;
+}
+.pg-reglages .rg-bascule input:checked + span { background: #F86A0C; }
+.pg-reglages .rg-bascule input:checked + span::after { transform: translateX(19px); }
+
+.pg-reglages .rg-note {
+  margin: 8px 2px 0; font-size: 11.5px; line-height: 1.45; color: #8A8279;
+}
+.pg-reglages .rg-version {
+  margin: 24px 0 12px; text-align: center; font-size: 11.5px; color: #A79F95;
+}
+
+/* Champs du compte */
+.pg-reglages .rg-champ {
+  display: flex; align-items: center; gap: 12px; padding: 13px 15px;
+}
+.pg-reglages .rg-champ + .rg-champ { border-top: 1px solid rgba(28, 24, 18, .06); }
+.pg-reglages .rg-lbl { flex: 1; font-size: 13.5px; color: #6E675E; }
+.pg-reglages .rg-val { font-size: 13.5px; font-weight: 500; color: #16130F; }
+.pg-reglages .rg-champ input {
+  width: 52%; font: inherit; font-size: 14px; text-align: right;
+  color: #16130F; background: #FFFDF9; border: 1px solid #EDE5D8;
+  border-radius: 10px; padding: 8px 10px; outline: none;
+}
+.pg-reglages .rg-champ input:focus {
+  border-color: rgba(248, 106, 12, .38);
+  box-shadow: 0 0 0 2.5px rgba(248, 106, 12, .09);
+}
+
+.pg-reglages .rg-principal {
+  display: block; width: 100%; margin-top: 12px; padding: 15px;
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  color: #F4F6F8; border: none; border-radius: 14px;
+  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
+}
+.pg-reglages .rg-principal--danger {
+  background: #A32B1C; color: #FFFFFF;
+}
+.pg-reglages .rg-carte--actions { margin-top: 18px; }
+.pg-reglages .rg-action {
+  display: block; width: 100%; padding: 14px 15px; font: inherit;
+  font-size: 14.5px; text-align: left; color: #16130F;
+  background: none; border: none; cursor: pointer;
+}
+.pg-reglages .rg-action + .rg-action { border-top: 1px solid rgba(28, 24, 18, .06); }
+.pg-reglages .rg-action--danger { color: #A32B1C; }
+.pg-reglages .rg-deconnexion {
+  display: block; width: 100%; margin-top: 4px; padding: 15px;
+  font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
+  color: #A32B1C; background: #FFFFFF;
+  border: 1px solid rgba(163, 43, 28, .18); border-radius: 14px;
+}
+
+/* Parrainage */
+.pg-reglages .rg-code {
+  font-size: 14px; font-weight: 700; letter-spacing: .08em; color: #B34700;
+}
+.pg-reglages .rg-copier {
+  padding: 7px 12px; font: inherit; font-size: 12px; font-weight: 600;
+  color: #B34700; background: #FFF6EC; border: 1px solid rgba(179, 71, 0, .2);
+  border-radius: 9px; cursor: pointer;
+}
+
+/* Resiliation */
+.pg-reglages .rg-intro { margin: 0 2px 16px; font-size: 14px;
+  line-height: 1.5; color: #57514A; }
+.pg-reglages .rg-motifs { display: flex; flex-direction: column; gap: 8px; }
+.pg-reglages .rg-motif {
+  padding: 14px 15px; font: inherit; font-size: 14px; text-align: left;
+  color: #16130F; background: #FFFFFF; cursor: pointer;
+  border: 1px solid rgba(28, 24, 18, .07); border-radius: 14px;
+}
+.pg-reglages .rg-motif.on {
+  border-color: rgba(248, 106, 12, .45); background: #FFF6EC;
+  box-shadow: 0 0 0 2.5px rgba(248, 106, 12, .08);
+}
+.pg-reglages .rg-offre {
+  margin-top: 12px; padding: 15px; border-radius: 16px;
+  background: #FFF6EC; border: 1px solid rgba(179, 71, 0, .16);
+}
+.pg-reglages .rg-offre h4 { margin: 0 0 5px; font-size: 15px;
+  font-weight: 700; color: #16130F; }
+.pg-reglages .rg-offre p { margin: 0 0 12px; font-size: 13px;
+  line-height: 1.45; color: #57514A; }
+.pg-reglages .rg-accepte {
+  width: 100%; padding: 13px; font: inherit; font-size: 14px;
+  font-weight: 600; color: #16130F; background: #F5B403;
+  border: none; border-radius: 12px; cursor: pointer;
+}
+.pg-reglages .rg-texte {
+  width: 100%; margin-top: 12px; padding: 12px; font: inherit;
+  font-size: 14px; line-height: 1.5; color: #16130F; box-sizing: border-box;
+  background: #FFFDF9; border: 1px solid #EDE5D8; border-radius: 13px;
+  resize: vertical; outline: none;
+}
+
+/* Modale de suppression */
+.pg-reglages .rg-modale {
+  position: fixed; inset: 0; z-index: 200; display: flex;
+  align-items: center; justify-content: center; padding: 24px;
+  background: rgba(22, 19, 15, .45);
+}
+.pg-reglages .rg-modale-boite {
+  width: 100%; max-width: 340px; padding: 22px 20px;
+  background: #FFFFFF; border-radius: 20px;
+  box-shadow: 0 18px 50px rgba(30, 24, 16, .3);
+}
+.pg-reglages .rg-modale-boite h3 { margin: 0 0 8px; font-size: 18px;
+  font-weight: 700; color: #16130F; }
+.pg-reglages .rg-modale-boite p { margin: 0 0 18px; font-size: 13.5px;
+  line-height: 1.5; color: #57514A; }
+.pg-reglages .rg-lien {
+  display: block; width: 100%; margin-top: 10px; padding: 10px;
+  font: inherit; font-size: 13.5px; color: #6E675E; background: none;
+  border: none; cursor: pointer;
+}

@@ -18,6 +18,7 @@ import { Programmes } from './components/Programmes.jsx';
 import { Questionnaire } from './components/Questionnaire.jsx';
 import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
+import { Reglages, vueReglages } from './components/Reglages.jsx';
 import { SeanceDetail } from './components/SeanceDetail.jsx';
 import { MaSeance } from './components/MaSeance.jsx';
 import { Stats } from './components/Stats.jsx';
@@ -319,6 +320,11 @@ function App() {
   ) : null;
 
   const PAGES = { journal: OngletJournal, entrainer: OngletEntrainer, stats: Stats, premium: PremiumPage };
+
+  // Les reglages couvrent l'application entiere : ils s'ouvrent
+  // depuis l'en-tete, present sur les quatre onglets, et se ferment
+  // en revenant exactement d'ou l'on vient.
+  if (vueReglages.value) return <Reglages />;
 
   return (
     <>

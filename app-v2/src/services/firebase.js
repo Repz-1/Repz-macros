@@ -14,7 +14,7 @@ import { signal, computed } from '@preact/signals';
 // existant se connecte avec ses identifiants habituels.
 // ============================================================
 
-const app = initializeApp({
+export const app = initializeApp({
   apiKey: 'AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I',
   authDomain: 'repz-baf60.firebaseapp.com',
   projectId: 'repz-baf60',
