@@ -34,6 +34,7 @@ import { StatsAvancees } from '../src/components/StatsAvancees.jsx';
 import { BelfitPlus } from '../src/components/BelfitPlus.jsx';
 import { Reglages } from '../src/components/Reglages.jsx';
 import { PremiumPage, estPremium } from '../src/components/PremiumPage.jsx';
+import { TdeeCalculator } from '../src/components/TdeeCalculator.jsx';
 
 // --- Donnees d'exemple : une journee a moitie remplie, pas un ecran
 //     vide. Un etat vide ne prouve pas qu'une page fonctionne. ---
@@ -90,6 +91,7 @@ const PAGES = {
   plus:      () => <BelfitPlus />,
   reglages:  () => <Reglages />,
   premium:   () => <PremiumPage />,
+  calcul:    () => <TdeeCalculator montre={true} retour="Mon programme" fermer={() => {}} />,
 };
 export const NOMS = Object.keys(PAGES);
 

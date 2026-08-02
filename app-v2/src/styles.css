@@ -118,6 +118,12 @@ button{cursor:pointer}
 .calc-barre{position:sticky;bottom:0;margin:0 -18px;padding:10px 18px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--srf-creme) 72%,rgba(246,241,230,0))}
 .calc-fermer{position:absolute;top:14px;right:14px;width:38px;height:38px;border:none;border-radius:50%;background:var(--srf-creme-4);color:var(--texte-2);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;z-index:1}
 .calc-fermer:active{background:var(--brd-champ);transform:scale(.94)}
+/* Fleche de retour du calculateur. La branche existait dans le
+   composant mais n'avait jamais servi : elle etait donc sans style,
+   et se serait affichee en bouton brut du navigateur. Elle annonce
+   la destination — une croix ne dit pas d'ou l'on vient. */
+.calc-retour{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;padding:0;border:none;background:none;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--orange-fonce);cursor:pointer}
+.calc-retour:active{opacity:.6}
 .calc-modes{display:flex;gap:6px;background:var(--srf-creme-4);border-radius:14px;padding:4px;margin-bottom:16px}
 .calc-modes button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border:none;border-radius:11px;background:transparent;font-size:13.5px;font-weight:800;color:#7A7362;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
 .calc-modes button.active{background:var(--srf-carte-2);color:var(--txt-1);box-shadow:0 1px 4px rgba(60,50,40,.12)}

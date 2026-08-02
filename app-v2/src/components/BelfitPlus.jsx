@@ -33,6 +33,14 @@ const URL_AJUSTEMENT =
 // Programme depose par le coach dans users/{uid}.programme.
 // Forme attendue :
 //   { kcal, prot, carbs, lip, note, livreLe (ISO), version }
+/** Page « Mon programme » ouverte. Un signal et non un useState : la
+ *  personne part sur le calculateur, qui vit dans l'onglet Journal ;
+ *  un etat local serait perdu au changement d'onglet et elle
+ *  reviendrait sur l'accueil BelFit+ au lieu de sa page. */
+export const progOuvert = signal(false);
+/** D'ou le calculateur a-t-il ete ouvert : null | 'programme'. Sert a
+ *  savoir ou revenir, et quel libelle mettre sur la fleche. */
+export const origineCalc = signal(null);
 export const programme = signal(null);
 export const programmeCharge = signal(false);
 /** Ajustements restants ce mois-ci, et quota de la formule. */
@@ -128,7 +136,8 @@ const Fleche = () => (
 );
 
 export function BelfitPlus() {
-  const [ouvertProg, setOuvertProg] = useState(false);
+  const ouvertProg = progOuvert.value;
+  const setOuvertProg = (v) => { progOuvert.value = typeof v === 'function' ? v(progOuvert.value) : v; };
   const [charge, setCharge] = useState(false);
   const [demande, setDemande] = useState(null);   // null | 'ouvert' | 'envoi' | 'ok' | 'erreur'
   const [motDemande, setMotDemande] = useState('');
@@ -284,7 +293,7 @@ export function BelfitPlus() {
           <div class="prog-actions">
             <button
               class="prog-action"
-              onClick={() => { allerOnglet('journal'); ouvrirCalcDemande.value = true; }}
+              onClick={() => { origineCalc.value = 'programme'; allerOnglet('journal'); ouvrirCalcDemande.value = true; }}
             >
               <b>Modifier mes objectifs</b>
               <em>poids, taille, activité</em>

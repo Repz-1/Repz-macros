@@ -30,6 +30,7 @@ import { Entete, voletProfil } from './components/Entete.jsx';
 
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { Besoins, besoinsRequis } from './components/Besoins.jsx';
+import { origineCalc } from './components/BelfitPlus.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
@@ -83,7 +84,24 @@ export function OngletJournal() {
       </div>
 
       {modale && <AddMealModal montre={true} fermer={() => setModale(false)} />}
-      {calc && <TdeeCalculator montre={true} fermer={() => setCalc(false)} />}
+      {/* Ouvert depuis Mon programme, le calculateur y ramene : sa
+          fleche annonce la destination, et la fermeture rebascule sur
+          l'onglet BelFit+ ou la page est restee ouverte. Sans ca, on
+          atterrissait sur le Journal, trois ecrans plus loin que d'ou
+          l'on venait. */}
+      {calc && (
+        <TdeeCalculator
+          montre={true}
+          retour={origineCalc.value === 'programme' ? 'Mon programme' : undefined}
+          fermer={() => {
+            setCalc(false);
+            if (origineCalc.value === 'programme') {
+              origineCalc.value = null;
+              allerOnglet('plus');
+            }
+          }}
+        />
+      )}
       {ouvrirMesPlats.value && <MesPlats fermer={() => { ouvrirMesPlats.value = false; }} />}
     </div>
   );

@@ -7,7 +7,7 @@ import { createPortal } from 'preact/compat';
 
 // Calculateur de besoins. Le resultat se recalcule a chaque frappe (pas de bouton
 // "Calculer" : reactif). "Appliquer" pousse le resultat dans les objectifs du jour.
-export function TdeeCalculator({ montre, fermer }) {
+export function TdeeCalculator({ montre, fermer, retour }) {
   const [f, setF] = useState({
     sexe: 'h', age: 25, poids: 75, taille: 175, masseGrasse: '',
     activiteBase: 1.3, joursEntrainement: 4, intensiteEntrainement: 0.03, ajustement: 300,
@@ -58,8 +58,15 @@ export function TdeeCalculator({ montre, fermer }) {
       <div class={`voile ${montre ? 'montre' : ''}`} onClick={fermer} />
       <div class={`modale modale-calc ${montre ? 'montre' : ''}`}>
         {/* La feuille occupe quasi tout l'ecran : le voile n'est plus une
-            sortie atteignable, il faut une croix explicite. */}
-        <button class="calc-fermer" onClick={fermer} aria-label="Fermer">✕</button>
+            sortie atteignable, il faut une sortie explicite.
+            Ouvert depuis une page, on annonce OU l'on retourne : une
+            croix ne dit pas d'ou l'on vient, et le calculateur peut
+            s'ouvrir depuis le Journal comme depuis Mon programme. */}
+        {retour ? (
+          <button class="calc-retour" onClick={fermer}>← {retour}</button>
+        ) : (
+          <button class="calc-fermer" onClick={fermer} aria-label="Fermer">✕</button>
+        )}
         <h3>Mes besoins</h3>
 
         <div class="calc-modes" role="group">

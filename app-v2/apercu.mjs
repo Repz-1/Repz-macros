@@ -21,7 +21,7 @@ import { execFileSync } from 'child_process';
 import { extname, join } from 'path';
 
 const PAGES = ['journal', 'besoins', 'courses', 'entrainer', 'stats',
-               'statsav', 'plus', 'reglages', 'premium'];
+               'statsav', 'plus', 'reglages', 'premium', 'calcul'];
 const LARGEUR = 390, HAUTEUR = 844;
 const RACINE = 'apercu/construit';
 const CAPTURES = 'apercu/captures';
@@ -94,7 +94,9 @@ for (const p of liste) {
       .slice(0, 4)
       .map(e => (e.tagName.toLowerCase() + '.' + String(e.className || '').split(' ')[0]).slice(0, 44));
     return { hauteur: d.scrollHeight, largeur: d.scrollWidth,
-             vide: (document.getElementById('apercu').textContent || '').trim().length < 12,
+             // Une modale se monte en portail hors de #apercu : on lit le
+             // corps entier, sinon une page parfaitement rendue est declaree vide.
+             vide: (document.body.textContent || '').trim().length < 12,
              large };
   });
 
