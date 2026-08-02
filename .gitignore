@@ -3,10 +3,13 @@ app-v2/node_modules/
 # Sortie de build (fabriquee par GitHub Actions, jamais commitee)
 v2/
 
+# Apercu : outil de developpement. Le code est versionne, sa sortie non.
+app-v2/apercu/construit/
+app-v2/apercu/captures/
+
 # Cles de signature Android : ne JAMAIS versionner
 android/*.jks
 android/*.keystore
 android/android-keystore.jks
 android/app/
 android/build/
-app-v2/apercu/

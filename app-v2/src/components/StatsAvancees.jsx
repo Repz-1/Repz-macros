@@ -94,7 +94,12 @@ export function StatsAvancees({ fermer }) {
   // --- Poids ---
   const pesees = weightLog.value
     .filter(p => p.iso >= borne)
-    .map(p => ({ iso: p.iso, kg: p.weight }))
+    // Le store v2 ecrit { iso, kg } ; les pesees importees de la v1
+    // portent { iso, weight }. Ne lire que p.weight donnait kg
+    // undefined sur toute donnee v2 : la courbe, la pente hebdo et
+    // l'ecart de poids tombaient a NaN, et le SVG refusait de tracer.
+    // Stats.jsx tolerait deja les deux formes, pas celui-ci.
+    .map(p => ({ iso: p.iso, kg: parseFloat(p.kg ?? p.weight) || 0 }))
     .sort((a, b) => a.iso.localeCompare(b.iso));
   const lisse = lissage(pesees);
   const pente = penteHebdo(lisse);

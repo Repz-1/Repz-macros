@@ -37,7 +37,7 @@ import { MealPage } from './components/MealPage.jsx';
 import { repasOuvertId } from './components/MealCard.jsx';
 import { MesPlats } from './components/MesPlats.jsx';
 
-function OngletJournal() {
+export function OngletJournal() {
   const [modale, setModale] = useState(false);
   const [calc, setCalc] = useState(false);
   // Le rappel de recalcul (carte Calories) demande l'ouverture par signal :
@@ -89,7 +89,7 @@ function OngletJournal() {
   );
 }
 
-function OngletEntrainer() {
+export function OngletEntrainer() {
   const vue = vueEntrainer.value;
   // Meme navigation qu'en v1 : une vue a la fois, fleche retour en haut.
   if (vue.nom === 'accueil') {
@@ -121,7 +121,7 @@ function OngletEntrainer() {
   );
 }
 
-function App() {
+export function App() {
   if (!authPrete.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>…</div>;
   }
@@ -371,7 +371,11 @@ function App() {
   );
 }
 
-render(<App />, document.getElementById('app'));
+// Le montage n'a lieu que si la page porte le conteneur de l'application.
+// L'apercu importe ce fichier pour rendre UNE page a la fois : sans ce
+// garde-fou, l'import demarrerait l'application entiere par effet de bord.
+const racine = document.getElementById('app');
+if (racine) render(<App />, racine);
 
 // Retrait du splash une fois l'interface peinte (min 400ms pour eviter le clignotement)
 (function retirerSplash(){
