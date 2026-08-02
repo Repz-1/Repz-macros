@@ -76,7 +76,7 @@
   background: #FBF3DC; display: flex; align-items: center; justify-content: center;
 }
 .pg-statsav .sa-carte h3 i svg {
-  width: 18px; height: 18px; fill: none; stroke: #DFA004; stroke-width: 1.9;
+  width: 18px; height: 18px; fill: none; stroke: var(--or-trait); stroke-width: 1.9;
   stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-statsav .sa-cs {

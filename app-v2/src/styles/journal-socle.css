@@ -914,7 +914,7 @@
 }
 .fr-embleme {
   width: 74px; height: 74px;
-  fill: none; stroke: #DFA004; stroke-width: 1.4;
+  fill: none; stroke: var(--or-trait); stroke-width: 1.4;
   stroke-linecap: round; stroke-linejoin: round;
   opacity: .55;
 }
@@ -1396,12 +1396,12 @@
    L'appui enfonce (translateY + ombre resserree) au lieu de
    seulement retrecir : sensation physique, pas d'effet flash. */
 .pg-journal .fab {
-  background: linear-gradient(180deg, #FFC933 0%, var(--srf-accent) 100%);
+  background: linear-gradient(180deg, var(--or-clair) 0%, var(--srf-accent) 100%);
   box-shadow: 0 1px 2px rgba(24,24,24,.08), 0 6px 16px rgba(247, 181, 0, .35);
 }
 .pg-journal .fab:active {
   transform: translateY(1px) scale(.96);
-  background: linear-gradient(180deg, var(--srf-accent) 0%, #E9A800 100%);
+  background: linear-gradient(180deg, var(--or) 0%, var(--or-trait) 100%);
   box-shadow: 0 1px 2px rgba(24,24,24,.10), 0 3px 8px rgba(247, 181, 0, .30);
 }
 
@@ -1987,7 +1987,7 @@
 }
 .login-consent input {
   width: 18px; height: 18px; margin: 1px 0 0;
-  accent-color: #F7B500; flex-shrink: 0;
+  accent-color: var(--or); flex-shrink: 0;
 }
 .login-consent a { color: var(--txt-accent); font-weight: 700; }
 
@@ -2146,7 +2146,7 @@
   background: var(--carte); border: 1.5px solid #EFE7D8; border-radius: 18px;
   padding: 14px 16px;
 }
-.modal.wm .wm-saisie:focus-within { border-color: #E0A21C; box-shadow: 0 0 0 3px rgba(224, 162, 28, .15); }
+.modal.wm .wm-saisie:focus-within { border-color: var(--or-trait); box-shadow: 0 0 0 3px rgba(176, 116, 0, .15); }
 .modal.wm .wm-saisie input {
   width: 130px; border: none; background: none; padding: 0; margin: 0;
   font-family: inherit; font-size: 40px; font-weight: 500; color: var(--txt-1);
@@ -2262,7 +2262,7 @@
 
 .wm2-ok {
   display: block; width: 100%; padding: 15px; border-radius: 16px;
-  background: linear-gradient(180deg, #FFC93C, #F0A90A);
+  background: linear-gradient(180deg, var(--or-clair), var(--or));
   border: none; color: var(--txt-1-fonce);
   font-family: inherit; font-size: 15.5px; font-weight: 500; letter-spacing: .01em;
   cursor: pointer; margin-top: 18px;
@@ -2288,7 +2288,7 @@
 }
 .pg-journal .ajout-repas svg {
   width: 16px; height: 16px;
-  fill: none; stroke: #B7860B; stroke-width: 2.4; stroke-linecap: round;
+  fill: none; stroke: var(--or-trait); stroke-width: 2.4; stroke-linecap: round;
 }
 .pg-journal .ajout-repas:active { background: #FAF8F3; transform: scale(.98); }
 
@@ -2343,14 +2343,14 @@
 
    Regle de contraste : jaune et orange en REMPLISSAGE seulement.
    Des qu'il s'agit de texte ou de bordure, --or-fonce (4,6:1 sur
-   creme). #FAC408 sur creme tombe a 1,7:1, illisible.
+   creme). var(--or) sur creme tombe a 1,7:1, illisible.
    ============================================================ */
 .couche-repas {
   --or:        #F86A0C;   /* remplissages, focus, selections */
   --or-fonce:  #B34700;   /* texte et bordures */
   --or-pale:   #FFEFD8;   /* fond d'icone */
   --or-creme:  #FFFAF2;
-  --rp-jaune:  #FAC408;   /* depart du degrade de l'anneau */
+  --rp-jaune:  var(--or);   /* depart du degrade de l'anneau */
   --rp-piste:  #EFE6D8;   /* portion vide de l'anneau */
 }
 .couche-repas .mc-ajout:focus-within {
@@ -2711,7 +2711,7 @@
 /* L'accent : un point de 4 px, seul endroit jaune de la barre. */
 .bn-point {
   display: block; width: 4px; height: 4px; border-radius: 50%;
-  background: #FCD200; opacity: 0; transform: scale(.4);
+  background: var(--or); opacity: 0; transform: scale(.4);
   transition: opacity 220ms cubic-bezier(.32,.72,0,1),
               transform 220ms cubic-bezier(.32,.72,0,1);
 }
@@ -2746,7 +2746,7 @@
    de 4 px cernee de blanc. On l'entoure d'un liseré pour qu'il ne
    disparaisse pas. */
 .bn-point {
-  background: #FCD200;
+  background: var(--or);
   box-shadow: 0 0 0 1px rgba(150, 120, 0, .35);
 }
 
@@ -3050,7 +3050,7 @@
   border-radius: 50%; background: #FBF0D4;
 }
 .crs-hero-ic svg {
-  width: 21px; height: 21px; fill: none; stroke: #DFA004;
+  width: 21px; height: 21px; fill: none; stroke: var(--or-trait);
   stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
 }
 .crs-hero h3 {
@@ -3064,7 +3064,7 @@
   display: inline-flex; align-items: center; gap: 6px; margin: 0;
   font-size: 12.5px; font-weight: 500; color: #57514A;
 }
-.crs-hero-tag svg { width: 15px; height: 15px; fill: #F5B403; stroke: none; }
+.crs-hero-tag svg { width: 15px; height: 15px; fill: var(--or); stroke: none; }
 
 /* Reglages */
 .crs-reglage { padding: 2px 16px 16px; }
@@ -3079,11 +3079,11 @@
 }
 /* Jours : la selection est NOIRE a texte dore (mesure sur l'image) */
 .crs-seg--jours button.on {
-  background: #16130F; color: #F5B403; border-color: #16130F;
+  background: #16130F; color: var(--or); border-color: #16130F;
 }
 /* Personnes : la selection est JAUNE a texte noir */
 .crs-seg--pers button.on {
-  background: #F7C64B; color: #16130F; border-color: #F7C64B;
+  background: var(--or); color: #16130F; border-color: var(--or);
 }
 
 .crs-generer {
@@ -3092,7 +3092,7 @@
   font: inherit; font-size: 15.5px; font-weight: 600;
   color: #FFFFFF; background: #16130F; border: none; border-radius: 15px;
 }
-.crs-generer svg { width: 17px; height: 17px; fill: #F5B403; stroke: none; }
+.crs-generer svg { width: 17px; height: 17px; fill: var(--or); stroke: none; }
 .crs-generer:disabled { opacity: .45; cursor: default; }
 
 

@@ -159,7 +159,7 @@
   line-height: 1.45; color: #57514A; }
 .pg-reglages .rg-accepte {
   width: 100%; padding: 13px; font: inherit; font-size: 14px;
-  font-weight: 600; color: #16130F; background: #F5B403;
+  font-weight: 600; color: #16130F; background: var(--or);
   border: none; border-radius: 12px; cursor: pointer;
 }
 .pg-reglages .rg-texte {

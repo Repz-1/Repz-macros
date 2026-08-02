@@ -25,10 +25,18 @@
 
   /* ---------- Couleurs de marque ----------
      Une couleur = un sens. Ne jamais en creer de proche. */
-  --or: #F7B500;                /* action principale, Premium */
-  --or-fonce: #8F6200;          /* texte sur fond clair dore */
-  --or-pale: #FFF4CC;           /* fond d'icone */
+  /* Jaune de marque, mesure sur le logo (logo-b, logo-header,
+     icon-512 v5 et v7 : #F8CF01 sur les quatre). Cinq valeurs
+     couvrent tous les usages du jaune ; toute autre est une derive.
+     Un aplat porte du texte noir (12,3:1). Un trait sur fond clair
+     exige --or-trait : le jaune plein y tombe a 1,4:1. */
+  --or: #F8CF01;                /* aplats : boutons, FAB, anneau, pastilles */
+  --or-clair: #FFDF4B;          /* haut de degrade uniquement */
+  --or-trait: #B07400;          /* icones et texte sur fond clair (3,5:1) */
+  --or-fonce: #8F6200;          /* texte dore appuye (4,8:1) */
+  --or-pale: #FFF4CC;           /* fond d'icone, tag */
   --or-creme: #FFFBEF;          /* degrade de carte */
+  --degrade-or: linear-gradient(168deg, var(--or) 0%, #F98A18 46%, #E0550A 100%);
 
   --proteines: #1F1F1F;
   --glucides: #F5A800;
@@ -177,9 +185,9 @@ input, select, textarea { min-width: 0; }
    ============================================================ */
 :root {
   /* surface */
-  --srf-accent: #f7b500;
-  --srf-accent-clair: #ffd86b;
-  --srf-accent-pale: #fff4cc;
+  --srf-accent: var(--or);
+  --srf-accent-clair: var(--or-clair);
+  --srf-accent-pale: var(--or-pale);
   --srf-alerte: #de2f14;
   --srf-carte: #fff;
   --srf-carte-2: #ffffff;
@@ -201,12 +209,12 @@ input, select, textarea { min-width: 0; }
   --txt-3: #8a8a8a;
   --txt-4: #a8a297;
   --txt-5: #c9c4b8;
-  --txt-accent: #8f6200;
+  --txt-accent: var(--or-fonce);
   --txt-accent-fonce: #5a3e00;
-  --txt-accent-nav: #dfa004;
-  --txt-accent-or: #b7860b;
-  --txt-accent-or-2: #b98a00;
-  --txt-accent-vif: #f7b500;
+  --txt-accent-nav: var(--or-trait);
+  --txt-accent-or: var(--or-trait);
+  --txt-accent-or-2: var(--or-trait);
+  --txt-accent-vif: var(--or);
   --txt-alerte: #de2f14;
   --txt-alerte-vif: #ef4444;
   --txt-ardoise: #9ca3af;
@@ -219,7 +227,7 @@ input, select, textarea { min-width: 0; }
   --brd-1: #e8e4d8;
   --brd-1-bis: #e9e4d6;
   --brd-2: #f0ede4;
-  --brd-accent: #f7b500;
+  --brd-accent: var(--or);
   --brd-accent-pale: #f3e2a8;
   --brd-ardoise: #cbd5e1;
   --brd-ardoise-clair: #f1f5f9;

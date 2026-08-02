@@ -284,7 +284,7 @@
 }
 .pg-plus .bp-hero-bonjour {
   margin: 0 0 3px; font-size: 10.5px; font-weight: 700;
-  letter-spacing: .18em; color: #C79A2E;
+  letter-spacing: .18em; color: var(--or-fonce);
 }
 .pg-plus .bp-hero-nom {
   margin: 0 0 9px; font-size: 22px; font-weight: 700;
@@ -296,7 +296,7 @@
 }
 .pg-plus .bp-hero-trait {
   display: block; width: 46px; height: 3px; border-radius: 2px;
-  background: #F5B403; margin-bottom: 13px;
+  background: var(--or); margin-bottom: 13px;
 }
 .pg-plus .bp-hero-sous {
   margin: 0 0 14px; font-size: 13px; line-height: 1.45;
@@ -308,7 +308,7 @@
   font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
   background: #16130F; color: #FFFFFF; border: none; border-radius: 14px;
 }
-.pg-plus .bp-hero-cta span { color: #F5B403; font-size: 16px; }
+.pg-plus .bp-hero-cta span { color: var(--or); font-size: 16px; }
 
 /* ---------- Grille 2 x 2 ---------- */
 .pg-plus .bp-grille {
@@ -327,7 +327,7 @@
 .pg-plus .bp-ic {
   display: flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; margin-bottom: 11px;
-  border-radius: 12px; background: #FBF3DC; color: #DFA004;
+  border-radius: 12px; background: #FBF3DC; color: var(--or-trait);
 }
 .pg-plus .bp-ic svg {
   width: 19px; height: 19px; fill: none; stroke: currentColor;
