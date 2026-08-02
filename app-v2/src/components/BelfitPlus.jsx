@@ -127,25 +127,6 @@ const Fleche = () => (
   </span>
 );
 
-/** Acces au calculateur, pose juste sous les chiffres du programme.
- *  Il vivait auparavant dans le bandeau du profil, insere au-dessus
- *  de l'en-tete du Journal : ce bandeau ne s'ouvre pas par-dessus la
- *  page, il la pousse vers le bas, et personne ne le trouvait.
- *  Place en bas du panneau, il se retrouvait sous tout le plan de
- *  repas — hors de vue des l'ouverture. Il est donc en tete, la ou
- *  les chiffres qu'il modifie sont affiches. */
-function LienBesoins() {
-  return (
-    <button
-      class="bp-besoins-lien"
-      onClick={() => { allerOnglet('journal'); ouvrirCalcDemande.value = true; }}
-    >
-      Modifier mes objectifs
-      <span aria-hidden="true">→</span>
-    </button>
-  );
-}
-
 export function BelfitPlus() {
   const [ouvertProg, setOuvertProg] = useState(false);
   const [charge, setCharge] = useState(false);
@@ -232,6 +213,124 @@ export function BelfitPlus() {
     else sousProg = `Reçu ${depuis(pr.livreLe) || 'récemment'} · prêt à appliquer`;
   }
 
+  // « Mon programme » ouvre une page a part entiere, pas un depliant
+  // sous la carte d'accueil. Demande par Raci : le depliant obligeait
+  // a defiler tout le plan pour atteindre les deux actions, et sans
+  // programme il n'affichait rien du tout.
+  if (ouvertProg) {
+    return (
+      <div class="pg-plus pg-prog">
+        <Entete retour={() => setOuvertProg(false)} />
+        <div class="prog-corps">
+          <button class="prog-retour" onClick={() => setOuvertProg(false)}>← BelFit+</button>
+          <h1 class="prog-titre">Mon programme</h1>
+
+          {!pret ? (
+            <p class="prog-attente">Chargement…</p>
+          ) : !pr ? (
+            <div class="prog-vide">
+              <p class="prog-vide-titre">Pas encore de programme</p>
+              <p class="prog-vide-txt">Ton coach le construit à partir de tes objectifs.</p>
+            </div>
+          ) : (
+            <>
+              <div class="bp-macros">
+                <div><b>{pr.kcal}</b><em>kcal</em></div>
+                <div><b>{pr.prot} g</b><em>protéines</em></div>
+                <div><b>{pr.carbs} g</b><em>glucides</em></div>
+                <div><b>{pr.lip} g</b><em>lipides</em></div>
+              </div>
+
+              {(pr.repas || []).map((r, i) => (
+                <div class="bp-repas" key={i}>
+                  <div class="bp-repas-tete">
+                    <span>{r.nom}</span>
+                    <em>{Math.round(kcalRepas(r))} kcal</em>
+                  </div>
+                  {r.ings.map((ing, j) => (
+                    <div class="bp-ing" key={j}>
+                      <span>{ing.name}</span>
+                      <em>{ing.portion} {unite(ing.name)}</em>
+                    </div>
+                  ))}
+                </div>
+              ))}
+
+              {pr.note && <p class="bp-note">{pr.note}</p>}
+
+              {ecart && (
+                <p class="bp-ecart">
+                  Tes objectifs actuels ({o.kcal} kcal) ne sont plus ceux de ton
+                  programme ({pr.kcal} kcal). Tu es sorti de l'objectif pour lequel
+                  ce plan a été construit — recharge-le, ou demande un ajustement à
+                  ton coach.
+                </p>
+              )}
+
+              {aRepas && (
+                <button class="bp-appliquer" onClick={charger}>
+                  {charge ? 'Programme chargé dans ton journal' : 'Charger dans mon journal'}
+                </button>
+              )}
+              {aRepas && (
+                <p class="bp-avis">Tes repas du jour seront remplacés par ceux du programme.</p>
+              )}
+            </>
+          )}
+
+          {/* Les deux actions, cote a cote, toujours accessibles —
+              y compris sans programme : c'est justement quand on n'en
+              a pas qu'on veut ecrire au coach. */}
+          <div class="prog-actions">
+            <button
+              class="prog-action"
+              onClick={() => { allerOnglet('journal'); ouvrirCalcDemande.value = true; }}
+            >
+              <b>Modifier mes objectifs</b>
+              <em>poids, taille, activité</em>
+            </button>
+            <button
+              class="prog-action"
+              disabled={aj.restants === 0}
+              onClick={() => setDemande('ouvert')}
+            >
+              <b>Demander un ajustement</b>
+              <em>{aj.restants === 0 ? 'aucun restant ce mois-ci'
+                   : aj.restants !== null ? `il t'en reste ${aj.restants} sur ${aj.quota}`
+                   : 'à ton coach'}</em>
+            </button>
+          </div>
+
+          {demande === 'ok' ? (
+            <p class="bp-ajust-ok">
+              Demande envoyée. Ton coach te répond sous 24 à 48 h.
+              {aj.restants !== null && ` Il te reste ${aj.restants} ${aj.restants > 1 ? 'ajustements' : 'ajustement'} ce mois-ci.`}
+            </p>
+          ) : demande === 'quota' ? (
+            <p class="bp-ajust-ko">
+              Tu as utilisé tes {aj.quota} ajustements du mois. Le compteur
+              repart le 1er. Écris à ton coach si c'est urgent.
+            </p>
+          ) : (demande === 'ouvert' || demande === 'envoi' || demande === 'erreur') ? (
+            <div class="bp-ajust">
+              <textarea
+                class="bp-ajust-champ"
+                maxLength={1000}
+                placeholder="Ce qui ne va pas, ce que tu voudrais changer…"
+                value={motDemande}
+                onInput={(e) => setMotDemande(e.target.value)}
+              />
+              {demande === 'erreur' && <p class="bp-ajust-ko">L'envoi a échoué. Réessaie.</p>}
+              <button class="bp-ajust-envoi" disabled={demande === 'envoi'} onClick={envoyerDemande}>
+                {demande === 'envoi' ? 'Envoi…' : 'Envoyer ma demande'}
+              </button>
+            </div>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div class="pg-plus">
       <Entete retour />
@@ -248,7 +347,7 @@ export function BelfitPlus() {
         <h1 class="bp-hero-titre">Bienvenue dans<br />ton espace.</h1>
         <span class="bp-hero-trait" aria-hidden="true" />
         <p class="bp-hero-sous">Tout ce dont tu as besoin pour progresser, réuni au même endroit.</p>
-        <button class="bp-hero-cta" onClick={() => setOuvertProg(v => !v)}>
+        <button class="bp-hero-cta" onClick={() => setOuvertProg(true)}>
           Mon programme <span aria-hidden="true">→</span>
         </button>
       </section>
@@ -297,138 +396,6 @@ export function BelfitPlus() {
           <Fleche />
         </button>
       </div>
-
-      {/* Le panneau s'ouvre meme sans programme. Il ne s'affichait
-          qu'a la condition `ouvertProg && pr` : sans programme, le
-          bouton Mon programme basculait un etat sans rien montrer —
-          un bouton parfaitement inerte, qu'on appuie deux fois avant
-          de croire l'application cassee. */}
-      {ouvertProg && (
-        <div class="bp-detail">
-          {!pret ? (
-            <p class="bp-attente">Chargement de ton programme…</p>
-          ) : !pr ? (
-            <div class="bp-sans-prog">
-              <p class="bp-sans-prog-titre">Pas encore de programme</p>
-              <p class="bp-sans-prog-txt">
-                Ton coach le construit à partir de tes objectifs.
-              </p>
-              <LienBesoins />
-            </div>
-          ) : (
-          <>
-          <div class="bp-macros">
-            <div><b>{pr.kcal}</b><em>kcal</em></div>
-            <div><b>{pr.prot} g</b><em>protéines</em></div>
-            <div><b>{pr.carbs} g</b><em>glucides</em></div>
-            <div><b>{pr.lip} g</b><em>lipides</em></div>
-          </div>
-          <LienBesoins />
-
-          {/* Le plan lui-meme, repas par repas. Consultable en
-              permanence : c'est le document que le client a achete. */}
-          {(pr.repas || []).map((r, i) => (
-            <div class="bp-repas" key={i}>
-              <div class="bp-repas-tete">
-                <span>{r.nom}</span>
-                <em>{Math.round(kcalRepas(r))} kcal</em>
-              </div>
-              {r.ings.map((ing, j) => (
-                <div class="bp-ing" key={j}>
-                  <span>{ing.name}</span>
-                  <em>{ing.portion} {unite(ing.name)}</em>
-                </div>
-              ))}
-            </div>
-          ))}
-
-          {pr.note && <p class="bp-note">{pr.note}</p>}
-
-          {/* Ecart avec le programme. Le client PEUT modifier ses
-              objectifs — c'est son application. Mais il doit savoir
-              qu'il quitte alors le plan pour lequel le coach a
-              travaille. On informe, on ne bloque pas, et on ne
-              recorrige rien dans son dos. */}
-          {ecart && (
-            <p class="bp-ecart">
-              Tes objectifs actuels ({o.kcal} kcal) ne sont plus ceux de ton
-              programme ({pr.kcal} kcal). Tu es sorti de l'objectif pour lequel
-              ce plan a été construit — recharge-le, ou demande un ajustement à
-              ton coach.
-            </p>
-          )}
-
-          {/* Le programme n'est pas modifiable ici : un ajustement se
-              demande au coach, qui en renvoie un. Le seul geste offert
-              est de le charger dans le journal. */}
-          {aRepas && (
-            <button class="bp-appliquer" onClick={charger}>
-              {charge ? 'Programme chargé dans ton journal' : 'Charger dans mon journal'}
-            </button>
-          )}
-          {aRepas && (
-            <p class="bp-avis">
-              Tes repas du jour seront remplacés par ceux du programme.
-            </p>
-          )}
-
-          </>
-          )}
-
-          {/* Demander un ajustement : sans programme, il n'y a rien a
-              ajuster. Le quota restant est annonce sur le bouton — un
-              quota qu'on ne decouvre qu'en le depassant est un quota
-              cache. */}
-          {pr && (
-          <div class="bp-ajust">
-            {demande === 'ok' ? (
-              <p class="bp-ajust-ok">
-                Demande envoyée. Ton coach te répond sous 24 à 48 h.
-                {aj.restants !== null && ` Il te reste ${aj.restants} ${aj.restants > 1 ? 'ajustements' : 'ajustement'} ce mois-ci.`}
-              </p>
-            ) : demande === 'quota' ? (
-              <p class="bp-ajust-ko">
-                Tu as utilisé tes {aj.quota} ajustements du mois. Le compteur
-                repart le 1er. Écris à ton coach si c'est urgent.
-              </p>
-            ) : demande === 'ouvert' || demande === 'envoi' || demande === 'erreur' ? (
-              <>
-                <textarea
-                  class="bp-ajust-champ"
-                  maxLength={1000}
-                  placeholder="Ce qui ne va pas, ce que tu voudrais changer…"
-                  value={motDemande}
-                  onInput={(e) => setMotDemande(e.target.value)}
-                />
-                {demande === 'erreur' && (
-                  <p class="bp-ajust-ko">L'envoi a échoué. Réessaie.</p>
-                )}
-                <button
-                  class="bp-ajust-envoi"
-                  disabled={demande === 'envoi'}
-                  onClick={envoyerDemande}
-                >
-                  {demande === 'envoi' ? 'Envoi…' : 'Envoyer ma demande'}
-                </button>
-              </>
-            ) : (
-              <button
-                class="bp-ajust-btn"
-                disabled={aj.restants === 0}
-                onClick={() => setDemande('ouvert')}
-              >
-                Demander un ajustement
-                {aj.restants !== null && (
-                  <em>{aj.restants === 0
-                    ? 'aucun restant ce mois-ci'
-                    : `il t'en reste ${aj.restants} sur ${aj.quota} ce mois-ci`}</em>
-                )}
-              </button>
-            )}
-          </div>
-          )}
-        </div>
-      )}
 
     </div>
   );

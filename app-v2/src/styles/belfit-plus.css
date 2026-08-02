@@ -423,3 +423,59 @@
 }
 .pg-plus .bp-hero-titre,
 .pg-plus .bp-hero-sous { max-width: 56%; }
+
+/* ============================================================
+   MON PROGRAMME — page a part entiere
+   Le plan vivait dans un depliant sous la carte d'accueil : il
+   fallait defiler tout le programme pour atteindre les actions, et
+   sans programme le bouton n'affichait rien. Meme gabarit que
+   Statistiques avancees, l'autre page ouverte depuis BelFit+.
+   ============================================================ */
+.pg-prog { background: var(--fond); min-height: 100%; }
+.pg-prog .prog-corps {
+  padding: 0 16px calc(var(--hauteur-nav) + 24px + env(safe-area-inset-bottom));
+}
+.pg-prog .prog-retour {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin: 14px 0 0; padding: 0; font: inherit; font-size: 13.5px;
+  font-weight: 600; color: var(--orange-fonce);
+  background: none; border: none; cursor: pointer;
+}
+.pg-prog .prog-titre {
+  margin: 12px 0 16px; font-size: 26px; font-weight: 700;
+  letter-spacing: -.035em; color: var(--encre);
+}
+.pg-prog .prog-attente { margin: 0; font-size: 13.5px; color: var(--encre-3); }
+.pg-prog .prog-vide {
+  background: var(--carte); border: 1px solid rgba(var(--filet-rvb), .055);
+  border-radius: 18px; padding: 18px 16px;
+}
+.pg-prog .prog-vide-titre {
+  margin: 0 0 5px; font-size: 16px; font-weight: 700; color: var(--encre);
+  letter-spacing: -.015em;
+}
+.pg-prog .prog-vide-txt {
+  margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--encre-2);
+}
+
+/* Les deux actions cote a cote. Elles restent affichees meme sans
+   programme : c'est justement quand on n'en a pas qu'on veut ecrire
+   au coach. */
+.pg-prog .prog-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 14px;
+}
+.pg-prog .prog-action {
+  display: flex; flex-direction: column; gap: 3px; text-align: left;
+  padding: 13px 14px; cursor: pointer; font: inherit;
+  background: var(--carte); border: 1px solid var(--bordure-chaude);
+  border-radius: 15px;
+}
+.pg-prog .prog-action b {
+  font-size: 13.5px; font-weight: 700; color: var(--encre); line-height: 1.25;
+}
+.pg-prog .prog-action em {
+  font-style: normal; font-size: 11px; color: var(--encre-4); line-height: 1.3;
+}
+.pg-prog .prog-action:disabled { opacity: .5; cursor: default; }
+.pg-prog .prog-action:active:not(:disabled) { background: var(--fond-creux); }
+.pg-prog .bp-ajust { margin-top: 12px; padding-top: 0; border-top: none; }
