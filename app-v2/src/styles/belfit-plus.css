@@ -124,7 +124,7 @@
    pour le neerlandais, plus long que le francais) puis s'efface d'un
    coup a 60 %. Le texte garde 13,8:1, le sujet passe de 35 a 74 %. */
 .pg-plus .bp-visuel::after {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
   background: linear-gradient(90deg,
     var(--carte) 0%, var(--carte) 22%, rgba(255,255,255,.88) 36%,
     rgba(255,255,255,.28) 48%, rgba(255,255,255,0) 60%);
@@ -357,10 +357,17 @@
   background: var(--carte); color: var(--encre);
 }
 .pg-plus .bp-carte .bp-fleche svg { width: 15px; height: 15px; }
-/* La photo occupe le quart haut-droit, sous le texte. */
+/* La photo tient toute la hauteur, a droite, sous le texte.
+   Elle s'arretait a 62 % de la hauteur, ancree en haut : regle ecrite
+   quand aucune carte n'avait d'image, donc personne n'avait vu le
+   resultat. Mesure sur la carte Stats : il restait dessous une bande
+   blanche de 242 x 52 px, avec la fleche seule dans le coin oppose.
+   Invisible tant qu'il n'y avait qu'un aplat, criant des qu'une photo
+   est arrivee. Le rayon suit : la courbe de 46 % n'a plus de sens une
+   fois le visuel colle aux deux coins droits. */
 .pg-plus .bp-visuel {
-  position: absolute; z-index: 1; inset: 0 0 auto auto;
-  width: 62%; height: 62%; border-radius: 0 20px 0 46%;
+  position: absolute; z-index: 1; inset: 0 0 0 auto;
+  width: 62%; height: 100%; border-radius: 0 20px 20px 0;
   background-size: cover; background-position: center;
   opacity: .96;
 }
