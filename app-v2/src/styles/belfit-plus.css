@@ -369,7 +369,14 @@
   position: absolute; z-index: 1; inset: 0 0 0 auto;
   width: 62%; height: 100%; border-radius: 0 20px 20px 0;
   background-size: cover; background-position: center;
-  opacity: .96;
+  /* .96 sur une image tres sombre laissait 28 % de la carte sous une
+     luminance de 80, contre 0 % pour ses voisines : un trou noir dans
+     une page creme. .72 la pose sur le blanc de la carte et fait
+     tomber cette part a 0,1 %, sans rien lui enlever de son role —
+     elle reste a 165 quand les autres sont a 236, donc toujours la
+     carte qui s'analyse. Un cran plus haut (.80) et le noir franc
+     revient. */
+  opacity: .72;
 }
 
 /* En-tete : meme traitement que Journal, S'entrainer et Stats —
