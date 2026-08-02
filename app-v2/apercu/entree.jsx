@@ -35,6 +35,7 @@ import { BelfitPlus } from '../src/components/BelfitPlus.jsx';
 import { Reglages } from '../src/components/Reglages.jsx';
 import { PremiumPage, estPremium } from '../src/components/PremiumPage.jsx';
 import { TdeeCalculator } from '../src/components/TdeeCalculator.jsx';
+import { BottomNav } from '../src/components/BottomNav.jsx';
 
 // --- Donnees d'exemple : une journee a moitie remplie, pas un ecran
 //     vide. Un etat vide ne prouve pas qu'une page fonctionne. ---
@@ -91,7 +92,10 @@ const PAGES = {
   plus:      () => <BelfitPlus />,
   reglages:  () => <Reglages />,
   premium:   () => <PremiumPage />,
-  calcul:    () => <TdeeCalculator montre={true} retour="Mon programme" fermer={() => {}} />,
+  // Le calculateur est rendu AVEC la barre de navigation : c'est leur
+  // superposition qui a masque le bouton Appliquer, un rendu sans
+  // barre n'aurait rien montre du probleme.
+  calcul:    () => (<><TdeeCalculator montre={true} retour="Mon programme" fermer={() => {}} /><BottomNav /></>),
 };
 export const NOMS = Object.keys(PAGES);
 
