@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { signal, effect, computed } from '@preact/signals';
 import { rayonDe, RAYONS } from '../data/rayons.js';
-import { DB, macrosOf } from '../data/aliments.js';
+import { DB } from '../data/aliments.js';
 import { repas } from '../store/journal.js';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
@@ -123,30 +123,7 @@ export function Courses() {
 
   const tous = [...duJournal, ...manuels];
 
-  // --- Reperes du bandeau, calcules sur la liste reelle ---
-  // Repas couverts : les repas non vides du journal, multiplies par
-  // les jours demandes.
-  const repasCouverts = repas.value.filter(r => (r.ings || []).length).length * c.jours;
-
-  // Calories : le total d'une journee tel que le journal l'affiche,
-  // multiplie par jours et personnes — la liste couvre exactement ca.
-  const kcalTotal = Math.round(
-    repas.value.reduce((t, r) => t + (r.ings || [])
-      .reduce((u, i) => u + (macrosOf(i).kcal || 0), 0), 0) * c.jours * c.pers,
-  );
-
-  // Estimation de prix : moyenne par rayon appliquee au poids. Elle
-  // est ANNONCEE comme approximative (le « ± » de la maquette) — les
-  // prix varient d'une enseigne a l'autre et nous n'en avons aucun.
-  const PRIX_KG = { legumes: 3.2, fruits: 3.0, viandes: 12.5, poissons: 16,
-    laitiers: 4.5, feculents: 2.4, epicerie: 6.5, autres: 5 };
-  const estimation = Math.round(
-    tous.reduce((t, i) => {
-      const kg = (i.qty || 0) / 1000;
-      return t + kg * (PRIX_KG[i.cat] || PRIX_KG.autres);
-    }, 0),
-  );
-
+  // Articles qu'il reste a prendre : le compteur au-dessus de la liste.
   const restants = tous.filter(i => !c.coches[i.nom]).length;
 
   const parRayon = RAYONS
@@ -225,29 +202,6 @@ export function Courses() {
           {!base.length && <p class="crs-note">{t('co_note_vide')}</p>}
         </div>
       </div>
-
-      {/* Bandeau chiffre : quatre reperes, uniquement quand la liste
-          existe — quatre zeros ne diraient rien. */}
-      {tous.length > 0 && (
-        <div class="crs-chiffres">
-          <div>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.3" /><circle cx="17" cy="20" r="1.3" /><path d="M2.5 3.5h2.6l2.4 11h10.2l2-7.4H6.4" /></svg>
-            <b>{tous.length}</b><span>ingrédients</span>
-          </div>
-          <div>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h16" /><path d="M5.5 17a6.5 6.5 0 0113 0" /><path d="M12 8V6" /></svg>
-            <b>{repasCouverts}</b><span>repas couverts</span>
-          </div>
-          <div>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s4.5 4 4.5 8a4.5 4.5 0 01-9 0c0-1.4.6-2.6 1.3-3.6.3 1.1 1 1.9 1.9 1.9 1 0 1.6-.9 1.3-2.2A6 6 0 0012 3z" /></svg>
-            <b>{kcalTotal.toLocaleString('fr-BE')}</b><span>kcal au total</span>
-          </div>
-          <div>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6.5" width="18" height="12" rx="2.5" /><path d="M3 10.5h18" /><circle cx="17" cy="14.5" r="1.2" /></svg>
-            <b>± {estimation} €</b><span>estimation</span>
-          </div>
-        </div>
-      )}
 
       {/* Liste par rayon */}
       {tous.length > 0 && (
