@@ -233,20 +233,6 @@ export function BelfitPlus() {
           premier benefice vendu, et le seul qui n'existe pas ailleurs
           dans l'app. */}
       <div class="bp-grille">
-      <button
-        class={'bp-carte' + (pr && !dejaApplique ? ' bp-carte--neuf' : '')}
-        onClick={() => pr && setOuvertProg(v => !v)}
-      >
-        <span class="bp-visuel bp-visuel--programme" aria-hidden="true" />
-        <span class="bp-corps">
-          <span class="bp-ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M5.5 20.5V8.4a2 2 0 012-2h9a2 2 0 012 2v12.1" /><path d="M9 6.4V4.6a3 3 0 016 0v1.8" /><path d="M9.5 12.6h5M9.5 16.2h3" /></svg>
-          </span>
-          <span class="bp-nom">Mon programme nutrition</span>
-          <span class="bp-sous">{sousProg || 'Ton plan personnalisé, mis à jour en continu.'}</span>
-        </span>
-        <Fleche />
-      </button>
 
         {/* 2. Statistiques */}
         <button class="bp-carte" onClick={() => { ongletActif.value = 'stats'; }}>
