@@ -29,6 +29,7 @@ import { signal } from '@preact/signals';
 import { Entete, voletProfil } from './components/Entete.jsx';
 
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
+import { Besoins, besoinsRequis } from './components/Besoins.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
@@ -130,6 +131,15 @@ function App() {
 
   if (!donneesPretes.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;
+  }
+
+  // Etape 2 de l'inscription. Elle vaut aussi pour les comptes deja
+  // crees qui n'ont jamais pose leurs objectifs : sans ca, on reparait
+  // le probleme pour les nouveaux en le laissant aux anciens. Un compte
+  // Google y passe comme les autres — c'est le chemin le plus emprunte,
+  // l'exempter recreerait exactement le trou qu'on bouche.
+  if (besoinsRequis()) {
+    return <Besoins />;
   }
 
   const onglet = ongletActif.value;

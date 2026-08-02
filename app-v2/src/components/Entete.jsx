@@ -11,7 +11,7 @@ export const ouvrirProfil = () => { voletProfil.value = !voletProfil.value; };
  *  Trois sources, dans l'ordre : le compte Firebase, la cle posee a
  *  la connexion, puis le profil local — un compte ancien peut n'avoir
  *  que la troisieme. */
-function prenom() {
+export function prenomUtilisateur() {
   const u = utilisateur.value;
   const nom = (u && u.displayName) || '';
   if (nom) return nom.split(' ')[0];
@@ -29,7 +29,7 @@ function prenom() {
 // Trois colonnes (1fr / auto / 1fr) : le centre reste centre quelle que
 // soit la largeur des deux bords.
 export function Entete({ retour } = {}) {
-  const p = prenom();
+  const p = prenomUtilisateur();
   return (
     <header class="j-entete j-entete--perso">
       {/* Le symbole compact est le B BELFIT (belfit-logo-b.png), le meme

@@ -1,0 +1,100 @@
+/* ============================================================
+   BESOINS — etape 2 de l'inscription. Meme matiere que l'ecran de
+   connexion : colonne de 360 px, champs a 12 px de rayon, bouton
+   jaune. La carte de resultat reprend le graphite des surfaces
+   d'analyse : c'est ce qui se lit, pas ce sur quoi on agit.
+   ============================================================ */
+.pg-besoins {
+  background: var(--fond); min-height: 100vh; min-height: 100dvh;
+  max-width: 360px; margin: 0 auto; box-sizing: border-box;
+  padding: 20px 20px calc(30px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column;
+}
+
+.pg-besoins .bs-etapes { display: flex; gap: 5px; width: 100%; margin-bottom: 18px; }
+.pg-besoins .bs-etapes i { flex: 1; height: 3px; border-radius: 999px; background: var(--bascule-off); }
+.pg-besoins .bs-etapes i.on { background: var(--or); }
+
+.pg-besoins .bs-titre {
+  margin: 0 0 4px; font-size: 19px; font-weight: 700;
+  letter-spacing: -.02em; text-align: center; color: var(--encre);
+}
+.pg-besoins .bs-chapo {
+  margin: 0 0 16px; font-size: 13px; line-height: 1.45;
+  text-align: center; color: var(--encre-2);
+}
+
+.pg-besoins .bs-form { display: flex; flex-direction: column; gap: 8px; }
+.pg-besoins .bs-form input,
+.pg-besoins .bs-form select {
+  width: 100%; box-sizing: border-box; padding: 11px 14px;
+  border: 1px solid var(--bordure-chaude); border-radius: 12px;
+  font-size: 15px; font-family: inherit; background: var(--carte);
+  color: var(--encre); outline: none;
+}
+.pg-besoins .bs-form input:focus,
+.pg-besoins .bs-form select:focus { border-color: var(--or); }
+
+.pg-besoins .bs-trio { display: flex; gap: 8px; }
+.pg-besoins .bs-trio > * { flex: 1; min-width: 0; }
+.pg-besoins .bs-champ { position: relative; }
+.pg-besoins .bs-champ span {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 12.5px; color: var(--encre-4); pointer-events: none;
+}
+.pg-besoins .bs-champ input { padding-right: 36px; }
+
+.pg-besoins .bs-seg { display: flex; gap: 3px; background: var(--piste); border-radius: 12px; padding: 3px; }
+.pg-besoins .bs-seg button {
+  flex: 1; padding: 9px 0; border: none; border-radius: 9px; background: none;
+  font: inherit; font-size: 13.5px; font-weight: 500; color: var(--encre-3); cursor: pointer;
+}
+.pg-besoins .bs-seg button.on {
+  background: var(--carte); color: var(--encre);
+  box-shadow: 0 1px 3px rgba(var(--ombre-rvb), .12);
+}
+.pg-besoins .bs-mini {
+  margin: 10px 2px 5px; font-size: 11px; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--encre-4);
+}
+
+.pg-besoins .bs-res {
+  margin-top: 16px; padding: 17px; border-radius: 20px;
+  color: var(--sur-graphite); background: var(--degrade-graphite);
+}
+.pg-besoins .bs-res-lb {
+  margin: 0; font-size: 10px; font-weight: 700; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sur-graphite-3);
+}
+.pg-besoins .bs-res-gros {
+  margin: 6px 0 2px; font-size: 38px; font-weight: 700; letter-spacing: -.04em;
+  line-height: 1; font-variant-numeric: tabular-nums;
+}
+.pg-besoins .bs-res-gros em {
+  font-style: normal; font-size: 15px; font-weight: 500;
+  color: var(--sur-graphite-3); margin-left: 5px;
+}
+.pg-besoins .bs-res-phrase {
+  margin: 0 0 13px; font-size: 12.5px; line-height: 1.45; color: var(--sur-graphite-2);
+}
+.pg-besoins .bs-res-grille {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  padding-top: 12px; border-top: 1px solid var(--filet-graphite);
+}
+.pg-besoins .bs-res-grille b {
+  display: block; font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.pg-besoins .bs-res-grille span {
+  display: block; font-size: 10px; color: var(--sur-graphite-3); margin-top: 2px;
+}
+
+.pg-besoins .bs-valider {
+  width: 100%; margin-top: 14px; padding: 13px; border: none; border-radius: 12px;
+  background: var(--or); color: var(--encre);
+  font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.pg-besoins .bs-valider:active { transform: scale(.99); }
+.pg-besoins .bs-note {
+  margin: 12px 2px 0; font-size: 11.5px; line-height: 1.45;
+  text-align: center; color: var(--encre-4);
+}
