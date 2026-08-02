@@ -267,6 +267,43 @@ export function Courses() {
         </div>
       </div>
 
+      {/* Ajout : la base des 1048 aliments se propose des deux
+          premieres lettres, mais le texte libre reste accepte — on
+          met aussi du papier toilette dans un caddie. */}
+      <div class="crs-ajout-zone">
+        <form class="crs-ajout" onSubmit={ajouterManuel}>
+          <svg class="crs-loupe" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" />
+          </svg>
+          <input
+            placeholder={t('co_add_ph')}
+            value={ajout}
+            onInput={e => setAjout(e.currentTarget.value)}
+          />
+          <button type="submit" aria-label="Ajouter">＋</button>
+        </form>
+
+        {suggestions.length > 0 && (
+          <div class="crs-suggestions">
+            {suggestions.map(n => (
+              <button
+                key={n}
+                /* onPointerDown et non onClick : au doigt, le premier
+                   appui fait perdre le focus au champ, le clavier se
+                   referme et la mise en page remonte — le bouton
+                   glisse alors sous le doigt et le clic tombe a cote.
+                   preventDefault empeche cette perte de focus. */
+                onPointerDown={(e) => { e.preventDefault(); ajouterDepuisBase(n); }}
+                onClick={(e) => e.preventDefault()}
+              >
+                <span>{n}</span>
+                <em>{qteLisible(qtePourAchat(n), DB[n])}</em>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Liste par rayon */}
       {tous.length > 0 && (
         <div class="crs-compte">
@@ -349,43 +386,6 @@ export function Courses() {
           <span>Génère ta liste ou ajoute des produits pour commencer.</span>
         </div>
       )}
-
-      {/* Ajout : la base des 1048 aliments se propose des deux
-          premieres lettres, mais le texte libre reste accepte — on
-          met aussi du papier toilette dans un caddie. */}
-      <div class="crs-ajout-zone">
-        <form class="crs-ajout" onSubmit={ajouterManuel}>
-          <svg class="crs-loupe" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" />
-          </svg>
-          <input
-            placeholder={t('co_add_ph')}
-            value={ajout}
-            onInput={e => setAjout(e.currentTarget.value)}
-          />
-          <button type="submit" aria-label="Ajouter">＋</button>
-        </form>
-
-        {suggestions.length > 0 && (
-          <div class="crs-suggestions">
-            {suggestions.map(n => (
-              <button
-                key={n}
-                /* onPointerDown et non onClick : au doigt, le premier
-                   appui fait perdre le focus au champ, le clavier se
-                   referme et la mise en page remonte — le bouton
-                   glisse alors sous le doigt et le clic tombe a cote.
-                   preventDefault empeche cette perte de focus. */
-                onPointerDown={(e) => { e.preventDefault(); ajouterDepuisBase(n); }}
-                onClick={(e) => e.preventDefault()}
-              >
-                <span>{n}</span>
-                <em>{qteLisible(qtePourAchat(n), DB[n])}</em>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
 
       {tous.length > 0 && (
         <div class="crs-actions">
