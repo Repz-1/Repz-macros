@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { signal, effect, computed } from '@preact/signals';
 import { rayonDe, RAYONS } from '../data/rayons.js';
 import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
+import { limitesPortion } from '../data/portions.js';
 import { repas } from '../store/journal.js';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
@@ -95,6 +96,30 @@ export function Courses() {
       .slice(0, 8);
   })();
 
+  /** Quantite proposee pour un aliment ajoute a la main.
+   *  Une liste de courses n'achete pas une portion mais de quoi
+   *  tenir : on prend la portion type de la famille (milieu des
+   *  bornes, arrondi au pas) et on la multiplie par les jours et les
+   *  personnes — exactement la regle appliquee aux articles issus du
+   *  journal. Hors base (papier toilette), aucune quantite : elle
+   *  n'aurait aucun sens. */
+  const qtePourAchat = (nom) => {
+    const d = DB[nom];
+    if (!d) return null;
+    const l = limitesPortion(nom);
+    const milieu = (l.min + l.max) / 2;
+    const type = Math.round(milieu / l.step) * l.step;
+    const brut = type * c.jours * c.pers;
+    return d.unit ? brut * d.unit : brut;   // les pieces se comptent en grammes
+  };
+
+  const ajouterDepuisBase = (nom) => {
+    if (!c.manuels.some(m => (typeof m === 'string' ? m : m.nom) === nom)) {
+      maj({ manuels: [...c.manuels, { nom, qty: qtePourAchat(nom) }] });
+    }
+    setAjout('');
+  };
+
   const poserNote = (nom, texte) => {
     const n = { ...(c.notes || {}) };
     const v = texte.trim();
@@ -137,9 +162,20 @@ export function Courses() {
         .map(i => ({ ...i, qty: i.qty * c.jours * c.pers }))
     : [];
 
+  // Les articles manuels ont pu etre enregistres en simple chaine par
+  // une version anterieure : les deux formes sont acceptees.
   const manuels = c.manuels
-    .filter(m => !retires.includes(m))
-    .map(m => ({ nom: m, qty: null, parUnite: null, unite: '', cat: rayonDe(m) }));
+    .map(m => (typeof m === 'string' ? { nom: m, qty: null } : m))
+    .filter(m => !retires.includes(m.nom))
+    .map(m => {
+      const d = DB[m.nom];
+      return {
+        nom: m.nom, qty: m.qty != null ? m.qty : null,
+        parUnite: d && d.unit ? d.unit : null,
+        unite: d && d.unitLabel ? d.unitLabel : 'u',
+        cat: rayonDe(m.nom),
+      };
+    });
 
   const tous = [...duJournal, ...manuels];
 
@@ -325,12 +361,9 @@ export function Courses() {
         {suggestions.length > 0 && (
           <div class="crs-suggestions">
             {suggestions.map(n => (
-              <button key={n} onClick={() => {
-                if (!c.manuels.includes(n)) maj({ manuels: [...c.manuels, n] });
-                setAjout('');
-              }}>
+              <button key={n} onClick={() => ajouterDepuisBase(n)}>
                 <span>{n}</span>
-                <em>{DB[n].kcal} kcal</em>
+                <em>{qteLisible(qtePourAchat(n), DB[n])}</em>
               </button>
             ))}
           </div>
@@ -353,6 +386,18 @@ export function Courses() {
       )}
     </div>
   );
+}
+
+/** Quantite lisible hors ligne de liste : sert aux suggestions. */
+function qteLisible(q, d) {
+  if (q == null) return '';
+  if (d && d.unit) {
+    const n = Math.ceil(q / d.unit);
+    return n + ' ' + (d.unitLabel || 'u') + (n > 1 ? 's' : '');
+  }
+  return q >= 1000
+    ? (q / 1000).toFixed(1).replace('.', ',') + ' kg'
+    : Math.round(q) + ' g';
 }
 
 /** Quantite lisible : kilos au-dela de 1000 g, unites si l'aliment se compte. */
