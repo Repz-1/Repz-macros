@@ -162,7 +162,7 @@ auth.onAuthStateChanged((user) => {
 </script>
 
 <div class="container">
-    <a href="profil.html" class="back-btn">←</a>
+    <a href="profil.html" id="btnRetourHaut" class="back-btn">←</a>
     <div class="page-title" data-i18n="set_title">Paramètres</div>
 
     <!-- COMPTE -->
@@ -611,6 +611,21 @@ function destinationSortie(avecLogout){
     if(window.location.search.indexOf('de=v2') === -1) return 'index.html';
     return avecLogout ? '/v2/?logout=1' : '/v2/';
 }
+
+// La fleche de retour etait codee en dur vers profil.html : arrive
+// depuis la v2, elle deposait donc l'utilisateur dans la v1, sans
+// aucun moyen de revenir. Elle suit desormais la provenance, comme
+// destinationSortie() le fait deja pour les autres sorties.
+(function reglerRetour(){
+    if(window.location.search.indexOf('de=v2') === -1) return;
+    // Retour direct a la v2. Les liens internes v1 (profil) portent
+    // le meme marqueur, sinon la chaine ramene a main.html.
+    var a = document.getElementById('btnRetourHaut');
+    if(a) a.setAttribute('href', '/v2/');
+    document.querySelectorAll('a[href="profil.html"]').forEach(function(l){
+        l.setAttribute('href', 'profil.html?de=v2');
+    });
+})();
 
 function logout(){
     purgerDonneesLocales();

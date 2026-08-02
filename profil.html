@@ -164,7 +164,7 @@ auth.onAuthStateChanged((user) => {
 
 <div class="container">
     <div style="display:flex;justify-content:space-between;align-items:center;">
-        <a href="main.html#0" class="back-btn">←</a>
+        <a href="main.html#0" id="btnRetourHaut" class="back-btn">←</a>
         <a href="parametres.html" class="back-btn" aria-label="Paramètres"><svg viewBox="0 0 24 24" style="width:20px;height:20px" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1.03 1.56V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1.11-1.56 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.56-1.03H3a2 2 0 110-4h.09a1.7 1.7 0 001.56-1.11 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34h.01A1.7 1.7 0 0010 4.09V4a2 2 0 114 0v.09a1.7 1.7 0 001.03 1.56h.01a1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87v.01a1.7 1.7 0 001.56 1.03H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1.02z"/></svg></a>
     </div>
     <div class="page-title" data-i18n="pf_title">Profil</div>
@@ -648,5 +648,18 @@ rafraichirSubPrefs();
 rafraichirAjustements();
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
+<script>
+// Arrive depuis la v2 (?de=v2), toute sortie doit y ramener : sans
+// cela la fleche deposait l'utilisateur dans main.html, c'est-a-dire
+// dans la v1, sans moyen de revenir.
+(function reglerRetourV2(){
+    if(window.location.search.indexOf('de=v2') === -1) return;
+    var a = document.getElementById('btnRetourHaut');
+    if(a) a.setAttribute('href', '/v2/');
+    document.querySelectorAll('a[href="parametres.html"]').forEach(function(l){
+        l.setAttribute('href', 'parametres.html?de=v2');
+    });
+})();
+</script>
 </body>
 </html>
