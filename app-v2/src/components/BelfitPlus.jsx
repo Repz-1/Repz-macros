@@ -127,6 +127,25 @@ const Fleche = () => (
   </span>
 );
 
+/** Acces au calculateur, pose juste sous les chiffres du programme.
+ *  Il vivait auparavant dans le bandeau du profil, insere au-dessus
+ *  de l'en-tete du Journal : ce bandeau ne s'ouvre pas par-dessus la
+ *  page, il la pousse vers le bas, et personne ne le trouvait.
+ *  Place en bas du panneau, il se retrouvait sous tout le plan de
+ *  repas — hors de vue des l'ouverture. Il est donc en tete, la ou
+ *  les chiffres qu'il modifie sont affiches. */
+function LienBesoins() {
+  return (
+    <button
+      class="bp-besoins-lien"
+      onClick={() => { allerOnglet('journal'); ouvrirCalcDemande.value = true; }}
+    >
+      Modifier mes objectifs
+      <span aria-hidden="true">→</span>
+    </button>
+  );
+}
+
 export function BelfitPlus() {
   const [ouvertProg, setOuvertProg] = useState(false);
   const [charge, setCharge] = useState(false);
@@ -292,10 +311,9 @@ export function BelfitPlus() {
             <div class="bp-sans-prog">
               <p class="bp-sans-prog-titre">Pas encore de programme</p>
               <p class="bp-sans-prog-txt">
-                Ton coach le construit à partir de tes objectifs et te
-                prévient par e-mail dès qu'il est prêt. En attendant, tu
-                peux ajuster tes objectifs toi-même ci-dessous.
+                Ton coach le construit à partir de tes objectifs.
               </p>
+              <LienBesoins />
             </div>
           ) : (
           <>
@@ -305,6 +323,7 @@ export function BelfitPlus() {
             <div><b>{pr.carbs} g</b><em>glucides</em></div>
             <div><b>{pr.lip} g</b><em>lipides</em></div>
           </div>
+          <LienBesoins />
 
           {/* Le plan lui-meme, repas par repas. Consultable en
               permanence : c'est le document que le client a achete. */}
@@ -355,22 +374,6 @@ export function BelfitPlus() {
 
           </>
           )}
-
-          {/* Modifier ses objectifs. Le bouton vivait dans le bandeau
-              du profil, insere au-dessus de l'en-tete du Journal : il
-              poussait la page vers le bas au lieu de s'ouvrir, et
-              personne ne le trouvait. Sa place est ici, a cote de la
-              demande d'ajustement — c'est le moment ou l'on constate
-              que ses chiffres ne collent plus. */}
-          <div class="bp-ajust">
-            <button
-              class="bp-ajust-btn bp-ajust-btn--besoins"
-              onClick={() => { allerOnglet('journal'); ouvrirCalcDemande.value = true; }}
-            >
-              Modifier mes objectifs
-              <em>poids, taille, activité, objectif</em>
-            </button>
-          </div>
 
           {/* Demander un ajustement : sans programme, il n'y a rien a
               ajuster. Le quota restant est annonce sur le bouton — un
