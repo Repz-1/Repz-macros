@@ -41,7 +41,7 @@
    derriere du texte est une photo qui empeche de lire. */
 .pg-plus .bp-carte {
   position: relative; display: block; width: 100%;
-  padding: 0; margin: 0 0 10px; overflow: hidden;
+  margin: 0; overflow: hidden;
   text-align: left; font: inherit; cursor: pointer;
   background: var(--bp-blanc);
   border: 1px solid var(--bp-bord); border-radius: 18px;
@@ -52,7 +52,7 @@
 
 .pg-plus .bp-corps {
   position: relative; z-index: 1; display: block;
-  padding: 15px 15px 16px; max-width: 62%;
+  padding: 0; max-width: 100%;
 }
 .pg-plus .bp-carte--large .bp-corps { max-width: 66%; padding: 17px 16px 18px; }
 
@@ -106,7 +106,8 @@
    Tant qu'une photo n'est pas fournie, la degradee tient seule :
    la carte n'a jamais l'air cassee. */
 .pg-plus .bp-visuel {
-  position: absolute; inset: 0 0 0 38%; z-index: 0;
+  position: absolute; inset: 0 0 auto auto; z-index: 1;
+  width: 62%; height: 62%; border-radius: 0 20px 0 46%;
   background-size: cover; background-position: center;
   background-repeat: no-repeat;
 }
@@ -115,8 +116,8 @@
    de la photo et deviendrait illisible selon l'image. */
 .pg-plus .bp-visuel::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg,
-    #FFFFFF 0%, rgba(255,255,255,.92) 26%, rgba(255,255,255,.35) 62%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(140deg,
+    rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 46%);
 }
 .pg-plus .bp-visuel--programme { background-image: url('/img/plus-programme.webp'), linear-gradient(135deg, #FFE9C4, #F8C98A); }
 .pg-plus .bp-visuel--stats     { background-image: url('/img/plus-stats.webp'),     linear-gradient(135deg, #E7EDF3, #C9D6E4); }
@@ -263,3 +264,96 @@
 
 /* Meme en-tete que le Journal, jusqu'aux icones. */
 .pg-plus .j-btn-icone { color: #8F6200; }
+
+/* ============================================================
+   BELFIT+ — d'apres la maquette, mesuree au pixel.
+     fond creme (246,241,239) · cartes blanches
+     carte d'accueil 203 pt · cartes de grille 135 pt
+     ecarts 10 pt, entre rangees comme sous l'accueil
+   La photo de l'accueil est barree sur la maquette : la carte
+   occupe toute la largeur et respire par ses marges.
+   ============================================================ */
+.pg-plus { background: #F6F1EF; }
+
+/* ---------- Carte d'accueil ---------- */
+.pg-plus .bp-hero {
+  background: #FFFFFF; border-radius: 22px;
+  padding: 18px 18px 17px; margin-bottom: 10px;
+  border: 1px solid rgba(28, 24, 18, .04);
+  box-shadow: 0 1px 2px rgba(60, 48, 30, .04), 0 6px 18px rgba(60, 48, 30, .06);
+}
+.pg-plus .bp-hero-bonjour {
+  margin: 0 0 3px; font-size: 10.5px; font-weight: 700;
+  letter-spacing: .18em; color: #C79A2E;
+}
+.pg-plus .bp-hero-nom {
+  margin: 0 0 9px; font-size: 22px; font-weight: 700;
+  letter-spacing: -.03em; color: #16130F; line-height: 1.1;
+}
+.pg-plus .bp-hero-titre {
+  margin: 0 0 10px; font-size: 24px; font-weight: 700;
+  letter-spacing: -.035em; line-height: 1.14; color: #16130F;
+}
+.pg-plus .bp-hero-trait {
+  display: block; width: 46px; height: 3px; border-radius: 2px;
+  background: #F5B403; margin-bottom: 13px;
+}
+.pg-plus .bp-hero-sous {
+  margin: 0 0 14px; font-size: 13px; line-height: 1.45;
+  color: #6E675E; max-width: 30ch;
+}
+.pg-plus .bp-hero-cta {
+  display: inline-flex; align-items: center; justify-content: space-between;
+  gap: 22px; min-width: 178px; padding: 12px 18px;
+  font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
+  background: #16130F; color: #FFFFFF; border: none; border-radius: 14px;
+}
+.pg-plus .bp-hero-cta span { color: #F5B403; font-size: 16px; }
+
+/* ---------- Grille 2 x 2 ---------- */
+.pg-plus .bp-grille {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin: 0 0 10px;
+}
+.pg-plus .bp-carte {
+  position: relative; overflow: hidden;
+  display: block; width: 100%; text-align: left;
+  min-height: 0; padding: 13px 13px 14px;
+  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .04);
+  border-radius: 20px; cursor: pointer;
+  box-shadow: 0 1px 2px rgba(60, 48, 30, .04), 0 6px 18px rgba(60, 48, 30, .06);
+}
+.pg-plus .bp-carte .bp-corps { display: block; position: relative; z-index: 2; }
+.pg-plus .bp-ic {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; margin-bottom: 14px;
+  border-radius: 12px; background: #FBF3DC; color: #DFA004;
+}
+.pg-plus .bp-ic svg {
+  width: 19px; height: 19px; fill: none; stroke: currentColor;
+  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-plus .bp-nom {
+  display: block; font-size: 14px; font-weight: 700;
+  letter-spacing: -.022em; line-height: 1.18; color: #16130F;
+  margin-bottom: 4px; max-width: 88%;
+}
+.pg-plus .bp-sous {
+  display: block; font-size: 11px; line-height: 1.35;
+  color: #8A8279; max-width: 90%;
+}
+/* Bouton rond a fleche, en bas a gauche comme la maquette. */
+.pg-plus .bp-carte .bp-fleche {
+  position: static; display: flex; align-items: center;
+  justify-content: center; width: 30px; height: 30px; margin-top: 10px;
+  border-radius: 50%; border: 1px solid rgba(28, 24, 18, .12);
+  background: #FFFFFF; color: #16130F;
+}
+.pg-plus .bp-carte .bp-fleche svg { width: 15px; height: 15px; }
+/* La photo occupe le quart haut-droit, sous le texte. */
+.pg-plus .bp-visuel {
+  position: absolute; z-index: 1; inset: 0 0 auto auto;
+  width: 62%; height: 62%; border-radius: 0 20px 0 46%;
+  background-size: cover; background-position: center;
+  opacity: .96;
+}

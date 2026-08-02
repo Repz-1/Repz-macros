@@ -82,6 +82,17 @@ function depuis(iso) {
   return m === 1 ? 'il y a un mois' : `il y a ${m} mois`;
 }
 
+/** Prenom pour l'accueil : le compte, sinon la cle locale. */
+function prenomCourt() {
+  const u = utilisateur.value;
+  const n = (u && u.displayName) || '';
+  if (n) return n.split(' ')[0];
+  try {
+    return localStorage.getItem('repz_firstName')
+      || (JSON.parse(localStorage.getItem('repz_profile') || '{}').prenom) || '';
+  } catch (e) { return ''; }
+}
+
 const CLE_CHARGE = 'belfit_prog_charge';
 
 /** Ce programme-ci a-t-il deja ete charge dans le journal ?
@@ -204,16 +215,26 @@ export function BelfitPlus() {
     <div class="pg-plus">
       <Entete />
 
-      <section class="bp-tete">
-        <p class="bp-bonjour">BELFIT+</p>
-        <h1 class="bp-titre">Ton espace.</h1>
+      {/* Carte d'accueil, d'apres la maquette. Sans photo : elle est
+          barree sur l'image de reference. La carte occupe donc toute
+          la largeur et respire par ses marges. */}
+      <section class="bp-hero">
+        <p class="bp-hero-bonjour">BONJOUR</p>
+        <p class="bp-hero-nom">{prenomCourt()} <span aria-hidden="true">👋</span></p>
+        <h1 class="bp-hero-titre">Bienvenue dans<br />ton espace.</h1>
+        <span class="bp-hero-trait" aria-hidden="true" />
+        <p class="bp-hero-sous">Tout ce dont tu as besoin pour progresser, réuni au même endroit.</p>
+        <button class="bp-hero-cta" onClick={() => setOuvertProg(v => !v)}>
+          Mon programme <span aria-hidden="true">→</span>
+        </button>
       </section>
 
       {/* 1. Le programme du coach. Premiere carte parce que c'est le
           premier benefice vendu, et le seul qui n'existe pas ailleurs
           dans l'app. */}
+      <div class="bp-grille">
       <button
-        class={'bp-carte bp-carte--large' + (pr && !dejaApplique ? ' bp-carte--neuf' : '')}
+        class={'bp-carte' + (pr && !dejaApplique ? ' bp-carte--neuf' : '')}
         onClick={() => pr && setOuvertProg(v => !v)}
       >
         <span class="bp-visuel bp-visuel--programme" aria-hidden="true" />
@@ -222,10 +243,50 @@ export function BelfitPlus() {
             <svg viewBox="0 0 24 24"><path d="M5.5 20.5V8.4a2 2 0 012-2h9a2 2 0 012 2v12.1" /><path d="M9 6.4V4.6a3 3 0 016 0v1.8" /><path d="M9.5 12.6h5M9.5 16.2h3" /></svg>
           </span>
           <span class="bp-nom">Mon programme nutrition</span>
-          {sousProg && <span class="bp-sous">{sousProg}</span>}
+          <span class="bp-sous">{sousProg || 'Ton plan personnalisé, mis à jour en continu.'}</span>
         </span>
-        {pr && <Fleche />}
+        <Fleche />
       </button>
+
+        {/* 2. Statistiques */}
+        <button class="bp-carte" onClick={() => { ongletActif.value = 'stats'; }}>
+          <span class="bp-visuel bp-visuel--stats" aria-hidden="true" />
+          <span class="bp-corps">
+            <span class="bp-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2" /></svg>
+            </span>
+            <span class="bp-nom">Mes statistiques avancées</span>
+            <span class="bp-sous">Analyse détaillée de ta progression.</span>
+          </span>
+          <Fleche />
+        </button>
+
+        {/* 3. Recettes */}
+        <button class="bp-carte" onClick={() => { ongletActif.value = 'journal'; ideesOuvertes.value = true; }}>
+          <span class="bp-visuel bp-visuel--recettes" aria-hidden="true" />
+          <span class="bp-corps">
+            <span class="bp-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6 3v8a3 3 0 006 0V3M9 11v10M18 3c-1.6 1.2-2.4 3-2.4 5.4 0 1.7.8 2.6 2.4 2.6V3z" /></svg>
+            </span>
+            <span class="bp-nom">Recettes intelligentes</span>
+            <span class="bp-sous">Des idées adaptées à ton objectif.</span>
+          </span>
+          <Fleche />
+        </button>
+
+        {/* 4. Courses */}
+        <button class="bp-carte" onClick={() => { ongletActif.value = 'courses'; }}>
+          <span class="bp-visuel bp-visuel--courses" aria-hidden="true" />
+          <span class="bp-corps">
+            <span class="bp-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4" /><circle cx="18" cy="20" r="1.4" /><path d="M2.5 3.5h2.6l2.3 11.2h11.1l1.9-8.2H6" /></svg>
+            </span>
+            <span class="bp-nom">Liste de courses intelligente</span>
+            <span class="bp-sous">Générée automatiquement selon tes repas.</span>
+          </span>
+          <Fleche />
+        </button>
+      </div>
 
       {ouvertProg && pr && (
         <div class="bp-detail">
@@ -335,46 +396,6 @@ export function BelfitPlus() {
         </div>
       )}
 
-      <div class="bp-grille">
-        {/* 2. Statistiques */}
-        <button class="bp-carte" onClick={() => { ongletActif.value = 'stats'; }}>
-          <span class="bp-visuel bp-visuel--stats" aria-hidden="true" />
-          <span class="bp-corps">
-            <span class="bp-ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2" /></svg>
-            </span>
-            <span class="bp-nom">Mes statistiques</span>
-            <span class="bp-sous">Sans limite de durée.</span>
-          </span>
-          <Fleche />
-        </button>
-
-        {/* 3. Recettes */}
-        <button class="bp-carte" onClick={() => { ongletActif.value = 'journal'; ideesOuvertes.value = true; }}>
-          <span class="bp-visuel bp-visuel--recettes" aria-hidden="true" />
-          <span class="bp-corps">
-            <span class="bp-ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M6 3v8a3 3 0 006 0V3M9 11v10M18 3c-1.6 1.2-2.4 3-2.4 5.4 0 1.7.8 2.6 2.4 2.6V3z" /></svg>
-            </span>
-            <span class="bp-nom">Idées de repas</span>
-            <span class="bp-sous">Adaptées à tes macros restantes.</span>
-          </span>
-          <Fleche />
-        </button>
-
-        {/* 4. Courses */}
-        <button class="bp-carte" onClick={() => { ongletActif.value = 'courses'; }}>
-          <span class="bp-visuel bp-visuel--courses" aria-hidden="true" />
-          <span class="bp-corps">
-            <span class="bp-ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4" /><circle cx="18" cy="20" r="1.4" /><path d="M2.5 3.5h2.6l2.3 11.2h11.1l1.9-8.2H6" /></svg>
-            </span>
-            <span class="bp-nom">Liste de courses</span>
-            <span class="bp-sous">Construite depuis tes repas.</span>
-          </span>
-          <Fleche />
-        </button>
-      </div>
 
       <p class="bp-pied">
         Membre BelFit+ · <a href="../parametres.html?de=v2">Gérer mon abonnement</a>
