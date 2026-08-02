@@ -219,6 +219,9 @@ export function BelfitPlus() {
           barree sur l'image de reference. La carte occupe donc toute
           la largeur et respire par ses marges. */}
       <section class="bp-hero">
+        {/* Le programme vit ici depuis que sa carte a fusionne avec le
+            bouton : son visuel l'accompagne, a droite. */}
+        <span class="bp-hero-visuel" aria-hidden="true" />
         <p class="bp-hero-bonjour">BONJOUR</p>
         <p class="bp-hero-nom">{prenomCourt()} <span aria-hidden="true">👋</span></p>
         <h1 class="bp-hero-titre">Bienvenue dans<br />ton espace.</h1>

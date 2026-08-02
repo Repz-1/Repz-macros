@@ -363,3 +363,23 @@
    premiere carte (mesure sur la carte Calories du Journal). */
 .pg-plus .j-retour { justify-self: start; margin-left: -10px; color: #16130F; }
 .pg-plus .bp-hero { margin-top: 26px; }
+
+/* ---------- Visuel du programme, dans l'accueil ----------
+   La carte « Mon programme » a fusionne avec le bouton noir : son
+   image l'accompagne ici, a droite, fondue vers le blanc pour que le
+   texte ne la rencontre jamais. */
+.pg-plus .bp-hero { position: relative; overflow: hidden; }
+.pg-plus .bp-hero > *:not(.bp-hero-visuel) { position: relative; z-index: 2; }
+.pg-plus .bp-hero-visuel {
+  position: absolute; z-index: 1; inset: 0 0 0 46%;
+  background-image: url('/img/plus-programme.webp');
+  background-size: cover; background-position: center top;
+}
+.pg-plus .bp-hero-visuel::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    #FFFFFF 0%, #FFFFFF 14%, rgba(255,255,255,.86) 38%,
+    rgba(255,255,255,.40) 64%, rgba(255,255,255,0) 92%);
+}
+.pg-plus .bp-hero-titre,
+.pg-plus .bp-hero-sous { max-width: 56%; }
