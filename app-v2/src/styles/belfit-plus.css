@@ -10,16 +10,16 @@
    au meme endroit.
    ============================================================ */
 .pg-plus {
-  --bp-blanc:  #FFFFFF;
+  --bp-blanc:  var(--carte);
   --bp-bord:   rgba(28, 24, 18, .055);
   --bp-filet:  rgba(28, 24, 18, .07);
   --bp-omb:    0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
-  --bp-tx:     #16130F;
-  --bp-tx2:    #57514A;
-  --bp-tx3:    #8A8279;
+  --bp-tx:     var(--encre);
+  --bp-tx2:    var(--encre-2);
+  --bp-tx3:    var(--encre-4);
   --bp-or:     var(--orange);
   --bp-or-lis: var(--orange-fonce);
-  background: #F4F3F0;
+  background: var(--fond);
   min-height: 100%;
   /* La barre de navigation flotte au-dessus du contenu : sans cette
      reserve, la derniere carte passe dessous. Meme valeur que le
@@ -76,7 +76,7 @@
 .pg-plus .bp-carte--large .bp-nom { font-size: 17px; }
 .pg-plus .bp-sous {
   display: block; margin-top: 5px;
-  font-size: 12.5px; line-height: 1.4; color: #6B655D;   /* 5,4:1 */
+  font-size: 12.5px; line-height: 1.4; color: var(--encre-3);   /* 5,4:1 */
 }
 
 /* Fleche : elle indique, elle n'appelle pas. */
@@ -120,12 +120,12 @@
 .pg-plus .bp-visuel::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(90deg,
-    #FFFFFF 0%, #FFFFFF 16%, rgba(255,255,255,.88) 38%,
+    var(--carte) 0%, var(--carte) 16%, rgba(255,255,255,.88) 38%,
     rgba(255,255,255,.42) 62%, rgba(255,255,255,0) 88%);
 }
 .pg-plus .bp-visuel--programme { background-image: url('/img/plus-programme.webp'), linear-gradient(135deg, #FFE9C4, #F8C98A); }
-.pg-plus .bp-visuel--stats     { background-image: url('/img/plus-stats.webp'),     linear-gradient(135deg, #E7EDF3, #C9D6E4); }
-.pg-plus .bp-visuel--recettes  { background-image: url('/img/plus-recettes.webp'),  linear-gradient(135deg, #EDE7D8, #D8CBA8); }
+.pg-plus .bp-visuel--stats     { background-image: url('/img/plus-stats.webp'),     linear-gradient(135deg, #E7EDF3, var(--brd-ardoise)); }
+.pg-plus .bp-visuel--recettes  { background-image: url('/img/plus-recettes.webp'),  linear-gradient(135deg, var(--bordure-chaude), #D8CBA8); }
 .pg-plus .bp-visuel--courses   { background-image: url('/img/plus-courses.webp'),   linear-gradient(135deg, #E4EDE2, #C3D8BE); }
 
 /* ---------- Detail du programme ---------- */
@@ -160,8 +160,8 @@
 .pg-plus .bp-appliquer {
   display: block; width: 100%; margin-top: 13px; padding: 13px;
   font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
-  color: #F4F6F8; border: none; border-radius: 13px;
-  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
+  color: var(--sur-graphite); border: none; border-radius: 13px;
+  background: linear-gradient(168deg, var(--graphite-haut) 0%, var(--graphite) 58%, var(--graphite-bas) 100%);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 2px 6px rgba(18,22,28,.16);
 }
 .pg-plus .bp-appliquer:active { box-shadow: inset 0 3px 9px rgba(0,0,0,.30); }
@@ -239,7 +239,7 @@
 .pg-plus .bp-ajust-champ {
   display: block; width: 100%; min-height: 84px; padding: 12px;
   font: inherit; font-size: 14px; line-height: 1.5; color: var(--bp-tx);
-  background: #FFFDF9; border: 1px solid #EDE5D8; border-radius: 13px;
+  background: var(--carte-chaude); border: 1px solid var(--bordure-chaude); border-radius: 13px;
   resize: vertical; outline: none; box-sizing: border-box;
 }
 .pg-plus .bp-ajust-champ:focus {
@@ -249,21 +249,21 @@
 .pg-plus .bp-ajust-envoi {
   display: block; width: 100%; margin-top: 10px; padding: 13px;
   font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
-  color: #F4F6F8; border: none; border-radius: 13px;
-  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
+  color: var(--sur-graphite); border: none; border-radius: 13px;
+  background: linear-gradient(168deg, var(--graphite-haut) 0%, var(--graphite) 58%, var(--graphite-bas) 100%);
 }
 .pg-plus .bp-ajust-envoi:disabled { opacity: .55; cursor: default; }
 .pg-plus .bp-ajust-ok, .pg-plus .bp-ajust-ko {
   margin: 0; padding: 11px 13px; font-size: 12.5px; line-height: 1.45;
   border-radius: 12px;
 }
-.pg-plus .bp-ajust-ok { color: #1C5334; background: #E9F5EE;
+.pg-plus .bp-ajust-ok { color: #1C5334; background: #E9F3EC;
   box-shadow: inset 0 0 0 1px rgba(28, 83, 52, .12); }
 .pg-plus .bp-ajust-ko { color: #7A4A08; background: #FDF4E3;
   box-shadow: inset 0 0 0 1px rgba(179, 113, 8, .16); }
 
 /* Meme en-tete que le Journal, jusqu'aux icones. */
-.pg-plus .j-btn-icone { color: #8F6200; }
+.pg-plus .j-btn-icone { color: var(--or-fonce); }
 
 /* ============================================================
    BELFIT+ — d'apres la maquette, mesuree au pixel.
@@ -273,11 +273,11 @@
    La photo de l'accueil est barree sur la maquette : la carte
    occupe toute la largeur et respire par ses marges.
    ============================================================ */
-.pg-plus { background: #F6F1EF; }
+.pg-plus { background: var(--fond); }
 
 /* ---------- Carte d'accueil ---------- */
 .pg-plus .bp-hero {
-  background: #FFFFFF; border-radius: 22px;
+  background: var(--carte); border-radius: 22px;
   padding: 18px 18px 17px; margin-bottom: 10px;
   border: 1px solid rgba(28, 24, 18, .04);
   box-shadow: 0 1px 2px rgba(60, 48, 30, .04), 0 6px 18px rgba(60, 48, 30, .06);
@@ -288,11 +288,11 @@
 }
 .pg-plus .bp-hero-nom {
   margin: 0 0 9px; font-size: 22px; font-weight: 700;
-  letter-spacing: -.03em; color: #16130F; line-height: 1.1;
+  letter-spacing: -.03em; color: var(--encre); line-height: 1.1;
 }
 .pg-plus .bp-hero-titre {
   margin: 0 0 10px; font-size: 24px; font-weight: 700;
-  letter-spacing: -.035em; line-height: 1.14; color: #16130F;
+  letter-spacing: -.035em; line-height: 1.14; color: var(--encre);
 }
 .pg-plus .bp-hero-trait {
   display: block; width: 46px; height: 3px; border-radius: 2px;
@@ -300,13 +300,13 @@
 }
 .pg-plus .bp-hero-sous {
   margin: 0 0 14px; font-size: 13px; line-height: 1.45;
-  color: #6E675E; max-width: 30ch;
+  color: var(--encre-3); max-width: 30ch;
 }
 .pg-plus .bp-hero-cta {
   display: inline-flex; align-items: center; justify-content: space-between;
   gap: 22px; min-width: 178px; padding: 12px 18px;
   font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
-  background: #16130F; color: #FFFFFF; border: none; border-radius: 14px;
+  background: var(--encre); color: var(--carte); border: none; border-radius: 14px;
 }
 .pg-plus .bp-hero-cta span { color: var(--or); font-size: 16px; }
 
@@ -319,7 +319,7 @@
   position: relative; overflow: hidden;
   display: block; width: 100%; text-align: left;
   min-height: 0; padding: 15px 16px 16px;
-  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .04);
+  background: var(--carte); border: 1px solid rgba(28, 24, 18, .04);
   border-radius: 20px; cursor: pointer;
   box-shadow: 0 1px 2px rgba(60, 48, 30, .04), 0 6px 18px rgba(60, 48, 30, .06);
 }
@@ -327,7 +327,7 @@
 .pg-plus .bp-ic {
   display: flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; margin-bottom: 11px;
-  border-radius: 12px; background: #FBF3DC; color: var(--or-trait);
+  border-radius: 12px; background: var(--creme-doree); color: var(--or-trait);
 }
 .pg-plus .bp-ic svg {
   width: 19px; height: 19px; fill: none; stroke: currentColor;
@@ -335,19 +335,19 @@
 }
 .pg-plus .bp-nom {
   display: block; font-size: 16px; font-weight: 700;
-  letter-spacing: -.022em; line-height: 1.18; color: #16130F;
+  letter-spacing: -.022em; line-height: 1.18; color: var(--encre);
   margin-bottom: 4px; max-width: 58%;
 }
 .pg-plus .bp-sous {
   display: block; font-size: 12.5px; line-height: 1.4;
-  color: #6E675E; max-width: 56%;
+  color: var(--encre-3); max-width: 56%;
 }
 /* Bouton rond a fleche, en bas a gauche comme la maquette. */
 .pg-plus .bp-carte .bp-fleche {
   position: static; display: flex; align-items: center;
   justify-content: center; width: 32px; height: 32px; margin-top: 12px;
   border-radius: 50%; border: 1px solid rgba(28, 24, 18, .12);
-  background: #FFFFFF; color: #16130F;
+  background: var(--carte); color: var(--encre);
 }
 .pg-plus .bp-carte .bp-fleche svg { width: 15px; height: 15px; }
 /* La photo occupe le quart haut-droit, sous le texte. */
@@ -361,7 +361,7 @@
 /* En-tete : meme traitement que Journal, S'entrainer et Stats —
    fleche retour noire a gauche, et 73 pt du haut d'ecran a la
    premiere carte (mesure sur la carte Calories du Journal). */
-.pg-plus .j-retour { justify-self: start; margin-left: -10px; color: #16130F; }
+.pg-plus .j-retour { justify-self: start; margin-left: -10px; color: var(--encre); }
 .pg-plus .bp-hero { margin-top: 26px; }
 
 /* ---------- Visuel du programme, dans l'accueil ----------
@@ -378,7 +378,7 @@
 .pg-plus .bp-hero-visuel::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(90deg,
-    #FFFFFF 0%, #FFFFFF 14%, rgba(255,255,255,.86) 38%,
+    var(--carte) 0%, var(--carte) 14%, rgba(255,255,255,.86) 38%,
     rgba(255,255,255,.40) 64%, rgba(255,255,255,0) 92%);
 }
 .pg-plus .bp-hero-titre,

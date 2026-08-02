@@ -82,6 +82,30 @@ Restent a arbitrer, sans urgence et sans effet visible :
 Ces valeurs sont desormais toutes nommees : chaque fusion est une
 ligne a changer, plus une chasse dans six fichiers.
 
+**Point d'etape (2 aout, suite).** Passe de fusion sur les six
+feuilles. Regle appliquee : deux valeurs fusionnent si elles sont a
+moins de 7 en distance RVB **et** de meme temperature (l'ecart
+rouge-bleu ne depasse pas 5) — un creme chaud ne devient jamais un
+gris-bleu froid. 226 valeurs distinctes ramenees a 144, dont 64 sont
+les definitions du systeme lui-meme. Vingt-quatre jetons doublons
+sont devenus des alias (`--srf-inverse: var(--texte)`).
+
+Verification : le graphe de jetons a ete resolu avant et apres. Aucune
+boucle, et l'ecart maximum sur une valeur finale est de 5,8 en
+distance RVB — sous le seuil de perception.
+
+`.fixe-ajout` et `.fixe-eau` supprimes : plus aucun composant ne les
+portait. **J10 et J17 sont donc caducs** — le Journal n'a plus de
+bouton flottant depuis le passage de la goutte d'eau en flux.
+
+Reste, et demande un arbitrage :
+- **`--texte #191919` contre `--encre #16130F`** : deux noirs a 12 de
+  distance, invisible a l'oeil mais tous deux tres utilises. Fusionner
+  touche toute l'application, donc ne se fait pas sans decision.
+- **119 valeurs en dur** hors systeme, dont 47 vues une seule fois :
+  ce sont des valeurs locales, leur donner un nom ferait du bruit.
+- **vingt-quatre rayons** face aux quatre annonces.
+
 ---
 
 ## Hors reproduction — dette technique connue

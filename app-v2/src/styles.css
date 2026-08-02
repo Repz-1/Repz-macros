@@ -2,7 +2,7 @@
 /* Le glissement entre onglets translate la page : sans cela, le
    debordement cree une bande blanche et un scroll lateral. */
 html, body { overflow-x: hidden; max-width: 100%; }
-/* Palette BELFIT : fond #F8F8F8, structure #181818, or var(--or) (actions primaires uniquement) */
+/* Palette BELFIT : fond #F8F8F8, structure #181818, or #F8CF01 (actions primaires uniquement) */
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--fond);font-family:'Satoshi','Manrope',sans-serif;color:var(--txt-1-fonce)}
 input,button{font-family:inherit}
@@ -14,7 +14,7 @@ button{cursor:pointer}
 .conteneur--nu{max-width:none;padding:0}
 
 /* ---- Dashboard du jour ---- */
-.tableau-bord{background:var(--srf-carte);border: 1px solid #e9f3ec;border-radius:24px;padding:16px 18px 14px;margin-bottom:14px}
+.tableau-bord{background:var(--srf-carte);border: 1px solid #E9F3EC;border-radius:24px;padding:16px 18px 14px;margin-bottom:14px}
 .tb-kcal{display:flex;align-items:baseline;gap:8px}
 .tb-kcal .gros{font-size:40px;font-weight:800;color:var(--txt-accent-vif)}
 .tb-kcal .label{color:var(--txt-3);font-weight:600}
@@ -26,7 +26,7 @@ button{cursor:pointer}
 .tb-macro .val{font-size:13px;color:var(--txt-3);font-weight:600;margin:2px 0 6px}
 .tb-macro .val b{color:var(--or-fonce)}
 .tb-mini{height:6px;background:var(--srf-creme-3);border-radius:4px;overflow:hidden}
-.tb-mini > div{height:100%;background:#d8cfae;border-radius:4px;transition:width .25s ease}
+.tb-mini > div{height:100%;background:#D8CFAE;border-radius:4px;transition:width .25s ease}
 
 /* ---- Carte repas ---- */
 .carte{background:var(--srf-carte);border-radius:24px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
@@ -55,8 +55,8 @@ button{cursor:pointer}
 .recherche{position:relative;margin-top:12px}
 .recherche input{width:100%;padding:13px 16px;border:1px solid var(--brd-1);border-radius:14px;font-size:15px;background:var(--srf-page)}
 .resultats{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--srf-carte);border: 1px solid #eee;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.10);max-height:260px;overflow:auto;z-index:30}
-.resultats button{display:flex;justify-content:space-between;width:100%;padding:12px 14px;border:none;background:none;text-align:left;font-size:14.5px;border-bottom: 1px solid #f6f4ee}
-.resultats button:hover{background: #faf7ee}
+.resultats button{display:flex;justify-content:space-between;width:100%;padding:12px 14px;border:none;background:none;text-align:left;font-size:14.5px;border-bottom: 1px solid var(--fond)}
+.resultats button:hover{background: #FAF7EE}
 .resultats .kc{color:var(--texte-3);font-size:13px}
 
 /* ---- Total repas ---- */
@@ -80,10 +80,10 @@ button{cursor:pointer}
 .titre-edit{font-size:18px;font-weight:800;padding:6px 10px;border:1px solid var(--brd-accent);border-radius:10px;width:100%;max-width:240px}
 
 /* ---- Eau ---- */
-.eau{display:flex;align-items:center;gap:10px;background: #EAF6FD;border-radius:18px;padding:12px 16px;margin-bottom:14px}
+.eau{display:flex;align-items:center;gap:10px;background: #EFF6FF;border-radius:18px;padding:12px 16px;margin-bottom:14px}
 .eau .goutte{font-size:22px}
-.eau .val{font-weight:800;font-size:17px;color:#1878b0;flex:1}
-.eau button{border:none;background:var(--srf-carte);border-radius:10px;padding:8px 14px;font-weight:800;color:#1878b0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.eau .val{font-weight:800;font-size:17px;color:#1878B0;flex:1}
+.eau button{border:none;background:var(--srf-carte);border-radius:10px;padding:8px 14px;font-weight:800;color:#1878B0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 
 /* ---- Objectifs ---- */
 .obj-lien{background:none;border:none;color:var(--txt-3);font-size:12.5px;font-weight:600;padding:4px 0 0;text-decoration:underline}
@@ -103,10 +103,10 @@ button{cursor:pointer}
   background-repeat:no-repeat;background-position:right 12px center;background-size:18px;padding-right:38px}
 .calc-grille input,.calc-grille select{width:100%;min-width:0;box-sizing:border-box;height:46px;padding:0 12px;border:1.5px solid #CBBFA3;border-radius:12px;font-weight:700;font-size:15px;font-family:inherit;color:var(--txt-1);background:var(--srf-carte-2);box-shadow:0 1px 3px rgba(60,50,40,.06);appearance:none;-webkit-appearance:none;transition:border-color .15s,box-shadow .15s}
 .calc-grille input:focus,.calc-grille select:focus{outline:none;border-color:var(--brd-accent);background:var(--srf-carte);box-shadow:inset 0 1px 2px rgba(60,50,40,.04),0 0 0 3px rgba(247,181,0,.14)}
-.calc-res{background:var(--srf-creme-4);border:1px solid #DDD3BA;border-radius:16px;padding:6px 16px;margin-bottom:12px}
+.calc-res{background:var(--srf-creme-4);border:1px solid var(--brd-champ);border-radius:16px;padding:6px 16px;margin-bottom:12px}
 .calc-res-ligne{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;color:var(--txt-2);font-weight:600}
 .calc-res-ligne span:last-child{color:var(--txt-1-fonce);font-weight:800}
-.calc-res-ligne.cible{border-top:1px solid #DDD5C2;margin-top:2px}
+.calc-res-ligne.cible{border-top:1px solid #D8D2C2;margin-top:2px}
 .calc-res-ligne.cible span{font-size:16px}
 .calc-res-ligne.cible span:last-child{color:var(--txt-accent-vif)}
 .calc-macros{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
@@ -117,7 +117,7 @@ button{cursor:pointer}
 .calc-appliquer:active{transform:scale(.985)}
 .calc-barre{position:sticky;bottom:0;margin:0 -18px;padding:10px 18px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--srf-creme) 72%,rgba(246,241,230,0))}
 .calc-fermer{position:absolute;top:14px;right:14px;width:38px;height:38px;border:none;border-radius:50%;background:var(--srf-creme-4);color:var(--texte-2);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;z-index:1}
-.calc-fermer:active{background:#DDD3BA;transform:scale(.94)}
+.calc-fermer:active{background:var(--brd-champ);transform:scale(.94)}
 .calc-modes{display:flex;gap:6px;background:var(--srf-creme-4);border-radius:14px;padding:4px;margin-bottom:16px}
 .calc-modes button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border:none;border-radius:11px;background:transparent;font-size:13.5px;font-weight:800;color:#7A7362;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
 .calc-modes button.active{background:var(--srf-carte-2);color:var(--txt-1);box-shadow:0 1px 4px rgba(60,50,40,.12)}
@@ -148,7 +148,7 @@ button{cursor:pointer}
 /* Message de reussite : memes teintes que la v1 (.success). */
 .login-ok{background:var(--carte);color:var(--texte);border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
 /* « Mot de passe oublie » reste volontairement en retrait (v1). */
-.login-oubli{background:none;border:none;color:#a5a19a;font-weight:600;font-size:12px;margin-top:5px;text-decoration:underline}
+.login-oubli{background:none;border:none;color:#A5A19A;font-weight:600;font-size:12px;margin-top:5px;text-decoration:underline}
 /* Ecran de confirmation d'adresse : texte explicatif et ligne d'aide. */
 .conf-texte{font-size:14.5px;line-height:1.55;color:#5C5750;margin:0 0 4px;text-align:center}
 .bandeau-conf{position:fixed;left:0;right:0;z-index:90;bottom:calc(60px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;margin:0 10px;padding:10px 12px;background:var(--srf-carte-2);border:1px solid #F0E2B4;border-radius:12px;box-shadow:0 4px 14px rgba(24,24,24,.08)}
@@ -255,9 +255,9 @@ button{cursor:pointer}
 .v2-timer-btn{flex:1;max-width:100px;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
 .v2-timer-btn.start{background:var(--srf-accent);color:var(--txt-inverse)}
 .v2-timer-btn.start:active{transform:scale(.95)}
-.v2-timer-btn.reset{background: #f3f4f6;color:var(--txt-1-doux);border: 1px solid #e5e7eb}
-.v2-timer-btn.reset:active{background: #e5e7eb}
-.v2-chrono-fab{position:fixed;bottom:calc(90px + env(safe-area-inset-bottom));right:12px;z-index:82;width:60px;height:60px;border-radius:50%;background:var(--or);color:#16130F;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(250,196,8,.4);transition:transform .15s,background .2s;-webkit-tap-highlight-color:transparent}
+.v2-timer-btn.reset{background: var(--sur-graphite);color:var(--txt-1-doux);border: 1px solid #E5E7EB}
+.v2-timer-btn.reset:active{background: #E5E7EB}
+.v2-chrono-fab{position:fixed;bottom:calc(90px + env(safe-area-inset-bottom));right:12px;z-index:82;width:60px;height:60px;border-radius:50%;background:var(--or);color:var(--encre);border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(250,196,8,.4);transition:transform .15s,background .2s;-webkit-tap-highlight-color:transparent}
 .v2-chrono-fab svg{width:30px;height:30px}
 .v2-chrono-fab:active{transform:scale(.94)}
 .v2-chrono-fab-time{font-size:11px;font-weight:800;line-height:1;margin-top:2px;font-variant-numeric:tabular-nums}
@@ -274,7 +274,7 @@ button{cursor:pointer}
 .seance-serie input{width:58px;padding:8px 6px;border:1px solid var(--brd-1);border-radius:9px;font-weight:700;text-align:center;font-size:14px;font-family:inherit}
 .seance-serie .u{font-size:12px;color:var(--texte-3);font-weight:700}
 .seance-serie .x{color:var(--texte-3);font-weight:800}
-.seance-add-serie{background:var(--srf-page);border:1px dashed #d8d2c2;border-radius:10px;padding:8px;width:100%;font-weight:700;font-size:13px;color:var(--txt-3);font-family:inherit;margin-top:4px}
+.seance-add-serie{background:var(--srf-page);border:1px dashed #D8D2C2;border-radius:10px;padding:8px;width:100%;font-weight:700;font-size:13px;color:var(--txt-3);font-family:inherit;margin-top:4px}
 .seance-add-exo{display:flex;gap:8px;margin-top:12px}
 .seance-add-exo input{flex:1;padding:13px 15px;border:1px solid var(--brd-1);border-radius:13px;font-size:14.5px;font-family:inherit;background:var(--srf-page)}
 .seance-add-exo button{width:48px;border:none;border-radius:13px;background:var(--srf-accent);font-size:20px;font-weight:800}
@@ -282,7 +282,7 @@ button{cursor:pointer}
 /* ---- Programmes ---- */
 .prog-onglets{display:flex;gap:7px;margin-bottom:14px;overflow-x:auto}
 .prog-onglets button{padding:8px 14px;border:1.5px solid var(--brd-1);border-radius:999px;background:var(--srf-carte);font-weight:700;font-size:13px;font-family:inherit;white-space:nowrap}
-.prog-onglets button.actif{background:var(--srf-inverse);border-color:#181818;color:var(--txt-inverse)}
+.prog-onglets button.actif{background:var(--srf-inverse);border-color:var(--texte);color:var(--txt-inverse)}
 .prog-carte{border:1px solid var(--brd-2);border-radius:14px;margin-bottom:10px;overflow:hidden}
 .prog-carte.choisi{border-color:var(--brd-accent);background:var(--carte)}
 .prog-tete{display:flex;align-items:center;gap:10px;padding:13px}
@@ -355,7 +355,7 @@ button{cursor:pointer}
 .idees-intro{margin:0 0 12px;color:var(--txt-2);font-size:13.5px;font-weight:600}
 .idees-cats{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
 .idees-cats button{padding:8px 13px;border:1.5px solid var(--brd-1);border-radius:999px;background:var(--srf-carte);font-weight:700;font-size:13px;font-family:inherit}
-.idees-cats button.actif{background:var(--srf-inverse);border-color:#181818;color:var(--txt-inverse)}
+.idees-cats button.actif{background:var(--srf-inverse);border-color:var(--texte);color:var(--txt-inverse)}
 .idee{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid var(--brd-2);border-radius:12px;margin-bottom:7px}
 .idee-info{flex:1;min-width:0}
 .idee-nom{font-weight:700;font-size:14px}
@@ -367,7 +367,7 @@ button{cursor:pointer}
 .crs-reglages label{flex:1;font-size:12.5px;font-weight:700;color:var(--txt-2);display:flex;flex-direction:column;gap:5px}
 .crs-reglages input{padding:11px;border:1px solid var(--brd-1);border-radius:11px;font-weight:700;font-size:15px;font-family:inherit;text-align:center}
 .crs-rayon{font-weight:800;font-size:15px;margin-bottom:9px}
-.crs-item{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom: 1px solid #f6f4ee}
+.crs-item{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom: 1px solid var(--fond)}
 .crs-item:last-child{border-bottom:none}
 .crs-item input{width:19px;height:19px;accent-color:var(--or)}
 .crs-nom{flex:1;font-size:14px;font-weight:600}
@@ -421,7 +421,7 @@ button{cursor:pointer}
 /* ---- Jauge circulaire (repere BelFit) ---- */
 .tb-jauge{position:relative;width:100%;max-width:186px;margin:0 auto 2px;aspect-ratio:1}
 .tb-jauge svg{width:100%;height:100%;transform:rotate(0deg)}
-.tb-piste{fill:none;stroke:#EDE8DA;stroke-width:11;stroke-linecap:round}
+.tb-piste{fill:none;stroke:var(--bordure-chaude);stroke-width:11;stroke-linecap:round}
 .tb-remplie{fill:none;stroke:url(#gradOr);stroke-width:11;stroke-linecap:round;transition:stroke-dasharray .45s ease}
 .tb-centre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
 .tb-nombre{font-size:38px;font-weight:800;line-height:1;color:var(--txt-1-fonce)}
@@ -439,7 +439,7 @@ button{cursor:pointer}
 
 /* ---- Rangee d'actions rapides (comme l'app actuelle) ---- */
 .qa-rangee{display:grid;grid-template-columns:repeat(3,1fr);background:var(--srf-carte);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
-.qa-btn{position:relative;background:none;border:none;border-right: 1px solid #f2efe6;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-family:inherit}
+.qa-btn{position:relative;background:none;border:none;border-right: 1px solid var(--brd-2);padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-family:inherit}
 .qa-btn:last-child{border-right:none}
 .qa-ic{width:38px;height:38px;border-radius:12px;background:var(--carte);display:flex;align-items:center;justify-content:center;color:var(--texte)}
 .qa-ic svg{width:20px;height:20px}
@@ -452,10 +452,10 @@ button{cursor:pointer}
 .tb-date{text-align:center;font-size:13.5px;font-weight:800;color:var(--txt-3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
 .tb-rangee{display:flex;align-items:center;justify-content:center;gap:4px}
 .tb-cote{flex:1;text-align:center;min-width:0}
-.tb-cote i{display:block;font-size:12px;color:#9a9588;font-weight:600;font-style:normal;margin-bottom:2px}
+.tb-cote i{display:block;font-size:12px;color:#9A938A;font-weight:600;font-style:normal;margin-bottom:2px}
 .tb-cote span{font-size:21px;font-weight:800}
 .tb-jauge{position:relative;width:172px;flex-shrink:0;aspect-ratio:1}
-.tb-remplie{stroke:#10B981 !important}
+.tb-remplie{stroke:var(--succes) !important}
 .tb-nombre{font-size:36px}
 .tb-sep{height:1px;background:var(--srf-creme-3);margin:10px 0 12px}
 .tb-mini > div{transition:width .3s ease,background .3s ease}
@@ -466,16 +466,16 @@ button{cursor:pointer}
 .entete .lang-choix{margin-left:auto}
 .entete-profil{background:none;border:none;color:var(--txt-accent-or-2);padding:4px}
 .entete-profil svg{width:26px;height:26px}
-.profil-volet{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--srf-carte);border: 1px solid #ece8dc;border-radius:14px;padding:11px 14px;margin-bottom:12px}
+.profil-volet{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--srf-carte);border: 1px solid var(--bordure-chaude);border-radius:14px;padding:11px 14px;margin-bottom:12px}
 .profil-volet span{font-size:13px;color:var(--txt-3);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .profil-volet button{background:none;border:none;color:var(--txt-alerte);font-weight:700;font-size:13px;font-family:inherit;text-decoration:underline;flex-shrink:0}
 
 /* ===== Dashboard : styles EXACTS de l'app actuelle ===== */
-.nutri-card{background:var(--srf-carte);border: 1px solid #e9f3ec;border-radius:22px;padding:16px 18px 14px;margin-bottom:16px;box-shadow:0 4px 14px rgba(60,50,40,.05)}
+.nutri-card{background:var(--srf-carte);border: 1px solid #E9F3EC;border-radius:22px;padding:16px 18px 14px;margin-bottom:16px;box-shadow:0 4px 14px rgba(60,50,40,.05)}
 .nutri-datebar{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;padding-top:2px}
 .nutri-datebar .ndb-cal{display:inline-flex;color:var(--txt-4)}
 .nutri-datebar .ndb-cal svg{width:17px;height:17px}
-.nutri-datebar .ndb-date{font-size:15px;font-weight:800;letter-spacing:.06em;color:#6b6660;text-transform:uppercase}
+.nutri-datebar .ndb-date{font-size:15px;font-weight:800;letter-spacing:.06em;color:var(--encre-3);text-transform:uppercase}
 .ring-wrap{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 0 4px}
 .ring-side{text-align:center;flex:1;min-width:0}
 .ring-side .rs-lab{font-size:12.5px;font-weight:600;color:var(--texte-3)}
@@ -484,7 +484,7 @@ button{cursor:pointer}
 .ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .ring-txt .rt-num{font-size:48px;font-weight:800;line-height:1;letter-spacing:-1.5px;color:var(--txt-1)}
 .ring-txt .rt-sub{font-size:12.5px;font-weight:700;color:var(--texte-3);margin-top:5px}
-.dt-remaining-big.over .rt-num{color:#f87171}
+.dt-remaining-big.over .rt-num{color:var(--alerte-douce)}
 .nutri-macros{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid var(--bordure-fine)}
 .nutri-macros .m-name{font-size:13.5px;font-weight:800}
 .nutri-macros .m-val{font-size:12.5px;color:var(--txt-1);font-weight:800;margin:6px 0 8px}
@@ -500,9 +500,9 @@ button{cursor:pointer}
 .qa-btn + .qa-btn{border-left:1px solid var(--bordure-fine);border-right:none}
 
 /* ---- Fleche retour des vues empilees (equivalent nav v1) ---- */
-.v2-retour{width:40px;height:40px;border-radius:50%;border: 1px solid #efefef;background:var(--srf-carte);
+.v2-retour{width:40px;height:40px;border-radius:50%;border: 1px solid var(--fond);background:var(--srf-carte);
   display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--txt-1-fonce);margin-bottom:12px}
-.v2-retour:active{background: #F6F4EE}
+.v2-retour:active{background: var(--fond)}
 
 /* ============================================================
    BARRE DE NAVIGATION
@@ -552,14 +552,14 @@ button{cursor:pointer}
 .premium-modal .pm-btn{display:block;width:100%;background:var(--or);color:var(--txt-1);border:none;text-decoration:none;padding:14px;border-radius:14px;font-size:15px;font-weight:700;margin-bottom:10px;font-family:inherit;cursor:pointer}
 .premium-modal .pm-close{background:none;border:none;color:var(--texte-2);font-size:14px;font-weight:600;cursor:pointer;padding:6px;font-family:inherit}
 /* Connexion Google (meme flux que la v1) */
-.login-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px;border: 1.5px solid #e5e1d6;border-radius:12px;background:var(--srf-carte);font-family:inherit;font-size:14px;font-weight:700;color:var(--txt-1-fonce);cursor:pointer;margin-bottom:8px}
+.login-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px;border: 1.5px solid #E5E1D6;border-radius:12px;background:var(--srf-carte);font-family:inherit;font-size:14px;font-weight:700;color:var(--txt-1-fonce);cursor:pointer;margin-bottom:8px}
 .login-google:active{background:var(--srf-page)}
 .login-google svg{width:19px;height:19px;flex:none}
 .login-ou{display:flex;align-items:center;gap:12px;color:var(--texte-3);font-size:12px;font-weight:700;margin-bottom:8px}
 .login-ou::before,.login-ou::after{content:'';flex:1;height:1px;background:var(--carte)}
 /* Croix de fermeture du scanner (meme habillage que la v1 .vm-x) */
 .scan-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:var(--carte);color:var(--texte);font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;z-index:2}
-.scan-x:active{background: #E6E3DB}
+.scan-x:active{background: var(--bordure)}
 /* Statut du compte dans le panneau profil */
 .profil-statut{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.04em;color:var(--txt-accent);background:var(--carte);border:1px solid var(--brd-accent-pale);border-radius:999px;padding:3px 10px;margin-top:6px}
 

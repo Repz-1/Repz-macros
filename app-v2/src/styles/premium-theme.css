@@ -25,13 +25,13 @@
    capture d'ecran, meme sans logo ; une couleur se copie.
    ============================================================ */
 .pg-premium.pg-premium {
-  --pr-fond: #EEEBE4;
-  --pr-sur: #1E242D; --pr-sur-h: #242B35;
-  --pr-tx: #F2F4F7; --pr-tx2: #A2A9B4; --pr-tx3: #838B96; --pr-tx4: #7C8490;
-  --pr-page-tx: #1B1B19; --pr-page-tx2: #6E6960; --pr-page-tx3: #8B857A;
+  --pr-fond: var(--piste);
+  --pr-sur: var(--graphite); --pr-sur-h: var(--graphite-haut);
+  --pr-tx: var(--sur-graphite); --pr-tx2: #A2A9B4; --pr-tx3: #838B96; --pr-tx4: #7C8490;
+  --pr-page-tx: var(--texte); --pr-page-tx2: var(--encre-3); --pr-page-tx3: var(--encre-4);
   /* Orange BelFit : l'accent Premium suit desormais le logo, plus l'or
      historique. Sur graphite #1E242D il tient 5,1:1, largement au-dessus
-     du seuil. Le jaune var(--or) ne disparait pas — il ouvre les degrades,
+     du seuil. Le jaune #F8CF01 ne disparait pas — il ouvre les degrades,
      en remplissage seulement, jamais en texte. */
   --pr-or: var(--orange); --pr-or-rvb: 248, 106, 12;
   --pr-filet: rgba(255,255,255,.032);
@@ -69,7 +69,7 @@
   margin: 0 auto 24px;
 }
 .pg-premium.pg-premium .prem-titre em { font-style: normal;
-  background: linear-gradient(168deg, #8A6600 0%, #6E5200 72%);
+  background: linear-gradient(168deg, var(--or-fonce) 0%, #6E5200 72%);
   -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* ---------- Materiau graphite, commun ---------- */
@@ -80,7 +80,7 @@
   background:
     linear-gradient(158deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.015) 34%,
                     rgba(255,255,255,0) 58%, rgba(0,0,0,.10) 100%),
-    linear-gradient(180deg, var(--pr-sur-h) 0%, var(--pr-sur) 62%, #191E26 100%);
+    linear-gradient(180deg, var(--pr-sur-h) 0%, var(--pr-sur) 62%, var(--graphite-bas) 100%);
   box-shadow: var(--pr-omb);
   color: var(--pr-tx);
 }
@@ -121,8 +121,8 @@
   box-shadow: inset 0 1px 0 rgba(255,244,205,.22);
 }
 .pg-premium.pg-premium .fo-badge {
-  font-size: 8px; font-weight: 700; letter-spacing: .16em; color: #1A1509;
-  background: linear-gradient(160deg, #FFEDB6, var(--or));
+  font-size: 8px; font-weight: 700; letter-spacing: .16em; color: var(--encre);
+  background: linear-gradient(160deg, #FFE9B8, var(--or));
   box-shadow: 0 3px 10px rgba(var(--pr-or-rvb),.26);
 }
 /* La formule retenue avance d'un plan : matiere plus claire,
@@ -132,7 +132,7 @@
   background:
     linear-gradient(158deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,.022) 32%,
                     rgba(255,255,255,0) 56%, rgba(0,0,0,.12) 100%),
-    radial-gradient(120% 90% at 50% -10%, #333B49 0%, #232A35 48%, #1A2029 100%);
+    radial-gradient(120% 90% at 50% -10%, #333B49 0%, var(--graphite-haut) 48%, var(--graphite) 100%);
   box-shadow: var(--pr-omb-f), 0 0 36px rgba(var(--pr-or-rvb),.08);
 }
 .pg-premium.pg-premium .fo.sel::before {
@@ -154,7 +154,7 @@
    12 s, en creme plutot qu'en blanc : il glisse, il ne flashe pas. */
 .pg-premium.pg-premium .continuer {
   position: relative; overflow: hidden; border: none; border-radius: 999px;
-  color: #1A1509;
+  color: var(--encre);
   background: var(--degrade-or);
   box-shadow: 0 1px 2px rgba(58,44,24,.16), 0 8px 18px rgba(170,135,0,.20),
               0 22px 44px rgba(170,135,0,.22), inset 0 1px 0 rgba(255,255,255,.62);
@@ -196,7 +196,7 @@
   background:
     linear-gradient(158deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.015) 34%,
                     rgba(255,255,255,0) 58%, rgba(0,0,0,.10) 100%),
-    linear-gradient(180deg, var(--pr-sur-h) 0%, var(--pr-sur) 62%, #191E26 100%);
+    linear-gradient(180deg, var(--pr-sur-h) 0%, var(--pr-sur) 62%, var(--graphite-bas) 100%);
   box-shadow: var(--pr-omb);
 }
 .pg-premium.pg-premium .pp::before {
@@ -321,13 +321,13 @@
 }
 .pg-premium.pg-premium .prem-titre em {
   font-style: normal;
-  background: linear-gradient(168deg, #8A6600 0%, #6E5200 72%);
+  background: linear-gradient(168deg, var(--or-fonce) 0%, #6E5200 72%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 /* Le CTA restait vert plein. */
 .pg-premium.pg-premium .continuer {
   background: var(--degrade-or);
-  color: #1A1509; border: none;
+  color: var(--encre); border: none;
 }
 .pg-premium.pg-premium .continuer small { color: rgba(26,21,9,.66); }
 /* Les coches etaient des pastilles vertes pleines. */
@@ -358,7 +358,7 @@
    ------------------------------------------------------------ */
 .pg-premium.pg-premium .continuer {
   background: var(--degrade-or);
-  color: #1A1509; border: none;
+  color: var(--encre); border: none;
   box-shadow:
     0 1px 2px rgba(58,44,24,.16),
     0 8px 18px rgba(170,135,0,.24),
@@ -390,7 +390,7 @@
    ------------------------------------------------------------ */
 .pg-premium.pg-premium .continuer {
   background: var(--degrade-or);
-  color: #1A1509;
+  color: var(--encre);
   box-shadow:
     0 1px 2px rgba(58,44,24,.16),
     0 8px 18px rgba(170,135,0,.24),
@@ -471,8 +471,8 @@
    Il reste la surface la plus foncee de la page, donc la plus
    visible — l'attention vient du contraste, pas de la saturation. */
 .pg-premium.pg-premium .continuer {
-  background: linear-gradient(168deg, #262D38 0%, #1E232D 58%, #171C24 100%);
-  color: #F4F6F8;
+  background: linear-gradient(168deg, var(--graphite-haut) 0%, var(--graphite) 58%, var(--graphite-bas) 100%);
+  color: var(--sur-graphite);
   box-shadow:
     inset 0 0 0 1px rgba(var(--pr-or-rvb),.30),
     inset 0 1px 0 rgba(255,255,255,.07),
@@ -524,14 +524,14 @@
    blanc, meme bordure, meme ombre a deux couches, memes rayons.
    ============================================================ */
 .pg-premium.pg-premium {
-  --pp-blanc:   #FFFFFF;
+  --pp-blanc:   var(--carte);
   --pp-bord:    rgba(28, 24, 18, .055);
   --pp-filet:   rgba(28, 24, 18, .07);
   --pp-omb:     0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
-  --pp-tx:      #16130F;
-  --pp-tx2:     #57514A;
-  --pp-tx3:     #8A8279;
-  background: #F4F3F0;
+  --pp-tx:      var(--encre);
+  --pp-tx2:     var(--encre-2);
+  --pp-tx3:     var(--encre-4);
+  background: var(--fond);
 }
 
 /* --- 1. OUVERTURE ---
@@ -573,7 +573,7 @@
 .pg-premium.pg-premium .pp h3 {
   font-size: 14.5px; font-weight: 600; margin-bottom: 3px; color: var(--pp-tx);
 }
-.pg-premium.pg-premium .pp p { font-size: 12.5px; line-height: 1.45; color: #6B655D; }  /* 5,4:1 sur blanc */
+.pg-premium.pg-premium .pp p { font-size: 12.5px; line-height: 1.45; color: var(--encre-3); }  /* 5,4:1 sur blanc */
 
 /* --- 3. COMPARATIF ---
    La meilleure partie : structure intacte, dix lignes conservees.
@@ -603,7 +603,7 @@
 }
 .pg-premium.pg-premium .cmp-ligne .c-note { color: var(--pp-tx3); }
 .pg-premium.pg-premium .c-cell .ck svg { stroke: var(--or-fonce, var(--orange-fonce)); filter: none; }
-.pg-premium.pg-premium .c-cell .tiret { color: #C6C0B7; }
+.pg-premium.pg-premium .c-cell .tiret { color: var(--txt-5); }
 
 /* --- 4. ZONE DE DECISION ---
    Le seul bloc sombre restant. Les formules gardent leur style,

@@ -93,18 +93,10 @@
    ELEMENTS FIXES
    Les trois seuls elements qui ne defilent pas.
    ============================================================ */
-.pg-journal .fixe-nav,
-.pg-journal .fixe-ajout,
-.pg-journal .fixe-eau { position: fixed; z-index: 60; }
-
-.pg-journal .fixe-ajout {
-  right: var(--marge-page);
-  bottom: calc(var(--hauteur-nav) + 18px + env(safe-area-inset-bottom));
-}
-.pg-journal .fixe-eau {
-  left: var(--marge-page);
-  bottom: calc(var(--hauteur-nav) + 18px + env(safe-area-inset-bottom));
-}
+/* .fixe-ajout / .fixe-eau : supprimes le 2 aout. Aucun composant ne
+   les portait depuis le passage de la goutte d'eau en flux. Le seul
+   flottant restant est le chrono, et il vit sur S'entrainer. */
+.pg-journal .fixe-nav { position: fixed; z-index: 60; }
 
 /* ============================================================
    ENTREE DE PAGE
@@ -246,7 +238,7 @@
   display: flex; align-items: center; justify-content: center; gap: 8px;
   margin-bottom: 8px; padding-top: 2px;
   font-size: 15px; font-weight: 500; letter-spacing: .06em;
-  color: #6B6660; text-transform: uppercase;
+  color: var(--encre-3); text-transform: uppercase;
 }
 .pg-journal .cal-date-ic {
   width: 17px; height: 17px; flex: none; color: var(--txt-4);
@@ -356,12 +348,12 @@
 .pg-journal .cal-rappel {
   display: flex; align-items: flex-start; gap: 8px;
   width: 100%; margin: 14px 0 0; padding: 10px 12px;
-  background: var(--carte); border: 1px solid #F2E2B6; border-radius: 12px;
+  background: var(--carte); border: 1px solid #F0E2B4; border-radius: 12px;
   cursor: pointer; font-family: inherit; text-align: left;
   font-size: 12.5px; font-weight: 600; color: var(--txt-accent); line-height: 1.45;
   transition: background var(--transition), transform var(--transition);
 }
-.pg-journal .cal-rappel:active { background: #FBEFCB; transform: scale(.99); }
+.pg-journal .cal-rappel:active { background: var(--or-pale); transform: scale(.99); }
 .pg-journal .cal-rappel svg {
   width: 15px; height: 15px; flex: none; margin-top: 1px;
   fill: none; stroke: currentColor; stroke-width: 1.9;
@@ -497,7 +489,7 @@
 }
 .pg-journal .mc-crayon {
   background: none; border: none; padding: 4px; cursor: pointer;
-  color: #C2BDB2; display: flex;
+  color: var(--encre-6); display: flex;
 }
 .pg-journal .mc-crayon svg {
   width: 15px; height: 15px;
@@ -550,7 +542,7 @@
   opacity: .72;
   transition: transform .15s, opacity .15s;
 }
-.pg-journal .water-fab:active { transform: scale(.94); opacity: 1; background: #0284C7; }
+.pg-journal .water-fab:active { transform: scale(.94); opacity: 1; background: var(--hydratation-active); }
 .pg-journal .wf-goutte { font-size: 18px; line-height: 1; }
 
 /* ---------- Ajouter ---------- */
@@ -584,7 +576,7 @@
   text-align: center;
 }
 .water-feuille h3 { font-size: 17px; font-weight: 500; margin-bottom: 12px; }
-.water-total { font-size: 34px; font-weight: 500; color: #0284C7; margin-bottom: 18px; }
+.water-total { font-size: 34px; font-weight: 500; color: var(--hydratation-active); margin-bottom: 18px; }
 .water-btns { display: flex; gap: 10px; }
 .water-btns button {
   flex: 1; padding: 14px; border: none; border-radius: var(--rayon-puce);
@@ -631,7 +623,7 @@
   width: 100%; min-width: 0; padding: 6px 2px;
   /* Meme langage que la page repas : un champ se voit (bord chaud franc,
      ombre interne), la palette slate froide detonnait sur le fond creme. */
-  border: 1.5px solid #D9CFBB; border-radius: 10px;
+  border: 1.5px solid var(--brd-champ); border-radius: 10px;
   background: var(--srf-carte-2); color: var(--txt-1-doux);
   box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
   font-size: 14px; font-weight: 700; text-align: center; font-family: inherit;
@@ -801,7 +793,7 @@
    ============================================================ */
 .pg-journal .eat-panneau {
   background: var(--srf-creme);
-  border: 1.5px solid #E6DCC4;
+  border: 1.5px solid #E5DCC6;
   border-radius: 18px;
   box-shadow: 0 6px 18px rgba(96, 78, 40, .07);
   padding: 16px 14px 18px;
@@ -825,7 +817,7 @@
 }
 .pg-journal .eat-cat.active,
 .pg-journal .eat-cat:active {
-  background: var(--srf-inverse-2); border-color: #191919; color: var(--txt-inverse-2);
+  background: var(--srf-inverse-2); border-color: var(--texte); color: var(--txt-inverse-2);
 }
 
 /* ---------- Cartes de recettes ---------- */
@@ -848,7 +840,7 @@
   font-family: inherit; font-size: 13px; font-weight: 500; color: var(--txt-1);
   cursor: pointer;
 }
-.pg-journal .eat-plus:active { background: #FAF7EF; }
+.pg-journal .eat-plus:active { background: #FAF7EE; }
 .pg-journal .eat-ecart { font-size: 12.5px; font-weight: 600; margin-top: 5px; line-height: 1.4; }
 .pg-journal .eat-ecart--info { color: var(--txt-2-chaud); }
 /* Ambre, jamais rouge : une suggestion n'est pas une erreur. */
@@ -1068,7 +1060,7 @@
   border: 1.5px solid var(--bordure); background: var(--srf-carte-2);
   font-size: 22px; line-height: 1; color: var(--txt-1); font-family: inherit; cursor: pointer;
 }
-.cp-compteur button:active { background: #F5F2EC; }
+.cp-compteur button:active { background: var(--fond); }
 .cp-compteur span {
   font-size: 30px; font-weight: 500; min-width: 56px;
   font-variant-numeric: tabular-nums;
@@ -1203,7 +1195,7 @@
 .mp-carte-detail { font-size: 13px; color: var(--texte-3); margin-top: 4px; }
 .mp-nouveau {
   width: 100%; padding: 15px; margin-top: 6px;
-  background: none; border: 1.5px dashed #D8D3CA; border-radius: 16px;
+  background: none; border: 1.5px dashed #D8D3C8; border-radius: 16px;
   color: var(--texte-3); font-size: 14.5px; font-weight: 700; font-family: inherit; cursor: pointer;
 }
 .mp-rien {
@@ -1284,7 +1276,7 @@
   color: var(--txt-inverse-2); font-size: 15px; font-weight: 500;
   cursor: pointer; font-family: inherit;
 }
-.crs-item.fait .crs-check { background: #10B981; border-color: #10B981; }
+.crs-item.fait .crs-check { background: var(--succes); border-color: var(--succes); }
 .crs-body { flex: 1; min-width: 0; cursor: pointer; }
 .crs-nom {
   font-size: 14.5px; font-weight: 700;
@@ -1335,15 +1327,15 @@
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; gap: 4px;
   padding: 30px 20px 34px; margin-top: 8px;
-  font-size: 14px; line-height: 1.55; text-align: center; color: #8A8279;
+  font-size: 14px; line-height: 1.55; text-align: center; color: var(--encre-4);
 }
 .crs-vide svg {
   width: 74px; height: 74px; margin-bottom: 10px;
-  fill: none; stroke: #DCD5C9; stroke-width: 1.4;
+  fill: none; stroke: var(--bascule-off); stroke-width: 1.4;
   stroke-linecap: round; stroke-linejoin: round;
 }
 .crs-vide b {
-  font-size: 16.5px; font-weight: 700; color: #16130F;
+  font-size: 16.5px; font-weight: 700; color: var(--encre);
   letter-spacing: -.02em;
 }
 
@@ -1439,7 +1431,7 @@
     text-align:center; box-shadow:0 12px 40px rgba(0,0,0,.25);
 }
 .water-box h3 { font-size:19px; font-weight:500; margin:0 0 4px; }
-.water-box .wb-sub { font-size:13px; color:#6b7280; margin-bottom:18px; }
+.water-box .wb-sub { font-size:13px; color:#6B7280; margin-bottom:18px; }
 
 /* La bouteille */
 .wb-tailles {
@@ -1451,7 +1443,7 @@
   font-size: 12.5px; font-weight: 700; color: #4A6B7C; font-family: inherit;
   transition: background .15s, border-color .15s, color .15s;
 }
-.wbt.active { background: var(--srf-info); border-color: #0EA5E9; color: var(--txt-inverse-2); }
+.wbt.active { background: var(--srf-info); border-color: var(--hydratation); color: var(--txt-inverse-2); }
 .wbt:active { transform: scale(.96); }
 
 .bottle {
@@ -1459,40 +1451,40 @@
     -webkit-tap-highlight-color:transparent;
 }
 .bottle-cap {
-    width:34px; height:18px; background:#0284c7; border-radius:5px 5px 2px 2px;
+    width:34px; height:18px; background:var(--hydratation-active); border-radius:5px 5px 2px 2px;
     margin:0 auto;
 }
 .bottle-neck {
-    width:30px; height:16px; background: #bae6fd; margin:0 auto;
+    width:30px; height:16px; background: #BAE6FD; margin:0 auto;
 }
 .bottle-body {
     width:110px; height:185px; margin:0 auto; position:relative;
-    border: 3px solid #bae6fd; border-radius:14px 14px 22px 22px; overflow:hidden;
-    background: #f0f9ff;
+    border: 3px solid #BAE6FD; border-radius:14px 14px 22px 22px; overflow:hidden;
+    background: #EFF6FF;
 }
 .bottle-fill {
     position:absolute; bottom:0; left:0; right:0;
-    background:linear-gradient(180deg,#38bdf8,var(--srf-info));
+    background:linear-gradient(180deg,#38BDF8,var(--srf-info));
     transition:height .35s cubic-bezier(.34,1.3,.64,1);
 }
 .bottle-pct {
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-size:22px; font-weight:500; color:#0369a1; z-index:2;
+    font-size:22px; font-weight:500; color:#0369A1; z-index:2;
 }
-.water-tap-hint { font-size:13px; color:#0ea5e9; font-weight:600; margin-bottom:16px; }
+.water-tap-hint { font-size:13px; color:var(--hydratation); font-weight:600; margin-bottom:16px; }
 
 .water-modal .water-total {
-    background: #f0f9ff; border-radius:12px; padding:14px; margin-bottom:16px;
+    background: #EFF6FF; border-radius:12px; padding:14px; margin-bottom:16px;
 }
-.water-modal .water-total .wt-v { font-size:26px; font-weight:500; color:#0ea5e9; }
-.water-modal .water-total .wt-l { font-size:12px; color:#6b7280; margin-top:2px; }
+.water-modal .water-total .wt-v { font-size:26px; font-weight:500; color:var(--hydratation); }
+.water-modal .water-total .wt-l { font-size:12px; color:#6B7280; margin-top:2px; }
 
 .water-actions { display:flex; gap:8px; }
 .water-actions button {
     flex:1; padding:12px; border:none; border-radius:11px; font-weight:700; font-size:14px; cursor:pointer;
     font-family:inherit;
 }
-.wa-reset { background: #f1f5f9; color:var(--txt-ardoise-fonce); }
+.wa-reset { background: var(--sur-graphite); color:var(--txt-ardoise-fonce); }
 .wa-close { background:var(--srf-info); color:var(--txt-inverse); }
 
 /* ============================================================
@@ -1583,7 +1575,7 @@
   font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
   transition: transform var(--transition), background var(--transition);
 }
-.pg-journal .mc-plat-btn:active { transform: scale(.97); background: #FBF3DC; }
+.pg-journal .mc-plat-btn:active { transform: scale(.97); background: var(--creme-doree); }
 .pg-journal .mc-plat-btn svg {
   width: 15px; height: 15px; flex: none;
   fill: none; stroke: currentColor; stroke-width: 1.7;
@@ -1661,7 +1653,7 @@
     border-radius:20px; padding:14px 16px; margin:0;
     box-shadow:0 2px 10px rgba(24,24,24,.04);
 }
-.pg-journal .weight-note:active { transform:scale(.99); background: #FDFBF6; }
+.pg-journal .weight-note:active { transform:scale(.99); background: var(--srf-page); }
 .pg-journal .weight-note .wn-ic {
     flex:none; color:var(--txt-1-fonce); display:flex; align-items:center; justify-content:center;
 }
@@ -1687,7 +1679,7 @@
    ============================================================ */
 .couche-repas {
   z-index: 6;                       /* au-dessus du rail et de Courses */
-  background: var(--fond, #F8F8F8);
+  background: var(--fond, var(--sur-graphite));
 }
 @media (prefers-reduced-motion: no-preference) {
   .couche-repas { animation: rp-entre 220ms cubic-bezier(.22, .8, .28, 1) both; }
@@ -1762,16 +1754,16 @@
 }
 .pg-journal .rp-kcal span { font-size: 15px; font-weight: 600; color: var(--texte-3); letter-spacing: 0; margin-left: 3px; }
 .pg-journal .rp-reco { margin-top: 5px; min-height: 16px; line-height: 1.35; }
-.pg-journal .rp-reco span { display: block; font-size: 11px; font-weight: 600; color: #A39D95; text-transform: uppercase; letter-spacing: .04em; }
-.pg-journal .rp-reco b { display: block; font-size: 13px; font-weight: 700; color: #6E6961; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pg-journal .rp-reco span { display: block; font-size: 11px; font-weight: 600; color: var(--encre-5); text-transform: uppercase; letter-spacing: .04em; }
+.pg-journal .rp-reco b { display: block; font-size: 13px; font-weight: 700; color: var(--encre-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 /* Trio de macros, separe par un filet, avec pastille de couleur */
 .pg-journal .rp-macros {
   flex: none; display: flex; align-items: stretch;
-  border-left: 1px solid #EFEAE2; padding-left: 10px; margin-left: 0;
+  border-left: 1px solid var(--piste-chaude); padding-left: 10px; margin-left: 0;
 }
 .pg-journal .rp-macro { text-align: center; padding: 0 6px; }
-.pg-journal .rp-macro + .rp-macro { border-left: 1px solid #F3EFE8; }
+.pg-journal .rp-macro + .rp-macro { border-left: 1px solid var(--brd-2); }
 .pg-journal .rp-macro b {
   display: block; font-size: 17px; font-weight: 500; color: var(--txt-1);
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
@@ -1817,11 +1809,11 @@
   font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
 }
 .pg-journal .rp-btn-plat svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.pg-journal .rp-btn-plat:active { background: #FFFBF2; }
+.pg-journal .rp-btn-plat:active { background: #FFFAF2; }
 .pg-journal .rp-btn-fin {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 17px; border-radius: 999px;
-  background: #141414; border: none; color: var(--txt-inverse);
+  background: var(--encre); border: none; color: var(--txt-inverse);
   font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
   position: relative; overflow: hidden;
 }
@@ -1873,13 +1865,13 @@
   background: var(--srf-carte); box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
 }
 .pg-journal .rp-colonne .mc-scan .ic { width: 26px; height: 26px; stroke-width: 2.1; }
-.pg-journal .rp-colonne .mc-scan:active { background: #FBF7F2; }
+.pg-journal .rp-colonne .mc-scan:active { background: var(--srf-page); }
 
 /* --- Quantite dans un cadre arrondi --- */
 .pg-journal .rp-liste .mc-ing-champ {
   /* Le liseret fantome #E9E3D9 se fondait dans la carte : la zone ou
      ecrire etait invisible. Bord franc, ombre interne legere, or au focus. */
-  border: 1.5px solid #D9CFBB; border-radius: 13px;
+  border: 1.5px solid var(--brd-champ); border-radius: 13px;
   background: var(--srf-carte-2); padding: 3px 4px;
   box-shadow: inset 0 1px 2px rgba(60, 50, 40, .05);
   transition: border-color .15s, box-shadow .15s;
@@ -1953,7 +1945,7 @@
 .modal-btns { display:flex; gap:8px; margin-top:18px; }
 .modal-btns button { flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:inherit; }
 .modal-save { background:var(--srf-inverse); color:var(--txt-inverse); }
-.modal-cancel { background: #e2e8f0; color:var(--txt-ardoise-fonce); }
+.modal-cancel { background: #E2E8F0; color:var(--txt-ardoise-fonce); }
 .modal .modal-h3-ic { display:flex; align-items:center; gap:8px; }
 .modal .modal-h3-ic .ic { width:20px; height:20px; flex:none; color:var(--txt-accent-vif); }
 .modal .wm-last { font-size:12.5px; color:var(--texte-3); font-weight:600; margin-top:6px; }
@@ -1962,16 +1954,16 @@
 /* Nom d'utilisateur : etat de disponibilite sous le champ.
    Couleurs reprises de la v1 (index.html, #pseudoHint). */
 .login-pseudo-note {
-  font-size: 12px; font-weight: 600; color: #9aa0aa;
+  font-size: 12px; font-weight: 600; color: var(--txt-ardoise);
   margin: -6px 2px 2px; line-height: 1.4; min-height: 17px;
 }
 .login-pseudo-note--invalide,
-.login-pseudo-note--pris { color: #dc2626; }
+.login-pseudo-note--pris { color: #DC2626; }
 .login-pseudo-note--libre { color: var(--texte); }
 
 /* Force du mot de passe : jauge v1 (index.html, .pw-meter / .pw-bar) */
 .login-pw-jauge {
-  height: 5px; background: #EEF0F3; border-radius: 5px;
+  height: 5px; background: #EEF1F5; border-radius: 5px;
   margin: -6px 2px 0; overflow: hidden;
 }
 .login-pw-bar {
@@ -2051,7 +2043,7 @@
 }
 .pg-journal .dn-offert {
   font-size: 10.5px; font-weight: 500; color: var(--texte);
-  background: #233B2D; border-radius: 999px; padding: 3px 8px;
+  background: #233B2A; border-radius: 999px; padding: 3px 8px;
   white-space: nowrap;
 }
 .pg-journal .dn-pro {
@@ -2073,7 +2065,7 @@
   display: flex; align-items: center; justify-content: center;
 }
 .pg-journal .dn-cadenas svg {
-  width: 14px; height: 14px; fill: none; stroke: #A8A29A;
+  width: 14px; height: 14px; fill: none; stroke: var(--encre-5);
   stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-journal .dn-partiel,
@@ -2100,7 +2092,7 @@
   background: var(--carte); border-radius: 999px; font-family: inherit;
 }
 .pg-journal .mc-ing-cuisson span {
-  font-size: 10.5px; font-weight: 700; color: #A8A29A;
+  font-size: 10.5px; font-weight: 700; color: var(--encre-5);
   padding: 3px 9px; border-radius: 999px; line-height: 1.2;
   transition: background .15s, color .15s;
 }
@@ -2143,7 +2135,7 @@
 /* Grand champ : le chiffre est la vedette, l'unite integree */
 .modal.wm .wm-saisie {
   display: flex; align-items: baseline; justify-content: center; gap: 8px;
-  background: var(--carte); border: 1.5px solid #EFE7D8; border-radius: 18px;
+  background: var(--carte); border: 1.5px solid var(--bordure-chaude); border-radius: 18px;
   padding: 14px 16px;
 }
 .modal.wm .wm-saisie:focus-within { border-color: var(--or-trait); box-shadow: 0 0 0 3px rgba(176, 116, 0, .15); }
@@ -2153,7 +2145,7 @@
   text-align: right; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
 .modal.wm .wm-saisie input:focus { outline: none; }
-.modal.wm .wm-saisie input::placeholder { color: #D8D2C6; }
+.modal.wm .wm-saisie input::placeholder { color: #D8D2C2; }
 /* Les fleches de champ nombre gachent le grand chiffre */
 .modal.wm .wm-saisie input::-webkit-outer-spin-button,
 .modal.wm .wm-saisie input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -2175,11 +2167,11 @@
   background: none; border: none; color: var(--texte-3);
   font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
 }
-.modal.wm .wm-annuler:active { background: #F5F2EC; }
+.modal.wm .wm-annuler:active { background: var(--fond); }
 .modal.wm .wm-ok {
   flex: 1.6; display: flex; align-items: center; justify-content: center; gap: 9px;
   padding: 14px; border-radius: 999px;
-  background: #141414; border: none; color: var(--txt-inverse);
+  background: var(--encre); border: none; color: var(--txt-inverse);
   font-family: inherit; font-size: 15.5px; font-weight: 700; cursor: pointer;
 }
 .modal.wm .wm-ok svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
@@ -2231,17 +2223,17 @@
 .wm2-rang { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
 .wm2-pas {
   flex: none; width: 50px; height: 50px; border-radius: 50%;
-  background: var(--srf-carte); border: 1.5px solid #E7E2D8; color: var(--txt-1-fonce);
+  background: var(--srf-carte); border: 1.5px solid #E5E1D6; color: var(--txt-1-fonce);
   cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation;
   display: flex; align-items: center; justify-content: center; padding: 0;
   box-shadow: 0 1px 3px rgba(24, 24, 24, .06);
   transition: background .12s, border-color .12s;
 }
 .wm2-pas svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
-.wm2-pas:active { background: #F7F5F0; border-color: #D9D3C6; transform: scale(.95); }
+.wm2-pas:active { background: var(--fond); border-color: #D8D2C2; transform: scale(.95); }
 .wm2-delta-zone {
   text-align: center; margin: 16px 0 0; min-height: 20px;
-  padding-bottom: 18px; border-bottom: 1px solid #F2EFE8;
+  padding-bottom: 18px; border-bottom: 1px solid var(--brd-2);
 }
 .wm2-delta { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; }
 .wm2-delta::before { font-size: 10px; }
@@ -2290,7 +2282,7 @@
   width: 16px; height: 16px;
   fill: none; stroke: var(--or-trait); stroke-width: 2.4; stroke-linecap: round;
 }
-.pg-journal .ajout-repas:active { background: #FAF8F3; transform: scale(.98); }
+.pg-journal .ajout-repas:active { background: var(--srf-page); transform: scale(.98); }
 
 /* ============================================================
    REDISTRIBUTION DES RACCOURCIS (Raci) : la rangee a disparu.
@@ -2343,15 +2335,15 @@
 
    Regle de contraste : jaune et orange en REMPLISSAGE seulement.
    Des qu'il s'agit de texte ou de bordure, --or-fonce (4,6:1 sur
-   creme). var(--or) sur creme tombe a 1,7:1, illisible.
+   creme). #F8CF01 sur creme tombe a 1,4:1, illisible.
    ============================================================ */
 .couche-repas {
   --or:        var(--orange);   /* remplissages, focus, selections */
   --or-fonce:  var(--orange-fonce);   /* texte et bordures */
-  --or-pale:   #FFEFD8;   /* fond d'icone */
+  --or-pale:   #FBF0D4;   /* fond d'icone */
   --or-creme:  #FFFAF2;
   --rp-jaune:  var(--or);   /* depart du degrade de l'anneau */
-  --rp-piste:  #EFE6D8;   /* portion vide de l'anneau */
+  --rp-piste:  var(--bordure-chaude);   /* portion vide de l'anneau */
 }
 .couche-repas .mc-ajout:focus-within {
   box-shadow: 0 0 0 3px rgba(248, 106, 12, .14);
@@ -2437,8 +2429,8 @@
   /* Meme creme que le champ : c'est ce qui les fait lire comme un
      seul composant plutot que comme trois boutons poses a cote. */
   width: 46px;
-  background: #FFFDF9;
-  border: 1px solid #F3ECE2;
+  background: var(--carte-chaude);
+  border: 1px solid var(--brd-2);
   border-radius: 13px;
   color: var(--or-fonce);
   box-shadow: 0 1px 2px rgba(58, 44, 24, .035);
@@ -2485,8 +2477,8 @@
    au focus, et discret meme la.
    ------------------------------------------------------------ */
 .couche-repas .rp-liste .mc-ing-champ {
-  border: 1px solid #EDE5D8; border-radius: 12px;
-  background: #FFFDF9;
+  border: 1px solid var(--bordure-chaude); border-radius: 12px;
+  background: var(--carte-chaude);
   box-shadow: inset 0 1px 2px rgba(58, 44, 24, .035);
 }
 .couche-repas .rp-liste .mc-ing-champ:focus-within {
@@ -2514,7 +2506,7 @@
 .couche-repas .rp-colonne .carte,
 .couche-repas .rp-colonne .dn,
 .couche-repas .rp-colonne .mc-resultats {
-  border: 1px solid #F2EBE0;
+  border: 1px solid var(--piste-chaude);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .9),
     0 1px 2px rgba(58, 44, 24, .04),
@@ -2522,7 +2514,7 @@
 }
 /* Les lignes d'aliments respirent : le filet seul suffit a les
    separer, il n'a pas besoin d'etre vu. */
-.couche-repas .rp-liste .mc-ing { border-color: #F2EBE0; }
+.couche-repas .rp-liste .mc-ing { border-color: var(--piste-chaude); }
 
 
 /* ============================================================
@@ -2631,7 +2623,7 @@
 .couche-repas .rp-btn-fin {
   padding: 14.5px;
   font-size: 15.5px; letter-spacing: -.005em;
-  background: #141414;
+  background: var(--encre);
   box-shadow: 0 1px 2px rgba(58,44,24,.10), 0 6px 16px rgba(58,44,24,.14);
 }
 .couche-repas .rp-btn-fin::after { animation: none; display: none; }
@@ -2656,7 +2648,7 @@
 .couche-repas .rp-btn-plat {
   padding: 12px;
   font-size: 14.5px; font-weight: 600;
-  background: #FFFFFF;
+  background: var(--carte);
   border: 1px solid var(--or);
   color: var(--or-fonce);
   box-shadow: none;
@@ -2740,7 +2732,7 @@
     0 8px 20px rgba(58,44,24,.08),
     0 22px 48px rgba(58,44,24,.10);
 }
-.bn-item { color: #8B857B; }                      /* 4,6:1 sur la barre */
+.bn-item { color: var(--encre-4); }                      /* 4,6:1 sur la barre */
 /* Le point garde le jaune officiel : sur blanc il ne porte aucun
    texte, seulement une position — 1,2:1 suffit pour une pastille
    de 4 px cernee de blanc. On l'entoure d'un liseré pour qu'il ne
@@ -2787,12 +2779,12 @@
    Premium lisent comme le meme materiau.
    ============================================================ */
 .pg-journal {
-  --gr-sur:    #1E232D;
-  --gr-haut:   #252B36;   /* crete du degrade */
-  --gr-bas:    #191E26;   /* pied du degrade */
-  --gr-tx:     #F4F6F8;   /* 15,2:1 — le chiffre */
-  --gr-tx2:    #AAB1BC;   /* 7,3:1  — le libelle */
-  --gr-tx3:    #868E99;   /* 4,7:1  — la mention */
+  --gr-sur:    var(--graphite);
+  --gr-haut:   var(--graphite-haut);   /* crete du degrade */
+  --gr-bas:    var(--graphite-bas);   /* pied du degrade */
+  --gr-tx:     var(--sur-graphite);   /* 15,2:1 — le chiffre */
+  --gr-tx2:    var(--sur-graphite-3);   /* 7,3:1  — le libelle */
+  --gr-tx3:    #838B96;   /* 4,7:1  — la mention */
   --gr-filet:  rgba(255, 255, 255, .085);
   --gr-piste:  rgba(255, 255, 255, .11);
   --bf-orange: var(--orange);   /* accent, remplissage et lumiere */
@@ -2875,7 +2867,7 @@
 .couche-repas .rp-plat,
 .couche-repas .rp-colonne .dn,
 .couche-repas .rp-colonne .mc-resultats {
-  background: #FFFFFF;
+  background: var(--carte);
   border: 1px solid rgba(28, 24, 18, .055);
   border-radius: 18px;
   box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
@@ -2884,12 +2876,12 @@
 .couche-repas .rp-liste .mc-ing-champ,
 .couche-repas .rp-colonne .mc-scan { border-radius: 13px; }
 .couche-repas .rp-colonne .mc-ajout {
-  background: #FFFFFF;
+  background: var(--carte);
   border: 1px solid rgba(28, 24, 18, .055);
   box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
 }
 .couche-repas .rp-colonne .mc-scan {
-  background: #FFFFFF;
+  background: var(--carte);
   border: 1px solid rgba(28, 24, 18, .05);
 }
 
@@ -2906,13 +2898,13 @@
 }
 .couche-repas .rp-colonne .dn-ligne { grid-template-columns: 22px 1fr auto; }
 .couche-repas .rp-colonne .dn-ic svg { stroke: #9A938A; stroke-width: 1.5; }
-.couche-repas .rp-colonne .dn-lb { color: #6E675E; }
-.couche-repas .rp-colonne .dn-val { color: #16130F; font-weight: 650; }
+.couche-repas .rp-colonne .dn-lb { color: var(--encre-3); }
+.couche-repas .rp-colonne .dn-val { color: var(--encre); font-weight: 650; }
 .couche-repas .rp-colonne .dn-ligne { border-top-color: rgba(28, 24, 18, .06); }
 
 /* ------------------------------------------------------------
    5. NAVIGATION — un seul accent, l'orange BelFit.
-   Le texte de l'onglet actif prend var(--orange-fonce) et non var(--orange) :
+   Le texte de l'onglet actif prend #B34700 et non #F86A0C :
    l'orange vif tombe a 2,9:1 sur blanc, sous le seuil. Meme
    teinte, meme lecture, mais lisible — l'icone et le point
    gardent le vif, ils ne portent pas de texte.
@@ -2958,7 +2950,7 @@
 .couche-repas .dn-cadenas svg { stroke: #9A938A; stroke-width: 1.6; }
 /* Verrouille, la ligne annonce une absence : le libelle recule au
    meme niveau que le cadenas, aucun des deux ne se lit en premier. */
-.couche-repas .dn-lignes--verrou .dn-lb { color: #8A8279; }
+.couche-repas .dn-lignes--verrou .dn-lb { color: var(--encre-4); }
 
 /* ------------------------------------------------------------
    BOUTON TERMINER — aligne sur le graphite du systeme.
@@ -2973,8 +2965,8 @@
    interagit en cours de route, pas le point d'arrivee.
    ------------------------------------------------------------ */
 .couche-repas .rp-btn-fin {
-  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
-  color: #F4F6F8;
+  background: linear-gradient(168deg, var(--graphite-haut) 0%, var(--graphite) 58%, var(--graphite-bas) 100%);
+  color: var(--sur-graphite);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .07),
     0 2px 6px rgba(18, 22, 28, .16),
@@ -2996,7 +2988,7 @@
    ============================================================ */
 .crs {
   padding: 0 0 calc(var(--hauteur-nav) + 24px + env(safe-area-inset-bottom));
-  background: #F8F5F1;
+  background: var(--fond);
 }
 
 /* Barre : titre centre entre deux boutons ronds */
@@ -3006,23 +2998,23 @@
 }
 .crs-barre h2 {
   margin: 0; text-align: center; font-size: 20px; font-weight: 600;
-  letter-spacing: -.025em; color: #16130F;
+  letter-spacing: -.025em; color: var(--encre);
 }
 .crs-rond {
   width: 38px; height: 38px; border-radius: 50%; display: flex;
   align-items: center; justify-content: center; cursor: pointer;
-  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .06);
+  background: var(--carte); border: 1px solid rgba(28, 24, 18, .06);
   box-shadow: 0 1px 3px rgba(40, 32, 22, .07);
 }
 .crs-rond svg {
-  width: 19px; height: 19px; fill: none; stroke: #16130F;
+  width: 19px; height: 19px; fill: none; stroke: var(--encre);
   stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
-.crs-rond:last-child svg { fill: #16130F; stroke: none; }
+.crs-rond:last-child svg { fill: var(--encre); stroke: none; }
 
 /* Carte de preparation */
 .crs-prep {
-  background: #FCF9F5; border: 1px solid rgba(28, 24, 18, .05);
+  background: var(--srf-page); border: 1px solid rgba(28, 24, 18, .05);
   border-radius: 22px; overflow: hidden; margin-bottom: 12px;
   box-shadow: 0 1px 2px rgba(60, 48, 30, .04), 0 6px 18px rgba(60, 48, 30, .06);
 }
@@ -3034,14 +3026,14 @@
 .crs-hero-photo {
   position: absolute; z-index: 1; inset: 0 0 0 48%;
   background-image: url('/img/courses-sac.webp'),
-    linear-gradient(135deg, #FBEFD8, #F4E2BE);
+    linear-gradient(135deg, var(--creme-doree), #F0E4BE);
   background-size: cover; background-position: center;
   border-radius: 0 0 0 44%;
 }
 .crs-hero-photo::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(90deg,
-    #FCF9F5 0%, #FCF9F5 12%, rgba(252,249,245,.86) 38%,
+    var(--srf-page) 0%, var(--srf-page) 12%, rgba(252,249,245,.86) 38%,
     rgba(252,249,245,.36) 66%, rgba(252,249,245,0) 92%);
 }
 .crs-hero-ic {
@@ -3055,42 +3047,42 @@
 }
 .crs-hero h3 {
   margin: 0 0 7px; font-size: 25px; font-weight: 700;
-  letter-spacing: -.035em; line-height: 1.12; color: #16130F;
+  letter-spacing: -.035em; line-height: 1.12; color: var(--encre);
 }
 .crs-hero > p {
-  margin: 0 0 9px; font-size: 13.5px; line-height: 1.45; color: #6E675E;
+  margin: 0 0 9px; font-size: 13.5px; line-height: 1.45; color: var(--encre-3);
 }
 .crs-hero-tag {
   display: inline-flex; align-items: center; gap: 6px; margin: 0;
-  font-size: 12.5px; font-weight: 500; color: #57514A;
+  font-size: 12.5px; font-weight: 500; color: var(--encre-2);
 }
 .crs-hero-tag svg { width: 15px; height: 15px; fill: var(--or); stroke: none; }
 
 /* Reglages */
 .crs-reglage { padding: 2px 16px 16px; }
 .crs-q {
-  margin: 12px 0 8px; font-size: 13.5px; font-weight: 500; color: #57514A;
+  margin: 12px 0 8px; font-size: 13.5px; font-weight: 500; color: var(--encre-2);
 }
 .crs-seg { display: flex; gap: 10px; }
 .crs-seg button {
   flex: 1; padding: 13px 0; font: inherit; font-size: 14px; font-weight: 600;
-  color: #16130F; background: #FFFFFF; cursor: pointer;
+  color: var(--encre); background: var(--carte); cursor: pointer;
   border: 1px solid rgba(28, 24, 18, .10); border-radius: 13px;
 }
 /* Jours : la selection est NOIRE a texte dore (mesure sur l'image) */
 .crs-seg--jours button.on {
-  background: #16130F; color: var(--or); border-color: #16130F;
+  background: var(--encre); color: var(--or); border-color: var(--encre);
 }
 /* Personnes : la selection est JAUNE a texte noir */
 .crs-seg--pers button.on {
-  background: var(--or); color: #16130F; border-color: var(--or);
+  background: var(--or); color: var(--encre); border-color: var(--or);
 }
 
 .crs-generer {
   display: flex; align-items: center; justify-content: center; gap: 9px;
   width: 100%; margin-top: 16px; padding: 16px; cursor: pointer;
   font: inherit; font-size: 15.5px; font-weight: 600;
-  color: #FFFFFF; background: #16130F; border: none; border-radius: 15px;
+  color: var(--carte); background: var(--encre); border: none; border-radius: 15px;
 }
 .crs-generer svg { width: 17px; height: 17px; fill: var(--or); stroke: none; }
 .crs-generer:disabled { opacity: .45; cursor: default; }
@@ -3101,25 +3093,25 @@
 .crs-ajout { position: relative; }
 .crs-loupe {
   position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
-  width: 18px; height: 18px; fill: none; stroke: #8A8279;
+  width: 18px; height: 18px; fill: none; stroke: var(--encre-4);
   stroke-width: 2; stroke-linecap: round; pointer-events: none;
 }
 .crs-ajout input { padding-left: 42px; }
 .crs-suggestions {
   position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 6px);
   max-height: 244px; overflow-y: auto;
-  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .07);
+  background: var(--carte); border: 1px solid rgba(28, 24, 18, .07);
   border-radius: 16px; box-shadow: 0 14px 34px rgba(40, 32, 22, .16);
 }
 .crs-suggestions button {
   display: flex; align-items: center; justify-content: space-between;
   gap: 10px; width: 100%; padding: 12px 15px; cursor: pointer;
-  font: inherit; font-size: 14px; text-align: left; color: #16130F;
+  font: inherit; font-size: 14px; text-align: left; color: var(--encre);
   background: none; border: none;
 }
 .crs-suggestions button + button { border-top: 1px solid rgba(28, 24, 18, .06); }
-.crs-suggestions button:active { background: #FBF7F2; }
-.crs-suggestions em { font-style: normal; font-size: 11.5px; color: #8A8279; }
+.crs-suggestions button:active { background: var(--srf-page); }
+.crs-suggestions em { font-style: normal; font-size: 11.5px; color: var(--encre-4); }
 
 /* ---------- Note par article ---------- */
 .crs-item-bloc + .crs-item-bloc { border-top: 1px solid rgba(28, 24, 18, .06); }
@@ -3127,7 +3119,7 @@
 .crs-note-tag {
   display: inline-block; padding: 2px 8px; border-radius: 999px;
   font-size: 11px; font-weight: 600; color: var(--orange-fonce);
-  background: #FFF3E6; border: 1px solid rgba(179, 71, 0, .16);
+  background: #FDF4E3; border: 1px solid rgba(179, 71, 0, .16);
 }
 .crs-note-btn {
   flex: none; width: 34px; height: 34px; display: flex;
@@ -3144,7 +3136,7 @@
 }
 .crs-note-champ input {
   flex: 1; min-width: 0; padding: 10px 12px; font: inherit; font-size: 13.5px;
-  color: #16130F; background: #FFFDF9; border: 1px solid #EDE5D8;
+  color: var(--encre); background: var(--carte-chaude); border: 1px solid var(--bordure-chaude);
   border-radius: 11px; outline: none;
 }
 .crs-note-champ input:focus {
@@ -3153,6 +3145,6 @@
 }
 .crs-note-champ button {
   flex: none; padding: 0 16px; font: inherit; font-size: 13px; font-weight: 600;
-  color: #FFFFFF; background: #16130F; border: none; border-radius: 11px;
+  color: var(--carte); background: var(--encre); border: none; border-radius: 11px;
   cursor: pointer;
 }
