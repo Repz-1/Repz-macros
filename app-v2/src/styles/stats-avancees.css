@@ -3,90 +3,90 @@
    fond, cartes blanches a 18 px, graphite pour la synthese (ce qui
    s'analyse), orange en accent, pastilles jaune pale a icone doree.
    ============================================================ */
-.pg-statsav { background: #F4F3F0; min-height: 100%; }
+.pg-statsav { background: var(--fond); min-height: 100%; }
 .pg-statsav .sa-corps {
   padding: 0 16px calc(var(--hauteur-nav) + 24px + env(safe-area-inset-bottom));
 }
 .pg-statsav .sa-retour {
   display: inline-flex; align-items: center; gap: 6px;
   margin: 14px 0 0; padding: 0; font: inherit; font-size: 13.5px;
-  font-weight: 600; color: #B34700; background: none; border: none; cursor: pointer;
+  font-weight: 600; color: var(--orange-fonce); background: none; border: none; cursor: pointer;
 }
 .pg-statsav .sa-titre {
   margin: 12px 0 4px; font-size: 26px; font-weight: 700;
-  letter-spacing: -.035em; color: #16130F;
+  letter-spacing: -.035em; color: var(--encre);
 }
 .pg-statsav .sa-sous {
-  margin: 0 0 16px; font-size: 13.5px; line-height: 1.45; color: #8A8279;
+  margin: 0 0 16px; font-size: 13.5px; line-height: 1.45; color: var(--encre-4);
 }
 
 /* Selecteur de periode : c'est LA difference avec la page Stats
    gratuite, figee sur 7 jours. */
 .pg-statsav .sa-periodes {
   display: flex; gap: 4px; padding: 4px; margin-bottom: 14px;
-  background: #EDEAE4; border-radius: 12px;
+  background: var(--bordure-douce); border-radius: 12px;
 }
 .pg-statsav .sa-periodes button {
   flex: 1; padding: 9px 0; font: inherit; font-size: 12.5px; font-weight: 600;
-  color: #6E675E; background: none; border: none; border-radius: 9px; cursor: pointer;
+  color: var(--encre-3); background: none; border: none; border-radius: 9px; cursor: pointer;
 }
 .pg-statsav .sa-periodes button.on {
-  background: #FFFFFF; color: #16130F; box-shadow: 0 1px 3px rgba(40, 32, 22, .12);
+  background: var(--carte); color: var(--encre); box-shadow: 0 1px 3px rgba(var(--ombre-rvb), .12);
 }
 
 /* Le verdict */
 .pg-statsav .sa-synthese {
-  background: linear-gradient(168deg, #252B36 0%, #1E232D 58%, #171C24 100%);
-  border-radius: 20px; padding: 18px; color: #F4F6F8; margin-bottom: 11px;
+  background: var(--degrade-graphite);
+  border-radius: 20px; padding: 18px; color: var(--sur-graphite); margin-bottom: 11px;
 }
 .pg-statsav .sa-lb {
   margin: 0; font-size: 10px; font-weight: 700; letter-spacing: .16em;
-  text-transform: uppercase; color: #AAB1BC;
+  text-transform: uppercase; color: var(--sur-graphite-3);
 }
 .pg-statsav .sa-gros {
   margin: 6px 0 2px; font-size: 38px; font-weight: 700; letter-spacing: -.04em;
   font-variant-numeric: tabular-nums; line-height: 1;
 }
 .pg-statsav .sa-phrase {
-  margin: 0 0 14px; font-size: 13px; line-height: 1.45; color: #C8CED8;
+  margin: 0 0 14px; font-size: 13px; line-height: 1.45; color: var(--sur-graphite-2);
 }
 .pg-statsav .sa-grille {
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, .10);
+  padding-top: 14px; border-top: 1px solid var(--filet-graphite);
 }
 .pg-statsav .sa-grille b {
   display: block; font-size: 18px; font-weight: 650;
   font-variant-numeric: tabular-nums;
 }
 .pg-statsav .sa-grille span {
-  display: block; font-size: 10.5px; color: #AAB1BC; margin-top: 2px;
+  display: block; font-size: 10.5px; color: var(--sur-graphite-3); margin-top: 2px;
 }
 
 .pg-statsav .sa-carte {
-  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .055);
+  background: var(--carte); border: 1px solid rgba(var(--filet-rvb), .055);
   border-radius: 18px; padding: 16px; margin-bottom: 11px;
-  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+  box-shadow: 0 1px 2px rgba(var(--ombre-rvb), .04), 0 3px 10px rgba(var(--ombre-rvb), .035);
 }
 .pg-statsav .sa-carte h3 {
   display: flex; align-items: center; gap: 10px; margin: 0 0 3px;
-  font-size: 15.5px; font-weight: 600; letter-spacing: -.015em; color: #16130F;
+  font-size: 15.5px; font-weight: 600; letter-spacing: -.015em; color: var(--encre);
 }
 .pg-statsav .sa-carte h3 i {
   width: 34px; height: 34px; flex: none; border-radius: 11px;
-  background: #FBF3DC; display: flex; align-items: center; justify-content: center;
+  background: var(--creme-doree); display: flex; align-items: center; justify-content: center;
 }
 .pg-statsav .sa-carte h3 i svg {
   width: 18px; height: 18px; fill: none; stroke: var(--or-trait); stroke-width: 1.9;
   stroke-linecap: round; stroke-linejoin: round;
 }
 .pg-statsav .sa-cs {
-  margin: 0 0 14px; padding-left: 44px; font-size: 12.5px; color: #8A8279;
+  margin: 0 0 14px; padding-left: 44px; font-size: 12.5px; color: var(--encre-4);
 }
 
 .pg-statsav .sa-courbe { height: 118px; margin: 4px 0 6px; }
 .pg-statsav .sa-courbe svg { width: 100%; height: 100%; overflow: visible; }
 .pg-statsav .sa-legende {
-  display: flex; justify-content: space-between; font-size: 10.5px; color: #8A8279;
+  display: flex; justify-content: space-between; font-size: 10.5px; color: var(--encre-4);
 }
 
 .pg-statsav .sa-barres {
@@ -94,38 +94,38 @@
 }
 .pg-statsav .sa-barres i {
   flex: 1; border-radius: 6px 6px 3px 3px; position: relative;
-  background: linear-gradient(180deg, #F8A05A, #F86A0C);
+  background: linear-gradient(180deg, var(--orange-clair), var(--orange));
 }
 .pg-statsav .sa-barres i em {
   position: absolute; top: -16px; left: 0; right: 0; text-align: center;
-  font-style: normal; font-size: 9.5px; color: #57514A;
+  font-style: normal; font-size: 9.5px; color: var(--encre-2);
   font-variant-numeric: tabular-nums;
 }
 
 .pg-statsav .sa-lignes { margin-top: 14px; }
 .pg-statsav .sa-ligne { display: flex; align-items: center; gap: 10px; padding: 9px 0; }
-.pg-statsav .sa-ligne + .sa-ligne { border-top: 1px solid rgba(28, 24, 18, .07); }
-.pg-statsav .sa-n { flex: 1; font-size: 13.5px; color: #16130F; }
+.pg-statsav .sa-ligne + .sa-ligne { border-top: 1px solid rgba(var(--filet-rvb), .07); }
+.pg-statsav .sa-n { flex: 1; font-size: 13.5px; color: var(--encre); }
 .pg-statsav .sa-jauge {
-  width: 92px; height: 6px; border-radius: 3px; background: #EDE8E0; overflow: hidden;
+  width: 92px; height: 6px; border-radius: 3px; background: var(--piste-chaude); overflow: hidden;
 }
-.pg-statsav .sa-jauge i { display: block; height: 100%; border-radius: 3px; background: #F86A0C; }
+.pg-statsav .sa-jauge i { display: block; height: 100%; border-radius: 3px; background: var(--orange); }
 .pg-statsav .sa-v {
   min-width: 58px; text-align: right; font-size: 13px; font-weight: 600;
-  color: #16130F; font-variant-numeric: tabular-nums;
+  color: var(--encre); font-variant-numeric: tabular-nums;
 }
 
 .pg-statsav .sa-rec { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
-.pg-statsav .sa-rec + .sa-rec { border-top: 1px solid rgba(28, 24, 18, .07); }
-.pg-statsav .sa-e { flex: 1; font-size: 13.5px; color: #16130F; }
+.pg-statsav .sa-rec + .sa-rec { border-top: 1px solid rgba(var(--filet-rvb), .07); }
+.pg-statsav .sa-e { flex: 1; font-size: 13.5px; color: var(--encre); }
 .pg-statsav .sa-p {
-  font-size: 15px; font-weight: 700; color: #16130F; font-variant-numeric: tabular-nums;
+  font-size: 15px; font-weight: 700; color: var(--encre); font-variant-numeric: tabular-nums;
 }
 
 .pg-statsav .sa-note {
-  margin: 10px 2px 0; font-size: 11.5px; line-height: 1.45; color: #8A8279;
+  margin: 10px 2px 0; font-size: 11.5px; line-height: 1.45; color: var(--encre-4);
 }
 .pg-statsav .sa-vide {
-  padding: 22px 18px; font-size: 13.5px; line-height: 1.55; color: #6E675E;
-  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .055); border-radius: 18px;
+  padding: 22px 18px; font-size: 13.5px; line-height: 1.55; color: var(--encre-3);
+  background: var(--carte); border: 1px solid rgba(var(--filet-rvb), .055); border-radius: 18px;
 }

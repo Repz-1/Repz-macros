@@ -17,8 +17,8 @@
   --bp-tx:     #16130F;
   --bp-tx2:    #57514A;
   --bp-tx3:    #8A8279;
-  --bp-or:     #F86A0C;
-  --bp-or-lis: #B34700;
+  --bp-or:     var(--orange);
+  --bp-or-lis: var(--orange-fonce);
   background: #F4F3F0;
   min-height: 100%;
   /* La barre de navigation flotte au-dessus du contenu : sans cette

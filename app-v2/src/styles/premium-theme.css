@@ -33,7 +33,7 @@
      historique. Sur graphite #1E242D il tient 5,1:1, largement au-dessus
      du seuil. Le jaune var(--or) ne disparait pas — il ouvre les degrades,
      en remplissage seulement, jamais en texte. */
-  --pr-or: #F86A0C; --pr-or-rvb: 248, 106, 12;
+  --pr-or: var(--orange); --pr-or-rvb: 248, 106, 12;
   --pr-filet: rgba(255,255,255,.032);
   --pr-rim: linear-gradient(152deg, rgba(255,226,190,.44) 0%, rgba(248,106,12,.18) 18%,
             rgba(255,255,255,.035) 42%, rgba(255,255,255,0) 60%,
@@ -142,7 +142,7 @@
 }
 .pg-premium.pg-premium .fo.sel .fo-mois {
   font-size: 30px; letter-spacing: -.045em;
-  background: linear-gradient(168deg, #FFE9C4 0%, var(--or) 32%, #F86A0C 70%, #B34700 100%);
+  background: linear-gradient(168deg, #FFE9C4 0%, var(--or) 32%, var(--orange) 70%, var(--orange-fonce) 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .pg-premium.pg-premium .fo.sel .fo-mois small { -webkit-text-fill-color: var(--pr-tx4); }
@@ -568,7 +568,7 @@
 .pg-premium.pg-premium .pp + .pp { border-top: 1px solid var(--pp-filet); }
 .pg-premium.pg-premium .pp::before { display: none; }   /* plus de lisere */
 .pg-premium.pg-premium .pp-ic, .pg-premium.pg-premium .pp-arc { width: 30px; height: 30px; }
-.pg-premium.pg-premium .pp-ic { color: var(--or-fonce, #B34700); }
+.pg-premium.pg-premium .pp-ic { color: var(--or-fonce, var(--orange-fonce)); }
 .pg-premium.pg-premium .pp-ic > svg:not(.pp-arc) { width: 16px; height: 16px; stroke-width: 1.7; }
 .pg-premium.pg-premium .pp h3 {
   font-size: 14.5px; font-weight: 600; margin-bottom: 3px; color: var(--pp-tx);
@@ -594,7 +594,7 @@
 .pg-premium.pg-premium .cmp-tete { padding: 13px 16px 9px; }
 .pg-premium.pg-premium .cmp-tete span { color: var(--pp-tx3); }
 .pg-premium.pg-premium .cmp-tete .h-gratuit { color: var(--pp-tx3); }
-.pg-premium.pg-premium .cmp-tete .h-prem { color: var(--or-fonce, #B34700); }
+.pg-premium.pg-premium .cmp-tete .h-prem { color: var(--or-fonce, var(--orange-fonce)); }
 .pg-premium.pg-premium .cmp-ligne { min-height: 42px; }
 .pg-premium.pg-premium .cmp-ligne + .cmp-ligne::before { background: var(--pp-filet); }
 .pg-premium.pg-premium .cmp-ligne .c-nom {
@@ -602,7 +602,7 @@
   padding: 7px 12px 7px 16px;
 }
 .pg-premium.pg-premium .cmp-ligne .c-note { color: var(--pp-tx3); }
-.pg-premium.pg-premium .c-cell .ck svg { stroke: var(--or-fonce, #B34700); filter: none; }
+.pg-premium.pg-premium .c-cell .ck svg { stroke: var(--or-fonce, var(--orange-fonce)); filter: none; }
 .pg-premium.pg-premium .c-cell .tiret { color: #C6C0B7; }
 
 /* --- 4. ZONE DE DECISION ---

@@ -142,8 +142,8 @@ export function PremiumPage() {
           <defs>
             <linearGradient id="premOr" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" style={{ stopColor: 'var(--or)' }} />
-              <stop offset="54%" stop-color="#F86A0C" />
-              <stop offset="100%" stop-color="#B34700" />
+              <stop offset="54%" stop-color="var(--orange)" />
+              <stop offset="100%" stop-color="var(--orange-fonce)" />
             </linearGradient>
           </defs>
         </svg>

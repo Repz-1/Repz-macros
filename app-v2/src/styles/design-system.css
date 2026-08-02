@@ -55,6 +55,58 @@
   --alerte: #DE2F14;
   --alerte-douce: #F87171;
 
+  /* ---------- Encre chaude ----------
+     Le noir et les gris des ecrans recents. Valeurs exactes, aucun
+     glissement : la fusion avec --texte / --txt-1 / --srf-inverse
+     (quatre noirs a 1 % d'ecart) reste a arbitrer. */
+  --encre: #16130F;             /* titres, valeurs, libelles */
+  --encre-2: #57514A;           /* prose, paragraphes */
+  --encre-3: #6E675E;           /* labels de champ, onglets au repos */
+  --encre-4: #8A8279;           /* sections, notes, sous-titres */
+  --encre-5: #A79F95;           /* mentions discretes (version) */
+  --encre-6: #C2BAB0;           /* chevrons */
+  --encre-rvb: 22, 19, 15;      /* voiles et fonds de modale */
+  --filet-rvb: 28, 24, 18;      /* bordures internes de carte */
+  --ombre-rvb: 40, 32, 22;      /* ombres portees */
+
+  /* ---------- Orange de marque ----------
+     Il n'avait aucun jeton : douze valeurs en dur dans six fichiers
+     pour la meme couleur. --orange-fonce porte le texte (4,96:1),
+     --orange ne sert qu'en aplat. */
+  --orange: #F86A0C;
+  --orange-fonce: #B34700;
+  --orange-clair: #F8A05A;      /* haut de degrade de barre */
+  --orange-creme: #FFF6EC;      /* fond pale */
+  --orange-rvb: 248, 106, 12;
+  --orange-fonce-rvb: 179, 71, 0;
+
+  /* ---------- Graphite ----------
+     Surfaces de synthese : ce qui s'analyse, par opposition aux
+     cartes blanches ou l'on agit. */
+  --graphite-haut: #252B36;
+  --graphite: #1E232D;
+  --graphite-bas: #171C24;
+  --degrade-graphite: linear-gradient(168deg, var(--graphite-haut) 0%, var(--graphite) 58%, var(--graphite-bas) 100%);
+  --sur-graphite: #F4F6F8;      /* texte principal pose sur graphite */
+  --sur-graphite-2: #C8CED8;    /* phrase secondaire */
+  --sur-graphite-3: #AAB1BC;    /* labels et unites */
+  --filet-graphite: rgba(255, 255, 255, .10);  /* separateur sur graphite */
+
+  /* ---------- Alerte appuyee ----------
+     --alerte (#DE2F14) crie ; celui-ci engage. Suppression de compte,
+     deconnexion, resiliation. */
+  --alerte-fonce: #A32B1C;
+  --alerte-fonce-rvb: 163, 43, 28;
+
+  /* ---------- Surfaces chaudes complementaires ---------- */
+  --carte-chaude: #FFFDF9;      /* champs de saisie */
+  --fond-creux: #F2F1EC;        /* piste de segment */
+  --bordure-chaude: #EDE5D8;    /* bordure de champ */
+  --piste-chaude: #EDE8E0;      /* piste de jauge */
+  --bordure-douce: #EDEAE4;     /* piste de segment, variante */
+  --bascule-off: #DDD8CF;       /* interrupteur au repos */
+  --creme-doree: #FBF3DC;       /* pastille d'icone doree */
+
   /* ---------- Geometrie ----------
      Trois rayons seulement. Toute autre valeur est une derive. */
   --rayon-carte: 20px;          /* cartes de contenu */

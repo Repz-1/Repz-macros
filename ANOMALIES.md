@@ -62,6 +62,26 @@ Statut : `observé` = relevé, non soumis · `soumis` = proposé à Raci ·
 Ces micro-écarts ne se voient pas isolément, mais ils empêchent
 d'avoir un jeu de jetons unique. À arbitrer en phase 2.
 
+**Point d'etape (2 aout).** Le jaune est tranche : cinq jetons
+(`--or`, `--or-clair`, `--or-trait`, `--or-fonce`, `--or-pale`)
+remplacent seize valeurs, `--or` valant le jaune mesure du logo
+`#F8CF01`. L'orange, qui n'avait aucun jeton, en a quatre.
+`reglages.css` et `stats-avancees.css` ne contiennent plus aucune
+valeur en dur.
+
+Restent a arbitrer, sans urgence et sans effet visible :
+- **quatre noirs** a moins de 1 % d'ecart : `--encre #16130F` (le
+  plus frequent), `--texte #191919`, `--txt-1-fonce #181818`,
+  `#141414`
+- **gris secondaires** : `--encre-4 #8A8279` face a
+  `--texte-3 #8E8B85`
+- **beiges de bordure** : `--bordure-chaude #EDE5D8`,
+  `--bordure-douce #EDEAE4`, `--bordure-fine #EDEBE6`
+- **vingt-quatre rayons** face aux quatre annonces par le systeme
+
+Ces valeurs sont desormais toutes nommees : chaque fusion est une
+ligne a changer, plus une chasse dans six fichiers.
+
 ---
 
 ## Hors reproduction — dette technique connue

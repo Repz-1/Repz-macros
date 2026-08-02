@@ -2346,8 +2346,8 @@
    creme). var(--or) sur creme tombe a 1,7:1, illisible.
    ============================================================ */
 .couche-repas {
-  --or:        #F86A0C;   /* remplissages, focus, selections */
-  --or-fonce:  #B34700;   /* texte et bordures */
+  --or:        var(--orange);   /* remplissages, focus, selections */
+  --or-fonce:  var(--orange-fonce);   /* texte et bordures */
   --or-pale:   #FFEFD8;   /* fond d'icone */
   --or-creme:  #FFFAF2;
   --rp-jaune:  var(--or);   /* depart du degrade de l'anneau */
@@ -2795,8 +2795,8 @@
   --gr-tx3:    #868E99;   /* 4,7:1  — la mention */
   --gr-filet:  rgba(255, 255, 255, .085);
   --gr-piste:  rgba(255, 255, 255, .11);
-  --bf-orange: #F86A0C;   /* accent, remplissage et lumiere */
-  --bf-orange-lis: #B34700; /* 5,5:1 sur blanc — texte et bordure */
+  --bf-orange: var(--orange);   /* accent, remplissage et lumiere */
+  --bf-orange-lis: var(--orange-fonce); /* 5,5:1 sur blanc — texte et bordure */
 }
 
 /* ------------------------------------------------------------
@@ -2912,7 +2912,7 @@
 
 /* ------------------------------------------------------------
    5. NAVIGATION — un seul accent, l'orange BelFit.
-   Le texte de l'onglet actif prend #B34700 et non #F86A0C :
+   Le texte de l'onglet actif prend var(--orange-fonce) et non var(--orange) :
    l'orange vif tombe a 2,9:1 sur blanc, sous le seuil. Meme
    teinte, meme lecture, mais lisible — l'icone et le point
    gardent le vif, ils ne portent pas de texte.
@@ -2931,9 +2931,9 @@
 .bn .bn-item--journal.bn-item--actif,
 .bn .bn-item--entrainer.bn-item--actif,
 .bn .bn-item--stats.bn-item--actif,
-.bn .bn-item--premium.bn-item--actif { color: #B34700; }
-.bn .bn-item--actif svg { color: #F86A0C; stroke: #F86A0C; }
-.bn .bn-point { background: #F86A0C; box-shadow: 0 0 0 1px rgba(179, 71, 0, .30); }
+.bn .bn-item--premium.bn-item--actif { color: var(--orange-fonce); }
+.bn .bn-item--actif svg { color: var(--orange); stroke: var(--orange); }
+.bn .bn-point { background: var(--orange); box-shadow: 0 0 0 1px rgba(179, 71, 0, .30); }
 
 /* ------------------------------------------------------------
    DETAIL NUTRITIONNEL — etat verrouille.
@@ -3126,7 +3126,7 @@
 .crs-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .crs-note-tag {
   display: inline-block; padding: 2px 8px; border-radius: 999px;
-  font-size: 11px; font-weight: 600; color: #B34700;
+  font-size: 11px; font-weight: 600; color: var(--orange-fonce);
   background: #FFF3E6; border: 1px solid rgba(179, 71, 0, .16);
 }
 .crs-note-btn {
