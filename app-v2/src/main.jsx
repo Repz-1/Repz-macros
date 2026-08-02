@@ -6,7 +6,7 @@ import './styles/journal-socle.css';
 import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
-import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
+import { repas, objectifs, donneesPretes } from './store/journal.js';
 import { DayDashboard, ouvrirCalcDemande } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
@@ -43,8 +43,10 @@ function OngletJournal() {
   // le composant ne possede pas l'etat de la modale, main.jsx si.
   if (ouvrirCalcDemande.value) {
     ouvrirCalcDemande.value = false;
-    if (estPremium.value || !calculBaseFait.value) setCalc(true);
-    else ongletActif.value = 'premium';
+    // Le calculateur est gratuit et sans limite (Raci, 2 aout). Mifflin-St
+    // Jeor n'est pas un avantage concurrentiel : le facturer rendait
+    // l'application fausse pour qui prend 8 kg, au lieu de la vendre.
+    setCalc(true);
   }
   // Colonne unique, ordre de lecture descendant :
   // logo -> calories -> actions rapides -> idees recettes -> repas.

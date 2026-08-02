@@ -6,7 +6,6 @@ import { signal } from '@preact/signals';
 export const ouvrirCalcDemande = signal(false);
 import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul } from '../store/journal.js';
 import { weightLog } from '../store/stats.js';
-import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { IdeesRepas } from './IdeesRepas.jsx';
 import { t } from '../i18n/index.js';
@@ -257,10 +256,10 @@ function RappelRecalcul() {
   const ecart = Math.abs(actuel - base);
   if (ecart < SEUIL_RECALCUL_KG) return null;
 
-  const aller = () => {
-    if (estPremium.value) { ouvrirCalcDemande.value = true; }
-    else { ongletActif.value = 'premium'; }
-  };
+  // On lui dit que son objectif date : le bouton doit le corriger, pas
+  // lui vendre quelque chose. Signaler un probleme puis faire payer la
+  // correction, c'est ce qui fait desinstaller une application.
+  const aller = () => { ouvrirCalcDemande.value = true; };
   return (
     <button class="cal-rappel" onClick={aller}>
       <svg viewBox="0 0 24 24" aria-hidden="true">
