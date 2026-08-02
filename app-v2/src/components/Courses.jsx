@@ -369,7 +369,16 @@ export function Courses() {
         {suggestions.length > 0 && (
           <div class="crs-suggestions">
             {suggestions.map(n => (
-              <button key={n} onClick={() => ajouterDepuisBase(n)}>
+              <button
+                key={n}
+                /* onPointerDown et non onClick : au doigt, le premier
+                   appui fait perdre le focus au champ, le clavier se
+                   referme et la mise en page remonte — le bouton
+                   glisse alors sous le doigt et le clic tombe a cote.
+                   preventDefault empeche cette perte de focus. */
+                onPointerDown={(e) => { e.preventDefault(); ajouterDepuisBase(n); }}
+                onClick={(e) => e.preventDefault()}
+              >
                 <span>{n}</span>
                 <em>{qteLisible(qtePourAchat(n), DB[n])}</em>
               </button>
