@@ -6,7 +6,6 @@ import { utilisateur } from '../services/firebase.js';
 import { setObjectifs, objectifs, repas } from '../store/journal.js';
 import { macrosOf, DB } from '../data/aliments.js';
 import { ongletActif } from './BottomNav.jsx';
-import { ouvrirReglages } from './Reglages.jsx';
 import { ideesOuvertes } from './IdeesRepas.jsx';
 import { Entete } from './Entete.jsx';
 import '../styles/belfit-plus.css';
@@ -397,10 +396,6 @@ export function BelfitPlus() {
         </div>
       )}
 
-
-      <p class="bp-pied">
-        Membre BelFit+ · <button class="bp-lien" onClick={ouvrirReglages}>Gérer mon abonnement</button>
-      </p>
     </div>
   );
 }
