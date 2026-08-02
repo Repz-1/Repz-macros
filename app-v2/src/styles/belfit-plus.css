@@ -230,6 +230,13 @@
    decouvre qu'en le depassant est un quota cache. */
 .pg-plus .bp-ajust { margin-top: 14px; padding-top: 14px;
   border-top: 1px solid var(--bp-filet); }
+/* Modifier ses objectifs : meme gabarit que la demande d'ajustement,
+   ton plus sobre. Ce n'est pas une demande au coach, c'est un reglage
+   personnel — il ne doit pas se confondre avec le bouton qui consomme
+   un quota. */
+.pg-plus .bp-ajust-btn--besoins {
+  color: var(--encre); border-color: var(--bordure-chaude);
+}
 .pg-plus .bp-ajust-btn {
   display: block; width: 100%; padding: 12px; font: inherit;
   font-size: 14px; font-weight: 600; cursor: pointer;

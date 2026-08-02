@@ -6,6 +6,7 @@ import { utilisateur } from '../services/firebase.js';
 import { setObjectifs, objectifs, repas } from '../store/journal.js';
 import { macrosOf, DB } from '../data/aliments.js';
 import { ongletActif, allerOnglet } from './BottomNav.jsx';
+import { ouvrirCalcDemande } from './DayDashboard.jsx';
 import { statsAvOuvertes } from './StatsAvancees.jsx';
 import { ideesOuvertes } from './IdeesRepas.jsx';
 import { Entete } from './Entete.jsx';
@@ -333,6 +334,22 @@ export function BelfitPlus() {
               Tes repas du jour seront remplacés par ceux du programme.
             </p>
           )}
+
+          {/* Modifier ses objectifs. Le bouton vivait dans le bandeau
+              du profil, insere au-dessus de l'en-tete du Journal : il
+              poussait la page vers le bas au lieu de s'ouvrir, et
+              personne ne le trouvait. Sa place est ici, a cote de la
+              demande d'ajustement — c'est le moment ou l'on constate
+              que ses chiffres ne collent plus. */}
+          <div class="bp-ajust">
+            <button
+              class="bp-ajust-btn bp-ajust-btn--besoins"
+              onClick={() => { allerOnglet('journal'); ouvrirCalcDemande.value = true; }}
+            >
+              Modifier mes objectifs
+              <em>poids, taille, activité, objectif</em>
+            </button>
+          </div>
 
           {/* Demander un ajustement. Le nombre restant est annonce sur
               le bouton : un quota qu'on ne decouvre qu'en le depassant
