@@ -3095,3 +3095,64 @@
 .crs-generer svg { width: 17px; height: 17px; fill: #F5B403; stroke: none; }
 .crs-generer:disabled { opacity: .45; cursor: default; }
 
+
+/* ---------- Ajout : recherche dans la base ---------- */
+.crs-ajout-zone { position: relative; margin-top: 10px; }
+.crs-ajout { position: relative; }
+.crs-loupe {
+  position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; fill: none; stroke: #8A8279;
+  stroke-width: 2; stroke-linecap: round; pointer-events: none;
+}
+.crs-ajout input { padding-left: 42px; }
+.crs-suggestions {
+  position: absolute; z-index: 30; left: 0; right: 0; bottom: calc(100% + 6px);
+  max-height: 244px; overflow-y: auto;
+  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .07);
+  border-radius: 16px; box-shadow: 0 12px 34px rgba(40, 32, 22, .16);
+}
+.crs-suggestions button {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; width: 100%; padding: 12px 15px; cursor: pointer;
+  font: inherit; font-size: 14px; text-align: left; color: #16130F;
+  background: none; border: none;
+}
+.crs-suggestions button + button { border-top: 1px solid rgba(28, 24, 18, .06); }
+.crs-suggestions button:active { background: #FBF7F2; }
+.crs-suggestions em { font-style: normal; font-size: 11.5px; color: #8A8279; }
+
+/* ---------- Note par article ---------- */
+.crs-item-bloc + .crs-item-bloc { border-top: 1px solid rgba(28, 24, 18, .06); }
+.crs-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.crs-note-tag {
+  display: inline-block; padding: 2px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; color: #B34700;
+  background: #FFF3E6; border: 1px solid rgba(179, 71, 0, .16);
+}
+.crs-note-btn {
+  flex: none; width: 34px; height: 34px; display: flex;
+  align-items: center; justify-content: center; cursor: pointer;
+  background: none; border: none;
+}
+.crs-note-btn svg {
+  width: 17px; height: 17px; fill: none; stroke: #B0A79A;
+  stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
+.crs-item.fait + .crs-note-champ { opacity: .6; }
+.crs-note-champ {
+  display: flex; gap: 8px; padding: 0 12px 12px 46px;
+}
+.crs-note-champ input {
+  flex: 1; min-width: 0; padding: 10px 12px; font: inherit; font-size: 13.5px;
+  color: #16130F; background: #FFFDF9; border: 1px solid #EDE5D8;
+  border-radius: 11px; outline: none;
+}
+.crs-note-champ input:focus {
+  border-color: rgba(248, 106, 12, .38);
+  box-shadow: 0 0 0 2.5px rgba(248, 106, 12, .09);
+}
+.crs-note-champ button {
+  flex: none; padding: 0 16px; font: inherit; font-size: 13px; font-weight: 600;
+  color: #FFFFFF; background: #16130F; border: none; border-radius: 11px;
+  cursor: pointer;
+}

@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { signal, effect, computed } from '@preact/signals';
 import { rayonDe, RAYONS } from '../data/rayons.js';
-import { DB } from '../data/aliments.js';
+import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
 import { repas } from '../store/journal.js';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
@@ -20,7 +20,7 @@ import { t } from '../i18n/index.js';
 
 const CHOIX_JOURS = [3, 5, 7];
 const CHOIX_PERS = [1, 2, 3, 4];
-const DEFAUT = { jours: 5, pers: 1, coches: {}, manuels: [], genere: false };
+const DEFAUT = { jours: 5, pers: 1, coches: {}, manuels: [], notes: {}, genere: false };
 
 export const courses = signal({ ...DEFAUT });
 
@@ -82,6 +82,26 @@ export function Courses() {
   const c = courses.value;
   const [ajout, setAjout] = useState('');
   const [menu, setMenu] = useState(false);
+  const [noteOuverte, setNoteOuverte] = useState(null);   // nom de l'article
+  const [noteTexte, setNoteTexte] = useState('');
+
+  // Suggestions depuis la base : recherche par mots, comme partout
+  // ailleurs dans l'app. « riz cru » trouve « Riz basmati cru ».
+  const q = ajout.trim().toLowerCase();
+  const suggestions = q.length < 2 ? [] : (() => {
+    const mots = q.split(/\s+/);
+    return NOMS_ALIMENTS
+      .filter(n => { const b = n.toLowerCase(); return mots.every(m => b.includes(m)); })
+      .slice(0, 8);
+  })();
+
+  const poserNote = (nom, texte) => {
+    const n = { ...(c.notes || {}) };
+    const v = texte.trim();
+    if (v) n[nom] = v.slice(0, 40); else delete n[nom];
+    maj({ notes: n });
+    setNoteOuverte(null); setNoteTexte('');
+  };
   const base = baseJournee.value;
 
   const maj = (o) => { courses.value = { ...courses.value, ...o }; };
@@ -223,15 +243,48 @@ export function Courses() {
             {r.liste.map(i => {
               const coche = !!c.coches[i.nom];
               return (
-                <div class={'crs-item' + (coche ? ' fait' : '')} key={i.nom}>
+                <div class="crs-item-bloc" key={i.nom}>
+                <div class={'crs-item' + (coche ? ' fait' : '')}>
                   <button class="crs-check" onClick={() => cocher(i.nom)} aria-label="Cocher">
                     {coche ? '✓' : ''}
                   </button>
                   <div class="crs-body" onClick={() => cocher(i.nom)}>
                     <div class="crs-nom">{i.nom}</div>
-                    {i.qty != null && <div class="crs-qty">{quantite(i)}</div>}
+                    <div class="crs-meta">
+                      {i.qty != null && <span class="crs-qty">{quantite(i)}</span>}
+                      {(c.notes || {})[i.nom] && (
+                        <span class="crs-note-tag">{c.notes[i.nom]}</span>
+                      )}
+                    </div>
                   </div>
+                  {/* Note libre : ou acheter cet article. Un magasin,
+                      un rayon, une marque — c'est au client de dire. */}
+                  <button
+                    class="crs-note-btn"
+                    aria-label="Note"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setNoteOuverte(noteOuverte === i.nom ? null : i.nom);
+                      setNoteTexte((c.notes || {})[i.nom] || '');
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24"><path d="M4 20l4.5-1.2L19 8.3a2 2 0 000-2.8l-.5-.5a2 2 0 00-2.8 0L5.2 15.5z" /></svg>
+                  </button>
                   <button class="crs-del" onClick={() => retirer(i.nom)} aria-label="Retirer">✕</button>
+                </div>
+                {noteOuverte === i.nom && (
+                  <div class="crs-note-champ">
+                    <input
+                      autoFocus
+                      maxLength={40}
+                      placeholder="Colruyt, boucherie, marque…"
+                      value={noteTexte}
+                      onInput={(e) => setNoteTexte(e.currentTarget.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') poserNote(i.nom, noteTexte); }}
+                    />
+                    <button onClick={() => poserNote(i.nom, noteTexte)}>OK</button>
+                  </div>
+                )}
                 </div>
               );
             })}
@@ -253,15 +306,36 @@ export function Courses() {
         </div>
       )}
 
-      {/* Ajout manuel */}
-      <form class="crs-ajout" onSubmit={ajouterManuel}>
-        <input
-          placeholder={t('co_add_ph')}
-          value={ajout}
-          onInput={e => setAjout(e.currentTarget.value)}
-        />
-        <button type="submit">＋</button>
-      </form>
+      {/* Ajout : la base des 1048 aliments se propose des deux
+          premieres lettres, mais le texte libre reste accepte — on
+          met aussi du papier toilette dans un caddie. */}
+      <div class="crs-ajout-zone">
+        <form class="crs-ajout" onSubmit={ajouterManuel}>
+          <svg class="crs-loupe" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" />
+          </svg>
+          <input
+            placeholder={t('co_add_ph')}
+            value={ajout}
+            onInput={e => setAjout(e.currentTarget.value)}
+          />
+          <button type="submit" aria-label="Ajouter">＋</button>
+        </form>
+
+        {suggestions.length > 0 && (
+          <div class="crs-suggestions">
+            {suggestions.map(n => (
+              <button key={n} onClick={() => {
+                if (!c.manuels.includes(n)) maj({ manuels: [...c.manuels, n] });
+                setAjout('');
+              }}>
+                <span>{n}</span>
+                <em>{DB[n].kcal} kcal</em>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {tous.length > 0 && (
         <div class="crs-actions">
