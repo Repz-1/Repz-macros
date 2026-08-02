@@ -346,14 +346,27 @@
 /* Rappel de recalcul : discret mais present, entre les macros et la
    pilule. Or BELFIT — c'est une action de l'app, pas de l'IA. */
 .pg-journal .cal-rappel {
-  display: flex; align-items: flex-start; gap: 8px;
+  display: flex; align-items: flex-start; gap: 4px;
   width: 100%; margin: 14px 0 0; padding: 10px 12px;
   background: var(--carte); border: 1px solid #F0E2B4; border-radius: 12px;
-  cursor: pointer; font-family: inherit; text-align: left;
-  font-size: 12.5px; font-weight: 600; color: var(--txt-accent); line-height: 1.45;
-  transition: background var(--transition), transform var(--transition);
 }
-.pg-journal .cal-rappel:active { background: var(--or-pale); transform: scale(.99); }
+/* Le corps est cliquable, la croix ne l'est pas : deux cibles separees
+   pour que fermer ne declenche jamais l'ouverture. */
+.pg-journal .cal-rappel-corps {
+  display: flex; align-items: flex-start; gap: 8px; flex: 1; min-width: 0;
+  padding: 0; background: none; border: none; cursor: pointer;
+  font-family: inherit; text-align: left;
+  font-size: 12.5px; font-weight: 600; color: var(--txt-accent); line-height: 1.45;
+  transition: opacity var(--transition);
+}
+.pg-journal .cal-rappel-corps:active { opacity: .6; }
+.pg-journal .cal-rappel-fermer {
+  flex: none; width: 26px; height: 26px; margin: -3px -4px 0 0; padding: 0;
+  background: none; border: none; cursor: pointer; border-radius: 50%;
+  font-family: inherit; font-size: 13px; line-height: 1; color: var(--encre-4);
+  transition: background var(--transition);
+}
+.pg-journal .cal-rappel-fermer:active { background: var(--or-pale); }
 .pg-journal .cal-rappel svg {
   width: 15px; height: 15px; flex: none; margin-top: 1px;
   fill: none; stroke: currentColor; stroke-width: 1.9;

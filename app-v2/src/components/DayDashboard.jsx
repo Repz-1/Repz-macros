@@ -4,7 +4,7 @@ import { signal } from '@preact/signals';
 // Demande d'ouverture du calculateur emise par la carte (rappel de
 // recalcul) ; consommee par main.jsx qui possede l'etat de la modale.
 export const ouvrirCalcDemande = signal(false);
-import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul } from '../store/journal.js';
+import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul, rappelIgnoreA } from '../store/journal.js';
 import { weightLog } from '../store/stats.js';
 import { ongletActif } from './BottomNav.jsx';
 import { IdeesRepas } from './IdeesRepas.jsx';
@@ -253,24 +253,32 @@ function RappelRecalcul() {
   const log = weightLog.value;
   if (!base || !log.length) return null;
   const actuel = log[log.length - 1].weight;
-  const ecart = Math.abs(actuel - base);
-  if (ecart < SEUIL_RECALCUL_KG) return null;
+  if (Math.abs(actuel - base) < SEUIL_RECALCUL_KG) return null;
+  // Ferme une fois, le rappel se tait jusqu'a ce que le poids s'eloigne
+  // d'un nouveau seuil. On informe, on n'insiste pas : le journal reste
+  // parfaitement utilisable avec des objectifs qui datent.
+  const ignore = rappelIgnoreA.value;
+  if (ignore != null && Math.abs(actuel - ignore) < SEUIL_RECALCUL_KG) return null;
 
-  // On lui dit que son objectif date : le bouton doit le corriger, pas
-  // lui vendre quelque chose. Signaler un probleme puis faire payer la
-  // correction, c'est ce qui fait desinstaller une application.
   const aller = () => { ouvrirCalcDemande.value = true; };
   return (
-    <button class="cal-rappel" onClick={aller}>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 12a9 9 0 0115.5-6.2M21 12a9 9 0 01-15.5 6.2" />
-        <path d="M18.5 3v3h-3M5.5 21v-3h3" />
-      </svg>
-      <span>
-        {t('recalc_hint')
-          .replace('{avant}', Math.round(base))
-          .replace('{maintenant}', Math.round(actuel))}
-      </span>
-    </button>
+    <div class="cal-rappel">
+      <button class="cal-rappel-corps" onClick={aller}>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 12a9 9 0 0115.5-6.2M21 12a9 9 0 01-15.5 6.2" />
+          <path d="M18.5 3v3h-3M5.5 21v-3h3" />
+        </svg>
+        <span>
+          {t('recalc_hint')
+            .replace('{avant}', Math.round(base))
+            .replace('{maintenant}', Math.round(actuel))}
+        </span>
+      </button>
+      <button
+        class="cal-rappel-fermer"
+        aria-label={t('chrono_fermer')}
+        onClick={() => { rappelIgnoreA.value = actuel; }}
+      >✕</button>
+    </div>
   );
 }

@@ -41,6 +41,10 @@ export const calculBaseFait = signal(false);
 // Poids (kg) saisi lors du dernier calcul de besoins : sert au rappel
 // « ton objectif date de X kg » quand le poids reel s'en eloigne.
 export const poidsCalcul = signal(null);
+// Poids auquel le rappel de recalcul a ete ferme. Le rappel se tait
+// jusqu'a ce que le poids s'en eloigne d'un nouveau seuil : on signale
+// une fois, on n'insiste pas.
+export const rappelIgnoreA = signal(null);
 // Contenance de la bouteille du suivi d'hydratation (litres).
 export const tailleBouteille = signal(1.5);
 
@@ -63,6 +67,7 @@ effect(() => {
     dateJour.value = (d && d.dateJour) || aujourdhui();
     calculBaseFait.value = !!(d && d.calculBaseFait);
     poidsCalcul.value = (d && typeof d.poidsCalcul === 'number') ? d.poidsCalcul : null;
+    rappelIgnoreA.value = (d && typeof d.rappelIgnoreA === 'number') ? d.rappelIgnoreA : null;
     tailleBouteille.value = (d && typeof d.tailleBouteille === 'number') ? d.tailleBouteille : 1.5;
     basculerSiJourChange();
     donneesPretes.value = true;
@@ -108,7 +113,7 @@ function migrerRepas(liste) {
 
 // --- Sauvegarde automatique par compte : local immediat + cloud differe. ---
 effect(() => {
-  const instantane = { repas: repas.value, objectifs: objectifs.value, eau: eau.value, dateJour: dateJour.value, calculBaseFait: calculBaseFait.value, poidsCalcul: poidsCalcul.value, tailleBouteille: tailleBouteille.value };
+  const instantane = { repas: repas.value, objectifs: objectifs.value, eau: eau.value, dateJour: dateJour.value, calculBaseFait: calculBaseFait.value, poidsCalcul: poidsCalcul.value, rappelIgnoreA: rappelIgnoreA.value, tailleBouteille: tailleBouteille.value };
   const u = identite.value;
   if (!u || !donneesPretes.value) return; // ne pas ecraser avant le chargement
   sauvegarder(u, instantane);
