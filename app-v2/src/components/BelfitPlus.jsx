@@ -5,7 +5,7 @@ import { getApps } from 'firebase/app';
 import { utilisateur } from '../services/firebase.js';
 import { setObjectifs, objectifs, repas } from '../store/journal.js';
 import { macrosOf, DB } from '../data/aliments.js';
-import { ongletActif } from './BottomNav.jsx';
+import { ongletActif, allerOnglet } from './BottomNav.jsx';
 import { statsAvOuvertes } from './StatsAvancees.jsx';
 import { ideesOuvertes } from './IdeesRepas.jsx';
 import { Entete } from './Entete.jsx';
@@ -252,7 +252,7 @@ export function BelfitPlus() {
         </button>
 
         {/* 3. Recettes */}
-        <button class="bp-carte" onClick={() => { ongletActif.value = 'journal'; ideesOuvertes.value = true; }}>
+        <button class="bp-carte" onClick={() => { allerOnglet('journal'); ideesOuvertes.value = true; }}>
           <span class="bp-visuel bp-visuel--recettes" aria-hidden="true" />
           <span class="bp-corps">
             <span class="bp-ic" aria-hidden="true">
@@ -265,7 +265,7 @@ export function BelfitPlus() {
         </button>
 
         {/* 4. Courses */}
-        <button class="bp-carte" onClick={() => { ongletActif.value = 'courses'; }}>
+        <button class="bp-carte" onClick={() => allerOnglet('courses')}>
           <span class="bp-visuel bp-visuel--courses" aria-hidden="true" />
           <span class="bp-corps">
             <span class="bp-ic" aria-hidden="true">
