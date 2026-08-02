@@ -239,8 +239,18 @@ export function Courses() {
         </div>
       ))}
 
-      {c.genere && !tous.length && (
-        <p class="crs-vide">{t('co_empty_alert')}</p>
+      {/* Liste vide : le message monte au centre, sous les reglages,
+          au lieu d'attendre une ligne perdue en bas de page. */}
+      {!tous.length && (
+        <div class="crs-vide">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 8h16l-1.4 11.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z" />
+            <path d="M8.5 8V6.2a3.5 3.5 0 017 0V8" />
+            <path d="M9.5 12v5M14.5 12v5" />
+          </svg>
+          <b>Ta liste est vide</b>
+          <span>Génère ta liste ou ajoute des produits pour commencer.</span>
+        </div>
       )}
 
       {/* Ajout manuel */}

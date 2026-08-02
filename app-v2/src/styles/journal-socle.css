@@ -1332,8 +1332,19 @@
   font-family: inherit; cursor: pointer;
 }
 .crs-vide {
-  font-size: 14px; color: var(--texte-3); text-align: center;
-  padding: 24px 4px; line-height: 1.6;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 4px;
+  padding: 30px 20px 34px; margin-top: 8px;
+  font-size: 14px; line-height: 1.55; text-align: center; color: #8A8279;
+}
+.crs-vide svg {
+  width: 74px; height: 74px; margin-bottom: 10px;
+  fill: none; stroke: #DCD5C9; stroke-width: 1.4;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.crs-vide b {
+  font-size: 16.5px; font-weight: 700; color: #16130F;
+  letter-spacing: -.02em;
 }
 
 /* ============================================================
@@ -2983,7 +2994,10 @@
      bandeau chiffre : 50 pt de haut, fond (253,249,242)
      champ d'ajout : 342 x 23 pt
    ============================================================ */
-.crs { padding: 0; background: #F8F5F1; }
+.crs {
+  padding: 0 0 calc(var(--hauteur-nav) + 24px + env(safe-area-inset-bottom));
+  background: #F8F5F1;
+}
 
 /* Barre : titre centre entre deux boutons ronds */
 .crs-barre {
