@@ -2972,3 +2972,133 @@
 .couche-repas .rp-btn-fin:active {
   box-shadow: inset 0 3px 9px rgba(0, 0, 0, .30), 0 1px 3px rgba(18, 22, 28, .14);
 }
+
+/* ============================================================
+   MES COURSES — d'apres la maquette, MESUREE au pixel (PIL).
+     fond page (248,245,241) · carte (252,249,245)
+     carte principale : marge 10 pt, largeur 371, hauteur 262
+     segment jours : pastille noire 40 pt de large
+     segment personnes : pastille jaune 39 pt
+     bouton generer : 333 x 31 pt
+     bandeau chiffre : 50 pt de haut, fond (253,249,242)
+     champ d'ajout : 342 x 23 pt
+   ============================================================ */
+.crs { padding: 0; background: #F8F5F1; }
+
+/* Barre : titre centre entre deux boutons ronds */
+.crs-barre {
+  display: grid; grid-template-columns: 40px 1fr 40px;
+  align-items: center; padding: 10px 0 14px;
+}
+.crs-barre h2 {
+  margin: 0; text-align: center; font-size: 20px; font-weight: 600;
+  letter-spacing: -.025em; color: #16130F;
+}
+.crs-rond {
+  width: 38px; height: 38px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; cursor: pointer;
+  background: #FFFFFF; border: 1px solid rgba(28, 24, 18, .06);
+  box-shadow: 0 1px 3px rgba(40, 32, 22, .07);
+}
+.crs-rond svg {
+  width: 19px; height: 19px; fill: none; stroke: #16130F;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.crs-rond:last-child svg { fill: #16130F; stroke: none; }
+
+/* Carte de preparation */
+.crs-prep {
+  background: #FCF9F5; border: 1px solid rgba(28, 24, 18, .05);
+  border-radius: 22px; overflow: hidden; margin-bottom: 12px;
+  box-shadow: 0 1px 2px rgba(60, 48, 30, .04), 0 6px 18px rgba(60, 48, 30, .06);
+}
+
+/* Bandeau illustre : la photo occupe la moitie droite et se fond
+   vers la gauche, le texte ne la rencontre jamais. */
+.crs-hero { position: relative; padding: 18px 16px 14px; overflow: hidden; }
+.crs-hero > * { position: relative; z-index: 2; }
+.crs-hero-photo {
+  position: absolute; z-index: 1; inset: 0 0 0 48%;
+  background-image: url('/img/courses-sac.webp'),
+    linear-gradient(135deg, #FBEFD8, #F4E2BE);
+  background-size: cover; background-position: center;
+  border-radius: 0 0 0 44%;
+}
+.crs-hero-photo::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    #FCF9F5 0%, #FCF9F5 12%, rgba(252,249,245,.86) 38%,
+    rgba(252,249,245,.36) 66%, rgba(252,249,245,0) 92%);
+}
+.crs-hero-ic {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; margin-bottom: 12px;
+  border-radius: 50%; background: #FBF0D4;
+}
+.crs-hero-ic svg {
+  width: 21px; height: 21px; fill: none; stroke: #DFA004;
+  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+.crs-hero h3 {
+  margin: 0 0 7px; font-size: 25px; font-weight: 700;
+  letter-spacing: -.035em; line-height: 1.12; color: #16130F;
+}
+.crs-hero > p {
+  margin: 0 0 9px; font-size: 13.5px; line-height: 1.45; color: #6E675E;
+}
+.crs-hero-tag {
+  display: inline-flex; align-items: center; gap: 6px; margin: 0;
+  font-size: 12.5px; font-weight: 500; color: #57514A;
+}
+.crs-hero-tag svg { width: 15px; height: 15px; fill: #F5B403; stroke: none; }
+
+/* Reglages */
+.crs-reglage { padding: 2px 16px 16px; }
+.crs-q {
+  margin: 12px 0 8px; font-size: 13.5px; font-weight: 500; color: #57514A;
+}
+.crs-seg { display: flex; gap: 10px; }
+.crs-seg button {
+  flex: 1; padding: 13px 0; font: inherit; font-size: 14px; font-weight: 600;
+  color: #16130F; background: #FFFFFF; cursor: pointer;
+  border: 1px solid rgba(28, 24, 18, .10); border-radius: 13px;
+}
+/* Jours : la selection est NOIRE a texte dore (mesure sur l'image) */
+.crs-seg--jours button.on {
+  background: #16130F; color: #F5B403; border-color: #16130F;
+}
+/* Personnes : la selection est JAUNE a texte noir */
+.crs-seg--pers button.on {
+  background: #F7C64B; color: #16130F; border-color: #F7C64B;
+}
+
+.crs-generer {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; margin-top: 16px; padding: 16px; cursor: pointer;
+  font: inherit; font-size: 15.5px; font-weight: 600;
+  color: #FFFFFF; background: #16130F; border: none; border-radius: 15px;
+}
+.crs-generer svg { width: 17px; height: 17px; fill: #F5B403; stroke: none; }
+.crs-generer:disabled { opacity: .45; cursor: default; }
+
+/* Bandeau chiffre : quatre reperes separes par des filets */
+.crs-chiffres {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: #FDF9F2; border: 1px solid rgba(28, 24, 18, .05);
+  border-radius: 20px; padding: 14px 4px; margin-bottom: 14px;
+  box-shadow: 0 1px 2px rgba(60, 48, 30, .04), 0 6px 18px rgba(60, 48, 30, .05);
+}
+.crs-chiffres > div {
+  text-align: center; padding: 0 4px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.crs-chiffres > div + div { border-left: 1px solid rgba(28, 24, 18, .08); }
+.crs-chiffres svg {
+  width: 20px; height: 20px; fill: none; stroke: #DFA004;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.crs-chiffres b {
+  font-size: 17px; font-weight: 700; color: #16130F;
+  letter-spacing: -.03em; font-variant-numeric: tabular-nums;
+}
+.crs-chiffres span { font-size: 10px; line-height: 1.2; color: #8A8279; }

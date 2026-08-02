@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { signal, effect, computed } from '@preact/signals';
 import { rayonDe, RAYONS } from '../data/rayons.js';
-import { DB } from '../data/aliments.js';
+import { DB, macrosOf } from '../data/aliments.js';
 import { repas } from '../store/journal.js';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
@@ -81,6 +81,7 @@ const baseJournee = computed(() => {
 export function Courses() {
   const c = courses.value;
   const [ajout, setAjout] = useState('');
+  const [menu, setMenu] = useState(false);
   const base = baseJournee.value;
 
   const maj = (o) => { courses.value = { ...courses.value, ...o }; };
@@ -121,6 +122,31 @@ export function Courses() {
     .map(m => ({ nom: m, qty: null, parUnite: null, unite: '', cat: rayonDe(m) }));
 
   const tous = [...duJournal, ...manuels];
+
+  // --- Reperes du bandeau, calcules sur la liste reelle ---
+  // Repas couverts : les repas non vides du journal, multiplies par
+  // les jours demandes.
+  const repasCouverts = repas.value.filter(r => (r.ings || []).length).length * c.jours;
+
+  // Calories : le total d'une journee tel que le journal l'affiche,
+  // multiplie par jours et personnes — la liste couvre exactement ca.
+  const kcalTotal = Math.round(
+    repas.value.reduce((t, r) => t + (r.ings || [])
+      .reduce((u, i) => u + (macrosOf(i).kcal || 0), 0), 0) * c.jours * c.pers,
+  );
+
+  // Estimation de prix : moyenne par rayon appliquee au poids. Elle
+  // est ANNONCEE comme approximative (le « ± » de la maquette) — les
+  // prix varient d'une enseigne a l'autre et nous n'en avons aucun.
+  const PRIX_KG = { legumes: 3.2, fruits: 3.0, viandes: 12.5, poissons: 16,
+    laitiers: 4.5, feculents: 2.4, epicerie: 6.5, autres: 5 };
+  const estimation = Math.round(
+    tous.reduce((t, i) => {
+      const kg = (i.qty || 0) / 1000;
+      return t + kg * (PRIX_KG[i.cat] || PRIX_KG.autres);
+    }, 0),
+  );
+
   const restants = tous.filter(i => !c.coches[i.nom]).length;
 
   const parRayon = RAYONS
@@ -145,46 +171,83 @@ export function Courses() {
 
   return (
     <div class="crs">
-      <div class="crs-entete">
+      {/* En-tete : titre centre entre deux boutons ronds, d'apres la
+          maquette mesuree (bouton 36 pt, titre 20 pt). */}
+      <div class="crs-barre">
+        <button class="crs-rond" onClick={() => { ongletActif.value = 'journal'; }} aria-label="Retour">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
         <h2>{t('co_title')}</h2>
-        <p>{t('co_sub')}</p>
+        <button class="crs-rond" onClick={() => setMenu(v => !v)} aria-label="Options">
+          <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>
+        </button>
       </div>
 
-      {/* Reglages et generation */}
+      {/* Carte de preparation : bandeau illustre, puis les deux
+          reglages, puis le bouton de generation. */}
       <div class="crs-prep">
-        <h3>🛒 {t('co_prep_title')}</h3>
+        <div class="crs-hero">
+          <span class="crs-hero-photo" aria-hidden="true" />
+          <span class="crs-hero-ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7z" /><path d="M9 8V6a3 3 0 016 0v2" /></svg>
+          </span>
+          <h3>Tes courses<br />intelligentes</h3>
+          <p>Générées automatiquement<br />à partir de tes repas.</p>
+          <p class="crs-hero-tag">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.7 5.3H19l-4.3 3.2 1.6 5.2L12 13.4 7.7 16.7l1.6-5.2L5 8.3h5.3z" /></svg>
+            100% adaptées à ton plan
+          </p>
+        </div>
 
-        <div class="crs-prep-ligne">
-          <div class="crs-lbl">{t('co_days_q')}</div>
-          <div class="crs-seg">
+        <div class="crs-reglage">
+          <p class="crs-q">{t('co_days_q')}</p>
+          <div class="crs-seg crs-seg--jours">
             {CHOIX_JOURS.map(n => (
               <button key={n} class={c.jours === n ? 'on' : ''} onClick={() => maj({ jours: n })}>
                 {n} {t('jours_court')}
               </button>
             ))}
           </div>
-        </div>
 
-        <div class="crs-prep-ligne">
-          <div class="crs-lbl">{t('co_people_q')}</div>
-          <div class="crs-seg">
+          <p class="crs-q">{t('co_people_q')}</p>
+          <div class="crs-seg crs-seg--pers">
             {CHOIX_PERS.map(n => (
               <button key={n} class={c.pers === n ? 'on' : ''} onClick={() => maj({ pers: n })}>
                 {n === 4 ? '4+' : n}
               </button>
             ))}
           </div>
+
+          <button class="crs-generer" disabled={!base.length} onClick={generer}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.7 5.3H19l-4.3 3.2 1.6 5.2L12 13.4 7.7 16.7l1.6-5.2L5 8.3h5.3z" /></svg>
+            {t('co_generate')}
+          </button>
+          {!base.length && <p class="crs-note">{t('co_note_vide')}</p>}
         </div>
-
-        <button class="crs-generer" disabled={!base.length} onClick={generer}>
-          {t('co_generate')}
-        </button>
-
-        {base.length > 0 && (
-          <p class="crs-note">✨ {t('co_note').replace('{n}', c.jours)}</p>
-        )}
-        {!base.length && <p class="crs-note">{t('co_note_vide')}</p>}
       </div>
+
+      {/* Bandeau chiffre : quatre reperes, uniquement quand la liste
+          existe — quatre zeros ne diraient rien. */}
+      {tous.length > 0 && (
+        <div class="crs-chiffres">
+          <div>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.3" /><circle cx="17" cy="20" r="1.3" /><path d="M2.5 3.5h2.6l2.4 11h10.2l2-7.4H6.4" /></svg>
+            <b>{tous.length}</b><span>ingrédients</span>
+          </div>
+          <div>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h16" /><path d="M5.5 17a6.5 6.5 0 0113 0" /><path d="M12 8V6" /></svg>
+            <b>{repasCouverts}</b><span>repas couverts</span>
+          </div>
+          <div>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s4.5 4 4.5 8a4.5 4.5 0 01-9 0c0-1.4.6-2.6 1.3-3.6.3 1.1 1 1.9 1.9 1.9 1 0 1.6-.9 1.3-2.2A6 6 0 0012 3z" /></svg>
+            <b>{kcalTotal.toLocaleString('fr-BE')}</b><span>kcal au total</span>
+          </div>
+          <div>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6.5" width="18" height="12" rx="2.5" /><path d="M3 10.5h18" /><circle cx="17" cy="14.5" r="1.2" /></svg>
+            <b>± {estimation} €</b><span>estimation</span>
+          </div>
+        </div>
+      )}
 
       {/* Liste par rayon */}
       {tous.length > 0 && (
