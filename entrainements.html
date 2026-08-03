@@ -983,6 +983,8 @@ const WL_JOURS_L = t('days_long').split('|');
 const WL_MOIS = t('months_min').split('|');
 const WL_MOIS_L = t('months_long').split('|');
 
+// Duree de conservation du calendrier des muscles, en jours.
+const JOURS_MUSCLE_LOG = 14;
 function wlDateDaysAgo(n){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - n); return d; }
 function wlIso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 function todayISO(){ return wlIso(new Date()); }
@@ -1192,19 +1194,14 @@ function syncMuscleLogFromCloud(u){
         firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
             const cloud = (doc.exists && doc.data().muscleLog) ? doc.data().muscleLog : {};
             const merged = Object.assign({}, loadMuscleLog(), cloud); // cloud prioritaire en cas de conflit
-            // ATTENTION — deux lignes supprimees ici le 2 aout 2026 :
-            //   const limite = wlIso(wlDateDaysAgo(7));
-            //   Object.keys(merged).forEach(k => { if (k < limite) delete merged[k]; });
-            // Elles effacaient TOUT jour de plus de 7 jours, puis
-            // sauvegardaient localement et repoussaient la version
-            // tronquee dans Firestore. L'historique etait donc detruit
-            // des deux cotes a chaque synchronisation. Le calendrier
-            // ne pouvait jamais contenir plus d'une semaine, et aucune
-            // statistique de long terme n'etait possible.
-            // Le calendrier pese ~40 octets par jour : dix ans tiennent
-            // dans 83 ko. Il n'y a aucune raison de purger.
+            // Fenetre de conservation du calendrier des muscles.
+            // Volontaire : au-dela, les jours sont retires du local et
+            // du cloud. Passee de 7 a 14 jours le 2 aout 2026, sur
+            // demande de Raci.
+            const limite = wlIso(wlDateDaysAgo(JOURS_MUSCLE_LOG));
+            Object.keys(merged).forEach(function(k){ if(k < limite) delete merged[k]; });
             saveMuscleLog(merged);
-            pushMuscleLogToCloud(merged);
+            pushMuscleLogToCloud(merged); // consolide et nettoie les jours effacés
             renderWlog();
                 }).catch(function(){});
     }catch(e){}
