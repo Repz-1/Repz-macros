@@ -117,7 +117,7 @@ function JournalEntrainement({ ouvrirJour }) {
   }
 
   return (
-    <div class="choice ph sm" style={'margin-top:24px;' + fond('card-journal.jpg')}>
+    <div class="choice ph sm ch-journal" style={'margin-top:24px;' + fond('card-journal.jpg')}>
       <div class="ch-icon">
         <svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5" /><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5" /></svg>
       </div>

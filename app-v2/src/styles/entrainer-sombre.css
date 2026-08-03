@@ -102,13 +102,29 @@
   font-size: 9.5px; letter-spacing: .2em; color: #727B89;
 }
 .pg-entrainer--sombre .choice.ph.featured::before { content: 'SUR MESURE'; }
-.pg-entrainer--sombre .choice.ph.md::before { content: 'A LA CARTE'; }
+.pg-entrainer--sombre .choice.ph.md::before { content: 'À LA CARTE'; }
 .pg-entrainer--sombre .choice.ph.sm::before { content: 'ARCHIVES'; }
-.pg-entrainer--sombre .choice.ph.featured h3 { color: var(--or); }
+/* Le journal n'est pas une archive : on y ecrit chaque jour. Les deux
+   cartes partageaient la classe .sm, donc la meme etiquette. */
+.pg-entrainer--sombre .choice.ph.ch-journal::before { content: 'AU QUOTIDIEN'; }
+/* Le titre etait dore ET le bouton dore, sur une page ou l'etiquette
+   de semaine et les icones le sont deja : cinq jaunes pour un ecran.
+   Le titre redevient blanc, le bouton garde l'accent — un seul point
+   d'appel par ligne. */
+.pg-entrainer--sombre .choice.ph.featured h3 { color: var(--text); }
 
 /* Une seule action reste un bouton : celle qu'on veut pousser. Les
-   autres lignes sont cliquables en entier — c'est deja un <a>. */
+   autres lignes sont cliquables en entier — c'est deja un <a>.
+   SAUF le journal d'entrainement : ce n'est pas un lien, c'est un
+   depliant. Son bouton est le seul moyen d'ouvrir le calendrier ;
+   le masquer rendait la fonction inatteignable. */
 .pg-entrainer--sombre .choice.ph .cta { display: none; }
+.pg-entrainer--sombre .choice.ph.ch-journal .cta {
+  display: inline-flex; margin-top: 11px; min-width: 0;
+  padding: 9px 14px; border-radius: 11px;
+  background: rgba(255, 255, 255, .09); color: var(--text);
+  border: 1px solid rgba(255, 255, 255, .14); box-shadow: none;
+}
 .pg-entrainer--sombre .choice.ph.featured .cta {
   display: inline-flex; margin-top: 11px; min-width: 0;
   padding: 9px 14px; border-radius: 11px; gap: 14px;
@@ -116,8 +132,8 @@
 }
 
 /* ---------- Le journal d'entrainement ---------- */
-.pg-entrainer--sombre .choice.ph.sm[style*="card-journal"] { padding-right: 0; }
-.pg-entrainer--sombre .choice.ph.sm[style*="card-journal"]::after { display: none; }
+.pg-entrainer--sombre .choice.ph.ch-journal { padding-right: 0; background-image: none !important; }
+.pg-entrainer--sombre .choice.ph.ch-journal::after { display: none; }
 .pg-entrainer--sombre .wlog-list { color: var(--text); }
 .pg-entrainer--sombre .wlog-sum-pill {
   background: rgba(255, 255, 255, .06); color: var(--text-dim); border: none;
