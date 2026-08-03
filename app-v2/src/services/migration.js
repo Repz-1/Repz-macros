@@ -158,8 +158,21 @@ export async function recupererMuscleLogV1(uid, logV2) {
     const db = getFirestore(getApps()[0]);
     const snap = await getDoc(doc(db, 'users', uid));
     if (!snap.exists()) return null;
-    const v1 = snap.data().muscleLog;
-    if (!v1 || typeof v1 !== 'object') return null;
+    // Trois sources possibles, fusionnees dans cet ordre de priorite
+    // croissante : appData (le plus ancien), la racine du document
+    // (ce que la v1 poussait), puis le localStorage du telephone
+    // (la v1 y ecrivait en premier, donc c'est souvent le plus
+    // complet — et le seul a survivre si le cloud a ete tronque).
+    const d = snap.data();
+    let appData = null;
+    try {
+      const brut = typeof d.appData === 'string' ? JSON.parse(d.appData) : d.appData;
+      appData = brut && brut.muscleLog;
+    } catch (e) {}
+    let local = null;
+    try { local = JSON.parse(localStorage.getItem('repz_muscleLog') || 'null'); } catch (e) {}
+    const v1 = Object.assign({}, appData || {}, d.muscleLog || {}, local || {});
+    if (!Object.keys(v1).length) return null;
 
     const dejaLa = logV2 && typeof logV2 === 'object' ? logV2 : {};
     const fusion = { ...dejaLa };

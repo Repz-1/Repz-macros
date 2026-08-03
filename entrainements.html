@@ -1192,10 +1192,19 @@ function syncMuscleLogFromCloud(u){
         firebase.firestore().collection('users').doc(u.uid).get().then(function(doc){
             const cloud = (doc.exists && doc.data().muscleLog) ? doc.data().muscleLog : {};
             const merged = Object.assign({}, loadMuscleLog(), cloud); // cloud prioritaire en cas de conflit
-            const limite = wlIso(wlDateDaysAgo(7));
-            Object.keys(merged).forEach(function(k){ if(k < limite) delete merged[k]; });
+            // ATTENTION — deux lignes supprimees ici le 2 aout 2026 :
+            //   const limite = wlIso(wlDateDaysAgo(7));
+            //   Object.keys(merged).forEach(k => { if (k < limite) delete merged[k]; });
+            // Elles effacaient TOUT jour de plus de 7 jours, puis
+            // sauvegardaient localement et repoussaient la version
+            // tronquee dans Firestore. L'historique etait donc detruit
+            // des deux cotes a chaque synchronisation. Le calendrier
+            // ne pouvait jamais contenir plus d'une semaine, et aucune
+            // statistique de long terme n'etait possible.
+            // Le calendrier pese ~40 octets par jour : dix ans tiennent
+            // dans 83 ko. Il n'y a aucune raison de purger.
             saveMuscleLog(merged);
-            pushMuscleLogToCloud(merged); // consolide et nettoie les jours effacés
+            pushMuscleLogToCloud(merged);
             renderWlog();
                 }).catch(function(){});
     }catch(e){}
