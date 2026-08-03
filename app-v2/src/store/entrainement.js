@@ -1,6 +1,7 @@
 import { signal, effect } from '@preact/signals';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
+import { recupererMuscleLogV1 } from '../services/migration.js';
 
 // ============================================================
 // STORE ENTRAINEMENT v2 — calendrier des muscles travailles.
@@ -29,10 +30,20 @@ effect(() => {
   if (!u) { uidM = null; pretM = false; return; }
   if (u === uidM) return;
   uidM = u; pretM = false;
-  chargerDonnees(u).then(d => {
+  chargerDonnees(u).then(async d => {
     if (uidM !== u) return;
-    muscleLog.value = (d && d.muscleLog) ? d.muscleLog : {};
+    const charge = (d && d.muscleLog) ? d.muscleLog : {};
+    // Rattrapage v1 : le calendrier vivait a la racine du document et
+    // n'a jamais ete importe par la migration, qui ne part que sur un
+    // compte totalement vierge de donnees v2. On ne remonte que les
+    // jours absents — un jour deja note en v2 fait foi.
+    const fusion = await recupererMuscleLogV1(u, charge);
+    if (uidM !== u) return;
+    muscleLog.value = fusion || charge;
     pretM = true;
+    // Fusion effective : on la persiste tout de suite, sinon elle
+    // serait refaite a chaque demarrage.
+    if (fusion) sauvegarder(u, { muscleLog: fusion });
   });
 });
 

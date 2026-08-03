@@ -135,3 +135,47 @@ export async function migrerSiNecessaire(uid) {
     return null;
   }
 }
+
+// ============================================================
+// RATTRAPAGE DU CALENDRIER DES MUSCLES
+//
+// migrerSiNecessaire() ne s'execute que si le compte n'a AUCUNE
+// donnee v2. Des que la v2 a ecrit les premiers repas, elle ne part
+// plus. Or le calendrier des muscles ne vit pas dans appData : il est
+// a la racine du document, dans users/{uid}.muscleLog. Resultat, tout
+// utilisateur passe a la v2 avant ce correctif a garde un historique
+// v1 present dans Firestore mais jamais importe — sa page
+// S'entrainer affiche des mois vides alors que la donnee existe.
+//
+// Cette fonction repare ce cas precis, et seulement lui :
+// - elle ne LIT que users/{uid}.muscleLog ;
+// - elle n'ecrase JAMAIS un jour deja present en v2 ;
+// - elle ne supprime rien, ni en v1 ni en v2.
+// Elle renvoie le journal fusionne, ou null s'il n'y a rien a faire.
+// ============================================================
+export async function recupererMuscleLogV1(uid, logV2) {
+  try {
+    const db = getFirestore(getApps()[0]);
+    const snap = await getDoc(doc(db, 'users', uid));
+    if (!snap.exists()) return null;
+    const v1 = snap.data().muscleLog;
+    if (!v1 || typeof v1 !== 'object') return null;
+
+    const dejaLa = logV2 && typeof logV2 === 'object' ? logV2 : {};
+    const fusion = { ...dejaLa };
+    let repris = 0;
+    for (const iso of Object.keys(v1)) {
+      // Un jour deja note en v2 fait foi : il est plus recent.
+      if (fusion[iso]) continue;
+      const jour = v1[iso];
+      const liste = Array.isArray(jour) ? jour
+        : (jour && typeof jour === 'object') ? Object.values(jour) : null;
+      if (!liste || !liste.length) continue;
+      fusion[iso] = liste.filter(v => typeof v === 'string');
+      repris++;
+    }
+    return repris ? fusion : null;
+  } catch (e) {
+    return null;
+  }
+}
