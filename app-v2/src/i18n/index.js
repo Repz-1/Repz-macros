@@ -74,7 +74,6 @@ const T = {
     aujourdhui: "Aujourd'hui", consommees: 'Consommées', objectif: 'Objectif', tes_repas: 'Tes repas',
     today_prefix: "Aujourd'hui,", total_jour: 'Total du jour', rl_vide: 'Rien encodé',
     qa_courses: 'Liste de courses', qa_calc: 'Calculer mes besoins',
-    sem_num: 'Semaine', sem_seance: 'séance', sem_seances: 'séances', sem_cette: 'cette semaine',
 
     calc_besoins_court: 'Calculateur', vocal_court: 'Vocal',
 
@@ -137,7 +136,6 @@ const T = {
     aujourdhui: 'Today', consommees: 'Consumed', objectif: 'Target', tes_repas: 'Your meals',
     today_prefix: 'Today,', total_jour: 'Day total', rl_vide: 'Nothing logged',
     qa_courses: 'Grocery list', qa_calc: 'Calculate my needs',
-    sem_num: 'Week', sem_seance: 'session', sem_seances: 'sessions', sem_cette: 'this week',
 
     calc_besoins_court: 'Calculator', vocal_court: 'Voice',
 
@@ -200,7 +198,6 @@ const T = {
     aujourdhui: 'Vandaag', consommees: 'Verbruikt', objectif: 'Doel', tes_repas: 'Je maaltijden',
     today_prefix: 'Vandaag,', total_jour: 'Dagtotaal', rl_vide: 'Niets gelogd',
     qa_courses: 'Boodschappenlijst', qa_calc: 'Bereken mijn behoeften',
-    sem_num: 'Week', sem_seance: 'sessie', sem_seances: 'sessies', sem_cette: 'deze week',
 
     calc_besoins_court: 'Calculator', vocal_court: 'Spraak',
 
