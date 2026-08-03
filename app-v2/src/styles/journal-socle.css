@@ -283,7 +283,13 @@
   width: 184px;
   aspect-ratio: 1;
 }
-.pg-journal .cal-anneau-svg { display: block; width: 100%; height: 100%; }
+/* overflow visible : la lueur est un cercle floute a 16 px, or le
+   cercle frole deja le bord du viewBox (rayon 82 + demi-trait 6,5 =
+   88,5 sur un demi-cadre de 95). Un SVG rogne par defaut tout ce qui
+   depasse : le halo etait coupe net aux quatre bords et dessinait un
+   CARRE sur le graphite — mesure sur capture, bords a 176 px CSS,
+   soit exactement la taille du SVG. */
+.pg-journal .cal-anneau-svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .pg-journal .cal-anneau-centre {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -2846,10 +2852,9 @@
    ponctuelle, pas un eclairage d'ambiance. */
 .pg-journal .cal .cal-anneau-piste { stroke: var(--gr-piste); opacity: 1; }
 .pg-journal .cal .cal-anneau-lueur {
-  background: radial-gradient(circle,
-    rgba(248, 106, 12, .30) 0%,
-    rgba(248, 106, 12, .11) 44%,
-    transparent 70%);
+  /* Le background etait une regle morte : la classe est portee par un
+     <circle> SVG, et background ne s'applique pas aux elements SVG.
+     Seul le blur agit — le halo, c'est le trait floute lui-meme. */
   filter: blur(16px); opacity: 1;
 }
 /* Macros : le nom recule, la valeur reste pleine. */
