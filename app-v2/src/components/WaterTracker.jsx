@@ -14,10 +14,14 @@ const PAR_APPUI = 0.075;   // v1 : WATER_PER_TAP = 75 ml
 // le choix est desormais persiste avec le journal (tailleBouteille).
 const TAILLES = [0.5, 1, 1.5, 2];
 
-/** Format v1 : « 0 L », « 0,300 L », « 1,5 L » */
+/** « 0 L », « 0,3 L », « 1,8 L », « 0,075 L ».
+ *  L'ancien format v1 figeait trois decimales des que le compte
+ *  n'etait pas rond : 24 appuis de 75 ml donnaient « 1,800 L » —
+ *  qui se lit comme mille huit cents litres, la virgule passant
+ *  pour un separateur de milliers. Les zeros de fin sont coupes. */
 function litresTxt(l) {
   const ml = Math.round(l * 1000);
-  return (ml / 1000).toFixed(ml % 1000 === 0 ? 0 : 3).replace('.', ',') + ' L';
+  return String(parseFloat((ml / 1000).toFixed(3))).replace('.', ',') + ' L';
 }
 
 export function WaterTracker() {
