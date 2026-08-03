@@ -12,8 +12,12 @@
  * Les assets (images, polices, JS) restent en cache d'abord : ils
  * sont versionnes par le nom de cache, donc jamais perimes.
  */
-const CACHE = 'belfit-v260';
-const CORE = ['./index.html','./main.html','./i18n.js','./i18n-strings.js','./app.html','./manifest.json','./icon-192-v7.png','./icon-512-v7.png','./belfit-logo-header.png'];
+const CACHE = 'belfit-v261';
+// main.html et app.html sont supprimes avec la v1. Les laisser ici
+// aurait fait echouer addAll() en entier : une seule URL absente
+// rejette la promesse, et le service worker ne s'installe pas du
+// tout — donc plus aucun cache, y compris pour les pages gardees.
+const CORE = ['./index.html','./i18n.js','./i18n-strings.js','./manifest.json','./icon-192-v7.png','./icon-512-v7.png','./belfit-logo-header.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
