@@ -26,6 +26,7 @@ function fond(fichier) {
   return fondsVus ? `background-image:url('/img/${fichier}')` : '';
 }
 import '../legacy/entrainer.scoped.css';
+import '../styles/entrainer-sombre.css';
 
 // ==========================================================
 // PAGE S'ENTRAINER — portage a l'identique de entrainements.html.
@@ -227,6 +228,62 @@ function ModalePremium({ montre, fermer }) {
 
 // ==========================================================
 // Page
+/* ------------------------------------------------------------
+   SEMAINE EN TETE — l'ancrage de la page.
+   Les donnees existent deja (muscleLog) mais vivaient repliees en
+   bas de page, derriere un bouton « Ouvrir ». Elles remontent : en
+   cinq secondes on sait combien, quand, et quoi.
+   Sept cases, lundi a dimanche. La couleur est celle du groupe
+   travaille, prise dans GROUPES — aucune couleur inventee. Deux
+   groupes le meme jour gardent leur partage en deux, comme dans le
+   calendrier mensuel.
+   ------------------------------------------------------------ */
+function SemaineEnTete() {
+  const log = muscleLog.value || {};
+  const auj = new Date();
+  const todayIso = wlIso(auj);
+  const lundi = new Date(auj);
+  lundi.setDate(auj.getDate() - ((auj.getDay() + 6) % 7));
+
+  const jours = [];
+  let seances = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(lundi);
+    d.setDate(lundi.getDate() + i);
+    const iso = wlIso(d);
+    const muscles = Object.values(log[iso] || {}).filter(v => v !== 'repos');
+    if (muscles.length) seances++;
+    let style = {};
+    if (muscles.length === 1) style = { background: COULEUR[muscles[0]] };
+    else if (muscles.length > 1) {
+      style = { background: `linear-gradient(160deg, ${COULEUR[muscles[0]]} 52%, ${COULEUR[muscles[1]]} 52%)` };
+    }
+    jours.push(
+      <i key={iso} class={'sem-jour' + (muscles.length ? ' faite' : '') + (iso === todayIso ? ' auj' : '')}
+         style={style} aria-hidden="true">
+        {t('days_min').split('|')[i]}
+      </i>
+    );
+  }
+
+  const noSemaine = (() => {
+    const d = new Date(auj); d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+    const jan4 = new Date(d.getFullYear(), 0, 4);
+    return 1 + Math.round(((d - jan4) / 86400000 - 3 + ((jan4.getDay() + 6) % 7)) / 7);
+  })();
+
+  return (
+    <header class="sem">
+      <p class="sem-kick">
+        {t('sem_num').toUpperCase()} {noSemaine} · {t('months_long').split('|')[auj.getMonth()].toUpperCase()}
+      </p>
+      <p class="sem-nb">{seances}<em>{seances > 1 ? t('sem_seances') : t('sem_seance')} {t('sem_cette')}</em></p>
+      <div class="sem-bande">{jours}</div>
+    </header>
+  );
+}
+
 // ==========================================================
 export function Entrainer() {
   const [jourOuvert, setJourOuvert] = useState(null);
@@ -242,8 +299,9 @@ export function Entrainer() {
   const lockedProgs = '';
 
   return (
-    <div class="pg-entrainer">
+    <div class="pg-entrainer pg-entrainer--sombre">
       <Entete retour />
+      <SemaineEnTete />
       {/* Pas de bloc-titre sous la barre : comme le Journal, la barre
           puis le contenu. Le nom de l'onglet est deja dans la
           navigation du bas — le repeter en 31 px coutait un tiers

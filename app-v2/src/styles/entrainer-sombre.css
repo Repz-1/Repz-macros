@@ -1,0 +1,137 @@
+/* ============================================================
+   S'ENTRAINER — direction « la salle »
+
+   La nutrition est la partie claire de l'application, l'entrainement
+   la partie sombre. Changer d'onglet devient un changement
+   d'ambiance, pas un changement de liste.
+
+   Trois raisons mesurees, pas un gout :
+   - la page etait la plus plate des dix (2,8 % de surface sombre,
+     amplitude 137 contre 223 pour le Journal) ;
+   - ses photos de salle sont a 1 % de saturation : sur du creme
+     elles font un gris moyen, sur du noir elles redeviennent de la
+     matiere ;
+   - les quatre cartes etaient le meme objet repete quatre fois —
+     icone, titre, sous-titre, bouton, photo — soit le gabarit par
+     defaut de n'importe quelle application.
+
+   Ce fichier est charge APRES entrainer.scoped.css et n'y touche
+   pas : la migration de la feuille heritee reste a faire, et le
+   retour en arriere tient en une ligne d'import.
+   ============================================================ */
+
+.pg-entrainer--sombre {
+  --bg: #14171D;
+  --card: transparent;
+  --text: #EEF1F5;
+  --text-dim: #7B8493;
+  --line: rgba(255, 255, 255, .09);
+  background: #14171D !important;
+  color: var(--text);
+  padding-bottom: calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom));
+}
+
+/* L'en-tete herite du socle clair : on ne redefinit que l'encre. */
+.pg-entrainer--sombre .j-entete .j-btn-icone svg { stroke: var(--or); }
+.pg-entrainer--sombre .j-retour svg { stroke: var(--text); }
+.pg-entrainer--sombre .j-prenom { color: var(--text); }
+
+/* ---------- L'ancrage : la semaine ---------- */
+.pg-entrainer--sombre .sem { margin: 8px 0 0; }
+.pg-entrainer--sombre .sem-kick {
+  margin: 0 0 9px; font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 10px; letter-spacing: .22em; color: var(--or);
+}
+.pg-entrainer--sombre .sem-nb {
+  margin: 0; font-size: 58px; font-weight: 700;
+  letter-spacing: -.055em; line-height: .86; color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.pg-entrainer--sombre .sem-nb em {
+  display: block; margin-top: 8px; font-style: normal;
+  font-size: 15px; font-weight: 400; letter-spacing: -.01em;
+  color: var(--text-dim);
+}
+.pg-entrainer--sombre .sem-bande { display: flex; gap: 4px; margin: 20px 0 2px; }
+.pg-entrainer--sombre .sem-jour {
+  flex: 1; height: 44px; border-radius: 6px; font-style: normal;
+  background: rgba(255, 255, 255, .055);
+  font-family: 'DM Mono', ui-monospace, monospace; font-size: 9px;
+  color: #5F6875; display: flex; align-items: flex-end;
+  justify-content: center; padding-bottom: 4px;
+}
+/* Une case remplie porte la couleur du groupe travaille : son texte
+   doit rester lisible dessus, quelle que soit cette couleur. */
+.pg-entrainer--sombre .sem-jour.faite { color: #14171D; font-weight: 500; }
+.pg-entrainer--sombre .sem-jour.auj:not(.faite) {
+  background: rgba(248, 207, 1, .14);
+  box-shadow: inset 0 0 0 1px var(--or); color: var(--or);
+}
+
+/* ---------- Les entrees : des lignes, plus des cartes ---------- */
+.pg-entrainer--sombre .choices { margin-top: 22px; border-top: 1px solid var(--line); }
+.pg-entrainer--sombre .choice.ph {
+  display: block; position: relative;
+  margin: 0; padding: 17px 82px 17px 0;
+  background-color: transparent; background-repeat: no-repeat;
+  background-size: 64px 100%; background-position: right center;
+  border: none; border-bottom: 1px solid var(--line);
+  border-radius: 0; box-shadow: none; min-height: 0;
+}
+/* Le fond de carte est pose en style en ligne par le composant : on
+   le confine a une bande de 64 px a droite, et on le durcit. Sur du
+   noir, un noir et blanc delave n'a plus besoin d'etre voile. */
+.pg-entrainer--sombre .choice.ph::after {
+  content: ''; position: absolute; top: 17px; bottom: 17px; right: 0;
+  width: 64px; border-radius: 8px;
+  background: linear-gradient(180deg, rgba(20,23,29,.15), rgba(20,23,29,.5));
+  pointer-events: none;
+}
+.pg-entrainer--sombre .choice.ph .ch-icon { display: none; }
+.pg-entrainer--sombre .choice.ph h3 {
+  margin: 5px 0 3px; font-size: 21px; font-weight: 700;
+  letter-spacing: -.032em; line-height: 1.05; color: var(--text);
+}
+.pg-entrainer--sombre .choice.ph p {
+  margin: 0; font-size: 12.5px; line-height: 1.35; color: var(--text-dim);
+}
+/* L'etiquette de nature remplace l'icone : elle dit ce qu'est
+   l'entree, la ou un pictogramme la decorait. */
+.pg-entrainer--sombre .choice.ph::before {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 9.5px; letter-spacing: .2em; color: #727B89;
+}
+.pg-entrainer--sombre .choice.ph.featured::before { content: 'SUR MESURE'; }
+.pg-entrainer--sombre .choice.ph.md::before { content: 'A LA CARTE'; }
+.pg-entrainer--sombre .choice.ph.sm::before { content: 'ARCHIVES'; }
+.pg-entrainer--sombre .choice.ph.featured h3 { color: var(--or); }
+
+/* Une seule action reste un bouton : celle qu'on veut pousser. Les
+   autres lignes sont cliquables en entier — c'est deja un <a>. */
+.pg-entrainer--sombre .choice.ph .cta { display: none; }
+.pg-entrainer--sombre .choice.ph.featured .cta {
+  display: inline-flex; margin-top: 11px; min-width: 0;
+  padding: 9px 14px; border-radius: 11px; gap: 14px;
+  background: var(--or); color: #14171D; box-shadow: none;
+}
+
+/* ---------- Le journal d'entrainement ---------- */
+.pg-entrainer--sombre .choice.ph.sm[style*="card-journal"] { padding-right: 0; }
+.pg-entrainer--sombre .choice.ph.sm[style*="card-journal"]::after { display: none; }
+.pg-entrainer--sombre .wlog-list { color: var(--text); }
+.pg-entrainer--sombre .wlog-sum-pill {
+  background: rgba(255, 255, 255, .06); color: var(--text-dim); border: none;
+}
+.pg-entrainer--sombre .wlog-cell { color: var(--text-dim); }
+.pg-entrainer--sombre .wlog-cell.seance { color: #14171D; }
+.pg-entrainer--sombre .wlog-wd, .pg-entrainer--sombre .wlog-cal-titre { color: var(--text-dim); }
+.pg-entrainer--sombre .wlog-nav { background: rgba(255,255,255,.07); color: var(--text); border: none; }
+.pg-entrainer--sombre .wlog-legende { color: var(--text-dim); }
+
+/* ---------- La phrase de bas de page ---------- */
+/* Elle etait a 2,2:1 en gris-bleu froid sur une page chaude — sous le
+   seuil de 4,5 exige pour du texte. */
+.pg-entrainer--sombre .note {
+  color: var(--text-dim); font-size: 12.5px; line-height: 1.5;
+  margin-top: 22px; text-align: left;
+}
