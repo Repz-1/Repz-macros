@@ -129,11 +129,11 @@
     background-color:#16130F; /* fond sombre si l'image tarde a charger */
     box-shadow:0 8px 22px rgba(24,24,24,.16); color:#fff;
 }
-.pg-entrainer .choice.ph::after{
-    content:''; position:absolute; inset:0; border-radius:inherit;
-    background:linear-gradient(180deg, rgba(10,10,10,.32) 0%, rgba(10,10,10,.42) 38%, rgba(10,10,10,.78) 74%, rgba(10,10,10,.92) 100%);
-    pointer-events:none;
-}
+/* Un voile sombre vertical vivait ici, herite du temps ou le texte
+   etait pose SUR la photo. Il portait le meme nom (::after) que le
+   fondu creme defini plus bas, donc il n'a jamais rien peint : le
+   second l'ecrasait entierement. Retire pour ne plus faire croire
+   qu'il agit. */
 .pg-entrainer .choice.ph > *{ position:relative; z-index:1; }
 .pg-entrainer .choice.ph .ch-icon{ display:none; }
 .pg-entrainer .choice.ph h3{ color:#fff; font-size:21px; text-shadow:0 1px 10px rgba(0,0,0,.55); }
@@ -420,14 +420,20 @@
 .pg-entrainer .choice.ph::after {
   content: ''; position: absolute; z-index: 1; inset: 0;
   border-radius: inherit; pointer-events: none;
+  /* Mesure : le fondu tenait jusqu'a 90 % de la largeur. La photo
+     n'atteignait jamais une luminance inferieure a 200 — elle etait
+     grise partout, jamais nette nulle part. Sur la reference de
+     Raci, elle devient nette des 57 %.
+     Le texte s'arrete a 50 % (max-width ci-dessous) plus la marge :
+     le voile tient jusqu'a 56 %, puis s'efface d'un coup a 70 %. */
   background: linear-gradient(90deg,
-    #FBF7F1 0%, #FBF7F1 42%, rgba(255,255,255,.92) 56%,
-    rgba(255,255,255,.42) 72%, rgba(255,255,255,0) 90%);
+    var(--carte) 0%, var(--carte) 50%, rgba(255,255,255,.88) 56%,
+    rgba(255,255,255,.30) 63%, rgba(255,255,255,0) 70%);
 }
 .pg-entrainer .choice.ph > * { position: relative; z-index: 2; }
 
 .pg-entrainer .choice.ph h3,
-.pg-entrainer .choice.ph > p { max-width: 55%; }
+.pg-entrainer .choice.ph > p { max-width: 50%; }
 
 .pg-entrainer .choice.ph .ch-icon {
   display: flex; align-items: center; justify-content: center;

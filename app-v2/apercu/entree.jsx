@@ -34,6 +34,7 @@ import { StatsAvancees } from '../src/components/StatsAvancees.jsx';
 import { BelfitPlus } from '../src/components/BelfitPlus.jsx';
 import { Reglages } from '../src/components/Reglages.jsx';
 import { PremiumPage, estPremium } from '../src/components/PremiumPage.jsx';
+import { ongletActif } from '../src/components/BottomNav.jsx';
 import { TdeeCalculator } from '../src/components/TdeeCalculator.jsx';
 import { BottomNav } from '../src/components/BottomNav.jsx';
 
@@ -82,6 +83,15 @@ function semer() {
   donneesPretes.value = true;
 }
 
+/* Certaines pages ne montrent leur contenu que si leur onglet est
+   actif : S'entrainer ne charge ses photos de fond qu'a la condition
+   ongletActif === 'entrainer'. Sans ca l'apercu rendait la page
+   entierement sans images — et declarait « photo nette : jamais »
+   avant comme apres correction. Une fixture qui ne reproduit pas le
+   contexte ne mesure rien. */
+const ONGLET = { journal: 'journal', entrainer: 'entrainer', stats: 'stats',
+                 courses: 'courses', plus: 'plus', premium: 'premium' };
+
 const PAGES = {
   journal:   () => <OngletJournal />,
   besoins:   () => <Besoins />,
@@ -101,6 +111,7 @@ export const NOMS = Object.keys(PAGES);
 
 semer();
 const demande = new URLSearchParams(location.search).get('p') || 'journal';
+ongletActif.value = ONGLET[demande] || 'journal';
 const page = PAGES[demande];
 const cible = document.getElementById('apercu');
 if (!page) {
