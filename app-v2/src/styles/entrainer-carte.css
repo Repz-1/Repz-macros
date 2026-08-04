@@ -1,178 +1,154 @@
 /* ============================================================
-   S'ENTRAINER — reproduction de la maquette fournie par Raci
+   S'ENTRAINER — d'apres la specification exacte de la maquette
 
-   Releves sur son image (941 x 1672, soit 2,41 px par px CSS) :
-     fond de page      #F1E8DE
-     cartes sombres    degrade #2F2A25 -> #1C1916
-     cartes claires    #F2ECE0 legerement nuance
-     bouton dore       #E8B84B
-     bouton sombre     #24211D
-     cadre des cartes  filet clair + ombre portee douce
+   Toutes les valeurs viennent du cahier des charges fourni par
+   Raci, converties de l'artboard 941 px vers un ecran de 390 px
+   CSS (echelle 2,41) :
 
-   LE POINT QUE J'AVAIS RATE : la coupe de la photo n'est pas la meme
-   partout. Les cartes SOMBRES ont une coupe ANGULAIRE, un biseau
-   droit. Les cartes CLAIRES ont une coupe COURBE, en demi-ellipse.
-   C'est ce contraste de decoupe, autant que l'alternance de fond,
-   qui distingue les rubriques.
+     marges laterales     74 px  ->  30,7
+     largeur de carte    793 px  ->  328,7   (ratio 2,36)
+     rayon des coins      34 px  ->  14
+     espacement           26 px  ->  11
+     padding interne      40 px  ->  16,6
+     zone texte          315 px  ->  40 % de la carte
+     zone image          390 px  ->  49 % de la carte
+     pastille             54 px  ->  22,4, rayon 6,6
+     bouton              220x60  ->  91 x 25, rayon 8,3
 
-   La photo etant posee en fond de carte par le composant (style en
-   ligne), elle n'est pas decoupable : on repose la couleur de la
-   carte par-dessus, a gauche, et c'est CE calque qui porte la forme.
+   DEUX ECARTS ASSUMES, et je les note pour qu'ils soient discutes
+   plutot que subis :
+
+   1. LES CORPS DE TEXTE. La spec donne 34 px de titre et 20 px de
+      corps sur l'artboard, soit 14 et 8,3 px CSS. A 8,3 px un texte
+      n'est pas lisible sur un telephone : l'artboard est un concept
+      a 2,4x, pas un ecran. Titre a 15 px, corps a 11,5 px — le plus
+      petit qui reste confortable.
+   2. LA HAUTEUR. Avec des textes lisibles, le contenu ne tient pas
+      dans un ratio de 2,36. Cible retenue : 2,15 environ.
+
+   LA SEPARATION EST UNE COURBE SUR LES QUATRE CARTES. La spec le dit
+   explicitement — « une grande courbe sculptee, douce, elegante,
+   comme une decoupe fluide entre matiere et photo ». J'avais code
+   une diagonale sur les cartes sombres : erreur.
    ============================================================ */
 
 .pg-entrainer--carte {
-  --page: #F1E8DE;
-  --sombre-h: #2F2A25;
-  --sombre-b: #1C1916;
-  --clair: #F2ECE0;
-  --or-ref: #E8B84B;
-  --noir-btn: #24211D;
-  background: var(--page) !important;
-  padding-bottom: calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom));
+  --creme-page: #F6F0E6;
+  --or-belfit: #C9971A;
+  --jaune-btn: #F3C32C;
+  --blanc-casse: #F7F3EC;
+  --gris-chaud: #8D8378;
+  background: linear-gradient(180deg, #F7F1E7, #F5EFE4) !important;
+  padding: 0 16px calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom));
 }
 
-.pg-entrainer--carte .j-entete .j-btn-icone svg { stroke: var(--or-trait); }
-.pg-entrainer--carte .j-retour svg { stroke: var(--or-trait); }
-.pg-entrainer--carte .j-prenom { color: var(--encre); font-weight: 700; }
+.pg-entrainer--carte .j-entete .j-btn-icone svg { stroke: var(--or-belfit); }
+.pg-entrainer--carte .j-retour svg { stroke: var(--or-belfit); }
+.pg-entrainer--carte .j-prenom { color: #2C2A28; font-weight: 700; }
 
 /* ---------- La carte ---------- */
 .pg-entrainer--carte .choice.ph {
   position: relative; overflow: hidden;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, .55);
-  /* 148 px de haut sur la maquette. La mienne montait a 200 : trop de
-     marges, titre trop gros, description sur trois lignes. */
-  padding: 15px 16px 15px;
-  margin-bottom: 13px;
+  border-radius: 14px; border: none;
+  padding: 14px 15px;
+  margin: 0 0 11px;
   background-size: cover; background-position: right center;
-  box-shadow: 0 1px 0 rgba(255,255,255,.7) inset,
-              0 3px 10px rgba(110, 85, 50, .10),
-              0 16px 34px rgba(110, 85, 50, .13);
+  box-shadow: 0 1px 0 rgba(255,255,255,.55) inset,
+              0 10px 30px rgba(45, 30, 10, .12);
 }
-.pg-entrainer--carte .choice.ph.ch-libre,
-.pg-entrainer--carte .choice.ph.ch-archives { background-color: var(--sombre-b); }
-.pg-entrainer--carte .choice.ph.ch-prog,
-.pg-entrainer--carte .choice.ph.ch-journal { background-color: var(--clair); }
+.pg-entrainer--carte .choice.ph.ch-libre {
+  background-color: #1F1A17;
+  box-shadow: 0 0 0 1px rgba(201, 151, 26, .22),
+              0 10px 30px rgba(45, 30, 10, .12);
+}
+.pg-entrainer--carte .choice.ph.ch-prog { background-color: #F2E8D8; }
+.pg-entrainer--carte .choice.ph.ch-archives { background-color: #2C2824; }
+.pg-entrainer--carte .choice.ph.ch-journal { background-color: #EFE3D0; }
 
-/* La feuille heritee peint un fondu creme en ::after sur toute la
-   carte. Il masquait le calque de forme et blanchissait les cartes
-   sombres : ici c'est ::before qui porte la forme, ::after n'a plus
-   d'objet. */
-/* La feuille heritee peignait un fondu creme en ::after sur toute la
-   carte. On le remplace au lieu de le masquer : il sert desormais a
-   RECHAUFFER la photo. Les photos de Raci sont grises — saturation
-   mesuree entre 1 et 12 % — alors que sa maquette montre une salle
-   baignee de lumiere doree. Un voile or en fusion « soft-light »
-   donne cette atmosphere sans retoucher une seule image. */
+/* ---------- La courbe de separation ----------
+   La photo est posee en fond de carte par le composant : on repose
+   la matiere de la carte par-dessus, a gauche, et c'est ce calque
+   qui porte la courbe. Rayon horizontal court, vertical plein : la
+   courbe s'etale sur toute la hauteur au lieu de se refermer. */
+.pg-entrainer--carte .choice.ph::before {
+  content: ''; position: absolute; inset: -1px 49% -1px -1px; z-index: 0;
+  border-radius: 14px 22% 22% 14px / 14px 50% 50% 14px;
+  pointer-events: none;
+}
+.pg-entrainer--carte .ch-libre::before    { background: linear-gradient(150deg, #2A2320, #1F1A17 75%); }
+.pg-entrainer--carte .ch-prog::before     { background: linear-gradient(150deg, #F7EEDF, #F2E8D8 72%); }
+.pg-entrainer--carte .ch-archives::before { background: linear-gradient(150deg, #4A433E, #2C2824 78%); }
+.pg-entrainer--carte .ch-journal::before  { background: linear-gradient(150deg, #F5EADA, #EFE3D0 72%); }
+
+/* Voile chaud sur la photo : les images de Raci sont grises
+   (saturation mesuree entre 1 et 12 %), la maquette montre une
+   lumiere doree. Fusion soft-light, aucune image retouchee. */
 .pg-entrainer--carte .choice.ph::after {
   content: ''; position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(115deg,
-    rgba(232, 184, 75, 0) 30%, rgba(232, 184, 75, .38) 62%, rgba(255, 214, 120, .55) 100%);
+    rgba(201, 151, 26, 0) 34%, rgba(201, 151, 26, .40) 64%, rgba(255, 214, 120, .58) 100%);
   mix-blend-mode: soft-light; pointer-events: none;
 }
 
-/* ---------- Le calque de forme ---------- */
-.pg-entrainer--carte .choice.ph::before {
-  content: ''; position: absolute; inset: -1px 30% -1px -1px; z-index: 0;
-  pointer-events: none;
-}
-/* Cartes sombres : biseau droit, angulaire. */
-.pg-entrainer--carte .choice.ph.ch-libre::before,
-.pg-entrainer--carte .choice.ph.ch-archives::before {
-  background: linear-gradient(150deg, var(--sombre-h), var(--sombre-b) 78%);
-  /* Relevee sur la maquette : une diagonale DOUCE qui penche vers la
-     droite en descendant — pas un biseau vertical. Le fond sombre
-     gagne du terrain vers le bas. */
-  /* Sur la maquette, le fond sombre forme une POINTE vers la droite a
-     mi-hauteur, avec un pan coupe en haut et en bas — pas une simple
-     diagonale. C'est cette pointe qui donne son caractere a la carte. */
-  /* RELEVE sur la carte « Seance libre » de Raci (402 x 212), en
-     scrutant depuis le bord droit pour eviter le texte : le bord de
-     la photo est a 50 % de la carte en haut et descend a 63 % en
-     bas. C'est une diagonale simple qui penche a DROITE — j'avais
-     code une pointe vers la droite a mi-hauteur, ce qui refermait la
-     forme au mauvais endroit.
-     Le calque couvre 70 % de la carte : 50/70 = 71 % en haut,
-     63/70 = 90 % en bas. */
-  clip-path: polygon(0 0, 71% 0, 90% 100%, 0 100%);
-}
-/* Cartes claires : coupe courbe, demi-ellipse. */
-.pg-entrainer--carte .choice.ph.ch-prog::before,
-.pg-entrainer--carte .choice.ph.ch-journal::before {
-  background: linear-gradient(150deg, #FAF6EE, var(--clair) 70%);
-  /* 58 % de rayon horizontal donnait un disque qui mangeait la carte.
-     Sur la maquette l'arc est DOUX : rayon horizontal court (16 %),
-     rayon vertical plein (50 %), ce qui etale la courbe sur toute la
-     hauteur au lieu de la refermer en cercle. */
-  border-radius: 24px 16% 16% 24px / 24px 50% 50% 24px;
-}
-
-/* ---------- Le texte ---------- */
+/* ---------- Contenu ---------- */
 .pg-entrainer--carte .choice.ph > * { position: relative; z-index: 2; }
-.pg-entrainer--carte .choice.ph h3 {
-  font-size: 18.5px; font-weight: 700; letter-spacing: -.03em;
-  line-height: 1.15; margin: 0 0 5px; max-width: 50%; min-height: 0;
-}
-.pg-entrainer--carte .choice.ph > p {
-  font-size: 12px; line-height: 1.38; margin: 0 0 12px;
-  max-width: 50%; min-height: 0;
-}
-.pg-entrainer--carte .choice.ph.ch-libre h3,
-.pg-entrainer--carte .choice.ph.ch-archives h3 { color: #FBF7EE; }
-.pg-entrainer--carte .choice.ph.ch-libre > p,
-.pg-entrainer--carte .choice.ph.ch-archives > p { color: #C3BAAD; }
-.pg-entrainer--carte .choice.ph.ch-prog h3,
-.pg-entrainer--carte .choice.ph.ch-journal h3 { color: #1F1B16; }
-.pg-entrainer--carte .choice.ph.ch-prog > p,
-.pg-entrainer--carte .choice.ph.ch-journal > p { color: #6B6154; }
-
-/* ---------- Les pastilles ----------
-   Presentes sur la maquette, une par carte. Celle du programme est
-   posee EN HAUT A DROITE, sur la photo — seule exception, relevee
-   sur l'image. */
 .pg-entrainer--carte .choice.ph .ch-icon {
-  display: flex; position: absolute; top: 14px; left: 16px;
-  width: 38px; height: 38px; border-radius: 12px; margin: 0; z-index: 3;
+  display: flex; position: absolute; top: 12px; left: 15px;
+  width: 32px; height: 32px; border-radius: 10px; margin: 0; z-index: 3;
   align-items: center; justify-content: center;
-  box-shadow: 0 3px 10px rgba(30, 22, 10, .18);
+  box-shadow: 0 2px 8px rgba(45, 30, 10, .16);
 }
-.pg-entrainer--carte .choice.ph .ch-icon svg { width: 18px; height: 18px; }
-.pg-entrainer--carte .ch-libre .ch-icon { background: linear-gradient(150deg, #F6DE9A, var(--or-ref)); }
-.pg-entrainer--carte .ch-libre .ch-icon svg { stroke: #4A3A10; }
-.pg-entrainer--carte .choice.ph.ch-prog .ch-icon { left: auto; right: 16px; background: #FBF8F2; }
-.pg-entrainer--carte .choice.ph.ch-prog .ch-icon svg { stroke: #4A3A10; }
-.pg-entrainer--carte .ch-archives .ch-icon,
-.pg-entrainer--carte .ch-journal .ch-icon { background: #FBF8F2; }
-.pg-entrainer--carte .ch-archives .ch-icon svg,
-.pg-entrainer--carte .ch-journal .ch-icon svg { stroke: #3A332A; }
+.pg-entrainer--carte .choice.ph .ch-icon svg { width: 16px; height: 16px; }
+.pg-entrainer--carte .ch-libre .ch-icon { background: #F4E8D2; }
+.pg-entrainer--carte .ch-libre .ch-icon svg { stroke: var(--or-belfit); }
+.pg-entrainer--carte .ch-archives .ch-icon { background: #F5EEE3; }
+.pg-entrainer--carte .ch-archives .ch-icon svg { stroke: #1F1D1B; }
+.pg-entrainer--carte .ch-journal .ch-icon { background: #F7F1E6; }
+.pg-entrainer--carte .ch-journal .ch-icon svg { stroke: #2A2724; }
+/* Carte 2 : pastille dans l'angle SUPERIEUR DROIT, la spec l'exige. */
+.pg-entrainer--carte .choice.ph.ch-prog .ch-icon {
+  left: auto; right: 15px; background: #FBF7F0;
+}
+.pg-entrainer--carte .choice.ph.ch-prog .ch-icon svg { stroke: #22201E; }
 
-/* Le titre descend sous la pastille. */
-.pg-entrainer--carte .choice.ph h3 { margin-top: 42px; }
-.pg-entrainer--carte .choice.ph.ch-prog h3 { margin-top: 4px; }
+.pg-entrainer--carte .choice.ph h3 {
+  font-size: 15px; font-weight: 700; letter-spacing: -.02em;
+  line-height: 1.16; margin: 38px 0 4px; max-width: 44%; min-height: 0;
+}
+.pg-entrainer--carte .choice.ph.ch-prog h3 { margin-top: 2px; }
+.pg-entrainer--carte .choice.ph > p {
+  font-size: 11.5px; line-height: 1.42; margin: 0 0 10px;
+  max-width: 44%; min-height: 0;
+}
+.pg-entrainer--carte .choice.ph.ch-libre h3 { color: var(--blanc-casse); }
+.pg-entrainer--carte .choice.ph.ch-libre > p { color: #D2C8BA; }
+.pg-entrainer--carte .choice.ph.ch-archives h3 { color: #F4F0E8; }
+.pg-entrainer--carte .choice.ph.ch-archives > p { color: #D5CCC1; }
+.pg-entrainer--carte .choice.ph.ch-prog h3 { color: #24211E; }
+.pg-entrainer--carte .choice.ph.ch-prog > p { color: #5E554D; }
+.pg-entrainer--carte .choice.ph.ch-journal h3 { color: #25221F; }
+.pg-entrainer--carte .choice.ph.ch-journal > p { color: #61574F; }
 
-/* ---------- Les boutons ---------- */
+/* ---------- Boutons ---------- */
 .pg-entrainer--carte .cta {
   display: inline-flex; align-items: center; justify-content: space-between;
-  /* max-width forcait « Creer ma seance » sur deux lignes et
-     rallongeait la carte. Sur la maquette il tient sur une ligne et
-     deborde legerement sous la photo — d'ou nowrap et pas de
-     plafond de largeur. */
-  gap: 14px; min-width: 0; white-space: nowrap; width: auto; max-width: none;
-  padding: 12px 19px; border-radius: 999px;
-  font-size: 13.5px; font-weight: 700; border: none; position: relative; z-index: 3;
+  gap: 14px; min-width: 0; width: auto; max-width: none; white-space: nowrap;
+  padding: 8px 14px; border-radius: 9px;
+  font-size: 12.5px; font-weight: 700; border: none;
+  position: relative; z-index: 3;
 }
 .pg-entrainer--carte .ch-libre .cta {
-  background: linear-gradient(150deg, #F3CF74, var(--or-ref));
-  color: #3A2C08; box-shadow: 0 4px 14px rgba(200, 150, 40, .38);
+  background: var(--jaune-btn); color: #1A1816;
+  box-shadow: 0 3px 12px rgba(201, 151, 26, .34);
 }
-.pg-entrainer--carte .ch-prog .cta,
-.pg-entrainer--carte .ch-archives .cta,
-.pg-entrainer--carte .ch-journal .cta {
-  background: var(--noir-btn); color: #FBF7EE;
-  box-shadow: 0 4px 14px rgba(30, 24, 16, .26);
-}
+.pg-entrainer--carte .ch-prog .cta { background: #2A2420; color: var(--blanc-casse); }
+.pg-entrainer--carte .ch-archives .cta { background: #2C2623; color: #F6F3EC; }
+.pg-entrainer--carte .ch-journal .cta { background: #2B2521; color: var(--blanc-casse); }
 
 /* ---------- Calendrier et bas de page ---------- */
 .pg-entrainer--carte .ch-journal .wlog-list { background: rgba(255,255,255,.6); }
-.pg-entrainer--carte .wlog-sum-pill { background: rgba(33,30,26,.06); color: var(--encre-2); border: none; }
-.pg-entrainer--carte .note { color: #8A8073; }
+.pg-entrainer--carte .wlog-sum-pill { background: rgba(45,30,10,.06); color: #61574F; border: none; }
+.pg-entrainer--carte .note {
+  color: var(--gris-chaud); font-size: 11.5px; line-height: 1.55;
+  max-width: 258px; margin: 18px auto 0; text-align: center;
+}
