@@ -42,7 +42,7 @@
   border: 1px solid rgba(255, 255, 255, .55);
   /* 148 px de haut sur la maquette. La mienne montait a 200 : trop de
      marges, titre trop gros, description sur trois lignes. */
-  padding: 14px 16px 14px;
+  padding: 12px 15px 12px;
   margin-bottom: 13px;
   background-size: cover; background-position: right center;
   box-shadow: 0 1px 0 rgba(255,255,255,.7) inset,
@@ -83,23 +83,30 @@
   /* Relevee sur la maquette : une diagonale DOUCE qui penche vers la
      droite en descendant — pas un biseau vertical. Le fond sombre
      gagne du terrain vers le bas. */
-  clip-path: polygon(0 0, 84% 0, 100% 100%, 0 100%);
+  /* Sur la maquette, le fond sombre forme une POINTE vers la droite a
+     mi-hauteur, avec un pan coupe en haut et en bas — pas une simple
+     diagonale. C'est cette pointe qui donne son caractere a la carte. */
+  clip-path: polygon(0 0, 78% 0, 100% 42%, 100% 58%, 78% 100%, 0 100%);
 }
 /* Cartes claires : coupe courbe, demi-ellipse. */
 .pg-entrainer--carte .choice.ph.ch-prog::before,
 .pg-entrainer--carte .choice.ph.ch-journal::before {
   background: linear-gradient(150deg, #FAF6EE, var(--clair) 70%);
-  border-radius: 24px 58% 58% 24px / 24px 50% 50% 24px;
+  /* 58 % de rayon horizontal donnait un disque qui mangeait la carte.
+     Sur la maquette l'arc est DOUX : rayon horizontal court (16 %),
+     rayon vertical plein (50 %), ce qui etale la courbe sur toute la
+     hauteur au lieu de la refermer en cercle. */
+  border-radius: 24px 16% 16% 24px / 24px 50% 50% 24px;
 }
 
 /* ---------- Le texte ---------- */
 .pg-entrainer--carte .choice.ph > * { position: relative; z-index: 2; }
 .pg-entrainer--carte .choice.ph h3 {
-  font-size: 18px; font-weight: 700; letter-spacing: -.03em;
-  line-height: 1.15; margin: 0 0 5px; max-width: 52%; min-height: 0;
+  font-size: 17px; font-weight: 700; letter-spacing: -.03em;
+  line-height: 1.12; margin: 0 0 4px; max-width: 52%; min-height: 0;
 }
 .pg-entrainer--carte .choice.ph > p {
-  font-size: 12px; line-height: 1.38; margin: 0 0 10px;
+  font-size: 11.5px; line-height: 1.34; margin: 0 0 9px;
   max-width: 52%; min-height: 0;
 }
 .pg-entrainer--carte .choice.ph.ch-libre h3,
@@ -117,23 +124,23 @@
    sur l'image. */
 .pg-entrainer--carte .choice.ph .ch-icon {
   display: flex; position: absolute; top: 14px; left: 16px;
-  width: 38px; height: 38px; border-radius: 12px; margin: 0; z-index: 3;
+  width: 34px; height: 34px; border-radius: 11px; margin: 0; z-index: 3;
   align-items: center; justify-content: center;
   box-shadow: 0 3px 10px rgba(30, 22, 10, .18);
 }
 .pg-entrainer--carte .choice.ph .ch-icon svg { width: 18px; height: 18px; }
 .pg-entrainer--carte .ch-libre .ch-icon { background: linear-gradient(150deg, #F6DE9A, var(--or-ref)); }
 .pg-entrainer--carte .ch-libre .ch-icon svg { stroke: #4A3A10; }
-.pg-entrainer--carte .ch-prog .ch-icon { left: auto; right: 20px; background: #FBF8F2; }
-.pg-entrainer--carte .ch-prog .ch-icon svg { stroke: #4A3A10; }
+.pg-entrainer--carte .choice.ph.ch-prog .ch-icon { left: auto; right: 16px; background: #FBF8F2; }
+.pg-entrainer--carte .choice.ph.ch-prog .ch-icon svg { stroke: #4A3A10; }
 .pg-entrainer--carte .ch-archives .ch-icon,
 .pg-entrainer--carte .ch-journal .ch-icon { background: #FBF8F2; }
 .pg-entrainer--carte .ch-archives .ch-icon svg,
 .pg-entrainer--carte .ch-journal .ch-icon svg { stroke: #3A332A; }
 
 /* Le titre descend sous la pastille. */
-.pg-entrainer--carte .choice.ph h3 { margin-top: 44px; }
-.pg-entrainer--carte .ch-prog h3 { margin-top: 4px; }
+.pg-entrainer--carte .choice.ph h3 { margin-top: 38px; }
+.pg-entrainer--carte .choice.ph.ch-prog h3 { margin-top: 4px; }
 
 /* ---------- Les boutons ---------- */
 .pg-entrainer--carte .cta {
@@ -142,9 +149,9 @@
      rallongeait la carte. Sur la maquette il tient sur une ligne et
      deborde legerement sous la photo — d'ou nowrap et pas de
      plafond de largeur. */
-  gap: 14px; min-width: 0; white-space: nowrap;
-  padding: 11px 17px; border-radius: 999px;
-  font-size: 13.5px; font-weight: 700; border: none; position: relative; z-index: 3;
+  gap: 14px; min-width: 0; white-space: nowrap; width: auto; max-width: none;
+  padding: 10px 16px; border-radius: 999px;
+  font-size: 13px; font-weight: 700; border: none; position: relative; z-index: 3;
 }
 .pg-entrainer--carte .ch-libre .cta {
   background: linear-gradient(150deg, #F3CF74, var(--or-ref));
