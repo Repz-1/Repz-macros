@@ -42,7 +42,7 @@
   border: 1px solid rgba(255, 255, 255, .55);
   /* 148 px de haut sur la maquette. La mienne montait a 200 : trop de
      marges, titre trop gros, description sur trois lignes. */
-  padding: 18px 17px 18px;
+  padding: 15px 16px 15px;
   margin-bottom: 13px;
   background-size: cover; background-position: right center;
   box-shadow: 0 1px 0 rgba(255,255,255,.7) inset,
@@ -73,7 +73,7 @@
 
 /* ---------- Le calque de forme ---------- */
 .pg-entrainer--carte .choice.ph::before {
-  content: ''; position: absolute; inset: -1px 40% -1px -1px; z-index: 0;
+  content: ''; position: absolute; inset: -1px 30% -1px -1px; z-index: 0;
   pointer-events: none;
 }
 /* Cartes sombres : biseau droit, angulaire. */
@@ -86,7 +86,15 @@
   /* Sur la maquette, le fond sombre forme une POINTE vers la droite a
      mi-hauteur, avec un pan coupe en haut et en bas — pas une simple
      diagonale. C'est cette pointe qui donne son caractere a la carte. */
-  clip-path: polygon(0 0, 78% 0, 100% 42%, 100% 58%, 78% 100%, 0 100%);
+  /* RELEVE sur la carte « Seance libre » de Raci (402 x 212), en
+     scrutant depuis le bord droit pour eviter le texte : le bord de
+     la photo est a 50 % de la carte en haut et descend a 63 % en
+     bas. C'est une diagonale simple qui penche a DROITE — j'avais
+     code une pointe vers la droite a mi-hauteur, ce qui refermait la
+     forme au mauvais endroit.
+     Le calque couvre 70 % de la carte : 50/70 = 71 % en haut,
+     63/70 = 90 % en bas. */
+  clip-path: polygon(0 0, 71% 0, 90% 100%, 0 100%);
 }
 /* Cartes claires : coupe courbe, demi-ellipse. */
 .pg-entrainer--carte .choice.ph.ch-prog::before,
@@ -103,11 +111,11 @@
 .pg-entrainer--carte .choice.ph > * { position: relative; z-index: 2; }
 .pg-entrainer--carte .choice.ph h3 {
   font-size: 18.5px; font-weight: 700; letter-spacing: -.03em;
-  line-height: 1.15; margin: 0 0 6px; max-width: 52%; min-height: 0;
+  line-height: 1.15; margin: 0 0 5px; max-width: 50%; min-height: 0;
 }
 .pg-entrainer--carte .choice.ph > p {
-  font-size: 12.5px; line-height: 1.42; margin: 0 0 14px;
-  max-width: 52%; min-height: 0;
+  font-size: 12px; line-height: 1.38; margin: 0 0 12px;
+  max-width: 50%; min-height: 0;
 }
 .pg-entrainer--carte .choice.ph.ch-libre h3,
 .pg-entrainer--carte .choice.ph.ch-archives h3 { color: #FBF7EE; }
@@ -139,7 +147,7 @@
 .pg-entrainer--carte .ch-journal .ch-icon svg { stroke: #3A332A; }
 
 /* Le titre descend sous la pastille. */
-.pg-entrainer--carte .choice.ph h3 { margin-top: 46px; }
+.pg-entrainer--carte .choice.ph h3 { margin-top: 42px; }
 .pg-entrainer--carte .choice.ph.ch-prog h3 { margin-top: 4px; }
 
 /* ---------- Les boutons ---------- */
