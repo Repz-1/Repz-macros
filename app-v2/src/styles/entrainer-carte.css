@@ -46,9 +46,13 @@
   border-radius: 12px;
   border: 1px solid rgba(170, 135, 70, .16);
   padding: 13px 13px 13px;
-  margin: 0 0 8px;
+  margin: 0 0 13px;
   background-size: cover; background-position: right center;
-  box-shadow: 0 10px 28px rgba(58, 43, 24, .10),
+  /* Sur la maquette, chaque carte est cernee d'un liseré clair qui la
+     detache du fond comme un passe-partout. C'est lui qui donne le
+     cote « objet pose » plutot que « bloc colle ». */
+  box-shadow: 0 0 0 3px rgba(255, 253, 246, .92),
+              0 10px 28px rgba(58, 43, 24, .12),
               0 2px 5px rgba(40, 30, 20, .05);
 }
 
@@ -82,7 +86,18 @@
    et blanchit les cartes sombres — texte blanc sur fond blanc. Piege
    rencontre trois fois : la regle est loin dans le fichier herite et
    ne se voit pas quand on ecrit une nouvelle feuille. */
-.pg-entrainer--carte .choice.ph::after { display: none; }
+/* ::after ne masque plus, il SERT : voile dore chaud sur la photo.
+   Les images de Raci sont grises — saturation entre 1 et 12 % — alors
+   que sa maquette baigne dans une lumiere doree : 17,6 % sur la page
+   entiere contre 12,0 chez moi apres la reecriture. J'avais ce voile
+   et je l'ai perdu en reecrivant la feuille : regression corrigee.
+   Fusion soft-light, aucune image retouchee. */
+.pg-entrainer--carte .choice.ph::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(112deg,
+    rgba(201, 147, 22, 0) 38%, rgba(201, 147, 22, .34) 66%, rgba(255, 214, 120, .48) 100%);
+  mix-blend-mode: soft-light; pointer-events: none;
+}
 
 /* ---------- Contenu ---------- */
 .pg-entrainer--carte .choice.ph > * { position: relative; z-index: 2; }
