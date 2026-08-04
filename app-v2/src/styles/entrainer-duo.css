@@ -51,12 +51,24 @@
    en fond par le composant — puis fond sa propre couleur en mode
    screen. Le texte vit au-dessus (z-index 2 pose par le socle), il
    n'est pas touche. ::after garde le fondu vers la carte. */
+/* DEUX ERREURS CORRIGEES ICI, trouvees en mesurant les pixels reels
+   et non les couleurs declarees — le contraste tombait a 1,9:1.
+
+   1. Le mode « screen » ECLAIRCIT toujours. Sur un theme sombre il
+      remontait le fond sous le texte clair. « color » transfere la
+      teinte et la saturation en gardant la luminance : la photo se
+      colore sans s'eclaircir.
+   2. Les z-index. Le socle pose z-index 2 sur les enfants de la
+      carte, donc sur le texte. ::after portait 2 lui aussi et, etant
+      genere apres les enfants, il peignait PAR-DESSUS le texte : le
+      voile passait devant les lettres au lieu de passer derriere.
+      ::before 0, ::after 1, texte 2. */
 .pg-entrainer--duo .choice.ph::before {
-  content: ''; position: absolute; inset: 0; z-index: 1;
+  content: ''; position: absolute; inset: 0; z-index: 0;
   border-radius: inherit; pointer-events: none;
-  -webkit-backdrop-filter: grayscale(1) contrast(1.18);
-  backdrop-filter: grayscale(1) contrast(1.18);
-  mix-blend-mode: screen;
+  -webkit-backdrop-filter: grayscale(1) contrast(1.12);
+  backdrop-filter: grayscale(1) contrast(1.12);
+  mix-blend-mode: color;
 }
 .pg-entrainer--duo .ch-libre::before    { background: linear-gradient(120deg, #8A6E00, #2A1F00); }
 .pg-entrainer--duo .ch-prog::before     { background: linear-gradient(300deg, #7A0C10, #240304); }
@@ -64,10 +76,10 @@
 .pg-entrainer--duo .ch-journal::before  { background: linear-gradient(120deg, #6B4600, #1A1207); }
 
 .pg-entrainer--duo .choice.ph::after {
-  z-index: 2;
+  z-index: 1;
   background: linear-gradient(90deg,
-    var(--carte-duo) 0%, rgba(26,23,18,.96) 22%,
-    rgba(26,23,18,.42) 54%, rgba(26,23,18,0) 78%);
+    var(--carte-duo) 0%, var(--carte-duo) 40%,
+    rgba(26,23,18,.90) 56%, rgba(26,23,18,.35) 68%, rgba(26,23,18,0) 82%);
 }
 
 /* ---------- Compositions : une par rubrique ----------
@@ -77,8 +89,8 @@
 .pg-entrainer--duo .ch-prog { background-position: left center; }
 .pg-entrainer--duo .ch-prog::after {
   background: linear-gradient(270deg,
-    var(--carte-duo) 0%, rgba(26,23,18,.96) 22%,
-    rgba(26,23,18,.42) 54%, rgba(26,23,18,0) 78%);
+    var(--carte-duo) 0%, var(--carte-duo) 40%,
+    rgba(26,23,18,.90) 56%, rgba(26,23,18,.35) 68%, rgba(26,23,18,0) 82%);
 }
 .pg-entrainer--duo .ch-prog h3,
 .pg-entrainer--duo .ch-prog > p { margin-left: auto; text-align: right; }
