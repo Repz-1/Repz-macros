@@ -28,7 +28,7 @@ function fond(fichier) {
   return fondsVus ? `background-image:url('/img/${fichier}')` : '';
 }
 import '../legacy/entrainer.scoped.css';
-import '../styles/entrainer-duo.css';
+import '../styles/entrainer-carte.css';
 
 // ==========================================================
 // PAGE S'ENTRAINER — portage a l'identique de entrainements.html.
@@ -256,7 +256,7 @@ export function Entrainer() {
   const lockedProgs = '';
 
   return (
-    <div class="pg-entrainer pg-entrainer--duo">
+    <div class="pg-entrainer pg-entrainer--carte">
       <Entete retour />
       {/* Pas de bloc-titre sous la barre : comme le Journal, la barre
           puis le contenu. Le nom de l'onglet est deja dans la
