@@ -42,8 +42,6 @@
 .pg-entrainer .wlog-nav{ width:32px; height:32px; border-radius:50%; border:none; background:var(--fond); color:#16130F; font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .pg-entrainer .wlog-nav:active{ transform:scale(.94); }
 .pg-entrainer .wlog-nav.off{ opacity:.3; }
-.pg-entrainer .wlog-nav.info{ font-size:13px; font-style:italic; font-family:Georgia, serif; }
-.pg-entrainer .wlog-nav.info.actif{ background:#F86A0C; color:#fff; }
 .pg-entrainer .wlog-more{ position:absolute; top:-3px; right:-3px; width:13px; height:13px; border-radius:50%; background:#fff; color:#334155; font-size:10px; font-weight:800; font-style:normal; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.2); }
 .pg-entrainer .wlog-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:7px 4px; padding-bottom:8px; }
 .pg-entrainer .wlog-wd{ text-align:center; font-size:10.5px; font-weight:800; color:#8A8279; }

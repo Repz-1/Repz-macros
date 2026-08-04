@@ -67,12 +67,6 @@ const nomMuscle = (k) => t('mus_' + k);
 function JournalEntrainement({ ouvrirJour }) {
   const [ouvert, setOuvert] = useState(false);
   const [offset, setOffset] = useState(0);
-  // La legende etait repliee derriere un bouton « i ». Un calendrier
-  // ou neuf pastilles de couleur ne veulent rien dire tant qu'on n'a
-  // pas trouve un bouton de 32 px echoue a la seule chose qu'il doit
-  // faire. Elle s'affiche desormais avec la grille ; le bouton reste
-  // pour la replier quand on n'en a plus besoin.
-  const [legende, setLegende] = useState(true);
 
   const log = muscleLog.value;
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -153,12 +147,8 @@ function JournalEntrainement({ ouvrirJour }) {
         <div class="wlog-cal-head">
           <button class="wlog-nav" onClick={(e) => { e.stopPropagation(); setOffset(offset - 1); }}>‹</button>
           <div class="wlog-cal-titre">{titre}</div>
-          <div style="display:flex;gap:6px;">
-            <button class={'wlog-nav info' + (legende ? ' actif' : '')}
-              onClick={(e) => { e.stopPropagation(); setLegende(!legende); }}>i</button>
-            <button class={'wlog-nav' + (offset === 0 ? ' off' : '')}
-              onClick={(e) => { e.stopPropagation(); if (offset < 0) setOffset(offset + 1); }}>›</button>
-          </div>
+          <button class={'wlog-nav' + (offset === 0 ? ' off' : '')}
+            onClick={(e) => { e.stopPropagation(); if (offset < 0) setOffset(offset + 1); }}>›</button>
         </div>
 
         <div class="wlog-grid">
@@ -166,15 +156,17 @@ function JournalEntrainement({ ouvrirJour }) {
           {cellules}
         </div>
 
-        {legende && (
-          <div class="wlog-legende">
-            {GROUPES.filter(g => COULEUR[g.k]).map(g => (
-              <span key={g.k}><i class="dot" style={{ background: COULEUR[g.k] }} />{nomMuscle(g.k)}</span>
-            ))}
-            <span><i class="dot repos" />{t('mus_repos')}</span>
-            <span><i class="dot today" />{t('today')}</span>
-          </div>
-        )}
+        {/* Toujours affichee : neuf pastilles de couleur ne disent rien
+            tant qu'on ne peut pas les nommer. Le bouton « i » qui la
+            repliait a ete retire — sa seule action etait de retirer
+            une information utile. */}
+        <div class="wlog-legende">
+          {GROUPES.filter(g => COULEUR[g.k]).map(g => (
+            <span key={g.k}><i class="dot" style={{ background: COULEUR[g.k] }} />{nomMuscle(g.k)}</span>
+          ))}
+          <span><i class="dot repos" />{t('mus_repos')}</span>
+          <span><i class="dot today" />{t('today')}</span>
+        </div>
       </div>
     </div>
   );
