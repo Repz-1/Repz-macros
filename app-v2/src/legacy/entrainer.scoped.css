@@ -59,27 +59,51 @@
 .pg-entrainer .wlog-legende .dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; }
 .pg-entrainer .wlog-legende .dot.repos{ background:#E2E6EA; }
 .pg-entrainer .wlog-legende .dot.today{ background:#fff; box-shadow:0 0 0 2px #F86A0C; width:7px; height:7px; }
-.pg-entrainer .ml-stats{ margin:-4px 0 12px; }
-.pg-entrainer .ml-stats-ligne{ font-size:12.5px; font-weight:700; color:#6B655D; background:var(--fond); border-radius:10px; padding:9px 12px; margin-bottom:8px; }
-.pg-entrainer .ml-exo{ display:flex; align-items:center; justify-content:space-between; font-size:13px; padding:7px 2px; border-bottom:1px solid #F1F3F5; color:#334155; }
-.pg-entrainer .ml-exo:last-child{ border-bottom:none; }
-.pg-entrainer .ml-exo b{ font-weight:700; color:#6B655D; font-size:12px; flex-shrink:0; margin-left:10px; }
+.ml-stats{ margin:-4px 0 12px; }
+.ml-stats-ligne{ font-size:12.5px; font-weight:700; color:#6B655D; background:var(--fond); border-radius:10px; padding:9px 12px; margin-bottom:8px; }
+.ml-exo{ display:flex; align-items:center; justify-content:space-between; font-size:13px; padding:7px 2px; border-bottom:1px solid #F1F3F5; color:#334155; }
+.ml-exo:last-child{ border-bottom:none; }
+.ml-exo b{ font-weight:700; color:#6B655D; font-size:12px; flex-shrink:0; margin-left:10px; }
 .pg-entrainer .wlog-sum-pill{ font-size:11.5px; font-weight:700; background:var(--fond); color:#57514A; padding:4px 10px; border-radius:8px; white-space:nowrap; }
 .pg-entrainer .wlog-list{ max-height:0; overflow:hidden; transition:max-height .4s ease; }
 .pg-entrainer .wlog-list.expanded{ max-height:1000px; margin-top:16px; }
-.pg-entrainer .ml-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
-.pg-entrainer .ml-overlay.show{ display:flex; }
-.pg-entrainer .ml-modal{ background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(80px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
-.pg-entrainer .ml-date{ font-size:17px; font-weight:800; margin-bottom:16px; text-transform:capitalize; }
-.pg-entrainer .ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
-.pg-entrainer .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid var(--line); background:#fff; color:var(--text-dim); cursor:pointer; }
-.pg-entrainer .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
-.pg-entrainer .ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }
-.pg-entrainer .ml-chip:active{ transform:scale(.96); }
-.pg-entrainer .ml-btns{ display:flex; gap:10px; }
-.pg-entrainer .ml-btns button{ flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; }
-.pg-entrainer .ml-clear{ background:#f1f5f9; color:#6B655D; }
-.pg-entrainer .ml-save{ background:#16130F; color:#F5A800; }
+/* Les deux modales sont montees en PORTAIL sur document.body : elles
+   ne sont plus dans .pg-entrainer, donc leurs regles ne peuvent pas
+   porter ce prefixe. Elles l'avaient : la feuille ne s'appliquait
+   plus du tout et la fenetre de choix des muscles sortait nue —
+   position:static, z-index:auto, empilee en bas du corps. */
+/* Ces variables sont declarees sur .pg-entrainer : hors de la page,
+   les modales lisaient --line et --text-dim vides — pastilles sans
+   bordure ni couleur de texte. On les redeclare pour le portail. */
+.ml-overlay, .premium-overlay{
+    --line:rgba(28,24,18,.055);
+    --text-dim:#6B655D;
+    --fond:#F4F3F0;
+    --text:#16130F;
+    --radius:22px;
+}
+.ml-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
+.ml-overlay.show{ display:flex; }
+.ml-modal{ background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(80px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
+/* La silhouette vient de Stats.jsx et toute sa feuille est prefixee
+   .pg-stats. Dans la modale, montee sur le corps, elle n'heritait
+   d'aucune largeur : le SVG prenait les 390 px de l'ecran et poussait
+   les pastilles de muscles hors de vue. */
+.ml-modal .bodymap{ width:112px; margin:0 auto 2px; }
+.ml-modal .bodymap svg{ width:100%; height:auto; display:block; }
+.ml-modal .bodymap .bp{ fill:rgba(28,24,18,.06); stroke:rgba(28,24,18,.10); stroke-width:.6; transition:fill .4s; }
+.ml-modal .bodymap-legend{ display:flex; align-items:center; justify-content:center; gap:5px; font-size:10.5px; color:#8A8279; margin-bottom:14px; font-weight:600; }
+.ml-modal .bodymap-legend i{ width:11px; height:11px; border-radius:3px; display:inline-block; }
+.ml-date{ font-size:17px; font-weight:800; margin-bottom:16px; text-transform:capitalize; }
+.ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
+.ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid var(--line); background:#fff; color:var(--text-dim); cursor:pointer; }
+.ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
+.ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }
+.ml-chip:active{ transform:scale(.96); }
+.ml-btns{ display:flex; gap:10px; }
+.ml-btns button{ flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; }
+.ml-clear{ background:#f1f5f9; color:#6B655D; }
+.ml-save{ background:#16130F; color:#F5A800; }
 .pg-entrainer .topbar-app{
     display:flex; justify-content:space-between; align-items:center;
     padding:12px 20px;
@@ -217,25 +241,25 @@
     padding:5px 11px; border-radius:20px; display:flex; align-items:center; gap:4px;
 }
 .pg-entrainer .choice.locked h3{ padding-right:0; }
-.pg-entrainer .premium-overlay{
+.premium-overlay{
     display:none; position:fixed; inset:0; z-index:9999;
     background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:22px;
 }
-.pg-entrainer .premium-overlay.show{ display:flex; }
-.pg-entrainer .premium-modal{
+.premium-overlay.show{ display:flex; }
+.premium-modal{
     background:#fff; border-radius:22px; padding:30px 24px; max-width:360px; width:100%;
     text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.3);
     animation:pmPop .3s ease-out;
 }
 @keyframes pmPop{ from{opacity:0;transform:scale(.9);} to{opacity:1;transform:scale(1);} }
-.pg-entrainer .premium-modal .pm-icon{ font-size:44px; margin-bottom:12px; }
-.pg-entrainer .premium-modal h3{ font-size:20px; font-weight:800; margin-bottom:10px; }
-.pg-entrainer .premium-modal p{ font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:22px; }
-.pg-entrainer .premium-modal .pm-btn{
+.premium-modal .pm-icon{ font-size:44px; margin-bottom:12px; }
+.premium-modal h3{ font-size:20px; font-weight:800; margin-bottom:10px; }
+.premium-modal p{ font-size:14px; color:var(--text-dim); line-height:1.55; margin-bottom:22px; }
+.premium-modal .pm-btn{
     display:block; background:var(--green); color:#fff; text-decoration:none;
     padding:14px; border-radius:14px; font-size:15px; font-weight:700; margin-bottom:10px;
 }
-.pg-entrainer .premium-modal .pm-close{
+.premium-modal .pm-close{
     background:none; border:none; color:var(--text-dim); font-size:14px; font-weight:600;
     cursor:pointer; padding:6px;
 }

@@ -67,7 +67,12 @@ const nomMuscle = (k) => t('mus_' + k);
 function JournalEntrainement({ ouvrirJour }) {
   const [ouvert, setOuvert] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [legende, setLegende] = useState(false);
+  // La legende etait repliee derriere un bouton « i ». Un calendrier
+  // ou neuf pastilles de couleur ne veulent rien dire tant qu'on n'a
+  // pas trouve un bouton de 32 px echoue a la seule chose qu'il doit
+  // faire. Elle s'affiche desormais avec la grille ; le bouton reste
+  // pour la replier quand on n'en a plus besoin.
+  const [legende, setLegende] = useState(true);
 
   const log = muscleLog.value;
   const today = new Date(); today.setHours(0, 0, 0, 0);
