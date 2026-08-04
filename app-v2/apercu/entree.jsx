@@ -96,7 +96,9 @@ const PAGES = {
   journal:   () => <OngletJournal />,
   besoins:   () => <Besoins />,
   courses:   () => <Courses />,
-  entrainer: () => <OngletEntrainer />,
+  // Rendu AVEC la barre de navigation : c'est sa superposition avec
+  // les feuilles qui a masque des boutons deux fois aujourd'hui.
+  entrainer: () => (<><OngletEntrainer /><BottomNav /></>),
   stats:     () => <Stats />,
   statsav:   () => <StatsAvancees retour={() => {}} />,
   plus:      () => <BelfitPlus />,

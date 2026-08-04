@@ -166,3 +166,39 @@
 /* La reference la laisse a 4,6:1, juste au-dessus du seuil. On prend
    un cran de marge. */
 .pg-entrainer--duo .note { color: #B3AA97; }
+
+/* ============================================================
+   MODALE DES MUSCLES
+   Trois defauts signales par Raci sur capture :
+   les boutons passaient sous la barre de navigation, le code
+   couleur n'etait explique nulle part, et la silhouette manquait.
+   ============================================================ */
+
+/* Le portail sort la modale du rail : elle recouvre desormais la
+   barre du bas. On lui laisse quand meme de l'air sous les boutons. */
+.ml-overlay { z-index: 200; }
+.ml-modal {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+  max-height: 88vh; overflow-y: auto;
+}
+/* Le titre etait creme sur blanc — illisible sur la capture. */
+.ml-modal .ml-date { color: var(--encre); }
+
+/* La silhouette, au-dessus des pastilles : on voit sur le corps ce
+   qu'on est en train de cocher. */
+.ml-modal .bodymap {
+  display: flex; flex-direction: column; align-items: center;
+  margin: 0 auto 14px; max-width: 150px;
+}
+.ml-modal .bodymap svg { width: 100%; height: auto; }
+.ml-modal .bodymap-legend { display: none; }
+
+/* Chaque pastille porte la couleur de son groupe, meme non
+   selectionnee : le code couleur du calendrier devient lisible sans
+   avoir a ouvrir la legende. */
+.ml-pt {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 7px; vertical-align: 1px; flex: none;
+}
+.ml-chip { display: inline-flex; align-items: center; }
+.ml-chip.on .ml-pt { background: rgba(255,255,255,.9) !important; }

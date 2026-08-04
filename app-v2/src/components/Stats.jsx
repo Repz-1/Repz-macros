@@ -44,7 +44,9 @@ function Vide({ texte, cta, onCta }) {
 
 // ---------- Silhouette : copie exacte de bodyMapSVG (v1) ----------
 // v1 : <div class="bodymap">svg + legende</div> — la legende vit DANS .bodymap (118px)
-function BodyMap({ compte, onClick }) {
+/* Exportee : la modale des muscles de S'entrainer l'affiche aussi,
+   pour qu'on voie sur le corps ce qu'on est en train de cocher. */
+export function BodyMap({ compte, onClick }) {
   // Travaille sur la periode -> couleur du muscle ; sinon gris
   const col = (k) => (compte[k] > 0 ? (COL[k] || '#F7B500') : '#E9EBEF');
   // Avant-bras et mains : rattaches visuellement au bras (v1)

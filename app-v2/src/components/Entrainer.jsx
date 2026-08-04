@@ -5,6 +5,8 @@ import { estPremium } from './PremiumPage.jsx';
 import { enDecouverte } from '../services/decouverte.js';
 import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
+import { createPortal } from 'preact/compat';
+import { BodyMap } from './Stats.jsx';
 import { t } from '../i18n/index.js';
 
 /* ------------------------------------------------------------
@@ -179,17 +181,27 @@ function JournalEntrainement({ ouvrirJour }) {
 function ModaleMuscles({ iso, fermer }) {
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
-  return (
+  // La silhouette lit un compte par muscle : ici, un jour, donc 1.
+  const compte = {};
+  sel.forEach(k => { if (k !== 'repos') compte[k] = 1; });
+  // PORTAIL VERS document.body. Le rail des onglets porte
+  // will-change:transform et z-index:1 : il cree un contexte
+  // d'empilement, donc le z-index 100 de la modale ne valait que
+  // DEDANS, et la barre de navigation (z-index 80, mais hors du
+  // rail) passait devant ses boutons. Montee au niveau du corps,
+  // elle recouvre tout ce qu'elle doit recouvrir.
+  return createPortal(
     <div class="ml-overlay show" onClick={(e) => { if (e.target.classList.contains('ml-overlay')) fermer(); }}>
       <div class="ml-modal">
         <h3 class="ml-date">{jourLong(wlIsoToDate(iso))}</h3>
-        <div class="ml-stats" />
+        <BodyMap compte={compte} />
         <div class="ml-groups">
           {GROUPES.map(g => (
             <button key={g.k}
               class={'ml-chip' + (sel.includes(g.k) ? ' on' : '')}
               style={sel.includes(g.k) && g.k !== 'repos' ? { background: g.c, borderColor: g.c, color: '#fff' } : {}}
               onClick={() => basculerMuscle(iso, g.k)}>
+              {COULEUR[g.k] && <i class="ml-pt" style={{ background: COULEUR[g.k] }} aria-hidden="true" />}
               {nomMuscle(g.k)}
             </button>
           ))}
@@ -202,7 +214,8 @@ function ModaleMuscles({ iso, fermer }) {
           <button class="ml-save" onClick={fermer}>{t('save')}</button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
