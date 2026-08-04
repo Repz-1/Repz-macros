@@ -250,23 +250,30 @@ export function Entrainer() {
           d'ecran avant la premiere carte. */}
 
       <div class="choices">
-        {/* Carte vedette : programme sur mesure (Premium) */}
-        <a href="#" class={'choice ph featured' + locked} style={fond('card-creer.jpg')}
+        {/* Seance libre EN PREMIER, et c'est elle qui porte le dore.
+            Decision de Raci (4 aout) : c'est la rubrique que les
+            utilisateurs emploieront le plus — l'entree la plus
+            frequente passe en tete et recoit l'accent, le programme
+            sur mesure descend en second. Le dore suit la carte de
+            tete : deux hierarchies contraires sur le meme ecran
+            (premiere carte sobre, deuxieme doree) ne hierarchisent
+            rien. */}
+        <a href="#" class="choice ph featured" style={fond('card-libre.jpg')}
+          onClick={(e) => { e.preventDefault(); allerVers('selection'); }}>
+          <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11" /></svg></span>
+          <h3>{t('tr_free_title')}</h3>
+          <p>{t('tr_free_sub')}</p>
+          <span class="cta">{t('tr_free_cta')}</span>
+        </a>
+
+        {/* Programme sur mesure (Premium), en second */}
+        <a href="#" class={'choice ph md' + locked} style={fond('card-creer.jpg')}
           onClick={(e) => verrou(e, 'questionnaire')}>
 
           <span class="ch-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="13" r="7.5" /><circle cx="11" cy="13" r="3" /><path d="M21 3l-6.8 6.8M21 3h-4.6M21 3v4.6" /></svg></span>
           <h3>{t('tr_create_title')}</h3>
           <p>{t('tr_create_sub')}</p>
           <span class="cta">{t('tr_start')}</span>
-        </a>
-
-        {/* Seance libre (gratuit) */}
-        <a href="#" class="choice ph md" style={fond('card-libre.jpg')}
-          onClick={(e) => { e.preventDefault(); allerVers('selection'); }}>
-          <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11" /></svg></span>
-          <h3>{t('tr_free_title')}</h3>
-          <p>{t('tr_free_sub')}</p>
-          <span class="cta">{t('tr_free_cta')}</span>
         </a>
 
         {/* Mes programmes (Premium) */}
