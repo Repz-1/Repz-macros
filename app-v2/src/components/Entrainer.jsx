@@ -186,9 +186,25 @@ function JournalEntrainement({ ouvrirJour }) {
 function ModaleMuscles({ iso, fermer }) {
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
-  // La silhouette lit un compte par muscle : ici, un jour, donc 1.
+
+  // La silhouette ne montre plus le seul jour ouvert mais TOUTE LA
+  // SEMAINE, du lundi jusqu'a ce jour : c'est la question qu'on se
+  // pose devant un calendrier d'entrainement — qu'est-ce que j'ai
+  // deja travaille, qu'est-ce qui manque. Un jour isole n'y repond
+  // pas. Semaine ISO, donc lundi ; (getDay()+6)%7 vaut 0 le lundi.
+  const jour = wlIsoToDate(iso);
+  const lundi = new Date(jour);
+  lundi.setDate(jour.getDate() - ((jour.getDay() + 6) % 7));
+  const joursSemaine = [];
+  for (let d = new Date(lundi); wlIso(d) <= iso; d.setDate(d.getDate() + 1)) {
+    joursSemaine.push(wlIso(d));
+  }
   const compte = {};
-  sel.forEach(k => { if (k !== 'repos') compte[k] = 1; });
+  joursSemaine.forEach(j => {
+    (muscleLog.value[j] || []).forEach(k => {
+      if (k !== 'repos') compte[k] = (compte[k] || 0) + 1;
+    });
+  });
   // PORTAIL VERS document.body. Le rail des onglets porte
   // will-change:transform et z-index:1 : il cree un contexte
   // d'empilement, donc le z-index 100 de la modale ne valait que
@@ -198,8 +214,21 @@ function ModaleMuscles({ iso, fermer }) {
   return createPortal(
     <div class="ml-overlay show" onClick={(e) => { if (e.target.classList.contains('ml-overlay')) fermer(); }}>
       <div class="ml-modal">
-        <h3 class="ml-date">{jourLong(wlIsoToDate(iso))}</h3>
-        <BodyMap compte={compte} />
+        <h3 class="ml-date">{jourLong(jour)}</h3>
+        <div class="ml-corps">
+          <BodyMap compte={compte} />
+          <div class="ml-legende">
+            <div class="ml-legende-titre">
+              {t('tr_week_since')} {jourCourt(lundi)}
+            </div>
+            {GROUPES.filter(g => COULEUR[g.k]).map(g => (
+              <span key={g.k} class={compte[g.k] ? 'fait' : ''}>
+                <i class="dot" style={{ background: compte[g.k] ? COULEUR[g.k] : '#E9EBEF' }} />
+                {nomMuscle(g.k)}
+              </span>
+            ))}
+          </div>
+        </div>
         <div class="ml-groups">
           {GROUPES.map(g => (
             <button key={g.k}
