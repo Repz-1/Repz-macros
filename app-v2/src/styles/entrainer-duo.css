@@ -1,0 +1,137 @@
+/* ============================================================
+   S'ENTRAINER — direction « duotone »
+
+   Choisie par Raci apres comparaison sur ses vraies photos.
+
+   Deux constats mesures la fondent :
+   - ses quatre photos ont une luminance de 46, 75, 101 et 96 sur
+     255. Elles sont deja sombres. Sur un fond creme il fallait les
+     noyer sous un voile blanc tenant jusqu'a 90 % de la largeur ;
+     sur un fond nuit, le fondu va vers leur propre matiere et elles
+     deviennent enfin visibles ;
+   - les quatre cartes etaient le meme objet repete quatre fois.
+     Ici chaque rubrique a sa composition ET sa teinte.
+
+   AUCUNE IMAGE N'EST REFAITE. Le duotone est calcule par le
+   navigateur : backdrop-filter desature la photo, un voile de
+   couleur est fondu par-dessus en mode screen. Changer une photo
+   demain suffit, la teinte suit.
+
+   Ce fichier est charge APRES entrainer.scoped.css et n'y touche
+   pas. Le retour en arriere tient en une ligne d'import.
+   ============================================================ */
+
+.pg-entrainer--duo {
+  --nuit: #12100C;
+  --carte-duo: #1A1712;
+  --encre-duo: #FBF7EE;
+  --encre-duo-2: #9C9382;
+  --filet-duo: rgba(248, 207, 1, .14);
+  background: var(--nuit) !important;
+  color: var(--encre-duo);
+  padding-bottom: calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom));
+}
+
+/* En-tete : seule l'encre change, la structure vient du socle. */
+.pg-entrainer--duo .j-entete .j-btn-icone svg { stroke: var(--or); }
+.pg-entrainer--duo .j-retour svg { stroke: var(--encre-duo); }
+.pg-entrainer--duo .j-prenom { color: var(--encre-duo); }
+
+/* ---------- La carte ---------- */
+.pg-entrainer--duo .choice.ph {
+  background-color: var(--carte-duo);
+  border: 1px solid var(--filet-duo);
+  box-shadow: none;
+}
+.pg-entrainer--duo .choice.ph h3 { color: var(--encre-duo); }
+.pg-entrainer--duo .choice.ph > p { color: var(--encre-duo-2); }
+
+/* ---------- Le duotone ----------
+   ::before desature ce qui est derriere lui — donc la photo, posee
+   en fond par le composant — puis fond sa propre couleur en mode
+   screen. Le texte vit au-dessus (z-index 2 pose par le socle), il
+   n'est pas touche. ::after garde le fondu vers la carte. */
+.pg-entrainer--duo .choice.ph::before {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  border-radius: inherit; pointer-events: none;
+  -webkit-backdrop-filter: grayscale(1) contrast(1.18);
+  backdrop-filter: grayscale(1) contrast(1.18);
+  mix-blend-mode: screen;
+}
+.pg-entrainer--duo .ch-libre::before    { background: linear-gradient(120deg, #8A6E00, #2A1F00); }
+.pg-entrainer--duo .ch-prog::before     { background: linear-gradient(300deg, #7A0C10, #240304); }
+.pg-entrainer--duo .ch-archives::before { background: linear-gradient(120deg, #3A4048, #101216); }
+.pg-entrainer--duo .ch-journal::before  { background: linear-gradient(120deg, #6B4600, #1A1207); }
+
+.pg-entrainer--duo .choice.ph::after {
+  z-index: 2;
+  background: linear-gradient(90deg,
+    var(--carte-duo) 0%, rgba(26,23,18,.96) 22%,
+    rgba(26,23,18,.42) 54%, rgba(26,23,18,0) 78%);
+}
+
+/* ---------- Compositions : une par rubrique ----------
+   1 photo a droite · 2 en miroir · 3 en filigrane · 4 en bandeau. */
+
+/* 2 — miroir : la photo passe a gauche, le texte s'aligne a droite */
+.pg-entrainer--duo .ch-prog { background-position: left center; }
+.pg-entrainer--duo .ch-prog::after {
+  background: linear-gradient(270deg,
+    var(--carte-duo) 0%, rgba(26,23,18,.96) 22%,
+    rgba(26,23,18,.42) 54%, rgba(26,23,18,0) 78%);
+}
+.pg-entrainer--duo .ch-prog h3,
+.pg-entrainer--duo .ch-prog > p { margin-left: auto; text-align: right; }
+.pg-entrainer--duo .ch-prog .ch-icon { margin-left: auto; }
+.pg-entrainer--duo .ch-prog .cta { float: right; }
+
+/* 3 — filigrane : la photo couvre toute la carte, tres en retrait */
+.pg-entrainer--duo .ch-archives::before { opacity: .30; }
+.pg-entrainer--duo .ch-archives::after {
+  background: linear-gradient(90deg,
+    rgba(26,23,18,.90) 0%, rgba(26,23,18,.86) 60%, rgba(26,23,18,.82) 100%);
+}
+.pg-entrainer--duo .ch-archives h3,
+.pg-entrainer--duo .ch-archives > p { max-width: 78%; }
+
+/* 4 — bandeau : la photo tient le haut, le calendrier se deplie dessous */
+.pg-entrainer--duo .ch-journal { background-position: center top; background-size: 100% 96px; }
+.pg-entrainer--duo .ch-journal::before { bottom: auto; height: 96px; border-radius: 20px 20px 0 0; }
+.pg-entrainer--duo .ch-journal::after {
+  background: linear-gradient(180deg,
+    rgba(26,23,18,0) 18%, rgba(26,23,18,.92) 78%, var(--carte-duo) 100%);
+}
+.pg-entrainer--duo .ch-journal > * { margin-top: 0; }
+.pg-entrainer--duo .ch-journal .ch-icon { margin-top: 58px; }
+
+/* ---------- Pastilles et boutons ---------- */
+.pg-entrainer--duo .ch-icon { border: none; }
+.pg-entrainer--duo .ch-libre .ch-icon    { background: var(--or); }
+.pg-entrainer--duo .ch-libre .ch-icon svg { stroke: var(--nuit); }
+.pg-entrainer--duo .ch-prog .ch-icon     { background: #D71016; }
+.pg-entrainer--duo .ch-prog .ch-icon svg  { stroke: #fff; }
+.pg-entrainer--duo .ch-archives .ch-icon { background: rgba(255,255,255,.08); }
+.pg-entrainer--duo .ch-archives .ch-icon svg { stroke: var(--encre-duo-2); }
+.pg-entrainer--duo .ch-journal .ch-icon  { background: var(--or-trait); }
+.pg-entrainer--duo .ch-journal .ch-icon svg { stroke: var(--nuit); }
+
+.pg-entrainer--duo .ch-libre .cta { background: var(--or); color: var(--nuit); }
+.pg-entrainer--duo .ch-prog .cta  { background: #D71016; color: #fff; }
+.pg-entrainer--duo .ch-archives .cta,
+.pg-entrainer--duo .ch-journal .cta {
+  background: transparent; color: var(--encre-duo);
+  border: 1.5px solid rgba(251, 247, 238, .34);
+}
+
+/* ---------- Le calendrier deplie ---------- */
+.pg-entrainer--duo .wlog-list { background: rgba(255,255,255,.045); color: var(--encre-duo); }
+.pg-entrainer--duo .wlog-sum-pill { background: rgba(255,255,255,.06); color: var(--encre-duo-2); border: none; }
+.pg-entrainer--duo .wlog-cell { color: var(--encre-duo-2); }
+.pg-entrainer--duo .wlog-cell.seance { color: var(--nuit); }
+.pg-entrainer--duo .wlog-wd,
+.pg-entrainer--duo .wlog-cal-titre,
+.pg-entrainer--duo .wlog-legende { color: var(--encre-duo-2); }
+.pg-entrainer--duo .wlog-nav { background: rgba(255,255,255,.07); color: var(--encre-duo); border: none; }
+
+/* ---------- La phrase de bas de page ---------- */
+.pg-entrainer--duo .note { color: var(--encre-duo-2); }
