@@ -117,14 +117,15 @@
 .pg-entrainer--carte .ch-journal .ch-icon { background: #FFF9EF; }
 .pg-entrainer--carte .ch-prog .ch-icon svg,
 .pg-entrainer--carte .ch-journal .ch-icon svg { stroke: #26221F; }
-/* Carte 2 : la cible reste en haut a droite, la spec l'exige. */
-.pg-entrainer--carte .choice.ph.ch-prog .ch-icon { left: auto; right: 13px; }
+/* Carte 2 : cible en haut a GAUCHE. La spec ecrite du 1er aout disait
+   « a droite », mais la maquette envoyee par Raci le 4 aout la montre
+   a gauche, comme les trois autres — c'est l'image qui fait foi. */
 
 .pg-entrainer--carte .choice.ph h3 {
   font-size: 15px; font-weight: 700; letter-spacing: -.02em;
   line-height: 1.12; margin: 36px 0 4px; max-width: 44%; min-height: 0;
 }
-.pg-entrainer--carte .choice.ph.ch-prog h3 { margin-top: 2px; }
+
 .pg-entrainer--carte .choice.ph > p {
   font-size: 11.5px; font-weight: 400; line-height: 1.42;
   margin: 0 0 10px; max-width: 44%; min-height: 0;
@@ -142,7 +143,10 @@
 .pg-entrainer--carte .cta {
   display: inline-flex; align-items: center; justify-content: space-between;
   gap: 14px; min-width: 0; width: auto; max-width: none; white-space: nowrap;
-  padding: 8px 14px; border-radius: 7px;
+  /* Capsule, comme la maquette : bouton mesure 311x55 px image,
+     rayon = hauteur/2. Le rayon 7 venait de la conversion d'artboard
+     du 1er aout ; l'image tranche. */
+  padding: 9px 16px; border-radius: 999px;
   font-size: 12.5px; font-weight: 700; border: none;
   position: relative; z-index: 3;
 }
