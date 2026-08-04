@@ -162,6 +162,28 @@
 .pg-entrainer--carte .ch-journal .cta { background: #26221F; color: #FFF9F0; }
 
 /* ---------- Calendrier et bas de page ---------- */
+/* La carte Journal est la seule qui CHANGE de hauteur : ouvrir le
+   calendrier la fait passer de 193 a 666 px, replier la legende de
+   666 a 604. Avec background-size:cover, la photo se remet a
+   l'echelle de la carte a chaque fois — d'ou le zoom avant/arriere
+   qu'on voyait en touchant le « i ». On fixe donc la photo sur la
+   LARGEUR (100% auto, sans repetition) : sa taille ne depend plus de
+   la hauteur, elle ne bouge plus. Sous la bande photo, la couleur de
+   carte prend le relais. */
+.pg-entrainer--carte .choice.ph.ch-journal {
+  background-color: #F3E7D2;
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+/* Les deux calques (degrade de lisibilite et voile dore) sont en
+   inset:0 : leur geometrie suit elle aussi la hauteur de la carte.
+   On les cale sur la bande photo — meme rapport que l'image, donc
+   meme hauteur qu'elle, quoi qu'il arrive au calendrier en dessous. */
+.pg-entrainer--carte .choice.ph.ch-journal::before,
+.pg-entrainer--carte .choice.ph.ch-journal::after {
+  inset: 0 0 auto 0; aspect-ratio: 1536 / 1024;
+}
 .pg-entrainer--carte .ch-journal .wlog-list { background: rgba(255, 253, 249, .72); }
 .pg-entrainer--carte .wlog-sum-pill { background: rgba(45, 30, 10, .06); color: #675D54; border: none; }
 .pg-entrainer--carte .note {
