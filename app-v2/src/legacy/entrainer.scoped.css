@@ -115,7 +115,10 @@
 .pg-entrainer .intro p{ font-size:17px; font-weight:500; color:#666; line-height:1.45; max-width:340px; margin:0; }
 .pg-entrainer .choices{ display:flex; flex-direction:column; gap:24px; max-width:480px; margin:0 auto; }
 .pg-entrainer .choice{
-    position:relative; display:block; border-radius:24px; padding:24px 22px;
+    /* 24px n'existait sur aucune autre carte de l'application : les
+       rayons en usage sont 12, 14, 16, 18 et 20. Aligne sur 20, le
+       rayon des grandes cartes (BelFit+, Stats, Reglages). */
+    position:relative; display:block; border-radius:20px; padding:24px 22px;
     background:var(--carte); border:1px solid rgba(28,24,18,.055);
     box-shadow:0 1px 2px rgba(var(--ombre-rvb),.04), 0 3px 10px rgba(var(--ombre-rvb),.035);
     text-decoration:none; color:inherit;
@@ -201,8 +204,11 @@
     background:var(--bg); border:1px solid var(--line);
     padding:7px 12px; border-radius:20px;
 }
+/* #9ca3af donnait 2,3:1 — sous le seuil de 4,5 exige pour du texte —
+   et c'etait la seule couleur FROIDE d'une page entierement chaude.
+   --encre-3 la remet dans la famille et la fait passer a 4,8:1. */
 .pg-entrainer .note{
-    text-align:center; font-size:12.5px; color:#9ca3af; margin-top:28px; line-height:1.5;
+    text-align:center; font-size:12.5px; color:var(--encre-3); margin-top:28px; line-height:1.5;
     max-width:340px; margin-left:auto; margin-right:auto;
 }
 .pg-entrainer .lock-badge{
@@ -407,7 +413,9 @@
   background-position: right center;
   background-repeat: no-repeat;
   border: 1px solid rgba(28, 24, 18, .04);
-  border-radius: 22px;
+  /* 22px n'existe sur aucune autre carte : les rayons en usage sont
+     12, 14, 16, 18 et 20. Aligne sur 20, celui des grandes cartes. */
+  border-radius: 20px;
   box-shadow: 0 1px 2px rgba(60, 48, 30, .05), 0 8px 22px rgba(60, 48, 30, .07);
   color: inherit;
 }
@@ -434,6 +442,16 @@
 
 .pg-entrainer .choice.ph h3,
 .pg-entrainer .choice.ph > p { max-width: 50%; }
+/* Mesure : 192, 211, 176 et 197 px. Quatre cartes de quatre hauteurs
+   differentes, parce que les descriptions tiennent sur deux ou trois
+   lignes selon leur longueur. L'oeil descend sans rythme.
+   On reserve trois lignes a toutes : 12,5px x 1,4 x 3 = 52,5px. Le
+   texte ne bouge pas d'un caractere, seule la place l'attend. */
+.pg-entrainer .choice.ph > p { min-height: 52.5px; }
+/* Meme raison pour le titre : « Creer mon programme » et « Journal
+   d'entrainement » passent sur deux lignes, les deux autres sur une.
+   Deux lignes reservees a tous : 19px x 1,15 x 2 = 43,7px. */
+.pg-entrainer .choice.ph h3 { min-height: 43.7px; }
 
 .pg-entrainer .choice.ph .ch-icon {
   display: flex; align-items: center; justify-content: center;
