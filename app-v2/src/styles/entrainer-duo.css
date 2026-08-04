@@ -38,10 +38,19 @@
 .pg-entrainer--duo .j-prenom { color: var(--encre-duo); }
 
 /* ---------- La carte ---------- */
+/* Mesure sur la reference de Raci : fond de page #100F0D, carte
+   #11100C — un rapport de 1,0:1. La carte ne se detache PAS par son
+   remplissage, uniquement par un filet dore d'un pixel. C'est ce qui
+   fait « premium » plutot que « theme sombre » : ma version empilait
+   un fond de carte plus clair que la page, d'ou l'effet lourd. */
 .pg-entrainer--duo .choice.ph {
-  background-color: var(--carte-duo);
-  border: 1px solid var(--filet-duo);
+  background-color: var(--nuit);
+  border: 1px solid rgba(246, 194, 47, .28);
   box-shadow: none;
+}
+.pg-entrainer--duo .ch-libre {
+  border-color: rgba(246, 194, 47, .55);
+  box-shadow: 0 0 22px rgba(246, 194, 47, .10);
 }
 .pg-entrainer--duo .choice.ph h3 { color: var(--encre-duo); }
 .pg-entrainer--duo .choice.ph > p { color: var(--encre-duo-2); }
@@ -70,16 +79,18 @@
   backdrop-filter: grayscale(1) contrast(1.12);
   mix-blend-mode: color;
 }
-.pg-entrainer--duo .ch-libre::before    { background: linear-gradient(120deg, #8A6E00, #2A1F00); }
-.pg-entrainer--duo .ch-prog::before     { background: linear-gradient(300deg, #7A0C10, #240304); }
-.pg-entrainer--duo .ch-archives::before { background: linear-gradient(120deg, #3A4048, #101216); }
-.pg-entrainer--duo .ch-journal::before  { background: linear-gradient(120deg, #6B4600, #1A1207); }
+/* Une seule teinte, l'ambre de la reference (44° de teinte, contre
+   50° pour --or). Les quatre photos de Raci sont grises : c'est le
+   duotone qui leur donne l'eclairage dore de la reference, sans
+   qu'aucune image ne soit refaite. */
+.pg-entrainer--duo .choice.ph::before { background: linear-gradient(120deg, #F6C22F, #6B4E00); }
+.pg-entrainer--duo .ch-prog::before   { background: linear-gradient(300deg, #F6C22F, #6B4E00); }
 
 .pg-entrainer--duo .choice.ph::after {
   z-index: 1;
   background: linear-gradient(90deg,
-    var(--carte-duo) 0%, var(--carte-duo) 40%,
-    rgba(26,23,18,.90) 56%, rgba(26,23,18,.35) 68%, rgba(26,23,18,0) 82%);
+    var(--nuit) 0%, var(--nuit) 42%,
+    rgba(18,16,12,.82) 54%, rgba(18,16,12,.22) 66%, rgba(18,16,12,0) 78%);
 }
 
 /* ---------- Compositions : une par rubrique ----------
@@ -89,8 +100,8 @@
 .pg-entrainer--duo .ch-prog { background-position: left center; }
 .pg-entrainer--duo .ch-prog::after {
   background: linear-gradient(270deg,
-    var(--carte-duo) 0%, var(--carte-duo) 40%,
-    rgba(26,23,18,.90) 56%, rgba(26,23,18,.35) 68%, rgba(26,23,18,0) 82%);
+    var(--nuit) 0%, var(--nuit) 42%,
+    rgba(18,16,12,.82) 54%, rgba(18,16,12,.22) 66%, rgba(18,16,12,0) 78%);
 }
 .pg-entrainer--duo .ch-prog h3,
 .pg-entrainer--duo .ch-prog > p { margin-left: auto; text-align: right; }
@@ -98,10 +109,10 @@
 .pg-entrainer--duo .ch-prog .cta { float: right; }
 
 /* 3 — filigrane : la photo couvre toute la carte, tres en retrait */
-.pg-entrainer--duo .ch-archives::before { opacity: .30; }
+.pg-entrainer--duo .ch-archives::before { opacity: .55; }
 .pg-entrainer--duo .ch-archives::after {
   background: linear-gradient(90deg,
-    rgba(26,23,18,.90) 0%, rgba(26,23,18,.86) 60%, rgba(26,23,18,.82) 100%);
+    rgba(18,16,12,.88) 0%, rgba(18,16,12,.84) 60%, rgba(18,16,12,.80) 100%);
 }
 .pg-entrainer--duo .ch-archives h3,
 .pg-entrainer--duo .ch-archives > p { max-width: 78%; }
@@ -111,28 +122,34 @@
 .pg-entrainer--duo .ch-journal::before { bottom: auto; height: 96px; border-radius: 20px 20px 0 0; }
 .pg-entrainer--duo .ch-journal::after {
   background: linear-gradient(180deg,
-    rgba(26,23,18,0) 18%, rgba(26,23,18,.92) 78%, var(--carte-duo) 100%);
+    rgba(18,16,12,0) 18%, rgba(18,16,12,.90) 76%, var(--nuit) 100%);
 }
 .pg-entrainer--duo .ch-journal > * { margin-top: 0; }
 .pg-entrainer--duo .ch-journal .ch-icon { margin-top: 58px; }
 
 /* ---------- Pastilles et boutons ---------- */
-.pg-entrainer--duo .ch-icon { border: none; }
-.pg-entrainer--duo .ch-libre .ch-icon    { background: var(--or); }
+.pg-entrainer--duo .ch-icon {
+  background: rgba(246, 194, 47, .10);
+  border: 1px solid rgba(246, 194, 47, .34);
+  border-radius: 13px;
+}
+.pg-entrainer--duo .ch-icon svg { stroke: #F6C22F; }
+.pg-entrainer--duo .ch-libre .ch-icon { background: #F6C22F; border-color: #F6C22F; }
 .pg-entrainer--duo .ch-libre .ch-icon svg { stroke: var(--nuit); }
-.pg-entrainer--duo .ch-prog .ch-icon     { background: #D71016; }
-.pg-entrainer--duo .ch-prog .ch-icon svg  { stroke: #fff; }
-.pg-entrainer--duo .ch-archives .ch-icon { background: rgba(255,255,255,.08); }
-.pg-entrainer--duo .ch-archives .ch-icon svg { stroke: var(--encre-duo-2); }
-.pg-entrainer--duo .ch-journal .ch-icon  { background: var(--or-trait); }
-.pg-entrainer--duo .ch-journal .ch-icon svg { stroke: var(--nuit); }
 
-.pg-entrainer--duo .ch-libre .cta { background: var(--or); color: var(--nuit); }
-.pg-entrainer--duo .ch-prog .cta  { background: #D71016; color: #fff; }
+/* Un seul plein, trois contours — comme la reference. Le dore plein
+   marque l'entree qu'on pousse, les autres restent des contours
+   dores : la page garde une seule voix. */
+.pg-entrainer--duo .cta { border-radius: 999px; }
+.pg-entrainer--duo .ch-libre .cta {
+  background: #F6C22F; color: var(--nuit);
+  box-shadow: 0 4px 18px rgba(246, 194, 47, .26);
+}
+.pg-entrainer--duo .ch-prog .cta,
 .pg-entrainer--duo .ch-archives .cta,
 .pg-entrainer--duo .ch-journal .cta {
-  background: transparent; color: var(--encre-duo);
-  border: 1.5px solid rgba(251, 247, 238, .34);
+  background: transparent; color: #F6C22F;
+  border: 1.4px solid rgba(246, 194, 47, .52);
 }
 
 /* ---------- Le calendrier deplie ---------- */
@@ -146,4 +163,6 @@
 .pg-entrainer--duo .wlog-nav { background: rgba(255,255,255,.07); color: var(--encre-duo); border: none; }
 
 /* ---------- La phrase de bas de page ---------- */
-.pg-entrainer--duo .note { color: var(--encre-duo-2); }
+/* La reference la laisse a 4,6:1, juste au-dessus du seuil. On prend
+   un cran de marge. */
+.pg-entrainer--duo .note { color: #B3AA97; }
