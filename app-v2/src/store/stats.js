@@ -36,8 +36,22 @@ effect(() => {
   chargerDonnees(u).then(d => {
     if (uidSt !== u) return;
     weightLog.value = (d && d.weightLog) || [];
-    histoJours.value = (d && d.histoJours) || {};
+    // FUSION, pas remplacement. La bascule de journee (journal.js)
+    // peut archiver la veille dans histoJours AVANT que ce chargement
+    // ne se termine : chaque module fait son propre appel Firestore
+    // et l'ordre des reponses n'est pas garanti. Ecraser avec le
+    // disque detruisait alors l'archive fraiche — les repas ayant
+    // deja ete remis a zero et sauvegardes, la journee entiere etait
+    // perdue. Vecu par Raci au matin du 4 aout : « tout s'est
+    // efface ». Ce qui est en memoire est plus recent que le disque,
+    // il prime.
+    histoJours.value = { ...((d && d.histoJours) || {}), ...histoJours.value };
     pretSt = true;
+    // Si une archive a ete posee avant ce point, elle n'a jamais ete
+    // sauvegardee (pretSt etait faux) : on la persiste maintenant.
+    if (Object.keys(histoJours.value).length !== Object.keys((d && d.histoJours) || {}).length) {
+      sauvegarder(u, { weightLog: weightLog.value, histoJours: histoJours.value });
+    }
   });
 });
 
