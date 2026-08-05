@@ -39,18 +39,15 @@
   // Service worker : ouverture instantanee depuis le cache
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('sw.js', { scope: '/v2/' }).then(function(reg){
-        // Nouvelle version detectee : on l'active et on recharge une seule fois
-        reg.addEventListener('updatefound', function(){
-          var sw = reg.installing;
-          if (!sw) return;
-          sw.addEventListener('statechange', function(){
-            if (sw.state === 'installed' && navigator.serviceWorker.controller) {
-              if (!window.__bfRecharge) { window.__bfRecharge = true; window.location.reload(); }
-            }
-          });
-        });
-      }).catch(function(){});
+      // Pas de rechargement automatique a la mise a jour. Ce reflexe
+      // datait d'un HTML servi depuis le cache ; il est reseau-d'abord
+      // depuis (sw.js, cache:'reload') : la page qu'on vient d'ouvrir
+      // est DEJA la plus recente. Le reload ne faisait plus qu'une
+      // chose — relancer l'app sous les yeux de l'utilisateur a chaque
+      // deploiement, comme s'il l'avait ouverte deux fois de suite.
+      // Le nouveau service worker s'installe en silence (skipWaiting +
+      // claim) et servira le prochain lancement.
+      navigator.serviceWorker.register('sw.js', { scope: '/v2/' }).catch(function(){});
     });
   }
 </script>
