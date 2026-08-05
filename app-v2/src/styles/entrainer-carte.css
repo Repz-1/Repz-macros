@@ -101,25 +101,10 @@
 
 /* ---------- Contenu ---------- */
 .pg-entrainer--carte .choice.ph > * { position: relative; z-index: 2; }
-.pg-entrainer--carte .choice.ph .ch-icon {
-  display: flex; position: absolute; top: 12px; left: 13px;
-  width: 32px; height: 32px; border-radius: 10px; margin: 0; z-index: 3;
-  align-items: center; justify-content: center;
-  box-shadow: 0 5px 12px rgba(50, 35, 15, .10);
-}
-.pg-entrainer--carte .choice.ph .ch-icon svg { width: 16px; height: 16px; stroke-width: 2; }
-/* Cartes sombres et cartes claires n'ont pas la meme pastille. */
-.pg-entrainer--carte .ch-libre .ch-icon,
-.pg-entrainer--carte .ch-archives .ch-icon { background: #F4E7D3; }
-.pg-entrainer--carte .ch-libre .ch-icon svg,
-.pg-entrainer--carte .ch-archives .ch-icon svg { stroke: var(--or-belfit); }
-.pg-entrainer--carte .ch-prog .ch-icon,
-.pg-entrainer--carte .ch-journal .ch-icon { background: #FFF9EF; }
-.pg-entrainer--carte .ch-prog .ch-icon svg,
-.pg-entrainer--carte .ch-journal .ch-icon svg { stroke: #26221F; }
-/* Carte 2 : cible en haut a GAUCHE. La spec ecrite du 1er aout disait
-   « a droite », mais la maquette envoyee par Raci le 4 aout la montre
-   a gauche, comme les trois autres — c'est l'image qui fait foi. */
+/* Les pastilles d'icone des quatre cartes ont ete retirees (Raci,
+   5 aout) : le titre dit deja ce que fait la carte, et la photo
+   porte l'identite. Le CSS part avec le balisage, sinon il reste
+   des regles qui ne visent plus rien. */
 
 .pg-entrainer--carte .choice.ph h3 {
   font-size: 15px; font-weight: 700; letter-spacing: -.02em;
