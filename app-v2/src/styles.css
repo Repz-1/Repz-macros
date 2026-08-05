@@ -481,6 +481,9 @@ button{cursor:pointer}
    contenu : le rail est transforme, donc position:fixed s'y calerait
    sur ses 400 % de large — on prend absolute, resolu sur .rail-pan,
    ce qui le laisse immobile pendant que la page defile. */
+/* Sur la page reglages, le volet s'ancre au conteneur d'ecran ;
+   sur les onglets, au panneau du rail. Meme geometrie partout. */
+.ecran-reglages{position:relative;min-height:100%}
 .profil-voile{position:absolute;inset:0;z-index:39}
 .profil-volet{position:absolute;top:52px;right:var(--marge-page,16px);z-index:40;
   display:flex;flex-direction:column;align-items:stretch;gap:9px;

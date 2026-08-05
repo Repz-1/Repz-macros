@@ -365,7 +365,20 @@ export function App() {
   // Les reglages couvrent l'application entiere : ils s'ouvrent
   // depuis l'en-tete, present sur les quatre onglets, et se ferment
   // en revenant exactement d'ou l'on vient.
-  if (vueReglages.value) return <Reglages />;
+  // Le volet du bouton profil doit exister ICI AUSSI : l'en-tete des
+  // reglages porte la meme icone bonhomme que les onglets, mais cette
+  // branche s'arretait a <Reglages /> sans jamais rendre le volet.
+  // L'appui basculait le signal... vers rien. C'etait le « je clique
+  // sur mon compte et rien ne s'ouvre » de Raci, insaisissable dans
+  // les tests parce qu'ils partaient toujours d'un onglet.
+  if (vueReglages.value) {
+    return (
+      <div class="ecran-reglages">
+        <Reglages />
+        {voletUtilisateur}
+      </div>
+    );
+  }
   if (statsAvOuvertes.value) {
     return <StatsAvancees fermer={() => { statsAvOuvertes.value = false; }} />;
   }
