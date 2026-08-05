@@ -16,7 +16,17 @@
 .pg-selection .filter-tabs{ display:flex; gap:8px; overflow-x:auto; padding:2px 0 14px; -webkit-overflow-scrolling:touch; }
 .pg-selection .filter-tabs::-webkit-scrollbar{ display:none; }
 .pg-selection .filter-tab{ flex-shrink:0; padding:7px 14px; border-radius:30px; border:1.5px solid var(--line); background:var(--card); font-size:12.5px; font-weight:600; color:var(--text-dim); cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:5px; }
-.pg-selection .filter-tab.active{ background:rgba(247,181,0,.14); color:#8F6200; border-color:var(--orange); }
+/* Filtre actif : remplissage neutre et bordure sombre. L'ancien
+   etat — fond ambre translucide, texte brun, bordure orange — se
+   lisait comme une ALERTE et non comme une selection, d'autant que
+   « Tout » est actif par defaut : on ouvrait l'ecran sur ce qui
+   ressemblait a un avertissement. L'orange reste un accent, jamais
+   une surface d'etat.
+   Cette rangee est secondaire : elle ne prend pas la pastille noire
+   des muscles, elle s'y subordonne par un fond clair. */
+.pg-selection .filter-tab.active{ background:#EDEAE4; color:#1a1a1a; border-color:#1a1a1a; }
+.pg-selection .filter-tab{ transition:background .2s ease, color .2s ease, border-color .2s ease, transform .12s ease; }
+.pg-selection .filter-tab:active{ transform:scale(.94); }
 
 .pg-selection .section-hint{ font-size:13px; color:var(--text-dim); margin:6px 4px 14px; display:flex; align-items:center; gap:6px; }
 
