@@ -90,17 +90,21 @@
   border-radius: 18px;
   /* Le cadrage vivait sur la carte (.choice.ph) ; le calque doit le
      porter lui-meme, sinon l'image ne s'affiche pas du tout. */
-  /* Cadrage. « cover » ne permettait AUCUN deplacement horizontal :
-     la source fait 1200x800 (rapport 1,5) pour un calque de 350x183
-     (rapport 1,91), donc l'image est calee sur la largeur et deborde
-     seulement en hauteur — changer background-position en X ne
-     produisait rien, ce que la mesure a confirme (disque immobile a
-     70,7 % malgre le reglage).
-     On agrandit donc a 118 % de la largeur : l'image deborde des
-     deux cotes, et le cadrage a 30 % pousse le disque vers la droite
-     en degageant la pointe du chevron. « 20 KG » reste lisible. */
-  background-size: 118% auto; background-position: 30% 50%;
+  /* Le disque garde sa taille naturelle : pas d'agrandissement.
+     « cover » cale l'image sur la largeur du calque (source 1200x800,
+     calque 350x183) et ne laisse aucun jeu horizontal — c'est pour
+     cela qu'un simple background-position ne deplacait rien. Le
+     decalage vers la droite se fait donc par la GEOMETRIE du calque,
+     pas par un zoom : voir la regle qui suit. */
+  background-size: 100% auto; background-position: 34px 50%;
   background-repeat: no-repeat;
+  /* 100 % de large = exactement la taille que donnait « cover », donc
+     le disque garde sa dimension d'origine et le flou d'arriere-plan
+     reste celui de la photo. Le decalage de 34 px vers la droite se
+     fait en pixels : en pourcentage il n'aurait rien produit, faute
+     de debordement horizontal. Les 34 px liberes a gauche tombent
+     sous la pointe du chevron, qui commence a 44 % — ils ne se
+     voient pas. */
   clip-path: polygon(
     54.5% 0%, 100% 0%, 100% 100%, 60.6% 100%,
     54.2% 90%, 51.2% 80%, 49.4% 70%, 47.8% 60%, 46.1% 50%,
