@@ -120,6 +120,17 @@
 .pg-entrainer--carte .choices > .ch-archives,
 .pg-entrainer--carte .choices > .ch-journal { grid-column: span 1; }
 
+/* Les deux cartes du bas forment une ligne : meme hauteur, boutons
+   alignes. Sans cela, la carte la plus bavarde impose sa hauteur et
+   l'autre flotte, avec deux boutons a des niveaux differents. */
+.pg-entrainer--carte .choices { align-items: stretch; }
+.pg-entrainer--carte .choice.ph.sm.ch-archives,
+.pg-entrainer--carte .choice.ph.sm.ch-journal {
+  display: flex; flex-direction: column;
+}
+.pg-entrainer--carte .choice.ph.sm.ch-archives .cta,
+.pg-entrainer--carte .choice.ph.sm.ch-journal .cta { margin-top: auto; }
+
 /* Sur une demi-largeur, les reserves de hauteur calculees pour la
    pleine largeur (43,7 px de titre, 52,5 px de texte) ne veulent
    plus rien dire : le titre passe sur trois lignes et le texte sur
@@ -130,8 +141,16 @@
 }
 .pg-entrainer--carte .choice.ph.sm.ch-archives > p,
 .pg-entrainer--carte .choice.ph.sm.ch-journal > p {
-  min-height: 0; font-size: 11.5px; line-height: 1.35;
+  min-height: 0; font-size: 10.5px; line-height: 1.38;
+  margin-bottom: 10px;
+  /* max-width: 44% vient de la carte pleine largeur : sur 174 px il
+     ne reste que 77 px, soit un mot par ligne. Sur les cartes
+     etroites, le texte prend presque toute la largeur — c'est la
+     photo qui recule, pas le texte. */
+  max-width: 86%;
 }
+.pg-entrainer--carte .choice.ph.sm.ch-archives h3,
+.pg-entrainer--carte .choice.ph.sm.ch-journal h3 { max-width: 92%; }
 .pg-entrainer--carte .choice.ph.sm.ch-archives .cta,
 .pg-entrainer--carte .choice.ph.sm.ch-journal .cta {
   padding: 8px 13px; font-size: 12.5px;
@@ -151,27 +170,8 @@
 
 /* ---------- Contenu ---------- */
 .pg-entrainer--carte .choice.ph > * { position: relative; z-index: 2; }
-.pg-entrainer--carte .choice.ph .ch-icon {
-  display: flex; position: absolute; top: 12px; left: 13px;
-  width: 32px; height: 32px; border-radius: 10px; margin: 0; z-index: 3;
-  align-items: center; justify-content: center;
-  box-shadow: 0 5px 12px rgba(50, 35, 15, .10);
-}
-.pg-entrainer--carte .choice.ph .ch-icon svg { width: 16px; height: 16px; stroke-width: 2; }
-/* Cartes sombres et cartes claires n'ont pas la meme pastille. */
-.pg-entrainer--carte .ch-libre .ch-icon,
-.pg-entrainer--carte .ch-archives .ch-icon { background: #F4E7D3; }
-.pg-entrainer--carte .ch-libre .ch-icon svg,
-.pg-entrainer--carte .ch-archives .ch-icon svg { stroke: var(--or-belfit); }
-.pg-entrainer--carte .ch-prog .ch-icon,
-.pg-entrainer--carte .ch-journal .ch-icon { background: #FFF9EF; }
-.pg-entrainer--carte .ch-prog .ch-icon svg,
-.pg-entrainer--carte .ch-journal .ch-icon svg { stroke: #26221F; }
-/* Sur les deux cartes etroites, la pastille garde sa taille mais le
-   titre doit descendre sous elle : a 174 px de large, il n'y a pas
-   la place de les mettre cote a cote. */
-.pg-entrainer--carte .choice.ph.sm.ch-archives h3,
-.pg-entrainer--carte .choice.ph.sm.ch-journal h3 { margin-top: 30px; }
+/* Pastilles d'icone : retirees definitivement (Raci, 5 aout). Le
+   titre nomme deja la carte, la photo porte l'identite. */
 
 .pg-entrainer--carte .choice.ph h3 {
   font-size: 15px; font-weight: 700; letter-spacing: -.02em;

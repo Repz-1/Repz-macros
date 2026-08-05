@@ -168,7 +168,6 @@
    second l'ecrasait entierement. Retire pour ne plus faire croire
    qu'il agit. */
 .pg-entrainer .choice.ph > *{ position:relative; z-index:1; }
-.pg-entrainer .choice.ph .ch-icon{ display:none; }
 .pg-entrainer .choice.ph h3{ color:#fff; font-size:21px; text-shadow:0 1px 10px rgba(0,0,0,.55); }
 .pg-entrainer .choice.ph > p{ color:rgba(255,255,255,.92); font-weight:600; max-width:34ch; text-shadow:0 1px 8px rgba(0,0,0,.55); }
 .pg-entrainer .choice.ph .cta{
@@ -202,11 +201,6 @@
 .pg-entrainer .choice.ph.sm .cta{ padding:10px 20px; font-size:14px; border-radius:14px; }
 .pg-entrainer .choice.ph .wlog-list{ background:#fff; border-radius:16px; color:var(--text); }
 .pg-entrainer .choice.ph .wlog-list.expanded{ padding:4px 16px; }
-.pg-entrainer .ch-icon{
-    width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center;
-    background:#FFF4CC; margin-bottom:16px;
-}
-.pg-entrainer .ch-icon svg{ width:27px; height:27px; stroke:var(--noir); fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 .pg-entrainer .choice h3{ font-size:19px; font-weight:800; margin-bottom:6px; letter-spacing:-.01em; color:var(--noir); }
 .pg-entrainer .choice > p{ font-size:14px; font-weight:500; color:var(--text-dim); line-height:1.55; margin-bottom:18px; }
 .pg-entrainer .cta{
@@ -483,19 +477,6 @@
    Deux lignes reservees a tous : 19px x 1,15 x 2 = 43,7px. */
 .pg-entrainer .choice.ph h3 { min-height: 43.7px; }
 
-.pg-entrainer .choice.ph .ch-icon {
-  display: flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px; margin-bottom: 7px;
-  border-radius: 11px; background: #F0EBE1;
-  color: #16130F; box-shadow: none; border: none;
-}
-.pg-entrainer .choice.ph .ch-icon svg {
-  width: 18px; height: 18px; fill: none; stroke: currentColor;
-  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
-}
-.pg-entrainer .choice.ph.featured .ch-icon {
-  background: #FBF0D2; color: #DFA004;
-}
 .pg-entrainer .choice.ph h3 {
   color: #16130F; font-size: 17px; font-weight: 700;
   letter-spacing: -.022em; line-height: 1.16; text-shadow: none;

@@ -119,7 +119,6 @@ function JournalEntrainement({ ouvrirJour }) {
 
   return (
     <div class="choice ph sm ch-journal" style={fond('card-journal.jpg')}>
-      <span class="ch-icon"><svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5" /><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5" /></svg></span>
       <h3>{t('tr_log_title')}</h3>
       <p>{t('tr_log_sub')}</p>
       <button class="cta" onClick={(e) => { e.stopPropagation(); setOuvert(!ouvert); }}>
@@ -298,7 +297,6 @@ export function Entrainer() {
             rien. */}
         <a href="#" class="choice ph featured ch-libre" style={fond('card-libre.jpg')}
           onClick={(e) => { e.preventDefault(); allerVers('selection'); }}>
-          <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11" /></svg></span>
           <h3>{t('tr_free_title')}</h3>
           <p>{t('tr_free_sub')}</p>
           <span class="cta">{t('tr_free_cta')}</span>
@@ -307,7 +305,6 @@ export function Entrainer() {
         {/* Programme sur mesure (Premium), en second */}
         <a href="#" class={'choice ph md ch-prog' + locked} style={fond('card-creer.jpg')}
           onClick={(e) => verrou(e, 'questionnaire')}>
-          <span class="ch-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="13" r="7.5" /><circle cx="11" cy="13" r="3" /><path d="M21 3l-6.8 6.8M21 3h-4.6M21 3v4.6" /></svg></span>
           <h3>{t('tr_create_title')}</h3>
           <p>{t('tr_create_sub')}</p>
           <span class="cta">{t('tr_start')}</span>
@@ -316,7 +313,6 @@ export function Entrainer() {
         {/* Mes programmes (Premium) */}
         <a href="#" class={'choice ph sm ch-archives' + lockedProgs} style={fond('card-programmes.jpg')}
           onClick={(e) => verrouProgs(e, 'programmes')}>
-          <span class="ch-icon"><svg viewBox="0 0 24 24"><path d="M3.5 7a2 2 0 012-2h4.2l2 2.4h7.3a2 2 0 012 2V18a2 2 0 01-2 2h-13.5a2 2 0 01-2-2z" /></svg></span>
           <h3>{t('tr_progs_title')}</h3>
           <p>{t('tr_progs_sub')}</p>
           <span class="cta">{t('open')}</span>
