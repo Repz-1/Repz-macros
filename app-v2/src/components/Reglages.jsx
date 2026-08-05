@@ -242,6 +242,16 @@ function EcranResilier({ retour }) {
 // ---------- Menu principal ----------
 export function Reglages() {
   const vue = vueReglages.value;
+  // Changer d'ecran remonte en haut. Les reglages remplacent toute
+  // la page : en passant d'une liste longue a un ecran court, le
+  // defilement du document restait ou il etait et l'ecran d'arrivee
+  // s'affichait hors champ — on avait l'impression que l'appui
+  // n'avait rien fait.
+  useEffect(() => {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    const c = document.querySelector('.pg-reglages');
+    if (c && c.parentElement) c.parentElement.scrollTop = 0;
+  }, [vue]);
   const u = utilisateur.value;
   const prem = estPremium.value;
   const [lg, setLg] = useState(langueApp.value);
