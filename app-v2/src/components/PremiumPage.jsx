@@ -1,6 +1,5 @@
 import { signal, effect } from '@preact/signals';
 import { utilisateur } from '../services/firebase.js';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApps } from 'firebase/app';
 import { t } from '../i18n/index.js';
 import { Entete } from './Entete.jsx';
@@ -41,8 +40,9 @@ effect(() => {
   } catch (e) { estPremium.value = false; }
 
   // Puis Firestore tranche (source de verite, ecrite par le webhook).
-  const db = getFirestore(getApps()[0]);
-  getDoc(doc(db, 'users', u.uid))
+  // Firestore en differe : voir services/sync.js pour la raison (170 Ko gzip)
+  import('firebase/firestore').then(({ getFirestore, doc, getDoc }) =>
+    getDoc(doc(getFirestore(getApps()[0]), 'users', u.uid)))
     .then(s => {
       const prem = s.exists() && s.data().premium === true;
       estPremium.value = prem;

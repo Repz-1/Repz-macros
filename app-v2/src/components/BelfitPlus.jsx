@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
 import { signal } from '@preact/signals';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApps } from 'firebase/app';
 import { utilisateur } from '../services/firebase.js';
 import { setObjectifs, objectifs, repas } from '../store/journal.js';
@@ -62,7 +61,9 @@ export function chargerProgramme() {
 
   const u = utilisateur.value;
   if (!u || !getApps().length) { programmeCharge.value = true; return; }
-  getDoc(doc(getFirestore(getApps()[0]), 'users', u.uid))
+  // Firestore en differe : voir services/sync.js pour la raison (170 Ko gzip)
+  import('firebase/firestore').then(({ getFirestore, doc, getDoc }) =>
+    getDoc(doc(getFirestore(getApps()[0]), 'users', u.uid)))
     .then(s => {
       const d = s.exists() ? s.data() : null;
       programme.value = (d && d.programme) || null;

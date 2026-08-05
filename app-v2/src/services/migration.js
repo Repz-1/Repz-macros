@@ -1,5 +1,9 @@
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApps } from 'firebase/app';
+// Meme logique que sync.js : Firestore en differe, jamais au demarrage.
+async function firestore() {
+  const fs = await import('firebase/firestore');
+  return { fs, db: fs.getFirestore(getApps()[0]) };
+}
 import { rayonDe } from '../data/rayons.js';
 
 // ============================================================
@@ -113,8 +117,8 @@ function convertirV1versV2(v1) {
 // si l'utilisateur a deja des donnees v2 (protection anti-ecrasement).
 export async function migrerSiNecessaire(uid) {
   try {
-    const db = getFirestore(getApps()[0]);
-    const snap = await getDoc(doc(db, 'users', uid));
+    const { fs, db } = await firestore();
+    const snap = await fs.getDoc(fs.doc(db, 'users', uid));
     if (!snap.exists()) return null;
     const d = snap.data();
 
@@ -155,8 +159,8 @@ export async function migrerSiNecessaire(uid) {
 // ============================================================
 export async function recupererMuscleLogV1(uid, logV2) {
   try {
-    const db = getFirestore(getApps()[0]);
-    const snap = await getDoc(doc(db, 'users', uid));
+    const { fs, db } = await firestore();
+    const snap = await fs.getDoc(fs.doc(db, 'users', uid));
     if (!snap.exists()) return null;
     // Trois sources possibles, fusionnees dans cet ordre de priorite
     // croissante : appData (le plus ancien), la racine du document

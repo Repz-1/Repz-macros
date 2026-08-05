@@ -1,0 +1,24 @@
+import { chromium } from 'playwright';
+import { createServer } from 'http';
+import { readFileSync, existsSync } from 'fs';
+import { extname, join } from 'path';
+const TYPES={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.json':'application/json','.woff2':'font/woff2'};
+const s=createServer((q,r)=>{let c=decodeURIComponent(q.url.split('?')[0]).replace(/^\/v2/,'');if(c==='/'||c.endsWith('/'))c+='index.html';
+ for(const b of ['../v2','..','public']){const f=join(b,c);if(existsSync(f)&&!f.endsWith('/')){r.writeHead(200,{'Content-Type':TYPES[extname(f)]||'application/octet-stream'});return r.end(readFileSync(f));}}r.writeHead(404);r.end();});
+await new Promise(r=>s.listen(4330,r));
+const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+const p=await b.newPage({viewport:{width:390,height:844}});
+const req=[];
+p.on('response',async r=>{try{const h=r.headers();req.push({u:r.url(),t:h['content-type']||'',n:+(h['content-length']||0)})}catch{}});
+const t0=Date.now();
+await p.goto('http://localhost:4330/v2/',{waitUntil:'load'});
+const tLoad=Date.now()-t0;
+await p.waitForTimeout(2500);
+const tTotal=Date.now()-t0;
+const par={};
+for(const r of req){const k=r.t.split(';')[0].split('/')[0]||'?';par[k]=(par[k]||0)+r.n;}
+console.log('requetes :',req.length,'| load :',tLoad,'ms');
+for(const [k,v] of Object.entries(par).sort((a,b)=>b[1]-a[1])) console.log('  ',k.padEnd(12), (v/1024).toFixed(0)+' Ko');
+console.log('\nles 8 plus lourdes :');
+req.sort((a,b)=>b.n-a.n).slice(0,8).forEach(r=>console.log('  ',(r.n/1024).toFixed(0).padStart(5)+' Ko', r.u.replace('http://localhost:4330','')));
+await b.close(); s.close();

@@ -1,7 +1,23 @@
-import { getFirestore, doc, getDoc, setDoc, enableIndexedDbPersistence } from 'firebase/firestore';
 import { auth } from './firebase.js';
 import { initializeApp, getApps } from 'firebase/app';
-import { migrerSiNecessaire } from './migration.js';
+
+/* Firestore pese 170 Ko gzip : importe en statique ici, il entrait
+   dans le graphe de demarrage via Courses/Scanner/SeanceTracker et
+   retardait le premier affichage de toute l'app. On le charge donc
+   a la premiere lecture/ecriture cloud — le local-first ne l'attend
+   jamais : localStorage repond d'abord dans tous les cas. */
+let _fsPromesse = null;
+function firestore() {
+  if (!_fsPromesse) {
+    _fsPromesse = import('firebase/firestore').then((fs) => {
+      const db = fs.getFirestore(getApps()[0]);
+      // Cache hors-ligne natif ; echec silencieux possible (multi-onglets)
+      fs.enableIndexedDbPersistence(db).catch(() => {});
+      return { fs, db };
+    });
+  }
+  return _fsPromesse;
+}
 
 // ============================================================
 // SYNC v2 — local-first.
@@ -12,13 +28,6 @@ import { migrerSiNecessaire } from './migration.js';
 // - Les donnees v2 vivent dans users/{uid}.v2Data (champ dedie :
 //   n'ecrase JAMAIS les donnees du site actuel appData/premium/etc).
 // ============================================================
-
-const db = getFirestore(getApps()[0]);
-
-// Persistance hors-ligne native de Firestore (cache IndexedDB).
-// Echec silencieux possible (plusieurs onglets ouverts) : pas grave,
-// notre localStorage couvre deja le local-first.
-enableIndexedDbPersistence(db).catch(() => {});
 
 let timerEnvoi = null;
 // Etat complet en memoire : les differents stores (journal, entrainement...)
@@ -39,7 +48,8 @@ export async function chargerDonnees(uid) {
   const local = localBrut ? JSON.parse(localBrut) : null;
   if (uid === UID_INVITE) { etatComplet = local ? { ...local } : {}; return local; }
   try {
-    const snap = await getDoc(doc(db, 'users', uid));
+    const { fs, db } = await firestore();
+    const snap = await fs.getDoc(fs.doc(db, 'users', uid));
     const cloud = snap.exists() && snap.data().v2Data ? snap.data().v2Data : null;
     let resultat;
     if (cloud && local) {
@@ -51,11 +61,12 @@ export async function chargerDonnees(uid) {
     // Aucune donnee v2 : premier passage d'un utilisateur v1 -> on convertit
     // ses donnees existantes (lecture seule sur v1, rien n'est efface).
     if (!resultat) {
+      const { migrerSiNecessaire } = await import('./migration.js');
       const migre = await migrerSiNecessaire(uid);
       if (migre) {
         resultat = migre;
         try { localStorage.setItem(cleLocale(uid), JSON.stringify(migre)); } catch (e) {}
-        setDoc(doc(db, 'users', uid), { v2Data: migre }, { merge: true }).catch(() => {});
+        fs.setDoc(fs.doc(db, 'users', uid), { v2Data: migre }, { merge: true }).catch(() => {});
       }
     }
     etatComplet = resultat ? { ...resultat } : {};
@@ -77,7 +88,8 @@ export function sauvegarder(uid, champsPartiels) {
   // Debounce : on n'envoie au cloud qu'apres 2s de calme (groupe les frappes)
   clearTimeout(timerEnvoi);
   timerEnvoi = setTimeout(() => {
-    setDoc(doc(db, 'users', uid), { v2Data: instantane }, { merge: true })
-      .catch(() => {/* hors-ligne : Firestore rejouera a la reconnexion */});
+    firestore().then(({ fs, db }) =>
+      fs.setDoc(fs.doc(db, 'users', uid), { v2Data: instantane }, { merge: true })
+    ).catch(() => {/* hors-ligne : Firestore rejouera a la reconnexion */});
   }, 2000);
 }
