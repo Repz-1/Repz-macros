@@ -371,11 +371,16 @@ export const EXERCISES = {
 };
 
 
+// Les filtres etaient CUMULATIFS : « Salle » incluait deja les cinq
+// materiels existants, donc rendait exactement le meme resultat que
+// « Tout » — deux boutons pour un seul effet, quel que soit le
+// muscle. Chaque filtre designe desormais un materiel PRECIS, et
+// « Tout » reste leur reunion.
 export const FILTERS = [
   { key: 'tout',     label: 'Tout',            mats: null },
   { key: 'rien',     label: 'Poids du corps',  mats: ['rien', 'traction'] },
-  { key: 'halteres', label: 'Haltères',        mats: ['rien', 'traction', 'halteres'] },
-  { key: 'salle',    label: 'Salle',           mats: ['rien', 'traction', 'halteres', 'barre', 'machine'] },
+  { key: 'halteres', label: 'Haltères',        mats: ['halteres'] },
+  { key: 'salle',    label: 'Salle',           mats: ['barre', 'machine'] },
 ];
 
 // Niveau -> libelle + nb d'etoiles pleines (comme le v1)
