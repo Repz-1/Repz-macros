@@ -99,6 +99,56 @@
   mix-blend-mode: soft-light; pointer-events: none;
 }
 
+/* ---------- Disposition (maquette Raci, 5 aout) ----------
+   Deux cartes pleine largeur, puis les deux dernieres cote a cote.
+   Grille a 2 colonnes : les deux premieres occupent les deux
+   colonnes, les deux suivantes une chacune. L'ancienne pile en
+   colonne unique donnait quatre bandeaux identiques — la grille
+   dit que « Seance libre » et « Creer mon programme » sont les
+   entrees principales, les deux autres des raccourcis. */
+.pg-entrainer--carte .choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+  align-items: start;
+}
+.pg-entrainer--carte .choices > .ch-libre,
+.pg-entrainer--carte .choices > .ch-prog { grid-column: 1 / -1; }
+
+/* Les deux cartes du bas sont moitie moins larges : le texte y a
+   besoin de plus de hauteur, et la photo de moins de place. */
+.pg-entrainer--carte .choices > .ch-archives,
+.pg-entrainer--carte .choices > .ch-journal { grid-column: span 1; }
+
+/* Sur une demi-largeur, les reserves de hauteur calculees pour la
+   pleine largeur (43,7 px de titre, 52,5 px de texte) ne veulent
+   plus rien dire : le titre passe sur trois lignes et le texte sur
+   cinq. On les libere et on resserre l'echelle. */
+.pg-entrainer--carte .choice.ph.sm.ch-archives h3,
+.pg-entrainer--carte .choice.ph.sm.ch-journal h3 {
+  min-height: 0; font-size: 14.5px; line-height: 1.2;
+}
+.pg-entrainer--carte .choice.ph.sm.ch-archives > p,
+.pg-entrainer--carte .choice.ph.sm.ch-journal > p {
+  min-height: 0; font-size: 11.5px; line-height: 1.35;
+}
+.pg-entrainer--carte .choice.ph.sm.ch-archives .cta,
+.pg-entrainer--carte .choice.ph.sm.ch-journal .cta {
+  padding: 8px 13px; font-size: 12.5px;
+}
+/* Le degrade de lisibilite doit couvrir bien plus : sur 170 px de
+   large, le texte occupe presque toute la carte, alors que le
+   degrade pleine largeur s'effacait des 44 %. On repousse les
+   bornes et on incline la coupe pour degager le haut de la photo. */
+.pg-entrainer--carte .choice.ph.ch-archives::before {
+  background: linear-gradient(168deg,
+    rgba(70, 64, 59, 0) 0%, rgba(66, 60, 55, .72) 22%, #423C37 42%, #46403B 100%);
+}
+.pg-entrainer--carte .choice.ph.ch-journal::before {
+  background: linear-gradient(168deg,
+    rgba(239, 225, 202, 0) 0%, rgba(241, 229, 208, .72) 22%, #F1E5D0 42%, #EFE1CA 100%);
+}
+
 /* ---------- Contenu ---------- */
 .pg-entrainer--carte .choice.ph > * { position: relative; z-index: 2; }
 /* Les pastilles d'icone des quatre cartes ont ete retirees (Raci,

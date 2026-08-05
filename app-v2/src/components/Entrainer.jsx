@@ -118,7 +118,7 @@ function JournalEntrainement({ ouvrirJour }) {
   }
 
   return (
-    <div class="choice ph sm ch-journal" style={'margin-top:24px;' + fond('card-journal.jpg')}>
+    <div class="choice ph sm ch-journal" style={fond('card-journal.jpg')}>
       <h3>{t('tr_log_title')}</h3>
       <p>{t('tr_log_sub')}</p>
       <button class="cta" onClick={(e) => { e.stopPropagation(); setOuvert(!ouvert); }}>
@@ -319,9 +319,9 @@ export function Entrainer() {
           <p>{t('tr_progs_sub')}</p>
           <span class="cta">{t('open')}</span>
         </a>
-      </div>
 
-      <JournalEntrainement ouvrirJour={setJourOuvert} />
+        <JournalEntrainement ouvrirJour={setJourOuvert} />
+      </div>
 
       <p class="note">{t('tr_note')}</p>
 
