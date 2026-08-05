@@ -118,7 +118,8 @@ function JournalEntrainement({ ouvrirJour }) {
   }
 
   return (
-    <div class="choice ph sm ch-journal" style={fond('card-journal.jpg')}>
+    <div class={'choice ph sm ch-journal' + (ouvert ? ' ch-journal--ouvert' : '')}
+      style={fond('card-journal.jpg')}>
       <h3>{t('tr_log_title')}</h3>
       <p>{t('tr_log_sub')}</p>
       <button class="cta" onClick={(e) => { e.stopPropagation(); setOuvert(!ouvert); }}>

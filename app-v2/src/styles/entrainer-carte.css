@@ -161,6 +161,14 @@
 .pg-entrainer--carte .choices > .ch-archives,
 .pg-entrainer--carte .choices > .ch-journal { grid-column: span 1; }
 
+/* Calendrier deplie : la carte Journal reprend TOUTE la largeur et
+   passe seule sur sa ligne. Sinon deux defauts a la fois : la grille
+   etirait « Mes programmes » a la hauteur du calendrier (une carte
+   de 1 400 px de haut pour trois lignes de texte), et le calendrier
+   lui-meme, coince sur 174 px, se faisait couper les samedis et les
+   dimanches. */
+.pg-entrainer--carte .choices > .ch-journal--ouvert { grid-column: 1 / -1; }
+
 /* Les deux cartes du bas forment une ligne : meme hauteur, boutons
    alignes. Sans cela, la carte la plus bavarde impose sa hauteur et
    l'autre flotte, avec deux boutons a des niveaux differents. */
@@ -303,3 +311,10 @@
   color: var(--gris-footer); font-size: 11.5px; line-height: 1.5;
   max-width: 290px; margin: 12px auto 0; text-align: center;
 }
+
+/* Deplie, la carte Journal est pleine largeur : elle reprend
+   l'echelle des deux cartes du haut, et non celle des vignettes. */
+.pg-entrainer--carte .choice.ph.sm.ch-journal--ouvert h3 { font-size: 15px; max-width: none; }
+.pg-entrainer--carte .choice.ph.sm.ch-journal--ouvert > p { font-size: 11.5px; max-width: 44%; }
+.pg-entrainer--carte .choice.ph.sm.ch-journal--ouvert .cta::before { display: block; }
+.pg-entrainer--carte .choice.ph.sm.ch-journal--ouvert .cta { gap: 16px; }
