@@ -12,7 +12,11 @@
  * Les assets (images, polices, JS) restent en cache d'abord : ils
  * sont versionnes par le nom de cache, donc jamais perimes.
  */
-const CACHE = 'belfit-v261';
+// v262 (5 aout) : la racine servait encore l'ancien index.html
+// depuis le cache — celui d'AVANT la redirection vers /v2/.
+// Il fallait taper l'adresse complete a la main. Monter le nom
+// du cache force chaque navigateur a jeter l'ancienne copie.
+const CACHE = 'belfit-v262';
 // main.html et app.html sont supprimes avec la v1. Les laisser ici
 // aurait fait echouer addAll() en entier : une seule URL absente
 // rejette la promesse, et le service worker ne s'installe pas du
