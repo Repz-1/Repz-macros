@@ -178,8 +178,28 @@
 .pg-entrainer--carte .choice.ph.sm.ch-journal h3 { max-width: 92%; }
 .pg-entrainer--carte .choice.ph.sm.ch-archives .cta,
 .pg-entrainer--carte .choice.ph.sm.ch-journal .cta {
-  padding: 8px 13px; font-size: 12.5px;
+  padding: 8px 12px; font-size: 12.5px;
+  /* Le bouton s'etirait sur toute la largeur et passait par-dessus
+     le shaker et le carnet. Il reste dans la colonne du texte :
+     le sujet de la photo garde sa place a droite. */
+  /* La feuille heritee impose min-width: 156px au bouton — pense pour
+     une carte de 358 px. Sur 174 px, cela couvrait 90 % de la carte
+     et passait par-dessus le shaker et le carnet. On libere le
+     plancher et on retire la fleche : le bouton se cale sur son
+     libelle et la photo respire. */
+  align-self: flex-start; width: auto; gap: 0; min-width: 0;
 }
+/* La fleche disparait sur les cartes etroites. C'etait elle, avec son
+   ecart de 14 px, qui poussait le bouton a 156 px sur une carte de
+   174 : max-width ne pouvait rien, un element flex ne descend pas
+   sous la largeur de son contenu. Sans elle, le bouton fait 108 px
+   et le shaker comme le carnet restent degages. */
+.pg-entrainer--carte .choice.ph.sm.ch-archives .cta::before,
+.pg-entrainer--carte .choice.ph.sm.ch-journal .cta::before { display: none; }
+/* Cadrage : « right center » plaquait la photo tout a droite, ce qui
+   sur 174 px de large montrait le bord du telephone au lieu du
+   shaker. On recule le cadrage pour amener le sujet au centre-droit. */
+.pg-entrainer--carte .choice.ph.sm.ch-archives { background-position: 78% center; }
 /* Le degrade de lisibilite doit couvrir bien plus : sur 170 px de
    large, le texte occupe presque toute la carte, alors que le
    degrade pleine largeur s'effacait des 44 %. On repousse les
