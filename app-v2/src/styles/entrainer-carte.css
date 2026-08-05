@@ -90,7 +90,17 @@
   border-radius: 18px;
   /* Le cadrage vivait sur la carte (.choice.ph) ; le calque doit le
      porter lui-meme, sinon l'image ne s'affiche pas du tout. */
-  background-size: cover; background-position: center; background-repeat: no-repeat;
+  /* Cadrage. « cover » ne permettait AUCUN deplacement horizontal :
+     la source fait 1200x800 (rapport 1,5) pour un calque de 350x183
+     (rapport 1,91), donc l'image est calee sur la largeur et deborde
+     seulement en hauteur — changer background-position en X ne
+     produisait rien, ce que la mesure a confirme (disque immobile a
+     70,7 % malgre le reglage).
+     On agrandit donc a 118 % de la largeur : l'image deborde des
+     deux cotes, et le cadrage a 30 % pousse le disque vers la droite
+     en degageant la pointe du chevron. « 20 KG » reste lisible. */
+  background-size: 118% auto; background-position: 30% 50%;
+  background-repeat: no-repeat;
   clip-path: polygon(
     54.5% 0%, 100% 0%, 100% 100%, 60.6% 100%,
     54.2% 90%, 51.2% 80%, 49.4% 70%, 47.8% 60%, 46.1% 50%,
