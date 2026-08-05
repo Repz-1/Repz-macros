@@ -85,7 +85,15 @@ function EcranCompte({ retour }) {
       localStorage.setItem('repz_profile', JSON.stringify(p));
     } catch (e) { /* non bloquant */ }
     // Le compte porte aussi le prenom : l'en-tete le lit en premier.
-    if (u && u.updateProfile) { u.updateProfile({ displayName: v }).catch(() => {}); }
+    // Le SDK modulaire n'expose PAS updateProfile sur l'utilisateur :
+    // c'est une fonction a part (firebase.js l'importe deja ainsi).
+    // La condition etait donc toujours fausse et le prenom n'arrivait
+    // jamais jusqu'au compte — il ne vivait que dans le stockage local.
+    if (u) {
+      import('firebase/auth')
+        .then(({ updateProfile }) => updateProfile(u, { displayName: v }))
+        .catch(() => {});
+    }
     setGarde(true);
     setTimeout(() => setGarde(false), 1200);
   };
@@ -239,6 +247,28 @@ function EcranResilier({ retour }) {
   );
 }
 
+// ---------- Garde-fou d'affichage ----------
+// Quand un rendu Preact echoue, le DOM precedent RESTE en place : on
+// croit que l'appui n'a rien declenche, alors que l'ecran a plante.
+// Ce garde-fou transforme un ecran muet en message lisible, et
+// permet de revenir en arriere au lieu d'etre coince.
+function Garde({ enfant, retour }) {
+  const [erreur, setErreur] = useState(null);
+  if (erreur) {
+    return (
+      <div class="pg-reglages">
+        <Entete retour={retour} />
+        <div class="rg-corps">
+          <button class="rg-retour" onClick={retour}>← {t('set_title')}</button>
+          <p class="rg-note">{erreur}</p>
+        </div>
+      </div>
+    );
+  }
+  try { return enfant(); }
+  catch (e) { setErreur(String((e && e.message) || e)); return null; }
+}
+
 // ---------- Menu principal ----------
 export function Reglages() {
   const vue = vueReglages.value;
@@ -281,8 +311,9 @@ export function Reglages() {
     catch (e) { /* non bloquant */ }
   };
 
-  if (vue === 'compte') return <EcranCompte retour={() => { vueReglages.value = 'menu'; }} />;
-  if (vue === 'resilier') return <EcranResilier retour={() => { vueReglages.value = 'menu'; }} />;
+  const auMenu = () => { vueReglages.value = 'menu'; };
+  if (vue === 'compte') return <Garde retour={auMenu} enfant={() => <EcranCompte retour={auMenu} />} />;
+  if (vue === 'resilier') return <Garde retour={auMenu} enfant={() => <EcranResilier retour={auMenu} />} />;
 
   return (
     <div class="pg-reglages">
