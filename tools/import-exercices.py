@@ -37,7 +37,7 @@ GROUPE = {
     'quadriceps': 'jambes', 'hamstrings': 'jambes', 'glutes': 'jambes',
     'calves': 'jambes', 'adductors': 'jambes', 'abductors': 'jambes',
     'abdominals': 'abdos',
-    'neck': 'cou',
+    'neck': 'dos',
 }
 
 # ---- Noms exacts (fournis par Raci, 5 aout) ------------------
@@ -82,6 +82,47 @@ NOMS_EXACTS = {
     'Standing Cable Wood Chop': 'Woodchop Descendant',
     'Stomach Vacuum': 'Vacuum Abdominal',
     'Wind Sprints': 'Sprints Courts',
+
+    # Biceps / avant-bras — partie 2
+    'Dumbbell Lying Pronation': "Pronation de l'Avant-Bras Allongé",
+    'Dumbbell Lying Supination': "Supination de l'Avant-Bras Allongé",
+    'Seated Biceps': 'Étirement des Biceps Assis',
+    'Wrist Circles': 'Cercles de Poignets',
+    'Wrist Rotations with Straight Bar': 'Rotations des Poignets, Barre Droite',
+    # Cou
+    'Isometric Neck Exercise - Front And Back': 'Flexion-Extension Isométrique du Cou',
+    'Isometric Neck Exercise - Sides': 'Inclinaisons Latérales Isométriques du Cou',
+    # Dos
+    'Incline Bench Pull': 'Rowing sur Banc Incliné',
+    'Kettlebell Sumo High Pull': 'High Pull Sumo',
+    'V-Bar Pullup': 'Tractions Prise Neutre Serrée',
+    # Jambes
+    '90/90 Hamstring': 'Étirement des Ischio-Jambiers en 90/90',
+    'All Fours Quad Stretch': 'Étirement du Quadriceps à Quatre Pattes',
+    'Bench Jump': 'Saut sur Banc',
+    'Bicycling, Stationary': 'Vélo Stationnaire',
+    'Butt Lift (Bridge)': 'Pont Fessier',
+    'Double Leg Butt Kick': 'Saut Talons-Fesses à Deux Jambes',
+    'Elliptical Trainer': 'Vélo Elliptique',
+    'Fast Skipping': 'Skipping Rapide',
+    'Flutter Kicks': 'Battements de Jambes Alternés',
+    'Groiners': 'Groiners',
+}
+
+# Reaffectation de groupe pour certains noms exacts : la v2 a des
+# onglets Étirements et Cardio herites de la v1, restes vides depuis
+# l'import — les etirements et le cardio machines s'y rangent au lieu
+# de gonfler les groupes musculaires. Le cou n'a pas d'onglet : les
+# deux isometriques vont sous Dos en attendant l'arbitrage de Raci.
+GROUPE_EXACT = {
+    'Seated Biceps': 'etirements',
+    '90/90 Hamstring': 'etirements',
+    'All Fours Quad Stretch': 'etirements',
+    'Bicycling, Stationary': 'cardio',
+    'Elliptical Trainer': 'cardio',
+    'Fast Skipping': 'cardio',
+    'Isometric Neck Exercise - Front And Back': 'dos',
+    'Isometric Neck Exercise - Sides': 'dos',
 }
 
 # ---- Mouvements de base -------------------------------------
@@ -222,6 +263,7 @@ def convertir(e):
         if 'smith machine' in bas:
             mat_fx = 'Machine Smith'
         nom = exact + (f' ({mat_fx})' if mat_fx else '')
+        groupe = GROUPE_EXACT.get(brut, groupe)
         return {'groupe': groupe, 'nom': nom, 'source': brut,
                 'mat': e['equipment'], 'niveau': e.get('level'),
                 'muscle': muscles[0], 'id': e.get('id') or brut.replace(' ', '_')}

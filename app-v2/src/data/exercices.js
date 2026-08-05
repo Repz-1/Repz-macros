@@ -59,6 +59,9 @@ export const EXERCISES = {
     {nom:'Extension Triceps Incliné (Poulie)', meta:'3 séries × 12 reps', imgId:'Cable_Incline_Pushdown', lvl:1, mat:'machine'},
     {nom:'Flexion Buste Avant Assis (Barre)', meta:'4 séries × 8-10 reps', imgId:'Seated_Good_Mornings', lvl:2, mat:'barre'},
     {nom:'Flexion Buste Avant Jambes Tendues (Barre)', meta:'4 séries × 8-10 reps', imgId:'Stiff_Leg_Barbell_Good_Morning', lvl:1, mat:'barre'},
+    {nom:'Flexion-Extension Isométrique du Cou', meta:'3 séries × 12 reps', imgId:'Isometric_Neck_Exercise_-_Front_And_Back', lvl:1, mat:'rien'},
+    {nom:'High Pull Sumo (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'Kettlebell_Sumo_High_Pull', lvl:2, mat:'halteres'},
+    {nom:'Inclinaisons Latérales Isométriques du Cou', meta:'3 séries × 12 reps', imgId:'Isometric_Neck_Exercise_-_Sides', lvl:1, mat:'rien'},
     {nom:'Pull-Over (Barre)', meta:'4 séries × 8-10 reps', imgId:'Bent-Arm_Barbell_Pullover', lvl:2, mat:'barre'},
     {nom:'Rack Pull (Barre)', meta:'4 séries × 8-10 reps', imgId:'Rack_Pull_with_Bands', lvl:2, mat:'barre'},
     {nom:'Rowing (Barre)', meta:'4 séries × 8-10 reps', imgId:'Straight_Bar_Bench_Mid_Rows', lvl:1, mat:'barre'},
@@ -82,6 +85,7 @@ export const EXERCISES = {
     {nom:'Rowing Un Bras (Barre)', meta:'4 séries × 8-10 reps', imgId:'One-Arm_Long_Bar_Row', lvl:1, mat:'barre'},
     {nom:'Rowing Un Bras (Haltère)', meta:'4 séries × 8-10 reps', imgId:'One-Arm_Dumbbell_Row', lvl:1, mat:'halteres'},
     {nom:'Rowing Un Bras (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'One-Arm_Kettlebell_Row', lvl:2, mat:'halteres'},
+    {nom:'Rowing sur Banc Incliné (Barre)', meta:'3 séries × 12 reps', imgId:'Incline_Bench_Pull', lvl:1, mat:'barre'},
     {nom:'Rowing à Genoux (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Kneeling_High_Pulley_Row', lvl:1, mat:'machine'},
     {nom:'Rowing à Genoux Un Bras (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Kneeling_Single-Arm_High_Pulley_Row', lvl:1, mat:'machine'},
     {nom:'Shrug (Barre)', meta:'3 séries × 12 reps', imgId:'Barbell_Shrug', lvl:1, mat:'barre'},
@@ -100,6 +104,7 @@ export const EXERCISES = {
     {nom:'Tirage Poitrine Un Bras (Poulie)', meta:'4 séries × 8-10 reps', imgId:'One_Arm_Lat_Pulldown', lvl:1, mat:'machine'},
     {nom:'Tractions', meta:'4 séries × 8-10 reps', imgId:'Pullups', lvl:1, mat:'traction'},
     {nom:'Tractions Prise Large Arrière', meta:'4 séries × 8-10 reps', imgId:'Wide-Grip_Rear_Pull-Up', lvl:2, mat:'traction'},
+    {nom:'Tractions Prise Neutre Serrée', meta:'4 séries × 8-10 reps', imgId:'V-Bar_Pullup', lvl:1, mat:'traction'},
     {nom:'Tractions Supination', meta:'4 séries × 8-10 reps', imgId:'Chin-Up', lvl:1, mat:'traction'},
   ],
   epaules: [
@@ -153,6 +158,7 @@ export const EXERCISES = {
     {nom:'Épaulé-Jeté Un Bras (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'One-Arm_Kettlebell_Clean_and_Jerk', lvl:2, mat:'halteres'},
   ],
   biceps: [
+    {nom:'Cercles de Poignets', meta:'3 séries × 12 reps', imgId:'Wrist_Circles', lvl:1, mat:'rien'},
     {nom:'Curl Araignée (Barre EZ)', meta:'3 séries × 12 reps', imgId:'Spider_Curl', lvl:1, mat:'barre'},
     {nom:'Curl Biceps (Barre EZ)', meta:'3 séries × 12 reps', imgId:'EZ-Bar_Curl', lvl:1, mat:'barre'},
     {nom:'Curl Biceps (Barre)', meta:'3 séries × 12 reps', imgId:'Barbell_Curl', lvl:1, mat:'barre'},
@@ -202,6 +208,9 @@ export const EXERCISES = {
     {nom:'Curl Pupitre Inversé (Barre EZ)', meta:'3 séries × 12 reps', imgId:'Reverse_Barbell_Preacher_Curls', lvl:2, mat:'barre'},
     {nom:'Curl Pupitre Un Bras (Haltère)', meta:'3 séries × 12 reps', imgId:'One_Arm_Dumbbell_Preacher_Curl', lvl:1, mat:'halteres'},
     {nom:'Drag Curl (Barre)', meta:'4 séries × 8-10 reps', imgId:'Drag_Curl', lvl:2, mat:'barre'},
+    {nom:'Pronation de l\'Avant-Bras Allongé (Haltère)', meta:'3 séries × 12 reps', imgId:'Dumbbell_Lying_Pronation', lvl:2, mat:'halteres'},
+    {nom:'Rotations des Poignets, Barre Droite (Barre)', meta:'3 séries × 12 reps', imgId:'Wrist_Rotations_with_Straight_Bar', lvl:1, mat:'barre'},
+    {nom:'Supination de l\'Avant-Bras Allongé (Haltère)', meta:'3 séries × 12 reps', imgId:'Dumbbell_Lying_Supination', lvl:2, mat:'halteres'},
     {nom:'Épaulé (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'Bottoms-Up_Clean_From_The_Hang_Position', lvl:2, mat:'halteres'},
   ],
   triceps: [
@@ -244,6 +253,7 @@ export const EXERCISES = {
     {nom:'Adduction Hanche (Poulie)', meta:'3 séries × 12 reps', imgId:'Cable_Hip_Adduction', lvl:1, mat:'machine'},
     {nom:'Adduction Hanche (Élastique)', meta:'3 séries × 12 reps', imgId:'Band_Hip_Adductions', lvl:1, mat:'halteres'},
     {nom:'Arraché (Barre)', meta:'4 séries × 8-10 reps', imgId:'Hang_Snatch', lvl:3, mat:'barre'},
+    {nom:'Battements de Jambes Alternés', meta:'4 séries × 8-10 reps', imgId:'Flutter_Kicks', lvl:1, mat:'rien'},
     {nom:'Box Jump Assis Sauté (Haltère)', meta:'4 séries × 8-10 reps', imgId:'Dumbbell_Seated_Box_Jump', lvl:2, mat:'halteres'},
     {nom:'Box Squat (Barre)', meta:'4 séries × 8-10 reps', imgId:'Box_Squat', lvl:2, mat:'barre'},
     {nom:'Box Squat Inversé (Barre)', meta:'4 séries × 8-10 reps', imgId:'Reverse_Band_Box_Squat', lvl:2, mat:'barre'},
@@ -271,6 +281,7 @@ export const EXERCISES = {
     {nom:'Glute Ham Raise', meta:'4 séries × 8-10 reps', imgId:'Natural_Glute_Ham_Raise', lvl:2, mat:'rien'},
     {nom:'Glute Ham Raise (Machine)', meta:'4 séries × 8-10 reps', imgId:'Glute_Ham_Raise', lvl:2, mat:'machine'},
     {nom:'Goblet Squat (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'Goblet_Squat', lvl:1, mat:'halteres'},
+    {nom:'Groiners', meta:'4 séries × 8-10 reps', imgId:'Groiners', lvl:2, mat:'rien'},
     {nom:'Hack Squat (Barre)', meta:'4 séries × 8-10 reps', imgId:'Barbell_Hack_Squat', lvl:2, mat:'barre'},
     {nom:'Hack Squat (Machine)', meta:'4 séries × 8-10 reps', imgId:'Hack_Squat', lvl:1, mat:'machine'},
     {nom:'Hip Thrust (Barre)', meta:'4 séries × 8-10 reps', imgId:'Barbell_Hip_Thrust', lvl:2, mat:'barre'},
@@ -279,6 +290,7 @@ export const EXERCISES = {
     {nom:'Leg Curl Allongé (Machine)', meta:'3 séries × 12 reps', imgId:'Lying_Leg_Curls', lvl:1, mat:'machine'},
     {nom:'Leg Curl Assis (Machine)', meta:'3 séries × 12 reps', imgId:'Seated_Leg_Curl', lvl:1, mat:'machine'},
     {nom:'Leg Curl Debout (Machine)', meta:'3 séries × 12 reps', imgId:'Standing_Leg_Curl', lvl:1, mat:'machine'},
+    {nom:'Pont Fessier', meta:'3 séries × 12 reps', imgId:'Butt_Lift_Bridge', lvl:1, mat:'rien'},
     {nom:'Presse Mollets (Machine)', meta:'3 séries × 12 reps', imgId:'Calf_Press', lvl:1, mat:'machine'},
     {nom:'Presse à Cuisses (Machine Smith)', meta:'4 séries × 8-10 reps', imgId:'Smith_Machine_Leg_Press', lvl:2, mat:'machine'},
     {nom:'Presse à Cuisses (Machine)', meta:'4 séries × 8-10 reps', imgId:'Leg_Press', lvl:1, mat:'machine'},
@@ -288,6 +300,8 @@ export const EXERCISES = {
     {nom:'Relevé de Jambes Arrière', meta:'3 séries × 12 reps', imgId:'Rear_Leg_Raises', lvl:1, mat:'rien'},
     {nom:'Relevé de Jambes Avant', meta:'3 séries × 12 reps', imgId:'Front_Leg_Raises', lvl:1, mat:'rien'},
     {nom:'Relevé de Jambes Latéral', meta:'3 séries × 12 reps', imgId:'Side_Leg_Raises', lvl:1, mat:'rien'},
+    {nom:'Saut Talons-Fesses à Deux Jambes', meta:'4 séries × 8-10 reps', imgId:'Double_Leg_Butt_Kick', lvl:1, mat:'rien'},
+    {nom:'Saut sur Banc', meta:'4 séries × 8-10 reps', imgId:'Bench_Jump', lvl:2, mat:'rien'},
     {nom:'Soulevé de Terre (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'Kettlebell_One-Legged_Deadlift', lvl:2, mat:'halteres'},
     {nom:'Soulevé de Terre (Machine)', meta:'4 séries × 8-10 reps', imgId:'Leverage_Deadlift', lvl:1, mat:'machine'},
     {nom:'Soulevé de Terre (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Cable_Deadlifts', lvl:1, mat:'machine'},
@@ -397,7 +411,18 @@ export const EXERCISES = {
     {nom:'Woodchop Ascendant (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Standing_Cable_Lift', lvl:1, mat:'machine'},
     {nom:'Woodchop Descendant (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Standing_Cable_Wood_Chop', lvl:1, mat:'machine'},
   ],
+  etirements: [
+    {nom:'Étirement des Biceps Assis', meta:'3 séries × 12 reps', imgId:'Seated_Biceps', lvl:3, mat:'rien'},
+    {nom:'Étirement des Ischio-Jambiers en 90/90', meta:'3 séries × 12 reps', imgId:'90_90_Hamstring', lvl:1, mat:'rien'},
+    {nom:'Étirement du Quadriceps à Quatre Pattes', meta:'3 séries × 12 reps', imgId:'All_Fours_Quad_Stretch', lvl:2, mat:'rien'},
+  ],
+  cardio: [
+    {nom:'Skipping Rapide', meta:'4 séries × 8-10 reps', imgId:'Fast_Skipping', lvl:1, mat:'rien'},
+    {nom:'Vélo Elliptique (Machine)', meta:'3 séries × 12 reps', imgId:'Elliptical_Trainer', lvl:2, mat:'machine'},
+    {nom:'Vélo Stationnaire (Machine)', meta:'3 séries × 12 reps', imgId:'Bicycling_Stationary', lvl:1, mat:'machine'},
+  ],
 };
+
 
 
 
