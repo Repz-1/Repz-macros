@@ -1,3 +1,14 @@
+// Base d'exercices — transposee du v1, puis reimportee de Free
+// Exercise DB. Photos : meme base, IMG_BASE + imgId + '/0.jpg'.
+
+export const IMG_BASE = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
+
+export const MUSCLES = [
+  {key:'pecs', label:'Pecs'}, {key:'dos', label:'Dos'}, {key:'epaules', label:'Épaules'},
+  {key:'biceps', label:'Biceps'}, {key:'triceps', label:'Triceps'}, {key:'jambes', label:'Jambes'}, {key:'abdos', label:'Abdos'},
+  {key:'etirements', label:'Étirements'}, {key:'cardio', label:'Cardio'},
+];
+
 // Base d'exercices — importee de Free Exercise DB (domaine public),
 // noms francais selon la convention de Raci, completee par sa table
 // de noms exacts (5 aout, partie 1 : abdos).
