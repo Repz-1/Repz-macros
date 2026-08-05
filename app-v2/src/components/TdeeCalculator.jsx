@@ -17,7 +17,26 @@ export function TdeeCalculator({ montre, fermer, retour }) {
   // 4 valeurs — reserve Premium, toujours (ajustement fin continu).
   const [mode, setMode] = useState('calc');
   const [man, setMan] = useState(() => ({ ...objectifs.value }));
-  const majMan = (cle, val) => setMan(o => ({ ...o, [cle]: val === '' ? '' : Math.max(0, parseFloat(val) || 0) }));
+  const majMan = (cle, val) => setMan(o => {
+    const v = val === '' ? '' : Math.max(0, parseFloat(val) || 0);
+    if (cle !== 'kcal' || v === '' || v <= 0) return { ...o, [cle]: v };
+    // Changer les calories REPARTIT les macros dans les memes
+    // proportions. Sans cela, passer de 3562 a 4000 kcal laissait des
+    // macros qui n'en totalisaient que 3562 : l'objectif affiche et
+    // les barres de macros racontaient deux histoires differentes.
+    // Les proportions sont celles de l'utilisateur, jamais une
+    // formule : on ne fait que les mettre a l'echelle. Chaque macro
+    // reste modifiable ensuite, elle n'est pas re-touchee.
+    const base = (+o.prot || 0) * 4 + (+o.carbs || 0) * 4 + (+o.lip || 0) * 9;
+    if (base <= 0) return { ...o, kcal: v };
+    const k = v / base;
+    return {
+      kcal: v,
+      prot: Math.round((+o.prot || 0) * k),
+      carbs: Math.round((+o.carbs || 0) * k),
+      lip: Math.round((+o.lip || 0) * k),
+    };
+  });
   const kcalMacros = Math.round((+man.prot || 0) * 4 + (+man.carbs || 0) * 4 + (+man.lip || 0) * 9);
 
   const choisirMode = (m) => {
