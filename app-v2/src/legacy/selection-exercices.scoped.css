@@ -39,3 +39,46 @@
 .pg-selection .session-bar.hidden{ display:none; }
 .pg-selection .session-bar .count{ font-size:14px; font-weight:700; }
 .pg-selection .session-bar .go{ font-size:14px; font-weight:800; }
+
+/* ============================================================
+   RECHERCHE — le catalogue est passe de 84 a 333 exercices.
+   Avec 91 mouvements pour les jambes, la liste seule n'est plus
+   navigable : sans champ de recherche, trouver « Presse a Cuisses »
+   demande de faire defiler la moitie du groupe.
+   ============================================================ */
+.pg-selection .ex-recherche {
+  position: relative; display: flex; align-items: center;
+  margin: 12px 0 4px;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; padding: 0 12px;
+}
+.pg-selection .ex-recherche svg {
+  width: 17px; height: 17px; flex: none;
+  fill: none; stroke: var(--text-dim); stroke-width: 2;
+  stroke-linecap: round;
+}
+.pg-selection .ex-recherche input {
+  flex: 1; min-width: 0; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 14.5px; color: var(--text);
+  padding: 12px 8px;
+}
+.pg-selection .ex-recherche input::placeholder { color: var(--text-dim); }
+/* La croix native de <input type=search> ne s'affiche pas partout :
+   on fournit la notre, toujours au meme endroit. */
+.pg-selection .ex-recherche input::-webkit-search-cancel-button { display: none; }
+.pg-selection .ex-recherche-vider {
+  flex: none; border: none; background: none; cursor: pointer;
+  font-size: 20px; line-height: 1; color: var(--text-dim); padding: 4px 2px;
+}
+/* Renvoi vers les autres groupes quand la recherche ne donne rien
+   ici mais trouve ailleurs. */
+.pg-selection .ex-ailleurs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center; margin-top: 14px;
+}
+.pg-selection .ex-ailleurs button {
+  border: 1px solid var(--line); background: var(--card);
+  border-radius: 999px; padding: 7px 14px;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  color: var(--text); cursor: pointer;
+}

@@ -28,13 +28,39 @@ export function SelectionExercices() {
     return o;
   });
 
+  const [recherche, setRecherche] = useState('');
+
   const mKey = MUSCLES[muscle].key;
   const f = FILTERS.find(x => x.key === filtre);
   const exoVisible = (ex) => !f.mats || f.mats.includes(ex.mat);
 
+  // Recherche par MOTS, insensible aux accents, a la casse et a
+  // l'ordre : « couche incline » trouve « Developpe Couche Incline
+  // (Haltere) », « poulie triceps » trouve « Extension Triceps
+  // (Poulie) ». Meme principe que la recherche d'aliments.
+  const normaliser = (x) => x.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ');
+  const mots = normaliser(recherche).split(/\s+/).filter(Boolean);
+  const correspond = (ex) => {
+    if (!mots.length) return true;
+    const cible = normaliser(ex.nom);
+    return mots.every(m => cible.includes(m));
+  };
+
   const liste = (EXERCISES[mKey] || [])
     .map((ex, i) => ({ ex, i }))
-    .filter(o => exoVisible(o.ex));
+    .filter(o => exoVisible(o.ex) && correspond(o.ex));
+
+  // Une recherche porte sur TOUT le catalogue, pas sur le seul muscle
+  // affiche : chercher « squat » depuis l'onglet Pecs ne doit pas
+  // renvoyer une liste vide. On indique alors ou se trouvent les
+  // resultats plutot que de laisser l'ecran muet.
+  const ailleurs = mots.length && !liste.length
+    ? MUSCLES.filter(m => m.key !== mKey)
+        .map(m => ({ m, n: (EXERCISES[m.key] || []).filter(correspond).length }))
+        .filter(o => o.n > 0)
+    : [];
 
   const nbSelectionnes = Object.values(selection).reduce((n, s) => n + s.size, 0);
 
@@ -78,13 +104,38 @@ export function SelectionExercices() {
         ))}
       </div>
 
-      <p class="section-hint">Touche un exercice pour l'ajouter.</p>
+      <div class="ex-recherche">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" /><path d="M20 20l-3.6-3.6" />
+        </svg>
+        <input type="search" value={recherche} placeholder="Chercher un exercice"
+          onInput={(e) => setRecherche(e.currentTarget.value)} />
+        {recherche && (
+          <button class="ex-recherche-vider" onClick={() => setRecherche('')}
+            aria-label="Effacer">×</button>
+        )}
+      </div>
+
+      <p class="section-hint">
+        {mots.length
+          ? `${liste.length} exercice${liste.length > 1 ? 's' : ''} trouvé${liste.length > 1 ? 's' : ''}`
+          : "Touche un exercice pour l'ajouter."}
+      </p>
 
       <div class="ex-list">
         {liste.length === 0 ? (
           <div style="text-align:center;color:#6b7280;font-size:14px;padding:34px 20px;line-height:1.5">
             <span style="display:block;font-size:44px;margin-bottom:10px">💪</span>
-            Aucun exercice pour ce matériel.
+            {mots.length ? 'Aucun exercice ne correspond.' : 'Aucun exercice pour ce matériel.'}
+            {ailleurs.length > 0 && (
+              <div class="ex-ailleurs">
+                {ailleurs.map(o => (
+                  <button key={o.m.key} onClick={() => setMuscle(MUSCLES.indexOf(o.m))}>
+                    {o.m.label} ({o.n})
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         ) : liste.map(({ ex, i }) => {
           const sel = selection[mKey].has(i);
