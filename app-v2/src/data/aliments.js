@@ -930,6 +930,7 @@ export const DB = {
     'Saucisse de Toulouse':{kcal:310,prot:16,carbs:1,lip:27,fibres:0,sucres:1,satures:11.3,sel:1.89},
     'Kefta':{kcal:240,prot:17,carbs:3,lip:18},
     'Haché de veau':{kcal:190,prot:19,carbs:0,lip:12},
+    'Burger de veau':{kcal:190,prot:19,carbs:0,lip:12,fibres:0,sucres:0,satures:5.2,sel:0.35},
     'Haché porc-veau':{kcal:250,prot:17,carbs:0,lip:20},
     'Steak végétal':{kcal:180,prot:16,carbs:7,lip:10},
     'Tofu fumé':{kcal:150,prot:16,carbs:2,lip:9,fibres:0.5,sucres:0.85,satures:1.53,sel:0.74},
