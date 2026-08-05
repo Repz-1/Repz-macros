@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { MUSCLES, EXERCISES, FILTERS, NIVEAUX, IMG_BASE } from '../data/exercices.js';
 import { retourEntrainer } from './Entrainer.jsx';
 import '../legacy/selection-exercices.scoped.css';
@@ -29,6 +30,10 @@ export function SelectionExercices() {
   });
 
   const [recherche, setRecherche] = useState('');
+  // Fiche d'exercice : index dans le groupe courant, ou null.
+  // Toucher la vignette OUVRE la fiche au lieu d'ajouter — voir le
+  // commentaire sur .ex-photo plus bas.
+  const [fiche, setFiche] = useState(null);
 
   const mKey = MUSCLES[muscle].key;
   const f = FILTERS.find(x => x.key === filtre);
@@ -143,8 +148,15 @@ export function SelectionExercices() {
           const sets = (ex.meta || '').replace(/\s*×\s*/g, ' • ');
           return (
             <div class={'ex-item' + (sel ? ' selected' : '')} key={mKey + '-' + i}>
-              <div class="ex-photo" style={bg} />
-              <div class="ex-info">
+              {/* La vignette ouvre la FICHE, elle n'ajoute pas. Voir
+                  l'exercice avant de le choisir est la premiere
+                  chose qu'on veut faire ; il fallait auparavant
+                  l'ajouter a sa seance pour decouvrir a quoi il
+                  ressemblait, donc s'engager avant de savoir. */}
+              <div class="ex-photo" style={bg} role="button" tabIndex={0}
+                aria-label={'Voir ' + ex.nom}
+                onClick={() => setFiche(i)} />
+              <div class="ex-info" onClick={() => setFiche(i)}>
                 <div class="ex-name">{ex.nom}</div>
                 <div class="ex-equip">{equipLabel(ex.mat)}</div>
                 {stars(ex.lvl)}
@@ -155,6 +167,12 @@ export function SelectionExercices() {
           );
         })}
       </div>
+
+      <FicheExercice
+        ex={fiche != null ? (EXERCISES[mKey] || [])[fiche] : null}
+        choisi={fiche != null && selection[mKey].has(fiche)}
+        basculer={() => { if (fiche != null) basculer(fiche); }}
+        fermer={() => setFiche(null)} />
 
       <div class={'session-bar' + (nbSelectionnes === 0 ? ' hidden' : '')}
         onClick={() => {
@@ -172,5 +190,45 @@ export function SelectionExercices() {
         <span class="go">Ma séance →</span>
       </div>
     </div>
+  );
+}
+
+
+// ============================================================
+// FICHE D'EXERCICE
+// Photo en grand, identite, et l'ajout depuis ici : on decide en
+// voyant le mouvement, pas en lisant son nom. La base fournit deux
+// vues par exercice (depart et fin) — les montrer toutes les deux
+// dit le mouvement, la que la vignette seule ne montre qu'une pose.
+// ============================================================
+function FicheExercice({ ex, choisi, basculer, fermer }) {
+  if (!ex) return null;
+  const vues = ex.imgId ? [0, 1] : [];
+  return createPortal(
+    <div class="exo-fiche" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
+      <div class="exo-fiche-carte">
+        <button class="exo-fiche-fermer" onClick={fermer} aria-label="Fermer">×</button>
+
+        <div class="exo-fiche-vues">
+          {vues.map(n => (
+            <div key={n} class="exo-fiche-vue"
+              style={{ backgroundImage: `url('${IMG_BASE}${ex.imgId}/${n}.jpg')` }} />
+          ))}
+        </div>
+
+        <h2>{ex.nom}</h2>
+        <div class="exo-fiche-meta">
+          <span>{equipLabel(ex.mat)}</span>
+          <span>{NIVEAUX[ex.lvl]}</span>
+          <span>{(ex.meta || '').replace(/\s*×\s*/g, ' • ')}</span>
+        </div>
+
+        <button class={'exo-fiche-ajout' + (choisi ? ' retire' : '')}
+          onClick={() => { basculer(); fermer(); }}>
+          {choisi ? 'Retirer de ma séance' : 'Ajouter à ma séance'}
+        </button>
+      </div>
+    </div>,
+    document.body
   );
 }

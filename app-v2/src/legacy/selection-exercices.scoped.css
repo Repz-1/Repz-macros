@@ -92,3 +92,65 @@
   font-family: inherit; font-size: 13px; font-weight: 600;
   color: var(--text); cursor: pointer;
 }
+
+/* ============================================================
+   FICHE D'EXERCICE
+   Le rail des quatre onglets est TRANSFORME : un position:fixed s'y
+   calerait sur ses 400 % de large. La feuille du socle met deja les
+   couches de ce type en absolute a l'interieur du panneau ; on suit
+   la meme regle (voir journal-socle.css, « .rail-pan .ml-overlay »).
+   ============================================================ */
+.exo-fiche {
+  /* Ces variables sont declarees sur .pg-selection. Montee en portail
+     sur le corps, la fiche n'en heritait plus : carte transparente,
+     texte sans couleur. Meme piege que les modales de S'entrainer. */
+  --card: #fff; --dark: #181818; --line: #e5e7eb;
+  --text: #1a1a1a; --text-dim: #6b7280;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: fixed; inset: 0; z-index: 120;
+  display: flex; align-items: flex-end; justify-content: center;
+  background: rgba(24, 24, 24, .55);
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
+
+
+.exo-fiche-carte {
+  width: 100%; max-width: 480px;
+  background: var(--card);
+  border-radius: 22px 22px 0 0;
+  /* La barre de navigation fait 87 px et reste visible : on lui
+     laisse la place, sinon le bouton d'ajout tombe dessus. */
+  padding: 18px 18px calc(100px + env(safe-area-inset-bottom));
+  position: relative;
+  max-height: 88%; overflow-y: auto;
+  box-shadow: 0 -8px 34px rgba(24, 24, 24, .22);
+}
+.exo-fiche-fermer {
+  position: absolute; top: 10px; right: 12px;
+  border: none; background: none; cursor: pointer;
+  font-size: 26px; line-height: 1; color: var(--text-dim); padding: 4px 6px;
+}
+/* Les deux vues cote a cote : depart et fin du mouvement. */
+.exo-fiche-vues { display: flex; gap: 8px; margin: 6px 0 14px; }
+.exo-fiche-vue {
+  flex: 1; aspect-ratio: 1 / 1; border-radius: 16px;
+  background: #EDEAE4 center/cover no-repeat;
+}
+.exo-fiche-carte h2 {
+  margin: 0 0 8px; font-size: 19px; font-weight: 800;
+  letter-spacing: -.01em; color: var(--text); padding-right: 28px;
+}
+.exo-fiche-meta {
+  display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px;
+}
+.exo-fiche-meta span {
+  background: #EDEAE4; border-radius: 999px; padding: 5px 11px;
+  font-size: 12.5px; font-weight: 600; color: #4A443D;
+}
+.exo-fiche-ajout {
+  display: block; width: 100%; border: none; cursor: pointer;
+  background: var(--dark); color: #fff;
+  border-radius: 16px; padding: 15px;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+}
+.exo-fiche-ajout.retire { background: #EDEAE4; color: #1a1a1a; }
