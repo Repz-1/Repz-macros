@@ -1,25 +1,7 @@
-// Base d'exercices — transposee du v1 (ma-seance.html / seance.body.html).
-// 84 exercices, 9 groupes musculaires. Photos : Free Exercise DB (CDN GitHub).
-
-export const IMG_BASE = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
-
-export const MUSCLES = [
-  {key:'pecs', label:'Pecs'}, {key:'dos', label:'Dos'}, {key:'epaules', label:'Épaules'},
-  {key:'biceps', label:'Biceps'}, {key:'triceps', label:'Triceps'}, {key:'jambes', label:'Jambes'}, {key:'abdos', label:'Abdos'},
-  {key:'etirements', label:'Étirements'}, {key:'cardio', label:'Cardio'},
-];
-
-// Base d'exercices — 333 mouvements importes de Free Exercise DB
-// (yuhonas/free-exercise-db, Unlicense = domaine public), nommes en
-// francais selon la convention relevee dans les captures de Raci :
-//     « Mouvement [Qualificatifs] (Materiel) »
-// Le materiel est omis au poids du corps. Les photos viennent de la
-// meme base : IMG_BASE + imgId + '/0.jpg'.
-//
+// Base d'exercices — importee de Free Exercise DB (domaine public),
+// noms francais selon la convention de Raci, completee par sa table
+// de noms exacts (5 aout, partie 1 : abdos).
 // Regenerer : python3 tools/import-exercices.py
-// Les 84 exercices de la v1 sont remplaces ; ceux qui existaient
-// s'y retrouvent sous leur nouveau nom (« Developpe Couche (Barre) »
-// pour « Developpe couche »).
 export const EXERCISES = {
   pecs: [
     {nom:'Chest Press (Machine)', meta:'4 séries × 8-10 reps', imgId:'Leverage_Chest_Press', lvl:1, mat:'machine'},
@@ -341,34 +323,71 @@ export const EXERCISES = {
     {nom:'Épaulé en Suspension Alterné (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'Alternating_Hang_Clean', lvl:2, mat:'halteres'},
   ],
   abdos: [
+    {nom:'Bent Press (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'Bent_Press', lvl:3, mat:'halteres'},
+    {nom:'Ciseaux de Jambes', meta:'3 séries × 12 reps', imgId:'Scissor_Kick', lvl:1, mat:'rien'},
+    {nom:'Cocon', meta:'4 séries × 8-10 reps', imgId:'Cocoons', lvl:1, mat:'rien'},
     {nom:'Crunch', meta:'4 séries × 8-10 reps', imgId:'Cross-Body_Crunch', lvl:1, mat:'rien'},
     {nom:'Crunch (Machine)', meta:'3 séries × 12 reps', imgId:'Ab_Crunch_Machine', lvl:2, mat:'machine'},
     {nom:'Crunch (Poulie)', meta:'3 séries × 12 reps', imgId:'Cable_Crunch', lvl:1, mat:'machine'},
     {nom:'Crunch Assis (Poulie)', meta:'3 séries × 12 reps', imgId:'Cable_Seated_Crunch', lvl:1, mat:'machine'},
+    {nom:'Crunch Bicyclette', meta:'4 séries × 8-10 reps', imgId:'Air_Bike', lvl:1, mat:'rien'},
     {nom:'Crunch Corde (Poulie)', meta:'3 séries × 12 reps', imgId:'Rope_Crunch', lvl:1, mat:'machine'},
+    {nom:'Crunch Coude-Genou', meta:'4 séries × 8-10 reps', imgId:'Elbow_to_Knee', lvl:1, mat:'rien'},
     {nom:'Crunch Debout Corde (Poulie)', meta:'3 séries × 12 reps', imgId:'Standing_Rope_Crunch', lvl:1, mat:'machine'},
     {nom:'Crunch Décliné', meta:'3 séries × 12 reps', imgId:'Decline_Crunch', lvl:2, mat:'rien'},
     {nom:'Crunch Inversé', meta:'3 séries × 12 reps', imgId:'Reverse_Crunch', lvl:1, mat:'rien'},
     {nom:'Crunch Inversé (Poulie)', meta:'3 séries × 12 reps', imgId:'Cable_Reverse_Crunch', lvl:1, mat:'machine'},
     {nom:'Crunch Inversé Décliné', meta:'4 séries × 8-10 reps', imgId:'Decline_Reverse_Crunch', lvl:1, mat:'rien'},
+    {nom:'Crunch Inversé avec Relevé de Bassin', meta:'4 séries × 8-10 reps', imgId:'Bottoms_Up', lvl:1, mat:'rien'},
     {nom:'Crunch au-dessus de la Tête', meta:'3 séries × 12 reps', imgId:'Crunch_-_Hands_Overhead', lvl:1, mat:'rien'},
     {nom:'Crunch à Genoux Alterné (Poulie)', meta:'3 séries × 12 reps', imgId:'Kneeling_Cable_Crunch_With_Alternating_Oblique_Twists', lvl:1, mat:'machine'},
     {nom:'Curl Biceps', meta:'3 séries × 12 reps', imgId:'Lower_Back_Curl', lvl:1, mat:'rien'},
     {nom:'Dead Bug', meta:'4 séries × 8-10 reps', imgId:'Dead_Bug', lvl:1, mat:'rien'},
+    {nom:'Double Windmill (Kettlebell)', meta:'3 séries × 12 reps', imgId:'Double_Kettlebell_Windmill', lvl:2, mat:'halteres'},
+    {nom:'Figure 8 (Kettlebell)', meta:'3 séries × 12 reps', imgId:'Kettlebell_Figure_8', lvl:2, mat:'halteres'},
     {nom:'Flexion Latérale (Barre)', meta:'3 séries × 12 reps', imgId:'Barbell_Side_Bend', lvl:1, mat:'barre'},
     {nom:'Flexion Latérale (Haltère)', meta:'3 séries × 12 reps', imgId:'Dumbbell_Side_Bend', lvl:1, mat:'halteres'},
     {nom:'Flexion Latérale (Poulie)', meta:'3 séries × 12 reps', imgId:'Bosu_Ball_Cable_Crunch_With_Side_Bends', lvl:1, mat:'machine'},
     {nom:'Flexion Latérale Un Bras (Poulie)', meta:'3 séries × 12 reps', imgId:'One-Arm_High-Pulley_Cable_Side_Bends', lvl:1, mat:'machine'},
+    {nom:'Gainage Latéral', meta:'3 séries × 12 reps', imgId:'Side_Bridge', lvl:1, mat:'rien'},
+    {nom:'Judo Flip (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Cable_Judo_Flip', lvl:1, mat:'machine'},
+    {nom:'Landmine 180° (Barre)', meta:'4 séries × 8-10 reps', imgId:'Landmine_180s', lvl:1, mat:'barre'},
+    {nom:'Pallof Press (Poulie)', meta:'3 séries × 12 reps', imgId:'Pallof_Press', lvl:1, mat:'machine'},
+    {nom:'Pallof Press avec Rotation (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Pallof_Press_With_Rotation', lvl:1, mat:'machine'},
+    {nom:'Passage entre les Jambes (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'Kettlebell_Pass_Between_The_Legs', lvl:2, mat:'halteres'},
     {nom:'Planche', meta:'3 séries × 12 reps', imgId:'Plank', lvl:1, mat:'rien'},
+    {nom:'Planche Dauphin', meta:'4 séries × 8-10 reps', imgId:'Butt-Ups', lvl:1, mat:'rien'},
+    {nom:'Ramené de Genoux', meta:'4 séries × 8-10 reps', imgId:'Leg_Pull-In', lvl:1, mat:'rien'},
+    {nom:'Ramené de Genoux Assis', meta:'3 séries × 12 reps', imgId:'Seated_Leg_Tucks', lvl:1, mat:'rien'},
+    {nom:'Ramené de Genoux Assis sur Banc Plat', meta:'4 séries × 8-10 reps', imgId:'Seated_Flat_Bench_Leg_Pull-In', lvl:1, mat:'rien'},
+    {nom:'Ramené de Genoux sur Banc Plat', meta:'4 séries × 8-10 reps', imgId:'Flat_Bench_Leg_Pull-In', lvl:1, mat:'rien'},
+    {nom:'Relevé de Bassin Genoux Fléchis', meta:'4 séries × 8-10 reps', imgId:'Bent-Knee_Hip_Raise', lvl:1, mat:'rien'},
+    {nom:'Relevé de Bassin Guidé (Machine Smith)', meta:'3 séries × 12 reps', imgId:'Smith_Machine_Hip_Raise', lvl:1, mat:'machine'},
     {nom:'Relevé de Jambes Allongé', meta:'3 séries × 12 reps', imgId:'Flat_Bench_Lying_Leg_Raise', lvl:1, mat:'rien'},
     {nom:'Relevé de Jambes Suspendu', meta:'3 séries × 12 reps', imgId:'Hanging_Leg_Raise', lvl:3, mat:'traction'},
+    {nom:'Relevé de Jambes Tendues Suspendu', meta:'4 séries × 8-10 reps', imgId:'Hanging_Pike', lvl:3, mat:'traction'},
+    {nom:'Rollout (Barre)', meta:'4 séries × 8-10 reps', imgId:'Barbell_Ab_Rollout', lvl:2, mat:'barre'},
+    {nom:'Rollout depuis un Banc (Barre)', meta:'4 séries × 8-10 reps', imgId:'Barbell_Rollout_from_Bench', lvl:2, mat:'barre'},
+    {nom:'Rollout à Genoux (Barre)', meta:'4 séries × 8-10 reps', imgId:'Barbell_Ab_Rollout_-_On_Knees', lvl:3, mat:'barre'},
     {nom:'Rotation Russe', meta:'4 séries × 8-10 reps', imgId:'Russian_Twist', lvl:2, mat:'rien'},
     {nom:'Rotation Russe (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Cable_Russian_Twists', lvl:1, mat:'machine'},
+    {nom:'Rotations du Buste Assis (Barre)', meta:'3 séries × 12 reps', imgId:'Seated_Barbell_Twist', lvl:1, mat:'barre'},
     {nom:'Sit Up', meta:'4 séries × 8-10 reps', imgId:'3_4_Sit-Up', lvl:1, mat:'rien'},
     {nom:'Sit Up (Barre)', meta:'4 séries × 8-10 reps', imgId:'Press_Sit-Up', lvl:3, mat:'barre'},
+    {nom:'Spell Caster (Haltère)', meta:'4 séries × 8-10 reps', imgId:'Spell_Caster', lvl:1, mat:'halteres'},
+    {nom:'Spider Crawl', meta:'4 séries × 8-10 reps', imgId:'Spider_Crawl', lvl:1, mat:'rien'},
+    {nom:'Sprints Courts', meta:'4 séries × 8-10 reps', imgId:'Wind_Sprints', lvl:1, mat:'rien'},
     {nom:'Toucher Orteils', meta:'3 séries × 12 reps', imgId:'Toe_Touchers', lvl:1, mat:'rien'},
+    {nom:'Touches de Talons Alternées', meta:'3 séries × 12 reps', imgId:'Alternate_Heel_Touchers', lvl:1, mat:'rien'},
+    {nom:'V-Up Latéral', meta:'4 séries × 8-10 reps', imgId:'Side_Jackknife', lvl:1, mat:'rien'},
+    {nom:'Vacuum Abdominal', meta:'3 séries × 12 reps', imgId:'Stomach_Vacuum', lvl:1, mat:'rien'},
+    {nom:'Windmill (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'Kettlebell_Windmill', lvl:2, mat:'halteres'},
+    {nom:'Windmill Avancé (Kettlebell)', meta:'3 séries × 12 reps', imgId:'Advanced_Kettlebell_Windmill', lvl:2, mat:'halteres'},
+    {nom:'Woodchop Ascendant (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Standing_Cable_Lift', lvl:1, mat:'machine'},
+    {nom:'Woodchop Descendant (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Standing_Cable_Wood_Chop', lvl:1, mat:'machine'},
   ],
 };
+
 
 
 // Les filtres etaient CUMULATIFS : « Salle » incluait deja les cinq

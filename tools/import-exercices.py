@@ -40,6 +40,50 @@ GROUPE = {
     'neck': 'cou',
 }
 
+# ---- Noms exacts (fournis par Raci, 5 aout) ------------------
+# Ces exercices n'ont pas de mouvement generique : chaque nom anglais
+# recoit directement son nom francais. Le materiel s'ajoute ensuite
+# entre parentheses comme partout ailleurs (jamais au poids du corps).
+NOMS_EXACTS = {
+    # Abdos — partie 1
+    'Advanced Kettlebell Windmill': 'Windmill Avancé',
+    'Air Bike': 'Crunch Bicyclette',
+    'Alternate Heel Touchers': 'Touches de Talons Alternées',
+    'Barbell Ab Rollout': 'Rollout',
+    'Barbell Ab Rollout - On Knees': 'Rollout à Genoux',
+    'Barbell Rollout from Bench': 'Rollout depuis un Banc',
+    'Bent Press': 'Bent Press',
+    'Bent-Knee Hip Raise': 'Relevé de Bassin Genoux Fléchis',
+    'Bottoms Up': 'Crunch Inversé avec Relevé de Bassin',
+    'Butt-Ups': 'Planche Dauphin',
+    'Cable Judo Flip': 'Judo Flip',
+    'Cocoons': 'Cocon',
+    'Double Kettlebell Windmill': 'Double Windmill',
+    'Elbow to Knee': 'Crunch Coude-Genou',
+    'Flat Bench Leg Pull-In': 'Ramené de Genoux sur Banc Plat',
+    'Hanging Pike': 'Relevé de Jambes Tendues Suspendu',
+    'Kettlebell Figure 8': 'Figure 8',
+    'Kettlebell Pass Between The Legs': 'Passage entre les Jambes',
+    'Kettlebell Windmill': 'Windmill',
+    "Landmine 180's": 'Landmine 180°',
+    'Leg Pull-In': 'Ramené de Genoux',
+    'Pallof Press': 'Pallof Press',
+    'Pallof Press With Rotation': 'Pallof Press avec Rotation',
+    'Scissor Kick': 'Ciseaux de Jambes',
+    'Seated Barbell Twist': 'Rotations du Buste Assis',
+    'Seated Flat Bench Leg Pull-In': 'Ramené de Genoux Assis sur Banc Plat',
+    'Seated Leg Tucks': 'Ramené de Genoux Assis',
+    'Side Bridge': 'Gainage Latéral',
+    'Side Jackknife': 'V-Up Latéral',
+    'Smith Machine Hip Raise': 'Relevé de Bassin Guidé',
+    'Spell Caster': 'Spell Caster',
+    'Spider Crawl': 'Spider Crawl',
+    'Standing Cable Lift': 'Woodchop Ascendant',
+    'Standing Cable Wood Chop': 'Woodchop Descendant',
+    'Stomach Vacuum': 'Vacuum Abdominal',
+    'Wind Sprints': 'Sprints Courts',
+}
+
 # ---- Mouvements de base -------------------------------------
 # Le motif le PLUS LONG qui correspond gagne : « Bench Press »
 # doit primer sur « Press », sinon tout devient « Développé ».
@@ -148,13 +192,18 @@ def convertir(e):
     brut = e['name']
     bas = brut.lower()
 
+    # Un nom exact fourni par Raci prime sur tout : il est repris tel
+    # quel, sans assemblage mouvement + qualificatifs.
+    exact = NOMS_EXACTS.get(brut)
+
     base = None
-    for en in sorted(MOUVEMENTS, key=len, reverse=True):
-        if en.lower() in bas:
-            base = MOUVEMENTS[en]
-            break
-    if not base:
-        return None
+    if not exact:
+        for en in sorted(MOUVEMENTS, key=len, reverse=True):
+            if en.lower() in bas:
+                base = MOUVEMENTS[en]
+                break
+        if not base:
+            return None
 
     # Materiel. La machine Smith est annoncee dans le NOM, pas dans le
     # champ equipment (qui dit « barbell ») : sans ce test, un exercice
@@ -167,6 +216,15 @@ def convertir(e):
     # la base a range l'exercice sous « barbell » pour un detail.
     if 'bodyweight' in bas:
         mat = None
+
+    if exact:
+        mat_fx = MAT.get(e['equipment'])
+        if 'smith machine' in bas:
+            mat_fx = 'Machine Smith'
+        nom = exact + (f' ({mat_fx})' if mat_fx else '')
+        return {'groupe': groupe, 'nom': nom, 'source': brut,
+                'mat': e['equipment'], 'niveau': e.get('level'),
+                'muscle': muscles[0], 'id': e.get('id') or brut.replace(' ', '_')}
 
     quals = []
     for en, fr in QUALIFS:
