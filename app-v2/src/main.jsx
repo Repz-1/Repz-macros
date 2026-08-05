@@ -370,7 +370,14 @@ export function App() {
             <div class="rail-pan" key={k}>
               <div class="pan-scroll" ref={(n) => { defileurs.current[k] = n; if (k === onglet) defileur.el = n; }}>
                 <div class="conteneur conteneur--nu">
-                  {k === 'journal' && voletUtilisateur}
+                  {/* Le volet du bouton profil etait rendu dans le seul
+                      panneau Journal du rail. Sur S'entrainer, Stats ou
+                      BelFit+, l'appui basculait bien le signal, mais le
+                      volet s'ouvrait dans un panneau voisin, hors de
+                      l'ecran : le bouton paraissait mort sur trois
+                      onglets sur quatre. Il suit desormais l'onglet
+                      actif — meme place, meme style, partout. */}
+                  {k === onglet && voletUtilisateur}
                   <Page />
                 </div>
               </div>
