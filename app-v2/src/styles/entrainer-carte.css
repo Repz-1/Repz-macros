@@ -68,10 +68,35 @@
   background: linear-gradient(100deg,
     #28231F 0%, #2C2621 40%, rgba(45, 39, 34, .55) 49%, rgba(49, 43, 38, 0) 58%);
 }
-.pg-entrainer--carte .ch-prog::before {
-  background: linear-gradient(100deg,
-    #F1E6D3 0%, #F3E9D9 38%, rgba(245, 236, 222, .55) 46%, rgba(245, 236, 222, 0) 55%);
+/* Carte 2 : la photo n'est plus effacee par un degrade, elle est
+   DECOUPEE. Le calque creme est taille en chevron — pointe vers la
+   droite, sommet a 38 % de la hauteur — exactement comme la maquette
+   du 5 aout. Les sommets viennent d'une mesure du bord de la photo
+   sur cette maquette, releve tous les 5 % de hauteur :
+       0 % -> 55,2 |  12 % -> 50,5 |  22 % -> 47,0 |  32 % -> 44,5
+      38 % -> 44,2 |  48 % -> 45,7 |  63 % -> 48,1 |  79 % -> 50,7
+     100 % -> 53,5
+   La courbe est douce : une dizaine de sommets suffisent a rendre
+   l'arrondi sans path() (qui n'accepte pas les pourcentages). */
+.pg-entrainer--carte .ch-prog { background: #F3E9D9; }
+/* Le calque photo est decoupe en chevron, pointe vers la gauche,
+   sommet a 38 % de la hauteur. Il garde une marge creme sur les
+   trois autres bords et ses propres angles arrondis. */
+.pg-entrainer--carte .choice.ph.ch-prog .ch-photo {
+  position: absolute; z-index: 0;
+  top: 6px; right: 6px; bottom: 6px; left: 0;
+  border-radius: 18px;
+  /* Le cadrage vivait sur la carte (.choice.ph) ; le calque doit le
+     porter lui-meme, sinon l'image ne s'affiche pas du tout. */
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  clip-path: polygon(
+    55.2% 0%, 100% 0%, 100% 100%, 53.5% 100%,
+    50.7% 79%, 48.1% 63%, 45.7% 48%, 44.2% 38%,
+    44.5% 32%, 47.0% 22%, 50.5% 12%);
 }
+/* Plus de degrade de lisibilite : la photo ne passe plus sous le
+   texte, c'est la decoupe qui les separe. */
+.pg-entrainer--carte .ch-prog::before { background: none; }
 .pg-entrainer--carte .ch-archives::before {
   background: linear-gradient(100deg,
     #46403B 0%, #423C37 36%, rgba(60, 55, 51, .55) 44%, rgba(60, 55, 51, 0) 53%);

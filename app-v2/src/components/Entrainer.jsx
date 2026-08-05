@@ -303,8 +303,13 @@ export function Entrainer() {
         </a>
 
         {/* Programme sur mesure (Premium), en second */}
-        <a href="#" class={'choice ph md ch-prog' + locked} style={fond('card-creer.jpg')}
+        {/* La photo du disque a son propre calque : elle doit etre
+            DECOUPEE en chevron et arrondie, avec une marge creme
+            autour. En fond de carte, elle collait aux quatre bords
+            et aucune forme n'etait possible. */}
+        <a href="#" class={'choice ph md ch-prog' + locked}
           onClick={(e) => verrou(e, 'questionnaire')}>
+          <span class="ch-photo" aria-hidden="true" style={fond('card-creer.jpg')} />
           <h3>{t('tr_create_title')}</h3>
           <p>{t('tr_create_sub')}</p>
           <span class="cta">{t('tr_start')}</span>
