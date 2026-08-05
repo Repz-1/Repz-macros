@@ -1,5 +1,6 @@
 import { signal } from '@preact/signals';
 import { useState, useEffect } from 'preact/hooks';
+import { Component } from 'preact';
 import { t, langue as langueApp, setLangue } from '../i18n/index.js';
 import { utilisateur, auth, app } from '../services/firebase.js';
 import { estPremium } from './PremiumPage.jsx';
@@ -250,23 +251,28 @@ function EcranResilier({ retour }) {
 // ---------- Garde-fou d'affichage ----------
 // Quand un rendu Preact echoue, le DOM precedent RESTE en place : on
 // croit que l'appui n'a rien declenche, alors que l'ecran a plante.
-// Ce garde-fou transforme un ecran muet en message lisible, et
-// permet de revenir en arriere au lieu d'etre coince.
-function Garde({ enfant, retour }) {
-  const [erreur, setErreur] = useState(null);
-  if (erreur) {
-    return (
-      <div class="pg-reglages">
-        <Entete retour={retour} />
-        <div class="rg-corps">
-          <button class="rg-retour" onClick={retour}>← {t('set_title')}</button>
-          <p class="rg-note">{erreur}</p>
+// PIEGE de la premiere version : un try/catch autour de enfant() ne
+// protegeait rien — appeler enfant() cree le vnode, il n'execute pas
+// le rendu du composant, qui a lieu plus tard dans Preact. Seule une
+// vraie frontiere d'erreur (componentDidCatch) intercepte un plantage
+// de rendu. C'est ce qu'est cette classe.
+class Garde extends Component {
+  constructor() { super(); this.state = { erreur: null }; }
+  componentDidCatch(e) { this.setState({ erreur: String((e && e.message) || e) }); }
+  render() {
+    if (this.state.erreur) {
+      return (
+        <div class="pg-reglages">
+          <Entete retour={this.props.retour} />
+          <div class="rg-corps">
+            <button class="rg-retour" onClick={this.props.retour}>← {t('set_title')}</button>
+            <p class="rg-note">Cet écran a rencontré une erreur&nbsp;: {this.state.erreur}</p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    return this.props.children;
   }
-  try { return enfant(); }
-  catch (e) { setErreur(String((e && e.message) || e)); return null; }
 }
 
 // ---------- Menu principal ----------
@@ -312,8 +318,8 @@ export function Reglages() {
   };
 
   const auMenu = () => { vueReglages.value = 'menu'; };
-  if (vue === 'compte') return <Garde retour={auMenu} enfant={() => <EcranCompte retour={auMenu} />} />;
-  if (vue === 'resilier') return <Garde retour={auMenu} enfant={() => <EcranResilier retour={auMenu} />} />;
+  if (vue === 'compte') return <Garde retour={auMenu}><EcranCompte retour={auMenu} /></Garde>;
+  if (vue === 'resilier') return <Garde retour={auMenu}><EcranResilier retour={auMenu} /></Garde>;
 
   return (
     <div class="pg-reglages">
