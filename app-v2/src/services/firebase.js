@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import {
-  getAuth, onAuthStateChanged,
+  initializeAuth, indexedDBLocalPersistence, browserLocalPersistence,
+  onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
   updateProfile,
   sendPasswordResetEmail,
@@ -23,7 +24,18 @@ export const app = initializeApp({
   appId: '1:403252293048:web:e7db6aed4ba92f0ebfb34d',
 });
 
-export const auth = getAuth(app);
+// getAuth() laissait Firebase choisir seul ou ranger la session. Si
+// IndexedDB est indisponible une seule fois — Chrome Android sous
+// pression de stockage, onglet restaure, quota atteint — il retombe
+// SILENCIEUSEMENT en memoire : la session meurt au rechargement
+// suivant, et l'application demande de se reconnecter sans que
+// personne se soit deconnecte. On impose donc la chaine, avec
+// localStorage en second : il reste un magasin durable, jamais la
+// memoire vive.
+export const auth = initializeAuth(app, {
+  persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+});
+
 
 // --- Signaux d'etat : toute l'app peut reagir a la connexion ---
 // utilisateur : null = deconnecte, objet = connecte
