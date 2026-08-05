@@ -2861,6 +2861,13 @@
 .pg-journal .cal .cal-macro-nom { color: var(--gr-tx2); }
 .pg-journal .cal .cal-macro-val { color: var(--gr-tx); }
 .pg-journal .cal .cal-macro-piste { background: var(--gr-piste); }
+/* La couleur macro « proteines » est un quasi-noir (#1F1F1F) pense
+   pour les surfaces creme. Sur le graphite, la valeur et la jauge
+   disparaissaient — noir sur noir. Sur CETTE carte, la variable
+   bascule en blanc : la barre proteines se remplit en clair, comme
+   le chiffre. Glucides et lipides gardent leur or et leur orange,
+   deja lisibles sur sombre. Nulle part ailleurs rien ne change. */
+.pg-journal .cal { --mac-prot: #F4F6F8; }
 
 /* ------------------------------------------------------------
    2. RESUME DU REPAS — meme nature, donc meme matiere.
@@ -2887,6 +2894,9 @@
 .couche-repas .rp-resume .rp-macro + .rp-macro { border-color: var(--gr-filet); }
 .couche-repas .rp-resume .rp-anneau-c span { background: var(--gr-sur); }
 .couche-repas .rp-resume { --rp-piste: rgba(255, 255, 255, .11); }
+/* Meme maladie que la carte calories : la pastille proteines
+   (#1F1F1F) disparaissait sur ce graphite. Blanc ici aussi. */
+.couche-repas .rp-resume { --proteines: #F4F6F8; }
 
 /* ------------------------------------------------------------
    3. SURFACES DE SAISIE — blanches, papier premium.
