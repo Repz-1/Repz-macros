@@ -335,20 +335,29 @@ export function App() {
     };
   }, []);
 
+  // Le volet etait une barre posee EN TETE DU CONTENU QUI DEFILE :
+  // ouvert depuis le bas d'une page, il s'affichait tout en haut,
+  // hors de l'ecran. Et ses cinq elements en ligne debordaient a
+  // droite sur 390 px — « Deconnexion » etait coupe. C'est desormais
+  // un menu ancre sous le bouton qui l'ouvre, en colonne, avec un
+  // voile qui le referme au premier appui a cote.
   const voletUtilisateur = voletProfil.value ? (
-    <div class="profil-volet">
-      <span>{utilisateur.value ? (utilisateur.value.displayName || utilisateur.value.email) : ''}</span>
-      <span class="profil-statut">
-        {estPremium.value ? '\u2726 PRO' : t('compte_gratuit')}
-      </span>
-      <div class="lang-choix">
-        {LANGUES.map(l => (
-          <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
-        ))}
+    <>
+      <div class="profil-voile" onClick={() => { voletProfil.value = false; }} />
+      <div class="profil-volet">
+        <span class="profil-qui">{utilisateur.value ? (utilisateur.value.displayName || utilisateur.value.email) : ''}</span>
+        <span class="profil-statut">
+          {estPremium.value ? '\u2726 PRO' : t('compte_gratuit')}
+        </span>
+        <div class="lang-choix">
+          {LANGUES.map(l => (
+            <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
+          ))}
+        </div>
+        <button class="profil-calc" onClick={() => { voletProfil.value = false; ouvrirCalcDemande.value = true; }}>{t('qa_calc')}</button>
+        <button class="profil-sortie" onClick={deconnexion}>{t('deconnexion')}</button>
       </div>
-      <button class="profil-calc" onClick={() => { voletProfil.value = false; ouvrirCalcDemande.value = true; }}>{t('qa_calc')}</button>
-      <button onClick={deconnexion}>{t('deconnexion')}</button>
-    </div>
+    </>
   ) : null;
 
   const PAGES = { journal: OngletJournal, entrainer: OngletEntrainer, stats: Stats, premium: PremiumPage };

@@ -477,9 +477,25 @@ button{cursor:pointer}
 .entete .lang-choix{margin-left:auto}
 .entete-profil{background:none;border:none;color:var(--txt-accent-or-2);padding:4px}
 .entete-profil svg{width:26px;height:26px}
-.profil-volet{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--srf-carte);border: 1px solid var(--bordure-chaude);border-radius:14px;padding:11px 14px;margin-bottom:12px}
-.profil-volet span{font-size:13px;color:var(--txt-3);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.profil-volet button{background:none;border:none;color:var(--txt-alerte);font-weight:700;font-size:13px;font-family:inherit;text-decoration:underline;flex-shrink:0}
+/* Menu du bouton profil. Ancre sous l'en-tete, pas pose en tete du
+   contenu : le rail est transforme, donc position:fixed s'y calerait
+   sur ses 400 % de large — on prend absolute, resolu sur .rail-pan,
+   ce qui le laisse immobile pendant que la page defile. */
+.profil-voile{position:absolute;inset:0;z-index:39}
+.profil-volet{position:absolute;top:52px;right:var(--marge-page,16px);z-index:40;
+  display:flex;flex-direction:column;align-items:stretch;gap:9px;
+  min-width:210px;max-width:min(280px,calc(100vw - 32px));
+  background:var(--srf-carte);border:1px solid var(--bordure-chaude);border-radius:16px;
+  padding:13px 15px;box-shadow:0 10px 30px rgba(40,32,22,.16),0 2px 6px rgba(40,32,22,.08)}
+.profil-volet .profil-qui{font-size:13px;color:var(--txt-3);font-weight:700;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profil-volet .profil-statut{font-size:11.5px;color:var(--txt-4);font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase}
+.profil-volet button{background:none;border:none;font-weight:700;font-size:13.5px;
+  font-family:inherit;text-align:left;padding:2px 0;color:var(--txt-2)}
+.profil-volet .profil-calc{color:var(--txt-2)}
+.profil-volet .profil-sortie{color:var(--txt-alerte)}
+.profil-volet .lang-choix{margin:1px 0 2px}
 
 /* ===== Dashboard : styles EXACTS de l'app actuelle ===== */
 .nutri-card{background:var(--srf-carte);border: 1px solid #E9F3EC;border-radius:22px;padding:16px 18px 14px;margin-bottom:16px;box-shadow:0 4px 14px rgba(60,50,40,.05)}
