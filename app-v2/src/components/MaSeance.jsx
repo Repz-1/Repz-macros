@@ -5,6 +5,7 @@ import { niveauPratique } from './SelectionExercices.jsx';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
+import { enregistrerSeance } from '../store/seances.js';
 import '../legacy/maseance.scoped.css';
 
 // ==========================================================
@@ -157,7 +158,22 @@ export function MaSeance() {
     return out;
   };
 
-  const felicitations = () => {
+  // Ce qui part au journal d'entrainement : tout exercice fait, avec ses
+  // series s'il en a. Un exercice coche sans chiffres reste une trace.
+  const collecterPourJournal = (coches) => {
+    const out = [];
+    const faitsFinaux = coches || faits;
+    exos.forEach((ex, i) => {
+      const s = (series[i] || []).filter(x => x.w !== '' || x.r !== '')
+        .map(x => ({ w: x.w === '' ? '' : parseFloat(x.w), r: x.r === '' ? '' : parseInt(x.r, 10) }));
+      if (s.length || faitsFinaux.has(i)) {
+        out.push({ nom: ex.nom, mKey: refs[i] ? refs[i].mKey : null, sets: s });
+      }
+    });
+    return out;
+  };
+
+  const felicitations = (coches) => {
     if (enregistre.current) return;
     enregistre.current = true;
     lancerConfettis();
@@ -165,20 +181,17 @@ export function MaSeance() {
     const listeExos = collecter();
     const bilan = calculerBilan(listeExos);
     const duree = debut.current ? Math.floor((Date.now() - debut.current) / 1000) : 0;
-    // Journal des seances (dashboard + stats), format v1 inchange
-    try {
-      let log = [];
-      const l = localStorage.getItem('repz_sessionLog');
-      if (l) log = JSON.parse(l);
-      log.push({
-        iso: new Date().toISOString().slice(0, 10),
-        ts: Date.now(),
-        duree,
-        titre: t('tr_free_title'),
-        exos: listeExos,
-      });
-      localStorage.setItem('repz_sessionLog', JSON.stringify(log));
-    } catch (e) {}
+    // Journal d'entrainement : la seance est enregistree par compte et
+    // synchronisee (users/{uid}.v2Data.seances), plus en localStorage global.
+    const exosJournal = collecterPourJournal(coches);
+    enregistrerSeance({
+      duree,
+      titre: t('tr_free_title'),
+      muscles: [...new Set(exosJournal.map(e => e.mKey).filter(Boolean))],
+      exos: exosJournal,
+      tonnage: bilan.tonnage,
+      records: bilan.records,
+    });
     sauverSeries(listeExos);
     setFini({ min: duree ? Math.max(1, Math.round(duree / 60)) : 0, ...bilan });
   };
@@ -198,7 +211,7 @@ export function MaSeance() {
     const s = new Set(faits);
     if (s.has(i)) s.delete(i); else s.add(i);
     setFaits(s);
-    if (exos.length > 0 && s.size === exos.length) setTimeout(felicitations, 400);
+    if (exos.length > 0 && s.size === exos.length) setTimeout(() => felicitations(s), 400);
   };
 
   const basculerSeries = (i) => {
