@@ -371,9 +371,6 @@ export function BelfitPlus() {
         <button class="bp-carte" onClick={() => { statsAvOuvertes.value = true; }}>
           <span class="bp-visuel bp-visuel--stats" aria-hidden="true" />
           <span class="bp-corps">
-            <span class="bp-ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2" /></svg>
-            </span>
             <span class="bp-nom">Mes statistiques avancées</span>
             <span class="bp-sous">Analyse détaillée de ta progression.</span>
           </span>
@@ -384,9 +381,6 @@ export function BelfitPlus() {
         <button class="bp-carte" onClick={() => { allerOnglet('journal'); ideesOuvertes.value = true; }}>
           <span class="bp-visuel bp-visuel--recettes" aria-hidden="true" />
           <span class="bp-corps">
-            <span class="bp-ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M6 3v8a3 3 0 006 0V3M9 11v10M18 3c-1.6 1.2-2.4 3-2.4 5.4 0 1.7.8 2.6 2.4 2.6V3z" /></svg>
-            </span>
             <span class="bp-nom">Recettes intelligentes</span>
             <span class="bp-sous">Des idées adaptées à ton objectif.</span>
           </span>
@@ -397,9 +391,6 @@ export function BelfitPlus() {
         <button class="bp-carte" onClick={() => allerOnglet('courses')}>
           <span class="bp-visuel bp-visuel--courses" aria-hidden="true" />
           <span class="bp-corps">
-            <span class="bp-ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4" /><circle cx="18" cy="20" r="1.4" /><path d="M2.5 3.5h2.6l2.3 11.2h11.1l1.9-8.2H6" /></svg>
-            </span>
             <span class="bp-nom">Liste de courses intelligente</span>
             <span class="bp-sous">Générée automatiquement selon tes repas.</span>
           </span>
