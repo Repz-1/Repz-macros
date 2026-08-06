@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { signal } from '@preact/signals';
-import { EXERCISES, IMG_BASE } from '../data/exercices.js';
+import { EXERCISES, IMG_BASE, PROTOCOLES } from '../data/exercices.js';
+import { niveauPratique } from './SelectionExercices.jsx';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
@@ -40,11 +41,18 @@ function dernierePerf(nom) {
   return sets.map(s => `${s.w || '?'}kg×${s.r || '?'}`).join(' · ');
 }
 
-/** Nombre de series prevues d'apres le meta (« 4 séries × 8-10 »), v1. */
-function nbSeriesPrevues(meta) {
-  const m = (meta || '').match(/(\d+)\s*série/i);
-  if (!m) return 3;
-  return Math.min(8, Math.max(1, parseInt(m[1], 10)));
+function protocole() {
+  return PROTOCOLES[niveauPratique.value] || PROTOCOLES.intermediaire;
+}
+function nbSeriesPrevues() {
+  return protocole().series.length;
+}
+// Pourcentage conseille pour la n-ieme serie. Au-dela du protocole,
+// les series ajoutees a la main n'en portent pas : c'est le
+// pratiquant qui decide, l'app ne prescrit rien qu'elle n'ait prevu.
+function pctSerie(j) {
+  const se = protocole().series[j];
+  return se ? se : null;
 }
 
 function calculerBilan(exos) {
@@ -199,7 +207,7 @@ export function MaSeance() {
     else {
       o.add(i);
       if (!series[i] || !series[i].length) {
-        const nb = nbSeriesPrevues(exos[i].meta);
+        const nb = nbSeriesPrevues();
         setSeries(p => ({ ...p, [i]: Array.from({ length: nb }, () => ({ w: '', r: '' })) }));
       }
     }
@@ -270,7 +278,11 @@ export function MaSeance() {
               </div>
               <div class="done-info">
                 <div class="done-name">{ex.nom}</div>
-                <div class="done-meta">{ex.meta}</div>
+                {/* Le sous-titre montrait « 4 séries × 8-10 reps », un
+                    texte fige de la v1, pendant que le protocole du
+                    niveau disait autre chose juste en dessous. Une
+                    seule verite : celle du niveau choisi. */}
+                <div class="done-meta">{protocole().resume}</div>
                 {(muscle || last) && (
                   <div class="ex-chips">
                     {muscle && <span class="ex-chip">{muscle}</span>}
@@ -285,10 +297,15 @@ export function MaSeance() {
               <div class="done-check">✓</div>
               <div class={'sets-panel' + (ouvert ? ' open' : '')} onClick={(e) => e.stopPropagation()}>
                 {last && <div class="sets-last">{t('ms_last_time')} : <b>{last}</b></div>}
+                <div class="sets-proto">{protocole().resume}</div>
                 <div>
                   {(series[i] || []).map((s, j) => (
-                    <div class="set-row" key={j}>
+                    <div class={'set-row' + (pctSerie(j) && pctSerie(j).degressive ? ' degressive' : '')} key={j}>
                       <div class="set-num">{j + 1}</div>
+                      {/* Le pourcentage conseille, en face de la ligne
+                          qu'on remplit : plus besoin de rouvrir la
+                          fiche pour se souvenir du plan. */}
+                      <div class="set-pct">{pctSerie(j) ? pctSerie(j).pct + ' %' : '—'}</div>
                       <input type="number" inputMode="decimal" step="0.5" min="0" placeholder="××"
                         value={s.w} onInput={(e) => majSerie(i, j, 'w', e.currentTarget.value)} />
                       <span class="set-unit">kg</span>
