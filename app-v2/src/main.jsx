@@ -354,7 +354,18 @@ export function App() {
             <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
           ))}
         </div>
-        <button class="profil-calc" onClick={() => { voletProfil.value = false; ouvrirCalcDemande.value = true; }}>{t('qa_calc')}</button>
+        {/* « Calculer mes besoins » est consomme par l'onglet Journal.
+            Ouvert depuis la page Reglages, la demande partait bien...
+            mais l'onglet n'etait pas rendu, puisque les reglages
+            remplacent toute la page : rien ne se passait, et le calcul
+            apparaissait deja ouvert en revenant en arriere. On ferme
+            donc les reglages et on revient au Journal avant de le
+            demander. */}
+        <button class="profil-calc" onClick={() => {
+          voletProfil.value = false;
+          if (vueReglages.value) { vueReglages.value = null; ongletActif.value = 'journal'; }
+          ouvrirCalcDemande.value = true;
+        }}>{t('qa_calc')}</button>
         <button class="profil-sortie" onClick={deconnexion}>{t('deconnexion')}</button>
       </div>
     </>
