@@ -416,4 +416,44 @@ export const FILTERS = [
 ];
 
 // Niveau -> libelle + nb d'etoiles pleines (comme le v1)
+// ============================================================
+// NIVEAU DE PRATIQUE
+// Le niveau n'est PAS une propriete de l'exercice : un developpe
+// couche sert au debutant comme au confirme. Il appartient a la
+// personne. Il se choisit donc une fois, au moment de composer la
+// seance, et pilote le volume de TOUS les exercices.
+// Les anciennes etiquettes collees a chaque exercice (etoiles,
+// « Debutant ») sont retirees : elles classaient 61 % du catalogue
+// en debutant et n'apprenaient rien.
+// ============================================================
+export const NIVEAUX_PRATIQUE = [
+  { key: 'debutant',     label: 'Débutant' },
+  { key: 'intermediaire', label: 'Intermédiaire' },
+  { key: 'avance',       label: 'Avancé' },
+];
+
+// Protocole de Raci (5 aout) : montee en charge sur deux series,
+// puis deux series a l'echec, la derniere prolongee en degressive —
+// on allege de moitie et on repart a l'echec, sans repos.
+// Les charges sont en POURCENTAGE DU MAX : l'app ne connait le 1RM
+// de personne, et le pratiquant sait ou il en est.
+const PROTOCOLE_ECHEC = {
+  series: [
+    { pct: 50, note: 'échauffement' },
+    { pct: 60, note: 'montée' },
+    { pct: 75, note: "jusqu'à l'échec" },
+    { pct: 75, note: "jusqu'à l'échec, puis dégressive à 50 % sans repos", degressive: true },
+  ],
+  resume: '4 séries • 50 / 60 / 75 / 75 % + dégressive',
+};
+
+export const PROTOCOLES = {
+  debutant: PROTOCOLE_ECHEC,
+  intermediaire: PROTOCOLE_ECHEC,
+  // Avance : en attente du protocole de Raci. On reprend celui des
+  // deux autres plutot que d'inventer un schema qu'il n'a pas valide.
+  avance: PROTOCOLE_ECHEC,
+};
+
+// Conserve : d'autres ecrans l'importent encore.
 export const NIVEAUX = { 1: 'Débutant', 2: 'Intermédiaire', 3: 'Avancé' };

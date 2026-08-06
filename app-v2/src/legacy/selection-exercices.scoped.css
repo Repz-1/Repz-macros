@@ -154,3 +154,33 @@
   font-family: inherit; font-size: 15px; font-weight: 700;
 }
 .exo-fiche-ajout.retire { background: #EDEAE4; color: #1a1a1a; }
+
+/* ---- Niveau de pratique -------------------------------------
+   Meme forme que les filtres materiel, mais une rangee a part :
+   ce n'est pas un filtre, ca ne retire aucun exercice — ca change
+   le volume conseille de tous. */
+.pg-selection .niv-rangee { display:flex; gap:8px; margin:10px 0 2px; }
+.pg-selection .niv-tab {
+  flex:1; border:1px solid var(--line); background:var(--card);
+  border-radius:999px; padding:9px 6px; cursor:pointer;
+  font-family:inherit; font-size:13px; font-weight:600; color:var(--text-dim);
+  transition:background .2s ease, color .2s ease, border-color .2s ease;
+}
+.pg-selection .niv-tab.active { background:#181818; color:#fff; border-color:#181818; }
+
+/* ---- Detail des series dans la fiche ---- */
+.exo-series { list-style:none; margin:0 0 16px; padding:0; counter-reset:serie; }
+.exo-series li {
+  counter-increment:serie; display:flex; align-items:baseline; gap:10px;
+  padding:9px 12px; border-radius:12px; background:#F4F2ED; margin-bottom:6px;
+  font-size:13px; color:#4A443D;
+}
+.exo-series li::before {
+  content:'Série ' counter(serie); flex:none; width:58px;
+  font-weight:700; color:#8A8279; font-size:11.5px; text-transform:uppercase;
+}
+.exo-series li b { flex:none; font-size:15px; font-weight:800; color:#1a1a1a; }
+.exo-series li span { flex:1; }
+/* La degressive se distingue : c'est la serie qui fait mal. */
+.exo-series li.degressive { background:#FBEFE2; color:#7A4A18; }
+.exo-series li.degressive b { color:#B34700; }

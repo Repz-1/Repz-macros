@@ -1,6 +1,18 @@
 import { useState } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { MUSCLES, EXERCISES, FILTERS, NIVEAUX, IMG_BASE } from '../data/exercices.js';
+import { MUSCLES, EXERCISES, FILTERS, NIVEAUX, IMG_BASE,
+         NIVEAUX_PRATIQUE, PROTOCOLES } from '../data/exercices.js';
+import { signal } from '@preact/signals';
+
+// Niveau de pratique : un seul choix pour toute la seance. Retenu
+// d'une seance a l'autre — il ne change pas d'un jour a l'autre.
+export const niveauPratique = signal(
+  (() => { try { return localStorage.getItem('belfit_niveau') || 'intermediaire'; } catch (e) { return 'intermediaire'; } })()
+);
+function choisirNiveau(k) {
+  niveauPratique.value = k;
+  try { localStorage.setItem('belfit_niveau', k); } catch (e) {}
+}
 import { retourEntrainer } from './Entrainer.jsx';
 import '../legacy/selection-exercices.scoped.css';
 import { seanceRefs } from './MaSeance.jsx';
@@ -109,6 +121,16 @@ export function SelectionExercices() {
         ))}
       </div>
 
+      {/* Le niveau pilote le volume de TOUS les exercices : il se
+          choisit une fois ici, pas exercice par exercice. */}
+      <div class="niv-rangee" role="group" aria-label="Niveau de pratique">
+        {NIVEAUX_PRATIQUE.map(n => (
+          <button key={n.key}
+            class={'niv-tab' + (niveauPratique.value === n.key ? ' active' : '')}
+            onClick={() => choisirNiveau(n.key)}>{n.label}</button>
+        ))}
+      </div>
+
       <div class="ex-recherche">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="11" cy="11" r="7" /><path d="M20 20l-3.6-3.6" />
@@ -159,8 +181,7 @@ export function SelectionExercices() {
               <div class="ex-info" onClick={() => setFiche(i)}>
                 <div class="ex-name">{ex.nom}</div>
                 <div class="ex-equip">{equipLabel(ex.mat)}</div>
-                {stars(ex.lvl)}
-                <div class="ex-sets">{sets}</div>
+                <div class="ex-sets">{PROTOCOLES[niveauPratique.value].resume}</div>
               </div>
               <button class="ex-add" onClick={() => basculer(i)} aria-label="Ajouter">{sel ? '✓' : '+'}</button>
             </div>
@@ -219,9 +240,19 @@ function FicheExercice({ ex, choisi, basculer, fermer }) {
         <h2>{ex.nom}</h2>
         <div class="exo-fiche-meta">
           <span>{equipLabel(ex.mat)}</span>
-          <span>{NIVEAUX[ex.lvl]}</span>
-          <span>{(ex.meta || '').replace(/\s*×\s*/g, ' • ')}</span>
+          <span>{NIVEAUX_PRATIQUE.find(n => n.key === niveauPratique.value).label}</span>
         </div>
+
+        {/* Le detail serie par serie : c'est la seule chose que le
+            pratiquant doit lire avant d'attaquer. Les charges sont en
+            pourcentage de SON max, qu'il connait. */}
+        <ol class="exo-series">
+          {PROTOCOLES[niveauPratique.value].series.map((se, k) => (
+            <li key={k} class={se.degressive ? 'degressive' : ''}>
+              <b>{se.pct} %</b><span>{se.note}</span>
+            </li>
+          ))}
+        </ol>
 
         <button class={'exo-fiche-ajout' + (choisi ? ' retire' : '')}
           onClick={() => { basculer(); fermer(); }}>
