@@ -62,7 +62,16 @@ export function PhotoModal({ fermer, repasId }) {
       });
       if (rep.status === 403) { setMsg('Réservé aux membres Premium'); setEtat('pret'); return; }
       if (rep.status === 404) { setMsg('Service pas encore activé'); setEtat('pret'); return; }
-      if (!rep.ok) { setMsg('Erreur ' + rep.status + ', réessaie'); setEtat('pret'); return; }
+      if (!rep.ok) {
+        // Meme fonction Gemini que le vocal, donc memes pannes : un
+        // 502 signifie « credits epuises » ou « quota atteint », pas
+        // une erreur que l'utilisateur puisse corriger.
+        console.error('analyserPhoto', rep.status);
+        setMsg(rep.status >= 500
+          ? 'Analyse momentanément indisponible. Réessaie dans quelques minutes — tu peux saisir ton repas à la main.'
+          : 'Analyse impossible. Vérifie ta connexion et réessaie.');
+        setEtat('pret'); return;
+      }
       const { aliments } = await rep.json();
       const trouves = (aliments || []).map(a => {
         const cle = trouverAliment(a.aliment);

@@ -106,7 +106,7 @@ export function VocalModal({ fermer, repasId }) {
       if (!MediaRecorder.isTypeSupported(mime)) mime = MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '';
       rec.current = mime ? new MediaRecorder(flux.current, { mimeType: mime }) : new MediaRecorder(flux.current);
       rec.current.ondataavailable = e => { if (e.data.size) morceaux.current.push(e.data); };
-      rec.current.onstop = () => { envoyer().catch(err => { setEtat('pret'); setMsg(''); setErreur('Analyse impossible : ' + ((err && err.message) || err)); }); };
+      rec.current.onstop = () => { envoyer().catch(err => { setEtat('pret'); setMsg(''); setErreur('Analyse impossible. Vérifie ta connexion et réessaie.'); console.error('vocal', err); }); };
       rec.current.start();
       setEtat('ecoute'); setMsg("Je t'écoute… (appuie pour terminer)");
       // Personne ne doit pouvoir laisser le micro ouvert : 15 s maximum,
@@ -165,9 +165,24 @@ export function VocalModal({ fermer, repasId }) {
       setMsg('Analyse en cours…');
       if (rep.status === 403) { setMsg(''); setEtat('pret'); setErreur('Réservé Premium (serveur).'); return; }
       if (!rep.ok) {
-        let corps = ''; try { corps = (await rep.text()).slice(0, 140); } catch (e) {}
+        // « Serveur en échec (HTTP 502) » n'apprend rien a personne et
+        // laisse croire a une panne de l'app. Le 502 le plus frequent
+        // vient d'un refus de Gemini — credits epuises, quota atteint —
+        // ce que l'utilisateur ne peut ni comprendre ni corriger.
+        // On dit ce qui se passe et ce qu'il peut faire ; le detail
+        // technique part dans la console pour le debogage.
+        let corps = ''; try { corps = (await rep.text()).slice(0, 300); } catch (e) {}
+        console.error('transcrireVocal', rep.status, corps);
         setMsg(''); setEtat('pret');
-        setErreur('Serveur en échec (HTTP ' + rep.status + ')' + (corps ? ' : ' + corps : ''));
+        setErreur(
+          rep.status === 502 || rep.status === 503
+            ? 'La reconnaissance vocale est momentanément indisponible. Réessaie dans quelques minutes — tu peux saisir ton repas à la main en attendant.'
+            : rep.status === 429
+              ? 'Trop de demandes d’un coup. Attends une minute et réessaie.'
+              : rep.status >= 500
+                ? 'Le service ne répond pas correctement. Réessaie plus tard.'
+                : 'Transcription impossible. Vérifie ta connexion et réessaie.'
+        );
         return;
       }
       const { aliments } = await rep.json();
