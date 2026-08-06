@@ -366,7 +366,15 @@ export function App() {
           if (vueReglages.value) { vueReglages.value = null; ongletActif.value = 'journal'; }
           ouvrirCalcDemande.value = true;
         }}>{t('qa_calc')}</button>
-        <button class="profil-sortie" onClick={deconnexion}>{t('deconnexion')}</button>
+        {/* La deconnexion laisse la page Reglages montee le temps que
+            Firebase reponde. On la ferme d'abord : sinon l'ecran de
+            connexion apparait apres coup, et un retour arriere
+            ramenerait des reglages qui n'ont plus de compte. */}
+        <button class="profil-sortie" onClick={() => {
+          voletProfil.value = false;
+          vueReglages.value = null;
+          deconnexion();
+        }}>{t('deconnexion')}</button>
       </div>
     </>
   ) : null;
