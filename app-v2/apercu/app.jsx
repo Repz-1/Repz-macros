@@ -8,6 +8,7 @@ import '../src/styles/journal-socle.css';
 import { utilisateur, authPrete } from '../src/services/firebase.js';
 import { donneesPretes, objectifs, repas, calculBaseFait } from '../src/store/journal.js';
 import { App } from '../src/main.jsx';
+import { estPremium } from '../src/components/PremiumPage.jsx';
 
 
 utilisateur.value = { uid: 'test', email: 'coach@belfit.be', displayName: 'Raci', metadata: { creationTime: new Date().toISOString() } };
@@ -23,6 +24,7 @@ repas.value = [
 authPrete.value = true;
 donneesPretes.value = true;
 calculBaseFait.value = true;
+try { localStorage.setItem('belfit_v2_apercu_premium', '1'); } catch (e) {}
 
 // Firebase repond en differe et remet `utilisateur` a null : on
 // maintient la session simulee le temps du test.
@@ -32,6 +34,7 @@ setInterval(() => {
   authPrete.value = true;
   donneesPretes.value = true;
   calculBaseFait.value = true;
+  estPremium.value = true;   // l'effet Firestore le remettait a false
 }, 100);
 
 render(<App />, document.getElementById('app'));

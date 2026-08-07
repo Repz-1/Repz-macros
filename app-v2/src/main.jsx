@@ -399,8 +399,16 @@ export function App() {
   // sur mon compte et rien ne s'ouvre » de Raci, insaisissable dans
   // les tests parce qu'ils partaient toujours d'un onglet.
   if (vueReglages.value) {
+    // key obligatoire : sans elle, Preact recycle le <div class="rail4">
+    // du rendu precedent en <div class="ecran-reglages"> — le style
+    // inline du balayage (translateX(-25/-50/-75%)) survit au
+    // changement de classe et decale tout l'ecran de 97/195/292 px
+    // vers la gauche selon l'onglet d'origine. La fleche retour se
+    // retrouvait hors ecran : « le retour ne marche pas » (Raci, 8/08).
+    // Meme famille que les position:fixed du rail, versant inverse :
+    // cette fois c'est le rail qui contamine l'ecran plein.
     return (
-      <div class="ecran-reglages">
+      <div class="ecran-reglages" key="ecran-reglages">
         <Reglages />
         {voletUtilisateur}
       </div>
@@ -420,7 +428,7 @@ export function App() {
           l'onglet actif etait toujours BelFit+. C'etait le « la
           fleche revient dans le journal alimentaire » de Raci (8/08).
           Le ref-callback pose la position des que le noeud existe. */}
-      <div class="rail4" ref={(n) => {
+      <div class="rail4" key="rail4" ref={(n) => {
         railRef.current = n;
         if (n && !n.style.transform) {
           n.style.transition = 'none';
