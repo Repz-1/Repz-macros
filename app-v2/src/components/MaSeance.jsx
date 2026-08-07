@@ -43,16 +43,20 @@ function dernierePerf(nom) {
 }
 
 function protocole() {
-  return PROTOCOLES[niveauPratique.value] || PROTOCOLES.intermediaire;
+  // Libre (null) reste null : rien n'est prerempli ni conseille.
+  const p = PROTOCOLES[niveauPratique.value];
+  return p === undefined ? PROTOCOLES.intermediaire : p;
 }
 function nbSeriesPrevues() {
-  return protocole().series.length;
+  const p = protocole();
+  return p ? p.series.length : 1;
 }
 // Pourcentage conseille pour la n-ieme serie. Au-dela du protocole,
 // les series ajoutees a la main n'en portent pas : c'est le
 // pratiquant qui decide, l'app ne prescrit rien qu'elle n'ait prevu.
 function pctSerie(j) {
-  const se = protocole().series[j];
+  const p = protocole();
+  const se = p && p.series[j];
   return se ? se : null;
 }
 
@@ -295,7 +299,7 @@ export function MaSeance() {
                     texte fige de la v1, pendant que le protocole du
                     niveau disait autre chose juste en dessous. Une
                     seule verite : celle du niveau choisi. */}
-                <div class="done-meta">{protocole().resume}</div>
+                <div class="done-meta">{protocole() ? protocole().resume : 'Séries libres'}</div>
                 {(muscle || last) && (
                   <div class="ex-chips">
                     {muscle && <span class="ex-chip">{muscle}</span>}
@@ -310,7 +314,7 @@ export function MaSeance() {
               <div class="done-check">✓</div>
               <div class={'sets-panel' + (ouvert ? ' open' : '')} onClick={(e) => e.stopPropagation()}>
                 {last && <div class="sets-last">{t('ms_last_time')} : <b>{last}</b></div>}
-                <div class="sets-proto">{protocole().resume}</div>
+                {protocole() && <div class="sets-proto">{protocole().resume}</div>}
                 <div>
                   {(series[i] || []).map((s, j) => (
                     <div class={'set-row' + (pctSerie(j) && pctSerie(j).degressive ? ' degressive' : '')} key={j}>

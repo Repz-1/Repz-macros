@@ -352,8 +352,6 @@ export function BelfitPlus() {
         {/* Le programme vit ici depuis que sa carte a fusionne avec le
             bouton : son visuel l'accompagne, a droite. */}
         <span class="bp-hero-visuel" aria-hidden="true" />
-        <p class="bp-hero-bonjour">BONJOUR</p>
-        <p class="bp-hero-nom">{prenomCourt()}</p>
         <h1 class="bp-hero-titre">Bienvenue dans<br />ton espace.</h1>
         <span class="bp-hero-trait" aria-hidden="true" />
         <p class="bp-hero-sous">Tout ce dont tu as besoin pour progresser, réuni au même endroit.</p>

@@ -430,6 +430,8 @@ export const NIVEAUX_PRATIQUE = [
   { key: 'debutant',     label: 'Débutant' },
   { key: 'intermediaire', label: 'Intermédiaire' },
   { key: 'avance',       label: 'Avancé' },
+  // Libre : aucun schema impose — le pratiquant compose ses series.
+  { key: 'libre',        label: 'Libre' },
 ];
 
 // Protocole de Raci (5 aout) : montee en charge sur deux series,
@@ -453,6 +455,8 @@ export const PROTOCOLES = {
   // Avance : en attente du protocole de Raci. On reprend celui des
   // deux autres plutot que d'inventer un schema qu'il n'a pas valide.
   avance: PROTOCOLE_ECHEC,
+  // Libre : pas de protocole — rien n'est prerempli ni conseille.
+  libre: null,
 };
 
 // Conserve : d'autres ecrans l'importent encore.

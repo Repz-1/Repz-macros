@@ -17,6 +17,7 @@ import { retourEntrainer } from './Entrainer.jsx';
 import '../legacy/selection-exercices.scoped.css';
 import { seanceRefs } from './MaSeance.jsx';
 import { allerVers } from './Entrainer.jsx';
+import { ongletActif } from './BottomNav.jsx';
 
 // ==========================================================
 // ECRAN "Choisir mes exercices" — transpose a l'identique du v1
@@ -181,7 +182,7 @@ export function SelectionExercices() {
               <div class="ex-info" onClick={() => setFiche(i)}>
                 <div class="ex-name">{ex.nom}</div>
                 <div class="ex-equip">{equipLabel(ex.mat)}</div>
-                <div class="ex-sets">{PROTOCOLES[niveauPratique.value].resume}</div>
+                <div class="ex-sets">Convient à tous les niveaux</div>
               </div>
               <button class="ex-add" onClick={() => basculer(i)} aria-label="Ajouter">{sel ? '✓' : '+'}</button>
             </div>
@@ -195,21 +196,24 @@ export function SelectionExercices() {
         basculer={() => { if (fiche != null) basculer(fiche); }}
         fermer={() => setFiche(null)} />
 
-      <div class={'session-bar' + (nbSelectionnes === 0 ? ' hidden' : '')}
-        onClick={() => {
-          // Ordre v1 : muscle par muscle, index croissant.
-          const refs = [];
-          MUSCLES.forEach(m => {
-            [...(selection[m.key] || [])].sort((a, b) => a - b)
-              .forEach(i => refs.push({ mKey: m.key, i }));
-          });
-          if (!refs.length) return;
-          seanceRefs.value = refs;
-          allerVers('maseance');
-        }}>
-        <span class="count">{nbSelectionnes} exercices sélectionnés</span>
-        <span class="go">Ma séance →</span>
-      </div>
+      {createPortal(
+        <div class={'session-bar pg-selection-portail' + (nbSelectionnes === 0 || ongletActif.value !== 'entrainer' ? ' hidden' : '')}
+          onClick={() => {
+            // Ordre v1 : muscle par muscle, index croissant.
+            const refs = [];
+            MUSCLES.forEach(m => {
+              [...(selection[m.key] || [])].sort((a, b) => a - b)
+                .forEach(i => refs.push({ mKey: m.key, i }));
+            });
+            if (!refs.length) return;
+            seanceRefs.value = refs;
+            allerVers('maseance');
+          }}>
+          <span class="count">{nbSelectionnes} exercices sélectionnés</span>
+          <span class="go">Ma séance →</span>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
@@ -240,19 +244,33 @@ function FicheExercice({ ex, choisi, basculer, fermer }) {
         <h2>{ex.nom}</h2>
         <div class="exo-fiche-meta">
           <span>{equipLabel(ex.mat)}</span>
-          <span>{NIVEAUX_PRATIQUE.find(n => n.key === niveauPratique.value).label}</span>
         </div>
 
-        {/* Le detail serie par serie : c'est la seule chose que le
-            pratiquant doit lire avant d'attaquer. Les charges sont en
-            pourcentage de SON max, qu'il connait. */}
-        <ol class="exo-series">
-          {PROTOCOLES[niveauPratique.value].series.map((se, k) => (
-            <li key={k} class={se.degressive ? 'degressive' : ''}>
-              <b>{se.pct} %</b><span>{se.note}</span>
-            </li>
+        {/* Le niveau se choisit aussi ici, devant l'exercice. Meme
+            reglage global que la rangee du haut : un seul niveau pour
+            la seance, modifiable d'ou l'on veut. Aucun choix n'est
+            obligatoire — l'ajout marche dans tous les cas. */}
+        <div class="exo-fiche-niveaux" role="group" aria-label="Niveau de pratique">
+          {NIVEAUX_PRATIQUE.map(n => (
+            <button key={n.key}
+              class={'niv-tab' + (niveauPratique.value === n.key ? ' active' : '')}
+              onClick={() => choisirNiveau(n.key)}>{n.label}</button>
           ))}
-        </ol>
+        </div>
+
+        {/* Le detail serie par serie du niveau choisi. En Libre, pas
+            de schema : la personne compose ses series elle-meme. */}
+        {PROTOCOLES[niveauPratique.value] ? (
+          <ol class="exo-series">
+            {PROTOCOLES[niveauPratique.value].series.map((se, k) => (
+              <li key={k} class={se.degressive ? 'degressive' : ''}>
+                <b>{se.pct} %</b><span>{se.note}</span>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="exo-series-libre">Compose tes séries comme tu veux : ajoute, enlève, choisis tes charges.</p>
+        )}
 
         <button class={'exo-fiche-ajout' + (choisi ? ' retire' : '')}
           onClick={() => { basculer(); fermer(); }}>
