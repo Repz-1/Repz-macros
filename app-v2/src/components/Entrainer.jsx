@@ -300,9 +300,7 @@ export function Entrainer() {
   // (Premium jour 1 sur le sur-mesure, fenetre decouverte sur les
   // programmes) sont leves ; le Premium reste sur la nutrition.
   const verrou = (e, dest) => { e.preventDefault(); allerVers(dest); };
-  const verrouProgs = verrou;
   const locked = '';
-  const lockedProgs = '';
 
   return (
     <div class="pg-entrainer pg-entrainer--carte">
@@ -339,14 +337,6 @@ export function Entrainer() {
           <h3>{t('tr_create_title')}</h3>
           <p>{t('tr_create_sub')}</p>
           <span class="cta">{t('tr_start')}</span>
-        </a>
-
-        {/* Mes programmes (Premium) */}
-        <a href="#" class={'choice ph sm ch-archives' + lockedProgs} style={fond('card-programmes.jpg')}
-          onClick={(e) => verrouProgs(e, 'programmes')}>
-          <h3>{t('tr_progs_title')}</h3>
-          <p>{t('tr_progs_sub')}</p>
-          <span class="cta">{t('open')}</span>
         </a>
 
         <JournalEntrainement ouvrirJour={setJourOuvert}

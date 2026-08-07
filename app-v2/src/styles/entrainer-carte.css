@@ -158,8 +158,9 @@
 
 /* Les deux cartes du bas sont moitie moins larges : le texte y a
    besoin de plus de hauteur, et la photo de moins de place. */
-.pg-entrainer--carte .choices > .ch-archives,
-.pg-entrainer--carte .choices > .ch-journal { grid-column: span 1; }
+/* Le journal occupe la rangee entiere : la carte « Mes programmes »
+   qui partageait sa ligne a ete retiree (decision Raci, 7/08). */
+.pg-entrainer--carte .choices > .ch-journal { grid-column: 1 / -1; }
 
 /* Calendrier deplie : la carte Journal reprend TOUTE la largeur et
    passe seule sur sa ligne. Sinon deux defauts a la fois : la grille
