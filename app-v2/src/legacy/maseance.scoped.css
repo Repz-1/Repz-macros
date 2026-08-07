@@ -221,3 +221,16 @@
 .pg-maseance .set-num.deg { background:#F86A0C; color:#fff; }
 .pg-maseance .set-add { font-weight:900; color:#8F6200; }
 .pg-maseance .sets-proto { font-family:'DM Mono',ui-monospace,monospace; font-size:12px; color:#57514A; }
+
+
+/* Les surcouches vivent desormais en portail sur document.body : le
+   rail porte will-change:transform et devenait le repere de leur
+   position:fixed — l'ecran de fin s'affichait a cheval sur deux
+   panneaux (Raci, 7/08). Meme cause que la barre « Ma seance ».
+   Hors du rail, elles n'ont plus d'ancetre .pg-maseance : les regles
+   sont reprises ici sans prefixe. */
+.congrats-overlay.pg-maseance {
+  position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,.6);
+  display: none; align-items: center; justify-content: center; padding: 24px;
+}
+.congrats-overlay.pg-maseance.show { display: flex; }

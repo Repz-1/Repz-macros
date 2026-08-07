@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { signal } from '@preact/signals';
 import { EXERCISES, IMG_BASE, PROTOCOLES } from '../data/exercices.js';
 import { niveauPratique } from './SelectionExercices.jsx';
@@ -378,7 +379,8 @@ export function MaSeance() {
       </div>
 
       {/* Confirmation d'arret (seance incomplete) */}
-      <div class={'congrats-overlay' + (arret ? ' show' : '')}>
+      {createPortal(
+      <div class={'congrats-overlay pg-maseance' + (arret ? ' show' : '')}>
         <div class="congrats-card">
           <div class="congrats-emoji">🤔</div>
           <div class="congrats-title">{t('ms_stop_title')}</div>
@@ -390,10 +392,11 @@ export function MaSeance() {
           <button class="congrats-btn" onClick={confirmerArret}>{t('ms_stop_yes')}</button>
           <button class="sc-cancel" onClick={() => setArret(false)}>{t('ms_stop_no')}</button>
         </div>
-      </div>
+      </div>, document.body)}
 
       {/* Felicitations + bilan */}
-      <div class={'congrats-overlay' + (fini ? ' show' : '')}>
+      {createPortal(
+      <div class={'congrats-overlay pg-maseance' + (fini ? ' show' : '')}>
         {fini && (
           <div class="congrats-card">
             <div class="congrats-emoji">🎉</div>
@@ -418,7 +421,7 @@ export function MaSeance() {
             </button>
           </div>
         )}
-      </div>
+      </div>, document.body)}
 
     </div>
   );

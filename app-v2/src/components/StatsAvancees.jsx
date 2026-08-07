@@ -174,9 +174,12 @@ export function StatsAvancees({ fermer }) {
 
   return (
     <div class="pg-statsav">
-      <Entete retour />
+      <Entete retour={fermer} />
       <div class="sa-corps">
-        <button class="sa-retour" onClick={fermer}>← BelFit+</button>
+        {/* Une seule fleche, celle de l'en-tete : deux boutons pour la
+            meme action ne donnent pas un choix, ils font hesiter.
+            Celle-ci recevait `true` au lieu d'une fonction et
+            retombait sur le repli « aller au Journal » (Raci, 7/08). */}
         <h1 class="sa-titre">Statistiques avancées</h1>
         <p class="sa-sous">Ta progression sur la durée, pas seulement cette semaine.</p>
 
