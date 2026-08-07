@@ -119,8 +119,7 @@
     #46403B 0%, #423C37 36%, rgba(60, 55, 51, .55) 44%, rgba(60, 55, 51, 0) 53%);
 }
 .pg-entrainer--carte .ch-journal::before {
-  background: linear-gradient(100deg,
-    #EFE1CA 0%, #F1E5D0 38%, rgba(243, 232, 214, .55) 47%, rgba(243, 232, 214, 0) 56%);
+  background: none;
 }
 
 /* La feuille heritee peint un fondu creme en ::after sur toute la
@@ -235,8 +234,7 @@
     rgba(70, 64, 59, 0) 0%, rgba(66, 60, 55, .72) 22%, #423C37 42%, #46403B 100%);
 }
 .pg-entrainer--carte .choice.ph.ch-journal::before {
-  background: linear-gradient(168deg,
-    rgba(239, 225, 202, 0) 0%, rgba(241, 229, 208, .72) 22%, #F1E5D0 42%, #EFE1CA 100%);
+  background: none;
 }
 
 /* ---------- Contenu ---------- */
@@ -294,9 +292,9 @@
    la hauteur, elle ne bouge plus. Sous la bande photo, la couleur de
    carte prend le relais. */
 .pg-entrainer--carte .choice.ph.ch-journal {
-  background-color: #F3E7D2;
-  background-size: 100% auto;
-  background-position: center top;
+  background-color: #F6E5CE;
+  background-size: 130% auto;
+  background-position: left top;
   background-repeat: no-repeat;
 }
 /* Les deux calques (degrade de lisibilite et voile dore) sont en
@@ -305,7 +303,7 @@
    meme hauteur qu'elle, quoi qu'il arrive au calendrier en dessous. */
 .pg-entrainer--carte .choice.ph.ch-journal::before,
 .pg-entrainer--carte .choice.ph.ch-journal::after {
-  inset: 0 0 auto 0; aspect-ratio: 1536 / 1024;
+  inset: 0 0 auto 0; aspect-ratio: 2172 / 941;
 }
 .pg-entrainer--carte .ch-journal .wlog-list { background: rgba(255, 253, 249, .72); }
 .pg-entrainer--carte .wlog-sum-pill { background: rgba(45, 30, 10, .06); color: #675D54; border: none; }
