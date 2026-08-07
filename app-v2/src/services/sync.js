@@ -55,7 +55,9 @@ export async function chargerDonnees(uid) {
   try {
     const { fs, db } = await firestore();
     const snap = await fs.getDoc(fs.doc(db, 'users', uid));
-    const cloud = snap.exists() && snap.data().v2Data ? snap.data().v2Data : null;
+    const brut = snap.exists() ? snap.data() : null;
+    const cloud = brut && brut.v2Data ? brut.v2Data : null;
+    if (cloud && !cloud.prenom && brut.prenom) cloud.prenom = brut.prenom;
     let resultat;
     if (cloud && local) {
       // Conflit : le plus recent gagne

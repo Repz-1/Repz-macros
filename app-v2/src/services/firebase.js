@@ -149,6 +149,7 @@ export async function inscription(email, mdp, prenom) {
     await setDoc(
       doc(getFirestore(app), 'users', cred.user.uid),
       {
+        prenom: p,
         consentRGPD: { accepte: true, date: new Date().toISOString(), version: '2026-07' },
         mon_code_parrainage: genererCodeParrainage(),
       },
