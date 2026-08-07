@@ -15,8 +15,8 @@ let uidS = null, pretS = false;
 
 effect(() => {
   const u = identite.value;
-  if (!u) { uidS = null; pretS = false; return; }
-  if (u === uidS) return;
+  if (!u) { pretS = false; return; }
+  if (u === uidS && pretS) return;
   uidS = u; pretS = false;
   chargerDonnees(u).then(d => {
     if (uidS !== u) return;

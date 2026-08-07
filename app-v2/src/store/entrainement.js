@@ -27,8 +27,15 @@ let uidM = null, pretM = false;
 
 effect(() => {
   const u = identite.value;
-  if (!u) { uidM = null; pretM = false; return; }
-  if (u === uidM) return;
+
+  // Identite momentanement nulle = rafraichissement de jeton, pas une
+  // deconnexion : on garde uidM, sinon chaque clignotement relancait
+  // un chargement dont la reponse PERIMEE ecrasait les jours notes
+  // entre-temps — c'est le « ca efface mes couleurs » du 7/08.
+  if (!u) { pretM = false; return; }
+  if (u === uidM && pretM) return;
+  if (u !== uidM) muscleLog.value = {};
+
   uidM = u; pretM = false;
   chargerDonnees(u).then(async d => {
     if (uidM !== u) return;
@@ -39,11 +46,14 @@ effect(() => {
     // jours absents — un jour deja note en v2 fait foi.
     const fusion = await recupererMuscleLogV1(u, charge);
     if (uidM !== u) return;
-    muscleLog.value = fusion || charge;
+    // Les jours tapes PENDANT que la lecture etait en vol priment sur
+    // la reponse : elle a ete prise avant eux. Fusion jour par jour,
+    // memoire prioritaire.
+    muscleLog.value = { ...(fusion || charge), ...muscleLog.value };
     pretM = true;
     // Fusion effective : on la persiste tout de suite, sinon elle
     // serait refaite a chaque demarrage.
-    if (fusion) sauvegarder(u, { muscleLog: fusion });
+    if (fusion) sauvegarder(u, { muscleLog: muscleLog.value });
   });
 });
 

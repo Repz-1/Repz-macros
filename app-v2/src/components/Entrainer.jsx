@@ -109,10 +109,10 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
       style = { background: `conic-gradient(${COULEUR[muscles[0]]} 0% 50%, ${COULEUR[muscles[1]]} 50% 100%)` };
     } else if (repos) cls += ' repos';
     if (iso === todayIso) cls += ' today';
-    if (futur) cls += ' futur';
+    if (futur) cls += ' futur' + (muscles.length || repos ? ' prevu' : '');
     cellules.push(
       <div key={iso} class={cls} style={style}
-        onClick={futur ? undefined : (e) => { e.stopPropagation(); ouvrirJour(iso); }}>
+        onClick={(e) => { e.stopPropagation(); ouvrirJour(iso); }}>
         {j}{muscles.length > 2 && <i class="wlog-more">+</i>}
       </div>
     );

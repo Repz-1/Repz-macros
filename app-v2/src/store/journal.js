@@ -55,8 +55,8 @@ function aujourdhui() { return new Date().toISOString().slice(0, 10); }
 let uidCharge = null;
 effect(() => {
   const u = identite.value;
-  if (!u) { uidCharge = null; donneesPretes.value = false; return; }
-  if (u === uidCharge) return;
+  if (!u) { donneesPretes.value = false; return; }
+  if (u === uidCharge && donneesPretes.value) return;
   uidCharge = u;
   donneesPretes.value = false;
   chargerDonnees(u).then(d => {

@@ -51,8 +51,11 @@
 .pg-entrainer .wlog-cell.repos{ background:#EDEFF2; color:#8A8279; }
 .pg-entrainer .wlog-cell.today{ box-shadow:0 0 0 2px #F86A0C; }
 .pg-entrainer .wlog-cell.today.seance{ box-shadow:0 0 0 2px #fff, 0 0 0 4px #F86A0C; }
-.pg-entrainer .wlog-cell.futur{ color:#CBD5E1; cursor:default; }
-.pg-entrainer .wlog-cell.futur:active{ transform:none; }
+.pg-entrainer .wlog-cell.futur{ color:#CBD5E1; }
+/* Jour a venir deja planifie : memes couleurs mais attenuees — le
+   previsionnel ne doit pas se lire comme du realise. */
+.pg-entrainer .wlog-cell.futur.prevu{ opacity:.5; }
+.pg-entrainer .wlog-cell.futur.repos{ opacity:.55; }
 .pg-entrainer .wlog-legende{ display:flex; flex-wrap:wrap; gap:6px 12px; padding:2px 2px 12px; font-size:11px; font-weight:700; color:#6B655D; }
 .pg-entrainer .wlog-legende .dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; }
 .pg-entrainer .wlog-legende .dot.repos{ background:#E2E6EA; }

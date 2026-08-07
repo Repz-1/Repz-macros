@@ -30,8 +30,8 @@ effect(() => {
   // synchronisation les ecraserait au premier rendu.
   if (apercuStats) return;
   const u = identite.value;
-  if (!u) { uidSt = null; pretSt = false; return; }
-  if (u === uidSt) return;
+  if (!u) { pretSt = false; return; }
+  if (u === uidSt && pretSt) return;
   uidSt = u; pretSt = false;
   chargerDonnees(u).then(d => {
     if (uidSt !== u) return;
