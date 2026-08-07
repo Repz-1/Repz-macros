@@ -93,3 +93,20 @@
   margin-left: -1px;
   margin-right: -1px;
 }
+
+/* ---------- Meme hauteur de depart partout ----------
+   Mesure du 7/08 (apercu 390 px), haut de l'en-tete depuis le haut du
+   panneau, et haut de la premiere carte :
+     Journal      en-tete a 12 px, carte a 73  (reference)
+     Stats        en-tete a 12 px, carte a 73  ✓
+     S'entrainer  en-tete a  8 px, carte a 73
+     BelFit+      en-tete a  0 px, carte a 73
+   L'en-tete « sautait » donc de 12 px en glissant d'un onglet a
+   l'autre. On la descend au niveau du Journal, et on reprend la meme
+   hauteur en dessous pour que la premiere carte ne bouge pas. */
+.pg-entrainer .j-entete--perso.j-entete--perso.j-entete--perso {
+  margin-top: 4px; margin-bottom: -4px;
+}
+.pg-plus .j-entete--perso.j-entete--perso.j-entete--perso {
+  margin-top: 12px; margin-bottom: -12px;
+}

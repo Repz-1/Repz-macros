@@ -17,7 +17,14 @@ const lire = () => page.evaluate(() => {
     .find(x => { const r=x.getBoundingClientRect(); return r.left>=0 && r.right<=innerWidth && r.height>0; });
   if (!e) return null;
   const p = e.querySelector('.j-prenom'), c = getComputedStyle(p), r = p.getBoundingClientRect();
-  return { centre: Math.round(r.left+r.width/2), ecran: Math.round(innerWidth/2),
+  // Hauteur de depart et ecart avec la premiere carte : ils sautaient
+  // de 12 px d'un onglet a l'autre (mesure du 7/08).
+  let suiv = e.nextElementSibling;
+  while (suiv && suiv.getBoundingClientRect().height < 30) suiv = suiv.nextElementSibling;
+  if (!suiv && e.parentElement) suiv = [...e.parentElement.children].find(c => c !== e && c.getBoundingClientRect().height > 30);
+  return { haut: Math.round(e.getBoundingClientRect().top),
+    contenu: suiv ? Math.round(suiv.getBoundingClientRect().top) : null,
+    centre: Math.round(r.left+r.width/2), ecran: Math.round(innerWidth/2),
     police: c.fontFamily.split(',')[0], corps: c.fontSize, graisse: c.fontWeight, couleur: c.color,
     gauche: e.querySelector('.j-retour') ? 'fleche' : (e.querySelector('.j-symbole') ? 'symbole' : 'rien'),
     icones: e.querySelectorAll('.j-entete-actions .j-btn-icone').length,
@@ -42,6 +49,8 @@ for (const o of ['Journal',"S'entraîner",'Stats','Premium','BelFit+']) {
     const a = e.querySelector('.j-entete-actions').getBoundingClientRect();
     return { g: Math.round(g.left), d: Math.round(innerWidth - a.right) };
   });
+  if (m.haut !== 12) echec(o+' : en-tete a '+m.haut+' px du haut au lieu de 12');
+  if (m.contenu !== 73) echec(o+' : premiere carte a '+m.contenu+' px au lieu de 73');
   if (pos.g !== 16) echec(o+' : symbole a '+pos.g+' px du bord au lieu de 16');
   if (pos.d !== 8) echec(o+' : icones a '+pos.d+' px du bord au lieu de 8');
   const sig = m.police+'|'+m.corps+'|'+m.graisse+'|'+m.couleur;
