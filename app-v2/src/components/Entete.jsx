@@ -2,6 +2,7 @@ import { signal } from '@preact/signals';
 import { utilisateur } from '../services/firebase.js';
 import { ongletActif } from './BottomNav.jsx';
 import { ouvrirReglages } from './Reglages.jsx';
+import { t } from '../i18n/index.js';
 
 // Etat du volet profil, partage entre l'en-tete de chaque onglet.
 export const voletProfil = signal(false);
@@ -72,7 +73,7 @@ export function Entete({ retour } = {}) {
         <img class="j-symbole" src="/belfit-logo-b.png" alt="BELFIT" />
       )}
 
-      <div class="j-prenom">{p}</div>
+      <div class="j-prenom">{p ? `${t('greeting')} ${p}` : t('greeting')}</div>
 
       <div class="j-entete-actions">
         <button class="j-btn-icone" onClick={ouvrirProfil} aria-label="Profil">
