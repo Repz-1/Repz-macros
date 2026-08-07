@@ -48,6 +48,7 @@
   padding: 13px 13px 13px;
   margin: 0 0 13px;
   background-size: cover; background-position: right center;
+  background-origin: border-box;
   /* Sur la maquette, chaque carte est cernee d'un liseré clair qui la
      detache du fond comme un passe-partout. C'est lui qui donne le
      cote « objet pose » plutot que « bloc colle ». */
