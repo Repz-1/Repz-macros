@@ -19,6 +19,11 @@ import '../legacy/maseance.scoped.css';
 
 // Exercices choisis dans SelectionExercices : [{mKey, i}]
 export const seanceRefs = signal([]);
+// Selection d'exercices de l'ecran precedent. Vit ICI (module deja
+// importe par SelectionExercices — l'inverse creerait un cycle) pour
+// survivre a l'aller-retour selection <-> seance, comme en v1.
+// Videe uniquement quand la seance se TERMINE.
+export const selectionExos = signal({});
 
 const NOMS_MUSCLES = {
   pecs: 'Pecs', dos: 'Dos', epaules: 'Épaules', biceps: 'Biceps',
@@ -72,6 +77,8 @@ function calculerBilan(exos) {
     e.sets.forEach(s => {
       const w = parseFloat(s.w), r = parseInt(s.r, 10);
       if (!isNaN(w) && !isNaN(r)) tonnage += w * r;
+      const dw = parseFloat(s.dw), dr = parseInt(s.dr, 10);
+      if (!isNaN(dw) && !isNaN(dr)) tonnage += dw * dr;
       if (!isNaN(w) && bestAvant > 0 && w > bestAvant && !records.includes(e.nom)) records.push(e.nom);
     });
   });
@@ -152,11 +159,19 @@ export function MaSeance() {
     }
   };
 
+  const nettoyerSet = (x) => {
+    const o = { w: x.w === '' ? '' : parseFloat(x.w), r: x.r === '' ? '' : parseInt(x.r, 10) };
+    if (x.dw || x.dr) {
+      o.dw = x.dw ? parseFloat(x.dw) : '';
+      o.dr = x.dr ? parseInt(x.dr, 10) : '';
+    }
+    return o;
+  };
   const collecter = () => {
     const out = [];
     exos.forEach((ex, i) => {
-      const s = (series[i] || []).filter(x => x.w !== '' || x.r !== '')
-        .map(x => ({ w: x.w === '' ? '' : parseFloat(x.w), r: x.r === '' ? '' : parseInt(x.r, 10) }));
+      const s = (series[i] || []).filter(x => x.w !== '' || x.r !== '' || x.dw || x.dr)
+        .map(nettoyerSet);
       if (s.length) out.push({ nom: ex.nom, sets: s });
     });
     return out;
@@ -168,8 +183,8 @@ export function MaSeance() {
     const out = [];
     const faitsFinaux = coches || faits;
     exos.forEach((ex, i) => {
-      const s = (series[i] || []).filter(x => x.w !== '' || x.r !== '')
-        .map(x => ({ w: x.w === '' ? '' : parseFloat(x.w), r: x.r === '' ? '' : parseInt(x.r, 10) }));
+      const s = (series[i] || []).filter(x => x.w !== '' || x.r !== '' || x.dw || x.dr)
+        .map(nettoyerSet);
       if (s.length || faitsFinaux.has(i)) {
         out.push({ nom: ex.nom, mKey: refs[i] ? refs[i].mKey : null, sets: s });
       }
@@ -208,7 +223,7 @@ export function MaSeance() {
   const confirmerArret = () => {
     setArret(false);
     if (faits.size > 0) felicitations();
-    else { ongletActif.value = 'journal'; retourEntrainer(); }
+    else { seanceRefs.value = []; selectionExos.value = {}; ongletActif.value = 'journal'; retourEntrainer(); }
   };
 
   const cocher = (i) => {
@@ -338,6 +353,21 @@ export function MaSeance() {
                       <button class="set-del" onClick={() => retirerSerie(i, j)} aria-label="Retirer">×</button>
                     </div>
                   ))}
+                  {(series[i] || []).map((s, j) => (
+                    pctSerie(j) && pctSerie(j).degressive ? (
+                      <div class="set-row set-deg" key={'d' + j}>
+                        <div class="set-num deg">D</div>
+                        <div class="set-pct">dégr.</div>
+                        <input type="number" inputMode="decimal" step="0.5" min="0" placeholder="××"
+                          value={s.dw || ''} onInput={(e) => majSerie(i, j, 'dw', e.currentTarget.value)} />
+                        <span class="set-unit">kg</span>
+                        <span class="set-x">×</span>
+                        <input type="number" inputMode="numeric" min="0" placeholder="××"
+                          value={s.dr || ''} onInput={(e) => majSerie(i, j, 'dr', e.currentTarget.value)} />
+                        <span class="set-unit">reps</span>
+                      </div>
+                    ) : null
+                  ))}
                 </div>
                 <button class="set-add" onClick={() => ajouterSerie(i)}>＋ {t('ms_add_set')}</button>
               </div>
@@ -382,7 +412,7 @@ export function MaSeance() {
                 <div class="cg-record">🏆 {t('ms_new_record')} : {fini.records.join(', ')} !</div>
               )}
             </div>
-            <button class="congrats-btn" onClick={() => { seanceRefs.value = []; retourEntrainer(); ongletActif.value = 'journal'; }}>
+            <button class="congrats-btn" onClick={() => { seanceRefs.value = []; selectionExos.value = {}; retourEntrainer(); ongletActif.value = 'journal'; }}>
               {t('ms_back_journal')}
             </button>
           </div>

@@ -32,6 +32,8 @@ function tonnageDe(exos) {
   (exos || []).forEach(e => (e.sets || []).forEach(s => {
     const w = parseFloat(s.w), r = parseInt(s.r, 10);
     if (!isNaN(w) && !isNaN(r)) t += w * r;
+    const dw = parseFloat(s.dw), dr = parseInt(s.dr, 10);
+    if (!isNaN(dw) && !isNaN(dr)) t += dw * dr;
   }));
   return Math.round(t);
 }

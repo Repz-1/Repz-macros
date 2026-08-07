@@ -126,16 +126,17 @@
   box-shadow: 0 -8px 34px rgba(24, 24, 24, .22);
 }
 .exo-fiche-fermer {
-  position: absolute; top: 12px; right: 12px; z-index: 2;
+  position: absolute; top: 10px; right: 12px; z-index: 2;
   width: 32px; height: 32px; border: none; border-radius: 50%;
-  background: rgba(255, 253, 249, .95); color: #28231F;
+  background: #F1EDE6; color: #28231F;
   font-size: 19px; line-height: 1; cursor: pointer; padding: 0;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, .18);
 }
 .exo-fiche-fermer:active { transform: scale(.92); }
-/* Les deux vues cote a cote : depart et fin du mouvement. */
-.exo-fiche-vues { display: flex; gap: 8px; margin: 6px 0 14px; }
+/* Les deux vues cote a cote : depart et fin du mouvement. Elles
+   demarrent sous la bande du bouton fermer : plus de superposition
+   (capture Raci, 7/08). */
+.exo-fiche-vues { display: flex; gap: 8px; margin: 40px 0 14px; }
 .exo-fiche-vue {
   flex: 1; aspect-ratio: 1 / 1; border-radius: 16px;
   background: #EDEAE4 center/cover no-repeat;

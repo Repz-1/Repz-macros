@@ -141,6 +141,7 @@ export function DetailSeance({ seance, apresSuppression }) {
                 {e.sets.map((x, j) => (
                   <span key={j} class={'det-serie' + (s.records.includes(e.nom) ? ' pr' : '')}>
                     {x.w === '' ? '—' : x.w} × {x.r === '' ? '—' : x.r}
+                    {(x.dw || x.dr) ? ` → dégr. ${x.dw || '—'} × ${x.dr || '—'}` : ''}
                   </span>
                 ))}
               </div>

@@ -13,9 +13,14 @@ function choisirNiveau(k) {
   niveauPratique.value = k;
   try { localStorage.setItem('belfit_niveau', k); } catch (e) {}
 }
+
+
 import { retourEntrainer } from './Entrainer.jsx';
 import '../legacy/selection-exercices.scoped.css';
-import { seanceRefs } from './MaSeance.jsx';
+// selectionExos vit dans MaSeance.jsx : en etat local ici, la
+// selection disparaissait a chaque aller-retour vers la seance
+// (bug V1/V2 confirme par Raci le 7/08).
+import { seanceRefs, selectionExos } from './MaSeance.jsx';
 import { allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 
@@ -36,11 +41,9 @@ export function SelectionExercices() {
   const [muscle, setMuscle] = useState(0);          // index dans MUSCLES
   const [filtre, setFiltre] = useState('tout');     // key dans FILTERS
   // Selection : { muscleKey: Set(index) }
-  const [selection, setSelection] = useState(() => {
-    const o = {};
-    MUSCLES.forEach(m => { o[m.key] = new Set(); });
-    return o;
-  });
+  // Vue locale du signal module (initialise les Sets au besoin).
+  const selection = selectionExos.value;
+  MUSCLES.forEach(m => { if (!selection[m.key]) selection[m.key] = new Set(); });
 
   const [recherche, setRecherche] = useState('');
   // Fiche d'exercice : index dans le groupe courant, ou null.
@@ -83,12 +86,11 @@ export function SelectionExercices() {
   const nbSelectionnes = Object.values(selection).reduce((n, s) => n + s.size, 0);
 
   const basculer = (i) => {
-    setSelection(prev => {
-      const copie = { ...prev, [mKey]: new Set(prev[mKey]) };
-      if (copie[mKey].has(i)) copie[mKey].delete(i);
-      else copie[mKey].add(i);
-      return copie;
-    });
+    const prev = selectionExos.value;
+    const copie = { ...prev, [mKey]: new Set(prev[mKey]) };
+    if (copie[mKey].has(i)) copie[mKey].delete(i);
+    else copie[mKey].add(i);
+    selectionExos.value = copie;
   };
 
   const stars = (lvl) => {

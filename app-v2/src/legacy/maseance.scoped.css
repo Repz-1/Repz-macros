@@ -196,3 +196,10 @@
   margin: 2px 0 10px; font-size: 12px; font-weight: 600;
   color: #8A8279;
 }
+
+/* Sous-ligne degressive : rattachee visuellement a sa serie, en
+   retrait, marquee orange comme le % de la serie 4. */
+.pg-maseance .set-row.set-deg { margin-left: 14px; margin-top: -2px; }
+.pg-maseance .set-num.deg { background: rgba(248,106,12,.12); color: #B34700; }
+.pg-maseance .set-row.set-deg .set-pct { color: #B34700; font-size: 11px; }
+.pg-maseance .set-row.set-deg input { border-color: #F0DCC4; }
