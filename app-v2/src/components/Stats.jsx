@@ -74,6 +74,95 @@ export function BodyMap({ compte, onClick }) {
   );
 }
 
+
+// ---------- Courbe du poids : periode + tendance ----------
+// Les barres mentaient deux fois : l'echelle demarrait a min-1 (un
+// ecart reel de 2,7 % s'affichait comme un rapport de 3,5), et l'axe
+// horizontal ignorait les dates (5 jours d'ecart occupaient la meme
+// largeur qu'un seul). Une courbe calee sur le temps corrige les deux.
+const PERIODES = [
+  { k: '1s', jours: 7 }, { k: '1m', jours: 31 },
+  { k: '3m', jours: 92 }, { k: '1a', jours: 366 },
+];
+// La tendance n'a de sens qu'avec assez de points : lissee sur 4
+// pesees, elle inventerait une forme. Seuil pose par Raci le 7/08.
+const MIN_TENDANCE = 10;
+
+const isoMoins = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
+
+/** Moyenne mobile centree sur 7 jours, en unites de temps reelles. */
+function tendance(pts) {
+  return pts.map(p => {
+    const t0 = new Date(p.iso).getTime();
+    const fen = pts.filter(q => Math.abs(new Date(q.iso).getTime() - t0) <= 3.5 * 86400000);
+    return { iso: p.iso, v: fen.reduce((a, q) => a + q.v, 0) / fen.length };
+  });
+}
+
+function CourbePoids({ points }) {
+  const L = 330, H = 150;
+  if (points.length === 1) {
+    const p = points[0];
+    return (
+      <div class="gr">
+        <svg viewBox={`0 0 ${L} ${H}`} preserveAspectRatio="none">
+          <circle class="gr-dern" cx={L / 2} cy={H / 2} r="5" />
+          <text class="gr-bulle" x={L / 2 + 10} y={H / 2 + 4}>{p.v}</text>
+        </svg>
+      </div>
+    );
+  }
+  const vs = points.map(p => p.v);
+  const min = Math.min(...vs), max = Math.max(...vs);
+  // Au moins 2 kg d'amplitude : sans ce plancher, une serie plate
+  // remplirait tout le cadre et transformerait 200 g en falaise.
+  const demi = Math.max(1, (max - min) / 2 + .3);
+  const centre = (min + max) / 2;
+  const bas = centre - demi, haut = centre + demi;
+  const t0 = new Date(points[0].iso).getTime();
+  const t1 = new Date(points[points.length - 1].iso).getTime();
+  const X = (iso) => (t1 === t0 ? L / 2 : ((new Date(iso).getTime() - t0) / (t1 - t0)) * (L - 46));
+  const Y = (v) => 18 + (1 - (v - bas) / (haut - bas)) * (H - 40);
+  const chemin = (arr) => arr.map((p, i) => `${i ? 'L' : 'M'}${X(p.iso).toFixed(1)},${Y(p.v).toFixed(1)}`).join(' ');
+
+  const assez = points.length >= MIN_TENDANCE;
+  const lisse = assez ? tendance(points) : null;
+  const dernier = points[points.length - 1];
+
+  return (
+    <div class="gr">
+      <svg viewBox={`0 0 ${L} ${H}`} preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="grRemplissage" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F86A0C" stop-opacity=".22" />
+            <stop offset="100%" stop-color="#F86A0C" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="18" x2={L} y2="18" stroke="#EDE9E2" />
+        <line x1="0" y1={H / 2} x2={L} y2={H / 2} stroke="#EDE9E2" />
+        <line x1="0" y1={H - 22} x2={L} y2={H - 22} stroke="#EDE9E2" />
+
+        <path d={`${chemin(points)} L${X(dernier.iso).toFixed(1)},${H} L0,${H} Z`} fill="url(#grRemplissage)" />
+        <path class={'gr-ligne' + (assez ? ' pale' : '')} d={chemin(points)} fill="none" />
+        {points.map(p => (
+          <circle key={p.iso} class={'gr-pt' + (assez ? ' pale' : '')}
+            cx={X(p.iso)} cy={Y(p.v)} r={assez ? 2.5 : 3.5} />
+        ))}
+
+        {lisse && <path class="gr-tendance" d={chemin(lisse)} fill="none" />}
+
+        <circle class={'gr-dern' + (assez ? ' sombre' : '')}
+          cx={X(dernier.iso)} cy={Y(assez ? lisse[lisse.length - 1].v : dernier.v)} r="5" />
+        <text class="gr-bulle" x={Math.min(X(dernier.iso) + 10, L - 34)}
+          y={Y(assez ? lisse[lisse.length - 1].v : dernier.v) + 4}>{dernier.v}</text>
+
+        <text class="gr-axe" x={L - 44} y="21">{haut.toFixed(1)}</text>
+        <text class="gr-axe" x={L - 44} y={H - 19}>{bas.toFixed(1)}</text>
+      </svg>
+    </div>
+  );
+}
+
 // ---------- Modale poids : copie v1 (weightModal, app.html) ----------
 export function WeightModal({ fermer }) {
   const l = weightLog.value || [];
@@ -167,6 +256,9 @@ export function WeightModal({ fermer }) {
 export function Stats() {
   const [exoSel, setExoSel] = useState(null);
   const [modalePoids, setModalePoids] = useState(false);
+  // Periode du graphique de poids : puce rapide ou intervalle libre.
+  const [periode, setPeriode] = useState('3m');
+  const [libre, setLibre] = useState({ ouvert: false, du: '', au: '' });
   const prem = estPremium.value;
 
   const poidsData = weightLog.value || [];
@@ -217,13 +309,26 @@ export function Stats() {
   const global = Math.round((nutrition + entrainement + scorePoids + regularite) / 4);
   const rienDuTout = !histoire.length && !poidsData.length && !Object.keys(setLogJours).length && !Object.keys(mLog).length;
 
-  // ================= Poids (v1 renderWeight) =================
+  // ================= Poids =================
   let poidsTri = [...poidsData].sort((a, b) => a.iso.localeCompare(b.iso));
   if (!prem && poidsTri.length > LIMITE_GRATUIT) poidsTri = poidsTri.slice(-LIMITE_GRATUIT);
 
+  // Fenetre choisie. « Poids actuel » reste la derniere pesee connue,
+  // meme hors periode : c'est ton poids, pas une statistique de la
+  // fenetre. « Variation » se lit en revanche SUR la periode affichee.
+  const bornes = (() => {
+    if (periode === 'libre' && libre.du && libre.au) return { du: libre.du, au: libre.au };
+    const def = PERIODES.find(x => x.k === periode) || PERIODES[2];
+    return { du: isoMoins(def.jours), au: '9999' };
+  })();
+  const poidsPeriode = poidsTri
+    .filter(d => d.iso >= bornes.du && d.iso <= bornes.au)
+    .map(d => ({ iso: d.iso, v: poidsDe(d) }));
+
   const poidsActuel = poidsTri.length ? poidsDe(poidsTri[poidsTri.length - 1]) : 0;
-  const poidsDebut = poidsTri.length ? poidsDe(poidsTri[0]) : 0;
-  const diff = (poidsActuel - poidsDebut).toFixed(1);
+  const poidsDebut = poidsPeriode.length ? poidsPeriode[0].v : poidsActuel;
+  const finPeriode = poidsPeriode.length ? poidsPeriode[poidsPeriode.length - 1].v : poidsActuel;
+  const diff = (finPeriode - poidsDebut).toFixed(1);
 
   // ================= Calories (v1 renderKcal) =================
   let kcalTri = [...histoire].sort((a, b) => (a.iso || '').localeCompare(b.iso || ''));
@@ -304,24 +409,48 @@ export function Stats() {
                 <div class="stat-box"><div class="sb-val">{poidsActuel} kg</div><div class="sb-lbl">{t('st_cur_weight')}</div></div>
                 <div class="stat-box"><div class="sb-val">{diff > 0 ? '+' + diff : diff} kg</div><div class="sb-lbl">{t('st_variation')}</div></div>
               </div>
-              <div class="chart">
-                {(() => {
-                  const vals = poidsTri.map(poidsDe);
-                  const min = Math.min(...vals) - 1, max = Math.max(...vals) + 1;
-                  return poidsTri.map(d => {
-                    const p = poidsDe(d);
-                    const h = max > min ? ((p - min) / (max - min)) * 100 : 50;
-                    const jour = d.date ? d.date.split(' ').slice(0, 2).join(' ') : jourCourt(d.iso);
-                    return (
-                      <div class="chart-bar-wrap" key={d.iso}>
-                        <div class="chart-val">{p}</div>
-                        <div class="chart-bar weight" style={{ height: Math.max(6, h) + '%' }} />
-                        <div class="chart-day">{jour}</div>
-                      </div>
-                    );
-                  });
-                })()}
+              <div class="per">
+                {PERIODES.map(x => (
+                  <button key={x.k} class={periode === x.k ? 'on' : ''}
+                    onClick={() => { setPeriode(x.k); setLibre(l => ({ ...l, ouvert: false })); }}>
+                    {t('per_' + x.k)}
+                  </button>
+                ))}
               </div>
+              <button class={'per-libre' + (periode === 'libre' ? ' on' : '')}
+                onClick={() => setLibre(l => ({ ...l, ouvert: !l.ouvert }))}>
+                {t('per_libre')}
+              </button>
+
+              {libre.ouvert && (
+                <div class="per-panneau">
+                  <label>{t('per_du')}
+                    <input type="date" value={libre.du} max={libre.au || undefined}
+                      onInput={(e) => setLibre(l => ({ ...l, du: e.currentTarget.value }))} />
+                  </label>
+                  <label>{t('per_au')}
+                    <input type="date" value={libre.au} min={libre.du || undefined}
+                      onInput={(e) => setLibre(l => ({ ...l, au: e.currentTarget.value }))} />
+                  </label>
+                  <button class="per-ok" disabled={!libre.du || !libre.au}
+                    onClick={() => { setPeriode('libre'); setLibre(l => ({ ...l, ouvert: false })); }}>
+                    {t('per_ok')}
+                  </button>
+                </div>
+              )}
+
+              {poidsPeriode.length ? (
+                <>
+                  <CourbePoids points={poidsPeriode} />
+                  <div class="gr-jours">
+                    <span>{jourCourt(poidsPeriode[0].iso)}</span>
+                    <span>{jourCourt(poidsPeriode[poidsPeriode.length - 1].iso)}</span>
+                  </div>
+                  {poidsPeriode.length < MIN_TENDANCE && (
+                    <div class="gr-note">{t('st_tendance_bloquee', { n: poidsPeriode.length })}</div>
+                  )}
+                </>
+              ) : <div class="gr-vide">{t('per_vide')}</div>}
             </>
           ) : <Vide texte={t('st_no_weight')} cta={t('st_add_weight')} onCta={() => setModalePoids(true)} />}
           <button class="weight-add-btn" onClick={() => setModalePoids(true)}>{t('st_weight_add')}</button>
