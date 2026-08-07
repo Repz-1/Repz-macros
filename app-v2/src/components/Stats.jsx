@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { weightLog, histoJours, ajouterPesee } from '../store/stats.js';
-import { muscleLog, basculerMuscle, viderJourMuscles } from '../store/entrainement.js';
+import { muscleLog } from '../store/entrainement.js';
 import { setLog } from './SeanceTracker.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
@@ -16,19 +16,9 @@ import '../legacy/stats.scoped.css';
 // ==========================================================
 
 const LIMITE_GRATUIT = 7;
-// v1 renderRepartition : ordre + couleurs des groupes
-const GROUPES_REP = [
-  { k: 'pecs', c: '#EF4444' }, { k: 'dos', c: '#F97316' },
-  { k: 'epaules', c: '#F7B500' }, { k: 'biceps', c: '#10B981' },
-  { k: 'triceps', c: '#06B6D4' }, { k: 'jambes', c: '#3B82F6' },
-  { k: 'abdos', c: '#8B5CF6' }, { k: 'cardio', c: '#EC4899' },
-];
 const COL = { pecs: '#EF4444', dos: '#F97316', epaules: '#F7B500', biceps: '#10B981', triceps: '#06B6D4', jambes: '#3B82F6', abdos: '#8B5CF6' };
-// v1 rendreEditMuscles : cles de la modale (repos inclus)
-const CLES_ML = ['pecs', 'dos', 'epaules', 'biceps', 'triceps', 'jambes', 'abdos', 'cardio', 'repos'];
 
 const isoNDaysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
-const isoDuJour = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 const jourCourt = (iso) => new Date(iso + 'T00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 // Pesees : v1 = {iso, date, weight} ; tolere l'ancien format v2 {iso, kg}
 const poidsDe = (e) => parseFloat(e.weight ?? e.kg) || 0;
@@ -80,51 +70,6 @@ export function BodyMap({ compte, onClick }) {
         <path class="bp" style={{ fill: col('jambes') }} d="M61 137 h-10 v34 q0 4 5 4 q5 0 5 -4z" />
       </svg>
       <div class="bodymap-legend"><i style="background:#E9EBEF" />{t('st_not_worked')}</div>
-    </div>
-  );
-}
-
-// ---------- Modale « muscles du jour » : copie v1 (ml-overlay) ----------
-function MlModal({ iso, setIso, fermer }) {
-  const sel = muscleLog.value[iso] || [];
-  const d = new Date(iso + 'T00:00');
-  const jours = t('days_long').split('|');
-  const mois = t('months_long').split('|');
-  const aujIso = isoDuJour(new Date());
-
-  const decaler = (n) => {
-    const dd = new Date(iso + 'T00:00');
-    dd.setDate(dd.getDate() + n);
-    const cible = isoDuJour(dd);
-    if (cible > aujIso) return; // pas de saisie dans le futur (v1)
-    setIso(cible);
-  };
-
-  return (
-    <div class="ml-overlay show" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
-      <div class="ml-modal">
-        <div class="ml-nav">
-          <button onClick={() => decaler(-1)} aria-label="Jour precedent">&lsaquo;</button>
-          <div style="flex:1;text-align:center;">
-            <h3 class="ml-date">{jours[d.getDay()]} {d.getDate()} {mois[d.getMonth()]}</h3>
-            <div class="ml-sub">{sel.length ? sel.map(k => t('mus_' + k)).join(' · ') : t('st_repart_empty')}</div>
-          </div>
-          <button disabled={iso >= aujIso} onClick={() => decaler(1)} aria-label="Jour suivant">&rsaquo;</button>
-        </div>
-        <div class="ml-groups">
-          {CLES_ML.map(k => (
-            <button
-              key={k}
-              class={'ml-chip ' + (k === 'repos' ? 'repos ' : '') + (sel.includes(k) ? 'on' : '')}
-              onClick={() => basculerMuscle(iso, k)}
-            >{t('mus_' + k)}</button>
-          ))}
-        </div>
-        <div class="ml-btns">
-          <button class="ml-clear" onClick={() => viderJourMuscles(iso)}>{t('clear')}</button>
-          <button class="ml-save" onClick={fermer}>{t('save')}</button>
-        </div>
-      </div>
     </div>
   );
 }
@@ -221,7 +166,6 @@ export function WeightModal({ fermer }) {
 
 export function Stats() {
   const [exoSel, setExoSel] = useState(null);
-  const [mlIso, setMlIso] = useState(null);          // modale muscles ouverte si non null
   const [modalePoids, setModalePoids] = useState(false);
   const prem = estPremium.value;
 
@@ -287,52 +231,6 @@ export function Stats() {
   const moyKcal = kcalTri.length ? Math.round(kcalTri.reduce((s, d) => s + parseInt(d.kcal || 0), 0) / kcalTri.length) : 0;
   const derniereKcal = kcalTri.length ? parseInt(kcalTri[kcalTri.length - 1].kcal || 0) : 0;
 
-  // ================= Repartition musculaire (v1 renderRepartition) =================
-  // Toujours la semaine en cours (lundi -> aujourd'hui)
-  const auj = new Date();
-  const lundi = new Date(auj); lundi.setDate(auj.getDate() - ((auj.getDay() + 6) % 7));
-  const depuis = lundi.toISOString().slice(0, 10);
-  const compte = {};
-  Object.keys(mLog).forEach(iso => {
-    if (iso < depuis) return;
-    (mLog[iso] || []).forEach(m => { if (m !== 'repos') compte[m] = (compte[m] || 0) + 1; });
-  });
-  const totalRepart = Object.values(compte).reduce((a, b) => a + b, 0);
-  const maxRepart = Math.max(...GROUPES_REP.map(g => compte[g.k] || 0));
-
-  const aujIso = new Date().toISOString().slice(0, 10);
-  const joursDepuis = (k) => {
-    let dernier = null;
-    Object.keys(mLog).forEach(iso => { if ((mLog[iso] || []).includes(k) && (!dernier || iso > dernier)) dernier = iso; });
-    return dernier ? Math.round((new Date(aujIso) - new Date(dernier)) / 86400000) : Infinity;
-  };
-  // v1 : grands muscles negliges depuis 8 jours ou plus
-  const negliges = ['pecs', 'dos', 'jambes', 'epaules'].map(k => ({ k, j: joursDepuis(k) })).filter(x => x.j >= 8);
-  // v1 : suggestion = memes muscles que le meme jour la semaine passee,
-  // MAIS uniquement ceux pas retravailles depuis (fenetre 8 jours)
-  const FENETRE_JOURS = 8;
-  const dSem = new Date(aujIso); dSem.setDate(dSem.getDate() - 7);
-  const isoSem = dSem.toISOString().slice(0, 10);
-  const memesJour = (mLog[isoSem] || [])
-    .filter(v => v !== 'repos')
-    .filter(k => joursDepuis(k) >= FENETRE_JOURS)
-    .map(k => t('mus_' + k).toLowerCase());
-  const aujFait = (mLog[aujIso] || []).length > 0;
-
-  let noteTexte = '', noteCheck = false;
-  if (memesJour.length && !aujFait) {
-    const jourNom = t('days_long').split('|')[new Date(aujIso).getDay()].toLowerCase();
-    noteTexte = t('st_suggestion', { muscles: memesJour.join(', '), day: jourNom });
-  } else if (negliges.length) {
-    const items = negliges.map(x => {
-      const nom = t('mus_' + x.k).toLowerCase();
-      return x.j === Infinity ? nom : `${nom} (${x.j} j)`;
-    });
-    noteTexte = `${t('st_next_hint')} ${items.join(', ')}.`;
-  } else {
-    noteTexte = t('st_balanced');
-    noteCheck = true;
-  }
 
   // ================= Progression par exercice (v1 renderExoProg) =================
   const topSet = (sets) => {
@@ -497,47 +395,6 @@ export function Stats() {
           ) : <Vide texte={t('st_no_sets')} cta={t('st_start_session')} onCta={() => { ongletActif.value = 'entrainer'; }} />}
         </div>
 
-        {/* REPARTITION MUSCULAIRE */}
-        <div class="stat-card acc-red">
-          <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M20.5 6.5a4.5 4.5 0 00-7.5-3.3 4.5 4.5 0 00-7.5 3.3c0 4.5 7.5 10 7.5 10s7.5-5.5 7.5-10z" /></svg><span>{t('st_repart')}</span></h2>
-          <div class="rep-head">
-            <div class="repart-periode">{t('st_this_week')}</div>
-            <button class="rep-edit" onClick={() => setMlIso(isoDuJour(new Date()))}>
-              <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z" /></svg>
-              <span>{t('st_edit_muscles')}</span>
-            </button>
-          </div>
-          {totalRepart ? (
-            <>
-              <div class="repart-layout">
-                <BodyMap compte={compte} onClick={() => setMlIso(isoDuJour(new Date()))} />
-                <div class="repart-body">
-                  {GROUPES_REP.filter(g => compte[g.k]).sort((a, b) => (compte[b.k] || 0) - (compte[a.k] || 0)).map(g => (
-                    <div class="rep-row" key={g.k}>
-                      <div class="rep-lbl">{t('mus_' + g.k)}</div>
-                      <div class="rep-track">
-                        <div class="rep-fill" style={{ width: Math.max(18, Math.round((compte[g.k] || 0) / maxRepart * 100)) + '%', background: g.c }} />
-                      </div>
-                      <div class="rep-val">{compte[g.k] || 0}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div class="repart-note">
-                <svg class="rn-ic" viewBox="0 0 24 24">
-                  <path d={noteCheck ? 'M20 6L9 17l-5-5' : 'M9 18V5l12-2v13M9 9l12-2'} />
-                </svg>
-                {noteTexte}
-              </div>
-            </>
-          ) : (
-            <div class="repart-layout">
-              <BodyMap compte={{}} onClick={() => setMlIso(isoDuJour(new Date()))} />
-              <div class="repart-body"><div class="repart-vide">{t('st_repart_empty')}</div></div>
-            </div>
-          )}
-        </div>
-
         {/* INVITATION PREMIUM */}
         {!prem && (
           <div class="premium-invite">
@@ -550,7 +407,6 @@ export function Stats() {
         )}
       </div>
 
-      {mlIso && <MlModal iso={mlIso} setIso={setMlIso} fermer={() => setMlIso(null)} />}
       {modalePoids && <WeightModal fermer={() => setModalePoids(false)} />}
     </div>
   );
