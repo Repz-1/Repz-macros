@@ -278,8 +278,51 @@ export function resetEau() {
   eau.value = 0;
 }
 
+/**
+ * Ecrit les objectifs du jour.
+ *
+ * Cas particulier : quand on ne change QUE les calories, les macros
+ * sont remises a l'echelle dans les memes proportions. Sans cela,
+ * l'objectif affiche et les barres de macros racontent deux histoires
+ * differentes — vecu par Raci le 7/08 : objectif passe a 4000 kcal,
+ * macros restees sur 218/428/96, soit 3448 kcal. Le calculateur le
+ * faisait deja de son cote ; d'autres chemins d'ecriture, non. C'est
+ * donc ici que ca doit vivre, pour tous les appelants a la fois.
+ *
+ * Un appelant qui fournit ses macros explicitement (calcul, programme
+ * du coach, saisie manuelle complete) n'est jamais retouche : ce qu'il
+ * ecrit fait foi.
+ */
 export function setObjectifs(nouveaux) {
-  objectifs.value = { ...objectifs.value, ...nouveaux };
+  const avant = objectifs.value;
+  const macrosFournies = ['prot', 'carbs', 'lip'].some(k => nouveaux[k] != null);
+  const kcal = +nouveaux.kcal || 0;
+
+  if (nouveaux.kcal != null && !macrosFournies && kcal > 0) {
+    const base = (+avant.prot || 0) * 4 + (+avant.carbs || 0) * 4 + (+avant.lip || 0) * 9;
+    if (base > 0) {
+      const k = kcal / base;
+      objectifs.value = {
+        ...avant,
+        kcal,
+        prot: Math.round((+avant.prot || 0) * k),
+        carbs: Math.round((+avant.carbs || 0) * k),
+        lip: Math.round((+avant.lip || 0) * k),
+      };
+      return;
+    }
+  }
+  objectifs.value = { ...avant, ...nouveaux };
+}
+
+/**
+ * Ecart entre l'objectif calorique et la somme des macros, en kcal.
+ * Sert a signaler une incoherence plutot qu'a la corriger en douce :
+ * des macros posees explicitement appartiennent a qui les a posees.
+ */
+export function ecartMacros(o = objectifs.value) {
+  const somme = (+o.prot || 0) * 4 + (+o.carbs || 0) * 4 + (+o.lip || 0) * 9;
+  return Math.round(somme - (+o.kcal || 0));
 }
 
 // Part de l'objectif quotidien attribuee a chaque repas fixe.
