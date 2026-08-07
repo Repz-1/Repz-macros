@@ -364,3 +364,9 @@
 .pg-stats .j-retour{ justify-self:start; margin-left:-10px; color:#16130F; }
 .pg-stats .j-entete{ margin-bottom:14px; }
 .pg-stats .container{ padding-top:0; }
+
+/* Pastilles d'icone retirees des titres de cartes (Raci, 7/08) : le
+   sous-titre etait decale de 44 px pour leur laisser la place, il
+   revient donc a l'alignement du titre. Meme decision que sur les
+   cartes de S'entrainer — a ignorer si les SVG reviennent. */
+.pg-stats .stat-card .card-sub { padding-left: 0; }

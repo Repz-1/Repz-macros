@@ -296,7 +296,7 @@ export function Stats() {
 
         {/* POIDS */}
         <div class="stat-card acc-green">
-          <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M4 4v16h16" /><path d="M7 14l3-3 2.5 2L20 7" /></svg><span>{t('st_weight')}</span></h2>
+          <h2><span>{t('st_weight')}</span></h2>
           <div class="card-sub">{t('st_weight_sub')}</div>
           {poidsTri.length ? (
             <>
@@ -329,7 +329,7 @@ export function Stats() {
 
         {/* CALORIES */}
         <div class="stat-card acc-orange">
-          <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M12 3C9 7 7 9 7 13a5 5 0 0010 0c0-2-1-3.6-2.5-5-.3 1.2-1 2-2 2.4C13 8 13 5.5 12 3z" /></svg><span>{t('st_kcal')}</span></h2>
+          <h2><span>{t('st_kcal')}</span></h2>
           <div class="card-sub">{t('st_kcal_sub')}</div>
           {kcalTri.length ? (
             <>
@@ -363,7 +363,7 @@ export function Stats() {
 
         {/* PROGRESSION PAR EXERCICE */}
         <div class="stat-card acc-blue">
-          <h2><svg class="h2ic" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7" /></svg><span>{t('st_exo')}</span></h2>
+          <h2><span>{t('st_exo')}</span></h2>
           <div class="card-sub">{t('st_exo_sub')}</div>
           {nomExo ? (
             <>
