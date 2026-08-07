@@ -68,12 +68,32 @@ let uidSe = null, pretSe = false;
 
 effect(() => {
   const u = identite.value;
-  if (!u) { uidSe = null; pretSe = false; seancesPretes.value = false; return; }
-  if (u === uidSe) return;
+
+  // Identite momentanement nulle = rafraichissement de jeton ou
+  // coupure reseau, PAS une deconnexion. On bloque les ecritures mais
+  // on garde uidSe : sans ca, chaque clignotement relancait un
+  // chargement concurrent, et le plus lent ecrasait le plus complet.
+  if (!u) { pretSe = false; seancesPretes.value = false; return; }
+
+  if (u === uidSe) {
+    // Meme compte, donnees deja en memoire : rien a recharger.
+    if (pretSe) return;
+    if (seances.value.length) { pretSe = true; seancesPretes.value = true; return; }
+  } else {
+    // Vrai changement de compte : on vide, sinon les seances du
+    // precedent seraient reecrites dans le document du suivant.
+    seances.value = [];
+  }
+
   uidSe = u; pretSe = false; seancesPretes.value = false;
   chargerDonnees(u).then(d => {
     if (uidSe !== u) return;
     const chargees = (d && Array.isArray(d.seances)) ? d.seances : null;
+
+    // Une lecture qui ne rapporte rien n'efface jamais ce qu'on a
+    // deja : elle peut avoir ete lancee avant la derniere ecriture.
+    if (!chargees && seances.value.length) { pretSe = true; seancesPretes.value = true; return; }
+
     const reprises = chargees ? [] : reprendreV1();
     seances.value = chargees || reprises;
     pretSe = true;

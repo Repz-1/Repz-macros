@@ -1,0 +1,110 @@
+/* ============================================================
+   SEANCES ENREGISTREES
+   Liste sous le calendrier du journal, liste plein ecran, detail.
+   Reprend les jetons de la carte journal : creme, graphite pour
+   les chiffres de synthese, orange en accent seul.
+   ============================================================ */
+
+/* ---------- bloc insere sous le calendrier ---------- */
+.pg-entrainer .sea-bloc { border-top: 1px solid var(--line); padding: 12px 2px 4px; }
+.pg-entrainer .sea-titre { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.pg-entrainer .sea-titre h4 { margin: 0; font-size: 13px; font-weight: 800; letter-spacing: .02em; color: #28231F; }
+.pg-entrainer .sea-titre span { font-size: 11px; font-weight: 700; color: #8A8279; }
+
+.pg-entrainer .sea-vide { font-size: 12px; font-weight: 400; color: #8A8279; padding: 6px 2px 12px; line-height: 1.45; margin: 0; }
+
+.pg-entrainer .sea-tout {
+  width: 100%; background: none; border: none; font-family: inherit;
+  font-size: 12px; font-weight: 700; color: #675D54; padding: 8px 0 4px; text-align: center;
+  cursor: pointer;
+}
+.pg-entrainer .sea-tout:active { opacity: .6; }
+
+/* ---------- une ligne de seance ---------- */
+.pg-entrainer .sea-ligne {
+  display: flex; align-items: center; gap: 10px; padding: 9px 8px;
+  border-radius: 12px; background: var(--fond); margin-bottom: 6px; cursor: pointer;
+}
+.pg-entrainer .sea-ligne:active { transform: scale(.985); }
+
+.pg-entrainer .sea-pastilles { display: flex; flex-shrink: 0; }
+.pg-entrainer .sea-pastilles i {
+  width: 11px; height: 11px; border-radius: 50%; display: block;
+  margin-right: -4px; box-shadow: 0 0 0 1.5px #FBFAF7;
+}
+.pg-entrainer .sea-pastilles i.vide { background: #E2E6EA; }
+
+.pg-entrainer .sea-corps { flex: 1; min-width: 0; }
+.pg-entrainer .sea-jour {
+  font-size: 12.5px; font-weight: 700; color: #28231F;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pg-entrainer .sea-detail { font-size: 11px; font-weight: 400; color: #7A736A; margin-top: 1px; }
+
+.pg-entrainer .sea-chiffre {
+  font-family: "DM Mono", ui-monospace, monospace; font-size: 14px; font-weight: 500;
+  color: #28231F; flex-shrink: 0; text-align: right; line-height: 1.15;
+}
+.pg-entrainer .sea-chiffre small {
+  display: block; font-family: inherit; font-size: 9.5px; font-weight: 700;
+  color: #9A938A; letter-spacing: .04em; text-transform: uppercase;
+  font-family: Satoshi, system-ui, sans-serif;
+}
+
+/* Le seul orange de l'ecran : un record, ca doit sauter aux yeux. */
+.pg-entrainer .sea-record {
+  display: inline-block; background: rgba(248, 106, 12, .12); color: var(--or-fonce);
+  font-size: 9.5px; font-weight: 800; padding: 1px 6px; border-radius: 6px;
+  margin-left: 6px; letter-spacing: .03em; vertical-align: 1px;
+}
+
+/* ---------- liste plein ecran et detail ---------- */
+.pg-entrainer .pg-seances { padding: 14px 16px 90px; background: var(--creme, #F8F2E8); min-height: 100%; }
+
+.pg-entrainer .sea-tete { margin-bottom: 14px; }
+.pg-entrainer .sea-tete h2 { margin: 0; font-size: 18px; font-weight: 800; color: #28231F; }
+.pg-entrainer .sea-tete p { margin: 1px 0 0; font-size: 11.5px; color: #7A736A; font-weight: 400; }
+
+.pg-entrainer .det-chiffres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.pg-entrainer .det-case { background: #1E232D; border-radius: 14px; padding: 12px 10px; color: #F8F2E8; }
+.pg-entrainer .det-case b {
+  display: block; font-family: "DM Mono", ui-monospace, monospace;
+  font-size: 19px; font-weight: 500; line-height: 1.15;
+}
+.pg-entrainer .det-case span {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: #A9A399;
+}
+
+.pg-entrainer .det-exo { background: #fff; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; }
+.pg-entrainer .det-exo-tete { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.pg-entrainer .det-exo-nom { font-size: 13.5px; font-weight: 700; color: #28231F; }
+.pg-entrainer .det-exo-mus { font-size: 10.5px; font-weight: 700; color: #7A736A; white-space: nowrap; }
+.pg-entrainer .det-exo-mus .dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px;
+}
+
+.pg-entrainer .det-series { display: flex; flex-wrap: wrap; gap: 6px; }
+.pg-entrainer .det-serie {
+  font-family: "DM Mono", ui-monospace, monospace; font-size: 12px;
+  background: var(--fond); border-radius: 8px; padding: 4px 9px; color: #28231F;
+}
+.pg-entrainer .det-serie.pr { background: rgba(248, 106, 12, .13); color: var(--or-fonce); font-weight: 500; }
+.pg-entrainer .det-exo-vide { font-size: 11.5px; color: #8A8279; }
+
+/* ---------- suppression, en bas et en deux temps ---------- */
+.pg-entrainer .det-supprimer {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line);
+}
+.pg-entrainer .det-supprimer span { font-size: 12.5px; font-weight: 700; color: #28231F; flex: 1; }
+.pg-entrainer .det-suppr {
+  background: none; border: none; font-family: inherit; font-size: 12.5px;
+  font-weight: 700; color: #9A938A; padding: 6px 0; cursor: pointer;
+}
+.pg-entrainer .det-oui, .pg-entrainer .det-non {
+  border: none; font-family: inherit; font-size: 12.5px; font-weight: 700;
+  border-radius: 10px; padding: 8px 14px; cursor: pointer;
+}
+.pg-entrainer .det-oui { background: #D71016; color: #fff; }
+.pg-entrainer .det-non { background: var(--fond); color: #57514A; }

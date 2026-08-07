@@ -34,6 +34,10 @@ let timerEnvoi = null;
 // sauvegardent chacun LEURS champs ; on fusionne ici pour ne jamais
 // ecraser les champs des autres.
 let etatComplet = {};
+// A quel compte appartient `etatComplet`. Au changement de compte il
+// faut repartir de zero : sans ca, les donnees du precedent seraient
+// reecrites dans le document du suivant.
+let uidEtat = null;
 
 function cleLocale(uid) {
   return `belfit_v2_journal_${uid}`;
@@ -44,9 +48,10 @@ const UID_INVITE = '__invite__';
 
 // ---- Lecture au demarrage : cloud d'abord, local en secours ----
 export async function chargerDonnees(uid) {
+  if (uid !== uidEtat) { etatComplet = {}; uidEtat = uid; }
   const localBrut = localStorage.getItem(cleLocale(uid));
   const local = localBrut ? JSON.parse(localBrut) : null;
-  if (uid === UID_INVITE) { etatComplet = local ? { ...local } : {}; return local; }
+  if (uid === UID_INVITE) { etatComplet = { ...(local || {}), ...etatComplet }; return local; }
   try {
     const { fs, db } = await firestore();
     const snap = await fs.getDoc(fs.doc(db, 'users', uid));
@@ -69,11 +74,11 @@ export async function chargerDonnees(uid) {
         fs.setDoc(fs.doc(db, 'users', uid), { v2Data: migre }, { merge: true }).catch(() => {});
       }
     }
-    etatComplet = resultat ? { ...resultat } : {};
+    etatComplet = { ...(resultat || {}), ...etatComplet };
     return resultat;
   } catch (e) {
     // Hors-ligne ou erreur reseau -> copie locale
-    etatComplet = local ? { ...local } : {};
+    etatComplet = { ...(local || {}), ...etatComplet };
     return local || null;
   }
 }

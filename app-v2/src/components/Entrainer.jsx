@@ -7,6 +7,7 @@ import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
 import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
+import { BlocSeances, ToutesSeances, DetailSeance } from './Seances.jsx';
 import { t } from '../i18n/index.js';
 
 /* ------------------------------------------------------------
@@ -64,7 +65,7 @@ const nomMuscle = (k) => t('mus_' + k);
 // ==========================================================
 // Journal d'entrainement : calendrier mensuel (classes wlog-*)
 // ==========================================================
-function JournalEntrainement({ ouvrirJour }) {
+function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
   const [ouvert, setOuvert] = useState(false);
   const [offset, setOffset] = useState(0);
 
@@ -165,6 +166,8 @@ function JournalEntrainement({ ouvrirJour }) {
           <span><i class="dot repos" />{t('mus_repos')}</span>
           <span><i class="dot today" />{t('today')}</span>
         </div>
+
+        <BlocSeances ouvrir={ouvrirSeance} voirTout={voirToutesSeances} />
       </div>
     </div>
   );
@@ -269,6 +272,28 @@ function ModalePremium({ montre, fermer }) {
 export function Entrainer() {
   const [jourOuvert, setJourOuvert] = useState(null);
   const [premium, setPremium] = useState(false);
+  // Vues internes a l'onglet : liste plein ecran et detail d'une
+  // seance. Pas de detour par vueEntrainer — ces deux ecrans partent
+  // du journal et y reviennent.
+  const [seanceOuverte, setSeanceOuverte] = useState(null);
+  const [toutesSeances, setToutesSeances] = useState(false);
+
+  if (seanceOuverte) {
+    return (
+      <div class="pg-entrainer pg-entrainer--carte">
+        <Entete retour={() => setSeanceOuverte(null)} />
+        <DetailSeance seance={seanceOuverte} apresSuppression={() => setSeanceOuverte(null)} />
+      </div>
+    );
+  }
+  if (toutesSeances) {
+    return (
+      <div class="pg-entrainer pg-entrainer--carte">
+        <Entete retour={() => setToutesSeances(false)} />
+        <ToutesSeances ouvrir={setSeanceOuverte} />
+      </div>
+    );
+  }
 
   // DECISION RACI (26/07) : la partie entrainement est GRATUITE en
   // entier — questionnaire, programmes, seances. Les anciens verrous
@@ -324,7 +349,9 @@ export function Entrainer() {
           <span class="cta">{t('open')}</span>
         </a>
 
-        <JournalEntrainement ouvrirJour={setJourOuvert} />
+        <JournalEntrainement ouvrirJour={setJourOuvert}
+          ouvrirSeance={setSeanceOuverte}
+          voirToutesSeances={() => setToutesSeances(true)} />
       </div>
 
       <p class="note">{t('tr_note')}</p>
