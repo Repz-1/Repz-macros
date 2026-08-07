@@ -73,3 +73,23 @@
   fill: none; stroke: currentColor;
   stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
 }
+
+/* ---------- Meme retrait horizontal partout ----------
+   Mesure du 7/08 (apercu 390 px), position du symbole depuis le bord
+   de l'ecran :
+     Journal      17 px   (--marge-page vaut 17 sur cette page)
+     S'entrainer  16 px
+     Stats        16 px
+     BelFit+       0 px   ← aucune marge : logo colle au bord et
+                            icones debordant de 8 px a droite
+   L'en-tete heritait de la marge de sa page ; il y en avait trois
+   valeurs differentes. On la lui donne ici, une fois pour toutes :
+   16 px a gauche comme a droite, quelle que soit la page dessous. */
+.pg-plus .j-entete--perso.j-entete--perso.j-entete--perso {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.pg-journal .j-entete--perso.j-entete--perso.j-entete--perso {
+  margin-left: -1px;
+  margin-right: -1px;
+}
