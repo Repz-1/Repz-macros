@@ -122,7 +122,6 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
     <div class={'choice ph sm ch-journal' + (ouvert ? ' ch-journal--ouvert' : '')}
       style={fond('card-journal.jpg')}>
       <h3>{t('tr_log_title')}</h3>
-      <p>{t('tr_log_sub')}</p>
       <button class="cta" onClick={(e) => { e.stopPropagation(); setOuvert(!ouvert); }}>
         {ouvert ? t('collapse') : t('open')}
       </button>
@@ -322,7 +321,6 @@ export function Entrainer() {
         <a href="#" class="choice ph featured ch-libre" style={fond('card-libre.jpg')}
           onClick={(e) => { e.preventDefault(); allerVers('selection'); }}>
           <h3>{t('tr_free_title')}</h3>
-          <p>{t('tr_free_sub')}</p>
           <span class="cta">{t('tr_free_cta')}</span>
         </a>
 
@@ -335,7 +333,6 @@ export function Entrainer() {
           onClick={(e) => verrou(e, 'questionnaire')}>
           <span class="ch-photo" aria-hidden="true" style={fond('card-creer.jpg')} />
           <h3>{t('tr_create_title')}</h3>
-          <p>{t('tr_create_sub')}</p>
           <span class="cta">{t('tr_start')}</span>
         </a>
 
