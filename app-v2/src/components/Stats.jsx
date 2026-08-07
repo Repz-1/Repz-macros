@@ -362,6 +362,30 @@ export function Stats() {
     deltaStr = delta > 0 ? `+${delta} kg` : (delta < 0 ? `${delta} kg` : '—');
   }
 
+  // Rampe de progression : ardoise -> or -> vert, interpolation continue.
+  // Jamais de rouge : sous 40 le gris dit « pas assez de donnees », pas « echec ».
+  const ANCRES_TEINTE = [
+    [0, [126, 135, 148]], [40, [176, 138, 60]], [58, [245, 168, 0]],
+    [74, [217, 162, 28]], [100, [63, 158, 107]],
+  ];
+  const teinteScore = (v) => {
+    v = Math.max(0, Math.min(100, v));
+    for (let i = 0; i < ANCRES_TEINTE.length - 1; i++) {
+      const [a, ca] = ANCRES_TEINTE[i], [b, cb] = ANCRES_TEINTE[i + 1];
+      if (v <= b) {
+        const t2 = (v - a) / (b - a);
+        return ca.map((x, k) => Math.round(x + (cb[k] - x) * t2));
+      }
+    }
+    return ANCRES_TEINTE[ANCRES_TEINTE.length - 1][1];
+  };
+  const rgbScore = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
+  // La barre part de la teinte d'ou l'on vient et finit sur celle ou l'on va.
+  const degradeScore = (v) =>
+    `linear-gradient(90deg, ${rgbScore(teinteScore(Math.max(0, v - 12)))}, ${rgbScore(teinteScore(Math.min(100, v + 18)))})`;
+  const cGlobal = teinteScore(global);
+  const R_ARC = 11, C_ARC = 2 * Math.PI * R_ARC;
+
   return (
     <div class="pg-stats">
       <div class="container">
@@ -375,12 +399,19 @@ export function Stats() {
 
         {/* NOTE DE PROGRESSION GLOBALE */}
         {!rienDuTout && (
-          <div class="score-card">
+          <div class="score-card" style={{ '--halo': `rgba(${cGlobal[0]},${cGlobal[1]},${cGlobal[2]},.30)` }}>
             <div class="score-head"><div>
               <div class="score-title">{t('st_score_title')}</div>
               <div class="score-val">
                 <span>{global}</span><small> %</small>
-                <span class="score-dot" style={{ background: global >= 70 ? '#10B981' : (global >= 40 ? '#F97316' : '#DC2626') }} />
+                <span class="score-arc">
+                  <svg viewBox="0 0 26 26">
+                    <circle class="piste" cx="13" cy="13" r={R_ARC} />
+                    <circle class="trace" cx="13" cy="13" r={R_ARC}
+                            stroke={rgbScore(cGlobal)}
+                            stroke-dasharray={`${C_ARC * global / 100} ${C_ARC}`} />
+                  </svg>
+                </span>
               </div>
             </div></div>
             <div class="score-note">
@@ -391,7 +422,7 @@ export function Stats() {
                 [t('st_row_weight'), scorePoids], [t('st_row_regularity'), regularite]].map(([l, v]) => (
                 <div class="score-row" key={l}>
                   <div class="sr-lbl">{l}</div>
-                  <div class="sr-bar"><div class="sr-fill" style={{ width: v + '%' }} /></div>
+                  <div class="sr-bar"><div class="sr-fill" style={{ width: v + '%', background: degradeScore(v) }} /></div>
                   <div class="sr-val">{v}%</div>
                 </div>
               ))}

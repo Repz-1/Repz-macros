@@ -67,12 +67,17 @@
     border-radius:20px; padding:22px 20px; margin-bottom:16px; color:#fff;
     box-shadow:0 10px 26px rgba(24,24,24,.25); overflow:hidden;
 }
-.pg-stats .score-card::after{ content:''; position:absolute; top:-70px; right:-70px; width:190px; height:190px; border-radius:50%; background:radial-gradient(circle,rgba(247,181,0,.28),transparent 70%); }
+.pg-stats .score-card::after{ content:''; position:absolute; top:-70px; right:-70px; width:190px; height:190px; border-radius:50%; background:radial-gradient(circle,var(--halo,rgba(247,181,0,.28)),transparent 70%); }
 .pg-stats .score-head{ display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
 .pg-stats .score-title{ font-size:13px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:rgba(255,255,255,.65); }
 .pg-stats .score-val{ font-size:44px; font-weight:800; letter-spacing:-.02em; line-height:1; margin:6px 0 2px; }
 .pg-stats .score-val small{ font-size:22px; font-weight:800; color:rgba(255,255,255,.55); }
 .pg-stats .score-dot{ width:12px; height:12px; border-radius:50%; display:inline-block; margin-left:8px; vertical-align:middle; }
+.pg-stats .score-val{ display:flex; align-items:center; }
+.pg-stats .score-arc{ width:26px; height:26px; margin-left:11px; flex:none; }
+.pg-stats .score-arc svg{ display:block; width:26px; height:26px; transform:rotate(-90deg); }
+.pg-stats .score-arc .piste{ fill:none; stroke:rgba(255,255,255,.16); stroke-width:3.5; }
+.pg-stats .score-arc .trace{ fill:none; stroke-width:3.5; stroke-linecap:round; transition:stroke-dasharray .7s cubic-bezier(.22,.8,.28,1); }
 .pg-stats .score-note{ font-size:12.5px; color:rgba(255,255,255,.6); margin-bottom:16px; position:relative; z-index:1; }
 .pg-stats .score-rows{ display:flex; flex-direction:column; gap:11px; position:relative; z-index:1; }
 .pg-stats .score-row{ display:flex; align-items:center; gap:10px; }
