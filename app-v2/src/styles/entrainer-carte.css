@@ -43,15 +43,15 @@
 /* ---------- Style commun des quatre cartes ---------- */
 .pg-entrainer--carte .choice.ph {
   position: relative; overflow: hidden;
-  border-radius: 16px;
-  border: 1px solid rgba(170, 135, 70, .14);
-  padding: 14px;
-  margin: 0 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(170, 135, 70, .16);
+  padding: 13px 13px 13px;
+  margin: 0 0 13px;
   background-size: cover; background-position: right center;
-  /* Le passe-partout clair qui detache la carte du fond : OPAQUE —
-     translucide, il melangeait fond et photo sur les bords et donnait
-     les defauts releves par Raci (7/08). */
-  box-shadow: 0 0 0 2px #FFFDF6,
+  /* Sur la maquette, chaque carte est cernee d'un liseré clair qui la
+     detache du fond comme un passe-partout. C'est lui qui donne le
+     cote « objet pose » plutot que « bloc colle ». */
+  box-shadow: 0 0 0 3px rgba(255, 253, 246, .92),
               0 10px 28px rgba(58, 43, 24, .12),
               0 2px 5px rgba(40, 30, 20, .05);
 }
@@ -203,7 +203,7 @@
 .pg-entrainer--carte .choice.ph.sm.ch-journal h3 { max-width: 92%; }
 .pg-entrainer--carte .choice.ph.sm.ch-archives .cta,
 .pg-entrainer--carte .choice.ph.sm.ch-journal .cta {
-  padding: 14px 22px; font-size: 15px;
+  padding: 8px 12px; font-size: 12.5px;
   /* Le bouton s'etirait sur toute la largeur et passait par-dessus
      le shaker et le carnet. Il reste dans la colonne du texte :
      le sujet de la photo garde sa place a droite. */
@@ -262,14 +262,14 @@
 .pg-entrainer--carte .choice.ph.ch-journal > p { color: #675D54; }
 
 /* ---------- Boutons ---------- */
-.pg-entrainer--carte .choice.ph .cta {
+.pg-entrainer--carte .cta {
   display: inline-flex; align-items: center; justify-content: space-between;
   gap: 14px; min-width: 0; width: auto; max-width: none; white-space: nowrap;
   /* Capsule, comme la maquette : bouton mesure 311x55 px image,
      rayon = hauteur/2. Le rayon 7 venait de la conversion d'artboard
      du 1er aout ; l'image tranche. */
-  padding: 14px 22px; border-radius: 999px;
-  font-size: 15px; font-weight: 800; border: none;
+  padding: 9px 16px; border-radius: 999px;
+  font-size: 12.5px; font-weight: 700; border: none;
   position: relative; z-index: 3;
 }
 .pg-entrainer--carte .ch-libre .cta {
@@ -297,12 +297,6 @@
   background-size: 100% auto;
   background-position: center top;
   background-repeat: no-repeat;
-}
-/* Le bas de la photo fond dans la couleur de carte au lieu de se
-   couper net — c'etait le principal defaut du contour journal. */
-.pg-entrainer--carte .ch-journal::before {
-  background: linear-gradient(180deg,
-    rgba(243, 231, 210, 0) 0%, rgba(243, 231, 210, .30) 45%, #F3E7D2 82%);
 }
 /* Les deux calques (degrade de lisibilite et voile dore) sont en
    inset:0 : leur geometrie suit elle aussi la hauteur de la carte.
