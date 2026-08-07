@@ -22,6 +22,7 @@ import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
 import { Reglages, vueReglages } from './components/Reglages.jsx';
 import { StatsAvancees, statsAvOuvertes } from './components/StatsAvancees.jsx';
+import { depilerRetour, retourEnAttente } from './services/retour.js';
 import { SeanceDetail } from './components/SeanceDetail.jsx';
 import { MaSeance } from './components/MaSeance.jsx';
 import { Stats } from './components/Stats.jsx';
@@ -209,7 +210,8 @@ export function App() {
       const vue = vueEntrainer.value;
       const ongletCourant = ongletActif.value;
       const pageRepas = repasOuvertId.value !== null;
-      const enProfondeur = pageRepas || vue.nom !== 'accueil' || ongletCourant !== 'journal';
+      const enProfondeur = retourEnAttente() || pageRepas
+        || vue.nom !== 'accueil' || ongletCourant !== 'journal';
 
       // Rien a remonter : on ne repose pas de sentinelle, le
       // telephone peut quitter l'application normalement.
@@ -219,14 +221,18 @@ export function App() {
 
       if (doublePression) {
         // Retour direct a l'accueil, quel que soit l'endroit.
+        while (depilerRetour()) { /* ferme tous les ecrans empiles */ }
         repasOuvertId.value = null;
         vueEntrainer.value = { nom: 'accueil', params: null };
         allerOnglet('journal');
         return;
       }
 
-      // Un seul cran en arriere.
-      if (pageRepas) repasOuvertId.value = null;
+      // Un seul cran en arriere : d'abord le dernier ecran superpose
+      // (Reglages, Statistiques avancees, detail de seance...), puis
+      // les etats que main.jsx gere lui-meme.
+      if (depilerRetour()) { /* ferme */ }
+      else if (pageRepas) repasOuvertId.value = null;
       else if (vue.nom === 'seanceDetail') allerVers('programmes');
       else if (vue.nom !== 'accueil') retourEntrainer();
       else allerOnglet('journal');
@@ -406,7 +412,21 @@ export function App() {
 
   return (
     <>
-      <div class="rail4" ref={railRef}>
+      {/* Le rail est DETRUIT quand un ecran plein (Reglages,
+          Statistiques avancees) prend la main, puis RECREE a la
+          fermeture. Sa position n'etait posee que par des effets qui
+          ne re-tournent pas au changement de branche : le rail neuf
+          restait a translateX(0) — panneau Journal — alors que
+          l'onglet actif etait toujours BelFit+. C'etait le « la
+          fleche revient dans le journal alimentaire » de Raci (8/08).
+          Le ref-callback pose la position des que le noeud existe. */}
+      <div class="rail4" ref={(n) => {
+        railRef.current = n;
+        if (n && !n.style.transform) {
+          n.style.transition = 'none';
+          n.style.transform = 'translateX(' + (idx * -25) + '%)';
+        }
+      }}>
         {ordre.map(k => {
           const Page = PAGES[k];
           return (

@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { useRetour } from '../services/retour.js';
 import { definirPrenom } from '../store/perso.js';
 import { useState, useEffect } from 'preact/hooks';
 import { Component } from 'preact';
@@ -279,6 +280,9 @@ class Garde extends Component {
 // ---------- Menu principal ----------
 export function Reglages() {
   const vue = vueReglages.value;
+  // Retour Android : ferme les reglages au lieu de changer l'onglet
+  // invisible dessous (meme famille que Statistiques avancees, 8/08).
+  useRetour(true, fermerReglages);
   // Changer d'ecran remonte en haut. Les reglages remplacent toute
   // la page : en passant d'une liste longue a un ecran court, le
   // defilement du document restait ou il etait et l'ecran d'arrivee
@@ -319,6 +323,9 @@ export function Reglages() {
   };
 
   const auMenu = () => { vueReglages.value = 'menu'; };
+  // Sous-ecran ouvert (compte, resiliation) : le retour Android y
+  // revient au menu des reglages — un cran, pas trois.
+  useRetour(vue === 'compte' || vue === 'resilier', auMenu);
   if (vue === 'compte') return <Garde retour={auMenu}><EcranCompte retour={auMenu} /></Garde>;
   if (vue === 'resilier') return <Garde retour={auMenu}><EcranResilier retour={auMenu} /></Garde>;
 

@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { useRetour } from '../services/retour.js';
 import { signal } from '@preact/signals';
 import { GROUPES, muscleLog, basculerMuscle } from '../store/entrainement.js';
 import { estPremium } from './PremiumPage.jsx';
@@ -277,6 +278,10 @@ export function Entrainer() {
   // du journal et y reviennent.
   const [seanceOuverte, setSeanceOuverte] = useState(null);
   const [toutesSeances, setToutesSeances] = useState(false);
+  // Retour Android : un cran ferme l'ecran ouvert, dans l'ordre
+  // d'empilement (detail par-dessus la liste).
+  useRetour(toutesSeances, () => setToutesSeances(false));
+  useRetour(!!seanceOuverte, () => setSeanceOuverte(null));
 
   if (seanceOuverte) {
     return (

@@ -5,6 +5,7 @@ import { weightLog, histoJours } from '../store/stats.js';
 import { objectifs } from '../store/journal.js';
 import { muscleLog } from '../store/entrainement.js';
 import { Entete } from './Entete.jsx';
+import { useRetour } from '../services/retour.js';
 import '../styles/stats-avancees.css';
 
 // ============================================================
@@ -71,6 +72,7 @@ function penteHebdo(pts) {
 
 export function StatsAvancees({ fermer }) {
   const [periode, setPeriode] = useState(30);
+  useRetour(true, fermer);   // retour Android = fermer cet ecran, pas changer d'onglet dessous
   const borne = depuis(periode);
 
   // --- Poids ---

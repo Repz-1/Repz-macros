@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useRetour } from '../services/retour.js';
 import { signal } from '@preact/signals';
 import { getApps } from 'firebase/app';
 import { utilisateur } from '../services/firebase.js';
@@ -138,6 +139,7 @@ const Fleche = () => (
 
 export function BelfitPlus() {
   const ouvertProg = progOuvert.value;
+  useRetour(ouvertProg, () => { progOuvert.value = false; });
   const setOuvertProg = (v) => { progOuvert.value = typeof v === 'function' ? v(progOuvert.value) : v; };
   const [charge, setCharge] = useState(false);
   const [demande, setDemande] = useState(null);   // null | 'ouvert' | 'envoi' | 'ok' | 'erreur'
@@ -232,7 +234,6 @@ export function BelfitPlus() {
       <div class="pg-plus pg-prog">
         <Entete retour={() => setOuvertProg(false)} />
         <div class="prog-corps">
-          <button class="prog-retour" onClick={() => setOuvertProg(false)}>← BelFit+</button>
           <h1 class="prog-titre">Mon programme</h1>
 
           {!pret ? (
