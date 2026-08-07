@@ -1,5 +1,6 @@
 import { signal } from '@preact/signals';
 import { utilisateur } from '../services/firebase.js';
+import { prenom } from '../store/perso.js';
 import { ongletActif } from './BottomNav.jsx';
 import { ouvrirReglages } from './Reglages.jsx';
 import { t } from '../i18n/index.js';
@@ -13,6 +14,10 @@ export const ouvrirProfil = () => { voletProfil.value = !voletProfil.value; };
  *  la connexion, puis le profil local — un compte ancien peut n'avoir
  *  que la troisieme. */
 export function prenomUtilisateur() {
+  // 1. Le prenom du compte (synchronise) — il suit la personne d'un
+  //    appareil a l'autre. 2. Le displayName Firebase. 3. Les cles
+  //    locales heritees de la v1, pour les comptes d'avant la synchro.
+  if (prenom.value) return prenom.value;
   const u = utilisateur.value;
   const nom = (u && u.displayName) || '';
   if (nom) return nom.split(' ')[0];

@@ -16,6 +16,9 @@ import { customFoods } from '../components/Scanner.jsx';
 
 export const favoris = signal([]);   // noms d'aliments
 export const plats = signal([]);     // { id, nom, ings, portions }
+// Prenom : synchronise avec le compte. localStorage seul le perdait
+// des qu'on changeait d'appareil ou de navigateur.
+export const prenom = signal('');
 
 let uid = null, pret = false;
 
@@ -28,12 +31,22 @@ effect(() => {
     if (uid !== u) return;
     favoris.value = (d && d.favoris) || [];
     plats.value = (d && d.plats) || [];
+    // Le prenom du compte fait foi. S'il manque au cloud mais existe
+    // en local (compte cree avant cette synchro), on le remonte.
+    const local = (() => {
+      try { return localStorage.getItem('repz_firstName') || ''; } catch (e) { return ''; }
+    })();
+    const duCompte = (d && d.prenom) || '';
+    prenom.value = duCompte || local;
+    if (!duCompte && local) sauvegarder(u, { prenom: local });
+    // Miroir local : l'en-tete s'affiche sans attendre le reseau.
+    try { if (prenom.value) localStorage.setItem('repz_firstName', prenom.value); } catch (e) {}
     pret = true;
   });
 });
 
 effect(() => {
-  const instantane = { favoris: favoris.value, plats: plats.value };
+  const instantane = { favoris: favoris.value, plats: plats.value, prenom: prenom.value };
   const u = identite.value;
   if (!u || !pret) return;   // ne pas ecraser avant le chargement
   sauvegarder(u, instantane);
@@ -93,4 +106,12 @@ export function enregistrerPlat(plat) {
 
 export function supprimerPlat(id) {
   plats.value = plats.value.filter(p => p.id !== id);
+}
+
+
+/** Change le prenom : compte d'abord, miroir local ensuite. */
+export function definirPrenom(v) {
+  const p = String(v || '').trim();
+  prenom.value = p;
+  try { localStorage.setItem('repz_firstName', p); } catch (e) {}
 }

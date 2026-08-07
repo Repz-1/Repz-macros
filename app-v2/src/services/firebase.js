@@ -73,15 +73,19 @@ onAuthStateChanged(auth, (u) => {
  * courte. Les Cloud Functions du pseudo restent deployees mais ne
  * sont plus appelees.
  */
-export async function connexion(identifiant, mdp) {
-  return signInWithEmailAndPassword(auth, String(identifiant || '').trim(), mdp);
-}
-
 function memoriserPrenom(user) {
   try {
     const prenom = (user.displayName || '').split(' ')[0] || '';
     if (prenom) localStorage.setItem('repz_firstName', prenom);
   } catch (e) {}
+}
+
+export async function connexion(identifiant, mdp) {
+  const cred = await signInWithEmailAndPassword(auth, String(identifiant || '').trim(), mdp);
+  // Seules l'inscription et Google memorisaient le prenom : apres une
+  // simple reconnexion l'en-tete disait « Bonjour » tout court.
+  memoriserPrenom(cred.user);
+  return cred;
 }
 
 export async function connexionGoogle() {

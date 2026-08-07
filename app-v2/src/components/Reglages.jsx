@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { definirPrenom } from '../store/perso.js';
 import { useState, useEffect } from 'preact/hooks';
 import { Component } from 'preact';
 import { t, langue as langueApp, setLangue } from '../i18n/index.js';
@@ -80,7 +81,7 @@ function EcranCompte({ retour }) {
     const v = prenom.trim();
     if (!v) return;
     try {
-      localStorage.setItem('repz_firstName', v);
+      definirPrenom(v);
       const p = JSON.parse(localStorage.getItem('repz_profile') || '{}');
       p.prenom = v;
       localStorage.setItem('repz_profile', JSON.stringify(p));
