@@ -225,7 +225,12 @@ export function MaSeance() {
       o.add(i);
       if (!series[i] || !series[i].length) {
         const nb = nbSeriesPrevues();
-        setSeries(p => ({ ...p, [i]: Array.from({ length: nb }, () => ({ w: '', r: '' })) }));
+        // Les schemas en repetitions (3×10, 4×12) preremplissent la
+        // colonne reps — modifiable, comme tout le reste.
+        setSeries(p => ({ ...p, [i]: Array.from({ length: nb }, (_, j) => {
+          const se = pctSerie(j);
+          return { w: '', r: se && se.reps != null ? se.reps : '' };
+        }) }));
       }
     }
     setOuverts(o);
@@ -322,7 +327,7 @@ export function MaSeance() {
                       {/* Le pourcentage conseille, en face de la ligne
                           qu'on remplit : plus besoin de rouvrir la
                           fiche pour se souvenir du plan. */}
-                      <div class="set-pct">{pctSerie(j) ? pctSerie(j).pct + ' %' : '—'}</div>
+                      <div class="set-pct">{pctSerie(j) ? (pctSerie(j).pct != null ? pctSerie(j).pct + ' %' : '× ' + pctSerie(j).reps) : '—'}</div>
                       <input type="number" inputMode="decimal" step="0.5" min="0" placeholder="××"
                         value={s.w} onInput={(e) => majSerie(i, j, 'w', e.currentTarget.value)} />
                       <span class="set-unit">kg</span>

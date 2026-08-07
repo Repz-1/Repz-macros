@@ -449,11 +449,18 @@ const PROTOCOLE_ECHEC = {
   resume: '4 séries • 50 / 60 / 75 / 75 % + dégressive',
 };
 
+// Schemas de Raci (7 aout) : le debutant et l'intermediaire comptent
+// en repetitions, pas en pourcentage du max — un debutant ne connait
+// pas son 1RM. L'avance garde le protocole a l'echec.
 export const PROTOCOLES = {
-  debutant: PROTOCOLE_ECHEC,
-  intermediaire: PROTOCOLE_ECHEC,
-  // Avance : en attente du protocole de Raci. On reprend celui des
-  // deux autres plutot que d'inventer un schema qu'il n'a pas valide.
+  debutant: {
+    series: [{ reps: 10 }, { reps: 10 }, { reps: 10 }],
+    resume: '3 séries × 10',
+  },
+  intermediaire: {
+    series: [{ reps: 12 }, { reps: 12 }, { reps: 12 }, { reps: 12 }],
+    resume: '4 séries × 12',
+  },
   avance: PROTOCOLE_ECHEC,
   // Libre : pas de protocole — rien n'est prerempli ni conseille.
   libre: null,

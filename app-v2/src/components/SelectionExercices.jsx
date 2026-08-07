@@ -264,7 +264,8 @@ function FicheExercice({ ex, choisi, basculer, fermer }) {
           <ol class="exo-series">
             {PROTOCOLES[niveauPratique.value].series.map((se, k) => (
               <li key={k} class={se.degressive ? 'degressive' : ''}>
-                <b>{se.pct} %</b><span>{se.note}</span>
+                <b>{se.pct != null ? se.pct + ' %' : se.reps + ' reps'}</b>
+                {se.note && <span>{se.note}</span>}
               </li>
             ))}
           </ol>
