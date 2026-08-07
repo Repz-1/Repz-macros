@@ -16,6 +16,7 @@ function choisirNiveau(k) {
 
 
 import { retourEntrainer } from './Entrainer.jsx';
+import { GROUPES } from '../store/entrainement.js';
 import '../legacy/selection-exercices.scoped.css';
 // selectionExos vit dans MaSeance.jsx : en etat local ici, la
 // selection disparaissait a chaque aller-retour vers la seance
@@ -193,6 +194,7 @@ export function SelectionExercices() {
       </div>
 
       <FicheExercice
+        mKey={mKey}
         ex={fiche != null ? (EXERCISES[mKey] || [])[fiche] : null}
         choisi={fiche != null && selection[mKey].has(fiche)}
         basculer={() => { if (fiche != null) basculer(fiche); }}
@@ -228,13 +230,21 @@ export function SelectionExercices() {
 // vues par exercice (depart et fin) — les montrer toutes les deux
 // dit le mouvement, la que la vignette seule ne montre qu'une pose.
 // ============================================================
-function FicheExercice({ ex, choisi, basculer, fermer }) {
+function FicheExercice({ mKey, ex, choisi, basculer, fermer }) {
   if (!ex) return null;
   const vues = ex.imgId ? [0, 1] : [];
+  // Direction A (validee par Raci le 7/08) : le bandeau prend la
+  // couleur du groupe musculaire — la meme palette que le calendrier.
+  const groupe = GROUPES.find(g => g.k === mKey);
+  const couleur = (groupe && groupe.c) || '#151515';
   return createPortal(
     <div class="exo-fiche" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
-      <div class="exo-fiche-carte">
-        <button class="exo-fiche-fermer" onClick={fermer} aria-label="Fermer">×</button>
+      <div class="exo-fiche-carte exo-fiche--bande">
+        <div class="exo-fiche-bande" style={{ background: couleur }}>
+          <div class="exo-fiche-muscle">{groupe ? groupe.label : ''}</div>
+          <h2>{ex.nom}</h2>
+          <button class="exo-fiche-fermer" onClick={fermer} aria-label="Fermer">×</button>
+        </div>
 
         <div class="exo-fiche-vues">
           {vues.map(n => (
@@ -243,9 +253,13 @@ function FicheExercice({ ex, choisi, basculer, fermer }) {
           ))}
         </div>
 
-        <h2>{ex.nom}</h2>
         <div class="exo-fiche-meta">
           <span>{equipLabel(ex.mat)}</span>
+          {groupe && (
+            <span class="exo-fiche-chip-mus" style={{ background: couleur + '1f', color: couleur }}>
+              {groupe.label}
+            </span>
+          )}
         </div>
 
         {/* Le niveau se choisit aussi ici, devant l'exercice. Meme
@@ -266,6 +280,7 @@ function FicheExercice({ ex, choisi, basculer, fermer }) {
           <ol class="exo-series">
             {PROTOCOLES[niveauPratique.value].series.map((se, k) => (
               <li key={k} class={se.degressive ? 'degressive' : ''}>
+                <i class="exo-serie-n">{k + 1}</i>
                 <b>{se.pct != null ? se.pct + ' %' : se.reps + ' reps'}</b>
                 {se.note && <span>{se.note}</span>}
               </li>

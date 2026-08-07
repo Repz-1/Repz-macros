@@ -308,7 +308,7 @@ export function MaSeance() {
           const ouvert = ouverts.has(i);
           return (
             <div key={i} class={'done-item' + (faits.has(i) ? ' done' : '')}
-              style="flex-wrap:wrap" onClick={() => cocher(i)}>
+              style="flex-wrap:wrap" onClick={() => basculerSeries(i)}>
               <div class="done-photo">
                 <img src={IMG_BASE + ex.imgId + '/0.jpg'} alt={ex.nom} loading="lazy"
                   onError={(e) => e.currentTarget.parentElement.classList.add('no-img')} />
@@ -331,7 +331,8 @@ export function MaSeance() {
                   {t('ms_sets_btn')}
                 </button>
               </div>
-              <div class="done-check">✓</div>
+              <div class="done-check" role="button" aria-label="Marquer comme fait"
+                onClick={(e) => { e.stopPropagation(); cocher(i); }}>✓</div>
               <div class={'sets-panel' + (ouvert ? ' open' : '')} onClick={(e) => e.stopPropagation()}>
                 {last && <div class="sets-last">{t('ms_last_time')} : <b>{last}</b></div>}
                 {protocole() && <div class="sets-proto">{protocole().resume}</div>}

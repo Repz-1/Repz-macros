@@ -114,51 +114,66 @@
 }
 
 
+/* ============ FICHE — direction A (Raci, 7/08) ============
+   Bandeau a la couleur du groupe musculaire (palette du calendrier),
+   photos qui mordent dessus, series en cartes, bouton d'ajout dore. */
 .exo-fiche-carte {
   width: 100%; max-width: 480px;
-  background: var(--card);
+  background: #FFFDF9;
   border-radius: 22px 22px 0 0;
   /* La barre de navigation fait 87 px et reste visible : on lui
      laisse la place, sinon le bouton d'ajout tombe dessus. */
-  padding: 18px 18px calc(100px + env(safe-area-inset-bottom));
+  padding: 0 0 calc(100px + env(safe-area-inset-bottom));
   position: relative;
   max-height: 88%; overflow-y: auto;
   box-shadow: 0 -8px 34px rgba(24, 24, 24, .22);
 }
+.exo-fiche-bande {
+  padding: 14px 16px 44px; border-radius: 22px 22px 0 0; position: relative;
+}
+.exo-fiche-muscle {
+  color: #fff; opacity: .9; font-size: 11px; font-weight: 900;
+  letter-spacing: .16em; text-transform: uppercase;
+}
+.exo-fiche-bande h2 {
+  margin: 2px 0 0; color: #fff; font-size: 21px; font-weight: 900;
+  letter-spacing: -.01em; padding-right: 40px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .18);
+}
 .exo-fiche-fermer {
-  position: absolute; top: 10px; right: 12px; z-index: 2;
+  position: absolute; top: 12px; right: 12px; z-index: 2;
   width: 32px; height: 32px; border: none; border-radius: 50%;
-  background: #F1EDE6; color: #28231F;
+  background: rgba(255, 255, 255, .24); color: #fff;
   font-size: 19px; line-height: 1; cursor: pointer; padding: 0;
   display: flex; align-items: center; justify-content: center;
 }
 .exo-fiche-fermer:active { transform: scale(.92); }
-/* Les deux vues cote a cote : depart et fin du mouvement. Elles
-   demarrent sous la bande du bouton fermer : plus de superposition
-   (capture Raci, 7/08). */
-.exo-fiche-vues { display: flex; gap: 8px; margin: 40px 0 14px; }
+/* Les deux vues mordent sur le bandeau, liseret creme autour. */
+.exo-fiche-vues { display: flex; gap: 8px; margin: -32px 14px 14px; position: relative; }
 .exo-fiche-vue {
   flex: 1; aspect-ratio: 1 / 1; border-radius: 16px;
   background: #EDEAE4 center/cover no-repeat;
-}
-.exo-fiche-carte h2 {
-  margin: 0 0 8px; font-size: 19px; font-weight: 800;
-  letter-spacing: -.01em; color: var(--text); padding-right: 28px;
+  border: 3px solid #FFFDF9;
 }
 .exo-fiche-meta {
-  display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px;
+  display: flex; flex-wrap: wrap; gap: 7px; margin: 0 16px 14px;
 }
 .exo-fiche-meta span {
-  background: #EDEAE4; border-radius: 999px; padding: 5px 11px;
-  font-size: 12.5px; font-weight: 600; color: #4A443D;
+  background: #F1EDE6; border-radius: 999px; padding: 5px 11px;
+  font-size: 11.5px; font-weight: 800; color: #57514A;
 }
+.exo-fiche-meta .exo-fiche-chip-mus { font-weight: 800; }
 .exo-fiche-ajout {
-  display: block; width: 100%; border: none; cursor: pointer;
-  background: var(--dark); color: #fff;
-  border-radius: 16px; padding: 15px;
-  font-family: inherit; font-size: 15px; font-weight: 700;
+  display: block; width: calc(100% - 32px); margin: 14px 16px 0;
+  border: none; cursor: pointer;
+  background: #F8CF01; color: #151515;
+  border-radius: 14px; padding: 14px;
+  font-family: inherit; font-size: 14.5px; font-weight: 900;
+  letter-spacing: .01em;
+  box-shadow: 0 6px 18px rgba(248, 207, 1, .45);
 }
-.exo-fiche-ajout.retire { background: #EDEAE4; color: #1a1a1a; }
+.exo-fiche-ajout:active { transform: scale(.985); }
+.exo-fiche-ajout.retire { background: #EDEAE4; color: #1a1a1a; box-shadow: none; }
 
 /* ---- Niveau de pratique -------------------------------------
    Meme forme que les filtres materiel, mais une rangee a part :
@@ -173,33 +188,39 @@
 }
 .pg-selection .niv-tab.active { background:#181818; color:#fff; border-color:#181818; }
 
-/* ---- Detail des series dans la fiche ---- */
-.exo-series { list-style:none; margin:0 0 16px; padding:0; counter-reset:serie; }
+/* ---- Detail des series dans la fiche (cartes, direction A) ---- */
+.exo-series { list-style:none; margin:0 16px 4px; padding:0; }
 .exo-series li {
-  counter-increment:serie; display:flex; align-items:baseline; gap:10px;
-  padding:9px 12px; border-radius:12px; background:#F4F2ED; margin-bottom:6px;
-  font-size:13px; color:#4A443D;
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px; border-radius:14px; background:#F7F4EE; margin-bottom:7px;
+  font-size:12px; font-weight:500; color:#6B655D;
 }
-.exo-series li::before {
-  content:'Série ' counter(serie); flex:none; width:58px;
-  font-weight:700; color:#8A8279; font-size:11.5px; text-transform:uppercase;
+.exo-serie-n {
+  width:26px; height:26px; flex-shrink:0; border-radius:9px;
+  background:#151515; color:#F8CF01; font-style:normal;
+  font-family:'DM Mono',ui-monospace,monospace; font-size:13px; font-weight:500;
+  display:flex; align-items:center; justify-content:center;
 }
-.exo-series li b { flex:none; font-size:15px; font-weight:800; color:#1a1a1a; }
+.exo-series li b {
+  flex:none; min-width:56px;
+  font-family:'DM Mono',ui-monospace,monospace; font-size:16px; font-weight:500; color:#151515;
+}
 .exo-series li span { flex:1; }
 /* La degressive se distingue : c'est la serie qui fait mal. */
-.exo-series li.degressive { background:#FBEFE2; color:#7A4A18; }
+.exo-series li.degressive { background:rgba(248,106,12,.09); border:1px dashed rgba(248,106,12,.4); color:#7A4A18; }
 .exo-series li.degressive b { color:#B34700; }
+.exo-series li.degressive .exo-serie-n { background:#F86A0C; color:#fff; }
 
 /* Rangee de niveau dans la fiche : memes onglets que la rangee du
    haut, resserres pour tenir a quatre dans la carte. La fiche vit en
    PORTAIL sur document.body, hors de .pg-selection : les regles du
    haut ne l'atteignent pas, elle porte donc les siennes en entier. */
-.exo-fiche .exo-fiche-niveaux{ display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 12px; }
+.exo-fiche .exo-fiche-niveaux{ display:flex; gap:6px; flex-wrap:wrap; margin:0 16px 14px; }
 .exo-fiche .exo-fiche-niveaux .niv-tab{
   flex:1; border:1px solid var(--line,#EDE9E2); background:#fff;
   border-radius:999px; padding:6px 11px; cursor:pointer;
   font-family:inherit; font-size:12px; font-weight:600; color:#6B655D;
   transition:background .2s ease, color .2s ease, border-color .2s ease;
 }
-.exo-fiche .exo-fiche-niveaux .niv-tab.active{ background:#181818; color:#fff; border-color:#181818; }
-.exo-fiche .exo-series-libre{ font-size:12.5px; color:#6B655D; background:var(--fond,#F4F3F0); border-radius:10px; padding:10px 12px; margin:0 0 4px; line-height:1.45; }
+.exo-fiche .exo-fiche-niveaux .niv-tab.active{ background:#151515; color:#F8CF01; border-color:#151515; }
+.exo-fiche .exo-series-libre{ font-size:12.5px; color:#6B655D; background:#F7F4EE; border-radius:12px; padding:11px 14px; margin:0 16px 4px; line-height:1.45; }

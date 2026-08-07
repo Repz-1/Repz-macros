@@ -52,8 +52,11 @@ try {
   const items = page.locator('.done-item');
   const n = await items.count();
   if (n !== 2) echec(`2 exercices attendus a l'ecran, ${n} trouves`);
-  await items.nth(0).tap(); await page.waitForTimeout(400);
-  await items.nth(1).tap(); await page.waitForTimeout(1800);
+  // Depuis le 7/08, le corps de l'exercice ouvre les series ;
+  // c'est le petit cercle (.done-check) qui coche.
+  const coches = page.locator('.done-check');
+  await coches.nth(0).tap(); await page.waitForTimeout(400);
+  await coches.nth(1).tap(); await page.waitForTimeout(1800);
 
   const stock = await page.evaluate(() => {
     const b = localStorage.getItem('belfit_v2_journal_test');
