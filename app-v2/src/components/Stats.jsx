@@ -368,7 +368,7 @@ export function Stats() {
             le bloc-titre « Mes stats » disparaissent, comme sur
             S'entrainer : le nom de l'onglet est deja dans la
             navigation du bas. */}
-        <Entete retour />
+        <Entete />
 
         {/* NOTE DE PROGRESSION GLOBALE */}
         {!rienDuTout && (

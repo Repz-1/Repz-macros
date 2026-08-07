@@ -343,7 +343,7 @@ export function BelfitPlus() {
 
   return (
     <div class="pg-plus">
-      <Entete retour />
+      <Entete />
 
       {/* Carte d'accueil, d'apres la maquette. Sans photo : elle est
           barree sur l'image de reference. La carte occupe donc toute

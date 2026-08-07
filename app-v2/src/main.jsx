@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from 'preact/hooks';
 import './styles.css';
 import './styles/design-system.css';
 import './styles/journal-socle.css';
+// En dernier : l'en-tete commune passe devant les variantes de page.
+import './styles/entete-commune.css';
 import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';

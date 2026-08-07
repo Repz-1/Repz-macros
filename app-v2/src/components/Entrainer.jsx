@@ -304,7 +304,7 @@ export function Entrainer() {
 
   return (
     <div class="pg-entrainer pg-entrainer--carte">
-      <Entete retour />
+      <Entete />
       {/* Pas de bloc-titre sous la barre : comme le Journal, la barre
           puis le contenu. Le nom de l'onglet est deja dans la
           navigation du bas — le repeter en 31 px coutait un tiers

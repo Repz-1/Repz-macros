@@ -1,0 +1,75 @@
+/* ============================================================
+   EN-TETE — UNE SEULE, PARTOUT
+   Demande de Raci (7/08) : « Mon compte, la roue dentée, le logo et
+   le prénom au même endroit sur chaque page, et la même police pour
+   les quatre. »
+
+   Ce que la mesure montrait avant cette feuille (aperçu, 390 px) :
+     Journal      Satoshi 500, grille, prenom centre a 195  (ecran 195)
+     S'entrainer  Manrope 700, flex,   prenom centre a 167
+     Stats        Satoshi 500, grille, prenom centre a 195
+     BelFit+      Manrope 500, flex,   prenom centre a 183
+   Trois pages avaient donc leur propre en-tete : deux polices, deux
+   graisses, deux couleurs, deux mises en page.
+
+   Chaque page redefinissait la sienne avec un prefixe (.pg-journal,
+   .pg-entrainer--carte, .pg-premium...), soit deux classes de
+   specificite. On repete donc la classe pour passer devant, sans
+   dependre de l'ordre des imports — et cette feuille est chargee en
+   dernier dans main.jsx.
+   ============================================================ */
+
+.j-entete--perso.j-entete--perso.j-entete--perso {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 47px;
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Le prenom : meme police, meme corps, meme graisse, meme couleur.
+   Il reste centre quelle que soit la largeur des deux bords. */
+.j-entete--perso.j-entete--perso .j-prenom {
+  justify-self: center;
+  font-family: Satoshi, system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #191919;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+  max-width: 46vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Colonne de gauche : le symbole BELFIT, ou la fleche de retour sur
+   les ecrans secondaires. Meme largeur reservee dans les deux cas,
+   sinon le centre se decale d'une page a l'autre. */
+.j-entete--perso.j-entete--perso .j-symbole,
+.j-entete--perso.j-entete--perso .j-retour {
+  justify-self: start;
+}
+
+/* Colonne de droite : profil puis reglages, colles au bord. */
+.j-entete--perso.j-entete--perso .j-entete-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: -8px;
+}
+
+.j-entete--perso.j-entete--perso .j-btn-icone {
+  width: 47px; height: 47px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--or-fonce, #B34700);
+  background: none; border: none; padding: 0;
+}
+.j-entete--perso.j-entete--perso .j-btn-icone svg {
+  width: 23px; height: 23px;
+  fill: none; stroke: currentColor;
+  stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
