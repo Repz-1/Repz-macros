@@ -38,7 +38,7 @@ export function Entete({ retour } = {}) {
   const p = prenomUtilisateur();
   return (
     <header class="j-entete j-entete--perso">
-      {/* Le symbole compact est le B BELFIT (belfit-logo-b.png), le meme
+      {/* Logo officiel BF (belfit-logo-bf.png) depuis le 8/08 — le meme
           que le splash v1 — logo-symbol.png etait un reste de l'epoque
           REPZ (feuille verte), jamais rebrande.
           CHEMIN ABSOLU obligatoire : en relatif ('../'), le navigateur
@@ -75,7 +75,7 @@ export function Entete({ retour } = {}) {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
         </button>
       ) : (
-        <img class="j-symbole" src="/belfit-logo-b.png" alt="BELFIT" />
+        <img class="j-symbole" src="/belfit-logo-bf.png" alt="BELFIT" />
       )}
 
       <div class="j-prenom">{p ? `${t('greeting')} ${p}` : t('greeting')}</div>

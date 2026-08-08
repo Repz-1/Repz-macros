@@ -131,7 +131,7 @@ export function LoginScreen() {
 
     return (
       <div class="login-ecran">
-        <img src="/belfit-logo-b.png" alt="BelFit" class="login-logo" />
+        <img src="/belfit-logo-bf.png" alt="BelFit" class="login-logo" />
         <h1 class="login-titre">{t('recup_titre')}</h1>
 
         <form onSubmit={envoyer} class="login-form">
@@ -159,7 +159,7 @@ export function LoginScreen() {
 
   return (
     <div class="login-ecran">
-      <img src="/belfit-logo-b.png" alt="BelFit" class="login-logo" />
+      <img src="/belfit-logo-bf.png" alt="BelFit" class="login-logo" />
       <h1 class="login-titre">
         {mode === 'connexion' ? t(accueil)
           : (prenom ? `Garde ton programme, ${prenom}` : t('hello_new'))}

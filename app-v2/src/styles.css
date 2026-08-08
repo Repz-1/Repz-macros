@@ -141,7 +141,7 @@ button{cursor:pointer}
 
 /* ---- Ecran de connexion ---- */
 .login-ecran{max-width:360px;margin:0 auto;padding:16px 20px 14px;display:flex;flex-direction:column;align-items:center;min-height:100vh;min-height:100dvh;box-sizing:border-box;justify-content:center;overscroll-behavior-y:none}
-.login-logo{width:56px;height:56px;border-radius:15px;margin-bottom:10px}
+.login-logo{width:auto;height:44px;border-radius:0;margin-bottom:12px}
 .login-titre{font-size:19px;font-weight:800;margin:0 0 14px;text-align:center}
 .login-form{width:100%;display:flex;flex-direction:column;gap:8px}
 .login-form input{padding:11px 14px;border:1px solid var(--brd-1);border-radius:12px;font-size:15px;font-family:inherit;background:var(--srf-carte)}
