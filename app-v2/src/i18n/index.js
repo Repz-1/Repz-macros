@@ -25,6 +25,7 @@ export function setLangue(l) {
 
 const T = {
   fr: {
+    cloturer_journee: 'Clôturer la journée',
     jour_non_cloture: 'Cette journée est celle de {j}. Termine-la, puis clôture-la pour passer à aujourd\'hui.',
     mp_gerer: 'Gérer mes plats',
     compte_gratuit: 'Compte gratuit',
@@ -88,6 +89,7 @@ const T = {
     premium_merci: 'Toutes les fonctionnalités sont débloquées. Merci de soutenir BelFit 💪',
   },
   en: {
+    cloturer_journee: 'Close the day',
     jour_non_cloture: 'This day is {j}. Finish it, then close it to move on to today.',
     mp_gerer: 'Manage my dishes',
     compte_gratuit: 'Free account',
@@ -151,6 +153,7 @@ const T = {
     premium_merci: 'All features unlocked. Thanks for supporting BelFit 💪',
   },
   nl: {
+    cloturer_journee: 'Dag afsluiten',
     jour_non_cloture: 'Deze dag is {j}. Maak hem af en sluit hem af om naar vandaag te gaan.',
     mp_gerer: 'Mijn gerechten beheren',
     compte_gratuit: 'Gratis account',

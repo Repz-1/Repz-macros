@@ -69,7 +69,6 @@ effect(() => {
     poidsCalcul.value = (d && typeof d.poidsCalcul === 'number') ? d.poidsCalcul : null;
     rappelIgnoreA.value = (d && typeof d.rappelIgnoreA === 'number') ? d.rappelIgnoreA : null;
     tailleBouteille.value = (d && typeof d.tailleBouteille === 'number') ? d.tailleBouteille : 1.5;
-    basculerSiJourChange();
     donneesPretes.value = true;
   });
 });
@@ -248,26 +247,12 @@ export function nouvelleJournee() {
   dateJour.value = aujourdhui();
 }
 
-// Bascule automatique : si la journee chargee n'est pas celle d'aujourd'hui,
-// on l'archive dans l'historique des stats SOUS SA PROPRE DATE, puis on
-// repart a zero. Une journee vide n'est pas archivee (pas de faux 0 kcal
-// dans les stats). Appelee au chargement et au retour en avant-plan.
-export function basculerSiJourChange() {
-  const veille = dateJour.value;
-  if (veille === aujourdhui()) return false;
-  const t = totauxJour.value;
-  if (t.kcal > 0) enregistrerJour(t, veille);
-  nouvelleJournee();
-  return true;
-}
-
-// L'app reste ouverte des jours en PWA : on revalide la date a chaque
-// retour en avant-plan, sinon la journee de la veille resterait affichee.
-if (typeof document !== 'undefined') {
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && donneesPretes.value) basculerSiJourChange();
-  });
-}
+// PLUS DE BASCULE AUTOMATIQUE (Raci, 8/08). L'automatisme du 27/07
+// (6967258) archivait et vidait une journee des que sa date differait
+// de celle du jour — une journee non terminee disparaissait pendant la
+// nuit. La cloture est manuelle : bouton « Cloturer la journee » dans
+// la carte Calories. Une journee non cloturee reste ouverte ; la ligne
+// de date affiche alors son vrai jour (« vendredi 7 aout »).
 
 export function ajouterEau(litres) {
   // Precision au millieme : le pas v1 est de 75 ml (0,075 L).
