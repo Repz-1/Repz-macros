@@ -2961,12 +2961,17 @@
 /* La barre vit HORS de .pg-journal : les jetons definis plus haut ne
    l'atteignent pas, et styles.css (l.536-539) est charge apres ce
    fichier. D'ou les valeurs en dur et le selecteur a trois classes. */
-.bn .bn-item--journal.bn-item--actif,
-.bn .bn-item--entrainer.bn-item--actif,
-.bn .bn-item--stats.bn-item--actif,
-.bn .bn-item--premium.bn-item--actif { color: var(--orange-fonce); }
-.bn .bn-item--actif svg { color: var(--orange); stroke: var(--orange); }
-.bn .bn-point { background: var(--orange); box-shadow: 0 0 0 1px rgba(179, 71, 0, .30); }
+/* Couleurs d'onglet actif RENDUES a l'identique de styles.css (l.566-569) :
+   Journal noir, S'entrainer or, Stats rouge, BelFit+/Premium vert sauge.
+   La regle qui vivait ici mettait les quatre en orange et effacait la
+   distinction (Raci, 8/08). L'icone et la pastille suivent desormais la
+   couleur de l'onglet au lieu d'imposer l'orange. */
+.bn .bn-item--journal.bn-item--actif   { color: var(--txt-1-fonce); }
+.bn .bn-item--entrainer.bn-item--actif { color: var(--txt-accent-nav); }
+.bn .bn-item--stats.bn-item--actif     { color: var(--txt-alerte); }
+.bn .bn-item--premium.bn-item--actif   { color: #3D7E5C; }
+.bn .bn-item--actif svg { color: currentColor; stroke: currentColor; }
+.bn .bn-item--actif .bn-point { background: currentColor; box-shadow: none; }
 
 /* ------------------------------------------------------------
    DETAIL NUTRITIONNEL — etat verrouille.
