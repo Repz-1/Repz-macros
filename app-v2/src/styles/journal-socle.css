@@ -3194,3 +3194,12 @@
   color: var(--carte); background: var(--encre); border: none; border-radius: 11px;
   cursor: pointer;
 }
+
+/* Journee laissee ouverte : une phrase, rien de plus. Meme discretion
+   que le rappel de recalcul — pas de couleur d'alerte, pas de pastille
+   (Raci, 8/08). */
+.pg-journal .cal-retard {
+  margin: 10px auto 0; max-width: 92%;
+  font-size: 12.5px; line-height: 1.45; text-align: center;
+  color: var(--texte-3);
+}

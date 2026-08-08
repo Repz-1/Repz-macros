@@ -4,7 +4,7 @@ import { signal } from '@preact/signals';
 // Demande d'ouverture du calculateur emise par la carte (rappel de
 // recalcul) ; consommee par main.jsx qui possede l'etat de la modale.
 export const ouvrirCalcDemande = signal(false);
-import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul, rappelIgnoreA } from '../store/journal.js';
+import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul, rappelIgnoreA, dateJour } from '../store/journal.js';
 import { weightLog } from '../store/stats.js';
 import { ongletActif } from './BottomNav.jsx';
 import { IdeesRepas } from './IdeesRepas.jsx';
@@ -176,6 +176,12 @@ export function DayDashboard() {
   const moisCourt = t('months_min').split('|');
   const dateTexte = `${t('today')}, ${d.getDate()} ${moisCourt[d.getMonth()] || ''}`;
 
+  // Journee ouverte differente d'aujourd'hui : on le dit, rien d'autre.
+  const isoAuj = new Date().toISOString().slice(0, 10);
+  const retard = !!dateJour.value && dateJour.value !== isoAuj;
+  const dOuvert = retard ? new Date(dateJour.value + 'T00:00') : null;
+  const jourOuvert = dOuvert ? (jours[dOuvert.getDay()] || '').toLowerCase() : '';
+
   return (
     <section class={'carte carte--relief cal' + (pret ? '' : ' cal--chargement')}
              data-palier={palier || 'ok'}>
@@ -234,6 +240,13 @@ export function DayDashboard() {
       <div class="cal-action">
         <IdeesRepas pilulSeule />
       </div>
+
+      {/* Journee laissee ouverte (la bascule automatique n'a pas tourne,
+          app fermee par exemple) : une phrase, rien d'autre — pas de
+          couleur, pas de pastille, aucun autre changement (Raci, 8/08). */}
+      {retard && (
+        <div class="cal-retard">{t('jour_non_cloture').replace('{j}', jourOuvert)}</div>
+      )}
     </section>
   );
 }
