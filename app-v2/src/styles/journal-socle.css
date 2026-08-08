@@ -44,7 +44,11 @@
   max-width: 640px;          /* au-dela, la ligne devient illisible */
   margin: 0 auto;
   padding: calc(12px + env(safe-area-inset-top)) var(--marge-page)
-           calc(var(--hauteur-nav) + 82px + env(safe-area-inset-bottom));
+           calc(var(--hauteur-nav) + 70px + env(safe-area-inset-bottom));
+  /* Reserve du bas : les boutons flottants (eau, ajouter) montent a
+     152px du bas de l'ecran — mesure. Descendre plus bas ferait passer
+     la derniere carte dessous. 92 (barre) + 70 = 162px : 10px de marge
+     au-dessus des boutons au lieu de 22 (Raci, 8/08). */
   display: flex;
   flex-direction: column;
   gap: 14px;

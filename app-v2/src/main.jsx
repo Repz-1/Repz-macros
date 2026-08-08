@@ -76,10 +76,11 @@ export function OngletJournal() {
           </button>
         </div>
 
-        <button class="courses-ligne" onClick={() => { ongletActif.value = 'courses'; }}>
-          <svg viewBox="0 0 24 24"><path d="M4 5h2l1.6 9.2a1.6 1.6 0 001.58 1.3h7.6a1.6 1.6 0 001.57-1.26L20 8H6.4" /><circle cx="9.6" cy="19.4" r="1.4" /><circle cx="16.8" cy="19.4" r="1.4" /></svg>
-          {t('qa_courses')}
-        </button>
+        {/* La ligne « Liste de courses » vivait ici. Retiree le 8/08 (Raci) :
+            elle allongeait le Journal pour une entree deja presente dans
+            BelFit+, et elle ouvrait aux comptes gratuits une fonction que
+            le tableau comparatif de l'abonnement annonce comme Premium.
+            L'unique acces est desormais la carte de BelFit+. */}
       </div>
 
       <div class="fab-rangee">
