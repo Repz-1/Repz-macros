@@ -96,7 +96,12 @@
 .pg-stats .stat-card.acc-violet::before{ background:#8B5CF6; }
 .pg-stats .stat-card.acc-violet h2 .h2ic{ stroke:#8B5CF6; }
 .pg-stats .chart-bar.weight{ background:linear-gradient(180deg,#059669,#34D399) !important; }
-.pg-stats .chart-bar.kcalbar{ background:linear-gradient(180deg,#EA580C,#FB923C); }
+.pg-stats .chart-bar.kcalbar{ background:linear-gradient(180deg,#F5A800,#F86A0C); flex:none; }
+.pg-stats .chart-bar.kcalbar--creuse{ background:linear-gradient(180deg,#E9DCC0,#D8C79E); }
+.pg-stats .per--kcal{ margin-top: 2px; }
+.pg-stats .chart-zone{ position:relative; }
+.pg-stats .chart-cible{ position:absolute; left:0; right:0; border-top:1px dashed rgba(143,98,0,.45); pointer-events:none; z-index:2; }
+.pg-stats .chart-cible span{ position:absolute; right:0; top:-15px; font-size:9.5px; font-weight:700; color:#8F6200; background:#fff; padding:0 4px; }
 .pg-stats .chart-bar.charge{ background:linear-gradient(180deg,#2563EB,#60A5FA) !important; }
 .pg-stats .chart-empty{ text-align:left !important; padding:4px 0 2px !important; display:flex; align-items:flex-start; gap:12px; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
 .pg-stats .chart-empty .ce-ic{ flex-shrink:0; width:34px; height:34px; border-radius:11px; background:#F4F5F7; display:flex; align-items:center; justify-content:center; }

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { weightLog, histoJours, ajouterPesee } from '../store/stats.js';
+import { objectifs } from '../store/journal.js';
 import { muscleLog } from '../store/entrainement.js';
 import { setLog } from './SeanceTracker.jsx';
 import { estPremium } from './PremiumPage.jsx';
@@ -258,6 +259,7 @@ export function Stats() {
   const [modalePoids, setModalePoids] = useState(false);
   // Periode du graphique de poids : puce rapide ou intervalle libre.
   const [periode, setPeriode] = useState('3m');
+  const [periodeK, setPeriodeK] = useState('1s');
   const [libre, setLibre] = useState({ ouvert: false, du: '', au: '' });
   const prem = estPremium.value;
 
@@ -330,11 +332,57 @@ export function Stats() {
   const finPeriode = poidsPeriode.length ? poidsPeriode[poidsPeriode.length - 1].v : poidsActuel;
   const diff = (finPeriode - poidsDebut).toFixed(1);
 
-  // ================= Calories (v1 renderKcal) =================
-  let kcalTri = [...histoire].sort((a, b) => (a.iso || '').localeCompare(b.iso || ''));
-  if (!prem && kcalTri.length > LIMITE_GRATUIT) kcalTri = kcalTri.slice(-LIMITE_GRATUIT);
-  const moyKcal = kcalTri.length ? Math.round(kcalTri.reduce((s, d) => s + parseInt(d.kcal || 0), 0) / kcalTri.length) : 0;
+  // ================= Calories =================
+  // Maquette validee par Raci le 8/08 : le graphe s'adapte a la periode
+  // au lieu d'empiler une barre par journee jusqu'a deborder de l'ecran
+  // (les deux dernieres colonnes finissaient a 394 et 422 px pour 390).
+  // Le pas d'agregation garantit AU PLUS 13 colonnes :
+  //   1 sem -> 1 barre / jour (7, jours vides compris)
+  //   1 mois -> 1 barre / semaine (5) · 3 mois -> 13 · 1 an -> 1 / mois (12)
+  const kcalTri = [...histoire].sort((a, b) => (a.iso || '').localeCompare(b.iso || ''));
+  const parIso = {};
+  kcalTri.forEach(d => { if (d.iso) parIso[d.iso] = parseInt(d.kcal || 0); });
+  const isoDe = (dt) => dt.toISOString().slice(0, 10);
+  const colsK = [];
+  if (periodeK === '1s') {
+    // 7 jours civils, les jours sans saisie gardent leur colonne (vide) :
+    // les supprimer decalait la lecture et cachait les trous.
+    for (let i = 6; i >= 0; i--) {
+      const dt = new Date(); dt.setDate(dt.getDate() - i);
+      const iso = isoDe(dt);
+      colsK.push({ cle: iso, v: parIso[iso] ?? null,
+        lb: dt.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' }) });
+    }
+  } else if (periodeK === '1m' || periodeK === '3m') {
+    const nb = periodeK === '1m' ? 5 : 13;
+    for (let i = nb - 1; i >= 0; i--) {
+      const lundi = new Date();
+      lundi.setDate(lundi.getDate() - ((lundi.getDay() + 6) % 7) - i * 7);
+      let somme = 0, n = 0;
+      for (let j = 0; j < 7; j++) {
+        const dt = new Date(lundi); dt.setDate(lundi.getDate() + j);
+        const v = parIso[isoDe(dt)];
+        if (v != null) { somme += v; n++; }
+      }
+      colsK.push({ cle: isoDe(lundi), v: n ? Math.round(somme / n) : null,
+        lb: `${lundi.getDate()}/${lundi.getMonth() + 1}` });
+    }
+  } else {
+    for (let i = 11; i >= 0; i--) {
+      const m = new Date(); m.setDate(1); m.setMonth(m.getMonth() - i);
+      const pref = m.toISOString().slice(0, 7);
+      let somme = 0, n = 0;
+      Object.keys(parIso).forEach(iso => { if (iso.startsWith(pref)) { somme += parIso[iso]; n++; } });
+      colsK.push({ cle: pref, v: n ? Math.round(somme / n) : null,
+        lb: m.toLocaleDateString('fr-FR', { month: 'short' }) });
+    }
+  }
+  const valsK = colsK.map(c => c.v).filter(v => v != null);
+  const objKcalJ = +objectifs.value.kcal || 0;
+  const moyKcal = valsK.length ? Math.round(valsK.reduce((a, b) => a + b, 0) / valsK.length) : 0;
   const derniereKcal = kcalTri.length ? parseInt(kcalTri[kcalTri.length - 1].kcal || 0) : 0;
+  // Le trait d'objectif doit toujours tenir dans le cadre.
+  const maxK = Math.max(objKcalJ || 1, ...(valsK.length ? valsK : [1])) * 1.08;
 
 
   // ================= Progression par exercice (v1 renderExoProg) =================
@@ -497,25 +545,42 @@ export function Stats() {
                 <div class="stat-box"><div class="sb-val">{moyKcal}</div><div class="sb-lbl">{t('st_avg_kcal')}</div></div>
                 <div class="stat-box"><div class="sb-val">{derniereKcal}</div><div class="sb-lbl">{t('st_last_day')}</div></div>
               </div>
-              <div class="chart">
-                {(() => {
-                  const kcals = kcalTri.map(d => parseInt(d.kcal || 0));
-                  const max = Math.max(...kcals) * 1.1;
-                  return kcalTri.map(d => {
-                    const k = parseInt(d.kcal || 0);
-                    const h = max > 0 ? (k / max) * 100 : 0;
-                    // v1 : « mer. 15 » (champ date de history) — reconstruit depuis l'iso
-                    const jour = d.date ? d.date.split(' ').slice(0, 2).join(' ')
-                      : new Date(d.iso + 'T00:00').toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' });
+              <div class="per per--kcal">
+                {['1s', '1m', '3m', '1a'].map(k => (
+                  <button key={k} class={periodeK === k ? 'on' : ''}
+                    onClick={() => setPeriodeK(k)}>{t('per_' + k)}</button>
+                ))}
+              </div>
+              <div class="chart-zone">
+                {objKcalJ > 0 && (
+                  /* Meme echelle que les barres : pied a 16 px (rangee
+                     des jours), 88 px de plot. La ligne coupe donc
+                     exactement les barres qui depassent l'objectif. */
+                  <div class="chart-cible" style={{ bottom: Math.round(16 + (objKcalJ / maxK) * 88) + 'px' }}>
+                    <span>{t('goal').toLowerCase()} {objKcalJ}</span>
+                  </div>
+                )}
+                <div class="chart">
+                  {colsK.map(c => {
+                    // Hauteur en PIXELS : en %, le flex de la colonne
+                    // compressait toutes les barres hautes a la meme
+                    // taille (mesure : 2511 et 2785 rendaient 88 px
+                    // chacune) — le graphe n'encodait plus rien.
+                    // 88 px = plot reel (130 - rangee valeurs - jours).
+                    const h = c.v == null ? 3 : (c.v / maxK) * 88;
+                    // Sable desature : jour vide ou tres en dessous de
+                    // l'objectif — on voit le creux sans alerte rouge.
+                    const creuse = c.v == null || (objKcalJ > 0 && c.v < objKcalJ / 2);
                     return (
-                      <div class="chart-bar-wrap" key={d.iso}>
-                        <div class="chart-val">{k}</div>
-                        <div class="chart-bar kcalbar" style={{ height: Math.max(6, h) + '%' }} />
-                        <div class="chart-day">{jour}</div>
+                      <div class="chart-bar-wrap" key={c.cle}>
+                        {colsK.length <= 7 && <div class="chart-val">{c.v == null ? '—' : c.v}</div>}
+                        <div class={'chart-bar kcalbar' + (creuse ? ' kcalbar--creuse' : '')}
+                             style={{ height: Math.max(3, Math.round(h)) + 'px' }} />
+                        <div class="chart-day">{c.lb}</div>
                       </div>
                     );
-                  });
-                })()}
+                  })}
+                </div>
               </div>
             </>
           ) : <Vide texte={t('st_no_day')} cta={t('st_save_day')} onCta={() => { ongletActif.value = 'journal'; }} />}
