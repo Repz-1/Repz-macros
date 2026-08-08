@@ -474,7 +474,7 @@ export function App() {
 const racine = document.getElementById('app');
 if (racine) render(<App />, racine);
 
-// Retrait du splash une fois l'interface peinte. 1000ms d'affichage
+// Retrait du splash une fois l'interface peinte. 1300ms d'affichage
 // plein + 300ms de fondu (Raci, 8/08 : 400ms ne laissait pas le temps
 // de voir le logo). Le delai ne bloque rien — l'app est deja rendue
 // derriere, le splash n'est qu'un voile.
@@ -487,5 +487,5 @@ if (racine) render(<App />, racine);
     const tc = document.querySelector('meta[name="theme-color"]');
     if (tc) tc.setAttribute('content', '#F4F3F0');
   };
-  setTimeout(partir, 1000);
+  setTimeout(partir, 1300);
 })();
