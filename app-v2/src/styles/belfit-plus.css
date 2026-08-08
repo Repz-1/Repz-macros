@@ -384,14 +384,14 @@
   position: absolute; z-index: 1; inset: 0 0 0 auto;
   width: 62%; height: 100%; border-radius: 0 20px 20px 0;
   background-size: cover; background-position: center;
-  /* .96 sur une image tres sombre laissait 28 % de la carte sous une
-     luminance de 80, contre 0 % pour ses voisines : un trou noir dans
-     une page creme. .72 la pose sur le blanc de la carte et fait
-     tomber cette part a 0,1 %, sans rien lui enlever de son role —
-     elle reste a 165 quand les autres sont a 236, donc toujours la
-     carte qui s'analyse. Un cran plus haut (.80) et le noir franc
-     revient. */
-  opacity: .72;
+  /* Opacite pleine depuis le 8/08 (Raci) : a .72 les photos etaient
+     delavees. Mesure sur la carte Stats, la plus sombre : luminance
+     moyenne du visuel 156 a .72, 119 a 1 — c'est ce gain de contraste
+     qui etait demande. La reserve d'une session precedente (« trou noir
+     dans une page creme ») portait sur .96 SANS le voile blanc de
+     .bp-visuel::after ; ce voile est toujours la et tient le degrade
+     vers le texte, la carte reste lisible. */
+  opacity: 1;
 }
 
 /* En-tete : meme traitement que Journal, S'entrainer et Stats —
