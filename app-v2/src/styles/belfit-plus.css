@@ -25,7 +25,20 @@
      reserve, la derniere carte passe dessous. Meme valeur que le
      Journal, plus la marge de securite du bas d'ecran. */
   padding-bottom: calc(var(--hauteur-nav) + 24px + env(safe-area-inset-bottom));
+  /* L'en-tete est ici le PREMIER ENFANT DIRECT de la page (ailleurs il
+     est dans un conteneur). Sa marge haute de 12px s'echappait donc par
+     fusion de marges et poussait le fond de la page vers le bas : une
+     bande claire de 12px apparaissait tout en haut de l'ecran, la ou le
+     fond du document restait visible (mesure : (254,252,252) de y=0 a
+     y=11, puis (244,242,238)). On reprend la marge en rembourrage : le
+     fond part de 0, l'en-tete reste a 12px, comme sur les 3 autres
+     onglets (Raci, 8/08). */
+  padding-top: 12px;
 }
+
+/* La regle d'origine porte trois fois la meme classe (entete-commune.css) :
+   il faut au moins autant de specificite pour reprendre sa marge. */
+.pg-plus > .j-entete.j-entete.j-entete { margin-top: 0; }
 
 /* ---------- Ouverture ---------- */
 .pg-plus .bp-tete { padding: 18px 0 16px; }
