@@ -16,7 +16,13 @@
 <style>
   html,body{margin:0;background:#F4F3F0;font-family:'Satoshi','Manrope',sans-serif;color:#181818}
   #splash{position:fixed;inset:0;z-index:9999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .25s ease}
-  #splash img{width:216px;height:auto}
+  #splash{flex-direction:column}
+  /* Verrouillage symbole + nom. Largeur du nom fixee a 300px : la ligne
+     « FITNESS · NUTRITION · BIEN-ETRE » fait 10% de la hauteur du bloc,
+     soit 8px de capitales a cette taille — la taille des libelles de la
+     barre de navigation, en dessous elle devient illisible. */
+  #splash .sp-sym{width:200px;height:auto}
+  #splash .sp-nom{width:300px;height:auto;margin-top:20px}
   #splash.parti{opacity:0;pointer-events:none}
 </style>
 </head>
@@ -25,7 +31,8 @@
      (Raci) : meme valeur que le fond de l'app, donc aucun flash entre le
      splash et le premier ecran. -->
 <div id="splash">
-  <img src="/belfit-logo-bf.png" alt="BelFit">
+  <img class="sp-sym" src="/belfit-logo-bf.png" alt="BelFit">
+  <img class="sp-nom" src="/belfit-nom.png" alt="BelFit — Fitness, Nutrition, Bien-être">
 </div>
 <svg width="0" height="0" style="position:absolute">
   <defs>
