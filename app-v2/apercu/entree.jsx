@@ -23,7 +23,7 @@ import '../src/styles.css';
 import '../src/styles/design-system.css';
 import '../src/styles/journal-socle.css';
 
-import { repas, objectifs, eau, donneesPretes, poidsCalcul, calculBaseFait }
+import { repas, objectifs, eau, donneesPretes, poidsCalcul, calculBaseFait, dateJour }
   from '../src/store/journal.js';
 import { weightLog, histoJours } from '../src/store/stats.js';
 import { OngletJournal, OngletEntrainer } from '../src/main.jsx';
@@ -79,6 +79,13 @@ function semer() {
                    carbs: 300 + ((d * 11) % 60), lip: 70 + (d % 12) };
   }
   histoJours.value = h;
+
+  // ?veille=1 : simule une journee laissee ouverte la veille, pour
+  // verifier le message de cloture sans attendre minuit.
+  if (new URLSearchParams(location.search).has('veille')) {
+    const h = new Date(); h.setDate(h.getDate() - 1);
+    dateJour.value = h.toISOString().slice(0, 10);
+  }
 
   donneesPretes.value = true;
 }

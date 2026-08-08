@@ -4,9 +4,10 @@ import { signal } from '@preact/signals';
 // Demande d'ouverture du calculateur emise par la carte (rappel de
 // recalcul) ; consommee par main.jsx qui possede l'etat de la modale.
 export const ouvrirCalcDemande = signal(false);
-import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul, rappelIgnoreA } from '../store/journal.js';
+import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul, rappelIgnoreA, nouvelleJournee, dateJour } from '../store/journal.js';
 import { weightLog } from '../store/stats.js';
 import { ongletActif } from './BottomNav.jsx';
+import { enregistrerJour } from '../store/stats.js';
 import { IdeesRepas } from './IdeesRepas.jsx';
 import { t } from '../i18n/index.js';
 
@@ -176,6 +177,13 @@ export function DayDashboard() {
   const moisCourt = t('months_min').split('|');
   const dateTexte = `${t('today')}, ${d.getDate()} ${moisCourt[d.getMonth()] || ''}`;
 
+  // Journee ouverte differente d'aujourd'hui : elle n'a pas ete cloturee.
+  // On se contente de le signaler ; rien d'autre ne change dans la carte.
+  const isoAuj = new Date().toISOString().slice(0, 10);
+  const retard = !!dateJour.value && dateJour.value !== isoAuj;
+  const dOuvert = retard ? new Date(dateJour.value + 'T00:00') : null;
+  const jourOuvert = dOuvert ? (jours[dOuvert.getDay()] || '').toLowerCase() : '';
+
   return (
     <section class={'carte carte--relief cal' + (pret ? '' : ' cal--chargement')}
              data-palier={palier || 'ok'}>
@@ -225,15 +233,39 @@ export function DayDashboard() {
         <Macro nom={t('fats')}     valeur={tot.lip}   cible={obj.lip}   teinte="var(--mac-lip)" />
       </div>
 
-      {/* Action principale du jour : « Repas intelligent » (Raci). Elle
-          remplace l'ancien « Commencer une nouvelle journee », desormais
-          automatique au changement de date. La pilule seule vit ici ; le
-          panneau deplie s'ouvre sous la carte (etat partage par signal). */}
+      {/* Action principale du jour : « Repas intelligent » (Raci). */}
       <RappelRecalcul />
 
       <div class="cal-action">
         <IdeesRepas pilulSeule />
       </div>
+
+      {/* Journee laissee ouverte : on le DIT, on ne fait rien d'autre.
+          C'est la seule chose ajoutee — pas de couleur, pas de pastille. */}
+      {retard && (
+        <div class="cal-retard">{t('jour_non_cloture').replace('{j}', jourOuvert)}</div>
+      )}
+
+      {/* « Commencer une nouvelle journee » : retire le 27/07 (6967258)
+          pour loger « Repas intelligent », et remplace par un archivage
+          AUTOMATIQUE au changement de date. Raci n'a jamais demande ce
+          retrait, et l'automatisme a efface une journee non terminee le
+          8/08. Le bouton revient a l'identique : meme classe, meme SVG,
+          memes cles i18n, meme CSS (jamais supprime). */}
+      <button class="cal-reset" onClick={() => {
+        if (!confirm(t('confirm_new_day'))) return;
+        // On archive le total AFFICHE (somme des cartes que l'utilisateur
+        // a sous les yeux), pas un second calcul : c'est ce qui creait
+        // quelques kcal d'ecart entre l'anneau et l'archive.
+        enregistrerJour(totauxJourAff.value, dateJour.value);
+        nouvelleJournee();
+      }}>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 12a9 9 0 0115.5-6.2M21 12a9 9 0 01-15.5 6.2" />
+          <path d="M18.5 3v3h-3M5.5 21v-3h3" />
+        </svg>
+        <span>{t('new_day')}</span>
+      </button>
     </section>
   );
 }
@@ -252,7 +284,12 @@ function RappelRecalcul() {
   const base = poidsCalcul.value;
   const log = weightLog.value;
   if (!base || !log.length) return null;
-  const actuel = log[log.length - 1].weight;
+  // Deux formes coexistent : { iso, weight } (v1 importee) et { iso, kg }
+  // (fixtures et certains chemins v2). Ne lire que .weight donnait NaN,
+  // et le rappel annoncait « tu es a NaN kg ». Stats.jsx et
+  // StatsAvancees.jsx toleraient deja les deux ; pas celui-ci.
+  const actuel = parseFloat(log[log.length - 1].weight ?? log[log.length - 1].kg);
+  if (!isFinite(actuel)) return null;
   if (Math.abs(actuel - base) < SEUIL_RECALCUL_KG) return null;
   // Ferme une fois, le rappel se tait jusqu'a ce que le poids s'eloigne
   // d'un nouveau seuil. On informe, on n'insiste pas : le journal reste

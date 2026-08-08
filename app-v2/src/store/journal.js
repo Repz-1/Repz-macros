@@ -69,7 +69,6 @@ effect(() => {
     poidsCalcul.value = (d && typeof d.poidsCalcul === 'number') ? d.poidsCalcul : null;
     rappelIgnoreA.value = (d && typeof d.rappelIgnoreA === 'number') ? d.rappelIgnoreA : null;
     tailleBouteille.value = (d && typeof d.tailleBouteille === 'number') ? d.tailleBouteille : 1.5;
-    basculerSiJourChange();
     donneesPretes.value = true;
   });
 });
@@ -248,26 +247,19 @@ export function nouvelleJournee() {
   dateJour.value = aujourdhui();
 }
 
-// Bascule automatique : si la journee chargee n'est pas celle d'aujourd'hui,
-// on l'archive dans l'historique des stats SOUS SA PROPRE DATE, puis on
-// repart a zero. Une journee vide n'est pas archivee (pas de faux 0 kcal
-// dans les stats). Appelee au chargement et au retour en avant-plan.
-export function basculerSiJourChange() {
-  const veille = dateJour.value;
-  if (veille === aujourdhui()) return false;
-  const t = totauxJour.value;
-  if (t.kcal > 0) enregistrerJour(t, veille);
-  nouvelleJournee();
-  return true;
-}
-
-// L'app reste ouverte des jours en PWA : on revalide la date a chaque
-// retour en avant-plan, sinon la journee de la veille resterait affichee.
-if (typeof document !== 'undefined') {
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && donneesPretes.value) basculerSiJourChange();
-  });
-}
+// PLUS DE BASCULE AUTOMATIQUE.
+//
+// Du 27/07 (6967258) au 08/08, une journee dont la date differait de
+// celle du jour etait archivee et videe automatiquement, au chargement
+// comme au retour en avant-plan. Cet automatisme avait ete introduit
+// pour compenser le retrait du bouton « Commencer une nouvelle
+// journee » — retrait que Raci n'avait pas demande. Consequence : une
+// journee laissee ouverte le soir disparaissait pendant la nuit, sans
+// que rien ne soit dit.
+//
+// La cloture est de nouveau MANUELLE, par le bouton de la carte
+// Calories. Une journee non cloturee reste ouverte indefiniment ; la
+// carte affiche simplement de quel jour il s'agit.
 
 export function ajouterEau(litres) {
   // Precision au millieme : le pas v1 est de 75 ml (0,075 L).
