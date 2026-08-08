@@ -16,13 +16,11 @@
 <style>
   html,body{margin:0;background:#F4F3F0;font-family:'Satoshi','Manrope',sans-serif;color:#181818}
   #splash{position:fixed;inset:0;z-index:9999;background:#F4F3F0;display:flex;align-items:center;justify-content:center;transition:opacity .25s ease}
-  #splash{flex-direction:column}
-  /* Verrouillage symbole + nom. Largeur du nom fixee a 300px : la ligne
-     « FITNESS · NUTRITION · BIEN-ETRE » fait 10% de la hauteur du bloc,
-     soit 8px de capitales a cette taille — la taille des libelles de la
-     barre de navigation, en dessous elle devient illisible. */
+  /* Symbole centre, nom en pied d'ecran : on ne lit pas un splash, le
+     nom n'est qu'une signature (Raci, 8/08). */
   #splash .sp-sym{width:200px;height:auto}
-  #splash .sp-nom{width:300px;height:auto;margin-top:20px}
+  #splash .sp-nom{position:absolute;left:50%;transform:translateX(-50%);
+    bottom:calc(48px + env(safe-area-inset-bottom));width:190px;height:auto}
   #splash.parti{opacity:0;pointer-events:none}
 </style>
 </head>
