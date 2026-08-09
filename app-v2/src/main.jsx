@@ -71,13 +71,15 @@ export function OngletJournal() {
         {/* La pilule vit dans la carte Calories ; ici, uniquement le
             panneau qui se deplie, juste sous elle. */}
         <IdeesRepas panneauSeul />
-        <WeightNote />
-        {/* Fente reservee a la goutte d'eau quand elle est a quai en haut
-            de page. Sans elle, la goutte se posait sur deux cartes de
-            repas (mesure : 77px de recouvrement). Sa position est lue en
-            direct par la mecanique de la goutte — ne pas la retirer sans
-            adapter goutte.js. */}
+        {/* Fente reservee a la goutte d'eau a quai. Elle vit ENTRE la
+            carte Calories et la carte de pesee (Raci, 9/08) : quand la
+            carte s'allonge avec le message « journee non cloturee », la
+            goutte reste dans cet espace au lieu de mordre sur le coin de
+            la carte. Quand la carte de pesee disparait, la fente reste le
+            premier creux sous le cadran — la place initiale. Sa position
+            est lue en direct par goutte.js, ne pas la retirer. */}
         <div class="fente-goutte" aria-hidden="true" />
+        <WeightNote />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
         {/* L'ajout d'un repas vit desormais dans le flux, sous le
             dernier repas — plus de bouton flottant jaune (Raci). */}
