@@ -61,23 +61,26 @@ const ONGLETS = [
 ];
 
 export function BottomNav() {
-  // La barre s'efface quand on descend et revient des qu'on remonte ou
-  // qu'on s'arrete (Raci, 9/08 : « la barre en bas gene un peu »). Elle
-  // revient toujours de son propre chef : on ne peut jamais se retrouver
-  // sans navigation. Seuil de 8px pour ne pas clignoter au moindre
-  // tremblement du doigt, et retour automatique apres 900ms d'arret.
+  // La barre s'efface pendant le defilement, dans les deux sens, et
+  // revient des que la page s'immobilise (Raci, 9/08 : « la barre en bas
+  // gene un peu »). Elle revient toujours de son propre chef : on ne
+  // peut jamais se retrouver sans navigation. Seuil de 6px pour ignorer
+  // le tremblement du doigt, retour apres 700ms d'immobilite.
   const [cachee, setCachee] = useState(false);
   useEffect(() => {
     let dernier = 0, minuteur = null, cible = null;
     const suivre = () => {
       const y = cible ? cible.scrollTop : 0;
       const ecart = y - dernier;
-      if (Math.abs(ecart) > 8) {
-        setCachee(ecart > 0 && y > 60);
+      // Elle s'efface dans LES DEUX SENS (Raci, 9/08) : c'est le fait de
+      // faire defiler qui la range, pas la direction. Elle revient des
+      // que la page s'immobilise.
+      if (Math.abs(ecart) > 6) {
+        setCachee(true);
         dernier = y;
       }
       clearTimeout(minuteur);
-      minuteur = setTimeout(() => setCachee(false), 900);
+      minuteur = setTimeout(() => setCachee(false), 700);
     };
     // Le panneau visible change d'un onglet a l'autre : on ecoute au
     // niveau du document, en phase de capture, plutot que de s'accrocher

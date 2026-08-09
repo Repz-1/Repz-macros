@@ -3022,10 +3022,14 @@
 /* Escamotage au defilement : la barre glisse sous le bord et revient des
    qu'on remonte ou qu'on s'arrete (Raci, 9/08). Elle ne disparait jamais
    definitivement — on ne peut pas se retrouver sans navigation. */
-.bn { transition: transform .26s cubic-bezier(.22,1,.36,1), opacity .2s ease; }
+/* Depart doux et arrivee douce dans les deux sens : la disparition est
+   un peu plus lente que le retour, pour qu'elle se retire sans a-coup et
+   revienne franchement quand on s'arrete. */
+.bn { transition: transform .34s cubic-bezier(.33,0,.2,1), opacity .28s cubic-bezier(.33,0,.2,1); }
 .bn--escamotee {
-  transform: translateY(calc(100% + 18px));
+  transform: translateY(calc(100% + 20px)) scale(.97);
   opacity: 0; pointer-events: none;
+  transition: transform .42s cubic-bezier(.4,0,.25,1), opacity .34s ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .bn { transition: none; }
