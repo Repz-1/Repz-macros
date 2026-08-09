@@ -46,9 +46,19 @@ export function WaterTracker() {
 
   return (
     <>
+      {/* Trois calques : le corps colore (qui s'efface quand la goutte se
+          disperse), le contenu lisible, et les perles. Sans cette
+          separation, effacer la pastille effacait aussi les perles, qui
+          sont ses enfants. La deformation est pilotee par goutte.js. */}
       <button class="water-fab" onClick={() => setOuvert(true)} aria-label={`${t('water_title')} — ${litresTxt(total)}`}>
-        <span style={{ fontSize: '18px' }}>💧</span>
-        <span class="wf-count">{litresTxt(total)}</span>
+        <span class="wf-corps" />
+        <span class="wf-contenu">
+          <span style={{ fontSize: '18px' }}>💧</span>
+          <span class="wf-count">{litresTxt(total)}</span>
+        </span>
+        <span class="wf-perles" aria-hidden="true">
+          <i /><i /><i /><i /><i /><i /><i />
+        </span>
       </button>
 
       {ouvert && createPortal(

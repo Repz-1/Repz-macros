@@ -1,5 +1,6 @@
 import { render } from 'preact';
 import { useState, useRef, useEffect } from 'preact/hooks';
+import { animerGoutte, arreterGoutte } from './services/goutte.js';
 import './styles.css';
 import './styles/design-system.css';
 import './styles/journal-socle.css';
@@ -54,6 +55,11 @@ export function OngletJournal() {
     if (estPremium.value || !calculBaseFait.value) setCalc(true);
     else ongletActif.value = 'premium';
   }
+  // La goutte d'eau se deforme au fil du defilement : sa mecanique tourne
+  // en boucle d'animation tant que le Journal est monte. Elle se coupe
+  // toute seule si le bouton disparait du document.
+  useEffect(() => { animerGoutte(); return arreterGoutte; }, []);
+
   // Colonne unique, ordre de lecture descendant :
   // logo -> calories -> actions rapides -> idees recettes -> repas.
   // Seuls la navigation, le bouton d'ajout et l'hydratation sont fixes.
@@ -66,6 +72,12 @@ export function OngletJournal() {
             panneau qui se deplie, juste sous elle. */}
         <IdeesRepas panneauSeul />
         <WeightNote />
+        {/* Fente reservee a la goutte d'eau quand elle est a quai en haut
+            de page. Sans elle, la goutte se posait sur deux cartes de
+            repas (mesure : 77px de recouvrement). Sa position est lue en
+            direct par la mecanique de la goutte — ne pas la retirer sans
+            adapter goutte.js. */}
+        <div class="fente-goutte" aria-hidden="true" />
         {repas.value.map(r => <MealCard key={r.id} r={r} />)}
         {/* L'ajout d'un repas vit desormais dans le flux, sous le
             dernier repas — plus de bouton flottant jaune (Raci). */}

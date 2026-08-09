@@ -548,14 +548,15 @@
    Meme couche, meme hauteur, mais independants. La rangee ne
    capte pas les clics : seuls les boutons le font.
    ============================================================ */
+/* La goutte se deplace maintenant sur toute la hauteur de l'ecran : la
+   rangee n'est plus une barre en bas de page mais un calque transparent
+   qui couvre le panneau, ou la goutte se positionne elle-meme et ou les
+   gouttelettes de trainee ont de la place pour vivre.
+   journal-socle.css l.1554 la rebascule en absolute dans .rail-pan —
+   indispensable, .rail4 portant will-change:transform. */
 .pg-journal .fab-rangee {
   position: fixed; z-index: 80;
-  bottom: calc(var(--hauteur-nav) + 14px + env(safe-area-inset-bottom));
-  left: 12px; right: 12px;
-  max-width: 448px; margin: 0 auto;
-  /* Le bouton jaune « Ajouter » ayant quitte la rangee (Raci), la goutte
-     est seule : space-between n'avait plus de sens, elle se cale a gauche. */
-  display: flex; align-items: center; justify-content: flex-start; gap: 10px;
+  inset: 0;
   pointer-events: none;
 }
 .pg-journal .fab-rangee > * { pointer-events: auto; }
@@ -565,17 +566,60 @@
 .pg-journal .fab-rangee > .fab:active { opacity: 1; }
 
 /* ---------- Hydratation ---------- */
+/* La goutte : trois calques superposes. Le bouton n'est plus qu'un cadre
+   transparent — c'est .wf-corps qui porte la couleur. Sans cette
+   separation, effacer la pastille effacait aussi les perles, qui sont
+   ses enfants.
+   AUCUNE transition ici : la deformation est pilotee image par image par
+   services/goutte.js. Une transition CSS joue sur son propre rythme et
+   decroche du doigt (Raci, 8/08). */
 .pg-journal .water-fab {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--srf-info); color: var(--txt-inverse-2); border: none;
-  padding: 12px 16px; border-radius: 30px; cursor: pointer;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, .4);
-  font-size: 14px; font-weight: 700; font-family: inherit;
-  opacity: .72;
-  transition: transform .15s, opacity .15s;
+  position: absolute; left: 12px; top: 0;
+  width: 81px; height: 46px;
+  background: none; border: none; padding: 0; cursor: pointer;
+  color: var(--txt-inverse-2); font-size: 14px; font-weight: 700;
+  font-family: inherit; white-space: nowrap;
+  transform-origin: 0% 50%;
+  will-change: transform, width, height;
 }
-.pg-journal .water-fab:active { transform: scale(.94); opacity: 1; background: var(--hydratation-active); }
-.pg-journal .wf-goutte { font-size: 18px; line-height: 1; }
+.pg-journal .wf-corps {
+  position: absolute; inset: 0; border-radius: 23px;
+  background: var(--srf-info);
+  box-shadow: 0 4px 14px rgba(14, 165, 233, .4);
+  opacity: .78;
+}
+.pg-journal .water-fab:active .wf-corps { opacity: 1; background: var(--hydratation-active); }
+.pg-journal .wf-contenu {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; gap: 6px; padding-left: 16px;
+}
+.pg-journal .wf-perles { position: absolute; inset: 0; pointer-events: none; }
+.pg-journal .wf-perles i {
+  position: absolute; left: 0; opacity: 0;
+  border-radius: 52% 60% 58% 50% / 48% 56% 54% 46%;
+  background: var(--srf-info);
+  box-shadow: 0 2px 7px rgba(14, 165, 233, .32);
+}
+/* Gouttelettes semees sur le trajet, qui tombent et se resorbent. */
+.pg-journal .wf-trainee {
+  position: absolute; z-index: 79; border-radius: 50%; pointer-events: none;
+  background: var(--srf-info);
+  box-shadow: 0 1px 4px rgba(14, 165, 233, .30);
+  animation: wf-resorber var(--vie) cubic-bezier(.4, 0, .7, 1) forwards;
+}
+@keyframes wf-resorber {
+  0%   { transform: scale(.6, .7)   translateY(0);    opacity: .85 }
+  18%  { transform: scale(1.06,.94) translateY(2px);  opacity: .8 }
+  60%  { transform: scale(.8, 1.1)  translateY(14px); opacity: .42 }
+  100% { transform: scale(.15,.3)   translateY(30px); opacity: 0 }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pg-journal .wf-trainee { display: none; }
+}
+
+/* Fente reservee a la goutte quand elle est a quai en haut de page.
+   Sans elle, la pastille se posait sur deux cartes de repas. */
+.pg-journal .fente-goutte { height: 62px; flex: 0 0 auto; }
 
 /* ---------- Ajouter ---------- */
 .pg-journal .fab {
