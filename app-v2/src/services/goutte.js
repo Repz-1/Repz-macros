@@ -155,28 +155,36 @@ export function animerGoutte() {
 
   let cibleY = 0, cibleD = 0, monte = true;
 
+  let hautFixe = null;
+
   function calculer() {
     const course = Math.max(1, sc.scrollHeight - sc.clientHeight);
     const y = sc.scrollTop;
-    // Distance en PIXELS, pas en pourcentage : sur une liste courte, un
-    // pourcentage se declenchait au moindre frolement.
-    const voyage = Math.min(140, course * 0.33);
-    const retour = course - voyage;
-    if (y <= voyage) {
-      const t = borne(y / voyage, 0, 1);
-      cibleY = melange(quaiHaut(), croisiere(), adoucir(t));
-      // Pas de place a quai : elle reste dispersee plutot que de se poser
-      // sur la carte.
-      cibleD = (placeAuRepos() !== null) ? borne(t / 0.34, 0, 1) : 1;
-      monte = true;
-    } else if (y >= retour) {
-      const t = borne((y - retour) / voyage, 0, 1);
-      cibleY = melange(croisiere(), quaiBas(), adoucir(t));
-      cibleD = borne((1 - t) / 0.34, 0, 1);
-      monte = false;
-    } else {
-      cibleY = croisiere(); cibleD = 1; monte = true;
-    }
+
+    // Le point de depart est memorise quand on est en haut : la fente
+    // defile avec le contenu, la relire en pleine course faisait deriver
+    // la goutte vers le haut de l'ecran.
+    if (y < 6 || hautFixe === null) hautFixe = quaiHaut();
+
+    // Course trop courte pour un voyage (grand ecran, peu de contenu) :
+    // la dispersion n'aurait pas le temps de s'achever et une demi-
+    // pastille traverserait les cartes. La goutte reste alors dans son
+    // creux et defile avec lui.
+    if (course < 160) { cibleY = quaiHaut(); cibleD = 0; monte = false; return; }
+
+    // Position PROPORTIONNELLE a toute la course : la goutte descend la
+    // gouttiere au rythme du defilement. L'ancien decoupage (voyage de
+    // 140px puis croisiere figee) concentrait tout le trajet sur le
+    // premier geste du pouce — a l'ecran ca faisait un SAUT jusqu'a
+    // mi-gouttiere, puis plus rien (Raci, 9/08).
+    const t = borne(y / course, 0, 1);
+    // Cible basse FIXE pendant le trajet : la recherche de creux lit des
+    // blocs en mouvement, elle ne s'applique qu'a l'arrivee.
+    const bas = t > 0.95 ? quaiBas() : (sc.clientHeight - QUAI_BAS_M);
+    cibleY = melange(hautFixe, bas, adoucir(t));
+    // Entiere aux deux bouts, gouttelettes entre les deux.
+    cibleD = borne(Math.min(y, course - y) / 90, 0, 1);
+    monte = false;
   }
 
   // La forme rattrape sa cible avec un retard souple : c'est cette
