@@ -619,10 +619,16 @@
 
 /* Fente reservee a la goutte quand elle est a quai en haut de page.
    Sans elle, la pastille se posait sur deux cartes de repas. */
-/* 50px : la pastille en fait 46, il lui faut 2px de marge de chaque
-   cote. A 62px l'ecart entre « Pense a te peser » et le premier repas
-   atteignait 90px, trop grand (Raci, 9/08). */
-.pg-journal .fente-goutte { height: 50px; flex: 0 0 auto; }
+/* La pastille fait 46px et se pose a fente.haut + 2. Pour que l'ecart
+   au-dessus (cadran -> goutte) egale celui du dessous (goutte -> carte
+   suivante, soit le gap de colonne de 14 + 2 = 16px), la fente annule
+   d'abord le gap qui la precede (-14) puis reserve 2 + 46 + 2 : hauteur
+   nette 36px. Mesure avant : 44px dessus, 16 dessous (Raci, 9/08). */
+.pg-journal .fente-goutte { height: 50px; margin-top: -28px; margin-bottom: 0; flex: 0 0 auto; }
+/* -28 et non -14 : un conteneur invisible de hauteur nulle (eat-zone-wrap)
+   vit entre le cadran et la fente et introduit un ecart de colonne
+   fantome supplementaire. Mesure finale visee : 16px de part et d'autre
+   de la pastille. */
 
 /* ---------- Ajouter ---------- */
 .pg-journal .fab {

@@ -291,23 +291,25 @@ export function Stats() {
     seanceFaite(iso) ||
     poidsData.some(w => w.iso === iso);
 
-  const nutrition = Math.round(j7.filter(iso => histoire.some(e => e.iso === iso)).length / 7 * 100);
+  const joursEncodes = j7.filter(iso => histoire.some(e => e.iso === iso)).length;
+  const nutrition = Math.round(joursEncodes / 7 * 100);
   const trainJours = j7.filter(iso =>
     (mLog[iso] && mLog[iso].length && !(mLog[iso].length === 1 && mLog[iso][0] === 'repos')) ||
     seanceFaite(iso)).length;
   const entrainement = Math.min(100, Math.round(trainJours / 4 * 100));
 
   const p14 = poidsData.filter(w => w.iso >= isoNDaysAgo(14)).sort((a, b) => a.iso.localeCompare(b.iso));
-  let scorePoids;
-  if (!p14.length) scorePoids = poidsData.length ? 40 : 0;
-  else if (p14.length === 1) scorePoids = 60;
-  else {
-    const first = poidsDe(p14[0]), last = poidsDe(p14[p14.length - 1]);
-    // v1 : goal.weight = derniere pesee saisie -> meme cible ici, sans localStorage
-    const cible = poidsData.length ? poidsDe([...poidsData].sort((a, b) => a.iso.localeCompare(b.iso))[poidsData.length - 1]) : 0;
-    scorePoids = cible > 0 ? (Math.abs(last - cible) <= Math.abs(first - cible) ? 100 : 65) : 90;
-  }
-  const regularite = Math.round(j7.filter(jourActif).length / 7 * 100);
+  // Le calcul precedent comparait la derniere pesee a une « cible » qui
+  // etait elle-meme la derniere pesee : l'ecart valait toujours zero, la
+  // condition etait toujours vraie, et ce score affichait 100 % quoi
+  // qu'il arrive des deux pesees en 14 jours. Il ne mesurait rien
+  // (trouve le 9/08 en relisant le code sur demande de Raci).
+  // Il mesure desormais ce qu'il annonce : la FREQUENCE de pesee sur
+  // 14 jours, une pesee tous les deux jours valant le maximum.
+  const scorePoids = Math.min(100, Math.round(p14.length / 7 * 100));
+  const pesees14 = p14.length;
+  const joursActifs = j7.filter(jourActif).length;
+  const regularite = Math.round(joursActifs / 7 * 100);
   const global = Math.round((nutrition + entrainement + scorePoids + regularite) / 4);
   const rienDuTout = !histoire.length && !poidsData.length && !Object.keys(setLogJours).length && !Object.keys(mLog).length;
 
@@ -380,7 +382,11 @@ export function Stats() {
   const valsK = colsK.map(c => c.v).filter(v => v != null);
   const objKcalJ = +objectifs.value.kcal || 0;
   const moyKcal = valsK.length ? Math.round(valsK.reduce((a, b) => a + b, 0) / valsK.length) : 0;
-  const derniereKcal = kcalTri.length ? parseInt(kcalTri[kcalTri.length - 1].kcal || 0) : 0;
+  // Un « 0 » ne distingue pas « rien mange » de « rien encode ». On garde
+  // la valeur seulement si la journee a ete renseignee (Raci, 9/08).
+  const derniereEntree = kcalTri.length ? kcalTri[kcalTri.length - 1] : null;
+  const derniereKcal = derniereEntree ? parseInt(derniereEntree.kcal || 0) : 0;
+  const derniereRenseignee = !!derniereEntree && derniereKcal > 0;
   // Le trait d'objectif doit toujours tenir dans le cadre.
   const maxK = Math.max(objKcalJ || 1, ...(valsK.length ? valsK : [1])) * 1.08;
 
@@ -465,13 +471,20 @@ export function Stats() {
             <div class="score-note">
               {global >= 85 ? t('st_note_a') : global >= 70 ? t('st_note_b') : global >= 40 ? t('st_note_c') : t('st_note_d')}
             </div>
+            {/* Chaque ligne porte son chiffre brut : on voit d'ou vient la
+                note au lieu de la subir (Raci, 9/08). */}
             <div class="score-rows">
-              {[[t('st_row_nutrition'), nutrition], [t('st_row_training'), entrainement],
-                [t('st_row_weight'), scorePoids], [t('st_row_regularity'), regularite]].map(([l, v]) => (
-                <div class="score-row" key={l}>
-                  <div class="sr-lbl">{l}</div>
-                  <div class="sr-bar"><div class="sr-fill" style={{ width: v + '%', background: degradeScore(v) }} /></div>
-                  <div class="sr-val">{v}%</div>
+              {[[t('st_row_nutrition'), nutrition, `${joursEncodes}/7 ${t('st_det_jours')}`],
+                [t('st_row_training'), entrainement, `${trainJours} ${t('st_det_seances')}`],
+                [t('st_row_weight'), scorePoids, `${pesees14} ${t('st_det_pesees')}`],
+                [t('st_row_regularity'), regularite, `${joursActifs}/7 ${t('st_det_actifs')}`]].map(([l, v, d]) => (
+                <div class="score-bloc" key={l}>
+                  <div class="score-row">
+                    <div class="sr-lbl">{l}</div>
+                    <div class="sr-bar"><div class="sr-fill" style={{ width: v + '%', background: degradeScore(v) }} /></div>
+                    <div class="sr-val">{v}%</div>
+                  </div>
+                  <div class="sr-det">{d}</div>
                 </div>
               ))}
             </div>
@@ -542,8 +555,16 @@ export function Stats() {
           {kcalTri.length ? (
             <>
               <div class="stat-summary">
-                <div class="stat-box"><div class="sb-val">{moyKcal}</div><div class="sb-lbl">{t('st_avg_kcal')}</div></div>
-                <div class="stat-box"><div class="sb-val">{derniereKcal}</div><div class="sb-lbl">{t('st_last_day')}</div></div>
+                <div class="stat-box">
+                  <div class="sb-val">{moyKcal}</div>
+                  <div class="sb-lbl">{t('st_moyenne_sur').replace('{n}', valsK.length)}</div>
+                </div>
+                <div class="stat-box">
+                  <div class={'sb-val' + (derniereRenseignee ? '' : ' sb-val--vide')}>
+                    {derniereRenseignee ? derniereKcal : t('st_derniere_vide')}
+                  </div>
+                  <div class="sb-lbl">{t('st_last_day')}</div>
+                </div>
               </div>
               <div class="per per--kcal">
                 {['1s', '1m', '3m', '1a'].map(k => (
