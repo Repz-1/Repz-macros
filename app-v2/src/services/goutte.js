@@ -99,9 +99,12 @@ export function animerGoutte() {
 
     const libre = (y) => !obstacles.some(o => y < o.b - 1 && y + PASTILLE_H > o.h + 1);
 
-    // 1. sa fente, si elle est visible
-    const yf = fenteY();
-    if (yf >= 8 && yf <= plancher && libre(yf)) return yf;
+    // 1. sa fente — le creux sous « Pense a te peser ». C'est SA place,
+    //    message « journee non cloturee » ou pas (Raci, 9/08). On la
+    //    ramene dans l'ecran plutot que de la rejeter : avant, un
+    //    depassement de 3px suffisait a l'envoyer se poser ailleurs.
+    const yf = Math.min(Math.max(fenteY(), 8), plancher);
+    if (libre(yf)) return yf;
     // 2. sinon le premier creux entre deux blocs, en partant du haut
     for (let i = 0; i < obstacles.length; i++) {
       const y = obstacles[i].b + 8;
