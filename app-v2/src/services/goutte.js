@@ -71,24 +71,60 @@ export function animerGoutte() {
     return (f.top - r.top) + (f.height - PASTILLE_H) / 2;
   };
   // Ou poser la pastille au repos.
-  // La fente est sa place normale. Mais quand la carte Calories porte le
-  // message « journee non cloturee », elle s'allonge et pousse la fente
-  // hors de l'ecran : ramener la pastille de force la posait en plein
-  // milieu de la carte (Raci, 9/08). On la glisse alors juste sous la
-  // carte, premier endroit libre en descendant. Elle ne reste dispersee
-  // qu'en dernier recours — sinon on ne pourrait plus lire son total.
+  // La fente est sa place normale. Quand la carte Calories porte le
+  // message « journee non cloturee » elle s'allonge et pousse la fente
+  // hors de l'ecran ; la pastille doit alors trouver un creux ailleurs.
+  // On ne surveille pas une carte en particulier mais TOUT ce qui occupe
+  // la colonne : la premiere version ne regardait que la carte sombre et
+  // la pastille se posait sur « Pense a te peser » (Raci, 9/08).
   const placeAuRepos = () => {
-    const plancher = sc.clientHeight - QUAI_BAS_M;
-    let y = Math.min(Math.max(fenteY(), 8), plancher);
-    const c = document.querySelector('.pg-journal .carte--relief');
-    if (c) {
-      const basCarte = c.getBoundingClientRect().bottom - sc.getBoundingClientRect().top;
-      if (basCarte > y) y = Math.min(basCarte + 10, plancher);
-      if (basCarte > y) return null;   // vraiment aucune place
+    const r = sc.getBoundingClientRect();
+    // Plancher cale sur la barre de navigation reelle, pas sur le quai
+    // bas : celui-ci laissait 148px inutilises sous la barre et faisait
+    // refuser des creux parfaitement libres (Raci, 9/08).
+    const bn = document.querySelector('.bn');
+    const plancher = bn
+      ? (bn.getBoundingClientRect().top - r.top) - PASTILLE_H - 10
+      : sc.clientHeight - QUAI_BAS_M;
+    const G = 12, D = G + PASTILLE_L;          // emprise horizontale a quai
+
+    // Tout ce qui est visible, occupe la bande de la pastille, et n'est
+    // ni la fente ni la goutte elle-meme.
+    const obstacles = [...sc.querySelectorAll('.pg-journal .colonne > *')]
+      .filter(e => !e.classList.contains('fente-goutte'))
+      .map(e => e.getBoundingClientRect())
+      .filter(b => b.height > 2 && b.right > G && b.left < D)
+      .map(b => ({ h: b.top - r.top, b: b.bottom - r.top }))
+      .sort((a, z) => a.h - z.h);
+
+    const libre = (y) => !obstacles.some(o => y < o.b - 1 && y + PASTILLE_H > o.h + 1);
+
+    // 1. sa fente, si elle est visible
+    const yf = fenteY();
+    if (yf >= 8 && yf <= plancher && libre(yf)) return yf;
+    // 2. sinon le premier creux entre deux blocs, en partant du haut
+    for (let i = 0; i < obstacles.length; i++) {
+      const y = obstacles[i].b + 8;
+      if (y >= 8 && y <= plancher && libre(y)) return y;
     }
-    return y;
+    // 3. sinon le quai bas, s'il est degage
+    if (libre(plancher)) return plancher;
+    // 4. vraiment aucune place : elle reste dispersee
+    return null;
   };
   const quaiHaut = () => { const y = placeAuRepos(); return y === null ? sc.clientHeight - QUAI_BAS_M : y; };
+  // Sonde de diagnostic (inerte en production, lue par les tests).
+  window.__goutte = () => {
+    const r = sc.getBoundingClientRect();
+    return { choix: placeAuRepos(), fente: Math.round(fenteY()),
+      obstacles: [...sc.querySelectorAll('.pg-journal .colonne > *')]
+        .filter(e => !e.classList.contains('fente-goutte'))
+        .map(e => { const b = e.getBoundingClientRect();
+          return { cl: (e.className||e.tagName).toString().split(' ')[0],
+                   h: Math.round(b.top-r.top), b: Math.round(b.bottom-r.top),
+                   g: Math.round(b.left), d: Math.round(b.right) }; })
+        .filter(o => o.b - o.h > 2) };
+  };
   const quaiBas = () => sc.clientHeight - QUAI_BAS_M;
   const croisiere = () => {
     if (ancrage === null) ancrage = quaiHaut();
@@ -149,7 +185,13 @@ export function animerGoutte() {
 
   function peindre() {
     if (!document.body.contains(bouton)) { boucle = null; return; }
-    if (Y === null) { calculer(); Y = cibleY; D = cibleD; }
+    // Recalcul a chaque image, pas seulement au defilement : la mise en
+    // page bouge sans qu'on defile — le message « journee non cloturee »
+    // apparait, une carte se replie, les polices finissent de charger.
+    // Une decision prise une seule fois au montage se retrouvait fausse
+    // et la pastille restait posee sur « Pense a te peser » (Raci, 9/08).
+    calculer();
+    if (Y === null) { Y = cibleY; D = cibleD; }
 
     const avant = Y;
     Y   += (cibleY - Y) * 0.16;
