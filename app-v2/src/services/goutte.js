@@ -67,7 +67,12 @@ export function animerGoutte() {
   const quaiHaut = () => {
     const f = fente.getBoundingClientRect();
     const r = sc.getBoundingClientRect();
-    return (f.top - r.top) + (f.height - PASTILLE_H) / 2;
+    const y = (f.top - r.top) + (f.height - PASTILLE_H) / 2;
+    // Butee : sur un ecran ou la carte Calories est haute, la fente
+    // descend sous la barre de navigation et la pastille s'y cache
+    // (constate sur le telephone de Raci, 9/08). Elle ne descend jamais
+    // plus bas que son quai du bas.
+    return Math.min(y, sc.clientHeight - QUAI_BAS_M);
   };
   const quaiBas = () => sc.clientHeight - QUAI_BAS_M;
   const croisiere = () => {

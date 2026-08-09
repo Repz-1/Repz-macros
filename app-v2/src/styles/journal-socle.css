@@ -3018,6 +3018,18 @@
 .bn .bn-item--entrainer.bn-item--actif { color: var(--txt-accent-nav); }
 .bn .bn-item--stats.bn-item--actif     { color: var(--txt-alerte); }
 .bn .bn-item--premium.bn-item--actif   { color: #3D7E5C; }
+
+/* Escamotage au defilement : la barre glisse sous le bord et revient des
+   qu'on remonte ou qu'on s'arrete (Raci, 9/08). Elle ne disparait jamais
+   definitivement — on ne peut pas se retrouver sans navigation. */
+.bn { transition: transform .26s cubic-bezier(.22,1,.36,1), opacity .2s ease; }
+.bn--escamotee {
+  transform: translateY(calc(100% + 18px));
+  opacity: 0; pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bn { transition: none; }
+}
 .bn .bn-item--actif svg { color: currentColor; stroke: currentColor; }
 .bn .bn-item--actif .bn-point { background: currentColor; box-shadow: none; }
 

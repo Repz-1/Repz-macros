@@ -2,6 +2,7 @@ import { signal } from '@preact/signals';
 import { t } from '../i18n/index.js';
 import { repasOuvertId } from './MealCard.jsx';
 import { estPremium } from './PremiumPage.jsx';
+import { useState, useEffect } from 'preact/hooks';
 
 // Onglet actif de l'app. Signal global : n'importe quel composant
 // peut naviguer (ex : le bouton « Premium » d'une modale).
@@ -60,8 +61,38 @@ const ONGLETS = [
 ];
 
 export function BottomNav() {
+  // La barre s'efface quand on descend et revient des qu'on remonte ou
+  // qu'on s'arrete (Raci, 9/08 : « la barre en bas gene un peu »). Elle
+  // revient toujours de son propre chef : on ne peut jamais se retrouver
+  // sans navigation. Seuil de 8px pour ne pas clignoter au moindre
+  // tremblement du doigt, et retour automatique apres 900ms d'arret.
+  const [cachee, setCachee] = useState(false);
+  useEffect(() => {
+    let dernier = 0, minuteur = null, cible = null;
+    const suivre = () => {
+      const y = cible ? cible.scrollTop : 0;
+      const ecart = y - dernier;
+      if (Math.abs(ecart) > 8) {
+        setCachee(ecart > 0 && y > 60);
+        dernier = y;
+      }
+      clearTimeout(minuteur);
+      minuteur = setTimeout(() => setCachee(false), 900);
+    };
+    // Le panneau visible change d'un onglet a l'autre : on ecoute au
+    // niveau du document, en phase de capture, plutot que de s'accrocher
+    // a un element qui sera remplace.
+    const surDefilement = (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('pan-scroll')) {
+        cible = e.target; suivre();
+      }
+    };
+    document.addEventListener('scroll', surDefilement, true);
+    return () => { document.removeEventListener('scroll', surDefilement, true); clearTimeout(minuteur); };
+  }, []);
+
   return (
-    <nav class="bn">
+    <nav class={'bn' + (cachee ? ' bn--escamotee' : '')}>
       {ONGLETS.map(o => {
         const actif = ongletActif.value === o.k;
         return (
