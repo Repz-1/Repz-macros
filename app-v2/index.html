@@ -19,8 +19,13 @@
   /* Symbole centre, nom en pied d'ecran : on ne lit pas un splash, le
      nom n'est qu'une signature (Raci, 8/08). */
   #splash .sp-sym{width:200px;height:auto}
+  /* Le nom seul, sans la ligne « FITNESS · NUTRITION · BIEN-ETRE » :
+     a la taille du splash ses capitales faisaient 5px, illisibles, et une
+     baseline figee en francais jure avec une app en trois langues
+     (Raci, 9/08). Le mot est plus large que haut (ratio 5,06), on lui
+     donne 168px pour une hauteur de 33px. */
   #splash .sp-nom{position:absolute;left:50%;transform:translateX(-50%);
-    bottom:calc(48px + env(safe-area-inset-bottom));width:190px;height:auto}
+    bottom:calc(52px + env(safe-area-inset-bottom));width:168px;height:auto}
   #splash.parti{opacity:0;pointer-events:none}
 </style>
 </head>
@@ -30,7 +35,7 @@
      splash et le premier ecran. -->
 <div id="splash">
   <img class="sp-sym" src="/belfit-logo-bf.png" alt="BelFit">
-  <img class="sp-nom" src="/belfit-nom.png" alt="BelFit — Fitness, Nutrition, Bien-être">
+  <img class="sp-nom" src="/belfit-nom.png" alt="BelFit">
 </div>
 <svg width="0" height="0" style="position:absolute">
   <defs>
