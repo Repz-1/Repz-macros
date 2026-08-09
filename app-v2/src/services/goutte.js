@@ -23,7 +23,10 @@
 const PASTILLE_L = 81;   // largeur de la pastille « 0,0 L »
 const PASTILLE_H = 46;
 const AMAS_L     = 12;   // colonne de gouttelettes
-const AMAS_H     = 96;
+// 70px : le creux entre « Pense a te peser » et le premier repas en fait
+// 78. Une colonne de 96 debordait sur la carte de repas pendant le geste
+// (Raci, 9/08).
+const AMAS_H     = 70;
 const QUAI_BAS_M = 196;  // hauteur du quai bas, depuis le bas de l'ecran
 const REMONTEE   = 24;   // ce que la goutte gagne au-dessus de sa fente
 
@@ -135,29 +138,27 @@ export function animerGoutte() {
   };
 
   let cibleY = 0, cibleD = 0, monte = true;
+  let precDefil = null, vitDefil = 0;
 
+  // La goutte reste dans SON CREUX et defile avec la page. Elle ne se cale
+  // plus sur une hauteur d'ecran fixe : c'est ce qui la faisait deriver
+  // par rapport au contenu et monter jusqu'au cadran (Raci, 9/08, quatre
+  // corrections successives sur ce point). La dispersion ne depend plus de
+  // la distance parcourue mais de la VITESSE de defilement : ca bouge, elle
+  // se disperse ; ca s'arrete, elle se reforme la ou elle est.
   function calculer() {
-    const course = Math.max(1, sc.scrollHeight - sc.clientHeight);
     const y = sc.scrollTop;
-    // Distance en PIXELS, pas en pourcentage : sur une liste courte, un
-    // pourcentage se declenchait au moindre frolement.
-    const voyage = Math.min(140, course * 0.33);
-    const retour = course - voyage;
-    if (y <= voyage) {
-      const t = borne(y / voyage, 0, 1);
-      cibleY = melange(quaiHaut(), croisiere(), adoucir(t));
-      // Pas de place a quai : elle reste dispersee plutot que de se poser
-      // sur la carte.
-      cibleD = (placeAuRepos() !== null) ? borne(t / 0.34, 0, 1) : 1;
-      monte = true;
-    } else if (y >= retour) {
-      const t = borne((y - retour) / voyage, 0, 1);
-      cibleY = melange(croisiere(), quaiBas(), adoucir(t));
-      cibleD = borne((1 - t) / 0.34, 0, 1);
-      monte = false;
-    } else {
-      cibleY = croisiere(); cibleD = 1; monte = true;
-    }
+    if (precDefil === null) precDefil = y;
+    const bond = Math.abs(y - precDefil);
+    monte = (y - precDefil) >= 0;
+    precDefil = y;
+    // moyenne glissante : une vitesse brute clignoterait a chaque image
+    vitDefil += (bond - vitDefil) * 0.35;
+
+    const place = placeAuRepos();
+    cibleY = place === null ? quaiHaut() : place;
+    // 6px de defilement par image suffisent a la disperser entierement.
+    cibleD = place === null ? 1 : borne(vitDefil / 6, 0, 1);
   }
 
   // La forme rattrape sa cible avec un retard souple : c'est cette
@@ -197,7 +198,10 @@ export function animerGoutte() {
     if (Y === null) { Y = cibleY; D = cibleD; }
 
     const avant = Y;
-    Y   += (cibleY - Y) * 0.16;
+    // Suivi serre de la position : la goutte est accrochee a un creux qui
+    // defile, tout retard la fait mordre sur la carte de repas suivante.
+    // L'inertie reste sur la FORME (D), c'est elle qui donne le liquide.
+    Y   += (cibleY - Y) * 0.45;
     D   += (cibleD - D) * 0.11;
     vit += (Math.abs(Y - avant) - vit) * 0.22;
 
@@ -208,11 +212,13 @@ export function animerGoutte() {
     bouton.style.height = h.toFixed(1) + 'px';
     bouton.style.left   = melange(12, 0, Math.min(1, d * 1.7)).toFixed(1) + 'px';
 
-    // Ancre par le HAUT dans les deux sens : ainsi l'amas se disperse vers
-    // le bas et ne peut jamais remonter jusqu'au cadran Calories.
+    // Centre sur la pastille : la goutte suivant desormais son creux, elle
+    // n'a plus de raison de s'etirer d'un seul cote — elle se disperse
+    // symetriquement et reste dans les 78px du creux.
+    const decal = -(h - PASTILLE_H) / 2;
     const v = Math.min(1, vit / 9);
     bouton.style.transform =
-      `translateY(${Y.toFixed(1)}px) scale(${(1 - v * 0.12).toFixed(3)},${(1 + v * 0.22).toFixed(3)})`;
+      `translateY(${(Y + decal).toFixed(1)}px) scale(${(1 - v * 0.12).toFixed(3)},${(1 + v * 0.22).toFixed(3)})`;
 
     corps.style.opacity      = (1 - d * 0.99).toFixed(3);
     corps.style.borderRadius = melange(23, 7, d).toFixed(1) + 'px';
