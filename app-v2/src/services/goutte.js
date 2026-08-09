@@ -70,17 +70,25 @@ export function animerGoutte() {
     const r = sc.getBoundingClientRect();
     return (f.top - r.top) + (f.height - PASTILLE_H) / 2;
   };
-  // La fente a-t-elle vraiment la place d'accueillir la pastille ?
-  // Quand la carte Calories porte le message « journee non cloturee »,
-  // elle s'allonge et pousse la fente hors de l'ecran. Ramener la
-  // pastille de force posait alors un pave bleu en plein milieu de la
-  // carte (constate par Raci, 9/08). Dans ce cas on ne la pose pas : elle
-  // reste en gouttelettes dans la gouttiere, ou elle ne recouvre rien.
-  const fenteAccessible = () => {
-    const y = fenteY();
-    return y >= 0 && y <= sc.clientHeight - QUAI_BAS_M;
+  // Ou poser la pastille au repos.
+  // La fente est sa place normale. Mais quand la carte Calories porte le
+  // message « journee non cloturee », elle s'allonge et pousse la fente
+  // hors de l'ecran : ramener la pastille de force la posait en plein
+  // milieu de la carte (Raci, 9/08). On la glisse alors juste sous la
+  // carte, premier endroit libre en descendant. Elle ne reste dispersee
+  // qu'en dernier recours — sinon on ne pourrait plus lire son total.
+  const placeAuRepos = () => {
+    const plancher = sc.clientHeight - QUAI_BAS_M;
+    let y = Math.min(Math.max(fenteY(), 8), plancher);
+    const c = document.querySelector('.pg-journal .carte--relief');
+    if (c) {
+      const basCarte = c.getBoundingClientRect().bottom - sc.getBoundingClientRect().top;
+      if (basCarte > y) y = Math.min(basCarte + 10, plancher);
+      if (basCarte > y) return null;   // vraiment aucune place
+    }
+    return y;
   };
-  const quaiHaut = () => Math.min(fenteY(), sc.clientHeight - QUAI_BAS_M);
+  const quaiHaut = () => { const y = placeAuRepos(); return y === null ? sc.clientHeight - QUAI_BAS_M : y; };
   const quaiBas = () => sc.clientHeight - QUAI_BAS_M;
   const croisiere = () => {
     if (ancrage === null) ancrage = quaiHaut();
@@ -101,7 +109,7 @@ export function animerGoutte() {
       cibleY = melange(quaiHaut(), croisiere(), adoucir(t));
       // Pas de place a quai : elle reste dispersee plutot que de se poser
       // sur la carte.
-      cibleD = fenteAccessible() ? borne(t / 0.34, 0, 1) : 1;
+      cibleD = (placeAuRepos() !== null) ? borne(t / 0.34, 0, 1) : 1;
       monte = true;
     } else if (y >= retour) {
       const t = borne((y - retour) / voyage, 0, 1);
