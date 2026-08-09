@@ -24,8 +24,7 @@ const PASTILLE_L = 81;   // largeur de la pastille « 0,0 L »
 const PASTILLE_H = 46;
 const AMAS_L     = 12;   // colonne de gouttelettes
 // 70px : le creux entre « Pense a te peser » et le premier repas en fait
-// 78. Une colonne de 96 debordait sur la carte de repas pendant le geste
-// (Raci, 9/08).
+// 78. Une colonne de 96 debordait sur la carte de repas.
 const AMAS_H     = 70;
 const QUAI_BAS_M = 196;  // hauteur du quai bas, depuis le bas de l'ecran
 const REMONTEE   = 24;   // ce que la goutte gagne au-dessus de sa fente
@@ -73,6 +72,29 @@ export function animerGoutte() {
     const r = sc.getBoundingClientRect();
     return (f.top - r.top) + (f.height - PASTILLE_H) / 2;
   };
+  // Rectangles reellement occupes par la colonne. Un conteneur peut faire
+  // toute la largeur alors que son contenu est cale d'un cote : la rangee
+  // « Ajouter un repas » en est une, son bouton est a droite. Mesurer le
+  // conteneur faisait croire la gouttiere occupee (Raci, 9/08).
+  const blocsColonne = () => {
+    const r = sc.getBoundingClientRect();
+    const out = [];
+    sc.querySelectorAll('.pg-journal .colonne > *').forEach(e => {
+      if (e.classList.contains('fente-goutte')) return;
+      let cible = e;
+      const enfants = [...e.children];
+      if (enfants.length === 1) {
+        const c = enfants[0].getBoundingClientRect();
+        if (c.width > 0 && c.width < e.getBoundingClientRect().width * 0.7) cible = enfants[0];
+      }
+      const b = cible.getBoundingClientRect();
+      if (b.height > 2) out.push({ h: b.top - r.top, b: b.bottom - r.top, g: b.left, d: b.right });
+    });
+    return out;
+  };
+  const estLibre = (y, blocs) => !blocs.some(o =>
+    o.d > 12 && o.g < 12 + PASTILLE_L && y < o.b - 1 && y + PASTILLE_H > o.h + 1);
+
   // Ou poser la pastille au repos.
   // La fente est sa place normale. Quand la carte Calories porte le
   // message « journee non cloturee » elle s'allonge et pousse la fente
@@ -82,25 +104,12 @@ export function animerGoutte() {
   // la pastille se posait sur « Pense a te peser » (Raci, 9/08).
   const placeAuRepos = () => {
     const r = sc.getBoundingClientRect();
-    // Plancher cale sur la barre de navigation reelle, pas sur le quai
-    // bas : celui-ci laissait 148px inutilises sous la barre et faisait
-    // refuser des creux parfaitement libres (Raci, 9/08).
     const bn = document.querySelector('.bn');
     const plancher = bn
       ? (bn.getBoundingClientRect().top - r.top) - PASTILLE_H - 10
       : sc.clientHeight - QUAI_BAS_M;
-    const G = 12, D = G + PASTILLE_L;          // emprise horizontale a quai
-
-    // Tout ce qui est visible, occupe la bande de la pastille, et n'est
-    // ni la fente ni la goutte elle-meme.
-    const obstacles = [...sc.querySelectorAll('.pg-journal .colonne > *')]
-      .filter(e => !e.classList.contains('fente-goutte'))
-      .map(e => e.getBoundingClientRect())
-      .filter(b => b.height > 2 && b.right > G && b.left < D)
-      .map(b => ({ h: b.top - r.top, b: b.bottom - r.top }))
-      .sort((a, z) => a.h - z.h);
-
-    const libre = (y) => !obstacles.some(o => y < o.b - 1 && y + PASTILLE_H > o.h + 1);
+    const obstacles = blocsColonne();
+    const libre = (y) => estLibre(y, obstacles);
 
     // 1. sa fente — le creux sous « Pense a te peser ». C'est SA place,
     //    message « journee non cloturee » ou pas (Raci, 9/08). On la
@@ -131,34 +140,43 @@ export function animerGoutte() {
                    g: Math.round(b.left), d: Math.round(b.right) }; })
         .filter(o => o.b - o.h > 2) };
   };
-  const quaiBas = () => sc.clientHeight - QUAI_BAS_M;
+  // Le quai du bas cherche lui aussi un creux : sans ca la pastille se
+  // posait sur « Ajouter un repas » en fin de defilement (Raci, 9/08).
+  const quaiBas = () => {
+    const blocs = blocsColonne();
+    let y = sc.clientHeight - QUAI_BAS_M;
+    for (let i = 0; i < 40 && !estLibre(y, blocs); i++) y -= 8;
+    return y;
+  };
   const croisiere = () => {
     if (ancrage === null) ancrage = quaiHaut();
     return ancrage - REMONTEE;
   };
 
   let cibleY = 0, cibleD = 0, monte = true;
-  let precDefil = null, vitDefil = 0;
 
-  // La goutte reste dans SON CREUX et defile avec la page. Elle ne se cale
-  // plus sur une hauteur d'ecran fixe : c'est ce qui la faisait deriver
-  // par rapport au contenu et monter jusqu'au cadran (Raci, 9/08, quatre
-  // corrections successives sur ce point). La dispersion ne depend plus de
-  // la distance parcourue mais de la VITESSE de defilement : ca bouge, elle
-  // se disperse ; ca s'arrete, elle se reforme la ou elle est.
   function calculer() {
+    const course = Math.max(1, sc.scrollHeight - sc.clientHeight);
     const y = sc.scrollTop;
-    if (precDefil === null) precDefil = y;
-    const bond = Math.abs(y - precDefil);
-    monte = (y - precDefil) >= 0;
-    precDefil = y;
-    // moyenne glissante : une vitesse brute clignoterait a chaque image
-    vitDefil += (bond - vitDefil) * 0.35;
-
-    const place = placeAuRepos();
-    cibleY = place === null ? quaiHaut() : place;
-    // 6px de defilement par image suffisent a la disperser entierement.
-    cibleD = place === null ? 1 : borne(vitDefil / 6, 0, 1);
+    // Distance en PIXELS, pas en pourcentage : sur une liste courte, un
+    // pourcentage se declenchait au moindre frolement.
+    const voyage = Math.min(140, course * 0.33);
+    const retour = course - voyage;
+    if (y <= voyage) {
+      const t = borne(y / voyage, 0, 1);
+      cibleY = melange(quaiHaut(), croisiere(), adoucir(t));
+      // Pas de place a quai : elle reste dispersee plutot que de se poser
+      // sur la carte.
+      cibleD = (placeAuRepos() !== null) ? borne(t / 0.34, 0, 1) : 1;
+      monte = true;
+    } else if (y >= retour) {
+      const t = borne((y - retour) / voyage, 0, 1);
+      cibleY = melange(croisiere(), quaiBas(), adoucir(t));
+      cibleD = borne((1 - t) / 0.34, 0, 1);
+      monte = false;
+    } else {
+      cibleY = croisiere(); cibleD = 1; monte = true;
+    }
   }
 
   // La forme rattrape sa cible avec un retard souple : c'est cette
@@ -198,10 +216,7 @@ export function animerGoutte() {
     if (Y === null) { Y = cibleY; D = cibleD; }
 
     const avant = Y;
-    // Suivi serre de la position : la goutte est accrochee a un creux qui
-    // defile, tout retard la fait mordre sur la carte de repas suivante.
-    // L'inertie reste sur la FORME (D), c'est elle qui donne le liquide.
-    Y   += (cibleY - Y) * 0.45;
+    Y   += (cibleY - Y) * 0.28;
     D   += (cibleD - D) * 0.11;
     vit += (Math.abs(Y - avant) - vit) * 0.22;
 
@@ -212,13 +227,11 @@ export function animerGoutte() {
     bouton.style.height = h.toFixed(1) + 'px';
     bouton.style.left   = melange(12, 0, Math.min(1, d * 1.7)).toFixed(1) + 'px';
 
-    // Centre sur la pastille : la goutte suivant desormais son creux, elle
-    // n'a plus de raison de s'etirer d'un seul cote — elle se disperse
-    // symetriquement et reste dans les 78px du creux.
-    const decal = -(h - PASTILLE_H) / 2;
+    // Ancre par le HAUT dans les deux sens : ainsi l'amas se disperse vers
+    // le bas et ne peut jamais remonter jusqu'au cadran Calories.
     const v = Math.min(1, vit / 9);
     bouton.style.transform =
-      `translateY(${(Y + decal).toFixed(1)}px) scale(${(1 - v * 0.12).toFixed(3)},${(1 + v * 0.22).toFixed(3)})`;
+      `translateY(${Y.toFixed(1)}px) scale(${(1 - v * 0.12).toFixed(3)},${(1 + v * 0.22).toFixed(3)})`;
 
     corps.style.opacity      = (1 - d * 0.99).toFixed(3);
     corps.style.borderRadius = melange(23, 7, d).toFixed(1) + 'px';
