@@ -61,9 +61,14 @@
 .pg-stats .exo-select{ width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:12px; font-size:14px; font-weight:700; font-family:inherit; background:#fff; color:var(--text); margin-bottom:14px; -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; }
 .pg-stats .exo-select:focus{ outline:none; border-color:#F86A0C; }
 .pg-stats .exo-pr{ display:flex; gap:10px; margin-bottom:14px; }
-.pg-stats .exo-pr-box{ flex:1; background:#FFF9E8; border:1px solid #F3D98A; border-radius:12px; padding:10px 12px; text-align:center; }
-.pg-stats .exo-pr-box .v{ font-size:19px; font-weight:800; color:#B98A00; }
-.pg-stats .exo-pr-box .l{ font-size:10.5px; color:var(--text-dim); margin-top:2px; }
+/* Boites de record : meme matiere que les boites de synthese de la
+   carte Calories. Elles jouent le meme role — un chiffre et son
+   libelle — et portaient deux traitements differents. Le jaune
+   #FFF9E8/#F3D98A et le texte #B98A00 n'appartiennent a aucune
+   palette BELFIT (mesure le 9/08). */
+.pg-stats .exo-pr-box{ flex:1; background:#FAF8F4; border:1px solid rgba(28,24,18,.05); border-radius:13px; padding:13px 10px; text-align:center; }
+.pg-stats .exo-pr-box .v{ font-size:21px; font-weight:650; letter-spacing:-.025em; color:#16130F; font-variant-numeric:tabular-nums; }
+.pg-stats .exo-pr-box .l{ font-size:10.5px; color:#8A8279; margin-top:3px; }
 .pg-stats .chart-val{ font-size:10px; font-weight:700; color:var(--text); }
 .pg-stats .chart-day{ font-size:10px; color:var(--text-dim); }
 .pg-stats .chart-empty{ text-align:center; color:var(--text-dim); font-size:14px; padding:26px 10px 30px; line-height:1.5; }
@@ -121,7 +126,11 @@
    Stats. En or il se confondait avec les barres qu'il devait mesurer. */
 .pg-stats .chart-cible{ position:absolute; left:0; right:0; border-top:1px dashed rgba(222,47,20,.50); pointer-events:none; z-index:2; }
 .pg-stats .chart-cible span{ position:absolute; right:0; top:-15px; font-size:9.5px; font-weight:700; color:#DE2F14; background:#fff; padding:0 4px; }
-.pg-stats .chart-bar.charge{ background:linear-gradient(180deg,#2563EB,#60A5FA) !important; }
+/* Barres de charge : le bleu #2563EB/#60A5FA n'appartenait a aucune
+   palette BELFIT. Le commit v296 annoncait l'unification des degrades
+   mais ce !important l'ecrasait — mesure le 9/08 : les barres de
+   « Progression par exercice » rendaient encore rgb(37,99,235). */
+.pg-stats .chart-bar.charge{ background:linear-gradient(180deg,#B34700,#F86A0C) !important; }
 .pg-stats .chart-empty{ text-align:left !important; padding:4px 0 2px !important; display:flex; align-items:flex-start; gap:12px; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
 .pg-stats .chart-empty .ce-ic{ flex-shrink:0; width:34px; height:34px; border-radius:11px; background:#F4F5F7; display:flex; align-items:center; justify-content:center; }
 .pg-stats .chart-empty .ce-ic svg{ width:19px; height:19px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
@@ -278,8 +287,11 @@
 .pg-stats .modal-cancel{ background:#e2e8f0; color:#475569; }
 .pg-stats .wm-last{ font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
 .pg-stats .wm-last b{ color:#191919; }
-/* .ce-btn est un <button> en v2 (lien en v1) : neutraliser le style bouton natif */
-.pg-stats .ce-btn{ border:none; cursor:pointer; font-family:inherit; }
+/* .ce-btn est un <button> en v2 (lien en v1) : neutraliser le style
+   bouton natif SANS effacer la bordure posee plus haut. `border:none`
+   ecrasait le contour annonce par le commit v296 — mesure le 9/08 :
+   `border: 0px none`, le bouton etait blanc sur blanc. */
+.pg-stats .ce-btn{ border:1px solid rgba(179,71,0,.30); cursor:pointer; font-family:inherit; }
 
 /* ============================================================
    STATS — alignement sur le langage BELFIT.
