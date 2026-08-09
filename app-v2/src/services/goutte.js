@@ -104,10 +104,7 @@ export function animerGoutte() {
   // la pastille se posait sur « Pense a te peser » (Raci, 9/08).
   const placeAuRepos = () => {
     const r = sc.getBoundingClientRect();
-    const bn = document.querySelector('.bn');
-    const plancher = bn
-      ? (bn.getBoundingClientRect().top - r.top) - PASTILLE_H - 10
-      : sc.clientHeight - QUAI_BAS_M;
+    const plancher = plafondBarre() - PASTILLE_H - 10;
     const obstacles = blocsColonne();
     const libre = (y) => estLibre(y, obstacles);
 
@@ -144,7 +141,7 @@ export function animerGoutte() {
   // posait sur « Ajouter un repas » en fin de defilement (Raci, 9/08).
   const quaiBas = () => {
     const blocs = blocsColonne();
-    let y = sc.clientHeight - QUAI_BAS_M;
+    let y = Math.min(sc.clientHeight - QUAI_BAS_M, plafondBarre() - PASTILLE_H - 10);
     for (let i = 0; i < 40 && !estLibre(y, blocs); i++) y -= 8;
     return y;
   };
@@ -156,6 +153,20 @@ export function animerGoutte() {
   let cibleY = 0, cibleD = 0, monte = true;
 
   let hautFixe = null;
+  let barreRepos = null;
+
+  // Position de la barre de navigation AU REPOS. Pendant le defilement
+  // elle s'escamote sous l'ecran : la lire a ce moment-la fait croire la
+  // place libre, la goutte s'y pose, puis la barre revient dessus —
+  // c'est exactement le conflit repere par Raci (9/08). On memorise donc
+  // sa position quand elle est visible, et on ne lit jamais l'autre.
+  const plafondBarre = () => {
+    const bn = document.querySelector('.bn');
+    if (bn && !bn.classList.contains('bn--escamotee')) {
+      barreRepos = bn.getBoundingClientRect().top;
+    }
+    return barreRepos ?? (sc.clientHeight - QUAI_BAS_M + PASTILLE_H + 10);
+  };
 
   function calculer() {
     const course = Math.max(1, sc.scrollHeight - sc.clientHeight);
@@ -180,7 +191,8 @@ export function animerGoutte() {
     const t = borne(y / course, 0, 1);
     // Cible basse FIXE pendant le trajet : la recherche de creux lit des
     // blocs en mouvement, elle ne s'applique qu'a l'arrivee.
-    const bas = t > 0.95 ? quaiBas() : (sc.clientHeight - QUAI_BAS_M);
+    const bas = t > 0.95 ? quaiBas()
+      : Math.min(sc.clientHeight - QUAI_BAS_M, plafondBarre() - PASTILLE_H - 10);
     cibleY = melange(hautFixe, bas, adoucir(t));
     // Entiere aux deux bouts, gouttelettes entre les deux.
     cibleD = borne(Math.min(y, course - y) / 90, 0, 1);
