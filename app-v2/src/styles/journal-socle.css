@@ -619,7 +619,10 @@
 
 /* Fente reservee a la goutte quand elle est a quai en haut de page.
    Sans elle, la pastille se posait sur deux cartes de repas. */
-.pg-journal .fente-goutte { height: 62px; flex: 0 0 auto; }
+/* 50px : la pastille en fait 46, il lui faut 2px de marge de chaque
+   cote. A 62px l'ecart entre « Pense a te peser » et le premier repas
+   atteignait 90px, trop grand (Raci, 9/08). */
+.pg-journal .fente-goutte { height: 50px; flex: 0 0 auto; }
 
 /* ---------- Ajouter ---------- */
 .pg-journal .fab {

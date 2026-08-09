@@ -64,16 +64,23 @@ export function animerGoutte() {
   // continu (pourcentage d'ecran, position d'une carte) remonte avec le
   // defilement et entraine l'amas jusqu'en haut de l'ecran.
   let ancrage = null;
-  const quaiHaut = () => {
+  // Position brute de la fente, telle qu'elle est a l'ecran.
+  const fenteY = () => {
     const f = fente.getBoundingClientRect();
     const r = sc.getBoundingClientRect();
-    const y = (f.top - r.top) + (f.height - PASTILLE_H) / 2;
-    // Butee : sur un ecran ou la carte Calories est haute, la fente
-    // descend sous la barre de navigation et la pastille s'y cache
-    // (constate sur le telephone de Raci, 9/08). Elle ne descend jamais
-    // plus bas que son quai du bas.
-    return Math.min(y, sc.clientHeight - QUAI_BAS_M);
+    return (f.top - r.top) + (f.height - PASTILLE_H) / 2;
   };
+  // La fente a-t-elle vraiment la place d'accueillir la pastille ?
+  // Quand la carte Calories porte le message « journee non cloturee »,
+  // elle s'allonge et pousse la fente hors de l'ecran. Ramener la
+  // pastille de force posait alors un pave bleu en plein milieu de la
+  // carte (constate par Raci, 9/08). Dans ce cas on ne la pose pas : elle
+  // reste en gouttelettes dans la gouttiere, ou elle ne recouvre rien.
+  const fenteAccessible = () => {
+    const y = fenteY();
+    return y >= 0 && y <= sc.clientHeight - QUAI_BAS_M;
+  };
+  const quaiHaut = () => Math.min(fenteY(), sc.clientHeight - QUAI_BAS_M);
   const quaiBas = () => sc.clientHeight - QUAI_BAS_M;
   const croisiere = () => {
     if (ancrage === null) ancrage = quaiHaut();
@@ -92,7 +99,9 @@ export function animerGoutte() {
     if (y <= voyage) {
       const t = borne(y / voyage, 0, 1);
       cibleY = melange(quaiHaut(), croisiere(), adoucir(t));
-      cibleD = borne(t / 0.34, 0, 1);
+      // Pas de place a quai : elle reste dispersee plutot que de se poser
+      // sur la carte.
+      cibleD = fenteAccessible() ? borne(t / 0.34, 0, 1) : 1;
       monte = true;
     } else if (y >= retour) {
       const t = borne((y - retour) / voyage, 0, 1);
