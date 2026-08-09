@@ -16,12 +16,12 @@
 // depuis le cache — celui d'AVANT la redirection vers /v2/.
 // Il fallait taper l'adresse complete a la main. Monter le nom
 // du cache force chaque navigateur a jeter l'ancienne copie.
-const CACHE = 'belfit-v283';
+const CACHE = 'belfit-v284';
 // main.html et app.html sont supprimes avec la v1. Les laisser ici
 // aurait fait echouer addAll() en entier : une seule URL absente
 // rejette la promesse, et le service worker ne s'installe pas du
 // tout — donc plus aucun cache, y compris pour les pages gardees.
-const CORE = ['./index.html','./i18n.js','./i18n-strings.js','./manifest.json','./icon-192-v8.png','./icon-512-v8.png','./belfit-logo-bf.png'];
+const CORE = ['./index.html','./i18n.js','./i18n-strings.js','./manifest.json','./icon-192-v9.png','./icon-512-v9.png','./belfit-logo-bf.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
