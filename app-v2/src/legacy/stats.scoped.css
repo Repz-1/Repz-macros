@@ -100,8 +100,8 @@
 .pg-stats .score-row .sr-val{ width:38px; text-align:right; font-size:12.5px; font-weight:800; font-variant-numeric:tabular-nums; }
 .pg-stats .stat-card.acc-green::before{ background:#10B981; }
 .pg-stats .stat-card.acc-green h2 .h2ic{ stroke:#10B981; }
-.pg-stats .stat-card.acc-orange::before{ background:#F97316; }
-.pg-stats .stat-card.acc-orange h2 .h2ic{ stroke:#F97316; }
+.pg-stats .stat-card.acc-orange::before{ background:#F86A0C; }
+.pg-stats .stat-card.acc-orange h2 .h2ic{ stroke:#F86A0C; }
 .pg-stats .stat-card.acc-blue::before{ background:#3B82F6; }
 .pg-stats .stat-card.acc-blue h2 .h2ic{ stroke:#3B82F6; }
 .pg-stats .stat-card.acc-gold::before{ background:#F86A0C; }
@@ -109,19 +109,28 @@
 .pg-stats .stat-card.acc-violet::before{ background:#8B5CF6; }
 .pg-stats .stat-card.acc-violet h2 .h2ic{ stroke:#8B5CF6; }
 .pg-stats .chart-bar.weight{ background:linear-gradient(180deg,#059669,#34D399) !important; }
-.pg-stats .chart-bar.kcalbar{ background:linear-gradient(180deg,#F5A800,#F86A0C); flex:none; }
+/* Un seul degrade pour toutes les donnees de la page. Il en cohabitait
+   trois — #F8A05A, #F5A800 et #B34700 en haut de barre — qui ne
+   signifiaient rien mais paraissaient approximatifs (Raci, 9/08). */
+.pg-stats .chart-bar.kcalbar{ background:linear-gradient(180deg,#B34700,#F86A0C); flex:none; }
 .pg-stats .chart-bar.kcalbar--creuse{ background:linear-gradient(180deg,#E9DCC0,#D8C79E); }
 .pg-stats .per--kcal{ margin-top: 2px; }
 .pg-stats .chart-zone{ position:relative; }
-.pg-stats .chart-cible{ position:absolute; left:0; right:0; border-top:1px dashed rgba(143,98,0,.45); pointer-events:none; z-index:2; }
-.pg-stats .chart-cible span{ position:absolute; right:0; top:-15px; font-size:9.5px; font-weight:700; color:#8F6200; background:#fff; padding:0 4px; }
+/* Le trait d'objectif SIGNALE : il passe au rouge #DE2F14, la couleur
+   que l'app reserve au repere et au depassement, et celle de l'onglet
+   Stats. En or il se confondait avec les barres qu'il devait mesurer. */
+.pg-stats .chart-cible{ position:absolute; left:0; right:0; border-top:1px dashed rgba(222,47,20,.50); pointer-events:none; z-index:2; }
+.pg-stats .chart-cible span{ position:absolute; right:0; top:-15px; font-size:9.5px; font-weight:700; color:#DE2F14; background:#fff; padding:0 4px; }
 .pg-stats .chart-bar.charge{ background:linear-gradient(180deg,#2563EB,#60A5FA) !important; }
 .pg-stats .chart-empty{ text-align:left !important; padding:4px 0 2px !important; display:flex; align-items:flex-start; gap:12px; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
 .pg-stats .chart-empty .ce-ic{ flex-shrink:0; width:34px; height:34px; border-radius:11px; background:#F4F5F7; display:flex; align-items:center; justify-content:center; }
 .pg-stats .chart-empty .ce-ic svg{ width:19px; height:19px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .pr-rank{ width:26px; height:26px; flex-shrink:0; border-radius:50%; background:#F5F3FF; color:#8B5CF6; font-size:12.5px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .pg-stats .pr-rank.r1{ background:#8B5CF6; color:#fff; }
-.pg-stats .ce-btn{ display:inline-block; margin-top:8px; background:#F86A0C; color:#16130F; text-decoration:none; font-size:12.5px; font-weight:800; padding:8px 14px; border-radius:11px; }
+/* Bouton borde plutot qu'aplat plein : sur Stats on vient lire, pas
+   agir — l'aplat en faisait l'element le plus fort de l'ecran, plus fort
+   que les donnees (Raci, 9/08). */
+.pg-stats .ce-btn{ display:inline-block; margin-top:8px; background:#fff; border:1px solid rgba(179,71,0,.30); color:#B34700; text-decoration:none; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:11px; }
 .pg-stats .stat-card.acc-red::before{ background:#EF4444; }
 .pg-stats .stat-card.acc-red h2 .h2ic{ stroke:#EF4444; }
 .pg-stats .repart-periode{ font-size:12px; font-weight:700; color:#8A8279; text-transform:uppercase; letter-spacing:.05em; margin:2px 0 14px; }
@@ -356,13 +365,13 @@
 /* ---------- Graphiques ---------- */
 .pg-stats .chart-bar {
   border-radius: 7px 7px 3px 3px;
-  background: linear-gradient(180deg, #F8A05A, #F86A0C);
+  background: linear-gradient(180deg, #B34700, #F86A0C);
 }
 .pg-stats .chart-bar.weight {
   background: linear-gradient(180deg, #3A414D, #1E232D);
 }
 .pg-stats .chart-bar.charge {
-  background: linear-gradient(180deg, #F8A05A, #F86A0C);
+  background: linear-gradient(180deg, #B34700, #F86A0C);
 }
 .pg-stats .chart-val {
   font-size: 10px; font-weight: 600; color: #16130F;
