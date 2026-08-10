@@ -68,7 +68,7 @@
    palette BELFIT (mesure le 9/08). */
 .pg-stats .exo-pr-box{ flex:1; background:#FAF8F4; border:1px solid rgba(28,24,18,.05); border-radius:13px; padding:13px 10px; text-align:center; }
 .pg-stats .exo-pr-box .v{ font-size:21px; font-weight:650; letter-spacing:-.025em; color:#16130F; font-variant-numeric:tabular-nums; }
-.pg-stats .exo-pr-box .l{ font-size:10.5px; color:#8A8279; margin-top:3px; }
+.pg-stats .exo-pr-box .l{ font-size:10.5px; color:#736C63; margin-top:3px; }
 .pg-stats .chart-val{ font-size:10px; font-weight:700; color:var(--text); }
 .pg-stats .chart-day{ font-size:10px; color:var(--text-dim); }
 .pg-stats .chart-empty{ text-align:center; color:var(--text-dim); font-size:14px; padding:26px 10px 30px; line-height:1.5; }
@@ -97,7 +97,7 @@
   color:rgba(255,255,255,.42); font-variant-numeric:tabular-nums; }
 /* « Non enregistrée » n'est pas un nombre : elle ne prend pas la taille
    d'un chiffre, sinon elle crie plus fort que la moyenne a cote. */
-.pg-stats .sb-val--vide{ font-size:16px !important; font-weight:500 !important; color:#8A8279 !important; }
+.pg-stats .sb-val--vide{ font-size:16px !important; font-weight:500 !important; color:#736C63 !important; }
 .pg-stats .score-row{ display:flex; align-items:center; gap:10px; }
 .pg-stats .score-row .sr-lbl{ width:118px; font-size:12.5px; font-weight:700; color:rgba(255,255,255,.85); flex-shrink:0; }
 .pg-stats .score-row .sr-bar{ flex:1; height:7px; background:rgba(255,255,255,.14); border-radius:5px; overflow:hidden; }
@@ -129,8 +129,14 @@
 /* Barres de charge : le bleu #2563EB/#60A5FA n'appartenait a aucune
    palette BELFIT. Le commit v296 annoncait l'unification des degrades
    mais ce !important l'ecrasait — mesure le 9/08 : les barres de
-   « Progression par exercice » rendaient encore rgb(37,99,235). */
-.pg-stats .chart-bar.charge{ background:linear-gradient(180deg,#B34700,#F86A0C) !important; }
+   « Progression par exercice » rendaient encore rgb(37,99,235).
+   Passees ensuite en orange BELFIT — erreur : deux blocs de barres
+   orange se suivaient, calories puis charges, plus rien ne les
+   distinguait. Choix de Raci le 10/08 : un bleu, mais profond.
+   Indigo #312E81 -> #4F46E5. Derogation R1 assumee : la charge
+   soulevee n'est pas une donnee de nutrition, elle merite sa
+   propre famille de couleur. */
+.pg-stats .chart-bar.charge{ background:linear-gradient(180deg,#312E81,#4F46E5) !important; }
 .pg-stats .chart-empty{ text-align:left !important; padding:4px 0 2px !important; display:flex; align-items:flex-start; gap:12px; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
 .pg-stats .chart-empty .ce-ic{ flex-shrink:0; width:34px; height:34px; border-radius:11px; background:#F4F5F7; display:flex; align-items:center; justify-content:center; }
 .pg-stats .chart-empty .ce-ic svg{ width:19px; height:19px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
@@ -142,7 +148,7 @@
 .pg-stats .ce-btn{ display:inline-block; margin-top:8px; background:#fff; border:1px solid rgba(179,71,0,.30); color:#B34700; text-decoration:none; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:11px; }
 .pg-stats .stat-card.acc-red::before{ background:#EF4444; }
 .pg-stats .stat-card.acc-red h2 .h2ic{ stroke:#EF4444; }
-.pg-stats .repart-periode{ font-size:12px; font-weight:700; color:#8A8279; text-transform:uppercase; letter-spacing:.05em; margin:2px 0 14px; }
+.pg-stats .repart-periode{ font-size:12px; font-weight:700; color:#736C63; text-transform:uppercase; letter-spacing:.05em; margin:2px 0 14px; }
 .pg-stats .repart-vide{ font-size:13px; color:#6B655D; font-weight:600; line-height:1.5; }
 .pg-stats .rt-btn{ flex:1; padding:8px 6px; border:1.5px solid #E6E8EC; background:#fff; border-radius:11px; font-size:12px; font-weight:700; color:#6B655D; font-family:inherit; cursor:pointer; }
 .pg-stats .rt-btn.active{ background:#FFF4CC; border-color:#F86A0C; color:#B34700; }
@@ -160,7 +166,7 @@
 .pg-stats .bodymap{ width:118px; flex-shrink:0; }
 .pg-stats .bodymap svg{ width:100%; height:auto; display:block; }
 .pg-stats .bodymap .bp{ fill:rgba(28,24,18,.06); stroke:rgba(28,24,18,.10); stroke-width:.6; transition:fill .4s; }
-.pg-stats .bodymap-legend{ display:flex; align-items:center; justify-content:center; gap:5px; font-size:10.5px; color:#8A8279; margin-top:6px; font-weight:600; }
+.pg-stats .bodymap-legend{ display:flex; align-items:center; justify-content:center; gap:5px; font-size:10.5px; color:#736C63; margin-top:6px; font-weight:600; }
 .pg-stats .bodymap-legend i{ width:11px; height:11px; border-radius:3px; display:inline-block; }
 .pg-stats .pr-row{ display:flex; align-items:center; gap:12px; padding:11px 0; border-top:1px solid var(--line); }
 .pg-stats .pr-row:first-child{ border-top:none; }
@@ -242,7 +248,7 @@
 .pg-stats .ml-overlay.show{ display:flex; }
 .pg-stats .ml-modal{ background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
 .pg-stats .ml-date{ font-size:17px; font-weight:800; margin-bottom:6px; text-transform:capitalize; }
-.pg-stats .ml-sub{ font-size:12.5px; color:#8a8580; font-weight:600; margin-bottom:16px; }
+.pg-stats .ml-sub{ font-size:12.5px; color:#736C63; font-weight:600; margin-bottom:16px; }
 .pg-stats .ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
 .pg-stats .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid rgba(28,24,18,.055); background:#fff; color:#6B655D; cursor:pointer; font-family:inherit; }
 .pg-stats .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
@@ -285,7 +291,7 @@
 .pg-stats .modal-btns button{ flex:1; padding:11px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:inherit; }
 .pg-stats .modal-save{ background:#16130F; color:#fff; }
 .pg-stats .modal-cancel{ background:#e2e8f0; color:#475569; }
-.pg-stats .wm-last{ font-size:12.5px; color:#8a8580; font-weight:600; margin-top:6px; }
+.pg-stats .wm-last{ font-size:12.5px; color:#736C63; font-weight:600; margin-top:6px; }
 .pg-stats .wm-last b{ color:#191919; }
 /* .ce-btn est un <button> en v2 (lien en v1) : neutraliser le style
    bouton natif SANS effacer la bordure posee plus haut. `border:none`
@@ -371,7 +377,7 @@
   color: #16130F; font-variant-numeric: tabular-nums;
 }
 .pg-stats .stat-box .sb-lbl {
-  font-size: 10.5px; color: #8A8279; margin-top: 3px;
+  font-size: 10.5px; color: #736C63; margin-top: 3px;
 }
 
 /* ---------- Graphiques ---------- */
@@ -382,16 +388,19 @@
 .pg-stats .chart-bar.weight {
   background: linear-gradient(180deg, #3A414D, #1E232D);
 }
+/* Indigo, pas orange : voir la regle du haut de fichier. Cette
+   seconde declaration est celle que l'ecran applique — c'est elle
+   qui a fait passer la correction du 9/08 pour faite. */
 .pg-stats .chart-bar.charge {
-  background: linear-gradient(180deg, #B34700, #F86A0C);
+  background: linear-gradient(180deg, #312E81, #4F46E5);
 }
 .pg-stats .chart-val {
   font-size: 10px; font-weight: 600; color: #16130F;
   font-variant-numeric: tabular-nums;
 }
-.pg-stats .chart-day { font-size: 10px; color: #8A8279; }
+.pg-stats .chart-day { font-size: 10px; color: #736C63; }
 .pg-stats .chart-empty {
-  color: #8A8279; font-size: 13px; line-height: 1.5;
+  color: #736C63; font-size: 13px; line-height: 1.5;
 }
 
 
@@ -436,7 +445,7 @@
   padding: 12px; margin-bottom: 12px; display: flex; gap: 8px; align-items: flex-end;
 }
 .pg-stats .per-panneau label {
-  flex: 1; font-size: 10.5px; font-weight: 700; color: #8A8279;
+  flex: 1; font-size: 10.5px; font-weight: 700; color: #736C63;
 }
 .pg-stats .per-panneau input {
   width: 100%; margin-top: 4px; padding: 9px 8px; border: 1.5px solid #E3DED4;
@@ -461,11 +470,11 @@
 .pg-stats .gr-bulle {
   font-family: 'DM Mono', ui-monospace, monospace; font-size: 11px; font-weight: 500; fill: #16130F;
 }
-.pg-stats .gr-axe { font-family: 'DM Mono', ui-monospace, monospace; font-size: 9.5px; fill: #A9A29A; }
+.pg-stats .gr-axe { font-family: 'DM Mono', ui-monospace, monospace; font-size: 9.5px; fill: #736C63; }
 .pg-stats .gr-jours {
   display: flex; justify-content: space-between; margin-top: 4px;
-  font-family: 'DM Mono', ui-monospace, monospace; font-size: 9.5px; color: #A9A29A;
+  font-family: 'DM Mono', ui-monospace, monospace; font-size: 9.5px; color: #736C63;
 }
 .pg-stats .gr-note, .pg-stats .gr-vide {
-  font-size: 11.5px; color: #8A8279; text-align: center; padding: 10px 4px 2px; line-height: 1.4;
+  font-size: 11.5px; color: #736C63; text-align: center; padding: 10px 4px 2px; line-height: 1.4;
 }
