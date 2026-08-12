@@ -83,6 +83,19 @@ export function entrerEnInvite() {
   authPrete.value = true;
 }
 
+// Entree DIRECTE par l'adresse : belfit.be/v2/?invite=1
+// Raci le 10/08 n'arrivait pas a entrer et ne pouvait pas me dire ce
+// qu'il voyait ; belfit.be n'est pas joignable depuis le conteneur,
+// je ne pouvais donc rien constater moi-meme. Une adresse ne depend
+// ni de trouver un lien, ni de reussir un appui : elle marche ou elle
+// ne marche pas, et ca se voit tout de suite.
+// Le parametre est aussi un contournement de cache : une URL
+// differente force GitHub Pages et le navigateur a redemander la
+// page au lieu de servir la copie de dix minutes.
+try {
+  if (new URLSearchParams(location.search).has('invite')) entrerEnInvite();
+} catch (e) { /* URL intouchable : le lien sous le formulaire reste */ }
+
 // --- Actions ---
 /**
  * Connexion par e-mail. La connexion par pseudo a ete abandonnee
