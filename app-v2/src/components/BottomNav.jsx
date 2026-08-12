@@ -65,12 +65,32 @@ export function BottomNav() {
   // revient des que la page s'immobilise (Raci, 9/08 : « la barre en bas
   // gene un peu »). Elle revient toujours de son propre chef : on ne
   // peut jamais se retrouver sans navigation. Seuil de 6px pour ignorer
-  // le tremblement du doigt, retour apres 700ms d'immobilite.
+  // le tremblement du doigt.
+  //
+  // Retour apres 240ms d'immobilite (Raci, 10/08 : « qu'elle
+  // reapparaisse rapidement quand j'arrete de defiler »). C'etait
+  // 700ms, plus 340ms d'animation : pres d'une seconde d'attente une
+  // fois le doigt leve.
+  //
+  // Et en bas de page, elle ne se cache pas du tout : l'escamotage
+  // sert a degager du contenu sous la barre, or arrive en bas il n'y
+  // a plus rien a degager. C'est la que l'attente se remarquait le
+  // plus, l'inertie du defilement relancant le minuteur a chaque
+  // image.
   const [cachee, setCachee] = useState(false);
   useEffect(() => {
     let dernier = 0, minuteur = null, cible = null;
     const suivre = () => {
       const y = cible ? cible.scrollTop : 0;
+      // Marge de 4px : le rebond elastique fait depasser le maximum,
+      // et un arrondi sub-pixel suffirait a rater l'egalite stricte.
+      const restant = cible ? cible.scrollHeight - cible.clientHeight - y : 0;
+      if (restant <= 4) {
+        clearTimeout(minuteur);
+        setCachee(false);
+        dernier = y;
+        return;
+      }
       const ecart = y - dernier;
       // Elle s'efface dans LES DEUX SENS (Raci, 9/08) : c'est le fait de
       // faire defiler qui la range, pas la direction. Elle revient des
@@ -80,7 +100,7 @@ export function BottomNav() {
         dernier = y;
       }
       clearTimeout(minuteur);
-      minuteur = setTimeout(() => setCachee(false), 700);
+      minuteur = setTimeout(() => setCachee(false), 240);
     };
     // Le panneau visible change d'un onglet a l'autre : on ecoute au
     // niveau du document, en phase de capture, plutot que de s'accrocher

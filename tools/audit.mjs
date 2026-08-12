@@ -289,6 +289,32 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R12 — Retour de la barre de navigation.
+// Raci le 10/08 : « qu'elle reapparaisse rapidement quand j'arrete de
+// defiler, surtout quand je suis en bas ». L'attente etait de 700ms
+// plus 340ms d'animation. Deux exigences tenues ici : le delai reste
+// court, et arrive en bas la barre ne se cache pas du tout —
+// l'escamotage sert a degager du contenu sous la barre, or en bas il
+// n'y a plus rien a degager.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/BottomNav.jsx');
+  const css = lire('app-v2/src/styles/journal-socle.css');
+  if (jsx && css) {
+    const soucis = [];
+    const d = jsx.match(/setCachee\(false\),\s*(\d+)\)/);
+    if (!d) soucis.push('delai de retour introuvable');
+    else if (+d[1] > 300) soucis.push(`delai de retour de ${d[1]}ms — au-dela de 300ms l'attente se remarque`);
+    if (!/restant <= 4/.test(jsx)) soucis.push('la barre se cache encore en bas de page');
+    const tr = css.match(/\.bn \{ transition: transform \.(\d+)s/);
+    if (!tr) soucis.push('transition de retour introuvable');
+    else if (+tr[1] > 30) soucis.push(`animation de retour de .${tr[1]}s — elle s'ajoute au delai`);
+    if (soucis.length) faute('R12 retour de la barre', soucis.join(' ; '));
+    else passe('R12 retour de la barre');
+  }
+}
+
+// ------------------------------------------------------------
 // R10 — Une ligne de resultat ne lit jamais des valeurs absentes.
 // Trouve le 10/08 en instrumentant la console : un favori dont
 // l'aliment n'existe plus dans la base — produit renomme, aliment

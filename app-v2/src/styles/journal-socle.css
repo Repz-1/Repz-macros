@@ -3053,7 +3053,7 @@
 /* Depart doux et arrivee douce dans les deux sens : la disparition est
    un peu plus lente que le retour, pour qu'elle se retire sans a-coup et
    revienne franchement quand on s'arrete. */
-.bn { transition: transform .34s cubic-bezier(.33,0,.2,1), opacity .28s cubic-bezier(.33,0,.2,1); }
+.bn { transition: transform .22s cubic-bezier(.22,.7,.3,1), opacity .16s ease-out; }
 .bn--escamotee {
   transform: translateY(calc(100% + 20px)) scale(.97);
   opacity: 0; pointer-events: none;
