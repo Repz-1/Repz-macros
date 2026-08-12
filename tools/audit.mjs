@@ -261,15 +261,28 @@ const DECALAGE_SW_V2 = 232;
   const css = lire('app-v2/src/styles/journal-socle.css');
   if (jsx && store && css) {
     const soucis = [];
-    if (/mc-res-fav|basculerFavori/.test(jsx)) soucis.push('l\'etoile a cocher est revenue dans la liste de resultats');
-    if (/mc-res-fav/.test(css)) soucis.push('le style de l\'etoile subsiste dans journal-socle.css');
+    // L'etoile est revenue le 10/08 a la demande de Raci — les deux
+    // listes coexistent. Ce qui est interdit, c'est son SILENCE :
+    // une bascule doit s'annoncer et se defaire d'un geste.
+    if (/basculerFavori/.test(jsx)) {
+      if (!/mc-avis-fav/.test(jsx)) soucis.push('la bascule de favori n\'affiche aucun retour');
+      if (!/maf-annuler/.test(jsx)) soucis.push('la bascule de favori ne peut pas etre annulee');
+      if (!/border-left/.test((css.match(/\.mc-res-fav \{[^}]*\}|\.mc-resultats \.mc-res-fav \{[^}]*\}/) || [''])[0])) {
+        soucis.push('l\'etoile n\'est plus separee de la zone de choix — c\'est ainsi qu\'on la touchait par megarde');
+      }
+    }
+    // Les deux listes doivent rester distinctes et titrees, sinon on
+    // ne sait plus laquelle on regarde ni ce que l'etoile fabrique.
+    if (!/fav_titre/.test(jsx) || !/mc_courants/.test(jsx)) {
+      soucis.push('les listes favoris / courants ne sont plus titrees separement');
+    }
     // Le comptage doit etre appele la ou l'aliment entre vraiment
     // dans un repas, sinon la liste ne se remplit jamais.
     if (!/noterUsage\(nom\)/.test(jsx)) soucis.push('choisir() ne compte pas l\'encodage — la liste des courants resterait vide');
     if (!/export function alimentsCourants/.test(store)) soucis.push('alimentsCourants() absent du store');
     // La reprise des anciennes etoiles ne doit pas sauter : sans
     // elle, des semaines d'habitudes disparaissent d'un coup.
-    if (!/d && d\.favoris/.test(store)) soucis.push('la reprise des anciens favoris a disparu du chargement');
+    if (!/export function estFavori/.test(store)) soucis.push('estFavori() absent du store');
     if (soucis.length) faute('R11 aliments courants', soucis.join(' ; '));
     else passe('R11 aliments courants');
   }

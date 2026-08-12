@@ -1949,6 +1949,10 @@ Object.assign(STRINGS_V1.fr, {
   fav_titre: "Tes favoris",
   mc_courants: "Tes aliments courants",
   fav_basculer: "Mettre en favori",
+  fav_retirer: "Retirer des favoris",
+  fav_ajoute: "{nom} ajouté à tes favoris",
+  fav_enleve: "{nom} retiré de tes favoris",
+  fav_annuler: "Annuler",
   cp_combien: "Combien de portions ?",
   cp_ajouter: "Ajouter au repas"
 });
@@ -1974,6 +1978,10 @@ Object.assign(STRINGS_V1.en, {
   fav_titre: "Your favourites",
   mc_courants: "Your usual foods",
   fav_basculer: "Add to favourites",
+  fav_retirer: "Remove from favourites",
+  fav_ajoute: "{nom} added to your favourites",
+  fav_enleve: "{nom} removed from your favourites",
+  fav_annuler: "Undo",
   cp_combien: "How many servings?",
   cp_ajouter: "Add to meal"
 });
@@ -1999,6 +2007,10 @@ Object.assign(STRINGS_V1.nl, {
   fav_titre: "Je favorieten",
   mc_courants: "Je gebruikelijke voedingsmiddelen",
   fav_basculer: "Aan favorieten toevoegen",
+  fav_retirer: "Uit favorieten verwijderen",
+  fav_ajoute: "{nom} toegevoegd aan je favorieten",
+  fav_enleve: "{nom} verwijderd uit je favorieten",
+  fav_annuler: "Ongedaan maken",
   cp_combien: "Hoeveel porties?",
   cp_ajouter: "Aan maaltijd toevoegen"
 });

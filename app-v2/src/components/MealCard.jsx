@@ -24,7 +24,10 @@ export const ingNouveau = signal(null);
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
-import { alimentsCourants, bonusUsage, noterUsage, plats, macrosPortion } from '../store/perso.js';
+import {
+  favoris, estFavori, basculerFavori,
+  alimentsCourants, bonusUsage, noterUsage, plats, macrosPortion,
+} from '../store/perso.js';
 import { MEAL_SVG, TYPE_SVG, MEAL_NEUTRAL_SVG } from '../data/illustrations.js';
 import {
   repas, totauxRepas, setPortion, ajouterIngredient, ajouterPlat,
@@ -220,12 +223,60 @@ export function Recherche({ repasId, phCourt }) {
   // Trouve le 10/08 en instrumentant la console.
   const aDesValeurs = (n) => !!(DB[n] || customFoods.value[n]);
 
-  // Sans saisie, on propose ce qui revient le plus souvent : c'est ce
-  // qu'on encode tous les jours, et ca evite d'avoir a taper.
-  const resultats = (terme.length < 2
-    ? alimentsCourants(6)
-    : classer(noms).map(([, n]) => n).slice(0, 8)
-  ).filter(aDesValeurs);
+  // Sans saisie, deux listes separees et titrees. Les favoris
+  // d'abord — un choix explicite prime sur une statistique — puis
+  // les aliments les plus encodes, dont on retire ce qui est deja
+  // epingle pour ne pas afficher deux fois la meme ligne.
+  const favVus = favoris.value.filter(aDesValeurs).slice(0, 5);
+  const courants = alimentsCourants(10)
+    .filter(n => !estFavori(n))
+    .filter(aDesValeurs)
+    .slice(0, Math.max(2, 6 - favVus.length));
+
+  const resultats = terme.length < 2
+    ? []
+    : classer(noms).map(([, n]) => n).slice(0, 8).filter(aDesValeurs);
+
+  // Une bascule de favori doit se VOIR. C'est le silence de l'ancienne
+  // etoile qui posait probleme : elle vivait a 42 px du nom qu'on tape
+  // pour choisir un aliment, elle basculait sans qu'on le veuille et
+  // rien ne le disait. Ici, chaque bascule affiche une bande avec le
+  // nom de l'aliment et une annulation d'un seul geste.
+  const [avis, setAvis] = useState(null);   // { nom, ajoute }
+  const minuteurAvis = useRef(null);
+
+  const annoncer = (nom) => {
+    const ajoute = estFavori(nom);
+    setAvis({ nom, ajoute });
+    clearTimeout(minuteurAvis.current);
+    minuteurAvis.current = setTimeout(() => setAvis(null), 4000);
+  };
+  useEffect(() => () => clearTimeout(minuteurAvis.current), []);
+
+  const basculer = (nom) => { basculerFavori(nom); annoncer(nom); };
+
+  const ligneResultat = (nom) => {
+    const dd = DB[nom] || customFoods.value[nom];
+    const fav = estFavori(nom);
+    return (
+      <div class="mc-res-ligne" key={nom}>
+        <button class="mc-res-choix" onClick={() => choisir(nom)}>
+          <span>{nom}</span>
+          <span class="kc">{dd.kcal} kcal/100g</span>
+        </button>
+        <button
+          class={'mc-res-fav' + (fav ? ' on' : '')}
+          onClick={e => { e.stopPropagation(); basculer(nom); }}
+          aria-label={fav ? t('fav_retirer') : t('fav_basculer')}
+          aria-pressed={fav ? 'true' : 'false'}
+        >{fav ? '★' : '☆'}</button>
+      </div>
+    );
+  };
+
+  const listeVide = terme.length < 2
+    ? favVus.length === 0 && courants.length === 0
+    : resultats.length === 0;
 
   // Aliments deja encodes dans CE repas, par nom. Sert a rediriger
   // l'appui au lieu d'ajouter une seconde fois la meme chose.
@@ -368,11 +419,8 @@ export function Recherche({ repasId, phCourt }) {
       {iaVocal && <VocalModal repasId={repasId} fermer={() => setIaVocal(false)} />}
       {iaPhoto && <PhotoModal repasId={repasId} fermer={() => setIaPhoto(false)} />}
 
-      {actif && (platsTrouves.length > 0 || resultats.length > 0) && (
+      {actif && (platsTrouves.length > 0 || !listeVide) && (
         <div class="mc-resultats" style={{ maxHeight: hListe + 'px' }}>
-          {terme.length < 2 && resultats.length > 0 && (
-            <div class="mc-res-titre">{t('mc_courants')}</div>
-          )}
 
           {platsTrouves.map(p => {
             const part = macrosPortion(p);
@@ -384,17 +432,37 @@ export function Recherche({ repasId, phCourt }) {
             );
           })}
 
-          {resultats.map(nom => {
-            const dd = DB[nom] || customFoods.value[nom];
-            return (
-            <div class="mc-res-ligne" key={nom}>
-              <button class="mc-res-choix" onClick={() => choisir(nom)}>
-                <span>{nom}</span>
-                <span class="kc">{dd.kcal} kcal/100g</span>
+          {/* Sans saisie : favoris epingles, puis aliments les plus
+              encodes. Deux titres, pour qu'on comprenne d'ou vient
+              chaque liste et ce que l'etoile fabrique. */}
+          {terme.length < 2 && favVus.length > 0 && (
+            <div class="mc-res-titre">{t('fav_titre')}</div>
+          )}
+          {terme.length < 2 && favVus.map(nom => ligneResultat(nom))}
+
+          {terme.length < 2 && courants.length > 0 && (
+            <div class="mc-res-titre">{t('mc_courants')}</div>
+          )}
+          {terme.length < 2 && courants.map(nom => ligneResultat(nom))}
+
+          {terme.length >= 2 && resultats.map(nom => ligneResultat(nom))}
+
+          {/* Retour de bascule : ce qui vient de se passer, et de quoi
+              le defaire. Sans lui, une etoile touchee par megarde
+              reste invisible — c'est exactement ce qui s'etait
+              produit. Il vit DANS le panneau : celui-ci est en
+              position absolue, une bande posee apres lui se
+              retrouvait par-dessus la barre de recherche. */}
+          {avis && (
+            <div class="mc-avis-fav">
+              <span class="maf-txt">
+                {t(avis.ajoute ? 'fav_ajoute' : 'fav_enleve', { nom: avis.nom })}
+              </span>
+              <button class="maf-annuler" onClick={() => { basculerFavori(avis.nom); setAvis(null); }}>
+                {t('fav_annuler')}
               </button>
             </div>
-            );
-          })}
+          )}
 
           {/* Acces discret a la bibliotheque, uniquement si elle existe */}
           {plats.value.length > 0 && (

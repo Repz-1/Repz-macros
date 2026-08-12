@@ -7,7 +7,7 @@ import '../src/styles/design-system.css';
 import '../src/styles/journal-socle.css';
 import { utilisateur, authPrete } from '../src/services/firebase.js';
 import { donneesPretes, objectifs, repas, calculBaseFait } from '../src/store/journal.js';
-import { usages } from '../src/store/perso.js';
+import { usages, favoris } from '../src/store/perso.js';
 import { App } from '../src/main.jsx';
 import { estPremium } from '../src/components/PremiumPage.jsx';
 import { ongletActif } from '../src/components/BottomNav.jsx';
@@ -30,6 +30,9 @@ repas.value = structuredClone(REPAS);
 // Comptages d'encodage : ce sont eux qui font la liste des courants.
 const USAGES = { 'Avoine': 12, 'Riz cru': 9, 'Poulet cuit': 8, 'Banane': 2 };
 usages.value = { ...USAGES };
+// Un favori epingle a la main, pour voir les deux listes cote a cote.
+const FAVORIS = ['Beurre cacahuète'];
+favoris.value = [...FAVORIS];
 
 authPrete.value = true;
 donneesPretes.value = true;
@@ -48,6 +51,7 @@ setInterval(() => {
   // journal a vide : on le maintient le temps du test.
   if (!repas.value.some(r => r.ings.length)) repas.value = structuredClone(REPAS);
   if (!Object.keys(usages.value).length) usages.value = { ...USAGES };
+  if (!favoris.value.length) favoris.value = [...FAVORIS];
   if (repasOuvertId.value === null) repasOuvertId.value = 1;
 }, 100);
 

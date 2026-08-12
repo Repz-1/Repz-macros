@@ -5,23 +5,31 @@ import { DB } from '../data/aliments.js';
 import { customFoods } from '../components/Scanner.jsx';
 
 // ============================================================
-// ALIMENTS COURANTS ET PLATS ENREGISTRES
+// FAVORIS, ALIMENTS COURANTS ET PLATS ENREGISTRES
 //
-// Aliments courants : ceux qu'on encode le plus souvent. Ils
-// remontent en tete de la recherche et s'affichent avant meme de
-// taper. Le comptage est automatique — l'app sait deja ce qu'on
-// mange tous les jours, le declarer a la main faisait le travail
-// deux fois. Une etoile a cocher tenait ce role jusqu'au 10/08 :
-// collee au nom qu'on tape pour choisir l'aliment, elle se
-// declenchait sans qu'on le veuille et rien ne disait ce qu'elle
-// faisait.
+// Deux listes, deux besoins distincts.
+//
+// Aliments courants : ceux qu'on encode le plus souvent, comptes
+// automatiquement. L'app sait deja ce qu'on mange tous les jours ;
+// le declarer a la main faisait le travail deux fois.
+//
+// Favoris : epingles a la main, pour l'aliment qu'on veut sous la
+// main tout de suite sans attendre qu'il se hisse par la frequence.
+// Ils passent devant les courants.
+//
+// L'etoile a ete retiree le 10/08 puis remise le meme jour : le
+// defaut n'etait pas l'etoile mais son silence. Collee au nom qu'on
+// tape pour choisir l'aliment, elle basculait sans qu'on le veuille
+// et rien ne le signalait — c'est ainsi que l'avoine de Raci est
+// devenue favorite sans decision. Elle revient avec un retour
+// visible et une annulation d'un geste.
 //
 // Plats : une recette pesee une seule fois, a la cuisson, puis
 // consommee en portions. Le batch cooking en pratique.
 // ============================================================
 
 export const usages = signal({});    // { nom: nombre d'encodages }
-export const favoris = signal([]);   // ancien systeme, lu pour la reprise
+export const favoris = signal([]);   // aliments epingles a la main
 export const plats = signal([]);     // { id, nom, ings, portions }
 // Prenom : synchronise avec le compte. localStorage seul le perdait
 // des qu'on changeait d'appareil ou de navigateur.
@@ -36,14 +44,8 @@ effect(() => {
   uid = u; pret = false;
   chargerDonnees(u).then(d => {
     if (uid !== u) return;
-    const anciens = (d && d.favoris) || [];
-    favoris.value = anciens;
-    // Reprise : les etoiles posees a la main avant le 10/08 valent
-    // trois encodages, pour qu'elles gardent leur rang le temps que
-    // le comptage reel prenne le relais. Sans cela, une liste
-    // d'habitudes construite pendant des semaines disparaissait.
-    const compte = (d && d.usages) || null;
-    usages.value = compte || Object.fromEntries(anciens.map(n => [n, 3]));
+    favoris.value = (d && d.favoris) || [];
+    usages.value = (d && d.usages) || {};
     plats.value = (d && d.plats) || [];
     // Le prenom du compte fait foi. S'il manque au cloud mais existe
     // en local (compte cree avant cette synchro), on le remonte.
@@ -60,8 +62,6 @@ effect(() => {
 });
 
 effect(() => {
-  // `favoris` reste ecrit tel quel : on ne detruit pas la donnee
-  // d'un systeme qu'on remplace, au cas ou il faudrait revenir.
   const instantane = {
     favoris: favoris.value, usages: usages.value,
     plats: plats.value, prenom: prenom.value,
@@ -70,6 +70,23 @@ effect(() => {
   if (!u || !pret) return;   // ne pas ecraser avant le chargement
   sauvegarder(u, instantane);
 });
+
+// ---------- Favoris ----------
+//
+// Le comptage automatique fait remonter ce qu'on encode le plus.
+// Les favoris repondent a un autre besoin : epingler un aliment
+// qu'on veut avoir sous la main SANS attendre qu'il se hisse par la
+// frequence — un aliment nouveau, ou un aliment de saison.
+
+export function estFavori(nom) {
+  return favoris.value.includes(nom);
+}
+
+export function basculerFavori(nom) {
+  favoris.value = estFavori(nom)
+    ? favoris.value.filter(n => n !== nom)
+    : [...favoris.value, nom];
+}
 
 // ---------- Aliments courants ----------
 
@@ -94,7 +111,10 @@ export function alimentsCourants(max = 6) {
  * « Riz au lait ». Il faut trois encodages pour atteindre le plafond.
  */
 export function bonusUsage(nom) {
-  return Math.min(25, (usages.value[nom] || 0) * 9);
+  // Un favori epingle passe devant tout aliment simplement frequent :
+  // c'est un choix explicite, il prime sur une statistique.
+  const base = estFavori(nom) ? 32 : 0;
+  return base + Math.min(25, (usages.value[nom] || 0) * 9);
 }
 
 // ---------- Plats ----------

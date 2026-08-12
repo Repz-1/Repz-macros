@@ -2627,6 +2627,34 @@
 .pg-journal .mc-resultats > button,
 .pg-journal .mc-res-ligne { border-bottom-color: var(--bordure-fine); }
 
+/* L'etoile. Elle a sa propre colonne, separee du nom par un filet :
+   c'est l'absence de frontiere qui la faisait toucher par megarde
+   quand on visait la ligne. Bouton visible, pas un glyphe flottant. */
+.pg-journal .mc-resultats .mc-res-fav {
+  flex: 0 0 52px; width: 52px; align-self: stretch;
+  background: none; border: none; border-left: 1px solid var(--bordure-fine);
+  cursor: pointer; font-size: 18px; line-height: 1; font-family: inherit;
+  color: #C9C3B8;
+}
+.pg-journal .mc-res-fav.on { color: var(--or); }
+.pg-journal .mc-res-fav:active { background: rgba(24,20,12,.045); }
+
+/* Retour de bascule, avec son annulation. */
+.pg-journal .mc-avis-fav {
+  display: flex; align-items: center; gap: 10px;
+  margin: 8px; padding: 10px 12px;
+  background: #1D1D1D; border-radius: 12px;
+}
+.pg-journal .maf-txt {
+  flex: 1 1 auto; min-width: 0; color: #F8F2E8;
+  font-size: 12.5px; font-weight: 500; line-height: 1.35;
+}
+.pg-journal .maf-annuler {
+  flex: 0 0 auto; background: none; border: none; cursor: pointer;
+  color: #FAC408; font-family: inherit; font-size: 12.5px; font-weight: 700;
+  padding: 4px 2px;
+}
+
 /* Le nom : c'est lui qu'on cherche. */
 .pg-journal .mc-resultats .mc-res-choix > span:first-child,
 .pg-journal .mc-resultats > button > span:first-child,
