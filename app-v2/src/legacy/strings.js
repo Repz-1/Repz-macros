@@ -1947,7 +1947,6 @@ Object.assign(STRINGS_V1.fr, {
   mp_portions_n: "portions",
   mp_par_portion: "par portion",
   fav_titre: "Tes favoris",
-  mc_deja_repas: "déjà {q} {u} dans ce repas — appuyer pour ajuster",
   fav_basculer: "Mettre en favori",
   cp_combien: "Combien de portions ?",
   cp_ajouter: "Ajouter au repas"
@@ -1972,7 +1971,6 @@ Object.assign(STRINGS_V1.en, {
   mp_portions_n: "servings",
   mp_par_portion: "per serving",
   fav_titre: "Your favourites",
-  mc_deja_repas: "already {q} {u} in this meal — tap to adjust",
   fav_basculer: "Add to favourites",
   cp_combien: "How many servings?",
   cp_ajouter: "Add to meal"
@@ -1997,7 +1995,6 @@ Object.assign(STRINGS_V1.nl, {
   mp_portions_n: "porties",
   mp_par_portion: "per portie",
   fav_titre: "Je favorieten",
-  mc_deja_repas: "al {q} {u} in deze maaltijd — tik om aan te passen",
   fav_basculer: "Aan favorieten toevoegen",
   cp_combien: "Hoeveel porties?",
   cp_ajouter: "Aan maaltijd toevoegen"

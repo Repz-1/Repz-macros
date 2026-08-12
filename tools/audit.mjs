@@ -237,9 +237,10 @@ const DECALAGE_SW_V2 = 232;
       if (iGarde === -1) soucis.push('choisir() n\'a pas de garde sur les aliments deja presents');
       else if (iAjout !== -1 && iAjout < iGarde) soucis.push('choisir() ajoute avant de verifier');
     }
-    // La liste doit aussi le DIRE : sans marque visible, l'appui reste
-    // une surprise meme s'il ne duplique plus.
-    if (!/est-la/.test(jsx)) soucis.push('la liste de resultats ne marque pas les aliments deja encodes');
+    // Volontairement PAS de marque visible dans la liste : « appuyer
+    // puis ajuster » est la regle pour tous les aliments, la signaler
+    // sur un seul n'apprend rien (retiree le 10/08 a la demande de
+    // Raci). La regle ne verifie donc que le comportement.
     if (soucis.length) faute('R9 doublon d\'aliment', soucis.join(' ; '));
     else passe('R9 doublon d\'aliment');
   }

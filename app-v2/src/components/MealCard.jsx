@@ -228,9 +228,8 @@ export function Recherche({ repasId, phCourt }) {
       ].slice(0, 8)
   ).filter(aDesValeurs);
 
-  // Aliments deja encodes dans CE repas, par nom. Sert deux fois : a
-  // marquer la liste de resultats, et a rediriger l'appui au lieu
-  // d'ajouter une seconde fois la meme chose.
+  // Aliments deja encodes dans CE repas, par nom. Sert a rediriger
+  // l'appui au lieu d'ajouter une seconde fois la meme chose.
   const dejaLa = new Map();
   for (const i of (repas.value.find(r => r.id === repasId)?.ings || [])) {
     if (!dejaLa.has(i.name)) dejaLa.set(i.name, i);
@@ -238,7 +237,12 @@ export function Recherche({ repasId, phCourt }) {
 
   const choisir = (nom) => {
     // Deja dans ce repas : on ne duplique pas, on emmene sur la ligne
-    // existante, quantite selectionnee. Signale par Raci le 10/08 :
+    // existante, quantite selectionnee. Silencieux, et c'est voulu :
+    // appuyer puis ajuster est la regle pour TOUS les aliments, la
+    // marque « deja dans ce repas » n'apprenait rien et ne se
+    // justifiait pas sur un seul (retiree le 10/08 a la demande de
+    // Raci). Le retour visuel existe deja : la liste se ferme et la
+    // quantite se selectionne. Signale par Raci le 10/08 :
     // Avoine encodee a 100 g, un appui sur le meme aliment dans la
     // liste donnait deux lignes de 100 g et un total de 760 kcal pour
     // 380 reellement manges — la journee comptait faux, pas seulement
@@ -381,21 +385,11 @@ export function Recherche({ repasId, phCourt }) {
           })}
 
           {resultats.map(nom => {
-            // Marquer ce qui est deja encode : la liste recouvre
-            // « DANS CE REPAS », on ne peut pas le voir en appuyant.
-            const dl = dejaLa.get(nom);
             const dd = DB[nom] || customFoods.value[nom];
             return (
             <div class="mc-res-ligne" key={nom}>
-              <button class={'mc-res-choix' + (dl ? ' est-la' : '')} onClick={() => choisir(nom)}>
-                <span>
-                  {nom}
-                  {dl && (
-                    <span class="mc-res-deja">
-                      {t('mc_deja_repas', { q: dl.portion, u: dd && dd.unit ? (dd.unitLabel || 'pièce') : 'g' })}
-                    </span>
-                  )}
-                </span>
+              <button class="mc-res-choix" onClick={() => choisir(nom)}>
+                <span>{nom}</span>
                 <span class="kc">{dd.kcal} kcal/100g</span>
               </button>
               <button
