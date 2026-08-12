@@ -300,7 +300,12 @@ const DECALAGE_SW_V2 = 232;
   const jsx = lire('app-v2/src/components/Questionnaire.jsx');
   if (jsx) {
     const soucis = [];
-    if (!/taille:[^}]*inverse:\s*true/.test(jsx)) soucis.push('la reglette de taille n\'est plus inversee');
+    // Taille et poids : grand vers le haut (Raci, 10/08). L'age reste
+    // croissant vers le bas — il n'a pas ete demande et un age n'a pas
+    // de haut ni de bas naturel.
+    for (const cle of ['taille', 'poids']) {
+      if (!new RegExp(`${cle}:[^}]*inverse:\\s*true`).test(jsx)) soucis.push(`la reglette de ${cle} n'est plus inversee`);
+    }
     if (!/const posDe =/.test(jsx) || !/const valDe =/.test(jsx)) soucis.push('les convertisseurs posDe/valDe ont disparu');
     // Aucun calcul de position en dur ne doit subsister a cote d'eux.
     const dur = jsx.match(/\((?:valeur|v|k) - min\) \* PX/g);
