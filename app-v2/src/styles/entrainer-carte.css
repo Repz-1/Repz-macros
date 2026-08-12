@@ -318,3 +318,83 @@
 .pg-entrainer--carte .choice.ph.sm.ch-journal--ouvert > p { font-size: 11.5px; max-width: 44%; }
 .pg-entrainer--carte .choice.ph.sm.ch-journal--ouvert .cta::before { display: block; }
 .pg-entrainer--carte .choice.ph.sm.ch-journal--ouvert .cta { gap: 16px; }
+
+/* ============================================================
+   REFONTE DE LA PAGE S'ENTRAINER — Raci, 10/08.
+   Les cartes photo « Seance libre » et « Creer mon programme »
+   sont retirees ; la page est le journal seul, dans un ordre
+   d'action : pastilles, action, calendrier, semaine, seances.
+   ============================================================ */
+
+/* Pastilles : elles ne coiffent plus un bloc replie, elles ouvrent
+   la page. Plus de filet sous elles, il separait de rien. */
+.pg-entrainer--carte .wlog-sum {
+  border-bottom: none; padding: 2px 2px 12px;
+}
+
+/* Zone d'action. C'est le geste principal de la page, donc le seul
+   aplat plein : tout le reste est sur fond blanc. */
+.pg-entrainer--carte .ent-action {
+  background: #FFF; border: 1px solid rgba(28,24,18,.06);
+  border-radius: 18px; padding: 16px; margin-bottom: 14px;
+}
+.pg-entrainer--carte .ent-action-jour {
+  font-size: 11.5px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: #736C63; margin-bottom: 10px;
+}
+.pg-entrainer--carte .ent-go {
+  display: block; width: 100%; border: none; border-radius: 14px;
+  background: var(--or, #FAC408); color: #16130F;
+  font-family: inherit; font-size: 17px; font-weight: 700;
+  letter-spacing: -.01em; padding: 19px 16px; cursor: pointer;
+}
+.pg-entrainer--carte .ent-go:active { filter: brightness(.95); }
+/* #B34700 et non le jaune : sur creme, #FAC408 tombe a 1.7:1. */
+.pg-entrainer--carte .ent-prog {
+  display: block; width: 100%; background: none; border: none;
+  margin-top: 13px; padding: 4px 0; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  color: #B34700; text-decoration: underline;
+}
+
+/* Blocs blancs : calendrier, semaine, seances. */
+.pg-entrainer--carte .ent-bloc {
+  background: #FFF; border: 1px solid rgba(28,24,18,.06);
+  border-radius: 18px; padding: 16px; margin-bottom: 14px;
+}
+.pg-entrainer--carte .ent-bloc h3 {
+  font-size: 15.5px; font-weight: 600; margin: 0 0 2px;
+}
+.pg-entrainer--carte .ent-sous {
+  font-size: 12.5px; color: #736C63; margin: 0 0 14px;
+}
+
+/* Semaine + silhouette cote a cote. */
+.pg-entrainer--carte .ent-semaine {
+  display: flex; gap: 14px; align-items: center;
+}
+.pg-entrainer--carte .ent-sem-txt { flex: 1 1 auto; min-width: 0; }
+.pg-entrainer--carte .ent-sem-l {
+  display: flex; justify-content: space-between; gap: 10px;
+  font-size: 12.5px; padding: 6px 0;
+  border-bottom: 1px solid rgba(28,24,18,.06);
+}
+.pg-entrainer--carte .ent-sem-l:last-child { border-bottom: none; }
+.pg-entrainer--carte .ent-sem-l b {
+  font-family: 'DM Mono', ui-monospace, monospace; font-weight: 500;
+  text-align: right;
+}
+.pg-entrainer--carte .ent-sem-oubli { color: #736C63; font-size: 11.5px; }
+.pg-entrainer--carte .ent-mannequin { flex: 0 0 88px; width: 88px; }
+.pg-entrainer--carte .ent-mannequin svg { width: 100%; height: auto; display: block; }
+/* BodyMap porte sa propre legende « non travaille ». Utile dans
+   Stats, redondante ici : la ligne « Pas encore touché » juste a
+   gauche nomme deja les groupes manquants, et le texte debordait du
+   bloc. */
+.pg-entrainer--carte .ent-mannequin .bodymap-legend { display: none; }
+
+/* Le bloc des seances vit maintenant DANS une carte blanche : son
+   cadre et son fond propres feraient une carte dans une carte. */
+.pg-entrainer--carte .ent-bloc .sea-bloc {
+  background: none; border: none; padding: 0; margin: 0;
+}

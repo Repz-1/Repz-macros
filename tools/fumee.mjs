@@ -59,6 +59,25 @@ const ecrans = [
     },
   },
   {
+    nom: "S'entrainer",
+    url: 'app.html',
+    // Ajoute le 10/08 apres la refonte de la page. Elle n'etait
+    // couverte par AUCUN ecran du test : c'est precisement ainsi
+    // qu'un composant absent avait survecu quinze jours ailleurs.
+    parcours: async (p) => {
+      await p.evaluate(() => {
+        const b = [...document.querySelectorAll('.bn-item')].find(e => /entrain/i.test(e.className));
+        if (b) b.click();
+      });
+      await p.waitForTimeout(1200);
+      // Les mois voisins redessinent la grille entiere.
+      for (const n of await p.$$('.wlog-nav')) { await n.tap().catch(() => {}); await p.waitForTimeout(250); }
+      // Un jour du calendrier ouvre la modale des muscles.
+      const jour = await p.$('.wlog-cell');
+      if (jour) { await jour.tap().catch(() => {}); await p.waitForTimeout(600); }
+    },
+  },
+  {
     nom: 'Questionnaire programme',
     url: 'quiz.html',
     // Les neuf etapes. C'est ici que se cachait le composant fantome :

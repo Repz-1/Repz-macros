@@ -66,8 +66,26 @@ const nomMuscle = (k) => t('mus_' + k);
 // ==========================================================
 // Journal d'entrainement : calendrier mensuel (classes wlog-*)
 // ==========================================================
+/**
+ * Journal d'entrainement — desormais TOUTE la page S'entrainer.
+ *
+ * Refonte demandee par Raci le 10/08. Les deux cartes « Seance libre »
+ * et « Creer mon programme » sont retirees : elles occupaient les deux
+ * tiers du premier ecran pour deux liens, et reléguaient le calendrier
+ * en troisieme position, replie derriere un bouton « Ouvrir ». La page
+ * est maintenant le journal seul, dans un ordre d'action :
+ *   1. pastilles de resume
+ *   2. zone d'action — demarrer une seance, adapter son programme
+ *   3. calendrier
+ *   4. semaine + silhouette
+ *   5. seances enregistrees
+ * Les deux destinations retirees sont reprises par la zone d'action :
+ * `selection` par le gros bouton, `questionnaire` par le lien.
+ *
+ * Plus d'etat replie : le calendrier est l'objet de la page, le
+ * masquer derriere un bouton n'avait plus de sens une fois seul.
+ */
 function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
-  const [ouvert, setOuvert] = useState(false);
   const [offset, setOffset] = useState(0);
 
   const log = muscleLog.value;
@@ -119,30 +137,57 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
     );
   }
 
-  return (
-    <div class={'choice ph sm ch-journal' + (ouvert ? ' ch-journal--ouvert' : '')}
-      style={fond('card-journal.jpg')}>
-      <h3>{t('tr_log_title')}</h3>
-      <p>{t('tr_log_sub')}</p>
-      <button class="cta" onClick={(e) => { e.stopPropagation(); setOuvert(!ouvert); }}>
-        {ouvert ? t('collapse') : t('open')}
-      </button>
+  // Silhouette de la semaine en cours, du lundi a aujourd'hui : la
+  // meme lecture que dans la modale d'un jour, mais posee sur la page
+  // pour qu'on la voie sans rien ouvrir.
+  const lundi = new Date(today);
+  lundi.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+  const compteSemaine = {};
+  let seancesSemaine = 0;
+  for (const d = new Date(lundi); wlIso(d) <= todayIso; d.setDate(d.getDate() + 1)) {
+    const vals = (log[wlIso(d)] || []).filter(v => v !== 'repos');
+    if (vals.length) seancesSemaine++;
+    vals.forEach(k => { compteSemaine[k] = (compteSemaine[k] || 0) + 1; });
+  }
+  const travailles = GROUPES.filter(g => COULEUR[g.k] && compteSemaine[g.k]);
+  const oublies = GROUPES.filter(g => COULEUR[g.k] && !compteSemaine[g.k]);
 
-      <div class={'wlog-list' + (ouvert ? ' expanded' : '')}>
-        <div class="wlog-sum">
-          {(nbSeancesMois || dernierIso) ? (
-            <>
+  return (
+    <>
+      {/* 1 — Pastilles de resume. Elles ouvraient jadis le bloc replie ;
+          elles ne font plus que renseigner, en tete de page. */}
+      <div class="wlog-sum">
+        {(nbSeancesMois || dernierIso) ? (
+          <>
+            <span class="wlog-sum-pill">
+              🏋️ {nbSeancesMois} {t(nbSeancesMois > 1 ? 'sessions' : 'session')} {t('in_month')} {t('months_long').split('|')[ref.getMonth()]}
+            </span>
+            {dernierTxt && (
               <span class="wlog-sum-pill">
-                🏋️ {nbSeancesMois} {t(nbSeancesMois > 1 ? 'sessions' : 'session')} {t('in_month')} {t('months_long').split('|')[ref.getMonth()]}
+                💪 {t('last_session')} : {dernierTxt} · {jourCourt(wlIsoToDate(dernierIso))}
               </span>
-              {dernierTxt && (
-                <span class="wlog-sum-pill">
-                  💪 {t('last_session')} : {dernierTxt} · {jourCourt(wlIsoToDate(dernierIso))}
-                </span>
-              )}
-            </>
-          ) : <span class="wlog-sum-pill">{t('first_session_hint')}</span>}
-        </div>
+            )}
+          </>
+        ) : <span class="wlog-sum-pill">{t('first_session_hint')}</span>}
+      </div>
+
+      {/* 2 — Zone d'action. Elle reprend les deux destinations des
+          cartes retirees : le gros bouton mene au choix d'exercices,
+          le lien au questionnaire de programme. */}
+      <div class="ent-action">
+        <div class="ent-action-jour">{jourLong(today)}</div>
+        <button class="ent-go" onClick={() => allerVers('selection')}>
+          {t('tr_start_session')}
+        </button>
+        <button class="ent-prog" onClick={() => allerVers('questionnaire')}>
+          {t('tr_adapt_prog')}
+        </button>
+      </div>
+
+      {/* 3 — Calendrier */}
+      <div class="ent-bloc">
+        <h3>{t('tr_log_title')}</h3>
+        <p class="ent-sous">{t('tr_log_sub')}</p>
 
         <div class="wlog-cal-head">
           <button class="wlog-nav" onClick={(e) => { e.stopPropagation(); setOffset(offset - 1); }}>‹</button>
@@ -167,10 +212,39 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
           <span><i class="dot repos" />{t('mus_repos')}</span>
           <span><i class="dot today" />{t('today')}</span>
         </div>
+      </div>
 
+      {/* 4 — Semaine + silhouette. La meme lecture que dans la modale
+          d'un jour, mais visible sans rien ouvrir : ce qui a ete
+          travaille depuis lundi, et ce qui n'a pas ete touche. */}
+      <div class="ent-bloc">
+        <h3>{t('tr_week_title')}</h3>
+        <p class="ent-sous">{t('tr_week_since')} {jourCourt(lundi)}</p>
+        <div class="ent-semaine">
+          <div class="ent-sem-txt">
+            <div class="ent-sem-l">
+              <span>{t('tr_week_sessions')}</span><b>{seancesSemaine}</b>
+            </div>
+            <div class="ent-sem-l">
+              <span>{t('tr_week_worked')}</span>
+              <b>{travailles.length} / {GROUPES.filter(g => COULEUR[g.k]).length}</b>
+            </div>
+            {oublies.length > 0 && (
+              <div class="ent-sem-l">
+                <span>{t('tr_week_missing')}</span>
+                <b class="ent-sem-oubli">{oublies.slice(0, 3).map(g => nomMuscle(g.k)).join(', ')}</b>
+              </div>
+            )}
+          </div>
+          <div class="ent-mannequin"><BodyMap compte={compteSemaine} /></div>
+        </div>
+      </div>
+
+      {/* 5 — Seances enregistrees */}
+      <div class="ent-bloc">
         <BlocSeances ouvrir={ouvrirSeance} voirTout={voirToutesSeances} />
       </div>
-    </div>
+    </>
   );
 }
 
@@ -315,41 +389,16 @@ export function Entrainer() {
           navigation du bas — le repeter en 31 px coutait un tiers
           d'ecran avant la premiere carte. */}
 
-      <div class="choices">
-        {/* Seance libre EN PREMIER, et c'est elle qui porte le dore.
-            Decision de Raci (4 aout) : c'est la rubrique que les
-            utilisateurs emploieront le plus — l'entree la plus
-            frequente passe en tete et recoit l'accent, le programme
-            sur mesure descend en second. Le dore suit la carte de
-            tete : deux hierarchies contraires sur le meme ecran
-            (premiere carte sobre, deuxieme doree) ne hierarchisent
-            rien. */}
-        <a href="#" class="choice ph featured ch-libre" style={fond('card-libre.jpg')}
-          onClick={(e) => { e.preventDefault(); allerVers('selection'); }}>
-          <h3>{t('tr_free_title')}</h3>
-          <p>{t('tr_free_sub')}</p>
-          <span class="cta">{t('tr_free_cta')}</span>
-        </a>
-
-        {/* Programme sur mesure (Premium), en second */}
-        {/* La photo du disque a son propre calque : elle doit etre
-            DECOUPEE en chevron et arrondie, avec une marge creme
-            autour. En fond de carte, elle collait aux quatre bords
-            et aucune forme n'etait possible. */}
-        <a href="#" class={'choice ph md ch-prog' + locked}
-          onClick={(e) => verrou(e, 'questionnaire')}>
-          <span class="ch-photo" aria-hidden="true" style={fond('card-creer.jpg')} />
-          <h3>{t('tr_create_title')}</h3>
-          <p>{t('tr_create_sub')}</p>
-          <span class="cta">{t('tr_start')}</span>
-        </a>
-
-        <JournalEntrainement ouvrirJour={setJourOuvert}
-          ouvrirSeance={setSeanceOuverte}
-          voirToutesSeances={() => setToutesSeances(true)} />
-      </div>
-
-      <p class="note">{t('tr_note')}</p>
+      {/* Les cartes « Seance libre » et « Creer mon programme » ont
+          ete retirees le 10/08 a la demande de Raci. Elles occupaient
+          les deux tiers du premier ecran pour deux liens et
+          repoussaient le calendrier en troisieme position, replie.
+          Leurs deux destinations vivent maintenant dans la zone
+          d'action du journal, en haut : `selection` sur le gros
+          bouton, `questionnaire` sur le lien. Aucune n'est perdue. */}
+      <JournalEntrainement ouvrirJour={setJourOuvert}
+        ouvrirSeance={setSeanceOuverte}
+        voirToutesSeances={() => setToutesSeances(true)} />
 
       <ModaleMuscles iso={jourOuvert} fermer={() => setJourOuvert(null)} />
       <ModalePremium montre={premium} fermer={() => setPremium(false)} />

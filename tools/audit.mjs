@@ -344,6 +344,32 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R16 — La page S'entrainer garde ses deux destinations.
+// Refonte du 10/08 : les cartes « Seance libre » et « Creer mon
+// programme » sont retirees. Elles etaient les SEULS chemins vers
+// `selection` (choix d'exercices) et `questionnaire` (programme sur
+// mesure). Retirer une carte sans reprendre sa destination rendrait
+// une fonctionnalite entiere inatteignable sans qu'aucune erreur ne
+// se produise — le pire genre de panne, silencieuse.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/Entrainer.jsx');
+  if (jsx) {
+    const soucis = [];
+    for (const dest of ['selection', 'questionnaire']) {
+      if (!new RegExp(`allerVers\\('${dest}'`).test(jsx)) {
+        soucis.push(`la destination '${dest}' n'est plus atteignable depuis S'entrainer`);
+      }
+    }
+    // Le calendrier ne doit pas retrouver d'etat replie : il EST la
+    // page maintenant, le masquer derriere un bouton n'a plus de sens.
+    if (/wlog-list' \+ \(ouvert/.test(jsx)) soucis.push('le journal est redevenu repliable');
+    if (soucis.length) faute('R16 page S\'entrainer', soucis.join(' ; '));
+    else passe('R16 page S\'entrainer');
+  }
+}
+
+// ------------------------------------------------------------
 // R13 — Tout composant employe dans du JSX doit exister.
 // Trouve le 10/08 : le commit b9b6a68 du 27/07, qui refaisait l'ecran
 // de resultat du questionnaire, a supprime la fonction Reglette en
