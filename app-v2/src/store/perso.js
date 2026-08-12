@@ -5,16 +5,23 @@ import { DB } from '../data/aliments.js';
 import { customFoods } from '../components/Scanner.jsx';
 
 // ============================================================
-// FAVORIS ET PLATS ENREGISTRES
+// ALIMENTS COURANTS ET PLATS ENREGISTRES
 //
-// Favoris : les aliments qu'on encode tout le temps. Ils remontent
-// en tete de la recherche, et s'affichent avant meme de taper.
+// Aliments courants : ceux qu'on encode le plus souvent. Ils
+// remontent en tete de la recherche et s'affichent avant meme de
+// taper. Le comptage est automatique — l'app sait deja ce qu'on
+// mange tous les jours, le declarer a la main faisait le travail
+// deux fois. Une etoile a cocher tenait ce role jusqu'au 10/08 :
+// collee au nom qu'on tape pour choisir l'aliment, elle se
+// declenchait sans qu'on le veuille et rien ne disait ce qu'elle
+// faisait.
 //
 // Plats : une recette pesee une seule fois, a la cuisson, puis
 // consommee en portions. Le batch cooking en pratique.
 // ============================================================
 
-export const favoris = signal([]);   // noms d'aliments
+export const usages = signal({});    // { nom: nombre d'encodages }
+export const favoris = signal([]);   // ancien systeme, lu pour la reprise
 export const plats = signal([]);     // { id, nom, ings, portions }
 // Prenom : synchronise avec le compte. localStorage seul le perdait
 // des qu'on changeait d'appareil ou de navigateur.
@@ -29,7 +36,14 @@ effect(() => {
   uid = u; pret = false;
   chargerDonnees(u).then(d => {
     if (uid !== u) return;
-    favoris.value = (d && d.favoris) || [];
+    const anciens = (d && d.favoris) || [];
+    favoris.value = anciens;
+    // Reprise : les etoiles posees a la main avant le 10/08 valent
+    // trois encodages, pour qu'elles gardent leur rang le temps que
+    // le comptage reel prenne le relais. Sans cela, une liste
+    // d'habitudes construite pendant des semaines disparaissait.
+    const compte = (d && d.usages) || null;
+    usages.value = compte || Object.fromEntries(anciens.map(n => [n, 3]));
     plats.value = (d && d.plats) || [];
     // Le prenom du compte fait foi. S'il manque au cloud mais existe
     // en local (compte cree avant cette synchro), on le remonte.
@@ -46,22 +60,41 @@ effect(() => {
 });
 
 effect(() => {
-  const instantane = { favoris: favoris.value, plats: plats.value, prenom: prenom.value };
+  // `favoris` reste ecrit tel quel : on ne detruit pas la donnee
+  // d'un systeme qu'on remplace, au cas ou il faudrait revenir.
+  const instantane = {
+    favoris: favoris.value, usages: usages.value,
+    plats: plats.value, prenom: prenom.value,
+  };
   const u = identite.value;
   if (!u || !pret) return;   // ne pas ecraser avant le chargement
   sauvegarder(u, instantane);
 });
 
-// ---------- Favoris ----------
+// ---------- Aliments courants ----------
 
-export function estFavori(nom) {
-  return favoris.value.includes(nom);
+/** Un encodage de plus pour cet aliment. */
+export function noterUsage(nom) {
+  usages.value = { ...usages.value, [nom]: (usages.value[nom] || 0) + 1 };
 }
 
-export function basculerFavori(nom) {
-  favoris.value = estFavori(nom)
-    ? favoris.value.filter(n => n !== nom)
-    : [...favoris.value, nom];
+/** Les aliments les plus encodes, du plus frequent au moins frequent. */
+export function alimentsCourants(max = 6) {
+  return Object.entries(usages.value)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'fr'))
+    .slice(0, max)
+    .map(([nom]) => nom);
+}
+
+/**
+ * Bonus de classement d'un aliment dans la recherche. Plafonne a 25,
+ * la valeur que portaient les favoris : au-dela, un aliment tres
+ * encode ecraserait un resultat exact et « riz » ne proposerait plus
+ * « Riz au lait ». Il faut trois encodages pour atteindre le plafond.
+ */
+export function bonusUsage(nom) {
+  return Math.min(25, (usages.value[nom] || 0) * 9);
 }
 
 // ---------- Plats ----------

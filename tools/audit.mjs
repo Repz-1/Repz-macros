@@ -247,6 +247,35 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R11 — La liste d'aliments courants se remplit toute seule.
+// Decision de Raci le 10/08 : l'etoile a cocher est retiree. Elle
+// etait collee au nom qu'on tape pour choisir l'aliment, se
+// declenchait sans qu'on le veuille — c'est ainsi que l'avoine de
+// Raci est devenue favorite sans decision — et rien ne disait ce
+// qu'elle faisait. Le comptage des encodages la remplace : l'app
+// sait deja ce qu'on mange tous les jours.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/MealCard.jsx');
+  const store = lire('app-v2/src/store/perso.js');
+  const css = lire('app-v2/src/styles/journal-socle.css');
+  if (jsx && store && css) {
+    const soucis = [];
+    if (/mc-res-fav|basculerFavori/.test(jsx)) soucis.push('l\'etoile a cocher est revenue dans la liste de resultats');
+    if (/mc-res-fav/.test(css)) soucis.push('le style de l\'etoile subsiste dans journal-socle.css');
+    // Le comptage doit etre appele la ou l'aliment entre vraiment
+    // dans un repas, sinon la liste ne se remplit jamais.
+    if (!/noterUsage\(nom\)/.test(jsx)) soucis.push('choisir() ne compte pas l\'encodage — la liste des courants resterait vide');
+    if (!/export function alimentsCourants/.test(store)) soucis.push('alimentsCourants() absent du store');
+    // La reprise des anciennes etoiles ne doit pas sauter : sans
+    // elle, des semaines d'habitudes disparaissent d'un coup.
+    if (!/d && d\.favoris/.test(store)) soucis.push('la reprise des anciens favoris a disparu du chargement');
+    if (soucis.length) faute('R11 aliments courants', soucis.join(' ; '));
+    else passe('R11 aliments courants');
+  }
+}
+
+// ------------------------------------------------------------
 // R10 — Une ligne de resultat ne lit jamais des valeurs absentes.
 // Trouve le 10/08 en instrumentant la console : un favori dont
 // l'aliment n'existe plus dans la base — produit renomme, aliment

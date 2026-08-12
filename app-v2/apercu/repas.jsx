@@ -7,7 +7,7 @@ import '../src/styles/design-system.css';
 import '../src/styles/journal-socle.css';
 import { utilisateur, authPrete } from '../src/services/firebase.js';
 import { donneesPretes, objectifs, repas, calculBaseFait } from '../src/store/journal.js';
-import { favoris } from '../src/store/perso.js';
+import { usages } from '../src/store/perso.js';
 import { App } from '../src/main.jsx';
 import { estPremium } from '../src/components/PremiumPage.jsx';
 import { ongletActif } from '../src/components/BottomNav.jsx';
@@ -27,7 +27,9 @@ const REPAS = [
   { id: 4, nom: 'Collations', type: 'collation', cle: 'snack', fixe: true, ings: [], ouvert: false },
 ];
 repas.value = structuredClone(REPAS);
-favoris.value = ['Avoine', 'Riz cru', 'Poulet cuit'];
+// Comptages d'encodage : ce sont eux qui font la liste des courants.
+const USAGES = { 'Avoine': 12, 'Riz cru': 9, 'Poulet cuit': 8, 'Banane': 2 };
+usages.value = { ...USAGES };
 
 authPrete.value = true;
 donneesPretes.value = true;
@@ -45,7 +47,7 @@ setInterval(() => {
   // La synchronisation Firestore repond en differe et remet le
   // journal a vide : on le maintient le temps du test.
   if (!repas.value.some(r => r.ings.length)) repas.value = structuredClone(REPAS);
-  if (!favoris.value.length) favoris.value = ['Avoine', 'Riz cru', 'Poulet cuit'];
+  if (!Object.keys(usages.value).length) usages.value = { ...USAGES };
   if (repasOuvertId.value === null) repasOuvertId.value = 1;
 }, 100);
 

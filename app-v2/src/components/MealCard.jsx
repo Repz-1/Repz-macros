@@ -24,7 +24,7 @@ export const ingNouveau = signal(null);
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
-import { favoris, estFavori, basculerFavori, plats, macrosPortion } from '../store/perso.js';
+import { alimentsCourants, bonusUsage, noterUsage, plats, macrosPortion } from '../store/perso.js';
 import { MEAL_SVG, TYPE_SVG, MEAL_NEUTRAL_SVG } from '../data/illustrations.js';
 import {
   repas, totauxRepas, setPortion, ajouterIngredient, ajouterPlat,
@@ -205,12 +205,12 @@ export function Recherche({ repasId, phCourt }) {
         .map(([, p]) => p)
     : [];
 
-  // Sans saisie, on propose les favoris : c'est ce qu'on encode tous les jours.
-  // Les favoris gardent la priorite a score egal : ce sont les
-  // aliments que la personne encode reellement tous les jours.
-  const classer = (liste, bonus) => liste
-    .map(n => [scoreRecherche(terme, n) + bonus, n])
-    .filter(([sc]) => sc > bonus)
+  // Le classement tient compte de ce que la personne encode vraiment :
+  // a pertinence egale, l'aliment le plus souvent choisi passe devant.
+  const classer = (liste) => liste
+    .map(n => [scoreRecherche(terme, n), n])
+    .filter(([sc]) => sc > 0)
+    .map(([sc, n]) => [sc + bonusUsage(n), n])
     .sort((a, b) => b[0] - a[0]);
 
   // Un favori dont l'aliment n'existe plus — produit renomme dans la
@@ -220,12 +220,11 @@ export function Recherche({ repasId, phCourt }) {
   // Trouve le 10/08 en instrumentant la console.
   const aDesValeurs = (n) => !!(DB[n] || customFoods.value[n]);
 
+  // Sans saisie, on propose ce qui revient le plus souvent : c'est ce
+  // qu'on encode tous les jours, et ca evite d'avoir a taper.
   const resultats = (terme.length < 2
-    ? favoris.value.slice(0, 6)
-    : [
-        ...classer(favoris.value, 25).map(([, n]) => n),
-        ...classer(noms.filter(n => !estFavori(n)), 0).map(([, n]) => n),
-      ].slice(0, 8)
+    ? alimentsCourants(6)
+    : classer(noms).map(([, n]) => n).slice(0, 8)
   ).filter(aDesValeurs);
 
   // Aliments deja encodes dans CE repas, par nom. Sert a rediriger
@@ -256,6 +255,7 @@ export function Recherche({ repasId, phCourt }) {
     const d = DB[nom] || customFoods.value[nom] || {};
     // Aliment "a la piece" (burger, oeuf...) : portion par defaut = 1 piece
     const id = ajouterIngredient(repasId, nom, d.unit || 100);
+    noterUsage(nom);          // c'est ce comptage qui fait la liste
     ingNouveau.value = id;    // la quantite prend le relais
   };
 
@@ -371,7 +371,7 @@ export function Recherche({ repasId, phCourt }) {
       {actif && (platsTrouves.length > 0 || resultats.length > 0) && (
         <div class="mc-resultats" style={{ maxHeight: hListe + 'px' }}>
           {terme.length < 2 && resultats.length > 0 && (
-            <div class="mc-res-titre">{t('fav_titre')}</div>
+            <div class="mc-res-titre">{t('mc_courants')}</div>
           )}
 
           {platsTrouves.map(p => {
@@ -392,11 +392,6 @@ export function Recherche({ repasId, phCourt }) {
                 <span>{nom}</span>
                 <span class="kc">{dd.kcal} kcal/100g</span>
               </button>
-              <button
-                class={'mc-res-fav' + (estFavori(nom) ? ' on' : '')}
-                onClick={e => { e.stopPropagation(); basculerFavori(nom); }}
-                aria-label={t('fav_basculer')}
-              >{estFavori(nom) ? '★' : '☆'}</button>
             </div>
             );
           })}

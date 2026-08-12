@@ -1108,12 +1108,6 @@
 .pg-journal .mc-res-choix > span:first-child { flex: 1 1 auto; min-width: 0; }
 .pg-journal .mc-res-choix > .kc { flex: 0 0 auto; white-space: nowrap; }
 .pg-journal .mc-res-choix:active { background: #EFF6FF; }
-.pg-journal .mc-resultats .mc-res-fav {
-  flex: 0 0 42px; width: 42px;
-  background: none; border: none; cursor: pointer;
-  color: #D8D3C8; font-size: 17px; line-height: 1; font-family: inherit;
-}
-
 .pg-journal .mc-res-plat {
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
   width: 100%; padding: 11px 14px;
@@ -2644,9 +2638,6 @@
   color: var(--texte-2); font-weight: 500; font-variant-numeric: tabular-nums;
 }
 .pg-journal .mc-res-titre { color: var(--texte-3); font-weight: 600; }
-
-.pg-journal .mc-res-fav { color: var(--texte-3); }
-.pg-journal .mc-res-fav.on { color: var(--or); }
 
 /* Etat tactile : une nappe a peine perceptible, pas une carte. */
 .pg-journal .mc-resultats > button:active,
