@@ -82,7 +82,7 @@ const ecrans = [
 // service worker, et il est servi a la racine alors que les images
 // sont referencees depuis /v2/ — elles existent bien dans le depot,
 // verifie. Tout le reste est un vrai defaut.
-const ATTENDU = /Firestore|firebase|Failed to fetch|net::ERR|ServiceWorker|Manifest|favicon|Failed to load resource/i;
+const ATTENDU = /Firestore|firebase|identitytoolkit|googleapis|Failed to fetch|net::ERR|ServiceWorker|Manifest|favicon|Failed to load resource/i;
 
 // Les ressources manquantes sont signalees a part, avec leur adresse :
 // un 404 sur un fichier absent du depot serait un vrai probleme, un

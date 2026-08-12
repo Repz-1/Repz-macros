@@ -3,6 +3,7 @@ import {
   initializeAuth, indexedDBLocalPersistence, browserLocalPersistence,
   onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
+  signInAnonymously,
   updateProfile,
   sendPasswordResetEmail,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
@@ -158,6 +159,18 @@ export async function inscription(email, mdp, prenom) {
   } catch (e) { /* non bloquant */ }
 
   return cred;
+}
+
+/**
+ * Session anonyme — contournement temporaire de l'ecran de connexion
+ * (voir src/acces-libre.js). Firebase delivre un vrai jeton sans mot
+ * de passe : les regles Firestore sont satisfaites et l'application
+ * fonctionne entierement, mais sur un compte NEUF, pas celui de
+ * l'utilisateur. Necessite « Anonymous » active dans la console.
+ */
+export async function connexionAnonyme() {
+  const cred = await signInAnonymously(auth);
+  return cred.user;
 }
 
 export async function deconnexion() {

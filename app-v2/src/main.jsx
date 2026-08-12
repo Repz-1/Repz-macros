@@ -6,8 +6,9 @@ import './styles/design-system.css';
 import './styles/journal-socle.css';
 // En dernier : l'en-tete commune passe devant les variantes de page.
 import './styles/entete-commune.css';
-import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
+import { utilisateur, authPrete, deconnexion, connexionAnonyme } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
+import { ACCES_LIBRE } from './acces-libre.js';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
 import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
 import { DayDashboard, ouvrirCalcDemande } from './components/DayDashboard.jsx';
@@ -157,11 +158,69 @@ export function OngletEntrainer() {
   );
 }
 
+/**
+ * Entree sans mot de passe. Une seule tentative : si la session
+ * anonyme echoue — cas le plus probable, « Anonymous » pas encore
+ * active dans la console Firebase — on retombe sur l'ecran de
+ * connexion en disant pourquoi, plutot que de boucler en silence.
+ */
+function AccesLibre() {
+  const [echec, setEchec] = useState(null);
+  const lance = useRef(false);
+  useEffect(() => {
+    if (lance.current) return;
+    lance.current = true;
+    connexionAnonyme().catch((e) => setEchec(e && e.code ? e.code : String(e)));
+  }, []);
+
+  if (echec) {
+    return (
+      <>
+        <div class="acces-libre-avis acces-libre-avis--echec">
+          Accès libre indisponible : {echec}. Active « Anonymous » dans
+          Firebase → Authentication → Sign-in method.
+        </div>
+        <LoginScreen />
+      </>
+    );
+  }
+  return (
+    <div style={{ textAlign: 'center', padding: '80px 20px', color: '#736C63', fontWeight: 600 }}>
+      Ouverture d’une session…
+    </div>
+  );
+}
+
+/**
+ * Banniere d'accès libre. Montee A LA RACINE, a cote de <App/>, et
+ * non dedans : App comporte cinq retours anticipes — chargement,
+ * connexion, donnees, Besoins, rail — et une banniere posee dans le
+ * corps n'aurait ete vue que par le dernier. C'est le meme piege que
+ * celui note le 5/08 : un element qui doit s'afficher PARTOUT doit
+ * etre teste depuis chaque branche, ou monte au-dessus d'elles.
+ *
+ * Elle est aussi hors du rail de navigation, dont le
+ * `will-change: transform` detourne le `position: fixed` de tous ses
+ * descendants.
+ */
+function AvisAccesLibre() {
+  if (!ACCES_LIBRE) return null;
+  return (
+    <div class="acces-libre-avis">
+      Accès libre actif — session anonyme, ce ne sont pas tes données
+    </div>
+  );
+}
+
 export function App() {
   if (!authPrete.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>…</div>;
   }
   if (!utilisateur.value) {
+    // Contournement temporaire demande par Raci le 10/08 : on ouvre
+    // une session anonyme au lieu d'afficher l'ecran de connexion.
+    // Voir src/acces-libre.js pour ce que ca implique.
+    if (ACCES_LIBRE) return <AccesLibre />;
     return <LoginScreen />;
   }
 
@@ -486,7 +545,7 @@ export function App() {
 // L'apercu importe ce fichier pour rendre UNE page a la fois : sans ce
 // garde-fou, l'import demarrerait l'application entiere par effet de bord.
 const racine = document.getElementById('app');
-if (racine) render(<App />, racine);
+if (racine) render(<><AvisAccesLibre /><App /></>, racine);
 
 // Retrait du splash une fois l'interface peinte. 1300ms d'affichage
 // plein + 300ms de fondu (Raci, 8/08 : 400ms ne laissait pas le temps

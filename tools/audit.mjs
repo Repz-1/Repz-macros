@@ -289,6 +289,33 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R15 — Acces libre : l'audit reste ROUGE tant qu'il est actif.
+// Raci le 10/08 a demande de contourner momentanement l'ecran de
+// connexion. Cette regle n'empeche rien : elle refuse simplement de
+// laisser l'audit passer au vert pendant ce temps. Un contournement
+// d'authentification en ligne ne doit pas pouvoir se faire oublier
+// entre deux sessions, ni partir en production par inadvertance.
+// Elle passera au vert d'elle-meme quand ACCES_LIBRE reviendra a
+// false — le « nouvel ordre ».
+// ------------------------------------------------------------
+{
+  const drapeau = lire('app-v2/src/acces-libre.js');
+  const jsx = lire('app-v2/src/main.jsx');
+  if (drapeau && /ACCES_LIBRE\s*=\s*true/.test(drapeau)) {
+    faute('R15 acces libre ACTIF',
+      'l\'ecran de connexion est contourne par session anonyme sur belfit.be — remettre ACCES_LIBRE a false pour refermer');
+  } else if (drapeau) {
+    // Desactive : on verifie qu'il ne reste pas de dispositif orphelin.
+    const restes = [];
+    if (jsx && /connexionAnonyme\(\)/.test(jsx) && !/ACCES_LIBRE/.test(jsx)) {
+      restes.push('main.jsx appelle encore connexionAnonyme() hors du drapeau');
+    }
+    if (restes.length) faute('R15 acces libre', restes.join(' ; '));
+    else passe('R15 acces libre (referme)');
+  }
+}
+
+// ------------------------------------------------------------
 // R14 — Sens de la reglette de taille.
 // Raci le 10/08 : grand vers le haut, petit vers le bas — le sens
 // d'une toise. La conversion position <-> valeur passe par un seul
