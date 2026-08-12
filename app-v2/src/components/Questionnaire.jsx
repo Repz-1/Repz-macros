@@ -20,7 +20,8 @@ const ETAPES = [
 
 // Etapes a reglette (taille / poids / age) : bornes et unite
 const REGLETTES = {
-  taille: { min: 120, max: 220, pas: 1, unite: 'cm', defaut: 175,
+  // inverse : grand en haut, petit en bas — le sens d'une toise.
+  taille: { min: 120, max: 220, pas: 1, unite: 'cm', defaut: 175, inverse: true,
             t: 'Quelle est ta taille ?', s: 'Sert à estimer tes besoins caloriques.' },
   poids:  { min: 35, max: 200, pas: 0.1, px: 90, unite: 'kg', defaut: 75,
             t: 'Quel est ton poids ?', s: 'Ton point de départ, rien de plus.' },
@@ -214,8 +215,15 @@ function conseilsPersonnels(r) {
  * effet. Signale par Raci le 10/08, le questionnaire etait bloque
  * depuis deux semaines.
  */
-function Reglette({ min, max, pas, valeur, unite, onChange, px }) {
+function Reglette({ min, max, pas, valeur, unite, onChange, px, inverse }) {
   const PX = px || 60;                            // px par unite entiere
+  // `inverse` : les grandes valeurs EN HAUT, les petites en bas.
+  // Demande de Raci le 10/08 pour la taille — c'est le sens d'une
+  // toise, on ne mesure pas quelqu'un a l'envers. Toute la mecanique
+  // passe par ce seul convertisseur position <-> valeur, pour qu'il
+  // n'existe qu'un endroit ou le sens puisse se contredire.
+  const posDe = (v) => (inverse ? max - v : v - min) * PX;
+  const valDe = (y) => (inverse ? max - y / PX : min + y / PX);
   const piste = useRef(null);
   const synchro = useRef(false);
   const [manuel, setManuel] = useState(false);
@@ -225,14 +233,14 @@ function Reglette({ min, max, pas, valeur, unite, onChange, px }) {
     const el = piste.current;
     if (!el) return;
     synchro.current = true;
-    el.scrollTop = (valeur - min) * PX;
+    el.scrollTop = posDe(valeur);
     const t = setTimeout(() => { synchro.current = false; }, 80);
     return () => clearTimeout(t);
   }, []);
 
   const surDefile = () => {
     if (synchro.current || !piste.current) return;
-    const brut = min + piste.current.scrollTop / PX;
+    const brut = valDe(piste.current.scrollTop);
     const v = Math.round(brut / pas) * pas;
     onChange(Math.min(max, Math.max(min, Math.round(v * 10) / 10)));
   };
@@ -243,7 +251,7 @@ function Reglette({ min, max, pas, valeur, unite, onChange, px }) {
     if (!isNaN(v) && v >= min && v <= max) {
       onChange(v);
       const el = piste.current;
-      if (el) { synchro.current = true; el.scrollTop = (v - min) * PX; setTimeout(() => { synchro.current = false; }, 80); }
+      if (el) { synchro.current = true; el.scrollTop = posDe(v); setTimeout(() => { synchro.current = false; }, 80); }
     }
   };
 
@@ -280,7 +288,7 @@ function Reglette({ min, max, pas, valeur, unite, onChange, px }) {
               + `repeating-linear-gradient(180deg, #A9A49C 0 2px, transparent 2px ${PX}px)`,
           }}>
             {reperes.map(k => (
-              <span key={k} class="rg-rep" style={{ top: (k - min) * PX + 'px' }}>{k}</span>
+              <span key={k} class="rg-rep" style={{ top: posDe(k) + 'px' }}>{k}</span>
             ))}
           </div>
         </div>
@@ -466,6 +474,7 @@ export function Questionnaire() {
           <Reglette
             key={etape}
             min={rg.min} max={rg.max} pas={rg.pas} unite={rg.unite} px={rg.px}
+            inverse={rg.inverse}
             valeur={reponses[etape] ?? rg.defaut}
             onChange={(v) => setReponses(r => ({ ...r, [etape]: v }))}
           />

@@ -289,6 +289,28 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R14 — Sens de la reglette de taille.
+// Raci le 10/08 : grand vers le haut, petit vers le bas — le sens
+// d'une toise. La conversion position <-> valeur passe par un seul
+// couple de fonctions (posDe / valDe) pour qu'il n'existe qu'un
+// endroit ou le sens puisse se contredire : un calcul en dur qui
+// reapparaitrait ailleurs ferait diverger l'affichage du reperage.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/Questionnaire.jsx');
+  if (jsx) {
+    const soucis = [];
+    if (!/taille:[^}]*inverse:\s*true/.test(jsx)) soucis.push('la reglette de taille n\'est plus inversee');
+    if (!/const posDe =/.test(jsx) || !/const valDe =/.test(jsx)) soucis.push('les convertisseurs posDe/valDe ont disparu');
+    // Aucun calcul de position en dur ne doit subsister a cote d'eux.
+    const dur = jsx.match(/\((?:valeur|v|k) - min\) \* PX/g);
+    if (dur) soucis.push(`${dur.length} calcul(s) de position en dur — ils ignorent le sens inverse`);
+    if (soucis.length) faute('R14 sens de la reglette', soucis.join(' ; '));
+    else passe('R14 sens de la reglette');
+  }
+}
+
+// ------------------------------------------------------------
 // R13 — Tout composant employe dans du JSX doit exister.
 // Trouve le 10/08 : le commit b9b6a68 du 27/07, qui refaisait l'ecran
 // de resultat du questionnaire, a supprime la fonction Reglette en
