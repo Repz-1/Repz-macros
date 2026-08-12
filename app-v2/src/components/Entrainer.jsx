@@ -9,6 +9,7 @@ import { Entete } from './Entete.jsx';
 import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
 import { BlocSeances, ToutesSeances, DetailSeance } from './Seances.jsx';
+import { programmeActif, seancePrevue, musclesPrevus } from '../store/programme.js';
 import { t } from '../i18n/index.js';
 
 /* ------------------------------------------------------------
@@ -119,14 +120,36 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
     const iso = wlIso(new Date(ref.getFullYear(), ref.getMonth(), j));
     const vals = (log[iso] || []).filter(v => COULEUR[v] || v === 'repos');
     const repos = vals.includes('repos');
-    const muscles = vals.filter(v => v !== 'repos');
+    let muscles = vals.filter(v => v !== 'repos');
     const futur = iso > todayIso;
+
+    // Seances PREVUES par le programme actif (Raci, 10/08 : « le
+    // programme apparait dans le calendrier »). Elles ne colorent que
+    // les jours ou rien n'a encore ete note : ce qui a reellement ete
+    // fait prime toujours sur ce qui etait prevu.
+    let prevu = null;
+    if (!muscles.length && !repos) {
+      prevu = seancePrevue(iso);
+      if (prevu) muscles = musclesPrevus(prevu.titre).filter(k => COULEUR[k]);
+    }
+
     let cls = 'wlog-cell', style = {};
     if (muscles.length === 1) { cls += ' seance'; style = { background: COULEUR[muscles[0]] }; }
     else if (muscles.length > 1) {
       cls += ' seance';
       style = { background: `conic-gradient(${COULEUR[muscles[0]]} 0% 50%, ${COULEUR[muscles[1]]} 50% 100%)` };
     } else if (repos) cls += ' repos';
+
+    // Un jour planifie se lit en CREUX : contour de la couleur du
+    // muscle, interieur vide. Sans cette difference, le calendrier
+    // affirmerait qu'une seance a eu lieu alors qu'elle est
+    // seulement prevue. La couleur passe par le style en ligne :
+    // `currentColor` dans la feuille ne la transporte pas.
+    if (prevu) {
+      cls += ' planifie';
+      const c = COULEUR[muscles[0]] || '#736C63';
+      style = { background: 'none', boxShadow: `inset 0 0 0 2px ${c}`, color: c };
+    }
     if (iso === todayIso) cls += ' today';
     if (futur) cls += ' futur' + (muscles.length || repos ? ' prevu' : '');
     cellules.push(
@@ -176,7 +199,12 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
           le lien au questionnaire de programme. */}
       <div class="ent-action">
         <div class="ent-action-jour">{jourLong(today)}</div>
-        <button class="ent-go" onClick={() => allerVers('selection')}>
+        {/* Schema de Raci du 10/08 : avec un programme actif on
+            demande d'abord quoi faire, sans programme on entre
+            directement en seance libre. L'ecran de choix n'apparait
+            jamais avec une seule option. */}
+        <button class="ent-go"
+          onClick={() => allerVers(programmeActif.value ? 'demarrer' : 'selection')}>
           {t('tr_start_session')}
         </button>
         <button class="ent-prog" onClick={() => allerVers('questionnaire')}>

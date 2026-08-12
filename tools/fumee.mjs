@@ -75,6 +75,13 @@ const ecrans = [
       // Un jour du calendrier ouvre la modale des muscles.
       const jour = await p.$('.wlog-cell');
       if (jour) { await jour.tap().catch(() => {}); await p.waitForTimeout(600); }
+      await p.keyboard.press('Escape').catch(() => {});
+      await p.waitForTimeout(400);
+      // « Démarrer une séance » : sans programme actif il mene droit
+      // au choix d'exercices, avec programme a l'ecran de choix. Les
+      // deux branches doivent rendre sans erreur.
+      const go = await p.$('.ent-go');
+      if (go) { await go.tap().catch(() => {}); await p.waitForTimeout(1200); }
     },
   },
   {

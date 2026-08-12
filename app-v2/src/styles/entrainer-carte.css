@@ -398,3 +398,43 @@
 .pg-entrainer--carte .ent-bloc .sea-bloc {
   background: none; border: none; padding: 0; margin: 0;
 }
+
+/* Jour PLANIFIE : le contour et la couleur viennent du style en
+   ligne (voir Entrainer.jsx). Ici on annule seulement l'aplat que
+   `.seance` poserait, et on garde le chiffre lisible. */
+.pg-entrainer--carte .wlog-cell.planifie { font-weight: 600; }
+.pg-entrainer--carte .wlog-cell.planifie.futur { opacity: 1; }
+
+/* ---- Ecran « Démarrer une séance » ---- */
+.pg-demarrer { padding: 0 14px 40px; }
+.pg-demarrer .dm-titre { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 8px 0 4px; }
+.pg-demarrer .dm-sous { font-size: 13px; color: #736C63; margin-bottom: 20px; }
+.pg-demarrer .dm-opt {
+  background: #FFF; border: 1px solid rgba(28,24,18,.06);
+  border-radius: 18px; padding: 16px; margin-bottom: 12px;
+}
+.pg-demarrer .dm-opt--reco { border: 2px solid #FAC408; }
+.pg-demarrer .dm-tag {
+  display: inline-block; background: #FAC408; color: #16130F;
+  font-size: 10px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-bottom: 9px;
+}
+.pg-demarrer .dm-opt h2 { font-size: 16.5px; font-weight: 600; margin: 0 0 3px; }
+.pg-demarrer .dm-opt p { font-size: 12.5px; color: #736C63; line-height: 1.45; margin: 0 0 12px; }
+.pg-demarrer .dm-exos { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 13px; }
+.pg-demarrer .dm-exo {
+  font-size: 11px; font-weight: 600; background: #F4F3F0; color: #57514A;
+  padding: 4px 9px; border-radius: 7px;
+}
+.pg-demarrer .dm-b {
+  display: block; width: 100%; border: none; border-radius: 13px; padding: 15px;
+  font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.pg-demarrer .dm-b--or { background: #FAC408; color: #16130F; }
+.pg-demarrer .dm-b--sobre { background: #F4F3F0; color: #16130F; }
+/* #B34700 : le jaune sur creme tombe a 1.7:1. */
+.pg-demarrer .dm-changer {
+  display: block; width: 100%; background: none; border: none; margin-top: 11px;
+  color: #B34700; font-family: inherit; font-size: 12.5px; font-weight: 700;
+  text-decoration: underline; cursor: pointer;
+}

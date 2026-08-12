@@ -344,6 +344,35 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R17 — Demarrer une seance : le routage suit le schema de Raci.
+//   programme actif ? -> ecran de choix ; sinon -> seance libre.
+// Un ecran de choix affiche SANS programme n'aurait qu'une option :
+// une porte a ouvrir pour rien. Et le calendrier ne doit pas
+// affirmer qu'une seance a eu lieu quand elle est seulement prevue —
+// le planifie se lit en creux, le fait en plein.
+// ------------------------------------------------------------
+{
+  const entr = lire('app-v2/src/components/Entrainer.jsx');
+  const store = lire('app-v2/src/store/programme.js');
+  const main = lire('app-v2/src/main.jsx');
+  if (entr && store && main) {
+    const soucis = [];
+    if (!/programmeActif\.value \? 'demarrer' : 'selection'/.test(entr)) {
+      soucis.push('le bouton ne route plus selon la presence d\'un programme actif');
+    }
+    if (!/vue\.nom === 'demarrer'/.test(main)) soucis.push("la vue 'demarrer' n'est pas branchee dans le routeur");
+    // Le reel prime sur le prevu : on ne planifie que sur un jour vide.
+    if (!/if \(!muscles\.length && !repos\)/.test(entr)) {
+      soucis.push('une seance prevue peut recouvrir une seance reellement notee');
+    }
+    // Quota gratuit : 4 seances hebdomadaires, au-dela Premium.
+    if (!/SEANCES_LIBRES = 4/.test(store)) soucis.push('le quota gratuit de 4 seances a change sans decision');
+    if (soucis.length) faute('R17 demarrer une seance', soucis.join(' ; '));
+    else passe('R17 demarrer une seance');
+  }
+}
+
+// ------------------------------------------------------------
 // R16 — La page S'entrainer garde ses deux destinations.
 // Refonte du 10/08 : les cartes « Seance libre » et « Creer mon
 // programme » sont retirees. Elles etaient les SEULS chemins vers
@@ -353,11 +382,17 @@ const DECALAGE_SW_V2 = 232;
 // se produise — le pire genre de panne, silencieuse.
 // ------------------------------------------------------------
 {
-  const jsx = lire('app-v2/src/components/Entrainer.jsx');
+  // La verification porte sur l'ONGLET, pas sur un seul fichier : le
+  // 10/08, `selection` est passee derriere l'ecran de choix, elle
+  // n'apparaissait donc plus dans Entrainer.jsx. La regle a sonne — a
+  // juste titre, la forme avait change — mais la destination restait
+  // atteignable. On lit donc les deux fichiers du parcours.
+  const jsx = [lire('app-v2/src/components/Entrainer.jsx'),
+               lire('app-v2/src/components/DemarrerSeance.jsx')].filter(Boolean).join('\n');
   if (jsx) {
     const soucis = [];
     for (const dest of ['selection', 'questionnaire']) {
-      if (!new RegExp(`allerVers\\('${dest}'`).test(jsx)) {
+      if (!new RegExp(`'${dest}'`).test(jsx)) {
         soucis.push(`la destination '${dest}' n'est plus atteignable depuis S'entrainer`);
       }
     }

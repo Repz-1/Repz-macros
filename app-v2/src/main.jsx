@@ -21,6 +21,7 @@ import { RestTimer } from './components/RestTimer.jsx';
 import { SeanceTracker } from './components/SeanceTracker.jsx';
 import { Programmes } from './components/Programmes.jsx';
 import { Questionnaire } from './components/Questionnaire.jsx';
+import { DemarrerSeance } from './components/DemarrerSeance.jsx';
 import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
 import { Reglages, vueReglages } from './components/Reglages.jsx';
@@ -132,6 +133,9 @@ export function OngletEntrainer() {
   // Meme navigation qu'en v1 : une vue a la fois, fleche retour en haut.
   if (vue.nom === 'accueil') {
     return (<><Entrainer /><RestTimer /></>);
+  }
+  if (vue.nom === 'demarrer') {
+    return (<><DemarrerSeance /><RestTimer /></>);
   }
   if (vue.nom === 'selection') {
     return (<><SelectionExercices /><RestTimer /></>);
