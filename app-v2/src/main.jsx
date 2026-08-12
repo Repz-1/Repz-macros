@@ -9,6 +9,7 @@ import './styles/entete-commune.css';
 import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { ACCES_INVITE } from './acces-invite.js';
+import { VERSION_APP } from './version.js';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
 import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
 import { DayDashboard, ouvrirCalcDemande } from './components/DayDashboard.jsx';
@@ -173,9 +174,15 @@ function AvisAccesInvite() {
   const invite = utilisateur.value && utilisateur.value.uid === '__invite__';
   return (
     <div class="acces-libre-avis">
+      {/* Le numero de version est AFFICHE ici. Le 10/08, Raci a
+          decrit une banniere qui n'existait plus depuis deux
+          versions : impossible de savoir, a distance, s'il lisait du
+          code ancien ou un vrai defaut. Le numero repond a la
+          question « quelle version lis-tu ? » sans avoir a la poser. */}
+      <b>v{VERSION_APP}</b>{' · '}
       {invite
         ? 'Mode invité — données locales, ce ne sont pas tes données'
-        : 'Accès invité ouvert — entrée sans compte disponible'}
+        : 'Accès invité ouvert — le lien « Entrer sans compte » est sous le formulaire'}
     </div>
   );
 }
