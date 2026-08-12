@@ -3317,3 +3317,16 @@
   pointer-events: none;
 }
 .acces-libre-avis--echec { position: static; background: #B34700; }
+
+/* La banniere est en position fixe : elle sort du flux et recouvrait
+   l'en-tete. On repousse la page de sa hauteur exacte, mesuree apres
+   rendu. La variable et la classe sont posees par AvisAccesInvite et
+   retirees avec lui : rien ne subsiste une fois l'acces referme. */
+/* Le padding sur <body> ne suffit pas : les quatre panneaux du rail
+   sont positionnes et couvrent la fenetre, l'en-tete ne descend donc
+   pas avec le corps. On decale les panneaux eux-memes, ainsi que
+   l'ecran de connexion qui vit hors du rail. Chevauchement vu sur la
+   capture de Raci du 10/08 : le logo passait derriere la banniere. */
+html.avec-avis .pan-scroll,
+html.avec-avis .login-ecran,
+html.avec-avis .pg-besoins { padding-top: var(--haut-avis, 0px); }

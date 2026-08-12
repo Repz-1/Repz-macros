@@ -170,10 +170,35 @@ export function OngletEntrainer() {
  * detourne le `position: fixed` de tous ses descendants.
  */
 function AvisAccesInvite() {
+  // La banniere occupe le haut de l'ecran en position fixe : sans
+  // marge, elle recouvre l'en-tete de l'application. Vu sur la
+  // capture de Raci du 10/08, le logo passait derriere. On decale
+  // donc la page de la hauteur exacte de la banniere, mesuree apres
+  // rendu — elle tient sur une ou deux lignes selon la largeur.
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    const poser = () => {
+      const h = el ? Math.ceil(el.getBoundingClientRect().height) : 0;
+      document.documentElement.style.setProperty('--haut-avis', h + 'px');
+      document.documentElement.classList.toggle('avec-avis', h > 0);
+    };
+    poser();
+    if (!el) return undefined;
+    const ro = new ResizeObserver(poser);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      document.documentElement.classList.remove('avec-avis');
+      document.documentElement.style.removeProperty('--haut-avis');
+    };
+  });
+
   if (!ACCES_INVITE) return null;
-  const invite = utilisateur.value && utilisateur.value.uid === '__invite__';
+  const u = utilisateur.value;
+  const invite = u && u.uid === '__invite__';
   return (
-    <div class="acces-libre-avis">
+    <div class="acces-libre-avis" ref={ref}>
       {/* Le numero de version est AFFICHE ici. Le 10/08, Raci a
           decrit une banniere qui n'existait plus depuis deux
           versions : impossible de savoir, a distance, s'il lisait du
@@ -181,8 +206,14 @@ function AvisAccesInvite() {
           question « quelle version lis-tu ? » sans avoir a la poser. */}
       <b>v{VERSION_APP}</b>{' · '}
       {invite
-        ? 'Mode invité — données locales, ce ne sont pas tes données'
-        : 'Accès invité ouvert — le lien « Entrer sans compte » est sous le formulaire'}
+        ? 'Mode invité — données locales'
+        : u
+          /* Connecte avec son vrai compte : lui indiquer ou trouver
+             le lien d'entree invite n'a aucun sens, il est deja
+             entre. Ce qui reste vrai et utile, c'est que la porte est
+             ouverte au public. Defaut vu sur la capture du 10/08. */
+          ? 'Accès invité ouvert au public — à refermer après tes essais'
+          : 'Accès invité ouvert — le lien « Entrer sans compte » est sous le formulaire'}
     </div>
   );
 }

@@ -83,6 +83,32 @@ export function entrerEnInvite() {
   authPrete.value = true;
 }
 
+/**
+ * Prepare le compte invite pour qu'il ouvre DIRECTEMENT sur le
+ * Journal. Sans cela, l'entree invite tombait sur « Tes besoins » :
+ * un compte neuf n'a pas d'objectifs, et besoinsRequis() le renvoie
+ * la tant qu'ils valent les valeurs par defaut. Etape legitime pour
+ * une vraie inscription, obstacle inutile pour un coup d'oeil a
+ * l'application (Raci, 10/08).
+ *
+ * On ecrit dans localStorage AVANT que le store ne charge : c'est la
+ * meme cle que sync.js lira pour l'identifiant invite, donc les
+ * objectifs arrivent par le chemin normal, sans cas particulier dans
+ * le journal. Si une session invite existe deja, on n'y touche pas —
+ * ce qui a ete encode d'une visite a l'autre reste en place.
+ */
+function preparerInvite() {
+  const cle = 'belfit_v2_journal___invite__';
+  try {
+    if (localStorage.getItem(cle)) return;
+    localStorage.setItem(cle, JSON.stringify({
+      objectifs: { kcal: 2700, prot: 170, carbs: 300, lip: 80 },
+      calculBaseFait: true,
+      ts: Date.now(),
+    }));
+  } catch (e) { /* stockage refuse : « Tes besoins » servira d'entree */ }
+}
+
 // Entree DIRECTE par l'adresse : belfit.be/v2/?invite=1
 // Raci le 10/08 n'arrivait pas a entrer et ne pouvait pas me dire ce
 // qu'il voyait ; belfit.be n'est pas joignable depuis le conteneur,
@@ -93,7 +119,7 @@ export function entrerEnInvite() {
 // differente force GitHub Pages et le navigateur a redemander la
 // page au lieu de servir la copie de dix minutes.
 try {
-  if (new URLSearchParams(location.search).has('invite')) entrerEnInvite();
+  if (new URLSearchParams(location.search).has('invite')) { preparerInvite(); entrerEnInvite(); }
 } catch (e) { /* URL intouchable : le lien sous le formulaire reste */ }
 
 // --- Actions ---
