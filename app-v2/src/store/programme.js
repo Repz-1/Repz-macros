@@ -41,8 +41,20 @@ const isoDuJour = (d) => d.getFullYear() + '-'
 
 export const programmeActif = signal(null);
 
-/** Nombre de seances hebdomadaires au-dela duquel il faut Premium. */
+/**
+ * Nombre de seances qu'un compte gratuit peut avoir PLANIFIEES a la
+ * fois. Precision de Raci le 10/08 : « un utilisateur gratuit peut
+ * programmer maximum 4 seances a la fois ; s'il en veut une 5e, il
+ * doit payer ». Ce n'est donc pas une limite sur le programme lui-
+ * meme mais sur ce qui est pose au calendrier : au 5e jour coche, un
+ * message s'affiche au lieu de la coche.
+ */
 export const SEANCES_LIBRES = 4;
+
+/** Peut-on encore planifier une seance de plus sans Premium ? */
+export function quotaAtteint(nbDejaChoisi, premium) {
+  return !premium && nbDejaChoisi >= SEANCES_LIBRES;
+}
 
 /** Le programme, retrouve par son identifiant. */
 export function progParId(id) {
@@ -53,7 +65,11 @@ export function progParId(id) {
   return null;
 }
 
-/** Un programme depasse-t-il le quota gratuit ? */
+/**
+ * Un programme depasse-t-il le quota gratuit ? Un programme 5j ou 6j
+ * demande cinq ou six seances planifiees, donc Premium. C'est le
+ * meme quota vu depuis le programme plutot que depuis le calendrier.
+ */
 export function exigePremium(id) {
   const p = progParId(id);
   return !!p && p.seances.length > SEANCES_LIBRES;
