@@ -212,6 +212,64 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R9 — Un aliment ne peut pas etre encode deux fois dans un repas.
+// Trouve le 10/08 : Avoine encodee a 100 g, un appui sur le meme
+// aliment dans la liste de resultats ajoutait une SECONDE ligne de
+// 100 g. Le repas affichait alors 760 kcal pour 380 reellement
+// manges — la journee comptait faux, ce n'etait pas qu'une liste
+// qui s'allonge. La liste de resultats recouvre « DANS CE REPAS » :
+// impossible de voir que l'aliment est deja la avant d'appuyer.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/MealCard.jsx');
+  if (!jsx) faute('R9 doublon d\'aliment', 'MealCard.jsx introuvable');
+  else {
+    const soucis = [];
+    // choisir() doit consulter les ingredients deja presents avant
+    // d'appeler ajouterIngredient, et rendre la main si l'aliment
+    // y figure deja.
+    const m = jsx.match(/const choisir = \(nom\) => \{[\s\S]*?\n  \};/);
+    if (!m) soucis.push('choisir() introuvable — la regle ne sait plus quoi verifier');
+    else {
+      const corps = m[0];
+      const iGarde = corps.search(/dejaLa[\s\S]*?return;/);
+      const iAjout = corps.indexOf('ajouterIngredient');
+      if (iGarde === -1) soucis.push('choisir() n\'a pas de garde sur les aliments deja presents');
+      else if (iAjout !== -1 && iAjout < iGarde) soucis.push('choisir() ajoute avant de verifier');
+    }
+    // La liste doit aussi le DIRE : sans marque visible, l'appui reste
+    // une surprise meme s'il ne duplique plus.
+    if (!/est-la/.test(jsx)) soucis.push('la liste de resultats ne marque pas les aliments deja encodes');
+    if (soucis.length) faute('R9 doublon d\'aliment', soucis.join(' ; '));
+    else passe('R9 doublon d\'aliment');
+  }
+}
+
+// ------------------------------------------------------------
+// R10 — Une ligne de resultat ne lit jamais des valeurs absentes.
+// Trouve le 10/08 en instrumentant la console : un favori dont
+// l'aliment n'existe plus dans la base — produit renomme, aliment
+// scanne puis supprime — passait dans la liste avec saisie, et la
+// page plantait sur `.kcal` d'un objet absent. Ecran blanc, pas un
+// defaut visuel. La branche sans saisie filtrait deja, l'autre non.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/MealCard.jsx');
+  if (jsx) {
+    const soucis = [];
+    // Aucune lecture directe sur le resultat du OU : il peut etre
+    // undefined et le point d'acces plante la page entiere.
+    if (/\(DB\[nom\]\s*\|\|\s*customFoods\.value\[nom\]\)\s*\./.test(jsx)) {
+      soucis.push('lecture directe sur (DB[nom] || customFoods[nom]) — plante si l\'aliment n\'existe plus');
+    }
+    // Et la liste doit etre filtree sur les DEUX branches.
+    if (!/aDesValeurs/.test(jsx)) soucis.push('la liste de resultats n\'ecarte pas les aliments sans valeurs');
+    if (soucis.length) faute('R10 resultat sans valeurs', soucis.join(' ; '));
+    else passe('R10 resultat sans valeurs');
+  }
+}
+
+// ------------------------------------------------------------
 // R8 — Contraste minimal des libelles de stats.scoped.css.
 // Trouve le 10/08 : les petits libelles (« Record x 8 », « Moyenne
 // sur 6 jours ») etaient en #8A8279 a 10.5px, soit 3.57:1 sur le

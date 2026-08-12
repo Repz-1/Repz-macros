@@ -2648,6 +2648,15 @@
 .pg-journal .mc-res-fav { color: var(--texte-3); }
 .pg-journal .mc-res-fav.on { color: var(--or); }
 
+/* Aliment deja encode dans ce repas. La liste de resultats recouvre
+   « DANS CE REPAS » : sans cette mention, on appuie sans pouvoir voir
+   que l'aliment est deja la. Bug signale par Raci le 10/08. */
+.pg-journal .mc-res-choix.est-la { background: #FFF6EC; }
+.pg-journal .mc-res-deja {
+  display: block; margin-top: 3px;
+  font-size: 11.5px; font-weight: 600; color: #B34700; letter-spacing: 0;
+}
+
 /* Etat tactile : une nappe a peine perceptible, pas une carte. */
 .pg-journal .mc-resultats > button:active,
 .pg-journal .mc-res-choix:active { background: rgba(24,20,12,.045); }

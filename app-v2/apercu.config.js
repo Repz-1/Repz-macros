@@ -11,6 +11,6 @@ export default defineConfig({
     outDir: 'construit',
     emptyOutDir: true,
     chunkSizeWarningLimit: 1200,
-    rollupOptions: { input: { index: 'apercu/index.html', app: 'apercu/app.html', stats: 'apercu/stats.html' } },
+    rollupOptions: { input: { index: 'apercu/index.html', app: 'apercu/app.html', stats: 'apercu/stats.html', repas: 'apercu/repas.html' } },
   },
 });

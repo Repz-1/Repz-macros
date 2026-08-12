@@ -27,7 +27,7 @@ import { t } from '../i18n/index.js';
 import { favoris, estFavori, basculerFavori, plats, macrosPortion } from '../store/perso.js';
 import { MEAL_SVG, TYPE_SVG, MEAL_NEUTRAL_SVG } from '../data/illustrations.js';
 import {
-  totauxRepas, setPortion, ajouterIngredient, ajouterPlat,
+  repas, totauxRepas, setPortion, ajouterIngredient, ajouterPlat,
   supprimerIngredient, supprimerRepas, renommerRepas, basculerCuisson,
   fourchetteRepas,
 } from '../store/journal.js';
@@ -107,10 +107,16 @@ export function LigneIngredient({ repasId, ing }) {
   // La valeur peut changer ailleurs (vocal, scan) : on resynchronise.
   useEffect(() => { setSaisie(String(ing.portion)); }, [ing.portion]);
 
-  // Aliment tout juste ajoute : on enchaine sur sa quantite, deja
-  // selectionnee — taper le chiffre remplace la valeur par defaut.
+  // Aliment vise : on enchaine sur sa quantite, deja selectionnee —
+  // taper le chiffre remplace la valeur.
+  // Le signal est lu ICI, dans le corps du composant, et non dans
+  // l'effet : sinon la ligne ne reagit qu'a sa propre creation. Une
+  // ligne DEJA montee — celle qu'on vise quand l'aliment est deja
+  // encode — ne voyait jamais passer le signal, son effet n'ayant
+  // que [ing.id] en dependance et cet id ne changeant pas.
+  const vise = ingNouveau.value === ing.id;
   useEffect(() => {
-    if (ingNouveau.value !== ing.id) return;
+    if (!vise) return;
     ingNouveau.value = null;
     const n = champQte.current;
     if (!n) return;
@@ -119,7 +125,7 @@ export function LigneIngredient({ repasId, ing }) {
       n.select();
       n.scrollIntoView({ block: 'center', behavior: 'smooth' });
     });
-  }, [ing.id]);
+  }, [vise]);
 
   return (
     <div class="mc-ing">
@@ -207,20 +213,45 @@ export function Recherche({ repasId, phCourt }) {
     .filter(([sc]) => sc > bonus)
     .sort((a, b) => b[0] - a[0]);
 
-  const resultats = terme.length < 2
-    ? favoris.value.filter(n => DB[n] || customFoods.value[n]).slice(0, 6)
+  // Un favori dont l'aliment n'existe plus — produit renomme dans la
+  // base, aliment scanne puis supprime — n'a plus de valeurs. La
+  // branche « sans saisie » l'ecartait deja ; celle avec saisie ne le
+  // faisait pas, et la page plantait sur `.kcal` d'un objet absent.
+  // Trouve le 10/08 en instrumentant la console.
+  const aDesValeurs = (n) => !!(DB[n] || customFoods.value[n]);
+
+  const resultats = (terme.length < 2
+    ? favoris.value.slice(0, 6)
     : [
         ...classer(favoris.value, 25).map(([, n]) => n),
         ...classer(noms.filter(n => !estFavori(n)), 0).map(([, n]) => n),
-      ].slice(0, 8);
+      ].slice(0, 8)
+  ).filter(aDesValeurs);
+
+  // Aliments deja encodes dans CE repas, par nom. Sert deux fois : a
+  // marquer la liste de resultats, et a rediriger l'appui au lieu
+  // d'ajouter une seconde fois la meme chose.
+  const dejaLa = new Map();
+  for (const i of (repas.value.find(r => r.id === repasId)?.ings || [])) {
+    if (!dejaLa.has(i.name)) dejaLa.set(i.name, i);
+  }
 
   const choisir = (nom) => {
-    const d = DB[nom] || customFoods.value[nom] || {};
-    // Aliment "a la piece" (burger, oeuf...) : portion par defaut = 1 piece
-    const id = ajouterIngredient(repasId, nom, d.unit || 100);
+    // Deja dans ce repas : on ne duplique pas, on emmene sur la ligne
+    // existante, quantite selectionnee. Signale par Raci le 10/08 :
+    // Avoine encodee a 100 g, un appui sur le meme aliment dans la
+    // liste donnait deux lignes de 100 g et un total de 760 kcal pour
+    // 380 reellement manges — la journee comptait faux, pas seulement
+    // la liste qui s'allongeait.
+    const existant = dejaLa.get(nom);
     setQ('');
     setActif(false);          // la liste se referme, comme attendu
     if (champRef.current) champRef.current.blur();
+    if (existant) { ingNouveau.value = existant.id; return; }
+
+    const d = DB[nom] || customFoods.value[nom] || {};
+    // Aliment "a la piece" (burger, oeuf...) : portion par defaut = 1 piece
+    const id = ajouterIngredient(repasId, nom, d.unit || 100);
     ingNouveau.value = id;    // la quantite prend le relais
   };
 
@@ -349,11 +380,23 @@ export function Recherche({ repasId, phCourt }) {
             );
           })}
 
-          {resultats.map(nom => (
+          {resultats.map(nom => {
+            // Marquer ce qui est deja encode : la liste recouvre
+            // « DANS CE REPAS », on ne peut pas le voir en appuyant.
+            const dl = dejaLa.get(nom);
+            const dd = DB[nom] || customFoods.value[nom];
+            return (
             <div class="mc-res-ligne" key={nom}>
-              <button class="mc-res-choix" onClick={() => choisir(nom)}>
-                <span>{nom}</span>
-                <span class="kc">{(DB[nom] || customFoods.value[nom]).kcal} kcal/100g</span>
+              <button class={'mc-res-choix' + (dl ? ' est-la' : '')} onClick={() => choisir(nom)}>
+                <span>
+                  {nom}
+                  {dl && (
+                    <span class="mc-res-deja">
+                      {t('mc_deja_repas', { q: dl.portion, u: dd && dd.unit ? (dd.unitLabel || 'pièce') : 'g' })}
+                    </span>
+                  )}
+                </span>
+                <span class="kc">{dd.kcal} kcal/100g</span>
               </button>
               <button
                 class={'mc-res-fav' + (estFavori(nom) ? ' on' : '')}
@@ -361,7 +404,8 @@ export function Recherche({ repasId, phCourt }) {
                 aria-label={t('fav_basculer')}
               >{estFavori(nom) ? '★' : '☆'}</button>
             </div>
-          ))}
+            );
+          })}
 
           {/* Acces discret a la bibliotheque, uniquement si elle existe */}
           {plats.value.length > 0 && (
