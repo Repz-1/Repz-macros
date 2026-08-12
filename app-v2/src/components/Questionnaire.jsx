@@ -20,12 +20,14 @@ const ETAPES = [
 
 // Etapes a reglette (taille / poids / age) : bornes et unite
 const REGLETTES = {
-  // inverse : grand en haut, petit en bas — le sens d'une toise.
+  // inverse : grand en haut, petit en bas, sur les trois reglettes.
+  // Le sens d'une toise, etendu au poids puis a l'age (Raci, 10/08) —
+  // ce qui compte le plus est la coherence entre les trois ecrans.
   taille: { min: 120, max: 220, pas: 1, unite: 'cm', defaut: 175, inverse: true,
             t: 'Quelle est ta taille ?', s: 'Sert à estimer tes besoins caloriques.' },
   poids:  { min: 35, max: 200, pas: 0.1, px: 90, unite: 'kg', defaut: 75, inverse: true,
             t: 'Quel est ton poids ?', s: 'Ton point de départ, rien de plus.' },
-  age:    { min: 14, max: 90, pas: 1, px: 40, unite: 'ans', defaut: 30,
+  age:    { min: 14, max: 90, pas: 1, px: 40, unite: 'ans', defaut: 30, inverse: true,
             t: 'Quel âge as-tu ?', s: 'La récupération change avec l\u2019âge : les conseils s\u2019adaptent.' },
 };
 
