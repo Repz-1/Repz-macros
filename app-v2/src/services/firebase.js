@@ -63,9 +63,25 @@ try {
 } catch (e) { /* URL intouchable : tant pis, l'ecran de connexion suffira */ }
 
 onAuthStateChanged(auth, (u) => {
+  // Un invite n'a pas de compte Firebase : le listener recoit null et
+  // le mettrait dehors aussitot entre. On ne l'ecrase donc pas.
+  if (!u && utilisateur.value && utilisateur.value.uid === '__invite__') {
+    authPrete.value = true;
+    return;
+  }
   utilisateur.value = u;
   authPrete.value = true;
 });
+
+/**
+ * Entree sans compte (voir src/acces-invite.js). Aucun appel a
+ * Firebase : on pose un utilisateur local dont l'uid est celui que
+ * services/sync.js reconnait deja pour court-circuiter Firestore.
+ */
+export function entrerEnInvite() {
+  utilisateur.value = { uid: '__invite__', email: null, displayName: 'Invité', isAnonymous: true };
+  authPrete.value = true;
+}
 
 // --- Actions ---
 /**

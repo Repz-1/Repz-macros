@@ -160,6 +160,9 @@ button{cursor:pointer}
 .login-ok{background:var(--carte);color:var(--texte);border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:600}
 /* « Mot de passe oublie » reste volontairement en retrait (v1). */
 .login-oubli{background:none;border:none;color:#A5A19A;font-weight:600;font-size:12px;margin-top:5px;text-decoration:underline}
+/* Entree invite provisoire (src/acces-invite.js). En retrait sous
+   « mot de passe oublie » : la connexion reste le chemin normal. */
+.login-invite{background:none;border:none;color:#B34700;font-weight:700;font-size:12px;margin-top:14px;text-decoration:underline;font-family:inherit;cursor:pointer}
 /* Ecran de confirmation d'adresse : texte explicatif et ligne d'aide. */
 .conf-texte{font-size:14.5px;line-height:1.55;color:#5C5750;margin:0 0 4px;text-align:center}
 .bandeau-conf{position:fixed;left:0;right:0;z-index:90;bottom:calc(60px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;margin:0 10px;padding:10px 12px;background:var(--srf-carte-2);border:1px solid #F0E2B4;border-radius:12px;box-shadow:0 4px 14px rgba(24,24,24,.08)}

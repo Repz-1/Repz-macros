@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { connexion, connexionGoogle, inscription, messageErreurAuth, envoyerLienReinitialisation } from '../services/firebase.js';
+import { connexion, connexionGoogle, inscription, messageErreurAuth, envoyerLienReinitialisation, entrerEnInvite } from '../services/firebase.js';
+import { ACCES_INVITE } from '../acces-invite.js';
 import { t, langue } from '../i18n/index.js';
 import { signal } from '@preact/signals';
 
@@ -260,6 +261,15 @@ export function LoginScreen() {
           onClick={() => { setMode('recuperation'); setErreur(''); setMsgOk(''); }}
         >
           {t('mdp_oublie')}
+        </button>
+      )}
+
+      {/* Entree provisoire sans mot de passe (Raci, 10/08). L'ecran de
+          connexion reste le chemin par defaut : ce lien vit en dessous,
+          en retrait, et disparait avec le drapeau ACCES_INVITE. */}
+      {ACCES_INVITE && mode !== 'recuperation' && (
+        <button class="login-invite" onClick={entrerEnInvite}>
+          Entrer sans compte — données locales, provisoire
         </button>
       )}
     </div>

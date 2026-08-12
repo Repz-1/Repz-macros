@@ -289,7 +289,7 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R15 — Acces libre : l'audit reste ROUGE tant qu'il est actif.
+// R15 — Acces invite : l'audit reste ROUGE tant qu'il est actif.
 // Raci le 10/08 a demande de contourner momentanement l'ecran de
 // connexion. Cette regle n'empeche rien : elle refuse simplement de
 // laisser l'audit passer au vert pendant ce temps. Un contournement
@@ -299,19 +299,20 @@ const DECALAGE_SW_V2 = 232;
 // false — le « nouvel ordre ».
 // ------------------------------------------------------------
 {
-  const drapeau = lire('app-v2/src/acces-libre.js');
-  const jsx = lire('app-v2/src/main.jsx');
-  if (drapeau && /ACCES_LIBRE\s*=\s*true/.test(drapeau)) {
-    faute('R15 acces libre ACTIF',
-      'l\'ecran de connexion est contourne par session anonyme sur belfit.be — remettre ACCES_LIBRE a false pour refermer');
+  const drapeau = lire('app-v2/src/acces-invite.js');
+  const login = lire('app-v2/src/components/LoginScreen.jsx');
+  if (drapeau && /ACCES_INVITE\s*=\s*true/.test(drapeau)) {
+    faute('R15 acces invite ACTIF',
+      'n\'importe qui entre sans compte sur belfit.be — remettre ACCES_INVITE a false pour refermer');
   } else if (drapeau) {
-    // Desactive : on verifie qu'il ne reste pas de dispositif orphelin.
+    // Referme : l'entree ne doit pas subsister hors du drapeau, et
+    // l'ecran de connexion doit rester le seul chemin.
     const restes = [];
-    if (jsx && /connexionAnonyme\(\)/.test(jsx) && !/ACCES_LIBRE/.test(jsx)) {
-      restes.push('main.jsx appelle encore connexionAnonyme() hors du drapeau');
+    if (login && /entrerEnInvite/.test(login) && !/ACCES_INVITE/.test(login)) {
+      restes.push('LoginScreen appelle encore entrerEnInvite() hors du drapeau');
     }
-    if (restes.length) faute('R15 acces libre', restes.join(' ; '));
-    else passe('R15 acces libre (referme)');
+    if (restes.length) faute('R15 acces invite', restes.join(' ; '));
+    else passe('R15 acces invite (referme)');
   }
 }
 

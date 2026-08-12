@@ -3302,8 +3302,8 @@
 }
 
 /* ============================================================
-   ACCES LIBRE — banniere de contournement de la connexion.
-   Voir src/acces-libre.js. Volontairement voyante : un
+   ACCES INVITE — banniere d'entree sans compte.
+   Voir src/acces-invite.js. Volontairement voyante : un
    contournement d'authentification ne doit pas pouvoir se faire
    oublier. Elle disparait d'elle-meme quand le drapeau repasse a
    false, ce style devenant alors sans emploi.
