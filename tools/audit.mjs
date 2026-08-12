@@ -289,6 +289,44 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R13 — Tout composant employe dans du JSX doit exister.
+// Trouve le 10/08 : le commit b9b6a68 du 27/07, qui refaisait l'ecran
+// de resultat du questionnaire, a supprime la fonction Reglette en
+// laissant la balise <Reglette> a sa place. L'etape 3 levait alors
+// « Reglette is not defined », le rendu plantait, l'ecran restait
+// fige sur l'etape 2 et l'appui sur Continuer semblait sans effet.
+// Le questionnaire « Creer mon programme » etait bloque depuis deux
+// semaines. `node tools/verif-js.js` ne l'a pas vu : il verifie la
+// syntaxe, pas les references.
+// ------------------------------------------------------------
+{
+  const { readdirSync } = await import('node:fs');
+  const dossiers = ['app-v2/src/components', 'app-v2/src/pages'];
+  const manquants = [];
+  for (const dossier of dossiers) {
+    let fichiers = [];
+    try { fichiers = readdirSync(resolve(RACINE, dossier)).filter(f => f.endsWith('.jsx')); }
+    catch (e) { continue; }
+    for (const f of fichiers) {
+      const src = lire(`${dossier}/${f}`);
+      if (!src) continue;
+      const propre = src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
+      // Balises commencant par une majuscule = composants.
+      const employes = new Set();
+      for (const m of propre.matchAll(/<([A-Z][A-Za-z0-9_]*)[\s/>]/g)) employes.add(m[1]);
+      for (const nom of employes) {
+        const defini = new RegExp(
+          `(function|const|class)\\s+${nom}\\b|\\b${nom}\\b[^\\n]*from\\s+['"]|\\{[^}]*\\b${nom}\\b[^}]*\\}\\s*from`
+        ).test(propre);
+        if (!defini) manquants.push(`${f} : <${nom}> employe mais ni defini ni importe`);
+      }
+    }
+  }
+  if (manquants.length) faute('R13 composant fantome', manquants.join(' ; '));
+  else passe('R13 composant fantome');
+}
+
+// ------------------------------------------------------------
 // R12 — Retour de la barre de navigation.
 // Raci le 10/08 : « qu'elle reapparaisse rapidement quand j'arrete de
 // defiler, surtout quand je suis en bas ». L'attente etait de 700ms
