@@ -38,7 +38,11 @@ function Vide({ texte, cta, onCta }) {
 /* Exportee : la modale des muscles de S'entrainer l'affiche aussi,
    pour qu'on voie sur le corps ce qu'on est en train de cocher. */
 export function BodyMap({ compte, onClick }) {
-  // Travaille sur la periode -> couleur du muscle ; sinon gris
+  // Silhouette DE FACE ET DE DOS. Raci le 10/08 : « fais un bonhomme
+  // plus complet, on voit a peine le dos, inclus les trapezes ».
+  // L'ancienne version ne montrait que la face : le dos s'y reduisait
+  // a deux echardes le long des flancs, et les trapezes n'existaient
+  // pas. Un dos travaille ne se voyait donc pratiquement pas.
   const col = (k) => (compte[k] > 0 ? (COL[k] || '#F7B500') : '#E9EBEF');
   // Avant-bras et mains : rattaches visuellement au bras (v1)
   const colBras = () => {
@@ -47,30 +51,57 @@ export function BodyMap({ compte, onClick }) {
     return '#E9EBEF';
   };
   return (
-    <div class="bodymap" onClick={onClick}>
-      <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="16" r="11" class="bp" />
-        <rect x="42" y="27" width="16" height="8" rx="3" class="bp" />
-        <path class="bp" style={{ fill: col('epaules') }} d="M30 37 q-8 1 -10 8 l4 6 q6 -6 12 -6z" />
-        <path class="bp" style={{ fill: col('epaules') }} d="M70 37 q8 1 10 8 l-4 6 q-6 -6 -12 -6z" />
-        <path class="bp" style={{ fill: col('dos') }} d="M33 40 q-4 3 -4 9 l0 8 q0 3 3 3 l3 0 q-2 -10 -1 -20z" />
-        <path class="bp" style={{ fill: col('dos') }} d="M67 40 q4 3 4 9 l0 8 q0 3 -3 3 l-3 0 q2 -10 1 -20z" />
-        <path class="bp" style={{ fill: col('pecs') }} d="M36 37 h28 q3 0 3 4 v10 q0 4 -4 4 h-26 q-4 0 -4 -4 v-10 q0 -4 3 -4z" />
-        <path class="bp" style={{ fill: col('abdos') }} d="M39 60 h22 q2 0 2 3 v20 q0 3 -3 3 h-20 q-3 0 -3 -3 v-20 q0 -3 2 -3z" />
-        <path class="bp" style={{ fill: col('biceps') }} d="M22 47 q-4 8 -4 18 l6 2 q2 -10 4 -16z" />
-        <path class="bp" style={{ fill: col('biceps') }} d="M78 47 q4 8 4 18 l-6 2 q-2 -10 -4 -16z" />
-        <path class="bp" style={{ fill: col('triceps') }} d="M17 66 q-2 8 -1 16 l6 -1 q0 -8 1 -14z" />
-        <path class="bp" style={{ fill: col('triceps') }} d="M83 66 q2 8 1 16 l-6 -1 q0 -8 -1 -14z" />
-        <path class="bp" style={{ fill: colBras() }} d="M15 83 q-2 8 -1 15 l6 -1 q0 -7 1 -13z" />
-        <path class="bp" style={{ fill: colBras() }} d="M85 83 q2 8 1 15 l-6 -1 q0 -7 -1 -13z" />
-        <ellipse class="bp" style={{ fill: colBras() }} cx="16.5" cy="102" rx="3.6" ry="5" />
-        <ellipse class="bp" style={{ fill: colBras() }} cx="83.5" cy="102" rx="3.6" ry="5" />
-        <path class="bp" style={{ fill: col('jambes') }} d="M40 89 h9 v40 q0 6 -5 6 q-5 0 -5 -6 z" />
-        <path class="bp" style={{ fill: col('jambes') }} d="M60 89 h-9 v40 q0 6 5 6 q5 0 5 -6 z" />
-        <path class="bp" style={{ fill: col('jambes') }} d="M39 137 h10 v34 q0 4 -5 4 q-5 0 -5 -4z" />
-        <path class="bp" style={{ fill: col('jambes') }} d="M61 137 h-10 v34 q0 4 5 4 q5 0 5 -4z" />
-      </svg>
-      <div class="bodymap-legend"><i style="background:#E9EBEF" />{t('st_not_worked')}</div>
+    <div class="bodymap bodymap--double" onClick={onClick}>
+      <div class="bm-vue">
+        <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+          {/* ---- FACE ---- */}
+          <circle cx="50" cy="16" r="11" class="bp" />
+          <rect x="42" y="27" width="16" height="8" rx="3" class="bp" />
+          {/* Trapezes : le galbe entre le cou et les epaules. */}
+          <path class="bp" style={{ fill: col('trapezes') }} d="M40 33 q10 -4 20 0 l7 5 q-17 -5 -34 0z" />
+          <path class="bp" style={{ fill: col('epaules') }} d="M30 38 q-8 1 -10 8 l4 6 q6 -6 12 -6z" />
+          <path class="bp" style={{ fill: col('epaules') }} d="M70 38 q8 1 10 8 l-4 6 q-6 -6 -12 -6z" />
+          <path class="bp" style={{ fill: col('pecs') }} d="M36 39 h28 q3 0 3 4 v10 q0 4 -4 4 h-26 q-4 0 -4 -4 v-10 q0 -4 3 -4z" />
+          <path class="bp" style={{ fill: col('abdos') }} d="M39 60 h22 q2 0 2 3 v20 q0 3 -3 3 h-20 q-3 0 -3 -3 v-20 q0 -3 2 -3z" />
+          <path class="bp" style={{ fill: col('biceps') }} d="M22 47 q-4 8 -4 18 l6 2 q2 -10 4 -16z" />
+          <path class="bp" style={{ fill: col('biceps') }} d="M78 47 q4 8 4 18 l-6 2 q-2 -10 -4 -16z" />
+          <path class="bp" style={{ fill: colBras() }} d="M17 66 q-2 9 -1 17 l6 -1 q0 -8 1 -15z" />
+          <path class="bp" style={{ fill: colBras() }} d="M83 66 q2 9 1 17 l-6 -1 q0 -8 -1 -15z" />
+          <ellipse class="bp" style={{ fill: colBras() }} cx="18" cy="90" rx="3.6" ry="5" />
+          <ellipse class="bp" style={{ fill: colBras() }} cx="82" cy="90" rx="3.6" ry="5" />
+          <path class="bp" style={{ fill: col('jambes') }} d="M40 89 h9 v40 q0 6 -5 6 q-5 0 -5 -6 z" />
+          <path class="bp" style={{ fill: col('jambes') }} d="M60 89 h-9 v40 q0 6 5 6 q5 0 5 -6 z" />
+          <path class="bp" style={{ fill: col('jambes') }} d="M39 137 h10 v34 q0 4 -5 4 q-5 0 -5 -4z" />
+          <path class="bp" style={{ fill: col('jambes') }} d="M61 137 h-10 v34 q0 4 5 4 q5 0 5 -4z" />
+        </svg>
+        <span class="bm-vue-nom">{t('bm_face')}</span>
+      </div>
+
+      <div class="bm-vue">
+        <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+          {/* ---- DOS ---- Le grand dorsal occupe enfin toute la
+               largeur du buste : c'est le muscle qu'on ne voyait pas. */}
+          <circle cx="50" cy="16" r="11" class="bp" />
+          <rect x="42" y="27" width="16" height="8" rx="3" class="bp" />
+          <path class="bp" style={{ fill: col('trapezes') }} d="M38 33 q12 -4 24 0 l6 6 q-4 12 -18 14 q-14 -2 -18 -14z" />
+          <path class="bp" style={{ fill: col('epaules') }} d="M30 38 q-8 1 -10 8 l4 6 q6 -6 12 -6z" />
+          <path class="bp" style={{ fill: col('epaules') }} d="M70 38 q8 1 10 8 l-4 6 q-6 -6 -12 -6z" />
+          <path class="bp" style={{ fill: col('dos') }} d="M34 52 q16 5 32 0 l2 14 q-4 10 -18 12 q-14 -2 -18 -12z" />
+          <path class="bp" style={{ fill: col('dos') }} d="M40 79 h20 q2 0 2 3 v5 q0 3 -3 3 h-18 q-3 0 -3 -3 v-5 q0 -3 2 -3z" />
+          <path class="bp" style={{ fill: col('triceps') }} d="M22 47 q-4 8 -4 18 l6 2 q2 -10 4 -16z" />
+          <path class="bp" style={{ fill: col('triceps') }} d="M78 47 q4 8 4 18 l-6 2 q-2 -10 -4 -16z" />
+          <path class="bp" style={{ fill: colBras() }} d="M17 66 q-2 9 -1 17 l6 -1 q0 -8 1 -15z" />
+          <path class="bp" style={{ fill: colBras() }} d="M83 66 q2 9 1 17 l-6 -1 q0 -8 -1 -15z" />
+          <ellipse class="bp" style={{ fill: colBras() }} cx="18" cy="90" rx="3.6" ry="5" />
+          <ellipse class="bp" style={{ fill: colBras() }} cx="82" cy="90" rx="3.6" ry="5" />
+          <path class="bp" style={{ fill: col('jambes') }} d="M40 93 h9 v36 q0 6 -5 6 q-5 0 -5 -6 z" />
+          <path class="bp" style={{ fill: col('jambes') }} d="M60 93 h-9 v36 q0 6 5 6 q5 0 5 -6 z" />
+          {/* Mollets : plus marques de dos, c'est leur face visible. */}
+          <path class="bp" style={{ fill: col('jambes') }} d="M39 137 q5 -3 10 0 v22 q0 12 -5 12 q-5 0 -5 -12z" />
+          <path class="bp" style={{ fill: col('jambes') }} d="M61 137 q-5 -3 -10 0 v22 q0 12 5 12 q5 0 5 -12z" />
+        </svg>
+        <span class="bm-vue-nom">{t('bm_dos')}</span>
+      </div>
     </div>
   );
 }

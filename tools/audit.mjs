@@ -344,6 +344,30 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R20 — Silhouette double et jour de repos.
+// Raci le 10/08 : « fais un bonhomme plus complet, on voit a peine le
+// dos, inclus les trapezes » et « pour le jour de repos trouve autre
+// chose au lieu du gris ». Le dos se reduisait a deux echardes sur
+// une vue de face ; le gris du repos se confondait avec un jour vide.
+// ------------------------------------------------------------
+{
+  const stats = lire('app-v2/src/components/Stats.jsx');
+  const entr = lire('app-v2/src/store/entrainement.js');
+  const css = lire('app-v2/src/styles/entrainer-carte.css');
+  if (stats && entr && css) {
+    const soucis = [];
+    if (!/bodymap--double/.test(stats)) soucis.push('la silhouette est revenue a une seule vue');
+    if (!/col\('trapezes'\)/.test(stats)) soucis.push('les trapezes ne sont plus dessines');
+    if (!/k: 'trapezes'/.test(entr)) soucis.push('le groupe trapezes a disparu de GROUPES');
+    if (/repos'[^}]*c: '#D6D3CB'/.test(entr)) soucis.push('le repos est redevenu gris');
+    // Contraste du chiffre sur la creme du repos : mesure 4.92:1.
+    if (!/wlog-cell\.repos \{[^}]*#E9DCC0/.test(css)) soucis.push('la creme du repos a disparu de la feuille');
+    if (soucis.length) faute('R20 silhouette et repos', soucis.join(' ; '));
+    else passe('R20 silhouette et repos');
+  }
+}
+
+// ------------------------------------------------------------
 // R19 — Fin de seance : les deux branches convergent.
 // Organigramme de Raci du 10/08. Deux liaisons etaient coupees :
 //  1. Une seance enregistree ne colorait pas le calendrier. Seul

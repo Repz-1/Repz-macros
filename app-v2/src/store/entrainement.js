@@ -14,12 +14,17 @@ export const GROUPES = [
   { k: 'pecs',    label: 'Pecs',    c: '#EF4444' },
   { k: 'dos',     label: 'Dos',     c: '#F97316' },
   { k: 'epaules', label: 'Épaules', c: '#F7B500' },
+  // Trapezes ajoutes le 10/08 a la demande de Raci. Aucun exercice de
+  // la base n'y est rattache (EXERCISES ne compte que sept groupes) :
+  // ils se notent donc a la main, comme le cardio. Teinte prise entre
+  // l'orange du dos et l'or des epaules, entre lesquels ils vivent.
+  { k: 'trapezes', label: 'Trapèzes', c: '#EA8C00' },
   { k: 'biceps',  label: 'Biceps',  c: '#10B981' },
   { k: 'triceps', label: 'Triceps', c: '#06B6D4' },
   { k: 'jambes',  label: 'Jambes',  c: '#3B82F6' },
   { k: 'abdos',   label: 'Abdos',   c: '#8B5CF6' },
   { k: 'cardio',  label: 'Cardio',  c: '#EC4899' },
-  { k: 'repos',   label: 'Repos',   c: '#D6D3CB' },
+  { k: 'repos',   label: 'Repos',   c: '#E9DCC0' },
 ];
 
 export const muscleLog = signal({});
