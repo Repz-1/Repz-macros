@@ -494,3 +494,8 @@
   background: #FAC408; color: #16130F; font-family: inherit;
   font-size: 15.5px; font-weight: 700; cursor: pointer; margin: 4px 0 18px;
 }
+
+/* Plan partiel : un compte gratuit sur un programme 6 jours n'en
+   planifie que 4. On le dit a cote du compteur plutot que de laisser
+   croire au plan complet. */
+.pg-planifier .pl-partiel { color: #B34700; font-weight: 700; }

@@ -73,7 +73,15 @@ export function PlanifierProgramme({ progId }) {
     setChoisis([...choisis, v]);
   };
 
-  const complet = choisis.length === total;
+  // Un compte gratuit sur un programme 6 jours ne peut cocher que 4
+  // jours : exiger le compte complet le laissait devant un bouton
+  // eteint qui ne s'allumerait jamais. Cul-de-sac trouve le 10/08 en
+  // eprouvant le verrou. On accepte donc un plan partiel, en le
+  // disant : les seances au-dela ne sont pas planifiees, elles
+  // restent accessibles a la main depuis la fiche du programme.
+  const plafond = premium ? total : Math.min(total, SEANCES_LIBRES);
+  const complet = choisis.length >= plafond;
+  const partiel = complet && choisis.length < total;
 
   const valider = () => {
     if (!complet) return;
@@ -114,7 +122,10 @@ export function PlanifierProgramme({ progId }) {
       )}
 
       <p class="pl-compte">
-        {choisis.length} / {total} {t('pl_jours_choisis')}
+        {choisis.length} / {plafond} {t('pl_jours_choisis')}
+        {partiel && (
+          <span class="pl-partiel">{t('pl_partiel', { n: total - choisis.length })}</span>
+        )}
       </p>
 
       <button class="pl-valider" disabled={!complet} onClick={valider}>

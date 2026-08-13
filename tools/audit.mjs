@@ -362,6 +362,14 @@ const DECALAGE_SW_V2 = 232;
     if (!/adopterProgramme\(progId, choisis\)/.test(pl)) soucis.push('la validation n\'adopte plus le programme');
     if (!/vue\.nom === 'planifier'/.test(main)) soucis.push("la vue 'planifier' n'est pas branchee");
     if (!/allerVers\('planifier'/.test(prg)) soucis.push('aucune entree vers la planification depuis la fiche programme');
+    // Cul-de-sac trouve le 10/08 en eprouvant le verrou : sur un
+    // programme 6 jours, un compte gratuit ne cochait que 4 jours et
+    // le bouton d'enregistrement, qui exigeait le compte complet, ne
+    // s'allumait jamais. Le plafond doit tenir compte du quota.
+    const pl = lire('app-v2/src/components/PlanifierProgramme.jsx');
+    if (pl && !/const plafond = premium \? total/.test(pl)) {
+      soucis.push('le bouton d\'enregistrement exige le compte complet — impasse pour un compte gratuit');
+    }
     if (soucis.length) faute('R18 quota de planification', soucis.join(' ; '));
     else passe('R18 quota de planification');
   }
