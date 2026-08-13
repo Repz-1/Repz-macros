@@ -28,11 +28,13 @@ const iso = (d) => d.getFullYear() + '-'
  * l'apercu affichait les references brutes, « dos:1 », « dos:0 ».
  */
 function apercuExos(seanceId, max = 4) {
+  // Meme format que SeanceDetail : « groupe:Nom exact ».
   const bruts = SESSION_EXOS[seanceId] || [];
-  const noms = bruts.map(ref => {
-    const [groupe, rang] = String(ref).split(':');
-    const e = EXERCISES[groupe] && EXERCISES[groupe][parseInt(rang, 10)];
-    return e && e.nom;
+  const noms = bruts.map((ref) => {
+    const sep = String(ref).indexOf(':');
+    const groupe = EXERCISES[String(ref).slice(0, sep)] || [];
+    const nom = String(ref).slice(sep + 1);
+    return groupe.some(e => e.nom === nom) ? nom : null;
   }).filter(Boolean);
   return { montres: noms.slice(0, max), reste: Math.max(0, noms.length - max), total: noms.length };
 }

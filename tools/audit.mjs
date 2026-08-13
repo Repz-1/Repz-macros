@@ -344,6 +344,33 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R21 — Les seances de programme designent leurs exercices par NOM.
+// Raci le 10/08 : « dans dos il y a du triceps, jambes, tout est
+// mixe ». Cause : sessionExos.js pointait par POSITION dans les
+// tableaux de exercices.js. A l'ecriture, dos[0..3] valaient
+// Tractions, Rowing barre, Tirage vertical, Rowing haltere ; la base
+// a ensuite ete remplacee par 369 exercices tries alphabetiquement et
+// les memes positions ont donne « Extension Triceps Incline »,
+// « Flexion Buste Avant »… Les 86 seances servaient des exercices
+// arbitraires sans qu'aucune erreur ne se produise.
+// Un nom ne se decale pas quand la liste est retriee.
+// ------------------------------------------------------------
+{
+  const data = lire('app-v2/src/data/sessionExos.js');
+  const detail = lire('app-v2/src/components/SeanceDetail.jsx');
+  if (data && detail) {
+    const soucis = [];
+    // Une reference « groupe:3 » est une position : le format qui a
+    // pourri. Toute reference doit porter un nom.
+    const positions = [...data.matchAll(/"[a-z]+:(\d+)"/g)];
+    if (positions.length) soucis.push(`${positions.length} reference(s) encore par position`);
+    if (!/parseInt\(rang, 10\)/.test(detail) === false) soucis.push('SeanceDetail resout encore par position');
+    if (soucis.length) faute('R21 exercices par nom', soucis.join(' ; '));
+    else passe('R21 exercices par nom');
+  }
+}
+
+// ------------------------------------------------------------
 // R20 — Silhouette double et jour de repos.
 // Raci le 10/08 : « fais un bonhomme plus complet, on voit a peine le
 // dos, inclus les trapezes » et « pour le jour de repos trouve autre
@@ -424,7 +451,8 @@ const DECALAGE_SW_V2 = 232;
     // programme 6 jours, un compte gratuit ne cochait que 4 jours et
     // le bouton d'enregistrement, qui exigeait le compte complet, ne
     // s'allumait jamais. Le plafond doit tenir compte du quota.
-    const pl = lire('app-v2/src/components/PlanifierProgramme.jsx');
+    // `pl` est deja lu plus haut dans ce bloc : le redeclarer creait
+    // une zone morte temporelle et faisait planter l'audit entier.
     if (pl && !/const plafond = premium \? total/.test(pl)) {
       soucis.push('le bouton d\'enregistrement exige le compte complet — impasse pour un compte gratuit');
     }

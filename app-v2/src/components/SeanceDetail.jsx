@@ -22,17 +22,19 @@ const NOMS_MUSCLES = {
 
 // Resout un seanceId -> liste d'exercices (ordre impose du programme)
 function resoudreExercices(seanceId) {
-  const bruts = SESSION_EXOS[seanceId];
-  if (!bruts) return [];
-  const refs = [];
-  bruts.forEach(ref => {
-    const [mKey, idx] = ref.split(':');
-    const i = parseInt(idx, 10);
-    if (EXERCISES[mKey] && EXERCISES[mKey][i]) {
-      refs.push({ mKey, ex: EXERCISES[mKey][i] });
-    }
-  });
-  return refs;
+  // Les references sont des NOMS depuis le 10/08 : « dos:Tractions ».
+  // Elles etaient des positions, « dos:3 », et se sont decalees le
+  // jour ou la base d'exercices a ete retriee — les seances servaient
+  // alors des exercices arbitraires. Un nom ne se decale pas.
+  const bruts = SESSION_EXOS[seanceId] || [];
+  return bruts.map((ref) => {
+    const sep = String(ref).indexOf(':');
+    const mKey = String(ref).slice(0, sep);
+    const nom = String(ref).slice(sep + 1);
+    const groupe = EXERCISES[mKey] || [];
+    const ex = groupe.find(e => e.nom === nom);
+    return ex ? { mKey, ex } : null;
+  }).filter(Boolean);
 }
 
 function lireSetLog() {
