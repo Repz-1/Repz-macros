@@ -155,7 +155,14 @@ export function OngletEntrainer() {
   }
   if (vue.nom === 'seanceDetail') {
     const p = vue.params || {};
-    return (<><SeanceDetail seanceId={p.seanceId} titre={p.titre} retour={() => allerVers('programmes')} /><RestTimer /></>);
+    // Le retour depend d'ou l'on vient. Depuis la bibliotheque, on y
+    // retourne. Depuis « Démarrer une séance », on revient au journal :
+    // renvoyer vers « Tous les programmes » apres avoir termine sa
+    // seance du jour n'a aucun sens — vu le 10/08 en eprouvant la
+    // boucle complete.
+    const versJournal = p.depuis === 'journal';
+    return (<><SeanceDetail seanceId={p.seanceId} titre={p.titre}
+      retour={versJournal ? retourEntrainer : () => allerVers('programmes')} /><RestTimer /></>);
   }
   return (
     <div class="pg-entrainer">

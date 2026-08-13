@@ -344,6 +344,33 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R19 — Fin de seance : les deux branches convergent.
+// Organigramme de Raci du 10/08. Deux liaisons etaient coupees :
+//  1. Une seance enregistree ne colorait pas le calendrier. Seul
+//     muscleLog l'alimente, et rien n'y ecrivait a la fin.
+//  2. La branche « programme » n'avait AUCUNE fin de seance :
+//     SeanceDetail ne contenait ni bouton Terminer ni enregistrement.
+//     On terminait sa seance du jour et il n'en restait rien.
+// Ces deux pannes sont silencieuses : aucune erreur, juste un
+// calendrier qui reste blanc.
+// ------------------------------------------------------------
+{
+  const seances = lire('app-v2/src/store/seances.js');
+  const detail = lire('app-v2/src/components/SeanceDetail.jsx');
+  if (seances && detail) {
+    const soucis = [];
+    if (!/noterMuscles\(seance\.iso, seance\.muscles\)/.test(seances)) {
+      soucis.push('enregistrerSeance ne colore plus le calendrier');
+    }
+    if (!/enregistrerSeance\(/.test(detail)) {
+      soucis.push('la seance de programme ne s\'enregistre pas — branche sans fin');
+    }
+    if (soucis.length) faute('R19 fin de seance', soucis.join(' ; '));
+    else passe('R19 fin de seance');
+  }
+}
+
+// ------------------------------------------------------------
 // R18 — Le quota gratuit mord a la planification.
 // Raci le 10/08 : « un utilisateur gratuit peut programmer maximum 4
 // seances a la fois ; s'il clique sur la 5e, un message s'affiche ».

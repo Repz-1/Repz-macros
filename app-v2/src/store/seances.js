@@ -1,4 +1,5 @@
 import { signal, effect } from '@preact/signals';
+import { noterMuscles } from './entrainement.js';
 import { identite } from '../services/firebase.js';
 import { chargerDonnees, sauvegarder } from '../services/sync.js';
 
@@ -133,6 +134,11 @@ export function enregistrerSeance(s) {
   };
   // La plus recente en tete : c'est l'ordre d'affichage attendu.
   seances.value = [seance, ...seances.value].slice(0, MAX_SEANCES);
+  // Le calendrier et le mannequin se nourrissent de muscleLog, pas de
+  // cette liste. Sans cette ligne, une seance terminee apparaissait
+  // dans « Mes seances » mais laissait le calendrier blanc. Liaison
+  // manquante de l'organigramme de Raci du 10/08.
+  noterMuscles(seance.iso, seance.muscles);
   return seance;
 }
 

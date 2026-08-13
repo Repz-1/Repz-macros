@@ -499,3 +499,21 @@
    planifie que 4. On le dit a cote du compteur plutot que de laisser
    croire au plan complet. */
 .pg-planifier .pl-partiel { color: #B34700; font-weight: 700; }
+
+/* ---- Fin de seance de programme (SeanceDetail) ---- */
+.sd-terminer {
+  display: block; width: calc(100% - 28px); margin: 16px 14px 0;
+  border: none; border-radius: 14px; padding: 17px;
+  background: #16130F; color: #F8F2E8;
+  font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
+}
+.sd-fini {
+  margin: 16px 14px 0; padding: 18px 16px;
+  background: #FFF; border: 2px solid #FAC408; border-radius: 18px; text-align: center;
+}
+.sd-fini-t { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.sd-fini-l { font-size: 13px; color: #736C63; line-height: 1.45; margin-bottom: 14px; }
+.sd-fini-b {
+  display: block; width: 100%; border: none; border-radius: 13px; padding: 15px;
+  background: #FAC408; color: #16130F; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+}

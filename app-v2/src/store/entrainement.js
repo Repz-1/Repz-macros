@@ -79,6 +79,30 @@ export function basculerMuscle(iso, k) {
   muscleLog.value = log;
 }
 
+/**
+ * Ajoute des muscles a un jour sans effacer ce qui y est deja.
+ *
+ * C'est la liaison qui manquait dans l'organigramme de Raci (10/08) :
+ * « Fin de seance -> Mannequin + Calendrier mis a jour ». Une seance
+ * terminee etait bien enregistree dans la liste, mais le calendrier
+ * restait blanc et le mannequin gris — seul muscleLog les alimente,
+ * et rien n'y ecrivait a la fin d'une seance.
+ *
+ * On FUSIONNE plutot qu'on ne remplace : un jour peut porter deux
+ * seances, ou des muscles notes a la main avant l'entrainement.
+ * « Repos » saute des qu'une seance est enregistree — on ne s'est pas
+ * repose le jour ou l'on s'est entraine.
+ */
+export function noterMuscles(iso, liste) {
+  const propres = [...new Set((liste || []).filter(k => k && k !== 'repos'))];
+  if (!propres.length) return;
+  const log = { ...muscleLog.value };
+  const jour = new Set((log[iso] || []).filter(k => k !== 'repos'));
+  propres.forEach(k => jour.add(k));
+  log[iso] = [...jour];
+  muscleLog.value = log;
+}
+
 export function viderJourMuscles(iso) {
   // v1 : viderJourMuscles() — efface toute la journee
   const log = { ...muscleLog.value };

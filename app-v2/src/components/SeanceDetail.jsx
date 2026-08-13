@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { enregistrerSeance } from '../store/seances.js';
+import { t } from '../i18n/index.js';
 import { EXERCISES, IMG_BASE } from '../data/exercices.js';
 import { SESSION_EXOS } from '../data/sessionExos.js';
 import { retourEntrainer } from './Entrainer.jsx';
@@ -62,6 +64,30 @@ export function SeanceDetail({ seanceId, titre, retour }) {
   const [series, setSeries] = useState({});
 
   const revenir = retour || retourEntrainer;
+  const [fini, setFini] = useState(null);
+
+  /**
+   * Termine la seance : elle rejoint « Mes seances », et ses muscles
+   * colorent le calendrier et le mannequin via enregistrerSeance ->
+   * noterMuscles. C'est la convergence des deux branches de
+   * l'organigramme vers « Fin de seance ».
+   */
+  const terminer = () => {
+    if (fini) return;
+    const exos = refs
+      .map(({ mKey, ex }, i) => ({ mKey, nom: ex.nom, fait: faits.has(i), series: series[i] || [] }))
+      .filter(e => e.fait);
+    // Rien de coche : on enregistre quand meme la seance ouverte,
+    // sinon un entrainement fait sans cocher disparaitrait.
+    const retenus = exos.length ? exos : refs.map(({ mKey, ex }) => ({ mKey, nom: ex.nom, fait: true, series: [] }));
+    enregistrerSeance({
+      titre: titre || t('session'),
+      duree: secondes,
+      muscles: [...new Set(retenus.map(e => e.mKey).filter(Boolean))],
+      exos: retenus,
+    });
+    setFini({ exos: retenus.length, min: Math.max(1, Math.round(secondes / 60)) });
+  };
 
   // Chrono de seance
   useEffect(() => {
@@ -130,6 +156,28 @@ export function SeanceDetail({ seanceId, titre, retour }) {
 
       {!demarree && (
         <button class="start-session-btn" onClick={() => setDemarree(true)}>Commencer</button>
+      )}
+
+      {/* Fin de seance. Elle n'existait PAS : la branche « programme »
+          de l'organigramme de Raci s'arretait ici, sans rien
+          enregistrer. On terminait une seance de programme et il n'en
+          restait aucune trace — ni dans la liste des seances, ni au
+          calendrier, ni sur le mannequin. Seule la seance libre
+          enregistrait. */}
+      {demarree && !fini && (
+        <button class="sd-terminer" onClick={terminer}>
+          {done === total && total > 0 ? t('sd_terminer') : t('sd_terminer_partiel', { n: done, t: total })}
+        </button>
+      )}
+
+      {fini && (
+        <div class="sd-fini">
+          <div class="sd-fini-t">{t('sd_bravo')}</div>
+          <div class="sd-fini-l">
+            {t('sd_fini_resume', { n: fini.exos, min: fini.min })}
+          </div>
+          <button class="sd-fini-b" onClick={revenir}>{t('sd_retour_journal')}</button>
+        </div>
       )}
 
       <div id="sessionList" class={demarree ? '' : 'locked'}>

@@ -87,7 +87,7 @@ export function DemarrerSeance() {
             </div>
           )}
           <button class="dm-b dm-b--or"
-            onClick={() => allerVers('seanceDetail', { seanceId: cible.seanceId, titre: cible.titre })}>
+            onClick={() => allerVers('seanceDetail', { seanceId: cible.seanceId, titre: cible.titre, depuis: 'journal' })}>
             {t('tr_prog_continue')}
           </button>
         </div>
