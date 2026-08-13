@@ -155,7 +155,13 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
     cellules.push(
       <div key={iso} class={cls} style={style}
         onClick={(e) => { e.stopPropagation(); ouvrirJour(iso); }}>
-        {j}{muscles.length > 2 && <i class="wlog-more">+</i>}
+        {/* Jour de repos : une COCHE VERTE, pas le chiffre (Raci,
+            10/08 — les trois nuances proposees se ressemblaient
+            toutes). Le repos est une decision tenue, pas une case
+            vide : la coche le dit d'un coup d'oeil. Le numero du
+            jour se lit toujours par sa position dans la grille. */}
+        {repos ? <i class="wlog-coche" aria-label={t('mus_repos')}>✓</i> : j}
+        {muscles.length > 2 && <i class="wlog-more">+</i>}
       </div>
     );
   }

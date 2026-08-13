@@ -359,9 +359,16 @@ const DECALAGE_SW_V2 = 232;
     if (!/bodymap--double/.test(stats)) soucis.push('la silhouette est revenue a une seule vue');
     if (!/col\('trapezes'\)/.test(stats)) soucis.push('les trapezes ne sont plus dessines');
     if (!/k: 'trapezes'/.test(entr)) soucis.push('le groupe trapezes a disparu de GROUPES');
-    if (/repos'[^}]*c: '#D6D3CB'/.test(entr)) soucis.push('le repos est redevenu gris');
-    // Contraste du chiffre sur la creme du repos : mesure 4.92:1.
-    if (!/wlog-cell\.repos \{[^}]*#E9DCC0/.test(css)) soucis.push('la creme du repos a disparu de la feuille');
+    // Le repos se lit par une COCHE VERTE, pas par un aplat pale.
+    // Raci le 10/08 sur trois nuances proposees : « c'est de la
+    // daube, c'est tous les memes ». Un signe, pas une teinte.
+    if (!/wlog-coche/.test(stats === null ? '' : lire('app-v2/src/components/Entrainer.jsx') || '')) {
+      soucis.push('la coche du jour de repos a disparu');
+    }
+    if (!/wlog-cell\.repos \{[^}]*#E8F3ED/.test(css)) soucis.push('le fond vert clair du repos a disparu');
+    // #26654B sur #E8F3ED : 6.07:1, mesure. Un vert plus clair
+    // repasserait sous le minimum lisible.
+    if (/wlog-coche[^}]*color: #2F7D5C/.test(css)) soucis.push('le vert de la coche est repasse a 4.39:1');
     if (soucis.length) faute('R20 silhouette et repos', soucis.join(' ; '));
     else passe('R20 silhouette et repos');
   }

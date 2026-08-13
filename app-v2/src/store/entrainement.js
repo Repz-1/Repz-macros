@@ -24,7 +24,7 @@ export const GROUPES = [
   { k: 'jambes',  label: 'Jambes',  c: '#3B82F6' },
   { k: 'abdos',   label: 'Abdos',   c: '#8B5CF6' },
   { k: 'cardio',  label: 'Cardio',  c: '#EC4899' },
-  { k: 'repos',   label: 'Repos',   c: '#E9DCC0' },
+  { k: 'repos',   label: 'Repos',   c: '#26654B' },
 ];
 
 export const muscleLog = signal({});

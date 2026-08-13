@@ -539,13 +539,21 @@
   width: 100%; max-width: 300px; margin: 14px auto 0;
 }
 
-/* Jour de REPOS. Raci le 10/08 : « trouve autre chose au lieu du
-   gris ». Le gris #EDEFF2 se confondait avec un jour vide — rien de
-   note et repos choisi se ressemblaient. La creme #E9DCC0 est chaude,
-   se distingue du vide, ne parle a aucun muscle, et appartient deja
-   a la palette (barre creuse des calories). Le chiffre reste lisible :
-   #6B5A38 sur creme donne 5.5:1, mesure. */
+/* Jour de REPOS : une COCHE VERTE. Raci le 10/08, apres avoir vu
+   trois nuances proposees : « c'est de la daube, c'est tous les
+   memes ; mets un V vert ». Il a raison — gris, creme ou beige, ce
+   sont trois aplats pales de plus dans une grille qui en compte deja.
+   Une coche n'est pas une nuance, c'est un signe : elle se lit avant
+   meme qu'on ait regarde. Et elle dit ce que le repos est vraiment,
+   une decision tenue, pas une case vide. */
 .pg-entrainer--carte .wlog-cell.repos {
-  background: #E9DCC0; color: #6B5A38; font-weight: 600;
+  background: #E8F3ED; color: #26654B;
+  box-shadow: inset 0 0 0 1.5px rgba(38,101,75,.32);
 }
-.pg-entrainer--carte .wlog-legende .dot.repos { background: #E9DCC0; }
+.pg-entrainer--carte .wlog-coche {
+  font-style: normal; font-size: 15px; font-weight: 700;
+  line-height: 1; color: #26654B;  /* 5.87:1 sur #E8F3ED, mesure */
+}
+.pg-entrainer--carte .wlog-legende .dot.repos {
+  background: #E8F3ED; box-shadow: inset 0 0 0 1.5px rgba(38,101,75,.45);
+}
