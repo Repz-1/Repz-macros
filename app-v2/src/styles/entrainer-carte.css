@@ -438,3 +438,59 @@
   color: #B34700; font-family: inherit; font-size: 12.5px; font-weight: 700;
   text-decoration: underline; cursor: pointer;
 }
+
+/* ---- Ecran « Quels jours ? » (planification) ---- */
+.pg-planifier { padding: 0 14px 40px; }
+.pg-planifier .pl-titre { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 8px 0 4px; }
+.pg-planifier .pl-sous { font-size: 13px; color: #736C63; margin-bottom: 20px; }
+.pg-planifier .pl-jours { display: flex; flex-direction: column; gap: 8px; }
+.pg-planifier .pl-jour {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; text-align: left; cursor: pointer;
+  background: #FFF; border: 1px solid rgba(28,24,18,.06); border-radius: 14px;
+  padding: 14px 16px; font-family: inherit;
+}
+/* Un jour choisi porte le jaune en FOND, pas en texte : sur creme,
+   #FAC408 tombe a 1.7:1 et le nom deviendrait illisible. */
+.pg-planifier .pl-jour.on { background: #FFF6E0; border-color: #FAC408; }
+.pg-planifier .pl-jour-nom { font-size: 15px; font-weight: 600; color: #16130F; }
+.pg-planifier .pl-jour-seance {
+  font-size: 11.5px; font-weight: 600; color: #B34700; text-align: right;
+  flex: 1 1 auto; min-width: 0;
+}
+.pg-planifier .pl-compte {
+  text-align: center; font-size: 12.5px; color: #736C63; margin: 16px 0 10px;
+}
+.pg-planifier .pl-valider {
+  display: block; width: 100%; border: none; border-radius: 14px; padding: 17px;
+  background: #FAC408; color: #16130F; font-family: inherit;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+}
+.pg-planifier .pl-valider:disabled { background: #E7E4DE; color: #A9A29A; cursor: default; }
+.pg-planifier .pl-autre {
+  display: block; width: 100%; background: none; border: none; margin-top: 12px;
+  color: #B34700; font-family: inherit; font-size: 12.5px; font-weight: 700;
+  text-decoration: underline; cursor: pointer;
+}
+.pg-planifier .pl-vide { padding: 40px 0; text-align: center; color: #736C63; }
+
+/* Le verrou du quota gratuit. Il apparait A L'APPUI sur le 5e jour,
+   pas en permanence : une limite affichee d'avance est un reproche. */
+.pg-planifier .pl-verrou {
+  background: #FFF6EC; border: 1px solid rgba(179,71,0,.22);
+  border-radius: 14px; padding: 14px; margin-top: 12px;
+}
+.pg-planifier .pl-verrou b { display: block; font-size: 14px; margin-bottom: 4px; }
+.pg-planifier .pl-verrou p { font-size: 12.5px; color: #57514A; line-height: 1.45; margin-bottom: 11px; }
+.pg-planifier .pl-verrou-b {
+  display: block; width: 100%; border: none; border-radius: 12px; padding: 13px;
+  background: #16130F; color: #F8F2E8; font-family: inherit;
+  font-size: 13.5px; font-weight: 700; cursor: pointer;
+}
+
+/* Bouton d'adoption sur la fiche d'un programme. */
+.pg-programmes .prog-adopter {
+  display: block; width: 100%; border: none; border-radius: 14px; padding: 16px;
+  background: #FAC408; color: #16130F; font-family: inherit;
+  font-size: 15.5px; font-weight: 700; cursor: pointer; margin: 4px 0 18px;
+}

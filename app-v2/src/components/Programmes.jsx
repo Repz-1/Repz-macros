@@ -10,6 +10,8 @@ function categorieDuProgramme(id) {
   return null;
 }
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
+import { programmeActif } from '../store/programme.js';
+import { t } from '../i18n/index.js';
 import { ongletActif } from './BottomNav.jsx';
 import '../legacy/programmes.scoped.css';
 
@@ -142,6 +144,18 @@ export function Programmes() {
         <h1>{prog ? prog.name : 'Séances'}</h1>
       </div>
       {prog && <p class="intro-txt">{prog.duree} · niveau {prog.niveau}. Choisis une séance pour voir les exercices.</p>}
+      {/* Adopter le programme : c'est l'entree de la planification,
+          qui n'existait pas. Sans elle, adopterProgramme() n'etait
+          appelable que par le code et aucun programme ne pouvait
+          devenir actif depuis l'interface. */}
+      {prog && (
+        <button class="prog-adopter" onClick={() => allerVers('planifier', { prog: prog.id })}>
+          {programmeActif.value && programmeActif.value.id === prog.id
+            ? t('pl_modifier_jours')
+            : t('pl_adopter')}
+        </button>
+      )}
+
       <div class="seance-list">
         {prog && prog.seances.map((s, i) => (
           <div class="seance-card" key={i} onClick={() => allerVers('seanceDetail', { seanceId: prog.id + '-' + i, titre: s.titre })}>

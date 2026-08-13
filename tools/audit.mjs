@@ -344,6 +344,30 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R18 — Le quota gratuit mord a la planification.
+// Raci le 10/08 : « un utilisateur gratuit peut programmer maximum 4
+// seances a la fois ; s'il clique sur la 5e, un message s'affiche ».
+// Le verrou doit apparaitre A L'APPUI, pas en permanence : une limite
+// affichee d'avance est un reproche. Et l'ecran doit exister — sans
+// lui, adopterProgramme() n'est appelable que par le code.
+// ------------------------------------------------------------
+{
+  const pl = lire('app-v2/src/components/PlanifierProgramme.jsx');
+  const prg = lire('app-v2/src/components/Programmes.jsx');
+  const main = lire('app-v2/src/main.jsx');
+  if (pl && prg && main) {
+    const soucis = [];
+    if (!/quotaAtteint\(choisis\.length, premium\)/.test(pl)) soucis.push('le quota n\'est plus consulte au moment du choix');
+    if (!/setBloque\(true\); return;/.test(pl)) soucis.push('le 5e jour n\'affiche pas de message');
+    if (!/adopterProgramme\(progId, choisis\)/.test(pl)) soucis.push('la validation n\'adopte plus le programme');
+    if (!/vue\.nom === 'planifier'/.test(main)) soucis.push("la vue 'planifier' n'est pas branchee");
+    if (!/allerVers\('planifier'/.test(prg)) soucis.push('aucune entree vers la planification depuis la fiche programme');
+    if (soucis.length) faute('R18 quota de planification', soucis.join(' ; '));
+    else passe('R18 quota de planification');
+  }
+}
+
+// ------------------------------------------------------------
 // R17 — Demarrer une seance : le routage suit le schema de Raci.
 //   programme actif ? -> ecran de choix ; sinon -> seance libre.
 // Un ecran de choix affiche SANS programme n'aurait qu'une option :
