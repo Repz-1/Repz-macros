@@ -23,27 +23,11 @@ import '../legacy/quiz2.css';
 const ETAPES = ['objectif', 'niveau', 'frequence', 'materiel'];
 
 // Etapes a reglette (taille / poids / age) : bornes et unite
-const REGLETTES = {
-  // inverse : grand en haut, petit en bas, sur les trois reglettes.
-  // Le sens d'une toise, etendu au poids puis a l'age (Raci, 10/08) —
-  // ce qui compte le plus est la coherence entre les trois ecrans.
-  taille: { min: 120, max: 220, pas: 1, unite: 'cm', defaut: 175, inverse: true,
-            t: 'Quelle est ta taille ?', s: 'Sert à estimer tes besoins caloriques.' },
-  poids:  { min: 35, max: 200, pas: 0.1, px: 90, unite: 'kg', defaut: 75, inverse: true,
-            t: 'Quel est ton poids ?', s: 'Ton point de départ, rien de plus.' },
-  age:    { min: 14, max: 90, pas: 1, px: 40, unite: 'ans', defaut: 30, inverse: true,
-            t: 'Quel âge as-tu ?', s: 'La récupération change avec l\u2019âge : les conseils s\u2019adaptent.' },
-};
 
-// Equipements pre-coches selon le lieu choisi
-const EQUIP_PAR_LIEU = {
-  'grande-salle': ['barre', 'halteres', 'machine', 'poulie', 'banc', 'traction'],
-  'petite-salle': ['halteres', 'machine', 'banc'],
-  'maison':       ['halteres', 'elastiques'],
-  'exterieur':    ['traction'],
-};
 
-const MULTI = { materiel: true };                    // cases a cocher
+// Plus aucune question a choix multiple : le materiel est passe a un
+// choix unique le 12/08, et c'etait la seule.
+const MULTI = {};
 
 const QUESTIONS = {
   objectif: {
@@ -60,16 +44,6 @@ const QUESTIONS = {
       // existeront.
       { v: 'force', l: 'Force / Performance' },
       { v: 'forme', l: 'Forme générale / Santé' },
-    ],
-  },
-  lieu: {
-    t: 'Où t\u2019entraînes-tu ?',
-    s: 'On présélectionnera le matériel correspondant à l\u2019étape suivante.',
-    o: [
-      { v: 'grande-salle', l: 'Grande salle de sport', n: 'Racks, barres, haltères, machines' },
-      { v: 'petite-salle', l: 'Petite salle', n: 'Quelques machines et haltères' },
-      { v: 'maison', l: 'À la maison', n: 'Ce que tu as chez toi' },
-      { v: 'exterieur', l: 'Dehors', n: 'Parc, aire de street workout' },
     ],
   },
   // Un seul choix, la ou c'etait huit cases a cocher. Chaque option
@@ -101,16 +75,6 @@ const QUESTIONS = {
     o: [
       { v: '2', l: '2 jours' }, { v: '3', l: '3 jours' }, { v: '4', l: '4 jours' },
       { v: '5', l: '5 jours' }, { v: '6', l: '6 jours' },
-    ],
-  },
-  duree: {
-    t: 'Combien de temps par séance ?',
-    s: 'Hors cardio : ce temps ne compte que la musculation.',
-    o: [
-      { v: '30-45', l: '30 à 45 minutes' },
-      { v: '45-60', l: '45 à 60 minutes' },
-      { v: '60-75', l: '60 à 75 minutes' },
-      { v: '75-90', l: '75 à 90 minutes' },
     ],
   },
 };
@@ -231,102 +195,6 @@ function conseilsPersonnels(r) {
   return out;
 }
 
-
-/**
- * Reglette graduee horizontale : on fait glisser sous l'aiguille.
- * Sert pour la taille, le poids et l'age. La valeur est aussi
- * tapable au clavier (appui sur le chiffre).
- *
- * RESTAUREE le 10/08. Le commit b9b6a68 du 27/07, qui refaisait
- * l'ecran de resultat, a supprime cette fonction en laissant la
- * balise <Reglette> a sa place. Depuis, l'etape 3 du questionnaire
- * levait « Reglette is not defined » : le rendu plantait, l'ecran
- * restait fige sur l'etape 2 et l'appui sur Continuer semblait sans
- * effet. Signale par Raci le 10/08, le questionnaire etait bloque
- * depuis deux semaines.
- */
-function Reglette({ min, max, pas, valeur, unite, onChange, px, inverse }) {
-  const PX = px || 60;                            // px par unite entiere
-  // `inverse` : les grandes valeurs EN HAUT, les petites en bas.
-  // Demande de Raci le 10/08 pour la taille — c'est le sens d'une
-  // toise, on ne mesure pas quelqu'un a l'envers. Toute la mecanique
-  // passe par ce seul convertisseur position <-> valeur, pour qu'il
-  // n'existe qu'un endroit ou le sens puisse se contredire.
-  const posDe = (v) => (inverse ? max - v : v - min) * PX;
-  const valDe = (y) => (inverse ? max - y / PX : min + y / PX);
-  const piste = useRef(null);
-  const synchro = useRef(false);
-  const [manuel, setManuel] = useState(false);
-  const [texte, setTexte] = useState('');
-
-  useEffect(() => {
-    const el = piste.current;
-    if (!el) return;
-    synchro.current = true;
-    el.scrollTop = posDe(valeur);
-    const t = setTimeout(() => { synchro.current = false; }, 80);
-    return () => clearTimeout(t);
-  }, []);
-
-  const surDefile = () => {
-    if (synchro.current || !piste.current) return;
-    const brut = valDe(piste.current.scrollTop);
-    const v = Math.round(brut / pas) * pas;
-    onChange(Math.min(max, Math.max(min, Math.round(v * 10) / 10)));
-  };
-
-  const validerManuel = () => {
-    const v = parseFloat(String(texte).replace(',', '.'));
-    setManuel(false);
-    if (!isNaN(v) && v >= min && v <= max) {
-      onChange(v);
-      const el = piste.current;
-      if (el) { synchro.current = true; el.scrollTop = posDe(v); setTimeout(() => { synchro.current = false; }, 80); }
-    }
-  };
-
-  // Echelle serree -> un chiffre tous les 5 crans, sinon chaque cran
-  const saut = PX >= 44 ? 1 : 5;
-  const reperes = [];
-  for (let k = Math.ceil(min); k <= max; k++) {
-    if (k % saut === 0 || k === min || k === max) reperes.push(k);
-  }
-
-  return (
-    <div class="rg">
-      {manuel ? (
-        <div class="rg-val rg-val--champ">
-          <input type="number" inputMode="decimal" step={pas} min={min} max={max}
-            value={texte} autoFocus
-            onInput={(e) => setTexte(e.currentTarget.value)}
-            onBlur={validerManuel}
-            onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
-        </div>
-      ) : (
-        <button class="rg-val" onClick={() => { setTexte(String(valeur)); setManuel(true); }}>
-          {String(valeur).replace('.', ',')}<span>{unite}</span>
-          <i class="rg-astuce">Touche le chiffre pour le taper</i>
-        </button>
-      )}
-      <div class="rg-zone">
-        <div class="rg-aiguille" />
-        <div class="rg-piste" ref={piste} onScroll={surDefile}>
-          <div class="rg-ruban" style={{
-            height: (max - min) * PX + 'px',
-            backgroundImage:
-              `repeating-linear-gradient(180deg, #DDD7CA 0 1.5px, transparent 1.5px ${pas < 1 ? PX * pas : PX / 5}px), `
-              + `repeating-linear-gradient(180deg, #A9A49C 0 2px, transparent 2px ${PX}px)`,
-          }}>
-            {reperes.map(k => (
-              <span key={k} class="rg-rep" style={{ top: posDe(k) + 'px' }}>{k}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function Questionnaire() {
   // Plus de valeurs de reglette : ces trois questions ont quitte le
   // questionnaire le 12/08. Elles restent posees dans « Tes besoins »,
@@ -339,15 +207,9 @@ export function Questionnaire() {
   const pct = surResultat ? 100 : ((i + 1) / total) * 100;
 
   const valeur = reponses[etape];
-  const repondu = REGLETTES[etape] ? true
-    : (MULTI[etape] ? (valeur || []).length > 0 : !!valeur);
+  const repondu = MULTI[etape] ? (valeur || []).length > 0 : !!valeur;
 
   const choisir = (v) => {
-    if (etape === 'lieu') {
-      // Le lieu presele le materiel : l'utilisateur n'a plus qu'a decocher.
-      setReponses(r => ({ ...r, lieu: v, materiel: [...(EQUIP_PAR_LIEU[v] || [])] }));
-      return;
-    }
     if (!MULTI[etape]) { setReponses(r => ({ ...r, [etape]: v })); return; }
     setReponses(r => {
       const liste = r[etape] || [];
@@ -506,11 +368,7 @@ export function Questionnaire() {
   }
 
   // ---------- Questions ----------
-  const rg = REGLETTES[etape];
-  const q = rg ? { t: rg.t, s: rg.s, o: [] } : QUESTIONS[etape];
-  // La duree ideale depend de l'objectif (table de Raci) :
-  // masse -> 60-75 ; seche et maintien -> 45-60.
-  const dureeIdeale = reponses.objectif === 'masse' ? '60-75' : '45-60';
+  const q = QUESTIONS[etape];
   return (
     <div class="qz">
       <div class="qz-haut">
@@ -525,17 +383,7 @@ export function Questionnaire() {
         <h1 class="qz-titre">{q.t}</h1>
         <p class="qz-sous">{q.s}</p>
 
-        {rg && (
-          <Reglette
-            key={etape}
-            min={rg.min} max={rg.max} pas={rg.pas} unite={rg.unite} px={rg.px}
-            inverse={rg.inverse}
-            valeur={reponses[etape] ?? rg.defaut}
-            onChange={(v) => setReponses(r => ({ ...r, [etape]: v }))}
-          />
-        )}
-
-        {!rg && <div class="qz-options">
+        <div class="qz-options">
           {q.o.map(o => (
             <button
               key={o.v}
@@ -543,9 +391,7 @@ export function Questionnaire() {
               onClick={() => choisir(o.v)}
             >
               <span class="qz-opt-tx">
-                <span class="qz-opt-lb">{o.l}
-                  {etape === 'duree' && o.v === dureeIdeale && <i class="qz-ideal">Idéal pour ton objectif</i>}
-                </span>
+                <span class="qz-opt-lb">{o.l}</span>
                 {o.n && <span class="qz-opt-note">{o.n}</span>}
               </span>
               <span class="qz-rond">
@@ -553,7 +399,7 @@ export function Questionnaire() {
               </span>
             </button>
           ))}
-        </div>}
+        </div>
       </div>
 
       <div class="qz-pied">

@@ -317,7 +317,7 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R14 — Sens de la reglette de taille.
+// R14 — Mecanique du sens de la reglette (composant reserve).
 // Raci le 10/08 : grand vers le haut, petit vers le bas — le sens
 // d'une toise. La conversion position <-> valeur passe par un seul
 // couple de fonctions (posDe / valDe) pour qu'il n'existe qu'un
@@ -325,15 +325,18 @@ const DECALAGE_SW_V2 = 232;
 // reapparaitrait ailleurs ferait diverger l'affichage du reperage.
 // ------------------------------------------------------------
 {
-  const jsx = lire('app-v2/src/components/Questionnaire.jsx');
+  // La reglette a DEMENAGE le 12/08 dans son propre fichier : elle a
+  // quitte le questionnaire d'entrainement, ramene a quatre
+  // questions, et attend le questionnaire de programme alimentaire.
+  // La regle a sonne a ce moment-la — signal juste, elle cherchait au
+  // mauvais endroit. Elle lit desormais le composant lui-meme.
+  const jsx = lire('app-v2/src/components/Reglette.jsx');
   if (jsx) {
     const soucis = [];
-    // Les TROIS reglettes vont dans le meme sens, grand vers le haut
-    // (Raci, 10/08). Une seule qui repartirait dans l'autre sens se
-    // remarquerait d'autant plus qu'elles s'enchainent.
-    for (const cle of ['taille', 'poids', 'age']) {
-      if (!new RegExp(`${cle}:[^}]*inverse:\\s*true`).test(jsx)) soucis.push(`la reglette de ${cle} n'est plus inversee`);
-    }
+    // Le sens ne vit plus dans une table de questions mais dans la
+    // prop `inverse`, que l'ecran appelant passera. Ce qu'on verrouille
+    // ici, c'est que la MECANIQUE du sens inverse existe toujours.
+    if (!/inverse \? max - v : v - min/.test(jsx)) soucis.push('la conversion « grand vers le haut » a disparu');
     if (!/const posDe =/.test(jsx) || !/const valDe =/.test(jsx)) soucis.push('les convertisseurs posDe/valDe ont disparu');
     // Aucun calcul de position en dur ne doit subsister a cote d'eux.
     const dur = jsx.match(/\((?:valeur|v|k) - min\) \* PX/g);
@@ -374,6 +377,18 @@ const DECALAGE_SW_V2 = 232;
     // Le materiel est passe d'un tableau a un choix unique : le reste
     // du code lit toujours une liste, via cette table.
     if (!/MATERIEL_PAR_CHOIX/.test(quiz)) soucis.push('la table materiel -> equipements a disparu');
+    // Le questionnaire ne doit plus porter la moindre trace des cinq
+    // questions retirees : une question morte dans QUESTIONS ne se
+    // voit pas, mais elle finit par etre reactivee ou recopiee.
+    for (const morte of ['REGLETTES', 'EQUIP_PAR_LIEU', 'dureeIdeale']) {
+      if (new RegExp(`\\b${morte}\\b`).test(quiz)) soucis.push(`${morte} subsiste dans le questionnaire`);
+    }
+    // La reglette est CONSERVEE, dans son propre fichier : Raci la
+    // destine au questionnaire de programme alimentaire pour coach.
+    const rg = lire('app-v2/src/components/Reglette.jsx');
+    if (!rg || !/export function Reglette/.test(rg)) {
+      soucis.push('le composant Reglette a disparu — il est reserve au futur questionnaire nutrition');
+    }
     if (soucis.length) faute('R25 questionnaire en 4 questions', soucis.join(' ; '));
     else passe('R25 questionnaire en 4 questions');
   }
