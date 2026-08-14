@@ -344,6 +344,27 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R23 — Onglet d'ouverture par l'adresse.
+// Raci le 10/08 : un lien qui ouvre directement S'entrainer, sans
+// passer par le Journal puis un appui. ?onglet=entrainer.
+// Une valeur inconnue doit etre IGNOREE : sans la liste blanche,
+// ?onglet=nimportequoi laisserait l'application sur un onglet
+// inexistant, rail hors ecran et barre sans selection.
+// ------------------------------------------------------------
+{
+  const nav = lire('app-v2/src/components/BottomNav.jsx');
+  if (nav) {
+    const soucis = [];
+    if (!/get\('onglet'\)/.test(nav)) soucis.push('le parametre ?onglet n\'est plus lu');
+    if (!/\['journal', 'entrainer', 'stats', 'premium'\]\.includes/.test(nav)) {
+      soucis.push('la liste blanche des onglets a disparu — une valeur inconnue passerait');
+    }
+    if (soucis.length) faute('R23 onglet par l\'adresse', soucis.join(' ; '));
+    else passe('R23 onglet par l\'adresse');
+  }
+}
+
+// ------------------------------------------------------------
 // R22 — La fenetre d'un jour depend du type de jour.
 // Raci le 10/08 : « on est le 12, et quand je clique jusqu'au 16
 // c'est la page du 12 qui s'ouvre ». Mesure alors : seul le titre

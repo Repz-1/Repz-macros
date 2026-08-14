@@ -8,6 +8,18 @@ import { useState, useEffect } from 'preact/hooks';
 // peut naviguer (ex : le bouton « Premium » d'une modale).
 export const ongletActif = signal('journal');
 
+// Onglet d'ouverture par l'adresse : belfit.be/v2/?onglet=entrainer
+// Demande de Raci le 10/08 — un lien qui ouvre directement la page
+// S'entrainer, sans passer par le Journal puis un appui.
+// Se combine avec ?invite=1. Une valeur inconnue est ignoree plutot
+// que de laisser l'application sur un onglet qui n'existe pas.
+try {
+  const demande = new URLSearchParams(location.search).get('onglet');
+  if (['journal', 'entrainer', 'stats', 'premium'].includes(demande)) {
+    ongletActif.value = demande;
+  }
+} catch (e) { /* URL intouchable : on reste sur le journal */ }
+
 // Hauteur de defilement de la page que l'on quitte. Le deck de
 // transition est en position fixe : sans cette valeur, la page
 // sortante repartirait de son sommet et sauterait verticalement.
