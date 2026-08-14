@@ -557,3 +557,39 @@
 .pg-entrainer--carte .wlog-legende .dot.repos {
   background: #E8F3ED; box-shadow: inset 0 0 0 1.5px rgba(38,101,75,.45);
 }
+
+/* ---- Fenetre d'un jour : trois cas ---- */
+.ml-type {
+  font-size: 11px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: #B34700; margin: -6px 0 12px;
+}
+.ml-fait-s { margin-bottom: 12px; }
+.ml-fait-t { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.ml-fait-d { color: #736C63; font-weight: 500; }
+.ml-fait-e {
+  display: flex; align-items: center; gap: 8px; padding: 6px 0;
+  border-bottom: 1px solid rgba(28,24,18,.06);
+}
+.ml-fait-e:last-child { border-bottom: none; }
+.ml-fait-e .dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 9px; }
+.ml-fait-n { flex: 1 1 auto; min-width: 0; font-size: 13px; font-weight: 600; }
+.ml-fait-v {
+  flex: 0 0 auto; font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 11.5px; color: #736C63;
+}
+.ml-prevu {
+  background: #FFF6EC; border: 1px solid rgba(179,71,0,.18);
+  border-radius: 13px; padding: 12px; margin-bottom: 12px;
+}
+.ml-prevu-t { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.ml-prevu-s { font-size: 11.5px; color: #736C63; }
+.ml-prevu-b {
+  display: block; width: 100%; margin-top: 11px; border: none; border-radius: 12px;
+  background: #FAC408; color: #16130F; padding: 13px;
+  font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
+}
+.ml-rien { font-size: 13px; color: #736C63; margin: 0 0 12px; }
+.ml-groups-titre {
+  font-size: 11px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: #736C63; margin: 4px 0 8px;
+}

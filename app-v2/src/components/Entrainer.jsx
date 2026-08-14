@@ -10,6 +10,16 @@ import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
 import { BlocSeances, ToutesSeances, DetailSeance } from './Seances.jsx';
 import { programmeActif, seancePrevue, musclesPrevus } from '../store/programme.js';
+import { seancesDuJour } from '../store/seances.js';
+
+/** « 90 × 8 · 85 × 10 », ou rien si aucune serie notee. */
+function resumeSeries(series) {
+  if (!series || !series.length) return '';
+  return series.slice(0, 3)
+    .filter(x => x && (x.kg || x.reps))
+    .map(x => `${x.kg || '—'} × ${x.reps || '—'}`)
+    .join(' · ');
+}
 import { t } from '../i18n/index.js';
 
 /* ------------------------------------------------------------
@@ -285,9 +295,30 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
 // ==========================================================
 // Modale de selection des muscles d'une journee
 // ==========================================================
+/**
+ * Fenetre d'un jour. Elle depend desormais du TYPE de jour.
+ *
+ * Raci le 10/08 : « on est le 12, et quand je clique jusqu'au 16 c'est
+ * la page du 12 qui s'ouvre ». Mesure : seul le titre changeait. Le
+ * corps — silhouette de la semaine et liste des huit muscles — etait
+ * rigoureusement identique du 12 au 16, puisqu'ils appartiennent a la
+ * meme semaine. Le titre fait une ligne, le corps occupe l'ecran :
+ * c'etait bien la meme page.
+ *
+ * Trois cas, comme dans l'organigramme :
+ *   passe      -> ce qui a ete fait, exercices et charges
+ *   aujourd'hui-> la seance prevue, avec de quoi la demarrer
+ *   a venir    -> ce qui est prevu
+ * Le marquage manuel des muscles reste accessible dans les trois :
+ * c'est lui qui colore le calendrier quand on s'entraine ailleurs.
+ */
 function ModaleMuscles({ iso, fermer }) {
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
+  const isoAuj = wlIso(new Date());
+  const type = iso < isoAuj ? 'passe' : (iso === isoAuj ? 'auj' : 'futur');
+  const faites = seancesDuJour(iso);
+  const prevue = seancePrevue(iso);
 
   // La silhouette ne montre plus le seul jour ouvert mais TOUTE LA
   // SEMAINE, du lundi jusqu'a ce jour : c'est la question qu'on se
@@ -317,6 +348,52 @@ function ModaleMuscles({ iso, fermer }) {
     <div class="ml-overlay show" onClick={(e) => { if (e.target.classList.contains('ml-overlay')) fermer(); }}>
       <div class="ml-modal">
         <h3 class="ml-date">{jourLong(jour)}</h3>
+        <div class="ml-type">
+          {type === 'passe' ? t('ml_passe') : type === 'auj' ? t('ml_auj') : t('ml_futur')}
+        </div>
+
+        {/* ---- Ce qui a ete FAIT ce jour-la ---- */}
+        {faites.length > 0 && (
+          <div class="ml-fait">
+            {faites.map(sa => (
+              <div key={sa.id} class="ml-fait-s">
+                <div class="ml-fait-t">
+                  {sa.titre}
+                  {sa.duree > 0 && <span class="ml-fait-d"> · {Math.max(1, Math.round(sa.duree / 60))} min</span>}
+                </div>
+                {(sa.exos || []).slice(0, 6).map((e, i) => (
+                  <div key={i} class="ml-fait-e">
+                    <i class="dot" style={{ background: COULEUR[e.mKey] || '#C9C3B8' }} />
+                    <span class="ml-fait-n">{e.nom}</span>
+                    <span class="ml-fait-v">{resumeSeries(e.series)}</span>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ---- Ce qui est PREVU ---- */}
+        {!faites.length && prevue && (
+          <div class="ml-prevu">
+            <div class="ml-prevu-t">{prevue.titre}</div>
+            <div class="ml-prevu-s">{prevue.sub}</div>
+            {type !== 'passe' && (
+              <button class="ml-prevu-b" onClick={() => {
+                fermer();
+                allerVers('seanceDetail', { seanceId: prevue.seanceId, titre: prevue.titre, depuis: 'journal' });
+              }}>{t('ml_demarrer')}</button>
+            )}
+          </div>
+        )}
+
+        {/* ---- Rien fait, rien prevu ---- */}
+        {!faites.length && !prevue && (
+          <p class="ml-rien">
+            {type === 'passe' ? t('ml_rien_passe') : t('ml_rien_futur')}
+          </p>
+        )}
+
         <div class="ml-corps">
           <BodyMap compte={compte} />
           <div class="ml-legende">
@@ -331,6 +408,7 @@ function ModaleMuscles({ iso, fermer }) {
             ))}
           </div>
         </div>
+        <div class="ml-groups-titre">{t('ml_noter')}</div>
         <div class="ml-groups">
           {GROUPES.map(g => (
             <button key={g.k}

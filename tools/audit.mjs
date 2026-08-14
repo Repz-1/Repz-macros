@@ -344,6 +344,30 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R22 — La fenetre d'un jour depend du type de jour.
+// Raci le 10/08 : « on est le 12, et quand je clique jusqu'au 16
+// c'est la page du 12 qui s'ouvre ». Mesure alors : seul le titre
+// changeait, le corps etait identique d'un jour a l'autre de la meme
+// semaine — silhouette hebdomadaire et liste des muscles. Trois cas
+// desormais : passe (ce qui a ete fait), aujourd'hui (la seance
+// prevue, avec de quoi la demarrer), a venir (ce qui est prevu).
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/Entrainer.jsx');
+  if (jsx) {
+    const soucis = [];
+    if (!/const type = iso < isoAuj/.test(jsx)) soucis.push('la fenetre ne distingue plus passe, aujourd\'hui et a venir');
+    if (!/seancesDuJour\(iso\)/.test(jsx)) soucis.push('un jour passe n\'affiche plus ce qui a ete fait');
+    if (!/ml-prevu-b/.test(jsx)) soucis.push('aucun moyen de demarrer la seance prevue depuis un jour');
+    // Le marquage manuel doit rester : c'est lui qui colore le
+    // calendrier quand on s'entraine hors de l'application.
+    if (!/basculerMuscle\(iso, g\.k\)/.test(jsx)) soucis.push('le marquage manuel des muscles a disparu');
+    if (soucis.length) faute('R22 fenetre d\'un jour', soucis.join(' ; '));
+    else passe('R22 fenetre d\'un jour');
+  }
+}
+
+// ------------------------------------------------------------
 // R21 — Les seances de programme designent leurs exercices par NOM.
 // Raci le 10/08 : « dans dos il y a du triceps, jambes, tout est
 // mixe ». Cause : sessionExos.js pointait par POSITION dans les
