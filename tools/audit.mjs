@@ -517,8 +517,18 @@ const DECALAGE_SW_V2 = 232;
   if (pl && prg && main) {
     const soucis = [];
     if (!/quotaAtteint\(choisis\.length, premium\)/.test(pl)) soucis.push('le quota n\'est plus consulte au moment du choix');
+    // Raci le 10/08 : « je veux moi pouvoir dire quel jour, quel
+    // muscle, dans quel ordre ». L'affectation doit rester EXPLICITE
+    // — { jourSemaine: indexSeance } — et non redevenir une liste ou
+    // la position impose la seance.
+    if (!/const \[aff, setAff\]/.test(pl)) soucis.push('l\'ordre des seances est redevenu impose par la position');
+    if (!/adopterProgramme\(progId, aff\)/.test(pl)) soucis.push('l\'affectation choisie n\'est plus celle qu\'on enregistre');
+    const store = lire('app-v2/src/store/programme.js');
+    if (store && !/export function normaliserJours/.test(store)) {
+      soucis.push('la reprise des anciens programmes (jours en tableau) a disparu');
+    }
     if (!/setBloque\(true\); return;/.test(pl)) soucis.push('le 5e jour n\'affiche pas de message');
-    if (!/adopterProgramme\(progId, choisis\)/.test(pl)) soucis.push('la validation n\'adopte plus le programme');
+    if (!/adopterProgramme\(progId, /.test(pl)) soucis.push('la validation n\'adopte plus le programme');
     if (!/vue\.nom === 'planifier'/.test(main)) soucis.push("la vue 'planifier' n'est pas branchee");
     if (!/allerVers\('planifier'/.test(prg)) soucis.push('aucune entree vers la planification depuis la fiche programme');
     // Cul-de-sac trouve le 10/08 en eprouvant le verrou : sur un

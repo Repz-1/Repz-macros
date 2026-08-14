@@ -619,3 +619,28 @@
   display: block; width: 100%; background: none; border: none; padding: 8px;
   color: #736C63; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
 }
+
+/* ---- Planification : on choisit le jour ET la seance ---- */
+.pg-planifier .pl-jour-bloc { margin-bottom: 8px; }
+.pg-planifier .pl-jour {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; text-align: left;
+}
+.pg-planifier .pl-jour .pl-jour-seance { text-align: right; }
+/* Jour sans seance : l'invite reste discrete, elle n'est pas un etat. */
+.pg-planifier .pl-jour:not(.on) .pl-jour-seance { color: #A9A29A; font-weight: 500; }
+.pg-planifier .pl-jour.ouvert { border-color: #B34700; }
+.pg-planifier .pl-menu { margin: 6px 0 4px; padding-left: 10px; }
+.pg-planifier .pl-menu-l {
+  display: block; width: 100%; text-align: left; margin-bottom: 5px;
+  border: 1px solid rgba(28,24,18,.08); border-radius: 11px;
+  background: #FFF; padding: 10px 12px; font-family: inherit; cursor: pointer;
+}
+.pg-planifier .pl-menu-l.on { border-color: #FAC408; background: #FFFBEF; }
+.pg-planifier .pl-menu-l:disabled { opacity: .45; cursor: default; }
+.pg-planifier .pl-menu-n { display: block; font-size: 13.5px; font-weight: 600; }
+.pg-planifier .pl-menu-s { display: block; font-size: 11.5px; color: #736C63; margin-top: 2px; }
+.pg-planifier .pl-menu-vider {
+  display: block; width: 100%; background: none; border: none; padding: 8px;
+  color: #736C63; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+}

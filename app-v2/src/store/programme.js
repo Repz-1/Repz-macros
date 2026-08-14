@@ -25,9 +25,18 @@ import { PROGRAMMES } from '../data/programmes.js';
 //
 // FORME : { id, jours, depuis }
 //   id     — identifiant du programme, ex. 'masse-3j'
-//   jours  — jours de la semaine choisis, 0 = dimanche … 6 = samedi.
-//            Autant de jours que le programme a de seances ; la
-//            seance n de la semaine tombe sur le n-ieme jour coche.
+//   jours  — AFFECTATION explicite { jourSemaine: indexSeance },
+//            0 = dimanche … 6 = samedi. Exemple : { 1:2, 3:0, 5:1 }
+//            met la seance 3 le lundi, la 1 le mercredi, la 2 le
+//            vendredi.
+//
+//            C'etait auparavant un simple tableau de jours, ou la
+//            position imposait la seance : le premier jour coche
+//            recevait la seance 1, le deuxieme la seance 2, etc.
+//            Raci le 10/08 : « je veux moi pouvoir dire quel jour,
+//            quel muscle, dans quel ordre ». Un ordre impose n'a
+//            aucune raison d'etre — on peut vouloir les jambes le
+//            lundi et les pecs le vendredi.
 //   depuis — date d'adoption (ISO), pour dater le calendrier.
 //
 // La date decide de la seance du jour. C'est plus simple qu'un
@@ -113,13 +122,36 @@ function ecrire(v) {
 }
 
 /** Adopter un programme, avec ses jours de la semaine. */
+/**
+ * Adopter un programme. `jours` est une affectation
+ * { jourSemaine: indexSeance }. Un tableau est encore accepte —
+ * ancienne forme, position = seance — et converti, pour ne pas
+ * perdre les programmes adoptes avant le 10/08.
+ */
 export function adopterProgramme(id, jours) {
   const p = progParId(id);
   if (!p) return null;
-  const propres = [...new Set(jours)].filter(j => j >= 0 && j <= 6).sort((a, b) => a - b);
-  const v = { id, jours: propres.slice(0, p.seances.length), depuis: isoDuJour(new Date()) };
+  const aff = normaliserJours(jours, p.seances.length);
+  if (!Object.keys(aff).length) return null;
+  const v = { id, jours: aff, depuis: isoDuJour(new Date()) };
   ecrire(v);
   return v;
+}
+
+/** Accepte l'ancienne forme (tableau) comme la nouvelle (objet). */
+export function normaliserJours(jours, nbSeances) {
+  const aff = {};
+  if (Array.isArray(jours)) {
+    [...new Set(jours)].filter(j => j >= 0 && j <= 6).sort((a, b) => a - b)
+      .slice(0, nbSeances)
+      .forEach((j, i) => { aff[j] = i; });
+    return aff;
+  }
+  for (const [j, i] of Object.entries(jours || {})) {
+    const nj = Number(j), ni = Number(i);
+    if (nj >= 0 && nj <= 6 && ni >= 0 && ni < nbSeances) aff[nj] = ni;
+  }
+  return aff;
 }
 
 /** Abandonner le programme en cours. */
@@ -148,14 +180,15 @@ export function seancePrevue(iso) {
   if (pose) return { ...pose, index: -1, prog: null, main: true };
 
   const a = programmeActif.value;
-  if (!a || !a.jours || !a.jours.length) return null;
+  if (!a || !a.jours) return null;
   if (a.depuis && iso < a.depuis) return null;
   const p = progParId(a.id);
   if (!p) return null;
   const parts = iso.split('-').map(Number);
   const jour = new Date(parts[0], parts[1] - 1, parts[2]).getDay();
-  const index = a.jours.indexOf(jour);
-  if (index === -1 || index >= p.seances.length) return null;
+  const aff = normaliserJours(a.jours, p.seances.length);
+  const index = aff[jour];
+  if (index === undefined || index >= p.seances.length) return null;
   const s = p.seances[index];
   return { seanceId: `${a.id}-${index}`, titre: s.titre, sub: s.sub, index, prog: p };
 }

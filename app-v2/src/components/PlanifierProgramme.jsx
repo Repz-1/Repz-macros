@@ -5,6 +5,7 @@ import { ongletActif } from './BottomNav.jsx';
 import {
   progParId, adopterProgramme, programmeActif,
   SEANCES_LIBRES, quotaAtteint,
+  normaliserJours,
 } from '../store/programme.js';
 import { t } from '../i18n/index.js';
 
@@ -43,10 +44,18 @@ export function PlanifierProgramme({ progId }) {
   // Si ce programme est deja actif, on repart de ses jours plutot que
   // d'une feuille blanche : « adapter mon programme » doit montrer ce
   // qui est en place, pas le faire ressaisir.
-  const [choisis, setChoisis] = useState(
-    actif && actif.id === progId && actif.jours ? [...actif.jours] : []
+  // AFFECTATION explicite { jourSemaine: indexSeance }. C'etait une
+  // simple liste de jours, ou la position imposait la seance : le
+  // premier jour coche recevait la seance 1, le deuxieme la 2…
+  // Raci le 10/08 : « je veux moi pouvoir dire quel jour, quel
+  // muscle, dans quel ordre ». On choisit donc le jour ET la seance.
+  const [aff, setAff] = useState(() =>
+    (actif && actif.id === progId && actif.jours)
+      ? normaliserJours(actif.jours, (prog && prog.seances.length) || 0)
+      : {}
   );
   const [bloque, setBloque] = useState(false);
+  const [jourOuvert, setJourOuvert] = useState(null);   // jour dont on choisit la seance
 
   if (!prog) {
     return (
@@ -58,20 +67,28 @@ export function PlanifierProgramme({ progId }) {
   }
 
   const total = prog.seances.length;
-  const ordonnes = JOURS.filter(j => choisis.includes(j.v)).map(j => j.v);
+  const choisis = Object.keys(aff).map(Number);
 
-  const basculer = (v) => {
-    if (choisis.includes(v)) {
-      setBloque(false);
-      setChoisis(choisis.filter(x => x !== v));
-      return;
-    }
-    // Le quota gratuit mord ICI, au moment du 5e jour coche.
+  const ouvrirJour = (v) => {
+    if (aff[v] !== undefined) { setJourOuvert(jourOuvert === v ? null : v); return; }
+    // Le quota gratuit mord ICI, au moment du 5e jour affecte.
     if (quotaAtteint(choisis.length, premium)) { setBloque(true); return; }
-    if (choisis.length >= total) return;      // pas plus de jours que de seances
     setBloque(false);
-    setChoisis([...choisis, v]);
+    setJourOuvert(jourOuvert === v ? null : v);
   };
+
+  const affecter = (v, index) => {
+    const n = { ...aff };
+    if (index === null) delete n[v];
+    else n[v] = index;
+    setAff(n);
+    setJourOuvert(null);
+    setBloque(false);
+  };
+
+  /** Les jours qui portent deja cette seance, hors celui qu'on edite. */
+  const dejaAilleurs = (index, sauf) =>
+    Object.entries(aff).some(([j, i]) => i === index && Number(j) !== sauf);
 
   // Un compte gratuit sur un programme 6 jours ne peut cocher que 4
   // jours : exiger le compte complet le laissait devant un bouton
@@ -93,7 +110,7 @@ export function PlanifierProgramme({ progId }) {
 
   const valider = () => {
     if (!complet) return;
-    adopterProgramme(progId, choisis);
+    adopterProgramme(progId, aff);
     retourEntrainer();
   };
 
@@ -105,16 +122,39 @@ export function PlanifierProgramme({ progId }) {
 
       <div class="pl-jours">
         {JOURS.map(j => {
-          const on = choisis.includes(j.v);
-          const rang = ordonnes.indexOf(j.v);
+          const index = aff[j.v];
+          const on = index !== undefined;
+          const ouvert = jourOuvert === j.v;
           return (
-            <button key={j.v} class={'pl-jour' + (on ? ' on' : '')}
-              aria-pressed={on ? 'true' : 'false'} onClick={() => basculer(j.v)}>
-              <span class="pl-jour-nom">{t('day_' + j.k)}</span>
-              {on && rang > -1 && prog.seances[rang] && (
-                <span class="pl-jour-seance">{prog.seances[rang].titre}</span>
+            <div key={j.v} class="pl-jour-bloc">
+              <button class={'pl-jour' + (on ? ' on' : '') + (ouvert ? ' ouvert' : '')}
+                aria-expanded={ouvert ? 'true' : 'false'} onClick={() => ouvrirJour(j.v)}>
+                <span class="pl-jour-nom">{t('day_' + j.k)}</span>
+                <span class="pl-jour-seance">
+                  {on ? prog.seances[index].titre : t('pl_choisir_seance')}
+                </span>
+              </button>
+
+              {ouvert && (
+                <div class="pl-menu">
+                  {prog.seances.map((sa, i) => {
+                    const pris = dejaAilleurs(i, j.v);
+                    return (
+                      <button key={i} class={'pl-menu-l' + (index === i ? ' on' : '')}
+                        disabled={pris} onClick={() => affecter(j.v, i)}>
+                        <span class="pl-menu-n">{sa.titre}</span>
+                        <span class="pl-menu-s">{pris ? t('pl_deja_placee') : sa.sub}</span>
+                      </button>
+                    );
+                  })}
+                  {on && (
+                    <button class="pl-menu-vider" onClick={() => affecter(j.v, null)}>
+                      {t('pl_jour_vider')}
+                    </button>
+                  )}
+                </div>
               )}
-            </button>
+            </div>
           );
         })}
       </div>
