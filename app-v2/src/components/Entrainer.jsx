@@ -66,6 +66,18 @@ const wlIso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2
 const wlIsoToDate = (iso) => { const p = iso.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
 const COULEUR = Object.fromEntries(GROUPES.filter(g => g.k !== 'repos').map(g => [g.k, g.c]));
 
+/**
+ * « aujourd'hui », « hier », « il y a 3 j », puis la date courte.
+ * Raci le 12/08 : la pastille « Dernière » etait trop longue.
+ */
+function quandCourt(iso, isoAuj) {
+  const jours = Math.round((wlIsoToDate(isoAuj) - wlIsoToDate(iso)) / 86400000);
+  if (jours <= 0) return t('today').toLowerCase();
+  if (jours === 1) return t('yesterday').toLowerCase();
+  if (jours < 7) return t('days_ago', { n: jours });
+  return jourCourt(wlIsoToDate(iso));
+}
+
 function jourCourt(d) {
   return `${t('days_short').split('|')[d.getDay()]} ${d.getDate()} ${t('months_min').split('|')[d.getMonth()]}`;
 }
@@ -203,7 +215,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
             </span>
             {dernierTxt && (
               <span class="wlog-sum-pill">
-                💪 {t('last_session')} : {dernierTxt} · {jourCourt(wlIsoToDate(dernierIso))}
+                {/* « Dernière : Triceps · Ven 14 août » etait trop long
+                    (Raci, 12/08). Quand c'est proche, le jour se dit en
+                    un mot — aujourd'hui, hier — et la date complete ne
+                    sert plus a rien. Elle ne revient qu'au-dela. */}
+                💪 {t('last_session')} : {dernierTxt} · {quandCourt(dernierIso, todayIso)}
               </span>
             )}
           </>

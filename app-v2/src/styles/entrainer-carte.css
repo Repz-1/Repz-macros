@@ -358,10 +358,14 @@
 }
 
 /* Blocs blancs : calendrier, semaine, seances. */
+/* 18 px entre les blocs plutot que 14 : Raci le 12/08 trouvait le
+   passage du calendrier a « Ta semaine » trop serre, et la page un peu
+   dense. Quatre pixels de plus par respiration, sans rien retirer. */
 .pg-entrainer--carte .ent-bloc {
   background: #FFF; border: 1px solid rgba(28,24,18,.06);
-  border-radius: 18px; padding: 16px; margin-bottom: 14px;
+  border-radius: 18px; padding: 17px 16px; margin-bottom: 18px;
 }
+.pg-entrainer--carte .ent-action { margin-bottom: 18px; }
 .pg-entrainer--carte .ent-bloc h3 {
   font-size: 15.5px; font-weight: 600; margin: 0 0 2px;
 }

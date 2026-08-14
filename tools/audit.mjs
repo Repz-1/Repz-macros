@@ -509,6 +509,12 @@ const DECALAGE_SW_V2 = 232;
   if (stats && entr && css) {
     const soucis = [];
     if (!/bodymap--double/.test(stats)) soucis.push('la silhouette est revenue a une seule vue');
+    // Raci le 12/08 : « les formes sont tres geometriques
+    // (rectangles), on pourrait le rendre plus anatomique ». Les
+    // muscles sont traces au path, pas au rectangle.
+    const bloc = (stats.match(/export function BodyMap[\s\S]*?\n\}\n/) || [''])[0];
+    const rects = (bloc.match(/<rect class="bp" style/g) || []).length;
+    if (rects) soucis.push(`${rects} muscle(s) redessine(s) au rectangle — la silhouette redevient geometrique`);
     if (!/col\('trapezes'\)/.test(stats)) soucis.push('les trapezes ne sont plus dessines');
     if (!/k: 'trapezes'/.test(entr)) soucis.push('le groupe trapezes a disparu de GROUPES');
     // Le repos se lit par une COCHE VERTE, pas par un aplat pale.
