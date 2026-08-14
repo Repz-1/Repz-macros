@@ -344,6 +344,42 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R25 — Le questionnaire tient en quatre questions.
+// Wording et choix dictes par Raci le 12/08. Il y en avait neuf :
+// taille, poids, age, lieu et duree ont ete retires apres
+// verification qu'aucune ne participait au choix du programme ni aux
+// besoins caloriques — elles n'alimentaient que des paragraphes de
+// conseil. Le lieu ne servait qu'a precocher le materiel, que la
+// question 4 demande maintenant directement.
+// ------------------------------------------------------------
+{
+  const quiz = lire('app-v2/src/components/Questionnaire.jsx');
+  if (quiz) {
+    const soucis = [];
+    const m = quiz.match(/const ETAPES = \[([^\]]*)\]/);
+    if (!m) soucis.push('ETAPES introuvable');
+    else {
+      const etapes = m[1].split(',').map(x => x.trim().replace(/'/g, '')).filter(Boolean);
+      if (etapes.length !== 4) soucis.push(`${etapes.length} etapes au lieu de 4 : ${etapes.join(', ')}`);
+      for (const attendue of ['objectif', 'niveau', 'frequence', 'materiel']) {
+        if (!etapes.includes(attendue)) soucis.push(`etape « ${attendue} » absente`);
+      }
+    }
+    // « Force / Performance » n'a pas de programmes a lui : sans ce
+    // renvoi, l'objectif ne recommanderait RIEN et l'ecran final
+    // resterait vide sans qu'aucune erreur ne se produise.
+    if (!/if \(objectif === 'force'\) objectif = 'masse'/.test(quiz)) {
+      soucis.push("l'objectif « force » ne renvoie plus vers un programme existant");
+    }
+    // Le materiel est passe d'un tableau a un choix unique : le reste
+    // du code lit toujours une liste, via cette table.
+    if (!/MATERIEL_PAR_CHOIX/.test(quiz)) soucis.push('la table materiel -> equipements a disparu');
+    if (soucis.length) faute('R25 questionnaire en 4 questions', soucis.join(' ; '));
+    else passe('R25 questionnaire en 4 questions');
+  }
+}
+
+// ------------------------------------------------------------
 // R24 — Deux entrees pour poser une seance au calendrier.
 // Raci le 10/08 : « l'application ne cree pas un programme sur
 // plusieurs jours ». Verification faite, le programme en couvrait

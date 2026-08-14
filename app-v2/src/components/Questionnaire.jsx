@@ -11,12 +11,16 @@ import '../legacy/quiz2.css';
 // supplementaires composent le paragraphe de conseil du coach.
 // ============================================================
 
-const ETAPES = [
-  'objectif', 'niveau',
-  'taille', 'poids', 'age',
-  'lieu', 'materiel',
-  'frequence', 'duree',
-];
+// QUATRE questions. Wording et choix dictes par Raci le 12/08.
+//
+// Il y en avait neuf : taille, poids, age, lieu et duree ont ete
+// retires. Verification faite avant de les retirer, ces cinq
+// reponses n'alimentaient QUE les paragraphes de conseil — aucune ne
+// participait au choix du programme (objectif + niveau + frequence)
+// ni aux besoins caloriques, qui sont poses ailleurs, dans Besoins.
+// Le lieu ne servait qu'a precocher le materiel : la question 4 le
+// demande maintenant directement.
+const ETAPES = ['objectif', 'niveau', 'frequence', 'materiel'];
 
 // Etapes a reglette (taille / poids / age) : bornes et unite
 const REGLETTES = {
@@ -43,12 +47,19 @@ const MULTI = { materiel: true };                    // cases a cocher
 
 const QUESTIONS = {
   objectif: {
-    t: 'Ton objectif ?',
+    t: 'Quel est ton objectif principal ?',
     s: 'Ce que tu veux atteindre en priorité dans les prochains mois.',
     o: [
-      { v: 'masse', l: 'Prendre du muscle', n: 'Gagner en volume et en force' },
-      { v: 'seche', l: 'Perdre du poids', n: 'Réduire la masse grasse' },
-      { v: 'forme', l: 'Maintien', n: 'Rester en forme et entretenir' },
+      { v: 'masse', l: 'Prise de muscle' },
+      { v: 'seche', l: 'Perte de gras' },
+      // « Force / Performance » est un objectif nouveau : la
+      // bibliotheque ne contient aucun programme de force. Il ouvre
+      // donc les programmes de prise de muscle, batis sur les memes
+      // mouvements lourds. C'est un pis-aller assume, pas une
+      // equivalence — a lever le jour ou des programmes de force
+      // existeront.
+      { v: 'force', l: 'Force / Performance' },
+      { v: 'forme', l: 'Forme générale / Santé' },
     ],
   },
   lieu: {
@@ -61,35 +72,35 @@ const QUESTIONS = {
       { v: 'exterieur', l: 'Dehors', n: 'Parc, aire de street workout' },
     ],
   },
+  // Un seul choix, la ou c'etait huit cases a cocher. Chaque option
+  // porte l'equipement qu'elle implique : le filtrage des exercices
+  // d'isolation et les conseils continuent de lire une LISTE, ils
+  // n'ont pas eu a changer.
   materiel: {
-    t: 'Ton matériel',
-    s: 'Présélectionné selon ton lieu. Décoche ce que tu n\u2019as pas.',
+    t: 'Avec quel matériel t\u2019entraînes-tu ?',
+    s: 'Ce dont tu disposes vraiment, la plupart du temps.',
     o: [
-      { v: 'barre', l: 'Barre et disques' },
-      { v: 'halteres', l: 'Haltères' },
-      { v: 'machine', l: 'Machines guidées' },
-      { v: 'poulie', l: 'Poulies / câbles' },
-      { v: 'banc', l: 'Banc' },
-      { v: 'traction', l: 'Barre de traction' },
-      { v: 'elastiques', l: 'Élastiques' },
-      { v: 'kettlebell', l: 'Kettlebells' },
+      { v: 'salle', l: 'Salle de sport complète', n: 'Barres, haltères, machines, poulies' },
+      { v: 'maison', l: 'Haltères + banc (maison)' },
+      { v: 'poids-corps', l: 'Poids du corps uniquement' },
+      { v: 'limite', l: 'Équipement limité', n: 'Élastiques, kettlebell…' },
     ],
   },
   niveau: {
-    t: 'Ton niveau ?',
+    t: 'Quel est ton niveau actuel ?',
     s: 'Sois honnête : un programme trop dur est un programme abandonné.',
     o: [
-      { v: 'debutant', l: 'Je débute', n: 'Jamais ou presque' },
-      { v: 'intermediaire', l: 'Je m\u2019entraîne de temps en temps', n: 'Sans vraie régularité' },
-      { v: 'confirme', l: 'Je m\u2019entraîne régulièrement', n: 'Depuis plus d\u2019un an' },
+      { v: 'debutant', l: 'Débutant', n: 'Moins d\u2019un an d\u2019expérience' },
+      { v: 'intermediaire', l: 'Intermédiaire', n: '1 à 3 ans' },
+      { v: 'confirme', l: 'Avancé', n: 'Plus de 3 ans' },
     ],
   },
   frequence: {
-    t: 'Combien de jours par semaine ?',
+    t: 'Combien de jours par semaine peux-tu t\u2019entraîner ?',
     s: 'Le nombre de séances que tu peux vraiment tenir.',
     o: [
       { v: '2', l: '2 jours' }, { v: '3', l: '3 jours' }, { v: '4', l: '4 jours' },
-      { v: '5', l: '5 jours' }, { v: '6', l: '6 jours' }, { v: '7', l: '7 jours' },
+      { v: '5', l: '5 jours' }, { v: '6', l: '6 jours' },
     ],
   },
   duree: {
@@ -105,10 +116,31 @@ const QUESTIONS = {
 };
 
 /** Recommandation : logique v1 (test.html) inchangee. 7 jours -> 6. */
+// Chaque option de materiel porte l'equipement qu'elle implique. Le
+// reste du code lit une LISTE de materiels : cette table evite d'avoir
+// a le changer, et garde le filtrage des exercices d'isolation.
+export const MATERIEL_PAR_CHOIX = {
+  'salle':       ['barre', 'halteres', 'machine', 'poulie', 'banc', 'traction'],
+  'maison':      ['halteres', 'banc'],
+  'poids-corps': [],
+  'limite':      ['elastiques', 'kettlebell'],
+};
+/** La liste d'equipements, quel que soit le format de la reponse. */
+export function materielsDe(rep) {
+  if (Array.isArray(rep)) return rep;                 // ancienne forme
+  return MATERIEL_PAR_CHOIX[rep] || [];
+}
+
 function recommander({ objectif, niveau, frequence }) {
   const jours = Math.min(6, parseInt(frequence, 10) || 3);
   let conseil = '';
   let progId;
+
+  // « Force / Performance » n'a pas de programmes a lui : la
+  // bibliotheque n'en contient aucun. Il emprunte ceux de prise de
+  // muscle, batis sur les memes mouvements lourds. Assume et ecrit ici
+  // plutot que dissimule dans une egalite silencieuse.
+  if (objectif === 'force') objectif = 'masse';
 
   if (objectif === 'masse') {
     const debMasse = "Pour débuter la prise de masse, un corps complet 3 jours donne souvent les meilleurs résultats : plus de récupération, une meilleure technique. On te conseille de commencer là — mais c'est toi qui choisis, voici le programme que tu as demandé.";
@@ -172,24 +204,20 @@ function recommander({ objectif, niveau, frequence }) {
 function conseilsPersonnels(r) {
   const out = [];
 
-  if (r.duree === '30-45') {
-    out.push("Pour tenir 30 à 45 minutes, garde 45 secondes de repos sur les exercices légers et enchaîne deux exercices d\u2019affilée quand tu peux. Le chrono de l\u2019app t\u2019aide à ne pas déborder.");
-  } else if (r.duree === '45-60') {
-    out.push("Sur 45 à 60 minutes, vise 1 min 15 de repos sur l\u2019isolation et 2 minutes sur les exercices classiques. Lance le chrono à chaque fin de série.");
-  } else if (r.duree === '60-75' || r.duree === '75-90') {
-    out.push("Tu as le temps de bien récupérer : 3 minutes sur les mouvements lourds (squat, développé, soulevé de terre), 2 minutes sur les classiques, 1 min 15 sur l\u2019isolation.");
+  // Les conseils qui dependaient de la duree et de l'age ont ete
+  // retires avec leurs questions, le 12/08. Plutot que de laisser des
+  // branches mortes qui ne se declencheraient plus jamais, le conseil
+  // sur les temps de repos se cale sur le NIVEAU, qu'on demande
+  // toujours. Aucune donnee inventee : seulement une reponse qu'on a.
+  if (r.niveau === 'debutant') {
+    out.push("Sur les temps de repos, vise 1 min 30 entre les séries : assez pour récupérer, assez court pour rester dans la séance. Le chrono de l\u2019app se lance à chaque fin de série.");
+  } else if (r.niveau === 'confirme') {
+    out.push("Sur les mouvements lourds — squat, développé, soulevé de terre — prends 3 minutes de repos, tu chargeras plus. 1 min 15 suffit sur l\u2019isolation.");
+  } else {
+    out.push("Vise 2 minutes de repos sur les exercices classiques et 1 min 15 sur l\u2019isolation. Lance le chrono à chaque fin de série plutôt que de compter dans ta tête.");
   }
 
-  const age = Number(r.age) || 0;
-  if (age >= 45) {
-    out.push("Passé 45 ans, l\u2019échauffement n\u2019est pas optionnel : 8 à 10 minutes avant de charger, et garde un jour de repos entre deux séances lourdes. Tes épaules et tes genoux te remercieront.");
-  } else if (age >= 35) {
-    out.push("Entre 35 et 44 ans, la récupération reste bonne mais l\u2019échauffement devient important : cinq minutes avant de charger, et surveille ton sommeil.");
-  } else if (age > 0 && age < 25) {
-    out.push("À ton âge la récupération est excellente : tu peux tenir une fréquence élevée. Le vrai risque, c\u2019est la technique bâclée pour charger plus vite — ne brûle pas les étapes.");
-  }
-
-  const m = r.materiel || [];
+  const m = materielsDe(r.materiel);
   if (m.length === 0) {
     out.push("Au poids du corps, la progression passe par la difficulté du mouvement et le tempo plutôt que par la charge : ralentis la descente, resserre les appuis, augmente les répétitions.");
   } else if (!m.includes('machine') && !m.includes('poulie')) {
@@ -300,7 +328,10 @@ function Reglette({ min, max, pas, valeur, unite, onChange, px, inverse }) {
 }
 
 export function Questionnaire() {
-  const [reponses, setReponses] = useState({ materiel: [], taille: 175, poids: 75, age: 30 });
+  // Plus de valeurs de reglette : ces trois questions ont quitte le
+  // questionnaire le 12/08. Elles restent posees dans « Tes besoins »,
+  // ou elles servent reellement au calcul calorique.
+  const [reponses, setReponses] = useState({});
   const [i, setI] = useState(0);
   const total = ETAPES.length;
   const surResultat = i >= total;
@@ -395,8 +426,18 @@ export function Questionnaire() {
     const prog = programmeParId(progId);
     const perso = conseilsPersonnels(reponses);
     const objTxt = reponses.objectif === 'masse' ? 'prendre du muscle'
-      : (reponses.objectif === 'seche' ? 'perdre du poids' : 'maintenir ta forme');
-    const dureeTxt = 'en séances de ' + String(reponses.duree || '45-60').replace('-', ' à ') + ' minutes';
+      : reponses.objectif === 'seche' ? 'perdre du poids'
+      : reponses.objectif === 'force' ? 'gagner en force'
+      : 'maintenir ta forme';
+    // La duree n'est plus demandee (questionnaire ramene a quatre
+    // questions le 12/08). La phrase reprend le MATERIEL a la place :
+    // repeter « 2 jours par semaine, a raison de 2 seances par
+    // semaine » disait deux fois la meme chose.
+    const MAT_TXT = {
+      'salle': ' en salle', 'maison': ' avec haltères et banc',
+      'poids-corps': ' au poids du corps', 'limite': ' avec un équipement limité',
+    };
+    const materielTxt = MAT_TXT[reponses.materiel] || '';
 
     return (
       <div class="qz">
@@ -412,7 +453,7 @@ export function Questionnaire() {
           <div class="qz-badge">Ton programme</div>
           <h1 class="qz-titre">{prog ? prog.name : '—'}</h1>
           <p class="qz-sous">
-            Tu veux {objTxt}, {reponses.frequence} jours par semaine, {dureeTxt}.
+            Tu veux {objTxt}, {reponses.frequence} jours par semaine{materielTxt}.
           </p>
 
           <div class="qz-carte">
