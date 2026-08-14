@@ -344,6 +344,35 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R24 — Deux entrees pour poser une seance au calendrier.
+// Raci le 10/08 : « l'application ne cree pas un programme sur
+// plusieurs jours ». Verification faite, le programme en couvrait
+// bien plusieurs — le defaut etait le CHEMIN : le questionnaire
+// s'arretait sur une fiche a lire, et l'adoption vivait deux ecrans
+// plus loin derriere « Choisir ce programme ». Deux entrees
+// desormais : le questionnaire mene aux jours, et une date du
+// calendrier permet d'y poser une seance.
+// ------------------------------------------------------------
+{
+  const quiz = lire('app-v2/src/components/Questionnaire.jsx');
+  const entr = lire('app-v2/src/components/Entrainer.jsx');
+  const store = lire('app-v2/src/store/programme.js');
+  if (quiz && entr && store) {
+    const soucis = [];
+    if (!/allerVers\('planifier', \{ prog: progId \}\)/.test(quiz)) {
+      soucis.push('le questionnaire ne mene plus au choix des jours');
+    }
+    if (!/planifierSeance\(iso, sa\)/.test(entr)) soucis.push('on ne peut plus poser une seance depuis une date');
+    // Une date posee a la main doit primer sur la regle du programme.
+    if (!/const pose = planifs\.value\[iso\]/.test(store)) {
+      soucis.push('une seance posee a la main ne prime plus sur le programme');
+    }
+    if (soucis.length) faute('R24 poser une seance', soucis.join(' ; '));
+    else passe('R24 poser une seance');
+  }
+}
+
+// ------------------------------------------------------------
 // R23 — Onglet d'ouverture par l'adresse.
 // Raci le 10/08 : un lien qui ouvre directement S'entrainer, sans
 // passer par le Journal puis un appui. ?onglet=entrainer.

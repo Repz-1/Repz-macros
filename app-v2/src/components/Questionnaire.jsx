@@ -442,9 +442,21 @@ export function Questionnaire() {
           )}
         </div>
 
+        {/* Le questionnaire mene DIRECTEMENT au choix des jours.
+            Raci le 10/08 : « l'application ne cree pas un programme
+            sur plusieurs jours ». Le programme en couvrait bien
+            plusieurs — verifie, lundi/mercredi/vendredi semaine apres
+            semaine — mais le chemin pour l'adopter passait par la
+            fiche puis « Choisir ce programme », deux ecrans plus
+            loin. Personne ne les trouvait. Repondre a neuf questions
+            doit deboucher sur un programme pose au calendrier, pas
+            sur une fiche a lire. */}
         <div class="qz-pied">
-          <button class="qz-btn" onClick={() => allerVers('programmes', { prog: progId })}>
-            Voir ce programme
+          <button class="qz-btn" onClick={() => allerVers('planifier', { prog: progId })}>
+            Choisir mes jours
+          </button>
+          <button class="qz-lien" onClick={() => allerVers('programmes', { prog: progId })}>
+            Voir le détail du programme
           </button>
           <button class="qz-lien" onClick={refaire}>Refaire le test</button>
         </div>

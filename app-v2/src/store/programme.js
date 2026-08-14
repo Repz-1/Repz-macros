@@ -42,6 +42,19 @@ const isoDuJour = (d) => d.getFullYear() + '-'
 export const programmeActif = signal(null);
 
 /**
+ * Seances posees a la main sur une date precise, hors programme.
+ * { '2026-08-18': { seanceId, titre } }
+ *
+ * Raci le 10/08 : « en cliquant sur une des dates je pourrais
+ * programmer une seance ». Le programme donne un rythme hebdomadaire
+ * regulier ; ceci sert a tout ce qui n'y rentre pas — rattraper une
+ * seance sautee, caler un jour en plus avant les vacances, poser une
+ * seance enregistree un jour precis. Une date posee ici PRIME sur le
+ * programme : c'est une decision explicite contre une regle.
+ */
+export const planifs = signal({});
+
+/**
  * Nombre de seances qu'un compte gratuit peut avoir PLANIFIEES a la
  * fois. Precision de Raci le 10/08 : « un utilisateur gratuit peut
  * programmer maximum 4 seances a la fois ; s'il en veut une 5e, il
@@ -88,6 +101,7 @@ effect(() => {
     // Le local prime s'il a deja quelque chose : une adoption faite
     // hors ligne ne doit pas etre effacee par un nuage plus ancien.
     programmeActif.value = programmeActif.value || (d && d.programmeActif) || null;
+    if (!Object.keys(planifs.value).length) planifs.value = (d && d.planifs) || {};
     pretP = true;
   });
 });
@@ -118,7 +132,21 @@ export function abandonnerProgramme() { ecrire(null); }
  * On ne planifie rien AVANT la date d'adoption : le calendrier ne
  * doit pas se remplir retroactivement de seances jamais prevues.
  */
+/** Poser ou retirer une seance a la main sur une date. */
+export function planifierSeance(iso, seance) {
+  const p = { ...planifs.value };
+  if (seance) p[iso] = { seanceId: seance.seanceId, titre: seance.titre, sub: seance.sub || '' };
+  else delete p[iso];
+  planifs.value = p;
+  const u = identite.value;
+  if (u) sauvegarder(u, { planifs: p });
+}
+
 export function seancePrevue(iso) {
+  // Une seance posee a la main passe avant le programme.
+  const pose = planifs.value[iso];
+  if (pose) return { ...pose, index: -1, prog: null, main: true };
+
   const a = programmeActif.value;
   if (!a || !a.jours || !a.jours.length) return null;
   if (a.depuis && iso < a.depuis) return null;

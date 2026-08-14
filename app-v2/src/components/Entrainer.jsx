@@ -9,7 +9,7 @@ import { Entete } from './Entete.jsx';
 import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
 import { BlocSeances, ToutesSeances, DetailSeance } from './Seances.jsx';
-import { programmeActif, seancePrevue, musclesPrevus } from '../store/programme.js';
+import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId } from '../store/programme.js';
 import { seancesDuJour } from '../store/seances.js';
 
 /** « 90 × 8 · 85 × 10 », ou rien si aucune serie notee. */
@@ -319,6 +319,16 @@ function ModaleMuscles({ iso, fermer }) {
   const type = iso < isoAuj ? 'passe' : (iso === isoAuj ? 'auj' : 'futur');
   const faites = seancesDuJour(iso);
   const prevue = seancePrevue(iso);
+  const [choixOuvert, setChoixOuvert] = useState(false);
+
+  // Les seances proposables : celles du programme actif. Sans
+  // programme, la liste est vide et on le dit plutot que d'ouvrir un
+  // choix sans choix.
+  const actif = programmeActif.value;
+  const prog = actif ? progParId(actif.id) : null;
+  const sessionsProgramme = prog
+    ? prog.seances.map((sa, i) => ({ seanceId: `${actif.id}-${i}`, titre: sa.titre, sub: sa.sub }))
+    : [];
 
   // La silhouette ne montre plus le seul jour ouvert mais TOUTE LA
   // SEMAINE, du lundi jusqu'a ce jour : c'est la question qu'on se
@@ -392,6 +402,40 @@ function ModaleMuscles({ iso, fermer }) {
           <p class="ml-rien">
             {type === 'passe' ? t('ml_rien_passe') : t('ml_rien_futur')}
           </p>
+        )}
+
+        {/* ---- Poser une seance sur CETTE date ----
+            Raci le 10/08 : « en cliquant sur une des dates je
+            pourrais programmer une seance ». Le programme donne un
+            rythme regulier ; ceci sert a ce qui n'y rentre pas —
+            rattraper, ajouter un jour, poser une seance enregistree.
+            Reserve au present et au futur : on ne planifie pas hier. */}
+        {type !== 'passe' && !faites.length && (
+          choixOuvert ? (
+            <div class="ml-choix">
+              <div class="ml-choix-t">{t('ml_choisir')}</div>
+              {sessionsProgramme.map(sa => (
+                <button key={sa.seanceId} class="ml-choix-l"
+                  onClick={() => { planifierSeance(iso, sa); setChoixOuvert(false); }}>
+                  <span class="ml-choix-n">{sa.titre}</span>
+                  <span class="ml-choix-s">{sa.sub}</span>
+                </button>
+              ))}
+              {!sessionsProgramme.length && <p class="ml-rien">{t('ml_pas_de_prog')}</p>}
+              <button class="ml-choix-annul" onClick={() => setChoixOuvert(false)}>{t('cancel')}</button>
+            </div>
+          ) : (
+            <button class="ml-programmer" onClick={() => setChoixOuvert(true)}>
+              {prevue ? t('ml_remplacer') : t('ml_programmer')}
+            </button>
+          )
+        )}
+
+        {/* Retirer une seance posee a la main sur cette date. */}
+        {prevue && prevue.main && !faites.length && (
+          <button class="ml-retirer" onClick={() => planifierSeance(iso, null)}>
+            {t('ml_retirer')}
+          </button>
         )}
 
         <div class="ml-corps">
