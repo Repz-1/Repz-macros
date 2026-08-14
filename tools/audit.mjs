@@ -527,8 +527,12 @@ const DECALAGE_SW_V2 = 232;
     // s'allumait jamais. Le plafond doit tenir compte du quota.
     // `pl` est deja lu plus haut dans ce bloc : le redeclarer creait
     // une zone morte temporelle et faisait planter l'audit entier.
-    if (pl && !/const plafond = premium \? total/.test(pl)) {
-      soucis.push('le bouton d\'enregistrement exige le compte complet — impasse pour un compte gratuit');
+    // On enregistre des qu'UN jour est coche. Exiger le compte complet
+    // bloquait deux fois : un compte gratuit sur un programme 6 jours
+    // (10/08), puis Raci lui-meme, en Premium sur un 5 jours, qui ne
+    // voulait s'entrainer que quatre jours cette semaine-la.
+    if (pl && !/const complet = choisis\.length >= 1/.test(pl)) {
+      soucis.push('l\'enregistrement exige a nouveau un nombre de jours impose');
     }
     if (soucis.length) faute('R18 quota de planification', soucis.join(' ; '));
     else passe('R18 quota de planification');

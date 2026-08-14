@@ -80,8 +80,16 @@ export function PlanifierProgramme({ progId }) {
   // disant : les seances au-dela ne sont pas planifiees, elles
   // restent accessibles a la main depuis la fiche du programme.
   const plafond = premium ? total : Math.min(total, SEANCES_LIBRES);
-  const complet = choisis.length >= plafond;
-  const partiel = complet && choisis.length < total;
+  // On enregistre des qu'UN jour est coche. Exiger le compte complet
+  // etait une regle de ma part, pas une demande : Raci, en Premium sur
+  // un programme 5 jours, restait a « 4 / 5 » devant un bouton eteint
+  // parce qu'il ne voulait s'entrainer que quatre jours cette
+  // semaine-la. Personne ne doit etre bloque parce que sa semaine ne
+  // rentre pas dans le moule du programme. Le compteur dit ce qui
+  // reste non planifie, et ces seances restent posables a la main
+  // depuis n'importe quelle date du calendrier.
+  const complet = choisis.length >= 1;
+  const partiel = choisis.length < total;
 
   const valider = () => {
     if (!complet) return;
@@ -122,7 +130,7 @@ export function PlanifierProgramme({ progId }) {
       )}
 
       <p class="pl-compte">
-        {choisis.length} / {plafond} {t('pl_jours_choisis')}
+        {choisis.length} / {total} {t('pl_jours_choisis')}
         {partiel && (
           <span class="pl-partiel">{t('pl_partiel', { n: total - choisis.length })}</span>
         )}
