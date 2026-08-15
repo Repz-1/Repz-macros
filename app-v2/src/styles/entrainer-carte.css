@@ -648,3 +648,10 @@
   display: block; width: 100%; background: none; border: none; padding: 8px;
   color: #736C63; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
 }
+
+/* Lisieres claires entre les muscles, comme sur une planche
+   d'anatomie : sans elles, deux groupes de teinte proche se
+   fondent en une seule masse. Modele fourni par Raci le 12/08. */
+.bodymap--double .bm-muscles path { stroke: #FFF; stroke-width: 1.6; stroke-linejoin: round; }
+.bodymap--double .bm-corps path,
+.bodymap--double .bm-corps ellipse { stroke: #FFF; stroke-width: 1.2; }
