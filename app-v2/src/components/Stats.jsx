@@ -7,6 +7,7 @@ import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
 import { Entete } from './Entete.jsx';
+import { SILHOUETTE_FACE, SILHOUETTE_DOS } from '../data/silhouette.js';
 import '../legacy/stats.scoped.css';
 
 // ==========================================================
@@ -17,7 +18,7 @@ import '../legacy/stats.scoped.css';
 // ==========================================================
 
 const LIMITE_GRATUIT = 7;
-const COL = { pecs: '#EF4444', dos: '#F97316', epaules: '#F7B500', biceps: '#10B981', triceps: '#06B6D4', jambes: '#3B82F6', abdos: '#8B5CF6' };
+const COL = { pecs: '#EF4444', dos: '#F97316', epaules: '#F7B500', trapezes: '#F7B500', biceps: '#10B981', triceps: '#06B6D4', jambes: '#3B82F6', abdos: '#8B5CF6' };
 
 const isoNDaysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
 const jourCourt = (iso) => new Date(iso + 'T00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
@@ -33,135 +34,51 @@ function Vide({ texte, cta, onCta }) {
   );
 }
 
-// ---------- Silhouette : copie exacte de bodyMapSVG (v1) ----------
+// ---------- Silhouette : decalque de la planche de Raci ----------
 // v1 : <div class="bodymap">svg + legende</div> — la legende vit DANS .bodymap (118px)
 /* Exportee : la modale des muscles de S'entrainer l'affiche aussi,
    pour qu'on voie sur le corps ce qu'on est en train de cocher. */
+
+// Le ton clair d'un groupe : sa couleur melangee de blanc. Il sert au
+// relief interne (vaste interne, colonne, tibia) sans ajouter de
+// couleur au code : un groupe au repos garde donc un relief gris.
+const CLAIR = {};
+const eclaircir = (hex) => {
+  if (CLAIR[hex]) return CLAIR[hex];
+  const n = parseInt(hex.slice(1), 16);
+  const m = (d) => Math.round(d + (255 - d) * 0.42).toString(16).padStart(2, '0');
+  return (CLAIR[hex] = `#${m((n >> 16) & 255)}${m((n >> 8) & 255)}${m(n & 255)}`);
+};
+
 export function BodyMap({ compte, onClick }) {
-  // Silhouette anatomique, face et dos.
-  //
-  // Raci le 12/08, planche de reference a l'appui : « remplace ton
-  // mannequin par celui-ci, beaucoup plus realiste et harmonieux ».
-  // Sa planche ne pouvait pas etre collee telle quelle — c'est une
-  // image, or chaque muscle doit pouvoir se colorer seul. Elle a donc
-  // servi de modele : proportions humaines (8 tetes), epaules larges,
-  // taille marquee, membres qui s'affinent, mains et pieds dessines,
-  // et surtout des muscles SEPARES par des lisieres claires, comme
-  // sur une planche d'anatomie.
-  //
-  // Le corps est trace en deux temps : une silhouette neutre complete
-  // en dessous, puis les groupes musculaires par-dessus. Un groupe
-  // jamais travaille laisse donc voir le corps, il ne fait pas un trou.
+  // Les traces viennent de data/silhouette.js, genere par tools/tracer.py
+  // a partir de la planche de Raci. Ici on ne fait que colorer : aucune
+  // geometrie n'est ecrite a la main, donc retoucher la silhouette veut
+  // dire relancer le tracer, jamais editer ce fichier.
   const col = (k) => (compte[k] > 0 ? (COL[k] || '#F7B500') : '#DDE1E7');
   const colBras = () => {
     if (compte.biceps > 0) return COL.biceps;
     if (compte.triceps > 0) return COL.triceps;
     return '#DDE1E7';
   };
-  const CORPS = '#E9EBEF';
+  const teinte = (p) => {
+    if (p.g === 'tete') return '#151515';
+    const c = p.g === 'avantBras' ? colBras() : col(p.g);
+    return p.t === 'clair' ? eclaircir(c) : c;
+  };
+  const vue = (chemins, nom) => (
+    <div class="bm-vue">
+      <svg viewBox="0 0 120 300" xmlns="http://www.w3.org/2000/svg" class="bm-svg">
+        {chemins.map((p, i) => <path key={i} fill={teinte(p)} d={p.d} />)}
+      </svg>
+      <span class="bm-vue-nom">{nom}</span>
+    </div>
+  );
 
   return (
     <div class="bodymap bodymap--double" onClick={onClick}>
-      <div class="bm-vue">
-        <svg viewBox="0 0 120 300" xmlns="http://www.w3.org/2000/svg" class="bm-svg">
-          <g class="bm-corps">
-            {/* La silhouette est batie de pieces qui S'EMBOITENT, et
-                non d'un seul contour : un contour unique se refermait
-                mal, les jambes se detachaient et les pieds flottaient. */}
-            <ellipse cx="60" cy="26" rx="14" ry="17" fill="#151515" />
-            <path fill={CORPS} d="M52 40 h16 v11 q-8 4 -16 0z" />
-            <path fill={CORPS} d="M60 46 q16 1 24 9 q6 6 8 16 l-4 34 h-8 l-2 -26 q-1 16 -4 26 q-3 9 -3 18 l-11 4 l-11 -4 q0 -9 -3 -18 q-3 -10 -4 -26 l-2 26 h-8 l-4 -34 q2 -10 8 -16 q8 -8 24 -9z" />
-            <path fill={CORPS} d="M44 126 q16 6 32 0 l2 20 q-18 6 -36 0z" />
-            <path fill={CORPS} d="M30 60 q-8 6 -9 18 l-3 26 h9 l3 -26 q1 -10 6 -15z" />
-            <path fill={CORPS} d="M90 60 q8 6 9 18 l3 26 h-9 l-3 -26 q-1 -10 -6 -15z" />
-            <path fill={CORPS} d="M18 102 h9 l3 32 h-9z" />
-            <path fill={CORPS} d="M102 102 h-9 l-3 32 h9z" />
-            <path fill={CORPS} d="M21 133 h8 q2 9 0 15 q-2 5 -5 5 q-3 0 -4 -5 q-2 -7 1 -15z" />
-            <path fill={CORPS} d="M99 133 h-8 q-2 9 0 15 q2 5 5 5 q3 0 4 -5 q2 -7 -1 -15z" />
-            <path fill={CORPS} d="M44 142 q8 4 14 1 l0 56 q-8 3 -15 0 q-3 -28 1 -57z" />
-            <path fill={CORPS} d="M76 142 q-8 4 -14 1 l0 56 q8 3 15 0 q3 -28 -1 -57z" />
-            <path fill={CORPS} d="M44 194 q7 3 14 0 l-2 74 h-11 q-3 -37 -1 -74z" />
-            <path fill={CORPS} d="M76 194 q-7 3 -14 0 l2 74 h11 q3 -37 1 -74z" />
-            <path fill={CORPS} d="M44 264 h12 l1 12 q7 3 8 7 q1 4 -3 4 h-19 q-2 -2 -1 -7 q2 -7 2 -16z" />
-            <path fill={CORPS} d="M76 264 h-12 l-1 12 q-7 3 -8 7 q-1 4 3 4 h19 q2 -2 1 -7 q-2 -7 -2 -16z" />
-          </g>
-
-          <g class="bm-muscles">
-            {/* Trapezes : du cou vers l'epaule */}
-            <path fill={col('trapezes')} d="M52 49 q8 -4 16 0 l15 8 q-8 -2 -15 1 q-8 -5 -16 0 q-7 -3 -15 -1z" />
-            {/* Deltoides */}
-            <path fill={col('epaules')} d="M37 57 q-10 5 -12 16 q-1 7 0 12 q5 -14 16 -18z" />
-            <path fill={col('epaules')} d="M83 57 q10 5 12 16 q1 7 0 12 q-5 -14 -16 -18z" />
-            {/* Pectoraux */}
-            <path fill={col('pecs')} d="M58 60 q-12 0 -17 6 q-4 4 -3 11 q2 9 11 11 q8 1 9 -7z" />
-            <path fill={col('pecs')} d="M62 60 q12 0 17 6 q4 4 3 11 q-2 9 -11 11 q-8 1 -9 -7z" />
-            {/* Abdominaux : trois etages, un sillon au milieu */}
-            <path fill={col('abdos')} d="M50 88 q10 3 20 0 l-1 11 q-9 3 -18 0z" />
-            <path fill={col('abdos')} d="M51 101 q9 3 18 0 l-1 11 q-8 3 -16 0z" />
-            <path fill={col('abdos')} d="M52 114 q8 3 16 0 l-2 12 q-6 2 -12 0z" />
-            {/* Biceps puis avant-bras */}
-            <path fill={col('biceps')} d="M35 62 q-9 6 -10 17 l-2 22 h11 l2 -22 q1 -10 6 -14z" />
-            <path fill={col('biceps')} d="M85 62 q9 6 10 17 l2 22 h-11 l-2 -22 q-1 -10 -6 -14z" />
-            <path fill={colBras()} d="M20 103 h9 l3 29 h-9z" />
-            <path fill={colBras()} d="M100 103 h-9 l-3 29 h9z" />
-            {/* Quadriceps : masse haute, puis tibia */}
-            <path fill={col('jambes')} d="M46 146 q7 3 11 1 l0 48 q-7 3 -13 0 q-2 -25 2 -49z" />
-            <path fill={col('jambes')} d="M74 146 q-7 3 -11 1 l0 48 q7 3 13 0 q2 -25 -2 -49z" />
-            <path fill={col('jambes')} d="M45 199 q6 3 12 0 l-1 34 q-1 14 -4 22 q-3 -8 -5 -22 q-3 -18 -2 -34z" />
-            <path fill={col('jambes')} d="M75 199 q-6 3 -12 0 l1 34 q1 14 4 22 q3 -8 5 -22 q3 -18 2 -34z" />
-          </g>
-        </svg>
-        <span class="bm-vue-nom">{t('bm_face')}</span>
-      </div>
-
-      <div class="bm-vue">
-        <svg viewBox="0 0 120 300" xmlns="http://www.w3.org/2000/svg" class="bm-svg">
-          <g class="bm-corps">
-            {/* La silhouette est batie de pieces qui S'EMBOITENT, et
-                non d'un seul contour : un contour unique se refermait
-                mal, les jambes se detachaient et les pieds flottaient. */}
-            <ellipse cx="60" cy="26" rx="14" ry="17" fill="#151515" />
-            <path fill={CORPS} d="M52 40 h16 v11 q-8 4 -16 0z" />
-            <path fill={CORPS} d="M60 46 q16 1 24 9 q6 6 8 16 l-4 34 h-8 l-2 -26 q-1 16 -4 26 q-3 9 -3 18 l-11 4 l-11 -4 q0 -9 -3 -18 q-3 -10 -4 -26 l-2 26 h-8 l-4 -34 q2 -10 8 -16 q8 -8 24 -9z" />
-            <path fill={CORPS} d="M44 126 q16 6 32 0 l2 20 q-18 6 -36 0z" />
-            <path fill={CORPS} d="M30 60 q-8 6 -9 18 l-3 26 h9 l3 -26 q1 -10 6 -15z" />
-            <path fill={CORPS} d="M90 60 q8 6 9 18 l3 26 h-9 l-3 -26 q-1 -10 -6 -15z" />
-            <path fill={CORPS} d="M18 102 h9 l3 32 h-9z" />
-            <path fill={CORPS} d="M102 102 h-9 l-3 32 h9z" />
-            <path fill={CORPS} d="M21 133 h8 q2 9 0 15 q-2 5 -5 5 q-3 0 -4 -5 q-2 -7 1 -15z" />
-            <path fill={CORPS} d="M99 133 h-8 q-2 9 0 15 q2 5 5 5 q3 0 4 -5 q2 -7 -1 -15z" />
-            <path fill={CORPS} d="M44 142 q8 4 14 1 l0 56 q-8 3 -15 0 q-3 -28 1 -57z" />
-            <path fill={CORPS} d="M76 142 q-8 4 -14 1 l0 56 q8 3 15 0 q3 -28 -1 -57z" />
-            <path fill={CORPS} d="M44 194 q7 3 14 0 l-2 74 h-11 q-3 -37 -1 -74z" />
-            <path fill={CORPS} d="M76 194 q-7 3 -14 0 l2 74 h11 q3 -37 1 -74z" />
-            <path fill={CORPS} d="M44 264 h12 l1 12 q7 3 8 7 q1 4 -3 4 h-19 q-2 -2 -1 -7 q2 -7 2 -16z" />
-            <path fill={CORPS} d="M76 264 h-12 l-1 12 q-7 3 -8 7 q-1 4 3 4 h19 q2 -2 1 -7 q-2 -7 -2 -16z" />
-          </g>
-
-          <g class="bm-muscles">
-            {/* Trapezes de dos : le losange, du cou au milieu du dos */}
-            <path fill={col('trapezes')} d="M52 49 q8 -4 16 0 l14 8 q-5 14 -11 22 q-5 5 -11 6 q-6 -1 -11 -6 q-6 -8 -11 -22z" />
-            <path fill={col('epaules')} d="M37 57 q-10 5 -12 16 q-1 7 0 12 q5 -14 16 -18z" />
-            <path fill={col('epaules')} d="M83 57 q10 5 12 16 q1 7 0 12 q-5 -14 -16 -18z" />
-            {/* Grand dorsal : le V, large en haut, resserre a la taille */}
-            <path fill={col('dos')} d="M42 79 q18 8 36 0 q2 13 -2 24 q-4 11 -16 17 q-12 -6 -16 -17 q-4 -11 -2 -24z" />
-            {/* Lombaires */}
-            <path fill={col('dos')} d="M50 122 q10 3 20 0 l-2 13 q-8 2 -16 0z" />
-            {/* Triceps */}
-            <path fill={col('triceps')} d="M35 62 q-9 6 -10 17 l-2 22 h11 l2 -22 q1 -10 6 -14z" />
-            <path fill={col('triceps')} d="M85 62 q9 6 10 17 l2 22 h-11 l-2 -22 q-1 -10 -6 -14z" />
-            <path fill={colBras()} d="M20 103 h9 l3 29 h-9z" />
-            <path fill={colBras()} d="M100 103 h-9 l-3 29 h9z" />
-            {/* Fessiers, ischios, puis mollets galbes */}
-            <path fill={col('jambes')} d="M45 138 q15 6 30 0 q3 10 0 19 q-15 5 -30 0 q-3 -9 0 -19z" />
-            <path fill={col('jambes')} d="M46 159 q7 3 11 1 l0 35 q-7 3 -13 0 q-2 -19 2 -36z" />
-            <path fill={col('jambes')} d="M74 159 q-7 3 -11 1 l0 35 q7 3 13 0 q2 -19 -2 -36z" />
-            <path fill={col('jambes')} d="M45 199 q6 3 12 0 q3 14 0 28 q-2 16 -5 26 q-4 -10 -6 -26 q-3 -14 -1 -28z" />
-            <path fill={col('jambes')} d="M75 199 q-6 3 -12 0 q-3 14 0 28 q2 16 5 26 q4 -10 6 -26 q3 -14 1 -28z" />
-          </g>
-        </svg>
-        <span class="bm-vue-nom">{t('bm_dos')}</span>
-      </div>
+      {vue(SILHOUETTE_FACE, t('bm_face'))}
+      {vue(SILHOUETTE_DOS, t('bm_dos'))}
     </div>
   );
 }

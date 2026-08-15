@@ -515,7 +515,10 @@ const DECALAGE_SW_V2 = 232;
     const bloc = (stats.match(/export function BodyMap[\s\S]*?\n\}\n/) || [''])[0];
     const rects = (bloc.match(/<rect class="bp" style/g) || []).length;
     if (rects) soucis.push(`${rects} muscle(s) redessine(s) au rectangle — la silhouette redevient geometrique`);
-    if (!/col\('trapezes'\)/.test(stats)) soucis.push('les trapezes ne sont plus dessines');
+    // La geometrie a quitte Stats.jsx : les trapezes se verifient
+    // maintenant dans les chemins generes, pas dans un appel col().
+    const sil = lire('app-v2/src/data/silhouette.js') || '';
+    if (!/g: 'trapezes'/.test(sil)) soucis.push('les trapezes ne sont plus dessines');
     if (!/k: 'trapezes'/.test(entr)) soucis.push('le groupe trapezes a disparu de GROUPES');
     // Le repos se lit par une COCHE VERTE, pas par un aplat pale.
     // Raci le 10/08 sur trois nuances proposees : « c'est de la
@@ -827,6 +830,37 @@ const DECALAGE_SW_V2 = 232;
     const mortes = suspectes.filter((c) => css.includes(c) && !posees.has(c.split('.').pop()));
     if (mortes.length) signale('R7 regles CSS mortes', `${mortes.join(', ')} — style defini, classe jamais posee par Stats.jsx`);
     else passe('R7 regles CSS mortes');
+  }
+}
+
+// ------------------------------------------------------------
+// R26 — La silhouette reste un decalque, pas un dessin a la main.
+// Trouve le 15/08 : six versions tracees au juge ont toutes rendu des
+// formes geometriques (« Lego », « effet os »). La silhouette est
+// desormais vectorisee depuis la planche de Raci par tools/tracer.py.
+// Trois pieges a tenir :
+//   - reecrire de la geometrie dans Stats.jsx annulerait le decalque ;
+//   - le fichier genere peut exploser (440 Ko au premier jet, avant
+//     decimation des points) et alourdir le bundle ;
+//   - un clipPath ou tout autre id casserait les DEUX silhouettes
+//     affichees en meme temps sur S'entrainer (carte + modale).
+// ------------------------------------------------------------
+{
+  const stats = lire('app-v2/src/components/Stats.jsx');
+  const sil = lire('app-v2/src/data/silhouette.js');
+  if (stats && sil) {
+    const soucis = [];
+    const bloc = (stats.match(/export function BodyMap[\s\S]*?\n\}\n/) || [''])[0];
+    const traces = (bloc.match(/d="M[\d\s.-]/g) || []).length;
+    if (traces) soucis.push(`${traces} trace(s) ecrit(s) a la main dans BodyMap — la geometrie doit venir de data/silhouette.js`);
+    if (!lire('tools/tracer.py')) soucis.push('tools/tracer.py absent : la silhouette ne serait plus regenerable');
+    const ko = Math.round(sil.length / 1024);
+    if (ko > 120) soucis.push(`data/silhouette.js pese ${ko} Ko — decimer les points dans tracer.py`);
+    if (/clipPath|url\(#/.test(bloc)) soucis.push('un clipPath est revenu : les deux silhouettes de S\'entrainer partageraient le meme id');
+    const face = (sil.match(/g: '/g) || []).length;
+    if (face < 40) soucis.push(`${face} chemins seulement — le decalque a perdu des pieces`);
+    if (soucis.length) faute('R26 silhouette decalquee', soucis.join(' ; '));
+    else passe('R26 silhouette decalquee');
   }
 }
 
