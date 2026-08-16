@@ -206,9 +206,6 @@ export function MealPage() {
           </div>
         )}
 
-        {/* Au-dela des macros : fibres, sucres, satures, sel */}
-        {!vide && <DetailNutritionnel ings={r.ings} />}
-
         {/* Enregistrer la composition comme plat reutilisable */}
         {!vide && (
           <div class="mc-plat rp-plat">
@@ -246,6 +243,15 @@ export function MealPage() {
             )}
           </div>
         )}
+
+        {/* Le detail nutritionnel passe SOUS les deux boutons (Raci,
+            16/08). Il s'intercalait entre la liste des aliments et
+            « Terminer » : on devait le franchir pour atteindre le
+            bouton qu'on etait venu chercher. Fibres, sucres, satures et
+            sel se consultent apres coup, pas pendant l'encodage — ils
+            sont donc au bout de la page, atteignables sans etre sur le
+            passage. */}
+        {!vide && <DetailNutritionnel ings={r.ings} />}
       </div>
     </div>
   );

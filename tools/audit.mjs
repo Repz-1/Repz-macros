@@ -955,6 +955,27 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R30 — Le detail nutritionnel reste APRES les boutons de fin.
+// Deplace le 16/08 a la demande de Raci : place entre la liste des
+// aliments et « Terminer », il fallait le franchir pour atteindre le
+// bouton qu'on etait venu chercher. Fibres, sucres, satures et sel se
+// consultent apres coup, pas pendant l'encodage.
+// Le piege : une passe de reorganisation le fait remonter « pour le
+// mettre en valeur », et il redevient un obstacle sur le chemin de
+// sortie du repas.
+// ------------------------------------------------------------
+{
+  const mp = lire('app-v2/src/components/MealPage.jsx');
+  if (mp) {
+    const iDetail = mp.indexOf('<DetailNutritionnel');
+    const iFin = mp.indexOf('rp-btn-fin');
+    if (iDetail < 0) faute('R30 detail nutritionnel en fin de page', 'le detail nutritionnel a disparu de la page repas');
+    else if (iDetail < iFin) faute('R30 detail nutritionnel en fin de page', 'il est remonte avant « Terminer » : il barre a nouveau le chemin de sortie');
+    else passe('R30 detail nutritionnel en fin de page');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

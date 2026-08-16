@@ -3345,12 +3345,23 @@ html.avec-avis .pg-besoins { padding-top: var(--haut-avis, 0px); }
    Volontairement discret : c'est un reperage, pas une alerte. Six
    cartes dont une criarde ferait lire la couleur avant le contenu. */
 .pg-journal .mc--suivant {
+  /* Trait plein a 2 px : a 1,5 px et 90 % d'opacite, le contour se
+     confondait avec les bordures des autres cartes des qu'on regardait
+     la page en entier. Il faut qu'il tranche d'un coup d'oeil, sans
+     avoir a comparer deux cartes cote a cote. */
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .9),
-    0 0 0 1.5px rgba(24, 24, 24, .9),
-    0 3px 6px rgba(24, 24, 24, .06),
-    0 10px 26px rgba(60, 50, 40, .12);
+    0 0 0 2px #151515,
+    0 4px 10px rgba(24, 24, 24, .10),
+    0 14px 30px rgba(60, 50, 40, .16);
+  /* Fond franchement blanc, quand les autres cartes tirent vers la
+     creme : la carte se detache aussi par sa surface, pas seulement
+     par son trait. */
+  background: #FFFFFF;
 }
+/* Un signet en haut de carte a ete essaye puis retire : a 2 px de
+   trait plein, la carte se voit deja de loin, et le signet mordait sur
+   la carte precedente. */
 /* Le titre passe en plein noir : sur une carte deja claire, c'est le
    seul contraste qui se lit sans agrandir la carte. */
 .pg-journal .mc--suivant .mc-titre { color: #0F0F0F; }
