@@ -111,14 +111,18 @@ export function SelectionExercices() {
         <h1>Choisir mes exercices</h1>
       </div>
 
-      <div class="muscle-tabs">
+      {/* Les trois rangees de filtres defilent horizontalement : le
+          doigt y fait deja glisser des pastilles, la page n'a pas a
+          changer d'onglet en meme temps. Le marqueur les exclut du
+          balayage sans toucher a main.jsx. */}
+      <div class="muscle-tabs" data-sans-swipe>
         {MUSCLES.map((m, i) => (
           <button key={m.key} class={'muscle-tab' + (i === muscle ? ' active' : '')}
             onClick={() => setMuscle(i)}>{m.label}</button>
         ))}
       </div>
 
-      <div class="filter-tabs">
+      <div class="filter-tabs" data-sans-swipe>
         {FILTERS.map(ft => (
           <button key={ft.key} class={'filter-tab' + (ft.key === filtre ? ' active' : '')}
             onClick={() => setFiltre(ft.key)}>{ft.label}</button>
@@ -127,7 +131,7 @@ export function SelectionExercices() {
 
       {/* Le niveau pilote le volume de TOUS les exercices : il se
           choisit une fois ici, pas exercice par exercice. */}
-      <div class="niv-rangee" role="group" aria-label="Niveau de pratique">
+      <div class="niv-rangee" role="group" aria-label="Niveau de pratique" data-sans-swipe>
         <span class="niv-libelle" aria-hidden="true">Niveau</span>
         {NIVEAUX_PRATIQUE.map(n => (
           <button key={n.key}

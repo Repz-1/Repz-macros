@@ -1056,6 +1056,37 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R33 — Le balayage de page ne prend pas la main dans une rangee qui
+// defile deja horizontalement.
+// Raci, 16/08 : « sa swipe toujours ». Les filtres de « Choisir mes
+// exercices » changeaient d'onglet quand on faisait glisser les
+// pastilles. La cause n'etait pas un oubli isole mais le mecanisme :
+// une liste de selecteurs dans main.jsx qu'il faut penser a alimenter
+// a chaque ecran. Deux garde-fous generiques l'ont remplacee — le
+// marqueur data-sans-swipe, et la detection d'un ancetre a defilement
+// horizontal. Le piege serait de les retirer en croyant la liste
+// suffisante.
+// ------------------------------------------------------------
+{
+  const main = lire('app-v2/src/main.jsx');
+  const sel = lire('app-v2/src/components/SelectionExercices.jsx');
+  const css = lire('app-v2/src/legacy/selection-exercices.scoped.css');
+  if (main && sel && css) {
+    const soucis = [];
+    if (!/data-sans-swipe/.test(main))
+      soucis.push('main.jsx ne reconnait plus data-sans-swipe : chaque ecran devrait a nouveau etre inscrit a la main');
+    if (!/defileHorizontal/.test(main))
+      soucis.push('la detection des rangees a defilement horizontal a disparu : les cas non prevus reviendront');
+    if ((sel.match(/data-sans-swipe/g) || []).length < 3)
+      soucis.push('les trois rangees de filtres ne sont plus toutes exclues du balayage');
+    if (!/touch-action:\s*pan-y/.test(css))
+      soucis.push('pan-y retire des rangees : sur iOS le geste part parfois avant touchstart');
+    if (soucis.length) faute('R33 balayage et rangees defilantes', soucis.join(' ; '));
+    else passe('R33 balayage et rangees defilantes');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

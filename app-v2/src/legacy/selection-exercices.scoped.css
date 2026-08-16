@@ -367,3 +367,11 @@ body:has(.pg-selection) .v2-chrono-fab.crit .v2-chrono-fab-time{ font-size:11px;
   .pg-selection .ex-item.selected .ex-add,
   .pg-selection .hint-compte.actif{ animation:none; }
 }
+
+/* Le navigateur cesse de proposer le geste horizontal a la page pour
+   ces rangees : pan-y ne laisse passer que le defilement vertical.
+   C'est la ceinture au JS de main.jsx — sur iOS, le geste part parfois
+   avant que touchstart ne soit remonte. */
+.pg-selection .muscle-tabs,
+.pg-selection .filter-tabs,
+.pg-selection .niv-rangee { touch-action: pan-y; overscroll-behavior-x: contain; }

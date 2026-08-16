@@ -350,13 +350,40 @@ export function App() {
 
   // ---- Balayage : le rail suit le doigt (v1) ----
   const geste = useRef(null);
+  // Zones ou le balayage de page ne doit pas prendre la main.
+  //
+  // La liste de selecteurs seule ne suffisait pas : il fallait penser a
+  // l'alimenter a chaque nouvel ecran, et on l'oubliait — les filtres de
+  // « Choisir mes exercices » changeaient d'onglet quand on faisait
+  // defiler les pastilles. Deux garde-fous s'y ajoutent donc, qui n'ont
+  // rien a declarer :
+  //
+  //   1. tout element portant data-sans-swipe, pour se signaler soi-meme
+  //      sans venir modifier ce fichier ;
+  //   2. tout ancetre qui defile HORIZONTALEMENT. Une rangee de chips,
+  //      un carrousel, un tableau large : le doigt y fait deja defiler
+  //      quelque chose, la page n'a pas a bouger en meme temps. C'est ce
+  //      qui rattrape les cas qu'on n'a pas prevus.
+  const defileHorizontal = (el) => {
+    for (let n = el; n && n !== document.body; n = n.parentElement) {
+      if (n.scrollWidth > n.clientWidth + 4) {
+        const ox = getComputedStyle(n).overflowX;
+        if (ox === 'auto' || ox === 'scroll') return true;
+      }
+    }
+    return false;
+  };
   const debutTouche = (e) => {
     if (e.touches.length !== 1) return;
-    if (e.target.closest && e.target.closest(
+    const cible = e.target;
+    if (!cible.closest) return;
+    if (cible.closest(
       '.modale, .voile, .cp-overlay, .fr-plein, .ml-overlay, .water-modal, .modal-overlay, ' +
       '.premium-overlay, .v2-timer-container, .v2-timer-overlay, .bn, ' +
-      '.prog-onglets, .idees-cats, input, select, textarea, .couche-repas'
+      '.prog-onglets, .idees-cats, input, select, textarea, .couche-repas, ' +
+      '[data-sans-swipe]'
     )) return;
+    if (defileHorizontal(cible)) return;
     geste.current = {
       x: e.touches[0].clientX, y: e.touches[0].clientY,
       verrou: null, dx: 0, vx: 0,
