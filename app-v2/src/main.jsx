@@ -95,7 +95,9 @@ export function OngletJournal() {
         {(() => {
           const aSuivre = repas.value.find(r => r.ings.length === 0);
           return repas.value.map(r => (
-            <MealCard key={r.id} r={r} aSuivre={aSuivre && r.id === aSuivre.id} />
+            <MealCard key={r.id} r={r}
+              aSuivre={aSuivre && r.id === aSuivre.id}
+              fait={r.ings.length > 0} />
           ));
         })()}
         {/* L'ajout d'un repas vit desormais dans le flux, sous le

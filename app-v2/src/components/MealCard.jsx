@@ -487,7 +487,7 @@ export function Recherche({ repasId, phCourt }) {
   );
 }
 
-export function MealCard({ r, aSuivre }) {
+export function MealCard({ r, aSuivre, fait }) {
   const tot = totauxRepas(r);
   const vide = r.ings.length === 0;
   const [edite, setEdite] = useState(false);
@@ -496,7 +496,7 @@ export function MealCard({ r, aSuivre }) {
   // centres sur la meme ligne : places separement, ils se retrouvaient
   // l'un en haut, l'autre au milieu.
   return (
-    <div class={'mc' + (aSuivre ? ' mc--suivant' : '')}>
+    <div class={'mc' + (aSuivre ? ' mc--suivant' : '') + (fait ? ' mc--fait' : '')}>
       <div class="mc-tete" onClick={() => { if (!edite) repasOuvertId.value = r.id; }}>
 
         <div class="mc-vignette" dangerouslySetInnerHTML={{ __html: illustration(r) }} />

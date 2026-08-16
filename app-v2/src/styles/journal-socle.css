@@ -3366,6 +3366,36 @@ html.avec-avis .pg-besoins { padding-top: var(--haut-avis, 0px); }
 /* Le chevron sort de son gris : il indique ou aller. */
 .pg-journal .mc--suivant .mc-chevron { opacity: 1; }
 
+/* ---------- Le repas deja encode -------------------------------------
+   Une coche posee en coin de vignette. Un repas rempli affichait deja
+   ses kcal a la place de la fourchette recommandee, mais dans une
+   ligne de 13 px en gris : l'information etait la, invisible des qu'on
+   balayait la page.
+
+   La coche vit sur la VIGNETTE, pas sur le bord : le bord gauche
+   appartient au trait du repas a suivre. Deux marques, deux zones,
+   aucune concurrence — et la meme couleur, donc un seul code a lire.
+
+   La pastille deborde volontairement de la vignette et porte un
+   liseré blanc : sur des illustrations qui vont du blanc casse au
+   noir, seul ce liseré garantit qu'elle se detache. */
+.pg-journal .mc--fait .mc-vignette { position: relative; }
+.pg-journal .mc--fait .mc-vignette::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #0DA271;
+  border: 2.5px solid #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 13l4 4 10-11'/%3E%3C/svg%3E");
+  background-size: 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .pg-journal .mc--suivant::before { transition: opacity .3s ease; }
 }

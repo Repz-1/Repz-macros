@@ -945,6 +945,12 @@ const DECALAGE_SW_V2 = 232;
     if (!/find\(r => r\.ings\.length === 0\)/.test(main))
       soucis.push('le repas a suivre n\'est plus le premier vide — un repas saute ne serait plus rappele');
     if (!/aSuivre/.test(carte)) soucis.push('MealCard ne recoit plus aSuivre : plus aucune carte n\'est mise en avant');
+    // La coche des repas encodes doit rester sur la vignette : le bord
+    // gauche appartient au trait du repas a suivre. Les faire cohabiter
+    // sur la meme zone rendrait les deux etats illisibles.
+    if (!/mc--fait/.test(carte)) soucis.push('les repas encodes ne portent plus de coche');
+    else if (!/\.mc--fait \.mc-vignette::after/.test(css))
+      soucis.push('la coche a quitte la vignette — elle entrerait en concurrence avec le trait du repas a suivre');
     const bloc = (css.match(/\.pg-journal \.mc--suivant::before \{[^}]*\}/) || [''])[0];
     if (!bloc) soucis.push('le style du repas a suivre a disparu');
     // Douze pistes ont ete essayees avant celle-ci. Refusees : le cadre
