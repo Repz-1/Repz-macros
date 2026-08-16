@@ -1172,6 +1172,30 @@ export const DB = {
     'Maca poudre':{kcal:325,prot:14,carbs:71,lip:1},
     'Gelée royale':{kcal:150,prot:13,carbs:15,lip:4},
     'Levure de bière':{kcal:350,prot:45,carbs:35,lip:2},
+
+    // ===== POUDRES PROTEINEES =====
+    // La base n'avait que « Whey », « Whey Iso » et « Caséine ». Or le
+    // taux de proteines va de 70 a 90 g selon le procede : compter une
+    // hydrolysee comme une concentree se paie 15 g d'ecart par dose.
+    // Chaque poudre courante a donc son entree, et les plus utilisees
+    // ont leur dose — on compte des mesurettes, pas des grammes.
+    'Whey concentrée':{kcal:400,prot:78,carbs:8,lip:6},
+    'Whey hydrolysée':{kcal:365,prot:88,carbs:2,lip:1},
+    'Whey native':{kcal:380,prot:82,carbs:5,lip:3},
+    'Clear whey':{kcal:355,prot:88,carbs:1,lip:0.5},
+    'Whey Iso (dose 30g)':{kcal:360,prot:90,carbs:2,lip:1,unit:30,unitLabel:'dose'},
+    'Whey concentrée (dose 30g)':{kcal:400,prot:78,carbs:8,lip:6,unit:30,unitLabel:'dose'},
+    'Caséine (dose 30g)':{kcal:360,prot:80,carbs:5,lip:1.5,unit:30,unitLabel:'dose'},
+    'Protéine de soja':{kcal:375,prot:88,carbs:2,lip:1},
+    'Protéine végétale (mélange)':{kcal:385,prot:75,carbs:8,lip:6},
+    'Protéine végétale (dose 30g)':{kcal:385,prot:75,carbs:8,lip:6,unit:30,unitLabel:'dose'},
+    'Protéine de courge':{kcal:390,prot:60,carbs:12,lip:10},
+    'Protéine de tournesol':{kcal:380,prot:55,carbs:15,lip:9},
+    'Protéine d\'avoine':{kcal:375,prot:55,carbs:25,lip:6},
+    'Protéine d\'amande':{kcal:400,prot:50,carbs:15,lip:12},
+    'Protéine de lactosérum bio':{kcal:395,prot:80,carbs:7,lip:5},
+    'Lait écrémé en poudre':{kcal:355,prot:35,carbs:52,lip:1},
+    'Gainer (dose 100g)':{kcal:380,prot:25,carbs:60,lip:5,unit:100,unitLabel:'dose'},
 };
 
 // Macros d'un ingredient {name, portion} a partir de la DB
