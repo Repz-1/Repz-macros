@@ -1022,6 +1022,40 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R32 — La fiche d'un jour ne lit jamais un agregat hebdomadaire.
+// Raci, 16/08. Elle a agrege la semaine entiere pendant un temps : on
+// ouvrait mardi et la silhouette se colorait de lundi, ce qui rend un
+// jour vide indiscernable d'un jour charge. La lecture hebdomadaire
+// existe ailleurs — la carte « Ta semaine » de la page S'entrainer.
+// Le piege : refaire une boucle sur les jours depuis lundi « pour
+// donner du contexte ».
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  if (ent) {
+    const soucis = [];
+    const i = ent.indexOf('function ModaleMuscles');
+    const fiche = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : '';
+    if (!fiche) soucis.push('ModaleMuscles introuvable');
+    else {
+      if (/joursSemaine|lundi\.setDate|tr_week_since/.test(fiche))
+        soucis.push('la fiche du jour agrege a nouveau la semaine — un jour vide y devient indiscernable d\'un jour charge');
+      // R33 : les muscles des exercices comptent, pas seulement les
+      // pastilles cochees. Sans cela, une seance pecs enregistree sans
+      // pastille laisse le corps gris.
+      if (!/faites\.forEach/.test(fiche))
+        soucis.push('les muscles des seances enregistrees ne sont plus deduits : une seance non pointee laisse la silhouette grise');
+      // R34 : toute fiche ouverte s'empile, sinon le retour Android
+      // change l'onglet SOUS elle.
+      if (!/useRetour\(!!iso/.test(fiche))
+        soucis.push('la fiche ne s\'empile plus dans la pile de retours : le bouton Android changerait l\'onglet sous elle');
+    }
+    if (soucis.length) faute('R32 fiche du jour', soucis.join(' ; '));
+    else passe('R32 fiche du jour');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

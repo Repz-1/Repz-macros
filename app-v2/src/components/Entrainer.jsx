@@ -358,6 +358,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
  * c'est lui qui colore le calendrier quand on s'entraine ailleurs.
  */
 function ModaleMuscles({ iso, fermer }) {
+  // Empilee dans la pile de retours : le bouton Android et la touche
+  // Echap la ferment, au lieu de changer l'onglet SOUS elle. Le hook
+  // doit etre appele avant tout retour anticipe — d'ou le `!!iso`
+  // plutot qu'un `if (!iso) return null` place au-dessus.
+  useRetour(!!iso, fermer);
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
   const isoAuj = wlIso(new Date());
@@ -375,24 +380,25 @@ function ModaleMuscles({ iso, fermer }) {
     ? prog.seances.map((sa, i) => ({ seanceId: `${actif.id}-${i}`, titre: sa.titre, sub: sa.sub }))
     : [];
 
-  // La silhouette ne montre plus le seul jour ouvert mais TOUTE LA
-  // SEMAINE, du lundi jusqu'a ce jour : c'est la question qu'on se
-  // pose devant un calendrier d'entrainement — qu'est-ce que j'ai
-  // deja travaille, qu'est-ce qui manque. Un jour isole n'y repond
-  // pas. Semaine ISO, donc lundi ; (getDay()+6)%7 vaut 0 le lundi.
+  // La fiche ne montre QUE le jour ouvert (Raci, 16/08). Elle a
+  // agrege la semaine entiere pendant un temps : on ouvrait mardi et
+  // la silhouette se colorait de lundi, ce qui rend un jour vide
+  // indiscernable d'un jour charge. La lecture hebdomadaire n'est pas
+  // perdue pour autant — c'est exactement ce que porte la carte
+  // « Ta semaine » de la page S'entrainer, avec sa propre silhouette.
+  //
+  // Deux sources pour un meme jour, reunies : les pastilles cochees a
+  // la main, et les muscles DEDUITS des exercices des seances
+  // enregistrees. Sans la deduction, faire une seance pecs sans
+  // cocher la pastille laissait le corps gris.
   const jour = wlIsoToDate(iso);
-  const lundi = new Date(jour);
-  lundi.setDate(jour.getDate() - ((jour.getDay() + 6) % 7));
-  const joursSemaine = [];
-  for (let d = new Date(lundi); wlIso(d) <= iso; d.setDate(d.getDate() + 1)) {
-    joursSemaine.push(wlIso(d));
-  }
   const compte = {};
-  joursSemaine.forEach(j => {
-    (muscleLog.value[j] || []).forEach(k => {
-      if (k !== 'repos') compte[k] = (compte[k] || 0) + 1;
-    });
+  (muscleLog.value[iso] || []).forEach(k => {
+    if (k !== 'repos') compte[k] = (compte[k] || 0) + 1;
   });
+  faites.forEach(sa => (sa.exos || []).forEach(e => {
+    if (e.mKey && e.mKey !== 'repos') compte[e.mKey] = (compte[e.mKey] || 0) + 1;
+  }));
   // PORTAIL VERS document.body. Le rail des onglets porte
   // will-change:transform et z-index:1 : il cree un contexte
   // d'empilement, donc le z-index 100 de la modale ne valait que
@@ -486,15 +492,20 @@ function ModaleMuscles({ iso, fermer }) {
         <div class="ml-corps">
           <BodyMap compte={compte} />
           <div class="ml-legende">
-            <div class="ml-legende-titre">
-              {t('tr_week_since')} {jourCourt(lundi)}
-            </div>
-            {GROUPES.filter(g => COULEUR[g.k]).map(g => (
-              <span key={g.k} class={compte[g.k] ? 'fait' : ''}>
-                <i class="dot" style={{ background: compte[g.k] ? COULEUR[g.k] : '#E9EBEF' }} />
+            {/* La legende ne liste plus les neuf groupes dont sept
+                eteints : elle nomme ce qui a ete travaille, et le dit
+                quand il n'y a rien. Une liste de gris demande de
+                chercher les rares pastilles allumees. */}
+            <div class="ml-legende-titre">{t('ml_ce_jour')}</div>
+            {GROUPES.filter(g => COULEUR[g.k] && compte[g.k]).map(g => (
+              <span key={g.k} class="fait">
+                <i class="dot" style={{ background: COULEUR[g.k] }} />
                 {nomMuscle(g.k)}
               </span>
             ))}
+            {!GROUPES.some(g => COULEUR[g.k] && compte[g.k]) && (
+              <span class="ml-legende-vide">{t('ml_rien_note')}</span>
+            )}
           </div>
         </div>
         <div class="ml-groups-titre">{t('ml_noter')}</div>
