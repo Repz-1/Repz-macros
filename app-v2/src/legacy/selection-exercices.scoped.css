@@ -224,3 +224,79 @@
 }
 .exo-fiche .exo-fiche-niveaux .niv-tab.active{ background:#151515; color:#F8CF01; border-color:#151515; }
 .exo-fiche .exo-series-libre{ font-size:12.5px; color:#6B655D; background:#F7F4EE; border-radius:12px; padding:11px 14px; margin:0 16px 4px; line-height:1.45; }
+
+/* =====================================================================
+   Ecran « Choisir mes exercices » — passe du 15/08 (directives Raci).
+   Cinq points, dans l'ordre ou ils sautent aux yeux a l'usage.
+   ===================================================================== */
+
+/* 2. LE COMPTE DES CHOIX, VISIBLE DES ZERO.
+   Il n'existait que dans la barre du bas, elle-meme masquee tant que
+   rien n'est choisi : la question « combien j'en ai ? » n'avait donc
+   pas de reponse a l'ecran au moment ou elle se pose. */
+.pg-selection .section-hint{ justify-content:space-between; }
+.pg-selection .hint-gauche{ min-width:0; }
+.pg-selection .hint-compte{
+  flex-shrink:0; font-weight:700; font-size:12.5px; color:var(--text-dim);
+  background:#EDEAE4; border-radius:20px; padding:4px 11px;
+  transition:background .2s ease, color .2s ease;
+}
+/* Des le premier choix il passe en jaune : la couleur dit « en cours »
+   sans qu'on ait a lire le chiffre. */
+.pg-selection .hint-compte.actif{ background:#F7B500; color:#181818; }
+
+/* 3. LE NIVEAU PASSE AU SECOND PLAN.
+   Trois rangees de pastilles occupaient la moitie du premier ecran
+   avant le moindre exercice. Le muscle et le materiel se changent
+   souvent, le niveau une fois : il se subordonne donc aux deux autres
+   par sa taille, et s'annonce par un libelle plutot que de se faire
+   passer pour un troisieme filtre de meme rang. */
+.pg-selection .niv-rangee{ align-items:center; padding-bottom:10px; }
+.pg-selection .niv-libelle{
+  flex-shrink:0; font-size:11px; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--text-dim); margin-right:2px;
+}
+.pg-selection .niv-tab{ padding:5px 11px; font-size:12px; }
+
+/* 4. L'AJOUT SE VOIT.
+   Le bouton changeait de couleur, mais sans rien qui accroche l'oeil au
+   moment du geste — sur une liste longue on doutait d'avoir touche.
+   L'animation ne se declenche qu'a l'apparition de .selected, donc
+   une seule fois, a l'ajout. */
+@keyframes exAjoute{
+  0%{ transform:scale(1); }
+  45%{ transform:scale(1.22); }
+  100%{ transform:scale(1); }
+}
+.pg-selection .ex-item.selected .ex-add{ animation:exAjoute .32s ease-out; }
+@media (prefers-reduced-motion:reduce){
+  .pg-selection .ex-item.selected .ex-add{ animation:none; }
+}
+
+/* 5. LES PHOTOS RESPIRENT.
+   La base d'exercices est faite de photos de salle, sous-exposees et
+   grisees. Une correction legere suffit a les detacher de la carte ;
+   au-dela, les fonds sombres virent au gris laiteux. */
+.pg-selection .ex-photo{ filter:brightness(1.08) contrast(1.07) saturate(1.06); }
+
+/* 1. LE CHRONO RESTE, EN RETRAIT.
+   Il recouvrait la derniere carte de la liste et la barre « Ma seance ».
+   Sur cet ecran seulement : plus petit, decale, et en retrait tant
+   qu'aucun compte a rebours ne tourne — des qu'il tourne il reprend sa
+   taille pleine, c'est a ce moment-la qu'on le cherche.
+   Passe par :has() plutot que par une classe : le bouton est porte
+   dans document.body, hors de .pg-selection. Un navigateur sans :has()
+   garde simplement le chrono d'origine. */
+body:has(.pg-selection) .v2-chrono-fab{
+  width:48px; height:48px; right:10px;
+  bottom:calc(150px + env(safe-area-inset-bottom));
+  opacity:.82; box-shadow:0 4px 12px rgba(250,196,8,.32);
+}
+body:has(.pg-selection) .v2-chrono-fab svg{ width:23px; height:23px; }
+body:has(.pg-selection) .v2-chrono-fab-time{ font-size:9.5px; }
+body:has(.pg-selection) .v2-chrono-fab.running,
+body:has(.pg-selection) .v2-chrono-fab.crit{
+  width:60px; height:60px; opacity:1;
+}
+body:has(.pg-selection) .v2-chrono-fab.running svg,
+body:has(.pg-selection) .v2-chrono-fab.crit svg{ width:30px; height:30px; }

@@ -896,6 +896,28 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R28 — Le chrono reste atteignable sur « Choisir mes exercices ».
+// Trouve le 15/08 sur capture : le bouton flottant recouvrait la
+// derniere carte de la liste ET la barre « Ma seance ». La consigne de
+// Raci etait explicite — le reduire, pas le supprimer. Le piege serait
+// qu'une passe de nettoyage le fasse disparaitre de cet ecran, ou que
+// le compte des choix retourne vivre dans la seule barre du bas, qui
+// est masquee a zero.
+// ------------------------------------------------------------
+{
+  const css = lire('app-v2/src/legacy/selection-exercices.scoped.css');
+  const jsx = lire('app-v2/src/components/SelectionExercices.jsx');
+  if (css && jsx) {
+    const soucis = [];
+    if (/\.v2-chrono-fab\s*\{[^}]*display\s*:\s*none/.test(css)) soucis.push('le chrono est masque sur cet ecran — Raci a demande de le garder');
+    if (!/body:has\(\.pg-selection\) \.v2-chrono-fab/.test(css)) soucis.push('le chrono n\'est plus mis en retrait : il recouvre la derniere carte et la barre Ma seance');
+    if (!/hint-compte/.test(jsx)) soucis.push('le compte des choix a quitte la liste — a zero il ne serait plus affiche nulle part');
+    if (soucis.length) faute('R28 chrono et compte sur la selection', soucis.join(' ; '));
+    else passe('R28 chrono et compte sur la selection');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

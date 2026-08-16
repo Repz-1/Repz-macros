@@ -128,6 +128,7 @@ export function SelectionExercices() {
       {/* Le niveau pilote le volume de TOUS les exercices : il se
           choisit une fois ici, pas exercice par exercice. */}
       <div class="niv-rangee" role="group" aria-label="Niveau de pratique">
+        <span class="niv-libelle" aria-hidden="true">Niveau</span>
         {NIVEAUX_PRATIQUE.map(n => (
           <button key={n.key}
             class={'niv-tab' + (niveauPratique.value === n.key ? ' active' : '')}
@@ -147,10 +148,20 @@ export function SelectionExercices() {
         )}
       </div>
 
+      {/* Le compte des choix vivait uniquement dans la barre du bas,
+          masquee tant qu'on n'a rien choisi : au moment ou on se
+          demande « combien j'en ai pris ? », il n'y avait donc rien a
+          lire. Il est desormais ici, present des zero, et se met a
+          jour a chaque ajout. */}
       <p class="section-hint">
-        {mots.length
-          ? `${liste.length} exercice${liste.length > 1 ? 's' : ''} trouvé${liste.length > 1 ? 's' : ''}`
-          : "Touche un exercice pour l'ajouter."}
+        <span class="hint-gauche">
+          {mots.length
+            ? `${liste.length} exercice${liste.length > 1 ? 's' : ''} trouvé${liste.length > 1 ? 's' : ''}`
+            : "Touche un exercice pour l'ajouter."}
+        </span>
+        <span class={'hint-compte' + (nbSelectionnes > 0 ? ' actif' : '')}>
+          {nbSelectionnes} sélectionné{nbSelectionnes > 1 ? 's' : ''}
+        </span>
       </p>
 
       <div class="ex-list">
