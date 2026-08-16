@@ -263,7 +263,6 @@ export function WeightModal({ fermer }) {
 }
 
 export function Stats() {
-  const [exoSel, setExoSel] = useState(null);
   const [modalePoids, setModalePoids] = useState(false);
   // Periode du graphique de poids : puce rapide ou intervalle libre.
   const [periode, setPeriode] = useState('3m');
@@ -399,30 +398,11 @@ export function Stats() {
   const maxK = Math.max(objKcalJ || 1, ...(valsK.length ? valsK : [1])) * 1.08;
 
 
-  // ================= Progression par exercice (v1 renderExoProg) =================
-  const topSet = (sets) => {
-    let best = null;
-    (sets || []).forEach(s => {
-      const w = (s.w === '' || s.w == null) ? null : parseFloat(s.w);
-      if (w != null && (best == null || w > best.w)) best = { w, r: s.r };
-    });
-    return best;
-  };
-  const nomsExos = Object.keys(setLogAll)
-    .filter(n => (setLogAll[n] || []).some(e => (e.sets || []).some(s => s.w !== '' && s.w != null))).sort();
-  const nomExo = (exoSel && nomsExos.includes(exoSel)) ? exoSel : nomsExos[0];
-  let histExo = [], pr = 0, prReps = 0, deltaStr = '—';
-  if (nomExo) {
-    histExo = setLogAll[nomExo].filter(e => (e.sets || []).some(s => s.w !== '' && s.w != null)).slice(-7);
-    setLogAll[nomExo].forEach(e => (e.sets || []).forEach(s => {
-      const w = parseFloat(s.w);
-      if (!isNaN(w) && w > pr) { pr = w; prReps = s.r || 0; }
-    }));
-    const premiere = topSet((setLogAll[nomExo].find(e => topSet(e.sets)) || {}).sets);
-    const derniere = histExo.length ? topSet(histExo[histExo.length - 1].sets) : null;
-    const delta = (premiere && derniere) ? (derniere.w - premiere.w) : 0;
-    deltaStr = delta > 0 ? `+${delta} kg` : (delta < 0 ? `${delta} kg` : '—');
-  }
+  // Le calcul de la progression par exercice vivait ici (v1
+  // renderExoProg). Retire avec sa carte le 16/08 : topSet, nomsExos,
+  // histExo, le record et l'ecart depuis la premiere seance n'avaient
+  // plus aucun lecteur. setLogAll reste utilise plus haut, pour compter
+  // les jours d'entrainement.
 
   // Rampe de progression : ardoise -> or -> vert, interpolation continue.
   // Jamais de rouge : sous 40 le gris dit « pas assez de donnees », pas « echec ».
@@ -615,40 +595,16 @@ export function Stats() {
           ) : <Vide texte={t('st_no_day')} cta={t('st_save_day')} onCta={() => { ongletActif.value = 'journal'; }} />}
         </div>
 
-        {/* PROGRESSION PAR EXERCICE */}
-        <div class="stat-card acc-blue">
-          <h2><span>{t('st_exo')}</span></h2>
-          <div class="card-sub">{t('st_exo_sub')}</div>
-          {nomExo ? (
-            <>
-              <select class="exo-select" value={nomExo} onChange={(e) => setExoSel(e.target.value)}>
-                {nomsExos.map(n => <option value={n} key={n}>{n}</option>)}
-              </select>
-              <div class="exo-pr">
-                <div class="exo-pr-box"><div class="v">{pr} kg</div><div class="l">{t('st_record')}{prReps ? ` × ${prReps}` : ''}</div></div>
-                <div class="exo-pr-box"><div class="v">{deltaStr}</div><div class="l">{t('st_since_start')}</div></div>
-                <div class="exo-pr-box"><div class="v">{histExo.length}</div><div class="l">{t('st_sessions_tracked')}</div></div>
-              </div>
-              <div class="chart">
-                {(() => {
-                  const vals = histExo.map(e => topSet(e.sets).w);
-                  const mx = Math.max(...vals), mn = Math.min(...vals), span = (mx - mn) || 1;
-                  return histExo.map(e => {
-                    const ts = topSet(e.sets);
-                    return (
-                      <div class="chart-bar-wrap" key={e.iso}>
-                        <div class="chart-val">{ts.w}</div>
-                        <div class="chart-bar charge" style={{ height: (25 + ((ts.w - mn) / span) * 75) + '%' }} />
-                        <div class="chart-day">{jourCourt(e.iso)}</div>
-                      </div>
-                    );
-                  });
-                })()}
-              </div>
-            </>
-          ) : <Vide texte={t('st_no_sets')} cta={t('st_start_session')} onCta={() => { ongletActif.value = 'entrainer'; }} />}
-        </div>
-
+        {/* La carte « Progression par exercice » a ete retiree le 16/08
+            (Raci) : elle refaisait ce que l'onglet S'entrainer montre
+            deja — le detail d'une seance y affiche les series et
+            signale les records. En etat vide elle ne portait plus
+            qu'un bouton « Lancer une seance », a un pouce de l'onglet
+            S'entrainer de la barre du bas.
+            Ce qui disparait avec elle et n'existe nulle part ailleurs :
+            le graphique de charge d'UN exercice suivi dans le temps, et
+            l'ecart depuis la premiere seance. Les records restent
+            visibles seance par seance, mais plus leur courbe. */}
         {/* INVITATION PREMIUM */}
         {!prem && (
           <div class="premium-invite">
