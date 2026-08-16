@@ -52,6 +52,35 @@ import '../styles/entrainer-carte.css';
 // ('accueil' -> 'programmes' -> 'seance'), avec fleche retour.
 export const vueEntrainer = signal({ nom: 'accueil', params: null });
 
+// Ouverture directe d'un ecran par l'adresse :
+//   belfit.be/v2/?onglet=entrainer&vue=selection
+// Lu une seule fois au chargement du module. La liste est FERMEE, et
+// n'accepte que les ecrans qui savent s'afficher sans parametre :
+// 'planifier' et 'seanceDetail' attendent un programme ou une seance,
+// les mettre dans l'adresse ouvrirait un ecran vide.
+const VUES_URL = ['demarrer', 'selection', 'questionnaire', 'programmes'];
+{
+  const v = new URLSearchParams(location.search).get('vue');
+  if (VUES_URL.includes(v)) vueEntrainer.value = { nom: v, params: null };
+}
+
+// Ouverture directe d'un ecran par l'adresse, pour partager un lien
+// ou tester sans traverser l'accueil :
+//   belfit.be/v2/?onglet=entrainer&vue=selection
+// Liste FERMEE : une valeur inconnue laisse l'accueil, elle ne peut
+// pas ouvrir un ecran vide. Les vues qui exigent des parametres
+// (planifier, seanceDetail) en sont volontairement exclues — sans
+// leur `prog` ou leur `seanceId` elles s'afficheraient a blanc.
+// Lu une seule fois au chargement, et sans toucher a l'historique :
+// le retour ramene a l'accueil comme depuis n'importe quel ecran.
+const VUES_ADRESSABLES = ['demarrer', 'selection', 'questionnaire', 'programmes'];
+{
+  const demandee = new URLSearchParams(location.search).get('vue');
+  if (VUES_ADRESSABLES.includes(demandee)) {
+    vueEntrainer.value = { nom: demandee, params: null };
+  }
+}
+
 export function allerVers(nom, params = null) {
   vueEntrainer.value = { nom, params };
   window.scrollTo(0, 0);

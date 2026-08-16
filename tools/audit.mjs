@@ -865,6 +865,37 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R27 — Les vues adressables par ?vue= restent ouvrables a vide.
+// Ajoute le 15/08 avec le parametre. Le piege : y inscrire une vue qui
+// attend des parametres (planifier veut un `prog`, seanceDetail un
+// `seanceId`). Ouverte par l'adresse, elle n'en aurait aucun et
+// s'afficherait a blanc — un ecran vide, sans erreur, donc invisible
+// en test. La liste doit donc rester fermee et sans ces deux vues.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  if (ent) {
+    const soucis = [];
+    const m = ent.match(/const VUES_ADRESSABLES = \[([^\]]*)\]/);
+    if (!m) soucis.push('VUES_ADRESSABLES introuvable — le parametre ?vue= a disparu');
+    else {
+      for (const risque of ['planifier', 'seanceDetail']) {
+        if (m[1].includes(risque)) soucis.push(`${risque} est adressable alors qu'elle exige des parametres — elle s'ouvrirait a blanc`);
+      }
+      // Le routeur des vues est dans main.jsx : c'est lui qui dit
+      // quelles vues existent vraiment, pas les appels a allerVers.
+      const routeur = lire('app-v2/src/main.jsx') || '';
+      for (const v of m[1].match(/'([a-zA-Z]+)'/g) || []) {
+        const nom = v.slice(1, -1);
+        if (!routeur.includes(`vue.nom === '${nom}'`)) soucis.push(`la vue ${nom} est adressable mais le routeur ne la connait pas`);
+      }
+    }
+    if (soucis.length) faute('R27 vues adressables', soucis.join(' ; '));
+    else passe('R27 vues adressables');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
