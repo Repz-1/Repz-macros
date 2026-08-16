@@ -925,6 +925,36 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R29 — Le Journal montre le prochain repas a remplir.
+// Demande de Raci le 16/08. Deux pieges :
+//   - marquer « le suivant du dernier rempli » au lieu du PREMIER vide.
+//     Sauter le dejeuner et remplir le diner laisserait alors le
+//     dejeuner sans marque, alors que c'est justement l'oubli a
+//     rattraper ;
+//   - habiller la marque en jaune ou en orange. Dans le Journal
+//     l'accent est le noir ; l'orange appartient a la page d'un repas
+//     ouvert (.couche-repas). Une carte criarde sur six ferait lire la
+//     couleur avant le contenu.
+// ------------------------------------------------------------
+{
+  const main = lire('app-v2/src/main.jsx');
+  const carte = lire('app-v2/src/components/MealCard.jsx');
+  const css = lire('app-v2/src/styles/journal-socle.css');
+  if (main && carte && css) {
+    const soucis = [];
+    if (!/find\(r => r\.ings\.length === 0\)/.test(main))
+      soucis.push('le repas a suivre n\'est plus le premier vide — un repas saute ne serait plus rappele');
+    if (!/aSuivre/.test(carte)) soucis.push('MealCard ne recoit plus aSuivre : plus aucune carte n\'est mise en avant');
+    const bloc = (css.match(/\.pg-journal \.mc--suivant \{[^}]*\}/) || [''])[0];
+    if (!bloc) soucis.push('le style du repas a suivre a disparu');
+    else if (/#F7B500|#FAC408|#F86A0C|var\(--or\)/.test(bloc))
+      soucis.push('la mise en avant est passee au jaune ou a l\'orange — l\'accent du Journal est le noir');
+    if (soucis.length) faute('R29 repas a suivre', soucis.join(' ; '));
+    else passe('R29 repas a suivre');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

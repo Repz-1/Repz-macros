@@ -3330,3 +3330,33 @@
 html.avec-avis .pan-scroll,
 html.avec-avis .login-ecran,
 html.avec-avis .pg-besoins { padding-top: var(--haut-avis, 0px); }
+
+/* ---------- Le repas a suivre ----------------------------------------
+   Demande de Raci (16/08) : a l'ouverture d'une journee, le premier
+   repas est mis en avant ; la marque descend d'elle-meme des qu'il
+   recoit son premier aliment, puis de repas en repas.
+
+   Pas de jaune ni d'orange ici : dans le Journal l'accent est le noir
+   (#181818, couleur de l'onglet). L'orange est reserve a la page d'un
+   repas ouvert (.couche-repas). La mise en avant se fait donc par la
+   bordure et une ombre un peu plus portee — la carte avance d'un cran
+   vers le lecteur au lieu de changer de couleur.
+
+   Volontairement discret : c'est un reperage, pas une alerte. Six
+   cartes dont une criarde ferait lire la couleur avant le contenu. */
+.pg-journal .mc--suivant {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .9),
+    0 0 0 1.5px rgba(24, 24, 24, .9),
+    0 3px 6px rgba(24, 24, 24, .06),
+    0 10px 26px rgba(60, 50, 40, .12);
+}
+/* Le titre passe en plein noir : sur une carte deja claire, c'est le
+   seul contraste qui se lit sans agrandir la carte. */
+.pg-journal .mc--suivant .mc-titre { color: #0F0F0F; }
+/* Et le chevron sort de son gris : il indique ou aller. */
+.pg-journal .mc--suivant .mc-chevron { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pg-journal .mc--suivant { transition: box-shadow .35s ease; }
+}

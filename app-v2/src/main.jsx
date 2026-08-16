@@ -84,7 +84,20 @@ export function OngletJournal() {
             est lue en direct par goutte.js, ne pas la retirer. */}
         <div class="fente-goutte" aria-hidden="true" />
         <WeightNote />
-        {repas.value.map(r => <MealCard key={r.id} r={r} />)}
+        {/* Le premier repas encore vide est mis en avant : a l'ouverture
+            d'une journee c'est le petit-dejeuner, puis la mise en avant
+            descend d'elle-meme des qu'un repas recoit son premier
+            aliment. Quand tout est rempli, plus rien n'est souligne —
+            la journee n'a plus d'etape suivante a montrer.
+            Note : c'est bien le PREMIER vide, pas le suivant du dernier
+            rempli. Sauter le dejeuner et remplir le diner laisse donc la
+            marque sur le dejeuner, ce qui est le rappel utile. */}
+        {(() => {
+          const aSuivre = repas.value.find(r => r.ings.length === 0);
+          return repas.value.map(r => (
+            <MealCard key={r.id} r={r} aSuivre={aSuivre && r.id === aSuivre.id} />
+          ));
+        })()}
         {/* L'ajout d'un repas vit desormais dans le flux, sous le
             dernier repas — plus de bouton flottant jaune (Raci). */}
         <div class="ajout-repas-rang">
