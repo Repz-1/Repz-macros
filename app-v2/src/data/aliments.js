@@ -1126,6 +1126,52 @@ export const DB = {
     'Menu McChicken (McDo)':{kcal:135,prot:3.6,carbs:17.5,lip:5.6,unit:685,unitLabel:'menu'},
     'Menu CBO (McDo)':{kcal:151,prot:4.4,carbs:16.5,lip:7.1,unit:744,unitLabel:'menu'},
     'Menu Whopper (Burger King)':{kcal:143,prot:4,carbs:16.2,lip:7,unit:786,unitLabel:'menu'},
+
+    // ===== COMPLEMENTS ALIMENTAIRES =====
+    // Valeurs generiques pour 100 g de poudre, sauf mention d'unite.
+    // Les etiquettes varient d'une marque a l'autre : ce sont des
+    // reperes, pas des releves. En cas d'ecart, le scan du code-barres
+    // cree l'aliment exact et prend le pas sur ces valeurs.
+    // Les entrees « dose » et « gelule » evitent d'avoir a peser :
+    // on compte des mesurettes, pas des grammes.
+    'Collagène (peptides)':{kcal:360,prot:90,carbs:0,lip:0},
+    'Collagène (dose 10g)':{kcal:360,prot:90,carbs:0,lip:0,unit:10,unitLabel:'dose'},
+    'Créatine monohydrate':{kcal:0,prot:0,carbs:0,lip:0},
+    'Créatine (dose 5g)':{kcal:0,prot:0,carbs:0,lip:0,unit:5,unitLabel:'dose'},
+    'BCAA poudre':{kcal:400,prot:100,carbs:0,lip:0},
+    'EAA poudre':{kcal:400,prot:100,carbs:0,lip:0},
+    'Glutamine poudre':{kcal:400,prot:100,carbs:0,lip:0},
+    'Beta-alanine':{kcal:0,prot:0,carbs:0,lip:0},
+    'Caséine micellaire':{kcal:365,prot:82,carbs:4,lip:1.5},
+    'Protéine de riz':{kcal:390,prot:80,carbs:6,lip:3},
+    'Protéine de pois':{kcal:380,prot:80,carbs:5,lip:5},
+    'Protéine de boeuf':{kcal:370,prot:85,carbs:2,lip:1},
+    'Blanc d\'oeuf en poudre':{kcal:380,prot:82,carbs:5,lip:0.5},
+    'Pré-workout (dose 10g)':{kcal:20,prot:0,carbs:5,lip:0,unit:10,unitLabel:'dose'},
+    'Électrolytes (dose)':{kcal:0,prot:0,carbs:0,lip:0,unit:5,unitLabel:'dose'},
+    'Huile de poisson (capsule 1g)':{kcal:900,prot:0,carbs:0,lip:100,unit:1,unitLabel:'capsule'},
+    'Huile de poisson':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile de krill (capsule 1g)':{kcal:900,prot:0,carbs:0,lip:100,unit:1,unitLabel:'capsule'},
+    'Huile de lin':{kcal:900,prot:0,carbs:0,lip:100},
+    'Huile MCT':{kcal:830,prot:0,carbs:0,lip:100},
+    // Les micronutriments n'apportent pas d'energie : ils sont a zero.
+    // Ils restent dans la base pour figurer au journal, pas pour peser
+    // dans le total.
+    'Multivitamines (comprimé)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
+    'Vitamine D (gélule)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'gélule'},
+    'Vitamine C (comprimé)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
+    'Magnésium (comprimé)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
+    'Zinc (comprimé)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
+    'Fer (comprimé)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
+    'Oméga-3 (gélule)':{kcal:900,prot:0,carbs:0,lip:100,unit:1,unitLabel:'gélule'},
+    'Probiotiques (gélule)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'gélule'},
+    'Caféine (comprimé 200mg)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
+    'Ashwagandha (gélule)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'gélule'},
+    'Curcuma (gélule)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'gélule'},
+    'Chlorella':{kcal:410,prot:58,carbs:23,lip:9},
+    'Maca poudre':{kcal:325,prot:14,carbs:71,lip:1},
+    'Gelée royale':{kcal:150,prot:13,carbs:15,lip:4},
+    'Levure de bière':{kcal:350,prot:45,carbs:35,lip:2},
 };
 
 // Macros d'un ingredient {name, portion} a partir de la DB

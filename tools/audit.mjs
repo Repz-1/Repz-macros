@@ -982,6 +982,40 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R31 — Les complements alimentaires restent coherents.
+// Ajoutes le 16/08 a la demande de Raci. Deux pieges propres a cette
+// famille :
+//   - les micronutriments (vitamines, mineraux, creatine) s'etiquettent
+//     a 0 kcal. Leur donner des macros par reflexe fausserait le total
+//     de la journee pour un comprime ;
+//   - les poudres protéinées se vendent a la mesurette. Sans entree
+//     « dose », il faut peser 5 g de creatine sur une balance de
+//     cuisine, ce que personne ne fait.
+// ------------------------------------------------------------
+{
+  const al = lire('app-v2/src/data/aliments.js');
+  if (al) {
+    const soucis = [];
+    const bloc = al.slice(al.indexOf('COMPLEMENTS ALIMENTAIRES'));
+    if (!bloc || bloc.length < 200) soucis.push('la section des complements a disparu');
+    else {
+      for (const attendu of ['Collagène (peptides)', 'Créatine monohydrate', 'Multivitamines (comprimé)']) {
+        if (!bloc.includes(attendu)) soucis.push(`${attendu} absent de la section`);
+      }
+      // Un comprime de vitamines qui pese dans le total = signe que
+      // quelqu'un a rempli les macros au jugé.
+      const zeros = bloc.match(/'(Multivitamines|Vitamine D|Magnésium|Zinc|Fer|Probiotiques|Créatine monohydrate)[^']*':\{kcal:(\d+)/g) || [];
+      for (const z of zeros) {
+        if (!/kcal:0/.test(z)) soucis.push(`${z.split("'")[1]} apporte des calories — les micronutriments s'etiquettent a 0`);
+      }
+      if (!/unitLabel:'dose'/.test(bloc)) soucis.push('plus aucune entree a la dose : il faudrait peser la creatine au gramme');
+    }
+    if (soucis.length) faute('R31 complements alimentaires', soucis.join(' ; '));
+    else passe('R31 complements alimentaires');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
