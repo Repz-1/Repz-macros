@@ -3345,26 +3345,26 @@ html.avec-avis .pg-besoins { padding-top: var(--haut-avis, 0px); }
    Volontairement discret : c'est un reperage, pas une alerte. Six
    cartes dont une criarde ferait lire la couleur avant le contenu. */
 .pg-journal .mc--suivant {
-  /* Trait plein a 2 px : a 1,5 px et 90 % d'opacite, le contour se
-     confondait avec les bordures des autres cartes des qu'on regardait
-     la page en entier. Il faut qu'il tranche d'un coup d'oeil, sans
-     avoir a comparer deux cartes cote a cote. */
+  /* Le trait noir a ete abandonne (Raci, 16/08) : la page en compte
+     deja beaucoup — le cadran, le bouton « Terminer », les titres — et
+     un cadre sombre de plus faisait une page tout en noir.
+     La carte se distingue donc par sa SURFACE, pas par un contour :
+     un fond jaune tres pale, la teinte d'action de BelFit. Le jaune
+     reste un remplissage, jamais un trait ni un texte — a 2 px son
+     contraste sur creme est trop faible pour porter seul. */
+  background: #FFF8E4;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .9),
-    0 0 0 2px #151515,
-    0 4px 10px rgba(24, 24, 24, .10),
-    0 14px 30px rgba(60, 50, 40, .16);
-  /* Fond franchement blanc, quand les autres cartes tirent vers la
-     creme : la carte se detache aussi par sa surface, pas seulement
-     par son trait. */
-  background: #FFFFFF;
+    0 0 0 1.5px rgba(240, 198, 74, .85),
+    0 4px 10px rgba(190, 145, 20, .10),
+    0 14px 30px rgba(150, 115, 20, .13);
 }
 /* Un signet en haut de carte a ete essaye puis retire : a 2 px de
    trait plein, la carte se voit deja de loin, et le signet mordait sur
    la carte precedente. */
-/* Le titre passe en plein noir : sur une carte deja claire, c'est le
-   seul contraste qui se lit sans agrandir la carte. */
-.pg-journal .mc--suivant .mc-titre { color: #0F0F0F; }
+/* Le titre garde sa couleur : la surface suffit a designer la carte,
+   l'assombrir en plus revenait a ajouter du noir a une page qui en a
+   deja beaucoup. */
 /* Et le chevron sort de son gris : il indique ou aller. */
 .pg-journal .mc--suivant .mc-chevron { opacity: 1; }
 

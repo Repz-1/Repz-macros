@@ -947,8 +947,14 @@ const DECALAGE_SW_V2 = 232;
     if (!/aSuivre/.test(carte)) soucis.push('MealCard ne recoit plus aSuivre : plus aucune carte n\'est mise en avant');
     const bloc = (css.match(/\.pg-journal \.mc--suivant \{[^}]*\}/) || [''])[0];
     if (!bloc) soucis.push('le style du repas a suivre a disparu');
-    else if (/#F7B500|#FAC408|#F86A0C|var\(--or\)/.test(bloc))
-      soucis.push('la mise en avant est passee au jaune ou a l\'orange — l\'accent du Journal est le noir');
+    // Regle inversee le 16/08 : le cadre noir a ete essaye et refuse
+    // par Raci — la page en compte deja beaucoup (cadran, bouton
+    // « Terminer », titres) et un cadre sombre de plus la rendait
+    // uniformement noire. La carte se distingue par sa surface.
+    else if (/0 0 0 [0-9.]+px #1[0-9A-Fa-f]{5}|0 0 0 [0-9.]+px #000/.test(bloc))
+      soucis.push('un cadre noir est revenu sur le repas a suivre — la mise en avant se fait par la surface');
+    else if (!/background:\s*#FFF/i.test(bloc))
+      soucis.push('le repas a suivre n\'a plus de fond distinct : rien ne le designe');
     if (soucis.length) faute('R29 repas a suivre', soucis.join(' ; '));
     else passe('R29 repas a suivre');
   }
