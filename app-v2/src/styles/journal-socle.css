@@ -3336,38 +3336,36 @@ html.avec-avis .pg-besoins { padding-top: var(--haut-avis, 0px); }
    repas est mis en avant ; la marque descend d'elle-meme des qu'il
    recoit son premier aliment, puis de repas en repas.
 
-   Pas de jaune ni d'orange ici : dans le Journal l'accent est le noir
-   (#181818, couleur de l'onglet). L'orange est reserve a la page d'un
-   repas ouvert (.couche-repas). La mise en avant se fait donc par la
-   bordure et une ombre un peu plus portee — la carte avance d'un cran
-   vers le lecteur au lieu de changer de couleur.
+   Choix arrete apres douze essais : un TRAIT VERTICAL sur le bord
+   gauche, et rien d'autre. Ont ete essayes puis refuses le cadre noir
+   (la page en compte deja trop : cadran, bouton Terminer, titres), le
+   fond jaune pale, et l'estompage des autres cartes.
 
-   Volontairement discret : c'est un reperage, pas une alerte. Six
-   cartes dont une criarde ferait lire la couleur avant le contenu. */
-.pg-journal .mc--suivant {
-  /* Le trait noir a ete abandonne (Raci, 16/08) : la page en compte
-     deja beaucoup — le cadran, le bouton « Terminer », les titres — et
-     un cadre sombre de plus faisait une page tout en noir.
-     La carte se distingue donc par sa SURFACE, pas par un contour :
-     un fond jaune tres pale, la teinte d'action de BelFit. Le jaune
-     reste un remplissage, jamais un trait ni un texte — a 2 px son
-     contraste sur creme est trop faible pour porter seul. */
-  background: #FFF8E4;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .9),
-    0 0 0 1.5px rgba(240, 198, 74, .85),
-    0 4px 10px rgba(190, 145, 20, .10),
-    0 14px 30px rgba(150, 115, 20, .13);
+   Le trait ne touche ni au fond, ni au texte, ni a la taille : aucune
+   carte ne change d'apparence, un repere se pose sur un bord. C'est ce
+   qui lui permet de cohabiter avec un Journal deja dense.
+
+   Le vert est celui de la jauge de calories, deja present dans la page
+   (rgba(13,162,113) sur .cal-anneau-trace) : aucune couleur nouvelle
+   n'entre dans le Journal.
+
+   Pas d'overflow:hidden sur la carte : entre 10 px du haut et 10 px du
+   bas, le bord est droit, le trait ne peut pas depasser des angles
+   arrondis. Masquer le debordement casserait les elements qui sortent
+   de la carte a l'edition. */
+.pg-journal .mc--suivant::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: #0DA271;
 }
-/* Un signet en haut de carte a ete essaye puis retire : a 2 px de
-   trait plein, la carte se voit deja de loin, et le signet mordait sur
-   la carte precedente. */
-/* Le titre garde sa couleur : la surface suffit a designer la carte,
-   l'assombrir en plus revenait a ajouter du noir a une page qui en a
-   deja beaucoup. */
-/* Et le chevron sort de son gris : il indique ou aller. */
+/* Le chevron sort de son gris : il indique ou aller. */
 .pg-journal .mc--suivant .mc-chevron { opacity: 1; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .pg-journal .mc--suivant { transition: box-shadow .35s ease; }
+  .pg-journal .mc--suivant::before { transition: opacity .3s ease; }
 }

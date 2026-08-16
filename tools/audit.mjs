@@ -945,16 +945,16 @@ const DECALAGE_SW_V2 = 232;
     if (!/find\(r => r\.ings\.length === 0\)/.test(main))
       soucis.push('le repas a suivre n\'est plus le premier vide — un repas saute ne serait plus rappele');
     if (!/aSuivre/.test(carte)) soucis.push('MealCard ne recoit plus aSuivre : plus aucune carte n\'est mise en avant');
-    const bloc = (css.match(/\.pg-journal \.mc--suivant \{[^}]*\}/) || [''])[0];
+    const bloc = (css.match(/\.pg-journal \.mc--suivant::before \{[^}]*\}/) || [''])[0];
     if (!bloc) soucis.push('le style du repas a suivre a disparu');
-    // Regle inversee le 16/08 : le cadre noir a ete essaye et refuse
-    // par Raci — la page en compte deja beaucoup (cadran, bouton
-    // « Terminer », titres) et un cadre sombre de plus la rendait
-    // uniformement noire. La carte se distingue par sa surface.
-    else if (/0 0 0 [0-9.]+px #1[0-9A-Fa-f]{5}|0 0 0 [0-9.]+px #000/.test(bloc))
-      soucis.push('un cadre noir est revenu sur le repas a suivre — la mise en avant se fait par la surface');
-    else if (!/background:\s*#FFF/i.test(bloc))
-      soucis.push('le repas a suivre n\'a plus de fond distinct : rien ne le designe');
+    // Douze pistes ont ete essayees avant celle-ci. Refusees : le cadre
+    // noir (la page en compte deja trop), le fond jaune pale, et
+    // l'estompage des autres cartes. Retenue : un trait vertical sur le
+    // bord gauche, qui ne touche ni au fond ni au texte ni a la taille.
+    else if (!/left:\s*0/.test(bloc) || !/width:\s*4px/.test(bloc))
+      soucis.push('le trait du bord gauche a disparu : plus rien ne designe le repas a suivre');
+    else if (/background:\s*(#1[0-9A-Fa-f]{5}|#000|#F7B500|#FAC408|#F86A0C)/i.test(bloc))
+      soucis.push('le trait a change de couleur — le vert est celui de la jauge de calories, deja present dans la page');
     if (soucis.length) faute('R29 repas a suivre', soucis.join(' ; '));
     else passe('R29 repas a suivre');
   }
