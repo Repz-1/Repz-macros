@@ -1077,8 +1077,16 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('main.jsx ne reconnait plus data-sans-swipe : chaque ecran devrait a nouveau etre inscrit a la main');
     if (!/defileHorizontal/.test(main))
       soucis.push('la detection des rangees a defilement horizontal a disparu : les cas non prevus reviendront');
-    if ((sel.match(/data-sans-swipe/g) || []).length < 3)
-      soucis.push('les trois rangees de filtres ne sont plus toutes exclues du balayage');
+    // La rangee des muscles est devenue une grille : elle n'a plus de
+    // defilement a proteger, mais materiel et niveau si.
+    if ((sel.match(/data-sans-swipe/g) || []).length < 2)
+      soucis.push('les rangees materiel et niveau ne sont plus exclues du balayage');
+    // Neuf muscles dans une bande horizontale : on en voyait quatre et
+    // rien ne disait que les autres existaient.
+    if (!/muscle-grille/.test(sel))
+      soucis.push('les muscles sont revenus en bande defilante : cinq groupes sur neuf redeviennent invisibles');
+    if (!/\(EXERCISES\[m\.key\] \|\| \[\]\)\.length > 0/.test(sel))
+      soucis.push('les groupes sans exercice sont affiches : une case qui ouvre une liste vide est une promesse non tenue');
     if (!/touch-action:\s*pan-y/.test(css))
       soucis.push('pan-y retire des rangees : sur iOS le geste part parfois avant touchstart');
     if (soucis.length) faute('R33 balayage et rangees defilantes', soucis.join(' ; '));

@@ -375,3 +375,37 @@ body:has(.pg-selection) .v2-chrono-fab.crit .v2-chrono-fab-time{ font-size:11px;
 .pg-selection .muscle-tabs,
 .pg-selection .filter-tabs,
 .pg-selection .niv-rangee { touch-action: pan-y; overscroll-behavior-x: contain; }
+
+/* ---------- Muscles : grille au lieu d'une bande defilante ----------
+   Sept groupes tiennent en deux rangees de quatre. Rien ne depasse,
+   donc plus de geste a deviner — et le balayage de page n'a plus rien
+   a intercepter ici, puisqu'il n'y a plus de defilement horizontal. */
+.pg-selection .muscle-grille {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  padding: 0 16px 10px;
+}
+.pg-selection .muscle-case {
+  background: #fff;
+  border: 1px solid var(--bordure, #E7DFCE);
+  border-radius: 12px;
+  padding: 11px 3px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--text-dim, #7A736A);
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s, transform .12s;
+}
+.pg-selection .muscle-case.active {
+  background: #181818;
+  border-color: #181818;
+  color: #fff;
+}
+.pg-selection .muscle-case:active { transform: scale(.94); }
+@media (prefers-reduced-motion: reduce) {
+  .pg-selection .muscle-case { transition: none; }
+  .pg-selection .muscle-case:active { transform: none; }
+}

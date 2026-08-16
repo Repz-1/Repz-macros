@@ -111,14 +111,23 @@ export function SelectionExercices() {
         <h1>Choisir mes exercices</h1>
       </div>
 
-      {/* Les trois rangees de filtres defilent horizontalement : le
-          doigt y fait deja glisser des pastilles, la page n'a pas a
-          changer d'onglet en meme temps. Le marqueur les exclut du
-          balayage sans toucher a main.jsx. */}
-      <div class="muscle-tabs" data-sans-swipe>
+      {/* Les muscles passent d'une rangee defilante a une GRILLE.
+          Neuf entrees dans une bande horizontale : on en voyait quatre,
+          et rien ne disait que les cinq autres existaient — il fallait
+          deviner qu'on pouvait faire glisser. Verrouiller le balayage
+          reglait le changement d'onglet accidentel, pas ce probleme-la.
+          En grille, tout est visible d'un coup : plus de geste a
+          decouvrir, plus rien de cache.
+          Les groupes sans aucun exercice (Etirements, Cardio) ne sont
+          pas affiches : une case qui ouvre une liste vide est une
+          promesse non tenue. */}
+      <div class="muscle-grille">
         {MUSCLES.map((m, i) => (
-          <button key={m.key} class={'muscle-tab' + (i === muscle ? ' active' : '')}
-            onClick={() => setMuscle(i)}>{m.label}</button>
+          (EXERCISES[m.key] || []).length > 0 && (
+            <button key={m.key} class={'muscle-case' + (i === muscle ? ' active' : '')}
+              aria-pressed={i === muscle}
+              onClick={() => setMuscle(i)}>{m.label}</button>
+          )
         ))}
       </div>
 
