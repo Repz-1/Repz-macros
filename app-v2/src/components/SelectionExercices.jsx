@@ -159,7 +159,12 @@ export function SelectionExercices() {
             ? `${liste.length} exercice${liste.length > 1 ? 's' : ''} trouvé${liste.length > 1 ? 's' : ''}`
             : "Touche un exercice pour l'ajouter."}
         </span>
-        <span class={'hint-compte' + (nbSelectionnes > 0 ? ' actif' : '')}>
+        {/* key = le nombre : Preact remonte l'element a chaque
+            changement, ce qui rejoue l'animation. Sans cela le compte
+            se mettait bien a jour, mais rien ne bougeait a l'ecran et
+            l'oeil, reste sur le bouton touche, ne le voyait pas. */}
+        <span key={nbSelectionnes}
+          class={'hint-compte' + (nbSelectionnes > 0 ? ' actif' : '')}>
           {nbSelectionnes} sélectionné{nbSelectionnes > 1 ? 's' : ''}
         </span>
       </p>

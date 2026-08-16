@@ -300,3 +300,70 @@ body:has(.pg-selection) .v2-chrono-fab.crit{
 }
 body:has(.pg-selection) .v2-chrono-fab.running svg,
 body:has(.pg-selection) .v2-chrono-fab.crit svg{ width:30px; height:30px; }
+
+/* =====================================================================
+   Finition du 16/08 — deux points, apres essai de Raci sur v333.
+   ===================================================================== */
+
+/* 1. LE CHRONO SORT DE LA COLONNE DES BOUTONS +.
+   Le reduire ne suffisait pas : ancre a droite, il restait dans l'axe
+   vertical des « + », donc il en recouvrait un des qu'on faisait
+   defiler. Il passe a GAUCHE, ou la colonne ne porte que les vignettes
+   — qui ouvrent la fiche, geste rattrapable, la ou un « + » manque
+   ajoute un exercice non voulu. Plus petit et plus efface au repos.
+   Des qu'un compte a rebours tourne il redevient pleinement visible :
+   c'est le seul moment ou on le cherche du regard. */
+body:has(.pg-selection) .v2-chrono-fab{
+  width:40px; height:40px;
+  right:auto; left:10px;
+  bottom:calc(150px + env(safe-area-inset-bottom));
+  opacity:.55; box-shadow:0 3px 9px rgba(250,196,8,.26);
+}
+body:has(.pg-selection) .v2-chrono-fab svg{ width:19px; height:19px; }
+body:has(.pg-selection) .v2-chrono-fab-time{ font-size:8.5px; }
+body:has(.pg-selection) .v2-chrono-fab:active{ opacity:1; }
+body:has(.pg-selection) .v2-chrono-fab.running,
+body:has(.pg-selection) .v2-chrono-fab.crit{
+  width:60px; height:60px; opacity:1; box-shadow:0 6px 20px rgba(0,0,0,.45);
+}
+body:has(.pg-selection) .v2-chrono-fab.running svg,
+body:has(.pg-selection) .v2-chrono-fab.crit svg{ width:30px; height:30px; }
+body:has(.pg-selection) .v2-chrono-fab.running .v2-chrono-fab-time,
+body:has(.pg-selection) .v2-chrono-fab.crit .v2-chrono-fab-time{ font-size:11px; }
+
+/* 2. L'ETAT « CHOISI » SE LIT SANS HESITATION.
+   Le bouton passait de blanc a jaune, sur une carte dont le fond
+   devient lui aussi jaune pale : deux jaunes voisins, l'ecart de
+   luminosite etait trop faible pour trancher d'un coup d'oeil. Il
+   passe au NOIR avec un check blanc — le contraste maximal de la
+   palette, et la seule surface sombre de la liste. */
+.pg-selection .ex-item.selected .ex-add{
+  background:#151515; color:#fff; font-size:21px; font-weight:700;
+  box-shadow:0 3px 12px rgba(21,21,21,.34);
+}
+/* Le ressaut passe de 1,22 a 1,32 et redescend en depassant un peu :
+   le mouvement se remarque en vision peripherique, la ou l'oeil n'est
+   pas — c'est-a-dire partout sauf sous le doigt. */
+@keyframes exAjoute{
+  0%{ transform:scale(1); }
+  40%{ transform:scale(1.32); }
+  70%{ transform:scale(.94); }
+  100%{ transform:scale(1); }
+}
+.pg-selection .ex-item.selected .ex-add{ animation:exAjoute .38s cubic-bezier(.2,.9,.3,1.2); }
+
+/* Le compte accuse reception du meme geste, a l'autre bout de l'ecran.
+   Sans cela il changeait de chiffre en silence : l'oeil, reste sur le
+   bouton, ne remontait jamais le voir. */
+@keyframes compteMaj{
+  0%{ transform:scale(1); }
+  35%{ transform:scale(1.18); }
+  100%{ transform:scale(1); }
+}
+.pg-selection .hint-compte{ display:inline-block; }
+.pg-selection .hint-compte.actif{ animation:compteMaj .34s ease-out; }
+
+@media (prefers-reduced-motion:reduce){
+  .pg-selection .ex-item.selected .ex-add,
+  .pg-selection .hint-compte.actif{ animation:none; }
+}

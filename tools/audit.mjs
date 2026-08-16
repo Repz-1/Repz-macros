@@ -912,6 +912,13 @@ const DECALAGE_SW_V2 = 232;
     if (/\.v2-chrono-fab\s*\{[^}]*display\s*:\s*none/.test(css)) soucis.push('le chrono est masque sur cet ecran — Raci a demande de le garder');
     if (!/body:has\(\.pg-selection\) \.v2-chrono-fab/.test(css)) soucis.push('le chrono n\'est plus mis en retrait : il recouvre la derniere carte et la barre Ma seance');
     if (!/hint-compte/.test(jsx)) soucis.push('le compte des choix a quitte la liste — a zero il ne serait plus affiche nulle part');
+    // Le chrono ancre a droite retombe dans l'axe des boutons « + » et
+    // en recouvre un des qu'on fait defiler : c'est ce que Raci a vu.
+    if (!/body:has\(\.pg-selection\) \.v2-chrono-fab\{[^}]*left\s*:/.test(css.replace(/\s+/g, ' ')))
+      soucis.push('le chrono est repasse a droite : il recouvre les boutons + au defilement');
+    // Sans key, le compte se met a jour mais sans rien qui bouge.
+    if (!/key=\{nbSelectionnes\}/.test(jsx))
+      soucis.push('le compte n\'est plus remonte a chaque changement : sa mise a jour redevient invisible');
     if (soucis.length) faute('R28 chrono et compte sur la selection', soucis.join(' ; '));
     else passe('R28 chrono et compte sur la selection');
   }
