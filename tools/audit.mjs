@@ -914,8 +914,11 @@ const DECALAGE_SW_V2 = 232;
     if (!/hint-compte/.test(jsx)) soucis.push('le compte des choix a quitte la liste — a zero il ne serait plus affiche nulle part');
     // Le chrono ancre a droite retombe dans l'axe des boutons « + » et
     // en recouvre un des qu'on fait defiler : c'est ce que Raci a vu.
-    if (!/body:has\(\.pg-selection\) \.v2-chrono-fab\{[^}]*left\s*:/.test(css.replace(/\s+/g, ' ')))
-      soucis.push('le chrono est repasse a droite : il recouvre les boutons + au defilement');
+    // Le chrono a fini en haut a droite : en bas, il devait fuir les
+    // boutons « + » a droite puis les vignettes a gauche — dans une
+    // liste qui defile, aucune position basse n'est libre.
+    if (!/body:has\(\.pg-selection\) \.v2-chrono-fab\{[^}]*top\s*:/.test(css.replace(/\s+/g, ' ')))
+      soucis.push('le chrono est redescendu dans la liste : il y recouvrira des boutons au defilement');
     // Sans key, le compte se met a jour mais sans rien qui bouge.
     if (!/key=\{nbSelectionnes\}/.test(jsx))
       soucis.push('le compte n\'est plus remonte a chaque changement : sa mise a jour redevient invisible');
@@ -1091,6 +1094,41 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('pan-y retire des rangees : sur iOS le geste part parfois avant touchstart');
     if (soucis.length) faute('R33 balayage et rangees defilantes', soucis.join(' ; '));
     else passe('R33 balayage et rangees defilantes');
+  }
+}
+
+// ------------------------------------------------------------
+// R34 — Aucun aliment defini deux fois.
+// Trouve le 17/08 en verifiant un repas de Raci : le detail
+// nutritionnel donnait 1,2 g de graisses saturees pour un repas qui en
+// contient 2,6. L'huile de lin avait ses valeurs CIQUAL depuis
+// toujours, mais une seconde definition ajoutee la veille — sans
+// detail — l'ecrasait. En JS la derniere gagne, en silence.
+//
+// Object.keys ne peut pas voir ces doublons : l'objet les a deja
+// fusionnes. Il faut lire le SOURCE.
+// ------------------------------------------------------------
+{
+  const src = lire('app-v2/src/data/aliments.js');
+  if (src) {
+    const compte = new Map();
+    for (const m of src.matchAll(/^ {4}'([^']+)':\{/gm)) {
+      compte.set(m[1], (compte.get(m[1]) || 0) + 1);
+    }
+    const doubles = [...compte].filter(([, n]) => n > 1);
+    // Les 36 doublons anterieurs au 17/08 sont connus et attendent
+    // l'arbitrage de Raci (certains ecarts sont enormes : la sauce
+    // samourai existe a 120 et a 540 kcal). Le seuil bloque toute
+    // NOUVELLE apparition sans exiger de les traiter d'un coup.
+    if (doubles.length > 36) {
+      faute('R34 aliments en double',
+        `${doubles.length} aliments definis plusieurs fois (36 connus) — le dernier ecrase le premier en silence : ` +
+        doubles.slice(0, 6).map(([k, n]) => `${k}×${n}`).join(', '));
+    } else if (doubles.length) {
+      signale('R34 aliments en double', `${doubles.length} doublons connus, en attente d'arbitrage — aucun nouveau`);
+    } else {
+      passe('R34 aliments en double');
+    }
   }
 }
 

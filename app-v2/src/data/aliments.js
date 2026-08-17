@@ -59,7 +59,7 @@ export const DB = {
     'Crevettes':{kcal:99,prot:24,carbs:0.2,lip:0.3,fibres:0,sucres:0,satures:0.19,sel:0.45},
     'Jambon blanc':{kcal:110,prot:18,carbs:1,lip:3.5,fibres:0.39,sucres:1.08,satures:0.54,sel:1.9},
     // Produits laitiers
-    'Whey Iso':{kcal:360,prot:90,carbs:2,lip:1},
+    'Whey Iso':{kcal:360,prot:90,carbs:2,lip:1,fibres:0,sucres:1,satures:0.6,sel:0.5},
     'Whey':{kcal:400,prot:80,carbs:8,lip:6},
     'Fromage blanc 0%':{kcal:47,prot:8,carbs:4,lip:0.2,fibres:0,sucres:3.89,satures:0.03,sel:0.11},
     'Skyr':{kcal:63,prot:11,carbs:4,lip:0.2},
@@ -1134,26 +1134,23 @@ export const DB = {
     // cree l'aliment exact et prend le pas sur ces valeurs.
     // Les entrees « dose » et « gelule » evitent d'avoir a peser :
     // on compte des mesurettes, pas des grammes.
-    'Collagène (peptides)':{kcal:360,prot:90,carbs:0,lip:0},
-    'Collagène (dose 10g)':{kcal:360,prot:90,carbs:0,lip:0,unit:10,unitLabel:'dose'},
-    'Créatine monohydrate':{kcal:0,prot:0,carbs:0,lip:0},
-    'Créatine (dose 5g)':{kcal:0,prot:0,carbs:0,lip:0,unit:5,unitLabel:'dose'},
+    'Collagène (peptides)':{kcal:360,prot:90,carbs:0,lip:0,fibres:0,sucres:0,satures:0,sel:0.3},
+    'Collagène (dose 10g)':{kcal:360,prot:90,carbs:0,lip:0,fibres:0,sucres:0,satures:0,sel:0.3,unit:10,unitLabel:'dose'},
+    'Créatine monohydrate':{kcal:0,prot:0,carbs:0,lip:0,fibres:0,sucres:0,satures:0,sel:0},
+    'Créatine (dose 5g)':{kcal:0,prot:0,carbs:0,lip:0,fibres:0,sucres:0,satures:0,sel:0,unit:5,unitLabel:'dose'},
     'BCAA poudre':{kcal:400,prot:100,carbs:0,lip:0},
     'EAA poudre':{kcal:400,prot:100,carbs:0,lip:0},
     'Glutamine poudre':{kcal:400,prot:100,carbs:0,lip:0},
     'Beta-alanine':{kcal:0,prot:0,carbs:0,lip:0},
-    'Caséine micellaire':{kcal:365,prot:82,carbs:4,lip:1.5},
-    'Protéine de riz':{kcal:390,prot:80,carbs:6,lip:3},
-    'Protéine de pois':{kcal:380,prot:80,carbs:5,lip:5},
+    'Caséine micellaire':{kcal:365,prot:82,carbs:4,lip:1.5,fibres:0,sucres:3,satures:1,sel:0.9},
+    'Protéine de riz':{kcal:390,prot:80,carbs:6,lip:3,fibres:3,sucres:1,satures:0.7,sel:0.3},
     'Protéine de boeuf':{kcal:370,prot:85,carbs:2,lip:1},
     'Blanc d\'oeuf en poudre':{kcal:380,prot:82,carbs:5,lip:0.5},
     'Pré-workout (dose 10g)':{kcal:20,prot:0,carbs:5,lip:0,unit:10,unitLabel:'dose'},
     'Électrolytes (dose)':{kcal:0,prot:0,carbs:0,lip:0,unit:5,unitLabel:'dose'},
-    'Huile de poisson (capsule 1g)':{kcal:900,prot:0,carbs:0,lip:100,unit:1,unitLabel:'capsule'},
-    'Huile de poisson':{kcal:900,prot:0,carbs:0,lip:100},
-    'Huile de krill (capsule 1g)':{kcal:900,prot:0,carbs:0,lip:100,unit:1,unitLabel:'capsule'},
-    'Huile de lin':{kcal:900,prot:0,carbs:0,lip:100},
-    'Huile MCT':{kcal:830,prot:0,carbs:0,lip:100},
+    'Huile de poisson (capsule 1g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:25,sel:0,unit:1,unitLabel:'capsule'},
+    'Huile de krill (capsule 1g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:30,sel:0,unit:1,unitLabel:'capsule'},
+    'Huile MCT':{kcal:830,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:97,sel:0},
     // Les micronutriments n'apportent pas d'energie : ils sont a zero.
     // Ils restent dans la base pour figurer au journal, pas pour peser
     // dans le total.
@@ -1163,7 +1160,7 @@ export const DB = {
     'Magnésium (comprimé)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
     'Zinc (comprimé)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
     'Fer (comprimé)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
-    'Oméga-3 (gélule)':{kcal:900,prot:0,carbs:0,lip:100,unit:1,unitLabel:'gélule'},
+    'Oméga-3 (gélule)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:25,sel:0,unit:1,unitLabel:'gélule'},
     'Probiotiques (gélule)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'gélule'},
     'Caféine (comprimé 200mg)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'comprimé'},
     'Ashwagandha (gélule)':{kcal:0,prot:0,carbs:0,lip:0,unit:1,unitLabel:'gélule'},
@@ -1179,14 +1176,14 @@ export const DB = {
     // hydrolysee comme une concentree se paie 15 g d'ecart par dose.
     // Chaque poudre courante a donc son entree, et les plus utilisees
     // ont leur dose — on compte des mesurettes, pas des grammes.
-    'Whey concentrée':{kcal:400,prot:78,carbs:8,lip:6},
-    'Whey hydrolysée':{kcal:365,prot:88,carbs:2,lip:1},
-    'Whey native':{kcal:380,prot:82,carbs:5,lip:3},
-    'Clear whey':{kcal:355,prot:88,carbs:1,lip:0.5},
+    'Whey concentrée':{kcal:400,prot:78,carbs:8,lip:6,fibres:0,sucres:6,satures:3.5,sel:0.5},
+    'Whey hydrolysée':{kcal:365,prot:88,carbs:2,lip:1,fibres:0,sucres:1,satures:0.5,sel:0.6},
+    'Whey native':{kcal:380,prot:82,carbs:5,lip:3,fibres:0,sucres:3,satures:2,sel:0.4},
+    'Clear whey':{kcal:355,prot:88,carbs:1,lip:0.5,fibres:0,sucres:0.5,satures:0.2,sel:0.4},
     'Whey Iso (dose 30g)':{kcal:360,prot:90,carbs:2,lip:1,unit:30,unitLabel:'dose'},
     'Whey concentrée (dose 30g)':{kcal:400,prot:78,carbs:8,lip:6,unit:30,unitLabel:'dose'},
     'Caséine (dose 30g)':{kcal:360,prot:80,carbs:5,lip:1.5,unit:30,unitLabel:'dose'},
-    'Protéine de soja':{kcal:375,prot:88,carbs:2,lip:1},
+    'Protéine de soja':{kcal:375,prot:88,carbs:2,lip:1,fibres:3,sucres:1,satures:0.2,sel:1.5},
     'Protéine végétale (mélange)':{kcal:385,prot:75,carbs:8,lip:6},
     'Protéine végétale (dose 30g)':{kcal:385,prot:75,carbs:8,lip:6,unit:30,unitLabel:'dose'},
     'Protéine de courge':{kcal:390,prot:60,carbs:12,lip:10},
