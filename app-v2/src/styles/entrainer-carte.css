@@ -655,3 +655,48 @@
 .bodymap--double .bm-muscles path { stroke: #FFF; stroke-width: 1.6; stroke-linejoin: round; }
 .bodymap--double .bm-corps path,
 .bodymap--double .bm-corps ellipse { stroke: #FFF; stroke-width: 1.2; }
+
+/* ---------- « Mon programme » : lien souligne → carte ---------------
+   Souligne et rouge, il ressemblait a une mention legale plutot qu'a la
+   seconde action de la page. Il devient une carte : une surface a
+   toucher, une icone qui dit de quoi il s'agit, une ligne qui explique
+   ce qui attend derriere.
+
+   Il ne rivalise pas avec le bouton jaune pour autant : celui-ci reste
+   le seul aplat plein. La carte est blanche a bordure — presente, mais
+   d'un cran en dessous. Deux aplats cote a cote se seraient disputes
+   le regard. */
+.pg-entrainer--carte .ent-prog {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; margin-top: 12px; padding: 13px 14px;
+  background: #FFF; border: 1px solid rgba(28,24,18,.10);
+  border-radius: 14px; cursor: pointer; text-align: left;
+  text-decoration: none; color: inherit;
+  transition: transform .12s ease, box-shadow .2s ease;
+}
+.pg-entrainer--carte .ent-prog:active {
+  transform: scale(.985);
+  box-shadow: 0 2px 8px rgba(60,50,40,.10);
+}
+.pg-entrainer--carte .ent-prog-ic {
+  flex: 0 0 38px; height: 38px; border-radius: 11px;
+  display: grid; place-items: center;
+  background: #FDF4E3; color: #B34700;
+}
+.pg-entrainer--carte .ent-prog-ic svg { width: 20px; height: 20px; }
+.pg-entrainer--carte .ent-prog-txt { flex: 1 1 auto; min-width: 0; }
+.pg-entrainer--carte .ent-prog-t {
+  display: block; font-size: 15px; font-weight: 700;
+  letter-spacing: -.01em; color: #181818;
+}
+.pg-entrainer--carte .ent-prog-s {
+  display: block; font-size: 12.5px; font-weight: 500;
+  color: #857C71; margin-top: 1px;
+}
+.pg-entrainer--carte .ent-prog-fl {
+  flex: 0 0 auto; font-size: 20px; color: #C3BAAE; line-height: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pg-entrainer--carte .ent-prog { transition: none; }
+  .pg-entrainer--carte .ent-prog:active { transform: none; }
+}

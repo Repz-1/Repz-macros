@@ -268,8 +268,25 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
           onClick={() => allerVers(programmeActif.value ? 'demarrer' : 'selection')}>
           {t('tr_start_session')}
         </button>
+        {/* Le lien souligne rouge est devenu une carte (Raci, 17/08) :
+            souligner et rougir un texte le fait ressembler a une
+            mention legale, pas a la seconde action de la page. La carte
+            lui donne une surface a toucher, une icone qui annonce le
+            sujet, et une ligne qui dit ce qui attend derriere — sans
+            rivaliser avec le bouton jaune, seul aplat plein de la page. */}
         <button class="ent-prog" onClick={() => allerVers('questionnaire')}>
-          {t('tr_adapt_prog')}
+          <span class="ent-prog-ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 5.5A1.5 1.5 0 015.5 4H10l2 2.4h6.5A1.5 1.5 0 0120 7.9v10.6a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 18.5z" />
+              <path d="M12 11v5M9.5 13.5h5" />
+            </svg>
+          </span>
+          <span class="ent-prog-txt">
+            <span class="ent-prog-t">{t('tr_adapt_prog')}</span>
+            <span class="ent-prog-s">{t('tr_adapt_prog_sub')}</span>
+          </span>
+          <span class="ent-prog-fl" aria-hidden="true">&rsaquo;</span>
         </button>
       </div>
 
