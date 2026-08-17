@@ -1133,6 +1133,44 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R35 — Le detail nutritionnel ne contient que des valeurs relevees.
+// Raci, 17/08 : « je pense pas que c'est juste ». Le calcul l'etait —
+// c'etaient les SOURCES qui ne l'etaient pas. La veille, pour combler
+// les cases vides des poudres protéinées, j'avais estime leurs fibres,
+// sucres, satures et sel. Or une whey passe de 0,2 a 1,2 g de sel
+// selon la marque et le procede : le total prenait alors l'air complet
+// tout en etant faux, ce qui est pire qu'un total partiel annonce
+// comme tel — l'app sait dire « calcule sur les aliments qui portent
+// l'information ».
+//
+// Les huiles gardent leur detail : le profil en acides gras est une
+// propriete du corps gras, pas de la marque.
+//
+// Regle : dans la section des complements, aucune poudre protéinée ne
+// porte de champ de detail.
+// ------------------------------------------------------------
+{
+  const src = lire('app-v2/src/data/aliments.js');
+  if (src) {
+    const i = src.indexOf('COMPLEMENTS ALIMENTAIRES');
+    const bloc = i >= 0 ? src.slice(i) : '';
+    const fautifs = [];
+    for (const m of bloc.matchAll(/^ {4}'([^']+)':\{([^}]*)\},/gm)) {
+      const [, nom, val] = m;
+      if (/huile|oméga|krill|mct/i.test(nom)) continue;   // profil lipidique : releve
+      if (/créatine|multivitamines|vitamine|magnésium|zinc|fer |probiotiques|caféine|électrolytes/i.test(nom)) continue; // zeros vrais
+      if (/fibres:|sucres:|satures:|sel:/.test(val)) fautifs.push(nom);
+    }
+    if (fautifs.length) {
+      faute('R35 detail nutritionnel estime',
+        `${fautifs.length} complement(s) portent un detail qui n'a pas ete releve : ` + fautifs.slice(0, 5).join(', '));
+    } else {
+      passe('R35 detail nutritionnel estime');
+    }
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
