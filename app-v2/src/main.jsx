@@ -339,7 +339,18 @@ export function App() {
       // les etats que main.jsx gere lui-meme.
       if (depilerRetour()) { /* ferme */ }
       else if (pageRepas) repasOuvertId.value = null;
-      else if (vue.nom === 'seanceDetail') allerVers('programmes');
+      // Le detail d'une seance s'ouvre depuis TROIS endroits : la
+      // bibliotheque de programmes, « Demarrer une seance », et la
+      // fiche d'un jour du calendrier. Les deux derniers posent
+      // depuis:'journal'. Le bouton retour VISIBLE le respectait
+      // deja ; celui-ci ne le regardait pas et renvoyait toujours vers
+      // « Tous les programmes ». D'ou la page qui revenait sans qu'on
+      // l'ait demandee (Raci, 17/08). Les deux retours suivent
+      // desormais la meme regle.
+      else if (vue.nom === 'seanceDetail') {
+        if (vue.params && vue.params.depuis === 'journal') retourEntrainer();
+        else allerVers('programmes');
+      }
       else if (vue.nom !== 'accueil') retourEntrainer();
       else allerOnglet('journal');
     };

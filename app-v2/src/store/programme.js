@@ -154,7 +154,13 @@ export function normaliserJours(jours, nbSeances) {
   return aff;
 }
 
-/** Abandonner le programme en cours. */
+/**
+ * Abandonner le programme en cours.
+ *
+ * Seule l'ADOPTION est annulee : les seances deja faites restent au
+ * journal et au calendrier, elles ont eu lieu. Ce qui disparait, ce
+ * sont les seances a VENIR que le programme posait sur les jours.
+ */
 export function abandonnerProgramme() { ecrire(null); }
 
 /**

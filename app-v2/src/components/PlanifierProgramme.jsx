@@ -3,7 +3,7 @@ import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import {
-  progParId, adopterProgramme, programmeActif,
+  progParId, adopterProgramme, abandonnerProgramme, programmeActif,
   SEANCES_LIBRES, quotaAtteint,
   normaliserJours,
 } from '../store/programme.js';
@@ -40,6 +40,7 @@ export function PlanifierProgramme({ progId }) {
   const prog = progParId(progId);
   const premium = estPremium.value;
   const actif = programmeActif.value;
+  const [confirmer, setConfirmer] = useState(false);
 
   // Si ce programme est deja actif, on repart de ses jours plutot que
   // d'une feuille blanche : « adapter mon programme » doit montrer ce
@@ -184,6 +185,31 @@ export function PlanifierProgramme({ progId }) {
         <button class="pl-autre" onClick={() => allerVers('programmes')}>
           {t('pl_autre')}
         </button>
+      )}
+
+      {/* Abandonner. On pouvait adopter un programme et le modifier,
+          jamais s'en defaire : la seule sortie etait d'en adopter un
+          autre par-dessus, ce qui suppose d'en vouloir un (Raci,
+          17/08). En dernier, discret, et derriere une confirmation —
+          c'est une action qu'on ne fait pas deux fois par mois. */}
+      {actif && actif.id === progId && (
+        confirmer ? (
+          <div class="pl-confirme">
+            <p>{t('pl_abandon_q')}</p>
+            <div class="pl-confirme-btns">
+              <button class="pl-conf-non" onClick={() => setConfirmer(false)}>
+                {t('cancel')}
+              </button>
+              <button class="pl-conf-oui" onClick={() => { abandonnerProgramme(); retourEntrainer(); }}>
+                {t('pl_abandon_ok')}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button class="pl-abandon" onClick={() => setConfirmer(true)}>
+            {t('pl_abandon')}
+          </button>
+        )
       )}
     </div>
   );

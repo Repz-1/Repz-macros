@@ -1,6 +1,7 @@
 import { signal } from '@preact/signals';
 import { t } from '../i18n/index.js';
 import { repasOuvertId } from './MealCard.jsx';
+import { vueEntrainer } from './Entrainer.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { useState, useEffect } from 'preact/hooks';
 
@@ -37,6 +38,16 @@ export function allerOnglet(cle) {
   // mais l'ecran restait bloque sur l'encodage du repas.
   if (repasOuvertId.value !== null) repasOuvertId.value = null;
   if (cle === ongletActif.value) return;
+  // En QUITTANT S'entrainer, on remet sa vue interne a l'accueil.
+  // Sans cela le signal garde le dernier ecran ouvert : on partait
+  // depuis « Tous les programmes », on revenait par l'onglet, et la
+  // liste des programmes reapparaissait — sans qu'on l'ait demandee et
+  // sans comprendre pourquoi. Un onglet doit s'ouvrir sur sa page
+  // d'accueil, pas sur l'endroit ou on l'avait laisse trois ecrans
+  // plus loin.
+  if (ongletActif.value === 'entrainer' && vueEntrainer.value.nom !== 'accueil') {
+    vueEntrainer.value = { nom: 'accueil', params: null };
+  }
   scrollSortant.value = lireScroll();
   ongletActif.value = cle;
 }

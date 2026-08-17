@@ -1193,6 +1193,46 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R37 — Un onglet s'ouvre sur sa page d'accueil.
+// Raci, 17/08 : « il continue a revenir sur cette page parfois »,
+// capture de « Tous les programmes » a l'appui. vueEntrainer est un
+// signal de module : il gardait le dernier ecran ouvert. On partait de
+// la liste des programmes vers un autre onglet, on revenait par la
+// barre du bas, et la liste reapparaissait — sans qu'on l'ait demandee.
+// ------------------------------------------------------------
+{
+  const nav = lire('app-v2/src/components/BottomNav.jsx');
+  if (nav) {
+    if (!/vueEntrainer\.value = \{ nom: 'accueil'/.test(nav))
+      faute('R37 onglet et vue interne', 'quitter S\'entrainer ne remet plus sa vue a l\'accueil : on y revient sur le dernier ecran ouvert');
+    else passe('R37 onglet et vue interne');
+  }
+}
+
+// ------------------------------------------------------------
+// R38 — Le programme actif se supprime sans refaire le questionnaire.
+// Raci, 17/08 : « je ne trouve pas comment supprimer ». Le bouton
+// d'abandon existait dans l'ecran de planification, mais on n'y
+// arrivait qu'apres avoir repondu aux quatre questions — autant dire
+// qu'il etait cache. La carte « Mon programme » mene desormais droit
+// a la planification quand un programme est actif.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const pl = lire('app-v2/src/components/PlanifierProgramme.jsx');
+  if (ent && pl) {
+    const soucis = [];
+    if (!/programmeActif\.value\s*\r?\n?\s*\? allerVers\('planifier'/.test(ent.replace(/\s+/g, ' ').replace(/ \? /g, ' ? ')) &&
+        !/programmeActif\.value \? allerVers\('planifier'/.test(ent.replace(/\s+/g, ' ')))
+      soucis.push('la carte « Mon programme » ne mene plus a la planification : la suppression redevient inaccessible');
+    if (!/abandonnerProgramme\(\)/.test(pl))
+      soucis.push('le bouton d\'abandon a disparu de la planification');
+    if (soucis.length) faute('R38 supprimer son programme', soucis.join(' ; '));
+    else passe('R38 supprimer son programme');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

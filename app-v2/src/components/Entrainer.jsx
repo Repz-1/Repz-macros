@@ -52,18 +52,6 @@ import '../styles/entrainer-carte.css';
 // ('accueil' -> 'programmes' -> 'seance'), avec fleche retour.
 export const vueEntrainer = signal({ nom: 'accueil', params: null });
 
-// Ouverture directe d'un ecran par l'adresse :
-//   belfit.be/v2/?onglet=entrainer&vue=selection
-// Lu une seule fois au chargement du module. La liste est FERMEE, et
-// n'accepte que les ecrans qui savent s'afficher sans parametre :
-// 'planifier' et 'seanceDetail' attendent un programme ou une seance,
-// les mettre dans l'adresse ouvrirait un ecran vide.
-const VUES_URL = ['demarrer', 'selection', 'questionnaire', 'programmes'];
-{
-  const v = new URLSearchParams(location.search).get('vue');
-  if (VUES_URL.includes(v)) vueEntrainer.value = { nom: v, params: null };
-}
-
 // Ouverture directe d'un ecran par l'adresse, pour partager un lien
 // ou tester sans traverser l'accueil :
 //   belfit.be/v2/?onglet=entrainer&vue=selection
@@ -274,7 +262,15 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
             lui donne une surface a toucher, une icone qui annonce le
             sujet, et une ligne qui dit ce qui attend derriere — sans
             rivaliser avec le bouton jaune, seul aplat plein de la page. */}
-        <button class="ent-prog" onClick={() => allerVers('questionnaire')}>
+        {/* Avec un programme actif, la carte mene a sa GESTION plutot
+            qu'au questionnaire. C'est la qu'on replace les seances,
+            qu'on en change, et qu'on supprime le programme — le bouton
+            d'abandon existait mais n'etait atteignable qu'apres avoir
+            refait les quatre questions, ce qui revient a le cacher
+            (Raci, 17/08 : « je ne trouve pas comment supprimer »). */}
+        <button class="ent-prog" onClick={() => (programmeActif.value
+          ? allerVers('planifier', { prog: programmeActif.value.id })
+          : allerVers('questionnaire'))}>
           <span class="ent-prog-ic" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -283,8 +279,12 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
             </svg>
           </span>
           <span class="ent-prog-txt">
-            <span class="ent-prog-t">{t('tr_adapt_prog')}</span>
-            <span class="ent-prog-s">{t('tr_adapt_prog_sub')}</span>
+            <span class="ent-prog-t">
+              {programmeActif.value ? t('tr_prog_gerer') : t('tr_adapt_prog')}
+            </span>
+            <span class="ent-prog-s">
+              {programmeActif.value ? t('tr_prog_gerer_sub') : t('tr_adapt_prog_sub')}
+            </span>
           </span>
           <span class="ent-prog-fl" aria-hidden="true">&rsaquo;</span>
         </button>
