@@ -1233,6 +1233,43 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R39 — La silhouette suit le sexe du compte.
+// Raci, 17/08 : « si c'est une femme on fait comment ? ». Le sexe
+// existait pour Mifflin-St Jeor mais vivait dans l'etat local du
+// calculateur : l'app le redemandait a chaque visite et l'oubliait
+// aussitot. Il est devenu une donnee de compte, et la silhouette en
+// depend.
+// Deux pieges :
+//   - donner a `sexe` une valeur par defaut dans le store. Vide veut
+//     dire « pas encore repondu » ; un defaut 'h' afficherait un corps
+//     masculin a une utilisatrice qui n'a rien choisi, sans distinction
+//     possible avec un choix reel ;
+//   - oublier de remonter le choix du calculateur vers le profil, ce
+//     qui laisserait le champ vide a jamais.
+// ------------------------------------------------------------
+{
+  const perso = lire('app-v2/src/store/perso.js');
+  const stats = lire('app-v2/src/components/Stats.jsx');
+  const bes = lire('app-v2/src/components/Besoins.jsx');
+  const sil = lire('app-v2/src/data/silhouette.js');
+  if (perso && stats && bes && sil) {
+    const soucis = [];
+    if (!/export const sexe = signal\(''\)/.test(perso))
+      soucis.push('le sexe n\'est plus une donnee de compte, ou porte un defaut : « vide » doit rester distinct d\'un choix');
+    if (!/sexe: sexe\.value/.test(perso))
+      soucis.push('le sexe n\'est plus synchronise avec le compte : il se perdrait au changement d\'appareil');
+    if (!/SILHOUETTE_FACE_F/.test(sil))
+      soucis.push('le modele feminin a disparu du fichier genere');
+    if (!/femme \? SILHOUETTE_FACE_F/.test(stats))
+      soucis.push('la silhouette ne suit plus le sexe : tout le monde revoit le modele masculin');
+    if (!/sexe\.value = val/.test(bes))
+      soucis.push('le calculateur ne remonte plus le sexe au profil : le champ resterait vide a jamais');
+    if (soucis.length) faute('R39 silhouette et sexe', soucis.join(' ; '));
+    else passe('R39 silhouette et sexe');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

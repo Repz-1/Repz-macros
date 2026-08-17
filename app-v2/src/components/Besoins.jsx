@@ -3,6 +3,7 @@ import { calculerBesoins, NIVEAUX_ACTIVITE, OBJECTIFS } from '../data/tdee.js';
 import { setObjectifs, calculBaseFait, poidsCalcul, objectifs } from '../store/journal.js';
 import { prenomUtilisateur } from './Entete.jsx';
 import '../styles/besoins.css';
+import { sexe } from '../store/perso.js';
 
 // ============================================================
 // BESOINS — etape 2 de l'inscription.
@@ -30,12 +31,21 @@ import '../styles/besoins.css';
 const JOURS = [0, 2, 4, 6];
 
 export function Besoins() {
+  // Le sexe deja repondu sur ce compte fait foi : on ne redemande pas
+  // ce qu'on sait, et le defaut masculin ne s'impose plus a une
+  // utilisatrice qui a deja repondu ailleurs.
   const [f, setF] = useState({
-    sexe: 'h', age: 30, poids: 75, taille: 175,
+    sexe: sexe.value || 'h', age: 30, poids: 75, taille: 175,
     activiteBase: 1.3, joursEntrainement: 4, ajustement: 300,
   });
   const [envoi, setEnvoi] = useState(false);
-  const maj = (cle, val) => setF(o => ({ ...o, [cle]: val }));
+  const maj = (cle, val) => {
+    // Le sexe remonte au profil : il sert au calcul ci-dessous, mais
+    // aussi a la silhouette de Stats. Repondre ici suffit donc, sans
+    // avoir a le redire ailleurs.
+    if (cle === 'sexe') sexe.value = val;
+    setF(o => ({ ...o, [cle]: val }));
+  };
   const num = (cle, val) => maj(cle, val === '' ? '' : parseFloat(val));
 
   const r = calculerBesoins({

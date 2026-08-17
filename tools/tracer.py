@@ -3,8 +3,14 @@
 import numpy as np, cv2, json
 from PIL import Image
 
-PAL = [(254,254,253),(16,16,15),(250,194,37),(222,54,52),(136,91,164),
-       (90,164,91),(43,125,203),(100,165,224),(181,215,242),(242,121,37),(248,184,127)]
+# Deux planches, deux palettes : le rendu de chacune a ses teintes
+# propres. On garde donc un jeu par modele plutot qu'une moyenne, qui
+# ferait glisser des pixels d'un groupe a l'autre.
+PAL_H = [(254,254,253),(16,16,15),(250,194,37),(222,54,52),(136,91,164),
+         (90,164,91),(43,125,203),(100,165,224),(181,215,242),(242,121,37),(248,184,127)]
+PAL_F = [(254,254,254),(27,26,26),(246,195,58),(213,67,68),(134,104,172),
+         (114,167,107),(80,139,198),(80,139,198),(185,207,210),(238,130,58),(238,130,58)]
+PAL = PAL_H
 FOND,TETE,JAUNE,ROUGE,VIOLET,VERT,BLEU,BLEUM,BLEUC,ORANGE,ORANGEC = range(11)
 cols = np.array(PAL, dtype=np.int32)
 
@@ -15,7 +21,15 @@ cols = np.array(PAL, dtype=np.int32)
 import sys, os
 PLANCHE = sys.argv[1] if len(sys.argv) > 1 else 'tools/planche-silhouette.jpg'
 SORTIE = sys.argv[2] if len(sys.argv) > 2 else 'app-v2/src/data/silhouette.js'
-im = np.array(Image.open(PLANCHE).convert('RGB')).astype(np.int32)[:1040]
+FEMME = '-f' in PLANCHE
+if FEMME:
+    PAL = PAL_F
+    cols = np.array(PAL, dtype=np.int32)
+# Les legendes FACE / DOS sont en bas sur la planche masculine, en haut
+# sur la feminine : on coupe du bon cote, sinon elles entrent dans le
+# cadrage et ecrasent les proportions.
+im = np.array(Image.open(PLANCHE).convert('RGB')).astype(np.int32)
+im = im[110:] if FEMME else im[:1040]
 q = ((im[:,:,None,:]-cols[None,None])**2).sum(3).argmin(2)
 W = q.shape[1]
 

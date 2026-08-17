@@ -7,7 +7,8 @@ import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
 import { Entete } from './Entete.jsx';
-import { SILHOUETTE_FACE, SILHOUETTE_DOS } from '../data/silhouette.js';
+import { SILHOUETTE_FACE, SILHOUETTE_DOS, SILHOUETTE_FACE_F, SILHOUETTE_DOS_F } from '../data/silhouette.js';
+import { sexe } from '../store/perso.js';
 import '../legacy/stats.scoped.css';
 
 // ==========================================================
@@ -66,6 +67,11 @@ export function BodyMap({ compte, onClick }) {
     const c = p.g === 'avantBras' ? colBras() : col(p.g);
     return p.t === 'clair' ? eclaircir(c) : c;
   };
+  // Deux modeles decalques, un par planche. Sans reponse au profil on
+  // garde le masculin — c'etait le seul jusqu'ici, et inventer un
+  // defaut feminin serait tout aussi arbitraire. Le choix se fait dans
+  // les reglages ou au calcul des besoins.
+  const femme = sexe.value === 'f';
   const vue = (chemins, nom) => (
     <div class="bm-vue">
       <svg viewBox="0 0 120 300" xmlns="http://www.w3.org/2000/svg" class="bm-svg">
@@ -77,8 +83,8 @@ export function BodyMap({ compte, onClick }) {
 
   return (
     <div class="bodymap bodymap--double" onClick={onClick}>
-      {vue(SILHOUETTE_FACE, t('bm_face'))}
-      {vue(SILHOUETTE_DOS, t('bm_dos'))}
+      {vue(femme ? SILHOUETTE_FACE_F : SILHOUETTE_FACE, t('bm_face'))}
+      {vue(femme ? SILHOUETTE_DOS_F : SILHOUETTE_DOS, t('bm_dos'))}
     </div>
   );
 }

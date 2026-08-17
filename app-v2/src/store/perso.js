@@ -35,6 +35,15 @@ export const plats = signal([]);     // { id, nom, ings, portions }
 // des qu'on changeait d'appareil ou de navigateur.
 export const prenom = signal('');
 
+// Sexe : 'h' ou 'f'. Il servait deja au calcul des besoins (Mifflin-St
+// Jeor ajoute +5 ou -161 selon le cas), mais vivait dans l'etat local
+// du calculateur et n'etait ecrit nulle part — l'app le redemandait a
+// chaque visite et l'oubliait aussitot. Il devient une donnee de
+// compte, comme le prenom, parce que la silhouette en depend aussi.
+// Vide tant que rien n'a ete choisi : on n'invente pas un defaut qui
+// afficherait un corps masculin a une utilisatrice.
+export const sexe = signal('');
+
 let uid = null, pret = false;
 
 effect(() => {
@@ -54,9 +63,13 @@ effect(() => {
     })();
     const duCompte = (d && d.prenom) || '';
     prenom.value = duCompte || local;
+    sexe.value = (d && d.sexe) || (() => {
+      try { return localStorage.getItem('repz_sexe') || ''; } catch (e) { return ''; }
+    })();
     if (!duCompte && local) sauvegarder(u, { prenom: local });
     // Miroir local : l'en-tete s'affiche sans attendre le reseau.
     try { if (prenom.value) localStorage.setItem('repz_firstName', prenom.value); } catch (e) {}
+    try { if (sexe.value) localStorage.setItem('repz_sexe', sexe.value); } catch (e) {}
     pret = true;
   });
 });
@@ -64,7 +77,7 @@ effect(() => {
 effect(() => {
   const instantane = {
     favoris: favoris.value, usages: usages.value,
-    plats: plats.value, prenom: prenom.value,
+    plats: plats.value, prenom: prenom.value, sexe: sexe.value,
   };
   const u = identite.value;
   if (!u || !pret) return;   // ne pas ecraser avant le chargement
