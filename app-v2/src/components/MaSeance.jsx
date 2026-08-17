@@ -270,7 +270,17 @@ export function MaSeance() {
           <button class="sh-back" onClick={() => allerVers('selection')} aria-label="Retour">←</button>
           <h1 class="sh-title">{t('ms_session')}</h1>
         </div>
-        <div class="empty-session">{t('ms_empty')}</div>
+        {/* L'etat vide n'offrait qu'une phrase : « Aucun exercice
+            selectionne. » On y arrivait sans savoir quoi faire — la
+            seule issue etait la fleche retour, en haut a gauche, qui
+            ressemble a un abandon plutot qu'a la suite du parcours.
+            Le bouton nomme l'action manquante. */}
+        <div class="empty-session">
+          <p class="empty-session-txt">{t('ms_empty')}</p>
+          <button class="empty-session-cta" onClick={() => allerVers('selection')}>
+            {t('ms_ajouter')}
+          </button>
+        </div>
       </div>
     );
   }

@@ -1171,6 +1171,28 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R36 — La seance libre vide donne une issue.
+// Audit du parcours demande par Raci le 17/08. Quatre des cinq points
+// etaient deja en place ; celui-ci ne l'etait pas. L'ecran affichait
+// « Aucun exercice selectionne. » et rien d'autre : la seule sortie
+// etait la fleche retour en haut a gauche, qui se lit comme un abandon
+// plutot que comme la suite du parcours.
+// ------------------------------------------------------------
+{
+  const ms = lire('app-v2/src/components/MaSeance.jsx');
+  if (ms) {
+    const i = ms.indexOf('empty-session');
+    const bloc = i >= 0 ? ms.slice(i - 400, i + 700) : '';
+    if (!bloc) faute('R36 seance libre vide', 'l\'etat vide a disparu');
+    else if (!/empty-session-cta/.test(bloc))
+      faute('R36 seance libre vide', 'plus de bouton dans l\'etat vide : on y arrive sans savoir quoi faire');
+    else if (!/allerVers\('selection'\)/.test(bloc))
+      faute('R36 seance libre vide', 'le bouton de l\'etat vide ne mene plus au choix des exercices');
+    else passe('R36 seance libre vide');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

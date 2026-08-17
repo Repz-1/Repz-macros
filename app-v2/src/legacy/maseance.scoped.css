@@ -234,3 +234,17 @@
   display: none; align-items: center; justify-content: center; padding: 24px;
 }
 .congrats-overlay.pg-maseance.show { display: flex; }
+
+/* L'etat vide donne une issue. Il n'offrait qu'une phrase : on y
+   arrivait sans savoir quoi faire, la seule sortie etant la fleche
+   retour en haut a gauche — qui ressemble a un abandon plutot qu'a la
+   suite du parcours. */
+.pg-maseance .empty-session-txt { margin: 0 0 18px; }
+.pg-maseance .empty-session-cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 15px 26px; border: none; border-radius: 999px;
+  background: var(--or, #FAC408); color: #16130F;
+  font-family: inherit; font-size: 15.5px; font-weight: 700;
+  letter-spacing: -.01em; cursor: pointer;
+}
+.pg-maseance .empty-session-cta:active { filter: brightness(.95); }
