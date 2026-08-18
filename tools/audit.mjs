@@ -1264,6 +1264,15 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('la silhouette ne suit plus le sexe : tout le monde revoit le modele masculin');
     if (!/sexe\.value = val/.test(bes))
       soucis.push('le calculateur ne remonte plus le sexe au profil : le champ resterait vide a jamais');
+    // Trois endroits proposent le choix ; deux d'entre eux ne
+    // l'ecrivaient nulle part avant le 17/08. Le reglage est le seul
+    // qu'on aille chercher volontairement.
+    const tdee = lire('app-v2/src/components/TdeeCalculator.jsx') || '';
+    const reg = lire('app-v2/src/components/Reglages.jsx') || '';
+    if (!/sexe\.value = val/.test(tdee))
+      soucis.push('le calculateur TDEE propose le sexe sans l\'ecrire : le choix y serait perdu');
+    if (!/acc_sexe/.test(reg))
+      soucis.push('le reglage de silhouette a disparu du compte : plus moyen d\'en changer apres coup');
     if (soucis.length) faute('R39 silhouette et sexe', soucis.join(' ; '));
     else passe('R39 silhouette et sexe');
   }

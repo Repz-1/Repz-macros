@@ -4,12 +4,13 @@ import { setObjectifs, calculBaseFait, poidsCalcul, objectifs } from '../store/j
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { createPortal } from 'preact/compat';
+import { sexe } from '../store/perso.js';
 
 // Calculateur de besoins. Le resultat se recalcule a chaque frappe (pas de bouton
 // "Calculer" : reactif). "Appliquer" pousse le resultat dans les objectifs du jour.
 export function TdeeCalculator({ montre, fermer, retour }) {
   const [f, setF] = useState({
-    sexe: 'h', age: 25, poids: 75, taille: 175, masseGrasse: '',
+    sexe: sexe.value || 'h', age: 25, poids: 75, taille: 175, masseGrasse: '',
     activiteBase: 1.3, joursEntrainement: 4, intensiteEntrainement: 0.03, ajustement: 300,
   });
   const [applique, setApplique] = useState(false);
@@ -48,7 +49,13 @@ export function TdeeCalculator({ montre, fermer, retour }) {
     setMode(m);
   };
 
-  const maj = (cle, val) => setF(o => ({ ...o, [cle]: val }));
+  // Le sexe remonte au profil : il sert au calcul, mais aussi a la
+  // silhouette de Stats. Le choisir ici suffit, sans avoir a le redire
+  // ailleurs — il n'etait ecrit nulle part jusqu'au 17/08.
+  const maj = (cle, val) => {
+    if (cle === 'sexe') sexe.value = val;
+    setF(o => ({ ...o, [cle]: val }));
+  };
   const num = (cle, val) => maj(cle, val === '' ? '' : parseFloat(val));
 
   const r = calculerBesoins({

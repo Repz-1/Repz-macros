@@ -10,6 +10,7 @@ import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
 import { VERSION_APP } from '../version.js';
 import '../styles/reglages.css';
+import { sexe } from '../store/perso.js';
 
 // ============================================================
 // REGLAGES — portage v2 de parametres.html.
@@ -124,6 +125,21 @@ function EcranCompte({ retour }) {
           <div class="rg-champ">
             <span class="rg-lbl">{t('acc_firstname')}</span>
             <input type="text" value={prenom} onInput={(e) => setPrenom(e.target.value)} />
+          </div>
+          {/* Le sexe se reglait uniquement dans le calculateur de
+              besoins — un ecran qu'on ouvre une fois. Il vit ici
+              desormais, la ou on va le chercher : il decide de la
+              silhouette de Stats autant que du calcul de Mifflin. */}
+          <div class="rg-champ">
+            <span class="rg-lbl">{t('acc_sexe')}</span>
+            <div class="rg-seg" role="group" aria-label={t('acc_sexe')}>
+              <button class={sexe.value === 'h' ? 'on' : ''}
+                aria-pressed={sexe.value === 'h'}
+                onClick={() => { sexe.value = 'h'; }}>{t('acc_homme')}</button>
+              <button class={sexe.value === 'f' ? 'on' : ''}
+                aria-pressed={sexe.value === 'f'}
+                onClick={() => { sexe.value = 'f'; }}>{t('acc_femme')}</button>
+            </div>
           </div>
           <div class="rg-champ">
             <span class="rg-lbl">{t('acc_password')}</span>
