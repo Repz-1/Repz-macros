@@ -82,9 +82,31 @@ export function BodyMap({ compte, onClick }) {
   );
 
   return (
-    <div class="bodymap bodymap--double" onClick={onClick}>
-      {vue(femme ? SILHOUETTE_FACE_F : SILHOUETTE_FACE, t('bm_face'))}
-      {vue(femme ? SILHOUETTE_DOS_F : SILHOUETTE_DOS, t('bm_dos'))}
+    <div class="bodymap-bloc">
+      <div class="bodymap bodymap--double" onClick={onClick}>
+        {vue(femme ? SILHOUETTE_FACE_F : SILHOUETTE_FACE, t('bm_face'))}
+        {vue(femme ? SILHOUETTE_DOS_F : SILHOUETTE_DOS, t('bm_dos'))}
+      </div>
+      {/* Tant que le sexe n'a pas ete choisi, on le demande LA — sous
+          le corps qui va changer. Aucune autre donnee ne permet de le
+          deviner, et deviner serait pire que demander.
+          La question ne revient plus une fois repondu : `sexe` vide
+          reste distinct d'un choix, c'est tout l'interet de ne pas lui
+          avoir donne de valeur par defaut. Elle reste modifiable a tout
+          moment dans les parametres du compte. */}
+      {!sexe.value && (
+        <div class="bm-sexe">
+          <span class="bm-sexe-q">{t('bm_sexe_q')}</span>
+          <div class="bm-sexe-choix">
+            <button onClick={(e) => { e.stopPropagation(); sexe.value = 'h'; }}>
+              {t('acc_homme')}
+            </button>
+            <button onClick={(e) => { e.stopPropagation(); sexe.value = 'f'; }}>
+              {t('acc_femme')}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

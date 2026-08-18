@@ -1273,6 +1273,13 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('le calculateur TDEE propose le sexe sans l\'ecrire : le choix y serait perdu');
     if (!/acc_sexe/.test(reg))
       soucis.push('le reglage de silhouette a disparu du compte : plus moyen d\'en changer apres coup');
+    // Sans cette question, une utilisatrice ne voit jamais son modele :
+    // rien d'autre ne permet de deviner le sexe, et le reglage du
+    // compte suppose qu'on soit alle le chercher.
+    if (!/bm_sexe_q/.test(stats))
+      soucis.push('la question sous la silhouette a disparu : le modele feminin redevient inatteignable sans passer par les reglages');
+    if (!/!sexe\.value &&/.test(stats))
+      soucis.push('la question ne depend plus d\'une reponse absente : elle se reposerait a chaque visite');
     if (soucis.length) faute('R39 silhouette et sexe', soucis.join(' ; '));
     else passe('R39 silhouette et sexe');
   }
