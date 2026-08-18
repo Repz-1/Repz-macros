@@ -1286,6 +1286,29 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R40 — La fiche d'un jour a une fleche de retour.
+// Raci, 17/08. Elle ne se fermait qu'en touchant a cote : un geste
+// qu'il faut deviner, et qui rate souvent puisque la fiche occupe
+// presque tout l'ecran. Le bouton Android la fermait deja (R32), mais
+// rien ne le disait a l'ecran.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const css = lire('app-v2/src/legacy/entrainer.scoped.css');
+  if (ent && css) {
+    const i = ent.indexOf('function ModaleMuscles');
+    const fiche = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : '';
+    const soucis = [];
+    if (!/class="ml-retour"/.test(fiche))
+      soucis.push('la fleche de retour a disparu : la fiche ne se ferme plus qu\'en touchant a cote');
+    if (!/\.ml-modal \.ml-retour/.test(css))
+      soucis.push('le style de la fleche a disparu');
+    if (soucis.length) faute('R40 fleche de la fiche du jour', soucis.join(' ; '));
+    else passe('R40 fleche de la fiche du jour');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

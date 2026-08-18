@@ -425,6 +425,12 @@ function ModaleMuscles({ iso, fermer }) {
   return createPortal(
     <div class="ml-overlay show" onClick={(e) => { if (e.target.classList.contains('ml-overlay')) fermer(); }}>
       <div class="ml-modal">
+        {/* Fleche de retour (Raci, 17/08). La fiche ne se fermait qu'en
+            touchant a cote — un geste qu'il faut deviner, et qui rate
+            souvent puisque la fiche occupe presque tout l'ecran. Le
+            bouton Android la fermait deja, mais rien ne le disait a
+            l'ecran. */}
+        <button class="ml-retour" onClick={fermer} aria-label="Retour">←</button>
         <h3 class="ml-date">{jourLong(jour)}</h3>
         <div class="ml-type">
           {type === 'passe' ? t('ml_passe') : type === 'auj' ? t('ml_auj') : t('ml_futur')}
@@ -520,9 +526,9 @@ function ModaleMuscles({ iso, fermer }) {
                 {nomMuscle(g.k)}
               </span>
             ))}
-            {!GROUPES.some(g => COULEUR[g.k] && compte[g.k]) && (
-              <span class="ml-legende-vide">{t('ml_rien_note')}</span>
-            )}
+            {/* Pas de « rien de note » ici : le haut de la fiche le dit
+                deja, et la silhouette entierement grise le montre. Trois
+                fois la meme information sur un demi-ecran. */}
           </div>
         </div>
         <div class="ml-groups-titre">{t('ml_noter')}</div>
