@@ -1309,6 +1309,34 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R41 — Le calendrier ne retient que deux semaines.
+// Raci, 17/08 : « retiens les dates du calendrier uniquement de la
+// semaine precedant la semaine en cours ». Les jours notes au-dela
+// sont effaces au chargement, et l'effacement remonte au compte —
+// sinon ils reviendraient au demarrage suivant.
+//
+// Le piege : elaguer le FUTUR avec le passe. On y planifie des
+// seances ; une purge symetrique viderait le programme de la semaine
+// a venir. La borne ne coupe que vers l'arriere.
+// ------------------------------------------------------------
+{
+  const st = lire('app-v2/src/store/entrainement.js');
+  if (st) {
+    const soucis = [];
+    if (!/export function borneCalendrier/.test(st))
+      soucis.push('la borne du calendrier a disparu : l\'historique repart sans limite');
+    if (!/jour >= borne/.test(st))
+      soucis.push('l\'elagage ne compare plus a la borne');
+    if (/jour <= borne|jour > borne\)/.test(st))
+      soucis.push('l\'elagage coupe dans le mauvais sens : il emporterait les seances planifiees');
+    if (!/sauvegarder\(u, \{ muscleLog: elague \}\)/.test(st))
+      soucis.push('les jours elagues ne sont pas effaces cote compte : ils reviendraient au prochain chargement');
+    if (soucis.length) faute('R41 fenetre du calendrier', soucis.join(' ; '));
+    else passe('R41 fenetre du calendrier');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

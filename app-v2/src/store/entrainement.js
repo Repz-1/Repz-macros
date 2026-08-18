@@ -28,6 +28,32 @@ export const GROUPES = [
 ];
 
 export const muscleLog = signal({});
+
+// Le calendrier ne retient que la semaine en cours et celle qui la
+// precede (Raci, 17/08). Au-dela, les jours notes sont effaces a
+// chaque chargement et ne repartent pas vers le compte.
+//
+// Le futur n'est JAMAIS elague : on y planifie des seances, et une
+// purge qui les emporterait viderait le programme de la semaine a
+// venir.
+//
+// Semaine ISO, donc lundi. (getDay() + 6) % 7 vaut 0 le lundi : on
+// remonte au lundi courant, puis sept jours de plus.
+export function borneCalendrier(aujourdhui = new Date()) {
+  const d = new Date(aujourdhui);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7) - 7);
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+export function elaguerCalendrier(log, borne = borneCalendrier()) {
+  const garde = {};
+  for (const [jour, vals] of Object.entries(log || {})) {
+    if (jour >= borne) garde[jour] = vals;
+  }
+  return garde;
+}
 let uidM = null, pretM = false;
 
 effect(() => {
@@ -54,11 +80,18 @@ effect(() => {
     // Les jours tapes PENDANT que la lecture etait en vol priment sur
     // la reponse : elle a ete prise avant eux. Fusion jour par jour,
     // memoire prioritaire.
-    muscleLog.value = { ...(fusion || charge), ...muscleLog.value };
+    const complet = { ...(fusion || charge), ...muscleLog.value };
+    const elague = elaguerCalendrier(complet);
+    muscleLog.value = elague;
     pretM = true;
+    // Les jours tombes hors fenetre sont effaces AUSSI cote compte,
+    // sinon ils reviendraient au prochain chargement.
+    if (Object.keys(complet).length !== Object.keys(elague).length) {
+      sauvegarder(u, { muscleLog: elague });
+    }
     // Fusion effective : on la persiste tout de suite, sinon elle
     // serait refaite a chaque demarrage.
-    if (fusion) sauvegarder(u, { muscleLog: muscleLog.value });
+    else if (fusion) sauvegarder(u, { muscleLog: muscleLog.value });
   });
 });
 
