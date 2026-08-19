@@ -82,40 +82,16 @@ export function BodyMap({ compte, onClick }) {
   );
 
   return (
-    <div class="bodymap-bloc">
-      <div class="bodymap bodymap--double" onClick={onClick}>
-        {vue(femme ? SILHOUETTE_FACE_F : SILHOUETTE_FACE, t('bm_face'))}
-        {vue(femme ? SILHOUETTE_DOS_F : SILHOUETTE_DOS, t('bm_dos'))}
-      </div>
-      {/* Tant que le sexe n'a pas ete choisi, on le demande LA — sous
-          le corps qui va changer. Aucune autre donnee ne permet de le
-          deviner, et deviner serait pire que demander.
-          La question ne revient plus une fois repondu : `sexe` vide
-          reste distinct d'un choix, c'est tout l'interet de ne pas lui
-          avoir donne de valeur par defaut. Elle reste modifiable a tout
-          moment dans les parametres du compte. */}
-      {/* Les deux boutons restent LA en permanence (Raci, 17/08 :
-          « il faut pouvoir laisser choisir constamment »). Ils ne
-          s'effacaient qu'apres la premiere reponse, et revenir en
-          arriere supposait de connaitre les parametres du compte —
-          autant dire que le choix etait definitif.
-          Seule la question disparait une fois repondu : elle sert a
-          amorcer, les boutons a corriger. */}
-      <div class="bm-sexe">
-        {!sexe.value && <span class="bm-sexe-q">{t('bm_sexe_q')}</span>}
-        <div class="bm-sexe-choix">
-          <button class={sexe.value === 'h' ? 'on' : ''}
-            aria-pressed={sexe.value === 'h'}
-            onClick={(e) => { e.stopPropagation(); sexe.value = 'h'; }}>
-            {t('acc_homme')}
-          </button>
-          <button class={sexe.value === 'f' ? 'on' : ''}
-            aria-pressed={sexe.value === 'f'}
-            onClick={(e) => { e.stopPropagation(); sexe.value = 'f'; }}>
-            {t('acc_femme')}
-          </button>
-        </div>
-      </div>
+    <div class="bodymap bodymap--double" onClick={onClick}>
+      {vue(femme ? SILHOUETTE_FACE_F : SILHOUETTE_FACE, t('bm_face'))}
+      {vue(femme ? SILHOUETTE_DOS_F : SILHOUETTE_DOS, t('bm_dos'))}
+      {/* Le choix de silhouette a quitte cet endroit (Raci, 17/08 :
+          « ne le mets plus dans la page mannequin meme ou sur un jour
+          de calendrier »). BodyMap est monte a trois endroits — carte
+          de la semaine, fiche d'un jour, Stats — donc les boutons
+          apparaissaient trois fois, y compris en ouvrant un jour au
+          hasard du calendrier. Ils vivent desormais dans Reglages,
+          section AFFICHAGE, au premier niveau. */}
     </div>
   );
 }

@@ -126,21 +126,8 @@ function EcranCompte({ retour }) {
             <span class="rg-lbl">{t('acc_firstname')}</span>
             <input type="text" value={prenom} onInput={(e) => setPrenom(e.target.value)} />
           </div>
-          {/* Le sexe se reglait uniquement dans le calculateur de
-              besoins — un ecran qu'on ouvre une fois. Il vit ici
-              desormais, la ou on va le chercher : il decide de la
-              silhouette de Stats autant que du calcul de Mifflin. */}
-          <div class="rg-champ">
-            <span class="rg-lbl">{t('acc_sexe')}</span>
-            <div class="rg-seg" role="group" aria-label={t('acc_sexe')}>
-              <button class={sexe.value === 'h' ? 'on' : ''}
-                aria-pressed={sexe.value === 'h'}
-                onClick={() => { sexe.value = 'h'; }}>{t('acc_homme')}</button>
-              <button class={sexe.value === 'f' ? 'on' : ''}
-                aria-pressed={sexe.value === 'f'}
-                onClick={() => { sexe.value = 'f'; }}>{t('acc_femme')}</button>
-            </div>
-          </div>
+          {/* Le reglage de silhouette a quitte cet ecran pour le
+              premier niveau des Reglages : il y etait trop enfoui. */}
           <div class="rg-champ">
             <span class="rg-lbl">{t('acc_password')}</span>
             <span class="rg-val">••••••••</span>
@@ -361,6 +348,28 @@ export function Reglages() {
             <Rangee titre={t('set_cancel')} sous={t('set_cancel_sub')}
                     onClick={() => { vueReglages.value = 'resilier'; }} />
           )}
+        </div>
+
+        {/* La silhouette se reglait sous « Parametres du compte », un
+            cran plus bas : Raci ne l'y trouvait pas. Elle remonte au
+            premier niveau, a cote de la langue — meme nature, un choix
+            d'affichage qui se prend une fois et se retrouve vite. */}
+        <p class="rg-section">{t('set_sec_affichage')}</p>
+        <div class="rg-carte">
+          <div class="rg-rangee rg-rangee--inerte">
+            <span class="rg-txt">
+              <span class="rg-nom">{t('acc_sexe')}</span>
+              <span class="rg-sous">{t('set_sexe_sub')}</span>
+            </span>
+            <span class="rg-seg">
+              <button class={sexe.value === 'h' ? 'on' : ''}
+                aria-pressed={sexe.value === 'h'}
+                onClick={() => { sexe.value = 'h'; }}>{t('acc_homme')}</button>
+              <button class={sexe.value === 'f' ? 'on' : ''}
+                aria-pressed={sexe.value === 'f'}
+                onClick={() => { sexe.value = 'f'; }}>{t('acc_femme')}</button>
+            </span>
+          </div>
         </div>
 
         <p class="rg-section">{t('settings_language')}</p>

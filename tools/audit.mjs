@@ -1276,16 +1276,16 @@ const DECALAGE_SW_V2 = 232;
     // Sans cette question, une utilisatrice ne voit jamais son modele :
     // rien d'autre ne permet de deviner le sexe, et le reglage du
     // compte suppose qu'on soit alle le chercher.
-    if (!/bm_sexe_q/.test(stats))
-      soucis.push('la question sous la silhouette a disparu : le modele feminin redevient inatteignable sans passer par les reglages');
-    if (!/!sexe\.value && <span class="bm-sexe-q"/.test(stats))
-      soucis.push('la question d\'amorce ne depend plus d\'une reponse absente : elle se reposerait a chaque visite');
-    // Raci, 17/08 : « une fois que j'ai choisi femme je ne peux plus
-    // revenir en arriere ». Les boutons s'effacaient apres la premiere
-    // reponse et le retour supposait de connaitre les parametres du
-    // compte — le choix etait de fait definitif.
-    if (/\{!sexe\.value && \(\s*<div class="bm-sexe"/.test(stats.replace(/\s+/g, ' ')))
-      soucis.push('les boutons de silhouette disparaissent apres la premiere reponse : le choix redevient definitif');
+    // Le choix a quitte BodyMap (Raci, 17/08). Le composant est monte
+    // a trois endroits — carte de la semaine, fiche d'un jour, Stats —
+    // donc les boutons apparaissaient trois fois, y compris en ouvrant
+    // un jour au hasard du calendrier.
+    if (/bm-sexe/.test(stats))
+      soucis.push('les boutons de silhouette sont revenus dans BodyMap : ils s\'afficheraient sur chaque jour du calendrier');
+    // Ils doivent etre au PREMIER niveau des reglages : sous
+    // « Parametres du compte », Raci ne les trouvait pas.
+    if (!/set_sec_affichage/.test(reg))
+      soucis.push('la section AFFICHAGE a disparu des reglages : le choix de silhouette redevient introuvable');
     if (soucis.length) faute('R39 silhouette et sexe', soucis.join(' ; '));
     else passe('R39 silhouette et sexe');
   }

@@ -701,55 +701,7 @@
   .pg-entrainer--carte .ent-prog:active { transform: none; }
 }
 
-/* ---------- Quelle silhouette te ressemble ? ------------------------
-   Pose sous le corps qui va changer, et une seule fois : la question
-   disparait des qu'on repond, puisque « sexe » vide reste distinct
-   d'un choix. Elle se retrouve ensuite dans les parametres du compte.
 
-   Volontairement discrete — ce n'est pas une etape a franchir, juste
-   une precision qu'on peut ignorer. Sans reponse, la silhouette
-   masculine reste affichee et l'app fonctionne. */
-.bodymap-bloc { display: flex; flex-direction: column; }
-.bm-sexe {
-  margin-top: 8px;
-  padding-top: 9px;
-  border-top: 1px solid rgba(28, 24, 18, .08);
-  text-align: center;
-}
-.bm-sexe-q {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: #857C71;
-  margin-bottom: 7px;
-  line-height: 1.3;
-}
-.bm-sexe-choix { display: flex; gap: 6px; justify-content: center; }
-.bm-sexe-choix button {
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 7px 4px;
-  border: 1px solid rgba(28, 24, 18, .12);
-  border-radius: 9px;
-  background: #FFF;
-  font-family: inherit;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #181818;
-  cursor: pointer;
-}
-.bm-sexe-choix button:active { background: #F4F0E8; }
-
-/* Une fois repondu, les boutons restent : revenir en arriere ne doit
-   pas supposer de connaitre les parametres du compte. Le choix actif
-   se marque, et l'ensemble s'efface d'un cran — il a fait son office,
-   il ne doit plus attirer l'oeil. */
-.bm-sexe:not(:has(.bm-sexe-q)) { opacity: .72; }
-.bm-sexe-choix button.on {
-  background: #181818;
-  border-color: #181818;
-  color: #FFF;
-}
 
 /* =====================================================================
    DIRECTION TYPOGRAPHIQUE — passe du 17/08 (directive Raci).
@@ -820,6 +772,9 @@
   letter-spacing: .04em;
 }
 .pg-entrainer--carte .wlog-more { color: var(--txt-1); font-weight: 700; }
+
+/* Les regles de .bm-sexe ont ete retirees avec les boutons : le choix
+   de silhouette vit maintenant dans Reglages > AFFICHAGE. */
 
 /* --- Resume de la semaine ----------------------------------------- */
 .pg-entrainer--carte .ent-sem-l { font-size: 13px; font-weight: 400; color: var(--txt-2); }
