@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
 import { signal } from '@preact/signals';
-import { GROUPES, muscleLog, basculerMuscle } from '../store/entrainement.js';
+import { GROUPES, muscleLog, basculerMuscle, borneCalendrier } from '../store/entrainement.js';
 import { estPremium } from './PremiumPage.jsx';
 import { enDecouverte } from '../services/decouverte.js';
 import { ongletActif } from './BottomNav.jsx';
@@ -133,6 +133,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
   const todayIso = wlIso(today);
   const ref = new Date(today.getFullYear(), today.getMonth() + offset, 1);
   const titre = t('months_long').split('|')[ref.getMonth()] + ' ' + ref.getFullYear();
+  // Le calendrier ne retient plus que deux semaines : le mois de la
+  // borne est le dernier qui contienne quelque chose. On compare sur
+  // « AAAA-MM » plutot que sur des dates, la borne pouvant tomber au
+  // milieu d'un mois.
+  const avantBorne = wlIso(ref).slice(0, 7) <= borneCalendrier().slice(0, 7);
 
   // Resume : seances du mois affiche + derniere seance notee
   const prefixeMois = wlIso(ref).slice(0, 7);
@@ -295,8 +300,14 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
         <h3>{t('tr_log_title')}</h3>
         <p class="ent-sous">{t('tr_log_sub')}</p>
 
+        {/* Le calendrier ne retient plus que deux semaines (v355) :
+            reculer au-dela n'ouvre que des mois vides, ce qui se lit
+            comme une perte de donnees plutot que comme une limite.
+            La fleche gauche s'eteint donc des que le mois affiche est
+            celui de la borne. */}
         <div class="wlog-cal-head">
-          <button class="wlog-nav" onClick={(e) => { e.stopPropagation(); setOffset(offset - 1); }}>‹</button>
+          <button class={'wlog-nav' + (avantBorne ? ' off' : '')}
+            onClick={(e) => { e.stopPropagation(); if (!avantBorne) setOffset(offset - 1); }}>‹</button>
           <div class="wlog-cal-titre">{titre}</div>
           <button class={'wlog-nav' + (offset === 0 ? ' off' : '')}
             onClick={(e) => { e.stopPropagation(); if (offset < 0) setOffset(offset + 1); }}>›</button>

@@ -1331,6 +1331,11 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('l\'elagage coupe dans le mauvais sens : il emporterait les seances planifiees');
     if (!/sauvegarder\(u, \{ muscleLog: elague \}\)/.test(st))
       soucis.push('les jours elagues ne sont pas effaces cote compte : ils reviendraient au prochain chargement');
+    // La fleche de recul doit s'eteindre a la borne : un mois vide
+    // qu'on peut atteindre se lit comme une perte de donnees.
+    const ent2 = lire('app-v2/src/components/Entrainer.jsx') || '';
+    if (!/avantBorne/.test(ent2))
+      soucis.push('la fleche de recul du calendrier ne s\'arrete plus a la borne : elle ouvre des mois vides');
     if (soucis.length) faute('R41 fenetre du calendrier', soucis.join(' ; '));
     else passe('R41 fenetre du calendrier');
   }
