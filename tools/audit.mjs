@@ -1370,6 +1370,15 @@ const DECALAGE_SW_V2 = 232;
     // Les gris bleutes du calendrier ne doivent pas revenir.
     if (/#334155|#CBD5E1/i.test(propre))
       soucis.push('un gris bleute est revenu sur S\'entrainer : il jure avec le fond creme');
+    // Les jetons doivent POINTER vers le systeme de design. La
+    // premiere version en inventait trois de plus, proches mais
+    // differents de --texte / --texte-2 / --texte-3 : c'est exactement
+    // le probleme qu'ils pretendaient resoudre, un cran plus haut.
+    if (!/--txt-1:\s*var\(--texte\)/.test(propre))
+      soucis.push('les gris de S\'entrainer ne pointent plus vers le systeme de design : deux palettes a tenir en phase a la main');
+    const ent = lire('app-v2/src/styles/entete-commune.css') || '';
+    if (/color:\s*#191919/.test(sansCommentaires(ent)))
+      soucis.push('l\'en-tete reprend un noir en dur au lieu de --texte');
     if (soucis.length) faute('R42 typographie de S\'entrainer', soucis.join(' ; '));
     else passe('R42 typographie de S\'entrainer');
   }

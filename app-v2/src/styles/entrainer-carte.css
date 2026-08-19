@@ -764,10 +764,15 @@
 .pg-entrainer--carte {
   /* Trois gris, pas onze. Les valeurs #334155 et #CBD5E1 heritees du
      calendrier tiraient vers le bleu, en desaccord avec la creme du
-     fond. */
-  --txt-1: #16130F;   /* presque noir : titres, chiffres, actions */
-  --txt-2: #6E665C;   /* gris moyen : descriptions, secondaire */
-  --txt-3: #B0A79C;   /* gris clair : desactive, jours futurs */
+     fond.
+     Ils POINTENT vers le systeme de design plutot que de porter leurs
+     propres valeurs : la premiere version en inventait trois de plus,
+     proches mais differents de --texte / --texte-2 / --texte-3, ce qui
+     recreait le probleme qu'elle pretendait resoudre. Un seul endroit
+     definit les gris de l'app. */
+  --txt-1: var(--texte);     /* presque noir : titres, chiffres, actions */
+  --txt-2: var(--texte-2);   /* gris moyen : descriptions, secondaire */
+  --txt-3: var(--texte-3);   /* gris clair : desactive, jours futurs */
 }
 
 /* --- Trois niveaux, trois graisses ------------------------------- */

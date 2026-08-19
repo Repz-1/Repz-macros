@@ -37,7 +37,10 @@
   font-family: Satoshi, system-ui, -apple-system, sans-serif;
   font-size: 17px;
   font-weight: 500;
-  color: #191919;
+  /* Pointe vers le systeme de design plutot que de repeter la valeur :
+     #191919 en dur ici et --texte ailleurs, ce sont deux noirs a tenir
+     en phase a la main. C'est le meme, une seule fois defini. */
+  color: var(--texte);
   letter-spacing: -.01em;
   white-space: nowrap;
   max-width: 46vw;
