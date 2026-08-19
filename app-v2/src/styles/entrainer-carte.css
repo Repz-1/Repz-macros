@@ -750,3 +750,124 @@
   border-color: #181818;
   color: #FFF;
 }
+
+/* =====================================================================
+   DIRECTION TYPOGRAPHIQUE — passe du 17/08 (directive Raci).
+   Releve avant : 5 graisses, 13 tailles, 11 couleurs de texte sur un
+   seul ecran. Chaque ajout avait apporte sa nuance, et l'ensemble ne
+   disait plus quelle information comptait.
+
+   Une famille : Satoshi. DM Mono reste, mais sur les VALEURS chiffrees
+   uniquement — c'est son role dans toute l'app, et un chiffre aligne
+   se lit mieux en chasse fixe.
+   ===================================================================== */
+.pg-entrainer--carte {
+  /* Trois gris, pas onze. Les valeurs #334155 et #CBD5E1 heritees du
+     calendrier tiraient vers le bleu, en desaccord avec la creme du
+     fond. */
+  --txt-1: #16130F;   /* presque noir : titres, chiffres, actions */
+  --txt-2: #6E665C;   /* gris moyen : descriptions, secondaire */
+  --txt-3: #B0A79C;   /* gris clair : desactive, jours futurs */
+}
+
+/* --- Trois niveaux, trois graisses ------------------------------- */
+/* 1. Titre principal — 17 px / 700 */
+.pg-entrainer--carte .ent-bloc > h3,
+.pg-entrainer--carte .wlog-cal-titre {
+  font-size: 17px; font-weight: 700; letter-spacing: -.015em;
+  color: var(--txt-1);
+}
+/* 2. Secondaire — 13 px / 400 */
+.pg-entrainer--carte .ent-sous,
+.pg-entrainer--carte .ent-prog-s,
+.pg-entrainer--carte .ent-sem-oubli {
+  font-size: 13px; font-weight: 400; letter-spacing: 0;
+  color: var(--txt-2);
+}
+/* 3. Bouton — 15 px / 700, sauf le principal traite plus bas */
+.pg-entrainer--carte .ent-prog-t {
+  font-size: 15px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--txt-1);
+}
+
+/* --- Hierarchie : un seul element domine -------------------------- */
+/* « Demarrer une seance » garde l'aplat jaune et gagne un cran de
+   taille. Rien d'autre sur la page n'est en aplat plein. */
+.pg-entrainer--carte .ent-go {
+  font-size: 17.5px; font-weight: 700; letter-spacing: -.015em;
+}
+/* La carte programme recule : bordure plus discrete, titre au niveau
+   d'un bouton et non d'un titre de bloc. */
+.pg-entrainer--carte .ent-prog { border-color: rgba(28,24,18,.08); }
+.pg-entrainer--carte .ent-prog-fl { color: var(--txt-3); }
+/* Le libelle de date au-dessus du bouton : c'est un reperage, pas un
+   titre. Il descend d'un cran. */
+.pg-entrainer--carte .ent-action-jour {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  color: var(--txt-2);
+}
+
+/* --- Calendrier : les gris bleutes rejoignent la palette ---------- */
+.pg-entrainer--carte .wlog-cell { color: var(--txt-1); font-weight: 500; }
+.pg-entrainer--carte .wlog-cell.futur { color: var(--txt-3); }
+.pg-entrainer--carte .wlog-wd {
+  font-size: 11px; font-weight: 500; color: var(--txt-3);
+  letter-spacing: .04em;
+}
+.pg-entrainer--carte .wlog-more { color: var(--txt-1); font-weight: 700; }
+
+/* --- Resume de la semaine ----------------------------------------- */
+.pg-entrainer--carte .ent-sem-l { font-size: 13px; font-weight: 400; color: var(--txt-2); }
+.pg-entrainer--carte .ent-sem-l b { font-size: 13px; color: var(--txt-1); }
+.pg-entrainer--carte .bm-vue-nom {
+  font-size: 9.5px; font-weight: 500; color: var(--txt-3); letter-spacing: .08em;
+}
+.pg-entrainer--carte .bm-sexe-q { font-weight: 400; color: var(--txt-2); }
+.pg-entrainer--carte .bm-sexe-choix button { font-weight: 500; color: var(--txt-1); }
+
+/* --- Etat vide : la premiere phrase que lit un nouveau venu --------
+   C'etait une pastille grise a coin arrondi, de la meme famille que
+   les compteurs qui l'entourent d'habitude — sauf qu'ici elle est
+   seule, et qu'elle accueille. Elle devient une ligne posee : un point
+   d'accroche a gauche, l'invitation en tete, la precision en dessous
+   et plus discrete. Fond creme tres pale plutot que gris : la page est
+   chaude, un gris neutre y fait tache. */
+.pg-entrainer--carte .wlog-sum-vide {
+  display: flex; align-items: center; gap: 11px;
+  width: 100%; padding: 12px 14px;
+  background: linear-gradient(180deg, #FFFDF8, #FDF8EE);
+  border: 1px solid rgba(28, 24, 18, .07);
+  border-radius: 14px;
+  white-space: normal;
+}
+.pg-entrainer--carte .wsv-ic {
+  flex: 0 0 34px; height: 34px; border-radius: 11px;
+  display: grid; place-items: center; font-size: 17px;
+  background: #FFF; box-shadow: 0 1px 3px rgba(60, 50, 40, .08);
+}
+.pg-entrainer--carte .wsv-txt { display: flex; flex-direction: column; min-width: 0; }
+.pg-entrainer--carte .wsv-txt b {
+  font-size: 13.5px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--txt-1); line-height: 1.3;
+}
+.pg-entrainer--carte .wsv-txt i {
+  font-style: normal; font-size: 12.5px; font-weight: 400;
+  color: var(--txt-2); line-height: 1.35; margin-top: 1px;
+}
+
+/* Trois exceptions restantes, ramenees a l'echelle. Le h4 des seances
+   etait la derniere graisse 800 de la page, et sea-vide le dernier
+   gris hors palette. « j-prenom » appartient a l'en-tete commune :
+   volontairement laisse, il est partage par tous les onglets et le
+   changer ici desynchroniserait le Journal. */
+.pg-entrainer--carte h4 {
+  font-size: 13px; font-weight: 700; color: var(--txt-1);
+  letter-spacing: -.005em;
+}
+.pg-entrainer--carte .sea-vide { font-size: 13px; color: var(--txt-2); }
+
+/* Echelle de tailles resserree : 17 titres · 15 boutons · 13 courant ·
+   11 legendes. Les valeurs intermediaires heritees (12, 12.5, 11.5)
+   se rangent sur les barreaux voisins. */
+.pg-entrainer--carte .ent-sem-oubli,
+.pg-entrainer--carte .ml-fait-v { font-size: 12.5px; }

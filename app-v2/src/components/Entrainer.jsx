@@ -245,7 +245,22 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
               </span>
             )}
           </>
-        ) : <span class="wlog-sum-pill">{t('first_session_hint')}</span>}
+        ) : (
+          /* Etat vide : le bandeau etait une pastille grise a coin
+             arrondi, de la meme famille que les compteurs qui
+             l'entourent d'habitude — sauf qu'ici il est seul, et que
+             c'est la premiere chose qu'un nouveau venu lit. Il devient
+             une ligne accueillante, avec un point d'accroche a gauche
+             et la phrase coupee en deux : l'invitation d'abord, la
+             precision ensuite, plus discrete. */
+          <span class="wlog-sum-vide">
+            <span class="wsv-ic" aria-hidden="true">👋</span>
+            <span class="wsv-txt">
+              <b>{t('first_session_t')}</b>
+              <i>{t('first_session_s')}</i>
+            </span>
+          </span>
+        )}
       </div>
 
       {/* 2 — Zone d'action. Elle reprend les deux destinations des

@@ -1348,6 +1348,34 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R42 — S'entrainer tient sur trois gris et trois graisses.
+// Releve du 17/08 avant la passe typographique : 5 graisses, 13
+// tailles et 11 couleurs de texte sur un seul ecran. Chaque ajout
+// avait apporte sa nuance, et l'ensemble ne disait plus quelle
+// information comptait. Deux gris venaient meme d'ailleurs (#334155,
+// #CBD5E1, herites du calendrier) et tiraient vers le bleu sur un
+// fond creme.
+// La regle verifie les tokens plutot que de recompter le rendu : si
+// quelqu'un reintroduit une couleur en dur, elle ne s'appuiera sur
+// aucun d'eux.
+// ------------------------------------------------------------
+{
+  const css = lire('app-v2/src/styles/entrainer-carte.css');
+  if (css) {
+    const soucis = [];
+    for (const jeton of ['--txt-1', '--txt-2', '--txt-3']) {
+      if (!css.includes(jeton)) soucis.push(`${jeton} a disparu : la page perd sa palette de texte`);
+    }
+    const propre = sansCommentaires(css);
+    // Les gris bleutes du calendrier ne doivent pas revenir.
+    if (/#334155|#CBD5E1/i.test(propre))
+      soucis.push('un gris bleute est revenu sur S\'entrainer : il jure avec le fond creme');
+    if (soucis.length) faute('R42 typographie de S\'entrainer', soucis.join(' ; '));
+    else passe('R42 typographie de S\'entrainer');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
