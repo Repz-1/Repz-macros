@@ -739,3 +739,14 @@
   cursor: pointer;
 }
 .bm-sexe-choix button:active { background: #F4F0E8; }
+
+/* Une fois repondu, les boutons restent : revenir en arriere ne doit
+   pas supposer de connaitre les parametres du compte. Le choix actif
+   se marque, et l'ensemble s'efface d'un cran — il a fait son office,
+   il ne doit plus attirer l'oeil. */
+.bm-sexe:not(:has(.bm-sexe-q)) { opacity: .72; }
+.bm-sexe-choix button.on {
+  background: #181818;
+  border-color: #181818;
+  color: #FFF;
+}

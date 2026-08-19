@@ -94,19 +94,28 @@ export function BodyMap({ compte, onClick }) {
           reste distinct d'un choix, c'est tout l'interet de ne pas lui
           avoir donne de valeur par defaut. Elle reste modifiable a tout
           moment dans les parametres du compte. */}
-      {!sexe.value && (
-        <div class="bm-sexe">
-          <span class="bm-sexe-q">{t('bm_sexe_q')}</span>
-          <div class="bm-sexe-choix">
-            <button onClick={(e) => { e.stopPropagation(); sexe.value = 'h'; }}>
-              {t('acc_homme')}
-            </button>
-            <button onClick={(e) => { e.stopPropagation(); sexe.value = 'f'; }}>
-              {t('acc_femme')}
-            </button>
-          </div>
+      {/* Les deux boutons restent LA en permanence (Raci, 17/08 :
+          « il faut pouvoir laisser choisir constamment »). Ils ne
+          s'effacaient qu'apres la premiere reponse, et revenir en
+          arriere supposait de connaitre les parametres du compte —
+          autant dire que le choix etait definitif.
+          Seule la question disparait une fois repondu : elle sert a
+          amorcer, les boutons a corriger. */}
+      <div class="bm-sexe">
+        {!sexe.value && <span class="bm-sexe-q">{t('bm_sexe_q')}</span>}
+        <div class="bm-sexe-choix">
+          <button class={sexe.value === 'h' ? 'on' : ''}
+            aria-pressed={sexe.value === 'h'}
+            onClick={(e) => { e.stopPropagation(); sexe.value = 'h'; }}>
+            {t('acc_homme')}
+          </button>
+          <button class={sexe.value === 'f' ? 'on' : ''}
+            aria-pressed={sexe.value === 'f'}
+            onClick={(e) => { e.stopPropagation(); sexe.value = 'f'; }}>
+            {t('acc_femme')}
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -1278,8 +1278,14 @@ const DECALAGE_SW_V2 = 232;
     // compte suppose qu'on soit alle le chercher.
     if (!/bm_sexe_q/.test(stats))
       soucis.push('la question sous la silhouette a disparu : le modele feminin redevient inatteignable sans passer par les reglages');
-    if (!/!sexe\.value &&/.test(stats))
-      soucis.push('la question ne depend plus d\'une reponse absente : elle se reposerait a chaque visite');
+    if (!/!sexe\.value && <span class="bm-sexe-q"/.test(stats))
+      soucis.push('la question d\'amorce ne depend plus d\'une reponse absente : elle se reposerait a chaque visite');
+    // Raci, 17/08 : « une fois que j'ai choisi femme je ne peux plus
+    // revenir en arriere ». Les boutons s'effacaient apres la premiere
+    // reponse et le retour supposait de connaitre les parametres du
+    // compte — le choix etait de fait definitif.
+    if (/\{!sexe\.value && \(\s*<div class="bm-sexe"/.test(stats.replace(/\s+/g, ' ')))
+      soucis.push('les boutons de silhouette disparaissent apres la premiere reponse : le choix redevient definitif');
     if (soucis.length) faute('R39 silhouette et sexe', soucis.join(' ; '));
     else passe('R39 silhouette et sexe');
   }
