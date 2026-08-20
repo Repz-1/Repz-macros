@@ -831,3 +831,46 @@
    se rangent sur les barreaux voisins. */
 .pg-entrainer--carte .ent-sem-oubli,
 .pg-entrainer--carte .ml-fait-v { font-size: 12.5px; }
+
+/* =====================================================================
+   HARMONISATION AVEC LE JOURNAL — 17/08.
+   Mesure des deux pages cote a cote : les cartes du Journal portent
+   une ombre a trois couches et une bordure lisible ; celles de
+   S'entrainer n'avaient AUCUNE ombre et une bordure a 6 % d'opacite,
+   trop pale pour detacher la carte du fond. D'ou l'impression de
+   pages a deux niveaux de finition.
+   Meme recette ici, aux memes valeurs — pas approchantes, les memes :
+   deux ombres voisines mais differentes se remarquent des qu'on passe
+   d'un onglet a l'autre.
+   ===================================================================== */
+.pg-entrainer--carte .ent-bloc,
+.pg-entrainer--carte .ent-action {
+  border: 1px solid #E5E3DE;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .8),
+    0 1px 2px rgba(24, 24, 24, .03),
+    0 6px 18px rgba(60, 50, 40, .07);
+}
+
+/* --- Densite : un rythme, pas trois -------------------------------
+   Les ecarts entre blocs valaient 18 px partout, y compris entre la
+   pastille d'accueil et le bouton principal — qui forment une seule
+   idee. On resserre ce qui va ensemble et on garde l'air entre les
+   sections, plutot qu'un intervalle unique applique sans distinction. */
+.pg-entrainer--carte .wlog-sum-vide { margin-bottom: 10px; }
+.pg-entrainer--carte .ent-bloc { margin-bottom: 14px; }
+.pg-entrainer--carte .ent-bloc:last-of-type { margin-bottom: 0; }
+
+/* Le titre de section ne concurrence pas le bouton : il descend de
+   17 a 16 px et gagne en interlettrage negatif, ce qui le pose sans
+   l'affaiblir. */
+.pg-entrainer--carte .ent-bloc > h3 {
+  font-size: 16px; letter-spacing: -.02em; margin-bottom: 2px;
+}
+
+/* Les pastilles du haut : discretes mais lisibles. Elles portaient la
+   graisse 700 d'un titre pour un contenu de legende. */
+.pg-entrainer--carte .wlog-sum-pill {
+  font-size: 12px; font-weight: 500; color: var(--txt-2);
+  background: rgba(45, 30, 10, .05);
+}

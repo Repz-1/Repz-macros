@@ -1379,6 +1379,12 @@ const DECALAGE_SW_V2 = 232;
     const ent = lire('app-v2/src/styles/entete-commune.css') || '';
     if (/color:\s*#191919/.test(sansCommentaires(ent)))
       soucis.push('l\'en-tete reprend un noir en dur au lieu de --texte');
+    // Les cartes des deux pages doivent porter la MEME ombre. Mesure
+    // du 17/08 : celles de S'entrainer n'en avaient aucune et leur
+    // bordure etait a 6 % d'opacite — d'ou l'impression de deux
+    // niveaux de finition entre les onglets.
+    if (!/0 6px 18px rgba\(60, 50, 40, \.07\)/.test(propre))
+      soucis.push('les cartes de S\'entrainer ont perdu l\'ombre du Journal : les deux onglets se remettent a diverger');
     if (soucis.length) faute('R42 typographie de S\'entrainer', soucis.join(' ; '));
     else passe('R42 typographie de S\'entrainer');
   }
