@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState, useRef } from 'preact/hooks';
 import { calculerBesoins, NIVEAUX_ACTIVITE, OBJECTIFS } from '../data/tdee.js';
 import { setObjectifs, calculBaseFait, poidsCalcul, objectifs } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
@@ -18,24 +18,49 @@ export function TdeeCalculator({ montre, fermer, retour }) {
   // 4 valeurs — reserve Premium, toujours (ajustement fin continu).
   const [mode, setMode] = useState('calc');
   const [man, setMan] = useState(() => ({ ...objectifs.value }));
+
+  // Les PROPORTIONS de depart, figees a l'ouverture. C'est la
+  // correction du 21/08 : le rapport etait relu dans l'etat courant a
+  // chaque frappe, donc il se detruisait lui-meme. En tapant « 4000 »,
+  // le premier « 4 » ramenait les macros a 0-1-0 ; le « 0 » suivant
+  // les mettait a l'echelle de CES valeurs-la, et ainsi de suite. On
+  // arrivait a 4000 kcal avec 0 g de proteines et 1000 g de glucides.
+  // Fige, le rapport survit a la saisie chiffre par chiffre.
+  const partRef = useRef(null);
+  if (partRef.current === null) {
+    const o = objectifs.value;
+    const base = (+o.prot || 0) * 4 + (+o.carbs || 0) * 4 + (+o.lip || 0) * 9;
+    partRef.current = base > 0
+      ? { prot: (+o.prot || 0) / base, carbs: (+o.carbs || 0) / base, lip: (+o.lip || 0) / base }
+      : null;
+  }
+
   const majMan = (cle, val) => setMan(o => {
     const v = val === '' ? '' : Math.max(0, parseFloat(val) || 0);
-    if (cle !== 'kcal' || v === '' || v <= 0) return { ...o, [cle]: v };
-    // Changer les calories REPARTIT les macros dans les memes
-    // proportions. Sans cela, passer de 3562 a 4000 kcal laissait des
-    // macros qui n'en totalisaient que 3562 : l'objectif affiche et
-    // les barres de macros racontaient deux histoires differentes.
-    // Les proportions sont celles de l'utilisateur, jamais une
-    // formule : on ne fait que les mettre a l'echelle. Chaque macro
-    // reste modifiable ensuite, elle n'est pas re-touchee.
-    const base = (+o.prot || 0) * 4 + (+o.carbs || 0) * 4 + (+o.lip || 0) * 9;
-    if (base <= 0) return { ...o, kcal: v };
-    const k = v / base;
+    // Une macro saisie a la main fait foi : elle redefinit le rapport,
+    // sinon la frappe suivante sur les calories l'ecraserait.
+    if (cle !== 'kcal') {
+      const suite = { ...o, [cle]: v };
+      const base = (+suite.prot || 0) * 4 + (+suite.carbs || 0) * 4 + (+suite.lip || 0) * 9;
+      if (base > 0) {
+        partRef.current = {
+          prot: (+suite.prot || 0) / base,
+          carbs: (+suite.carbs || 0) / base,
+          lip: (+suite.lip || 0) / base,
+        };
+      }
+      return suite;
+    }
+    // Changer les calories repartit les macros dans les MEMES
+    // proportions qu'au depart. Elles sont celles de l'utilisateur,
+    // jamais une formule : on ne fait que les mettre a l'echelle.
+    if (v === '' || v <= 0 || !partRef.current) return { ...o, kcal: v };
+    const r = partRef.current;
     return {
       kcal: v,
-      prot: Math.round((+o.prot || 0) * k),
-      carbs: Math.round((+o.carbs || 0) * k),
-      lip: Math.round((+o.lip || 0) * k),
+      prot: Math.round(r.prot * v),
+      carbs: Math.round(r.carbs * v),
+      lip: Math.round(r.lip * v),
     };
   });
   const kcalMacros = Math.round((+man.prot || 0) * 4 + (+man.carbs || 0) * 4 + (+man.lip || 0) * 9);

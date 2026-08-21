@@ -1450,6 +1450,36 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R45 — Le rapport des macros survit a la saisie chiffre par chiffre.
+// Raci, 21/08 : « j'ai modifie mes calories mais les macros n'ont
+// toujours pas change ». Elles changeaient — mais mal.
+//
+// Le rapport etait relu dans l'ETAT COURANT a chaque frappe, donc il
+// se detruisait lui-meme. En tapant « 4000 » sur un objectif de 3562
+// kcal : le premier « 4 » ramenait les macros a 0 g de proteines,
+// 1 g de glucides ; le « 0 » suivant les mettait a l'echelle de CES
+// valeurs-la. Resultat final : 4000 kcal, 0 g de proteines, 1000 g de
+// glucides.
+//
+// Le rapport est desormais fige a l'ouverture (useRef) et ne bouge que
+// si l'utilisateur saisit une macro a la main.
+// ------------------------------------------------------------
+{
+  const tdee = lire('app-v2/src/components/TdeeCalculator.jsx');
+  if (tdee) {
+    const soucis = [];
+    if (!/partRef/.test(tdee))
+      soucis.push('le rapport des macros n\'est plus fige : il se detruira a nouveau frappe par frappe');
+    // Le symptome exact : recalculer la base depuis `o` dans la branche kcal.
+    const branche = (tdee.match(/if \(cle !== 'kcal'\)[\s\S]*?\}\);/) || [''])[0];
+    if (/const base = \(\+o\.prot/.test(branche.slice(branche.indexOf('Changer les calories'))))
+      soucis.push('la branche des calories relit les macros courantes : le rapport se detruit a chaque frappe');
+    if (soucis.length) faute('R45 rapport des macros', soucis.join(' ; '));
+    else passe('R45 rapport des macros');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

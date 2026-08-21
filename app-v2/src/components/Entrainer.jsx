@@ -287,12 +287,14 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
               <path d="M12 11v5M9.5 13.5h5" />
             </svg>
           </span>
+          {/* Titre seul (Raci, 21/08). Le sous-titre « Replacer les
+              seances, en changer ou l'arreter » passait sur deux lignes
+              et faisait de la carte secondaire le bloc le plus haut de
+              la zone d'action — juste sous le bouton qui doit dominer.
+              Ce qu'il annoncait se decouvre de toute facon en entrant. */}
           <span class="ent-prog-txt">
             <span class="ent-prog-t">
               {programmeActif.value ? t('tr_prog_gerer') : t('tr_adapt_prog')}
-            </span>
-            <span class="ent-prog-s">
-              {programmeActif.value ? t('tr_prog_gerer_sub') : t('tr_adapt_prog_sub')}
             </span>
           </span>
           <span class="ent-prog-fl" aria-hidden="true">&rsaquo;</span>

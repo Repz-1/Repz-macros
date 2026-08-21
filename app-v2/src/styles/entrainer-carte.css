@@ -931,3 +931,10 @@
   display: flex; flex-wrap: wrap; gap: 6px;
   margin: 10px 0 2px;
 }
+
+/* La carte « Mon programme » n'a plus que son titre : elle se resserre
+   en consequence. A l'ancienne hauteur, une ligne seule aurait flotte
+   au milieu d'un bloc dimensionne pour deux. */
+.pg-entrainer--carte .ent-prog { padding: 11px 14px; }
+.pg-entrainer--carte .ent-prog-ic { flex-basis: 34px; height: 34px; border-radius: 10px; }
+.pg-entrainer--carte .ent-prog-ic svg { width: 18px; height: 18px; }
