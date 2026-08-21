@@ -920,3 +920,14 @@
 .pg-entrainer--carte .ent-go {
   box-shadow: 0 6px 26px rgba(250, 196, 8, .26);
 }
+
+/* Les deux resumes, descendus sous le titre du calendrier. Ils
+   flottaient en haut de page, de largeurs inegales, au-dessus de la
+   carte d'action : ils cassaient l'alignement du haut sans etre a leur
+   place — ils comptent les seances du MOIS AFFICHE, pas de la journee.
+   Sur une ligne, ils se lisent comme une legende du calendrier plutot
+   que comme deux etiquettes empilees. */
+.pg-entrainer--carte .wlog-resume {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 10px 0 2px;
+}

@@ -1398,6 +1398,34 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R43 — Le haut de S'entrainer reste degage.
+// Raci, 21/08, capture a l'appui : les deux pastilles de resume
+// flottaient entre l'en-tete et la carte d'action, de largeurs
+// inegales, et cassaient l'alignement du haut. Elles comptent les
+// seances du MOIS AFFICHE au calendrier — leur place est sous son
+// titre, pas au-dessus du bouton du jour.
+// Les emoji qui les precedaient sont retires : un halterophile et un
+// biceps en couleur ne disaient rien que le texte ne dise deja.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  if (ent) {
+    const soucis = [];
+    const i = ent.indexOf('function JournalEntrainement');
+    const bloc = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : ent;
+    if (!/wlog-resume/.test(bloc))
+      soucis.push('les resumes ne sont plus sous le titre du calendrier');
+    const haut = bloc.slice(bloc.indexOf('class="wlog-sum"'), bloc.indexOf('ent-action'));
+    if (/wlog-sum-pill/.test(haut))
+      soucis.push('une pastille de resume est remontee au-dessus de la carte d\'action : le haut se dealigne a nouveau');
+    if (/🏋|💪/.test(bloc))
+      soucis.push('un emoji est revenu devant les resumes');
+    if (soucis.length) faute('R43 haut de S\'entrainer', soucis.join(' ; '));
+    else passe('R43 haut de S\'entrainer');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

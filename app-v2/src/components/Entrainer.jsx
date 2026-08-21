@@ -227,25 +227,14 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
 
   return (
     <>
-      {/* 1 — Pastilles de resume. Elles ouvraient jadis le bloc replie ;
-          elles ne font plus que renseigner, en tete de page. */}
+      {/* 1 — Le haut de page ne porte plus que l'accueil du premier
+          jour. Les deux pastilles de resume flottaient ici, de largeurs
+          inegales, au-dessus de la carte d'action : elles cassaient
+          l'alignement du haut sans etre a leur place — elles parlent du
+          MOIS AFFICHE au calendrier, pas de la journee. Elles sont
+          descendues sous le titre du calendrier (Raci, 21/08). */}
       <div class="wlog-sum">
-        {(nbSeancesMois || dernierIso) ? (
-          <>
-            <span class="wlog-sum-pill">
-              🏋️ {nbSeancesMois} {t(nbSeancesMois > 1 ? 'sessions' : 'session')} {t('in_month')} {t('months_long').split('|')[ref.getMonth()]}
-            </span>
-            {dernierTxt && (
-              <span class="wlog-sum-pill">
-                {/* « Dernière : Triceps · Ven 14 août » etait trop long
-                    (Raci, 12/08). Quand c'est proche, le jour se dit en
-                    un mot — aujourd'hui, hier — et la date complete ne
-                    sert plus a rien. Elle ne revient qu'au-dela. */}
-                💪 {t('last_session')} : {dernierTxt} · {quandCourt(dernierIso, todayIso)}
-              </span>
-            )}
-          </>
-        ) : (
+        {(nbSeancesMois || dernierIso) ? null : (
           /* Etat vide : le bandeau etait une pastille grise a coin
              arrondi, de la meme famille que les compteurs qui
              l'entourent d'habitude — sauf qu'ici il est seul, et que
@@ -314,6 +303,28 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
       <div class="ent-bloc">
         <h3>{t('tr_log_title')}</h3>
         <p class="ent-sous">{t('tr_log_sub')}</p>
+
+        {/* Les deux resumes, descendus du haut de page : ils comptent
+            les seances du MOIS AFFICHE, donc ils appartiennent au
+            calendrier. Sans emoji — un halterophile et un biceps en
+            couleur devant chaque ligne juraient avec le reste de la
+            page, et ne disaient rien que le texte ne dise deja. */}
+        {(nbSeancesMois || dernierIso) && (
+          <div class="wlog-resume">
+            <span class="wlog-sum-pill">
+              {nbSeancesMois} {t(nbSeancesMois > 1 ? 'sessions' : 'session')} {t('in_month')} {t('months_long').split('|')[ref.getMonth()]}
+            </span>
+            {dernierTxt && (
+              <span class="wlog-sum-pill">
+                {/* « Dernière : Triceps · Ven 14 août » etait trop long
+                    (Raci, 12/08). Quand c'est proche, le jour se dit en
+                    un mot — aujourd'hui, hier — et la date complete ne
+                    sert plus a rien. Elle ne revient qu'au-dela. */}
+                {t('last_session')} : {dernierTxt} · {quandCourt(dernierIso, todayIso)}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Le calendrier ne retient plus que deux semaines (v355) :
             reculer au-dela n'ouvre que des mois vides, ce qui se lit
