@@ -78,7 +78,13 @@ export function Entete({ retour } = {}) {
         <img class="j-symbole" src="/belfit-logo-bf.png" alt="BELFIT" />
       )}
 
+      {/* « Bonjour + prenom » retire de toutes les pages (Raci, 21/08,
+          « pour le moment »). Le calcul de `p` est conserve juste
+          au-dessus : le jour ou on le remet, il n'y a que cette ligne
+          a decommenter, et la grille de l'en-tete a repasser a trois
+          colonnes dans entete-commune.css.
       <div class="j-prenom">{p ? `${t('greeting')} ${p}` : t('greeting')}</div>
+      */}
 
       <div class="j-entete-actions">
         <button class="j-btn-icone" onClick={ouvrirProfil} aria-label="Profil">

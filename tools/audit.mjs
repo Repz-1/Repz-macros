@@ -1426,6 +1426,30 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R44 — L'en-tete n'a que deux colonnes tant que le prenom est retire.
+// Raci, 21/08 : « on enleve le bonjour + nom pour le moment ». Le
+// piege est dans la grille : avec « 1fr auto 1fr » et deux enfants
+// seulement, les icones se placent dans la colonne du MILIEU et
+// laissent un vide a droite. Les deux changements vont ensemble — si
+// l'un revient sans l'autre, l'en-tete se casse.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/Entete.jsx');
+  const css = lire('app-v2/src/styles/entete-commune.css');
+  if (jsx && css) {
+    // Le rendu compte, pas le commentaire qui conserve la ligne.
+    const actif = jsx.replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
+    const troisColonnes = /grid-template-columns:\s*1fr auto 1fr/.test(sansCommentaires(css));
+    const prenomRendu = /class="j-prenom"/.test(actif);
+    if (prenomRendu !== troisColonnes) {
+      faute('R44 en-tete et prenom', prenomRendu
+        ? 'le prenom est rendu mais la grille n\'a que deux colonnes : il ecrasera les icones'
+        : 'le prenom est retire mais la grille en garde trois : les icones se calent au milieu et laissent un vide a droite');
+    } else passe('R44 en-tete et prenom');
+  }
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

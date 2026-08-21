@@ -21,7 +21,13 @@
 
 .j-entete--perso.j-entete--perso.j-entete--perso {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  /* Deux colonnes depuis le retrait du prenom (21/08) : le symbole a
+     gauche, les icones a droite. Avec « 1fr auto 1fr » et deux enfants
+     seulement, les icones se seraient placees dans la colonne du
+     MILIEU et auraient laisse un vide a droite.
+     Pour remettre le prenom : repasser a « 1fr auto 1fr » et
+     decommenter la ligne .j-prenom dans Entete.jsx. */
+  grid-template-columns: 1fr auto;
   align-items: center;
   min-height: 47px;
   padding: 0;
