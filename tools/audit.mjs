@@ -1385,6 +1385,13 @@ const DECALAGE_SW_V2 = 232;
     // niveaux de finition entre les onglets.
     if (!/0 6px 18px rgba\(60, 50, 40, \.07\)/.test(propre))
       soucis.push('les cartes de S\'entrainer ont perdu l\'ombre du Journal : les deux onglets se remettent a diverger');
+    // La carte d'action porte le MEME graphite que le cadran des
+    // calories : deux graphites voisins se remarquent des qu'on passe
+    // d'un onglet a l'autre.
+    if (!/\.ent-action \{[^}]*var\(--degrade-graphite\)/.test(propre.replace(/\s+/g, ' ')))
+      soucis.push('la carte d\'action n\'utilise plus le degrade graphite du systeme : elle divergerait du cadran du Journal');
+    if (/\.ent-prog-t \{[^}]*color:\s*#(16130F|181818)/i.test(propre.replace(/\s+/g, ' ')))
+      soucis.push('le texte de « Mon programme » est repasse en noir : illisible sur graphite');
     if (soucis.length) faute('R42 typographie de S\'entrainer', soucis.join(' ; '));
     else passe('R42 typographie de S\'entrainer');
   }

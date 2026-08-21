@@ -687,7 +687,8 @@
 .pg-entrainer--carte .ent-prog-txt { flex: 1 1 auto; min-width: 0; }
 .pg-entrainer--carte .ent-prog-t {
   display: block; font-size: 15px; font-weight: 700;
-  letter-spacing: -.01em; color: #181818;
+  letter-spacing: -.01em;
+  /* La couleur est posee plus bas, avec le passage au graphite. */
 }
 .pg-entrainer--carte .ent-prog-s {
   display: block; font-size: 12.5px; font-weight: 500;
@@ -741,10 +742,10 @@
   font-size: 13px; font-weight: 400; letter-spacing: 0;
   color: var(--txt-2);
 }
-/* 3. Bouton — 15 px / 700, sauf le principal traite plus bas */
+/* 3. Bouton — 15 px / 700. La couleur suit le fond de la carte, elle
+   est donc posee avec le graphite plus bas. */
 .pg-entrainer--carte .ent-prog-t {
   font-size: 15px; font-weight: 700; letter-spacing: -.01em;
-  color: var(--txt-1);
 }
 
 /* --- Hierarchie : un seul element domine -------------------------- */
@@ -873,4 +874,49 @@
 .pg-entrainer--carte .wlog-sum-pill {
   font-size: 12px; font-weight: 500; color: var(--txt-2);
   background: rgba(45, 30, 10, .05);
+}
+
+/* =====================================================================
+   LA CARTE D'ACTION PASSE EN GRAPHITE — 17/08.
+   Meme traitement que le cadran des calories du Journal : ce sont les
+   deux memes roles, la carte qui porte l'action du jour. Elle reprend
+   donc le degrade et les trois tons de texte du systeme, pas des
+   valeurs approchantes — deux graphites voisins se remarquent des
+   qu'on passe d'un onglet a l'autre.
+   Le reste de la page reste clair : c'est un bandeau, pas un mode
+   sombre.
+   ===================================================================== */
+.pg-entrainer--carte .ent-action {
+  background: var(--degrade-graphite);
+  border: 1px solid rgba(255, 255, 255, .07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .06),
+    0 10px 28px rgba(23, 28, 36, .28);
+}
+.pg-entrainer--carte .ent-action-jour { color: var(--sur-graphite-3); }
+
+/* La carte « Mon programme » reste secondaire, mais sur graphite :
+   un aplat blanc y aurait fait un second point focal a cote du jaune. */
+.pg-entrainer--carte .ent-prog {
+  background: rgba(255, 255, 255, .05);
+  border-color: rgba(255, 255, 255, .10);
+}
+.pg-entrainer--carte .ent-prog-t { color: var(--sur-graphite); }
+.pg-entrainer--carte .ent-prog-s { color: var(--sur-graphite-3); }
+.pg-entrainer--carte .ent-prog-fl { color: var(--sur-graphite-3); }
+/* L'icone reprend le jaune BELFIT : sur graphite, l'orange du fond
+   creme n'a plus assez de contraste. */
+.pg-entrainer--carte .ent-prog-ic {
+  background: rgba(250, 196, 8, .14);
+  color: #FAC408;
+}
+.pg-entrainer--carte .ent-prog:active {
+  background: rgba(255, 255, 255, .09);
+  box-shadow: none;
+}
+
+/* Le jaune gagne un halo : sur graphite il devient franchement
+   lumineux sans qu'on ait touche a sa couleur. */
+.pg-entrainer--carte .ent-go {
+  box-shadow: 0 6px 26px rgba(250, 196, 8, .26);
 }

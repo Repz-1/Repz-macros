@@ -56,11 +56,16 @@ export function BodyMap({ compte, onClick }) {
   // a partir de la planche de Raci. Ici on ne fait que colorer : aucune
   // geometrie n'est ecrite a la main, donc retoucher la silhouette veut
   // dire relancer le tracer, jamais editer ce fichier.
-  const col = (k) => (compte[k] > 0 ? (COL[k] || '#F7B500') : '#DDE1E7');
+  // Le gris de repos vient du CSS : sur le fond anthracite de
+  // S'entrainer, le #DDE1E7 d'origine devient un corps blanc eclatant
+  // au milieu d'une page sombre. La variable permet a chaque page de
+  // donner le sien sans que le composant ait a savoir ou il est monte.
+  const REPOS = 'var(--bm-repos, #DDE1E7)';
+  const col = (k) => (compte[k] > 0 ? (COL[k] || '#F7B500') : REPOS);
   const colBras = () => {
     if (compte.biceps > 0) return COL.biceps;
     if (compte.triceps > 0) return COL.triceps;
-    return '#DDE1E7';
+    return REPOS;
   };
   const teinte = (p) => {
     if (p.g === 'tete') return '#151515';
