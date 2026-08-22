@@ -551,8 +551,11 @@ const DECALAGE_SW_V2 = 232;
   const detail = lire('app-v2/src/components/SeanceDetail.jsx');
   if (seances && detail) {
     const soucis = [];
-    if (!/noterMuscles\(seance\.iso, seance\.muscles\)/.test(seances)) {
-      soucis.push('enregistrerSeance ne colore plus le calendrier');
+    // 22/08 : la liaison ne passe plus par une RECOPIE dans muscleLog
+    // (voir R46) mais par une lecture directe de la liste des seances.
+    // Ce qui doit tenir : la seance porte son jour et ses muscles.
+    if (!/iso: s\.iso \|\|/.test(seances) || !/muscles: s\.muscles \|\| \[\]/.test(seances)) {
+      soucis.push('la seance enregistree ne porte plus son jour ou ses muscles — le calendrier ne peut plus les deduire');
     }
     if (!/enregistrerSeance\(/.test(detail)) {
       soucis.push('la seance de programme ne s\'enregistre pas — branche sans fin');
@@ -1046,7 +1049,7 @@ const DECALAGE_SW_V2 = 232;
       // R33 : les muscles des exercices comptent, pas seulement les
       // pastilles cochees. Sans cela, une seance pecs enregistree sans
       // pastille laisse le corps gris.
-      if (!/faites\.forEach/.test(fiche))
+      if (!/compteDuJour\(iso\)/.test(fiche))
         soucis.push('les muscles des seances enregistrees ne sont plus deduits : une seance non pointee laisse la silhouette grise');
       // R34 : toute fiche ouverte s'empile, sinon le retour Android
       // change l'onglet SOUS elle.
@@ -1477,6 +1480,44 @@ const DECALAGE_SW_V2 = 232;
     if (soucis.length) faute('R45 rapport des macros', soucis.join(' ; '));
     else passe('R45 rapport des macros');
   }
+}
+
+// ------------------------------------------------------------
+// R46 — Un jour ne porte que ce qui le justifie encore.
+// Raci, 22/08 : « si je clique sur le 21 aout il m'affiche 4 muscles,
+// c'est faux ». La fiche ne lisait pourtant que ce jour-la. Le defaut
+// etait en amont : enregistrerSeance RECOPIAIT les muscles de la
+// seance dans muscleLog. Deux sources fondues en une, impossible a
+// separer ensuite — supprimer la seance laissait sa couleur sur le
+// jour, definitivement, sans qu'aucune pastille ne l'explique.
+// Regle : muscleLog ne contient QUE le marquage manuel ; ce qui a ete
+// fait se deduit des seances a la lecture (services/muscles-jour.js).
+// ------------------------------------------------------------
+{
+  const src = lire('app-v2/src/services/muscles-jour.js');
+  const seances = lire('app-v2/src/store/seances.js');
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const st = lire('app-v2/src/components/Stats.jsx');
+  const sa = lire('app-v2/src/components/StatsAvancees.jsx');
+  const soucis = [];
+  if (!src) soucis.push('services/muscles-jour.js a disparu : plus de source unique');
+  else {
+    for (const f of ['compteDuJour', 'musclesDuJour', 'musclesParJour']) {
+      if (!new RegExp('export function ' + f).test(src)) soucis.push(`${f}() a disparu`);
+    }
+    // La deduction se fait jour par jour : filtrer sur sa.iso !== iso.
+    if (!/sa\.iso !== iso/.test(src)) soucis.push('la deduction ne filtre plus sur le jour : elle agregerait plusieurs jours');
+  }
+  if (seances && /noterMuscles/.test(seances)) {
+    soucis.push('la seance recopie a nouveau ses muscles dans muscleLog : une seance supprimee laissera sa couleur pour toujours');
+  }
+  if (ent && !/const log = musclesParJour\(\)/.test(ent)) {
+    soucis.push('le calendrier ne lit plus la source unique');
+  }
+  if (st && /muscleLog\.value/.test(st)) soucis.push('Stats relit muscleLog brut : les seances enregistrees en seraient absentes');
+  if (sa && /muscleLog\.value/.test(sa)) soucis.push('Stats avancees relit muscleLog brut : les seances enregistrees en seraient absentes');
+  if (soucis.length) faute('R46 muscles du jour', soucis.join(' ; '));
+  else passe('R46 muscles du jour');
 }
 
 // ------------------------------------------------------------

@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
 import { signal } from '@preact/signals';
 import { GROUPES, muscleLog, basculerMuscle, borneCalendrier } from '../store/entrainement.js';
+import { compteDuJour, musclesParJour } from '../services/muscles-jour.js';
 import { estPremium } from './PremiumPage.jsx';
 import { enDecouverte } from '../services/decouverte.js';
 import { ongletActif } from './BottomNav.jsx';
@@ -128,7 +129,10 @@ const nomMuscle = (k) => t('mus_' + k);
 function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
   const [offset, setOffset] = useState(0);
 
-  const log = muscleLog.value;
+  // Source unique : marquage manuel + seances enregistrees, reunis a
+  // la lecture (services/muscles-jour.js). Le calendrier ne depend
+  // plus d'une recopie faite a la fin de la seance.
+  const log = musclesParJour();
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const todayIso = wlIso(today);
   const ref = new Date(today.getFullYear(), today.getMonth() + offset, 1);
@@ -448,13 +452,7 @@ function ModaleMuscles({ iso, fermer }) {
   // enregistrees. Sans la deduction, faire une seance pecs sans
   // cocher la pastille laissait le corps gris.
   const jour = wlIsoToDate(iso);
-  const compte = {};
-  (muscleLog.value[iso] || []).forEach(k => {
-    if (k !== 'repos') compte[k] = (compte[k] || 0) + 1;
-  });
-  faites.forEach(sa => (sa.exos || []).forEach(e => {
-    if (e.mKey && e.mKey !== 'repos') compte[e.mKey] = (compte[e.mKey] || 0) + 1;
-  }));
+  const compte = compteDuJour(iso);
   // PORTAIL VERS document.body. Le rail des onglets porte
   // will-change:transform et z-index:1 : il cree un contexte
   // d'empilement, donc le z-index 100 de la modale ne valait que
@@ -501,6 +499,12 @@ function ModaleMuscles({ iso, fermer }) {
           <div class="ml-prevu">
             <div class="ml-prevu-t">{prevue.titre}</div>
             <div class="ml-prevu-s">{prevue.sub}</div>
+            {/* Jour passe : cette seance etait au programme, elle n'a
+                jamais ete enregistree. Sans cette ligne, elle se lisait
+                comme une seance FAITE — le titre du bloc dit « ce que
+                tu as fait » — et contredisait les muscles affiches
+                dessous (Raci, 22/08). */}
+            {type === 'passe' && <div class="ml-prevu-non">{t('ml_prevu_non')}</div>}
             {type !== 'passe' && (
               <button class="ml-prevu-b" onClick={() => {
                 fermer();
@@ -558,7 +562,12 @@ function ModaleMuscles({ iso, fermer }) {
                 eteints : elle nomme ce qui a ete travaille, et le dit
                 quand il n'y a rien. Une liste de gris demande de
                 chercher les rares pastilles allumees. */}
-            <div class="ml-legende-titre">{t('ml_ce_jour')}</div>
+            {/* Le titre ne s'affiche que s'il annonce quelque chose : un
+                en-tete seul au-dessus du vide fait chercher ce qui
+                manque (Raci, 22/08). La silhouette grise suffit. */}
+            {GROUPES.some(g => COULEUR[g.k] && compte[g.k]) && (
+              <div class="ml-legende-titre">{t('ml_ce_jour')}</div>
+            )}
             {GROUPES.filter(g => COULEUR[g.k] && compte[g.k]).map(g => (
               <span key={g.k} class="fait">
                 <i class="dot" style={{ background: COULEUR[g.k] }} />

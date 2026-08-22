@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { weightLog, histoJours, ajouterPesee } from '../store/stats.js';
 import { objectifs } from '../store/journal.js';
-import { muscleLog } from '../store/entrainement.js';
+import { musclesParJour } from '../services/muscles-jour.js';
 import { setLog } from './SeanceTracker.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
@@ -292,7 +292,9 @@ export function Stats() {
   const histoBrut = histoJours.value || {};
   // v1 : history = [{iso, date, kcal, ...}] ; store v2 = {iso: {kcal,...}}
   const histoire = Object.entries(histoBrut).map(([iso, v]) => ({ iso, ...(v || {}) }));
-  const mLog = muscleLog.value || {};
+  // Marquage manuel ET seances enregistrees : depuis le 22/08 la
+  // seance n'ecrit plus dans muscleLog, elle se lit en direct.
+  const mLog = musclesParJour();
   // setLog v2 : { iso: [{ex, series:[{kg,reps}]}] }
   // -> vue par exercice, meme forme que la v1 : { nom: [{iso, sets:[{w,r}]}] }
   const setLogJours = setLog.value || {};

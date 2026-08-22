@@ -587,6 +587,10 @@
 }
 .ml-prevu-t { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
 .ml-prevu-s { font-size: 11.5px; color: #736C63; }
+/* Jour passe : la seance etait prevue, pas faite. Le brun-or du texte
+   la distingue du titre sans crier — c'est une precision, pas une
+   alerte. */
+.ml-prevu-non { margin-top: 6px; font-size: 11.5px; font-weight: 700; color: #B34700; }
 .ml-prevu-b {
   display: block; width: 100%; margin-top: 11px; border: none; border-radius: 12px;
   background: #FAC408; color: #16130F; padding: 13px;

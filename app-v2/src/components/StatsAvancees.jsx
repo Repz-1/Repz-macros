@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks';
 import { t } from '../i18n/index.js';
 import { weightLog, histoJours } from '../store/stats.js';
 import { objectifs } from '../store/journal.js';
-import { muscleLog } from '../store/entrainement.js';
+import { musclesParJour } from '../services/muscles-jour.js';
 import { Entete } from './Entete.jsx';
 import { useRetour } from '../services/retour.js';
 import '../styles/stats-avancees.css';
@@ -134,7 +134,8 @@ export function StatsAvancees({ fermer }) {
 
   // --- Muscles ---
   const muscles = {};
-  Object.entries(muscleLog.value || {}).forEach(([d, vals]) => {
+  const journal = musclesParJour();
+  Object.entries(journal).forEach(([d, vals]) => {
     if (d < borne) return;
     (Array.isArray(vals) ? vals : []).forEach(m => {
       if (m === 'repos') return;
@@ -142,8 +143,8 @@ export function StatsAvancees({ fermer }) {
     });
   });
   const topMuscle = Object.entries(muscles).sort((a, b) => b[1] - a[1])[0];
-  const seances = Object.keys(muscleLog.value || {})
-    .filter(d => d >= borne && (muscleLog.value[d] || []).some(v => v !== 'repos')).length;
+  const seances = Object.keys(journal)
+    .filter(d => d >= borne && (journal[d] || []).some(v => v !== 'repos')).length;
 
   const assez = nbJours > 0 || pesees.length > 0;
 
