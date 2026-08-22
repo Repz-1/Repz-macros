@@ -553,13 +553,20 @@
    fermait qu'en touchant a cote : un geste qu'il faut deviner, et qui
    rate souvent puisqu'elle occupe presque tout l'ecran. Le bouton
    Android la fermait deja, mais rien ne le disait.
-   Posee dans le flux avant la date plutot qu'en absolu : la date garde
-   sa place, et la fleche ne peut pas recouvrir un jour a deux lignes. */
+   En bas a DROITE depuis le 22/08 : en haut a gauche, elle etait au
+   coin le plus loin du pouce sur une fiche qui prend tout l'ecran.
+   Fixe, dans la reserve de 80 px que la fiche garde sous ses boutons —
+   elle ne recouvre donc ni « Effacer » ni « Enregistrer », et reste
+   atteignable meme quand la fiche est longue. */
 .ml-modal .ml-retour {
+  position: fixed;
+  right: 18px; bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 2;
   display: inline-flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px; margin: 0 0 10px -4px;
+  width: 52px; height: 52px; margin: 0;
   border: none; border-radius: 50%;
-  background: #F4F0E8; color: #181818;
-  font-size: 19px; line-height: 1; cursor: pointer;
+  background: #16130F; color: #F5A800;
+  box-shadow: 0 6px 18px rgba(22, 19, 15, .28);
+  font-size: 22px; line-height: 1; cursor: pointer;
 }
-.ml-modal .ml-retour:active { background: #E9E3D8; }
+.ml-modal .ml-retour:active { transform: scale(.94); }

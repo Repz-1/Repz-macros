@@ -462,12 +462,6 @@ function ModaleMuscles({ iso, fermer }) {
   return createPortal(
     <div class="ml-overlay show" onClick={(e) => { if (e.target.classList.contains('ml-overlay')) fermer(); }}>
       <div class="ml-modal">
-        {/* Fleche de retour (Raci, 17/08). La fiche ne se fermait qu'en
-            touchant a cote — un geste qu'il faut deviner, et qui rate
-            souvent puisque la fiche occupe presque tout l'ecran. Le
-            bouton Android la fermait deja, mais rien ne le disait a
-            l'ecran. */}
-        <button class="ml-retour" onClick={fermer} aria-label="Retour">←</button>
         <h3 class="ml-date">{jourLong(jour)}</h3>
         <div class="ml-type">
           {type === 'passe' ? t('ml_passe') : type === 'auj' ? t('ml_auj') : t('ml_futur')}
@@ -598,6 +592,14 @@ function ModaleMuscles({ iso, fermer }) {
           }}>{t('clear')}</button>
           <button class="ml-save" onClick={fermer}>{t('save')}</button>
         </div>
+
+        {/* Fleche de retour (Raci, 17/08 ; descendue en bas a droite le
+            22/08). En haut a gauche elle etait a l'opposé du pouce sur
+            une fiche qui occupe tout l'ecran. Posee en dernier dans le
+            DOM pour que l'ordre de lecture suive l'ordre visuel, elle
+            est calee en fixe dans la reserve de 80 px que la fiche
+            garde sous ses boutons. */}
+        <button class="ml-retour" onClick={fermer} aria-label="Retour">←</button>
       </div>
     </div>,
     document.body
