@@ -64,6 +64,38 @@ export function TdeeCalculator({ montre, fermer, retour }) {
     };
   });
   const kcalMacros = Math.round((+man.prot || 0) * 4 + (+man.carbs || 0) * 4 + (+man.lip || 0) * 9);
+  const kcalVise = +man.kcal || 0;
+  const ecart = kcalMacros - kcalVise;
+  // 50 kcal : le seuil qui existait deja pour la mention d'ecart. En
+  // dessous, c'est l'arrondi des grammes, pas une erreur de saisie.
+  const ecartVisible = kcalVise > 0 && Math.abs(ecart) > 50;
+
+  // Les macros suivent les calories. Elles gardent LEURS proportions
+  // (celles affichees a l'instant, pas un ratio type) : on ne fait que
+  // les mettre a l'echelle. Sans ce geste, la ligne d'ecart constatait
+  // un probleme sans rien offrir pour le regler (Raci, 23/08).
+  const repartir = () => setMan(o => {
+    const base = (+o.prot || 0) * 4 + (+o.carbs || 0) * 4 + (+o.lip || 0) * 9;
+    const cible = +o.kcal || 0;
+    if (base <= 0 || cible <= 0) return o;
+    const f = cible / base;
+    const suite = {
+      kcal: cible,
+      prot: Math.round((+o.prot || 0) * f),
+      carbs: Math.round((+o.carbs || 0) * f),
+      lip: Math.round((+o.lip || 0) * f),
+    };
+    const nb = suite.prot * 4 + suite.carbs * 4 + suite.lip * 9;
+    if (nb > 0) {
+      partRef.current = { prot: suite.prot / nb, carbs: suite.carbs / nb, lip: suite.lip / nb };
+    }
+    return suite;
+  });
+
+  // Le sens inverse : les calories se calent sur les macros. C'est le
+  // chemin qui creait l'ecart au depart — une macro corrigee a la main
+  // laissait les calories sur leur ancienne valeur.
+  const calerCalories = () => setMan(o => ({ ...o, kcal: kcalMacros }));
 
   const choisirMode = (m) => {
     if (m === 'manuel' && !estPremium.value) {
@@ -143,7 +175,18 @@ export function TdeeCalculator({ montre, fermer, retour }) {
             </label>
             <div class="calc-note pleine">
               P×4 + G×4 + L×9 = <b>{kcalMacros} kcal</b>
-              {Math.abs(kcalMacros - (+man.kcal || 0)) > 50 ? ' — écart avec tes calories' : ''}
+              {/* L'ecart porte son chiffre et son sens : « ecart avec tes
+                  calories » disait qu'il y avait un probleme sans dire
+                  lequel, ni de combien, ni comment en sortir. */}
+              {ecartVisible && (ecart < 0
+                ? <> — il manque <b>{-ecart} kcal</b> pour atteindre {kcalVise}.</>
+                : <> — <b>{ecart} kcal</b> de trop par rapport à {kcalVise}.</>)}
+              {ecartVisible && (
+                <div class="calc-accorder">
+                  <button type="button" onClick={repartir}>Répartir les {kcalVise} kcal</button>
+                  <button type="button" onClick={calerCalories}>Calories → {kcalMacros}</button>
+                </div>
+              )}
             </div>
           </div>
         ) : (

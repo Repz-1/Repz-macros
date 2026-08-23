@@ -1551,6 +1551,37 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R48 — Un ecart annonce doit se chiffrer et se combler.
+// Raci, 23/08 : ses objectifs disaient 4000 kcal et 218/428/96, soit
+// 3448 kcal de macros. La feuille affichait « — ecart avec tes
+// calories » : ni le chiffre, ni le sens, ni de quoi le corriger. Elle
+// constatait le probleme et laissait l'utilisateur avec. Regle : la
+// note porte le nombre de kcal manquantes ou en trop, et les deux
+// sorties (macros -> calories, calories -> macros) sont a un geste.
+// Rien n'est recalcule d'office : les proportions restent celles de
+// l'utilisateur, mises a l'echelle.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/TdeeCalculator.jsx');
+  const css = lire('app-v2/src/styles.css');
+  const soucis = [];
+  if (!jsx) soucis.push('TdeeCalculator.jsx introuvable');
+  else {
+    if (!/const ecart = kcalMacros - kcalVise/.test(jsx)) soucis.push('l\'ecart n\'est plus calcule');
+    if (!/il manque/.test(jsx) || !/de trop/.test(jsx)) soucis.push('l\'ecart ne dit plus son sens ni son chiffre');
+    if (!/const repartir = /.test(jsx)) soucis.push('« Repartir » a disparu : l\'ecart redevient constate sans issue');
+    if (!/const calerCalories = /.test(jsx)) soucis.push('le sens inverse (calories calees sur les macros) a disparu');
+    // La repartition met a l'echelle, elle n'impose aucun ratio type.
+    if (/0\.3\s*\*\s*cible|ratio par defaut/.test(jsx)) soucis.push('un ratio type est impose : les proportions doivent rester celles de l\'utilisateur');
+  }
+  if (css && !/\.calc-grille>\.pleine\{grid-column:1 \/ -1\}/.test(css)) {
+    soucis.push('la note d\'ecart retombe dans la demi-colonne : ses boutons s\'empilent a cote de Lipides');
+  }
+  if (soucis.length) faute('R48 ecart macros/calories', soucis.join(' ; '));
+  else passe('R48 ecart macros/calories');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
