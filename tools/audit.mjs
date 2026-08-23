@@ -172,14 +172,16 @@ const derniereValeur = (css, selecteur, propriete) => {
 // R5 — Un seul chemin pour ouvrir la pesee.
 // Trouve le 9/08 : en etat vide, la carte poids affichait DEUX
 // boutons ouvrant la meme modale, l'un sous l'autre.
-// (Regle informative tant que Raci n'a pas tranche : elle compte
-// les appels a setModalePoids dans la carte poids.)
+// Tranche par Raci le 23/08 : en etat vide, seul le bouton de l'etat
+// vide reste — il n'y a rien a « modifier » tant qu'il n'y a rien.
+// Le bouton permanent revient des la premiere pesee. La regle verifie
+// donc qu'il est bien conditionne, pas qu'il a disparu.
 // ------------------------------------------------------------
 {
   const s = lire('app-v2/src/components/Stats.jsx');
   if (s) {
-    const n = (s.match(/setModalePoids\(true\)/g) || []).length;
-    if (n > 1) faute('R5 pesee — chemin unique', `${n} boutons ouvrent la modale de pesee (attendu 1) — doublon en etat vide`);
+    const garde = /\{poidsTri\.length > 0 && \(\s*<button class="weight-add-btn"/.test(s);
+    if (!garde) faute('R5 pesee — chemin unique', 'le bouton permanent n\'est plus conditionne : il redouble le bouton de l\'etat vide');
     else passe('R5 pesee — chemin unique');
   }
 }

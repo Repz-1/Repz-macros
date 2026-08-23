@@ -553,7 +553,14 @@ export function Stats() {
               ) : <div class="gr-vide">{t('per_vide')}</div>}
             </>
           ) : <Vide texte={t('st_no_weight')} cta={t('st_add_weight')} onCta={() => setModalePoids(true)} />}
-          <button class="weight-add-btn" onClick={() => setModalePoids(true)}>{t('st_weight_add')}</button>
+          {/* Le bouton permanent ne s'affiche QUE s'il y a deja une pesee.
+              En etat vide il doublait le bouton de l'etat vide, juste en
+              dessous, vers la meme modale — et il proposait de « modifier »
+              un poids qui n'existe pas encore (R5, tranche par Raci le
+              23/08). Des la premiere pesee, il reprend sa place. */}
+          {poidsTri.length > 0 && (
+            <button class="weight-add-btn" onClick={() => setModalePoids(true)}>{t('st_weight_add')}</button>
+          )}
         </div>
 
         {/* CALORIES */}
