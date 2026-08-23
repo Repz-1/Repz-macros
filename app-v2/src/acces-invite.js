@@ -41,7 +41,10 @@
 //
 // POUR REFERMER : repasser ACCES_INVITE a false. Rien d'autre.
 // ============================================================
-export const ACCES_INVITE = true;
+// Referme le 23/08 a la demande de Raci : les essais en ligne sont
+// finis. L'ecran de connexion redevient le seul chemin, la banniere
+// rouge disparait avec le drapeau.
+export const ACCES_INVITE = false;
 
 // Identifiant local reconnu par services/sync.js (UID_INVITE).
 export const UID_INVITE = '__invite__';
