@@ -1584,6 +1584,34 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R49 — Un seul interrupteur pour le mode vitrine.
+// Raci, 24/08 : reouverture provisoire de l'acces public, avec
+// S'entrainer en premier ecran. Le risque d'un mode provisoire, c'est
+// qu'il en reste un morceau : le drapeau referme mais l'onglet
+// d'ouverture encore force. ONGLET_VITRINE est donc DERIVE de
+// ACCES_INVITE — un seul false remet tout d'aplomb. La regle verifie
+// que la derivation tient, et que le retour Android suit l'onglet
+// d'ouverture au lieu d'un 'journal' ecrit en dur.
+// ------------------------------------------------------------
+{
+  const flag = lire('app-v2/src/acces-invite.js');
+  const nav = lire('app-v2/src/components/BottomNav.jsx');
+  const main = lire('app-v2/src/main.jsx');
+  const soucis = [];
+  if (flag && !/ONGLET_VITRINE = ACCES_INVITE \?/.test(flag)) {
+    soucis.push('ONGLET_VITRINE n\'est plus derive de ACCES_INVITE : refermer l\'acces laisserait l\'onglet force');
+  }
+  if (nav && !/signal\(ONGLET_VITRINE\)/.test(nav)) {
+    soucis.push('l\'onglet d\'ouverture est reecrit en dur dans BottomNav');
+  }
+  if (main && /allerOnglet\('journal'\)/.test(main)) {
+    soucis.push('le retour Android ramene sur un journal ecrit en dur, pas sur l\'onglet d\'ouverture');
+  }
+  if (soucis.length) faute('R49 mode vitrine', soucis.join(' ; '));
+  else passe('R49 mode vitrine');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

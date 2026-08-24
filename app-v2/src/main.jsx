@@ -8,7 +8,7 @@ import './styles/journal-socle.css';
 import './styles/entete-commune.css';
 import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
-import { ACCES_INVITE } from './acces-invite.js';
+import { ACCES_INVITE, ONGLET_VITRINE } from './acces-invite.js';
 import { VERSION_APP } from './version.js';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
 import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
@@ -317,7 +317,7 @@ export function App() {
       const ongletCourant = ongletActif.value;
       const pageRepas = repasOuvertId.value !== null;
       const enProfondeur = retourEnAttente() || pageRepas
-        || vue.nom !== 'accueil' || ongletCourant !== 'journal';
+        || vue.nom !== 'accueil' || ongletCourant !== ONGLET_VITRINE;
 
       // Rien a remonter : on ne repose pas de sentinelle, le
       // telephone peut quitter l'application normalement.
@@ -330,7 +330,7 @@ export function App() {
         while (depilerRetour()) { /* ferme tous les ecrans empiles */ }
         repasOuvertId.value = null;
         vueEntrainer.value = { nom: 'accueil', params: null };
-        allerOnglet('journal');
+        allerOnglet(ONGLET_VITRINE);
         return;
       }
 
@@ -352,7 +352,10 @@ export function App() {
         else allerVers('programmes');
       }
       else if (vue.nom !== 'accueil') retourEntrainer();
-      else allerOnglet('journal');
+      // Le retour ramene sur l'onglet d'OUVERTURE, pas sur un journal
+      // ecrit en dur : en mode vitrine il renvoyait sur une page que
+      // l'utilisateur n'avait jamais ouverte.
+      else allerOnglet(ONGLET_VITRINE);
     };
 
     window.addEventListener('popstate', onPop);

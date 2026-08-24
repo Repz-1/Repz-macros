@@ -41,10 +41,17 @@
 //
 // POUR REFERMER : repasser ACCES_INVITE a false. Rien d'autre.
 // ============================================================
-// Referme le 23/08 a la demande de Raci : les essais en ligne sont
-// finis. L'ecran de connexion redevient le seul chemin, la banniere
-// rouge disparait avec le drapeau.
-export const ACCES_INVITE = false;
+// Rouvert le 24/08, PROVISOIREMENT, a la demande de Raci : nouvelle
+// serie d'essais publics. Pour refermer : repasser a false, rien
+// d'autre. Le drapeau commande aussi l'onglet d'ouverture (voir
+// ONGLET_VITRINE plus bas).
+export const ACCES_INVITE = true;
+
+// Le temps des essais publics, l'application s'ouvre sur S'entrainer
+// plutot que sur le Journal : c'est la page que Raci veut montrer en
+// premier. Adosse a ACCES_INVITE pour qu'il n'y ait qu'un interrupteur
+// a remettre a false — aucun reglage ne peut rester en arriere.
+export const ONGLET_VITRINE = ACCES_INVITE ? 'entrainer' : 'journal';
 
 // Identifiant local reconnu par services/sync.js (UID_INVITE).
 export const UID_INVITE = '__invite__';

@@ -4,10 +4,13 @@ import { repasOuvertId } from './MealCard.jsx';
 import { vueEntrainer } from './Entrainer.jsx';
 import { estPremium } from './PremiumPage.jsx';
 import { useState, useEffect } from 'preact/hooks';
+import { ONGLET_VITRINE } from '../acces-invite.js';
 
 // Onglet actif de l'app. Signal global : n'importe quel composant
 // peut naviguer (ex : le bouton « Premium » d'une modale).
-export const ongletActif = signal('journal');
+// L'onglet d'ouverture. 'journal' en temps normal ; 'entrainer' tant
+// que les essais publics sont ouverts (voir acces-invite.js).
+export const ongletActif = signal(ONGLET_VITRINE);
 
 // Onglet d'ouverture par l'adresse : belfit.be/v2/?onglet=entrainer
 // Demande de Raci le 10/08 — un lien qui ouvre directement la page
