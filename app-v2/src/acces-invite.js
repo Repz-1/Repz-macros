@@ -41,11 +41,10 @@
 //
 // POUR REFERMER : repasser ACCES_INVITE a false. Rien d'autre.
 // ============================================================
-// Rouvert le 24/08, PROVISOIREMENT, a la demande de Raci : nouvelle
-// serie d'essais publics. Pour refermer : repasser a false, rien
-// d'autre. Le drapeau commande aussi l'onglet d'ouverture (voir
-// ONGLET_VITRINE plus bas).
-export const ACCES_INVITE = true;
+// Referme le 24/08 : l'ecran de connexion redevient le seul chemin,
+// la banniere rouge disparait, et l'application se rouvre sur le
+// Journal (ONGLET_VITRINE suit ce drapeau).
+export const ACCES_INVITE = false;
 
 // Le temps des essais publics, l'application s'ouvre sur S'entrainer
 // plutot que sur le Journal : c'est la page que Raci veut montrer en
