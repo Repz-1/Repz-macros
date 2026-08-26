@@ -202,6 +202,9 @@ export function seancePrevue(iso) {
 /** Les muscles d'une seance prevue, deduits de son titre. */
 const MOTS = {
   pecs: ['pec', 'poitrine', 'push'], dos: ['dos', 'pull'], epaules: ['épaule', 'epaule'],
+  // Trapezes : groupe a part depuis le 26/08, ils doivent se deduire
+  // d'un titre comme les autres.
+  trapezes: ['trapèze', 'trapeze', 'shrug'],
   biceps: ['biceps'], triceps: ['triceps'], jambes: ['jambe', 'legs', 'quadri', 'fessier'],
   abdos: ['abdo', 'gainage', 'core'], cardio: ['cardio', 'circuit', 'hiit'],
 };

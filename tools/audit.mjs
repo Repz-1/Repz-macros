@@ -1818,6 +1818,39 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R57 — Les trapezes sont un groupe entier, pas une pastille.
+// Raci, 26/08 : « inclure les trapezes comme muscle supplementaire
+// dans la liste des muscles ». Ils existaient depuis le 10/08 dans le
+// calendrier et sur les silhouettes, mais PAS dans le selecteur
+// d'exercices : on pouvait noter une seance de trapezes apres coup,
+// jamais en monter une. Les cinq Shrug etaient ranges sous « dos ».
+// Un muscle doit exister partout ou les autres existent : selecteur,
+// deduction depuis un titre, couleur de stats.
+// ------------------------------------------------------------
+{
+  const ex = lire('app-v2/src/data/exercices.js');
+  const pg = lire('app-v2/src/store/programme.js');
+  const st = lire('app-v2/src/components/Stats.jsx');
+  const gr = lire('app-v2/src/store/entrainement.js');
+  const soucis = [];
+  if (ex) {
+    if (!/\{key:'trapezes', label:'Trapèzes'\}/.test(ex)) soucis.push('trapezes absent de MUSCLES : pas d\'onglet dans le selecteur');
+    const m = /^  trapezes: \[/m.exec(ex);
+    const n = m ? (ex.slice(m.index, ex.indexOf('\n  ],', m.index)).match(/\{nom:/g) || []).length : 0;
+    if (n < 5) soucis.push(`le groupe trapezes ne compte que ${n} exercices (5 attendus)`);
+    const md = /^  dos: \[/m.exec(ex);
+    if (md && /nom:'Shrug/.test(ex.slice(md.index, ex.indexOf('\n  ],', md.index)))) {
+      soucis.push('des Shrug sont revenus dans « dos » : ils y seraient comptes comme du dos');
+    }
+  }
+  if (pg && !/trapezes: \['trapèze'/.test(pg)) soucis.push('un titre « Trapezes » ne colore plus le calendrier');
+  if (st && /trapezes: '#F7B500'/.test(st)) soucis.push('les trapezes reprennent la teinte des epaules dans Stats');
+  if (gr && !/k: 'trapezes'/.test(gr)) soucis.push('trapezes a disparu des GROUPES');
+  if (soucis.length) faute('R57 trapezes', soucis.join(' ; '));
+  else passe('R57 trapezes');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

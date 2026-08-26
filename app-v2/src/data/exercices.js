@@ -5,6 +5,11 @@ export const IMG_BASE = 'https://raw.githubusercontent.com/yuhonas/free-exercise
 
 export const MUSCLES = [
   {key:'pecs', label:'Pecs'}, {key:'dos', label:'Dos'}, {key:'epaules', label:'Épaules'},
+  // Trapezes : groupe a part depuis le 26/08 (demande de Raci). Ils
+  // existaient deja dans le calendrier et sur les silhouettes, mais
+  // pas dans le selecteur d'exercices — impossible d'y monter une
+  // seance. Les cinq Shrug etaient ranges sous « dos ».
+  {key:'trapezes', label:'Trapèzes'},
   {key:'biceps', label:'Biceps'}, {key:'triceps', label:'Triceps'}, {key:'jambes', label:'Jambes'}, {key:'abdos', label:'Abdos'},
   {key:'etirements', label:'Étirements'}, {key:'cardio', label:'Cardio'},
 ];
@@ -84,11 +89,6 @@ export const EXERCISES = {
     {nom:'Rowing Un Bras (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'One-Arm_Kettlebell_Row', lvl:2, mat:'halteres'},
     {nom:'Rowing à Genoux (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Kneeling_High_Pulley_Row', lvl:1, mat:'machine'},
     {nom:'Rowing à Genoux Un Bras (Poulie)', meta:'4 séries × 8-10 reps', imgId:'Kneeling_Single-Arm_High_Pulley_Row', lvl:1, mat:'machine'},
-    {nom:'Shrug (Barre)', meta:'3 séries × 12 reps', imgId:'Barbell_Shrug', lvl:1, mat:'barre'},
-    {nom:'Shrug (Haltère)', meta:'3 séries × 12 reps', imgId:'Dumbbell_Shrug', lvl:1, mat:'halteres'},
-    {nom:'Shrug (Machine Smith)', meta:'3 séries × 12 reps', imgId:'Smith_Machine_Behind_the_Back_Shrug', lvl:1, mat:'machine'},
-    {nom:'Shrug (Machine)', meta:'3 séries × 12 reps', imgId:'Calf-Machine_Shoulder_Shrug', lvl:1, mat:'machine'},
-    {nom:'Shrug (Poulie)', meta:'3 séries × 12 reps', imgId:'Cable_Shrugs', lvl:1, mat:'machine'},
     {nom:'Soulevé de Terre (Barre)', meta:'4 séries × 8-10 reps', imgId:'Barbell_Deadlift', lvl:2, mat:'barre'},
     {nom:'Soulevé de Terre Inversé (Barre)', meta:'4 séries × 8-10 reps', imgId:'Reverse_Band_Deadlift', lvl:3, mat:'barre'},
     {nom:'Superman', meta:'4 séries × 8-10 reps', imgId:'Superman', lvl:1, mat:'rien'},
@@ -151,6 +151,14 @@ export const EXERCISES = {
     {nom:'Élévation Latérale Inclinées Un Bras (Haltère)', meta:'3 séries × 12 reps', imgId:'One-Arm_Incline_Lateral_Raise', lvl:1, mat:'halteres'},
     {nom:'Épaulé-Jeté (Barre)', meta:'4 séries × 8-10 reps', imgId:'Clean_and_Jerk', lvl:3, mat:'barre'},
     {nom:'Épaulé-Jeté Un Bras (Kettlebell)', meta:'4 séries × 8-10 reps', imgId:'One-Arm_Kettlebell_Clean_and_Jerk', lvl:2, mat:'halteres'},
+  ],
+  // Trapezes — les cinq Shrug, sortis de « dos » le 26/08.
+  trapezes: [
+    {nom:'Shrug (Barre)', meta:'3 séries × 12 reps', imgId:'Barbell_Shrug', lvl:1, mat:'barre'},
+    {nom:'Shrug (Haltère)', meta:'3 séries × 12 reps', imgId:'Dumbbell_Shrug', lvl:1, mat:'halteres'},
+    {nom:'Shrug (Machine Smith)', meta:'3 séries × 12 reps', imgId:'Smith_Machine_Behind_the_Back_Shrug', lvl:1, mat:'machine'},
+    {nom:'Shrug (Machine)', meta:'3 séries × 12 reps', imgId:'Calf-Machine_Shoulder_Shrug', lvl:1, mat:'machine'},
+    {nom:'Shrug (Poulie)', meta:'3 séries × 12 reps', imgId:'Cable_Shrugs', lvl:1, mat:'machine'},
   ],
   biceps: [
     {nom:'Curl Araignée (Barre EZ)', meta:'3 séries × 12 reps', imgId:'Spider_Curl', lvl:1, mat:'barre'},

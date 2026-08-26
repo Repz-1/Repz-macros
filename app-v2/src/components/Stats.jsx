@@ -19,7 +19,7 @@ import '../legacy/stats.scoped.css';
 // ==========================================================
 
 const LIMITE_GRATUIT = 7;
-const COL = { pecs: '#EF4444', dos: '#F97316', epaules: '#F7B500', trapezes: '#F7B500', biceps: '#10B981', triceps: '#06B6D4', jambes: '#3B82F6', abdos: '#8B5CF6' };
+const COL = { pecs: '#EF4444', dos: '#F97316', epaules: '#F7B500', trapezes: '#EA8C00', biceps: '#10B981', triceps: '#06B6D4', jambes: '#3B82F6', abdos: '#8B5CF6' };
 
 const isoNDaysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
 const jourCourt = (iso) => new Date(iso + 'T00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
