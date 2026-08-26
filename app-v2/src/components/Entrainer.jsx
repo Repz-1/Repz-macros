@@ -467,6 +467,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
               la zone d'action — juste sous le bouton qui doit dominer.
               Ce qu'il annoncait se decouvre de toute facon en entrant. */}
           <span class="ent-prog-txt">
+            {/* Le libelle suit l'etat : « Mon programme » quand il y en
+                a un, « Choisir un programme » quand il n'y en a pas.
+                Raci, 26/08 : il appuyait sur « Mon programme » et
+                tombait sur la bibliotheque — le mot promettait un
+                programme qu'il n'avait pas encore adopte. */}
             <span class="ent-prog-t">
               {programmeActif.value ? t('tr_prog_gerer') : t('tr_adapt_prog')}
             </span>
