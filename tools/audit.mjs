@@ -1795,10 +1795,14 @@ const DECALAGE_SW_V2 = 232;
     if (!/function poseeCetteSemaine/.test(ent)) {
       soucis.push('sans garde-fou, la carte peut renvoyer null et faire disparaitre toute la zone d\'action');
     }
-    // Le questionnaire est revenu le 26/08 comme OFFRE : il s'atteint
-    // depuis l'aiguillage de la bibliotheque, jamais comme passage
-    // oblige depuis S'entrainer ou depuis « Demarrer une seance ».
-    if (/allerVers\('questionnaire'\)/.test(ent)) soucis.push('le questionnaire redevient un passage oblige depuis S\'entrainer');
+    // Le questionnaire a d'abord ete retire (il etait obligatoire),
+    // puis remis comme choix, puis branche en direct sur le lien de la
+    // carte (Raci, 26/08) : celui qui clique « Trouver mon programme »
+    // ne sait pas quoi faire, les quatre questions SONT la reponse.
+    // Ce qui reste interdit : qu'il barre la route du gros bouton.
+    if (/class="cp-go"[\s\S]{0,300}allerVers\('questionnaire'\)/.test(ent)) {
+      soucis.push('le questionnaire barre de nouveau le bouton principal');
+    }
   }
   if (dm && /allerVers\('questionnaire'\)/.test(dm)) soucis.push('le questionnaire redevient un passage oblige depuis Demarrer une seance');
   if (soucis.length) faute('R55 seances posees', soucis.join(' ; '));
@@ -1924,9 +1928,16 @@ const DECALAGE_SW_V2 = 232;
   if (css && !/\.voie-lien/.test(css)) soucis.push('le lien vers la liste complete a perdu son style');
   // Le libelle du lien doit annoncer le carrefour, pas une seule de
   // ses branches : « Choisir un programme » promettait un catalogue.
+  // Le lien de la carte mene DIRECTEMENT aux quatre questions : celui
+  // qui clique ne sait pas quoi faire, un carrefour de plus le
+  // renverrait a son indecision.
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  if (ent && !/: allerVers\('questionnaire'\)\)/.test(ent)) {
+    soucis.push('le lien de la carte n\'ouvre plus directement les quatre questions');
+  }
   const str = lire('app-v2/src/legacy/strings.js');
   if (str && /cp_choisir:"Choisir un programme"/.test(str)) {
-    soucis.push('le lien promet un catalogue alors qu\'il ouvre un carrefour');
+    soucis.push('le lien promet un catalogue alors qu\'il ouvre les quatre questions');
   }
   if (soucis.length) faute('R59 deux voies', soucis.join(' ; '));
   else passe('R59 deux voies');

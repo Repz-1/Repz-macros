@@ -287,9 +287,13 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           {t('tr_start_session')}
         </button>
       )}
+      {/* Sans programme, ce lien s'adresse a quelqu'un qui ne sait pas
+          quoi faire : il ouvre les quatre questions, qui menent au
+          programme correspondant a son objectif. Pas de carrefour
+          intermediaire (Raci, 26/08). */}
       <button class="cp-gerer" onClick={() => (prog
         ? allerVers('planifier', { prog: actif.id })
-        : allerVers('programmes'))}>
+        : allerVers('questionnaire'))}>
         {prog ? t('cp_gerer') : t('cp_choisir')}
       </button>
     </div>
