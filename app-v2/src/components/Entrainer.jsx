@@ -62,8 +62,9 @@ export const vueEntrainer = signal({ nom: 'accueil', params: null });
 // leur `prog` ou leur `seanceId` elles s'afficheraient a blanc.
 // Lu une seule fois au chargement, et sans toucher a l'historique :
 // le retour ramene a l'accueil comme depuis n'importe quel ecran.
-// 'questionnaire' retire le 26/08 : plus aucun chemin, adresse comprise.
-const VUES_ADRESSABLES = ['demarrer', 'selection', 'programmes'];
+// 'questionnaire' est revenu le 26/08, mais comme OFFRE : on y accede
+// par l'aiguillage de la bibliotheque, plus en passage oblige.
+const VUES_ADRESSABLES = ['demarrer', 'selection', 'programmes', 'questionnaire'];
 {
   const demandee = new URLSearchParams(location.search).get('vue');
   if (VUES_ADRESSABLES.includes(demandee)) {

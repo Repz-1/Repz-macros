@@ -1791,12 +1791,12 @@ const DECALAGE_SW_V2 = 232;
     if (!/function poseeCetteSemaine/.test(ent)) {
       soucis.push('sans garde-fou, la carte peut renvoyer null et faire disparaitre toute la zone d\'action');
     }
-    if (/allerVers\('questionnaire'\)/.test(ent)) soucis.push('le questionnaire est revenu dans S\'entrainer');
-    if (/'questionnaire'/.test((ent.match(/const VUES_ADRESSABLES = \[[^\]]*\]/) || [''])[0])) {
-      soucis.push('le questionnaire reste ouvrable par l\'adresse');
-    }
+    // Le questionnaire est revenu le 26/08 comme OFFRE : il s'atteint
+    // depuis l'aiguillage de la bibliotheque, jamais comme passage
+    // oblige depuis S'entrainer ou depuis « Demarrer une seance ».
+    if (/allerVers\('questionnaire'\)/.test(ent)) soucis.push('le questionnaire redevient un passage oblige depuis S\'entrainer');
   }
-  if (dm && /allerVers\('questionnaire'\)/.test(dm)) soucis.push('le questionnaire est revenu dans Demarrer une seance');
+  if (dm && /allerVers\('questionnaire'\)/.test(dm)) soucis.push('le questionnaire redevient un passage oblige depuis Demarrer une seance');
   if (soucis.length) faute('R55 seances posees', soucis.join(' ; '));
   else passe('R55 seances posees');
 }
@@ -1819,8 +1819,10 @@ const DECALAGE_SW_V2 = 232;
     if (/ecran === 'cats'|setEcran\('cats'\)|class="cat-card"|class="cat-list"/.test(pr)) {
       soucis.push('l\'ecran des trois objectifs est revenu');
     }
-    if (!/useState\(vise \? 'seances' : 'progs'\)/.test(pr)) {
-      soucis.push('la bibliotheque ne s\'ouvre plus directement sur la liste des programmes');
+    // Depuis le 26/08 l'entree est l'aiguillage a deux voies (R59) :
+    // la liste reste a UN appui, sans ecran d'objectifs entre les deux.
+    if (!/useState\(vise \? 'seances' : 'intro'\)/.test(pr)) {
+      soucis.push('l\'entree de la bibliotheque a change sans passer par R59');
     }
     // Le Full body debutant est range dans « forme » ET repousse dans
     // « masse » : a plat, il sortait deux fois.
@@ -1886,11 +1888,33 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('le retour rouvre la bibliotheque a plat : deux pages en arriere au lieu d\'une');
     }
   }
-  if (pr && !/useState\(vise \? 'seances' : 'progs'\)/.test(pr)) {
+  if (pr && !/useState\(vise \? 'seances' : /.test(pr)) {
     soucis.push('un programme vise n\'ouvre plus directement ses seances : le retour retomberait sur la liste');
   }
   if (soucis.length) faute('R58 retour d\'une seance', soucis.join(' ; '));
   else passe('R58 retour d\'une seance');
+}
+
+// ------------------------------------------------------------
+// R59 — Deux voies vers un programme, aucune imposee.
+// Raci, 26/08 : « si je clique sur Choisir un programme, il doit me
+// proposer si je veux faire le questionnaire ; si oui les 4 questions,
+// sinon acces direct aux programmes par niveau ». Le questionnaire
+// avait ete retire le matin meme parce qu'il etait OBLIGATOIRE. Il
+// revient comme choix. Les deux voies doivent rester joignables.
+// ------------------------------------------------------------
+{
+  const pr = lire('app-v2/src/components/Programmes.jsx');
+  const css = lire('app-v2/src/legacy/programmes.scoped.css');
+  const soucis = [];
+  if (pr) {
+    if (!/useState\(vise \? 'seances' : 'intro'\)/.test(pr)) soucis.push('l\'aiguillage ne s\'ouvre plus en premier');
+    if (!/allerVers\('questionnaire'\)/.test(pr)) soucis.push('la voie du questionnaire a disparu');
+    if (!/setEcran\('progs'\)/.test(pr)) soucis.push('la voie directe vers les programmes a disparu');
+  }
+  if (css && !/\.voie-quiz/.test(css)) soucis.push('les deux voies ont perdu leur style');
+  if (soucis.length) faute('R59 deux voies', soucis.join(' ; '));
+  else passe('R59 deux voies');
 }
 
 // ------------------------------------------------------------

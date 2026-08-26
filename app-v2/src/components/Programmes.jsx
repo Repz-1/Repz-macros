@@ -39,7 +39,14 @@ export function Programmes() {
   // Les 14 programmes sont donc a plat, filtres par NIVEAU. Les
   // categories restent dans les donnees : elles servent encore au
   // classement de la liste et a la recommandation.
-  const [ecran, setEcran] = useState(vise ? 'seances' : 'progs');
+  // ecran : 'intro' | 'progs' | 'seances'
+  //
+  // 'intro' n'est PAS l'ancien ecran des trois objectifs (supprime le
+  // 26/08, R56). C'est un aiguillage a deux voies demande par Raci le
+  // meme jour : repondre aux quatre questions, ou aller droit aux
+  // programmes classes par niveau. Le questionnaire redevient une
+  // OFFRE, il n'est plus un passage oblige.
+  const [ecran, setEcran] = useState(vise ? 'seances' : 'intro');
   const [progId, setProgId] = useState(vise);
 
   // Tous les programmes, dans l'ordre des categories, SANS DOUBLON :
@@ -84,12 +91,35 @@ export function Programmes() {
     );
   };
 
+  // ---- Ecran 0 : deux voies ----
+  if (ecran === 'intro') {
+    return (
+      <div class="pg-programmes">
+        <div class="top">
+          <button class="back-btn" onClick={retourEntrainer} aria-label="Retour">←</button>
+          <h1>{t('pr_titre')}</h1>
+        </div>
+        <p class="intro-txt">{t('pr_intro')}</p>
+
+        <button class="voie voie-quiz" onClick={() => allerVers('questionnaire')}>
+          <span class="voie-n">{t('pr_voie_quiz')}</span>
+          <span class="voie-s">{t('pr_voie_quiz_s')}</span>
+        </button>
+
+        <button class="voie" onClick={() => setEcran('progs')}>
+          <span class="voie-n">{t('pr_voie_liste')}</span>
+          <span class="voie-s">{t('pr_voie_liste_s', { n: TOUS.length })}</span>
+        </button>
+      </div>
+    );
+  }
+
   // ---- Ecran 1 : les 14 programmes, a plat ----
   if (ecran === 'progs') {
     return (
       <div class="pg-programmes">
         <div class="top">
-          <button class="back-btn" onClick={retourEntrainer} aria-label="Retour">←</button>
+          <button class="back-btn" onClick={() => setEcran('intro')} aria-label="Retour">←</button>
           <h1>{t('pr_titre')}</h1>
         </div>
         <p class="intro-txt">{t('pr_sous')}</p>

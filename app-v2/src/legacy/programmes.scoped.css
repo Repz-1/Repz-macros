@@ -46,3 +46,23 @@
 
 /* Barre du haut orange (maison + Premium) : RETIREE le 26/08 avec son
    markup — reste du v1, second en-tete au-dessus de celui de l'app. */
+
+/* Aiguillage a deux voies (Raci, 26/08) : quatre questions, ou la
+   liste complete. Deux blocs de meme poids — aucune des deux voies
+   n'est presentee comme la bonne. */
+.pg-programmes .voie {
+  display: block; width: 100%; text-align: left; margin-bottom: 12px;
+  padding: 18px 16px; border: 1.5px solid #E7E1D4; border-radius: 18px;
+  background: #fff; font-family: inherit; cursor: pointer;
+}
+.pg-programmes .voie:active { transform: scale(.99); background: #FBF9F4; }
+.pg-programmes .voie-n {
+  display: block; font-size: 16px; font-weight: 800; color: #181818;
+}
+.pg-programmes .voie-s {
+  display: block; margin-top: 5px; font-size: 12.5px; font-weight: 500;
+  line-height: 1.45; color: #8A8378;
+}
+/* La voie du questionnaire porte le liser d'or : c'est un conseil,
+   pas une simple liste. */
+.pg-programmes .voie-quiz { border-color: #E8C766; background: #FFFCF3; }
