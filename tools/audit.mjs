@@ -1675,6 +1675,33 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R52 — La barre des onglets ne recouvre aucune page.
+// Raci, 26/08 (capture annotee) : sur « Quels jours ? », la barre des
+// quatre onglets flottait par-dessus « Modifier mon programme » et
+// cachait entierement « Abandonner ce programme ». La barre est en
+// position fixe : toute page a onglets doit reserver sa hauteur en
+// bas, sinon son dernier element devient invisible ET intouchable.
+// La regle liste les pages plein ecran et exige la reserve.
+// ------------------------------------------------------------
+{
+  const soucis = [];
+  const pages = [
+    ['pg-planifier', 'app-v2/src/styles/entrainer-carte.css'],
+    ['pg-demarrer', 'app-v2/src/styles/entrainer-carte.css'],
+  ];
+  for (const [cls, fichier] of pages) {
+    const css = lire(fichier);
+    if (!css) continue;
+    const bloc = (css.match(new RegExp('\\.' + cls + ' \\{[^}]*\\}')) || [''])[0];
+    if (!/hauteur-nav/.test(bloc)) {
+      soucis.push(`.${cls} ne reserve pas la hauteur de la barre d'onglets : son dernier bouton est recouvert`);
+    }
+  }
+  if (soucis.length) faute('R52 barre d\'onglets', soucis.join(' ; '));
+  else passe('R52 barre d\'onglets');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

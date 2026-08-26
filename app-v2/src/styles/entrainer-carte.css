@@ -416,7 +416,9 @@
 .pg-entrainer--carte .wlog-cell.planifie.futur { opacity: 1; }
 
 /* ---- Ecran « Démarrer une séance » ---- */
-.pg-demarrer { padding: 0 14px 40px; }
+/* Meme reserve que .pg-planifier : la barre des onglets est fixe et
+   recouvrait le dernier element de la page (R52). */
+.pg-demarrer { padding: 0 14px calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom)); }
 .pg-demarrer .dm-titre { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 8px 0 4px; }
 .pg-demarrer .dm-sous { font-size: 13px; color: #736C63; margin-bottom: 20px; }
 .pg-demarrer .dm-opt {
@@ -450,7 +452,12 @@
 }
 
 /* ---- Ecran « Quels jours ? » (planification) ---- */
-.pg-planifier { padding: 0 14px 40px; }
+/* La barre des quatre onglets flotte au-dessus de la page : sans
+   reserve, elle recouvrait « Choisir un autre programme » et cachait
+   entierement « Abandonner ce programme » (Raci, 26/08 — capture
+   annotee). Meme reserve que les autres pages : hauteur de la nav,
+   plus une marge, plus la zone de securite du telephone. */
+.pg-planifier { padding: 0 14px calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom)); }
 .pg-planifier .pl-titre { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 8px 0 4px; }
 .pg-planifier .pl-sous { font-size: 13px; color: #736C63; margin-bottom: 20px; }
 .pg-planifier .pl-jours { display: flex; flex-direction: column; gap: 8px; }
