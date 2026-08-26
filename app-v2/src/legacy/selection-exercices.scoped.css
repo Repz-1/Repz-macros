@@ -279,67 +279,11 @@
    au-dela, les fonds sombres virent au gris laiteux. */
 .pg-selection .ex-photo{ filter:brightness(1.08) contrast(1.07) saturate(1.06); }
 
-/* 1. LE CHRONO RESTE, EN RETRAIT.
-   Il recouvrait la derniere carte de la liste et la barre « Ma seance ».
-   Sur cet ecran seulement : plus petit, decale, et en retrait tant
-   qu'aucun compte a rebours ne tourne — des qu'il tourne il reprend sa
-   taille pleine, c'est a ce moment-la qu'on le cherche.
-   Passe par :has() plutot que par une classe : le bouton est porte
-   dans document.body, hors de .pg-selection. Un navigateur sans :has()
-   garde simplement le chrono d'origine. */
-body:has(.pg-selection) .v2-chrono-fab{
-  width:48px; height:48px; right:10px;
-  bottom:calc(150px + env(safe-area-inset-bottom));
-  opacity:.82; box-shadow:0 4px 12px rgba(250,196,8,.32);
-}
-body:has(.pg-selection) .v2-chrono-fab svg{ width:23px; height:23px; }
-body:has(.pg-selection) .v2-chrono-fab-time{ font-size:9.5px; }
-body:has(.pg-selection) .v2-chrono-fab.running,
-body:has(.pg-selection) .v2-chrono-fab.crit{
-  width:60px; height:60px; opacity:1;
-}
-body:has(.pg-selection) .v2-chrono-fab.running svg,
-body:has(.pg-selection) .v2-chrono-fab.crit svg{ width:30px; height:30px; }
-
-/* =====================================================================
-   Finition du 16/08 — deux points, apres essai de Raci sur v333.
-   ===================================================================== */
-
-/* 1. LE CHRONO SORT DE LA COLONNE DES BOUTONS +.
-   Le reduire ne suffisait pas : ancre a droite, il restait dans l'axe
-   vertical des « + », donc il en recouvrait un des qu'on faisait
-   defiler. Il passe a GAUCHE, ou la colonne ne porte que les vignettes
-   — qui ouvrent la fiche, geste rattrapable, la ou un « + » manque
-   ajoute un exercice non voulu. Plus petit et plus efface au repos.
-   Des qu'un compte a rebours tourne il redevient pleinement visible :
-   c'est le seul moment ou on le cherche du regard. */
-/* Le chrono remonte dans la barre de titre, a droite (Raci, 16/08).
-   En bas il devait fuir les boutons « + » a droite, puis les vignettes
-   a gauche : dans une liste qui defile, aucune position basse n'est
-   libre. En haut a droite la place est vide — le titre s'arrete a
-   287 px sur 412 — et elle ne bouge pas quand on fait defiler.
-   Aligne sur le bouton retour : meme hauteur (48 px), meme diametre
-   apparent, donc une barre a deux extremites plutot qu'un element
-   flottant de plus. */
-body:has(.pg-selection) .v2-chrono-fab{
-  width:40px; height:40px;
-  left:auto; right:16px;
-  top:calc(48px + env(safe-area-inset-top));
-  bottom:auto;
-  opacity:1; box-shadow:0 2px 8px rgba(250,196,8,.30);
-}
-body:has(.pg-selection) .v2-chrono-fab svg{ width:19px; height:19px; }
-body:has(.pg-selection) .v2-chrono-fab-time{ font-size:8.5px; }
-body:has(.pg-selection) .v2-chrono-fab:active{ opacity:1; }
-body:has(.pg-selection) .v2-chrono-fab.running,
-body:has(.pg-selection) .v2-chrono-fab.crit{
-  width:52px; height:52px; opacity:1; box-shadow:0 4px 16px rgba(0,0,0,.35);
-  top:calc(42px + env(safe-area-inset-top));
-}
-body:has(.pg-selection) .v2-chrono-fab.running svg,
-body:has(.pg-selection) .v2-chrono-fab.crit svg{ width:30px; height:30px; }
-body:has(.pg-selection) .v2-chrono-fab.running .v2-chrono-fab-time,
-body:has(.pg-selection) .v2-chrono-fab.crit .v2-chrono-fab-time{ font-size:11px; }
+/* Le chrono de repos a quitte cette page le 26/08 (Raci) : il n'y
+   avait rien a chronometrer pendant qu'on choisit ses exercices.
+   Les regles qui le repositionnaient ici — reduit, decale a gauche,
+   puis remonte dans la barre de titre — sont parties avec lui.
+   Historique conserve dans le depot. */
 
 /* 2. L'ETAT « CHOISI » SE LIT SANS HESITATION.
    Le bouton passait de blanc a jaune, sur une carte dont le fond

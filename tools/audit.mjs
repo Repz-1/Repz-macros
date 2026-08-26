@@ -901,34 +901,31 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R28 — Le chrono reste atteignable sur « Choisir mes exercices ».
-// Trouve le 15/08 sur capture : le bouton flottant recouvrait la
-// derniere carte de la liste ET la barre « Ma seance ». La consigne de
-// Raci etait explicite — le reduire, pas le supprimer. Le piege serait
-// qu'une passe de nettoyage le fasse disparaitre de cet ecran, ou que
-// le compte des choix retourne vivre dans la seule barre du bas, qui
-// est masquee a zero.
+// R28 — Le compte des choix reste lisible dans la liste.
+// Histoire : le 15/08 le chrono flottant recouvrait la derniere carte
+// et la barre « Ma seance ». On l'a reduit, decale, puis remonte dans
+// la barre de titre. Le 26/08 Raci a tranche autrement — le chrono
+// quitte cet ecran, il n'y a rien a chronometrer pendant qu'on choisit
+// ses exercices. Ce qui reste a proteger ici : le compte des choix ne
+// doit pas retourner vivre dans la seule barre du bas, masquee a zero.
 // ------------------------------------------------------------
 {
   const css = lire('app-v2/src/legacy/selection-exercices.scoped.css');
   const jsx = lire('app-v2/src/components/SelectionExercices.jsx');
   if (css && jsx) {
     const soucis = [];
-    if (/\.v2-chrono-fab\s*\{[^}]*display\s*:\s*none/.test(css)) soucis.push('le chrono est masque sur cet ecran — Raci a demande de le garder');
-    if (!/body:has\(\.pg-selection\) \.v2-chrono-fab/.test(css)) soucis.push('le chrono n\'est plus mis en retrait : il recouvre la derniere carte et la barre Ma seance');
     if (!/hint-compte/.test(jsx)) soucis.push('le compte des choix a quitte la liste — a zero il ne serait plus affiche nulle part');
-    // Le chrono ancre a droite retombe dans l'axe des boutons « + » et
-    // en recouvre un des qu'on fait defiler : c'est ce que Raci a vu.
-    // Le chrono a fini en haut a droite : en bas, il devait fuir les
-    // boutons « + » a droite puis les vignettes a gauche — dans une
-    // liste qui defile, aucune position basse n'est libre.
-    if (!/body:has\(\.pg-selection\) \.v2-chrono-fab\{[^}]*top\s*:/.test(css.replace(/\s+/g, ' ')))
-      soucis.push('le chrono est redescendu dans la liste : il y recouvrira des boutons au defilement');
+    // Si le chrono revenait un jour sur cet ecran, il faudrait de
+    // nouveau lui trouver une place : en bas il fuyait les boutons
+    // « + » a droite puis les vignettes a gauche, et dans une liste
+    // qui defile aucune position basse n'est libre.
+    if (/body:has\(\.pg-selection\) \.v2-chrono-fab/.test(css))
+      soucis.push('le chrono est revenu sur la selection sans que sa place soit retranchee');
     // Sans key, le compte se met a jour mais sans rien qui bouge.
     if (!/key=\{nbSelectionnes\}/.test(jsx))
       soucis.push('le compte n\'est plus remonte a chaque changement : sa mise a jour redevient invisible');
-    if (soucis.length) faute('R28 chrono et compte sur la selection', soucis.join(' ; '));
-    else passe('R28 chrono et compte sur la selection');
+    if (soucis.length) faute('R28 compte des choix', soucis.join(' ; '));
+    else passe('R28 compte des choix');
   }
 }
 
@@ -1941,6 +1938,36 @@ const DECALAGE_SW_V2 = 232;
   if (!lire('tools/sync-version.mjs')) soucis.push('le script de synchronisation des versions a disparu');
   if (soucis.length) faute('R60 chaine de publication', soucis.join(' ; '));
   else passe('R60 chaine de publication');
+}
+
+// ------------------------------------------------------------
+// R61 — Le chrono n'apparait qu'ou il sert.
+// Raci, 26/08 : « afficher le chrono seulement sur la page principale
+// de S'entrainer et pendant une seance ». Il flottait sur six ecrans,
+// dont la bibliotheque et le choix des exercices, ou il n'y avait rien
+// a chronometrer. Il doit aussi passer AU-DESSUS de la barre des
+// quatre onglets, pas la toucher.
+// ------------------------------------------------------------
+{
+  const m = lire('app-v2/src/main.jsx');
+  const st = lire('app-v2/src/styles.css');
+  const soucis = [];
+  if (m) {
+    const n = (m.match(/<RestTimer \/>/g) || []).length;
+    if (n !== 3) soucis.push('le chrono est monte ' + n + ' fois au lieu de 3 (accueil, seance en cours, suivi)');
+    if (!/<Entrainer \/><RestTimer \/>/.test(m)) soucis.push('le chrono a quitte l\'accueil de S\'entrainer');
+    if (!/<MaSeance \/><RestTimer \/>/.test(m)) soucis.push('le chrono a quitte la seance en cours');
+    for (const [vue, comp] of [['la bibliotheque', 'Programmes'], ['le choix des exercices', 'SelectionExercices'],
+                               ['la planification', 'PlanifierProgramme'], ['« Demarrer une seance »', 'DemarrerSeance']]) {
+      if (new RegExp('<' + comp + '[^>]*\\/><RestTimer').test(m)) soucis.push('le chrono est revenu sur ' + vue);
+    }
+  }
+  // Le bouton doit degager la barre des quatre onglets.
+  if (st && !/\.v2-chrono-fab\{position:fixed;bottom:calc\(90px \+ 1mm/.test(st)) {
+    soucis.push('le chrono est redescendu sur la barre des onglets');
+  }
+  if (soucis.length) faute('R61 chrono la ou il sert', soucis.join(' ; '));
+  else passe('R61 chrono la ou il sert');
 }
 
 // ------------------------------------------------------------

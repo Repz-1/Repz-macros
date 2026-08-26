@@ -147,23 +147,28 @@ export function OngletJournal() {
 export function OngletEntrainer() {
   const vue = vueEntrainer.value;
   // Meme navigation qu'en v1 : une vue a la fois, fleche retour en haut.
+  // Le chrono de repos n'apparait qu'a deux endroits (Raci, 26/08) :
+  // ici, ou l'on pilote son entrainement, et pendant une seance en
+  // cours. Ailleurs — bibliotheque, planification, choix d'exercices,
+  // fiche d'une seance — il n'y avait rien a chronometrer : un bouton
+  // flottant de plus a eviter du pouce.
   if (vue.nom === 'accueil') {
     return (<><Entrainer /><RestTimer /></>);
   }
   if (vue.nom === 'planifier') {
-    return (<><PlanifierProgramme progId={vue.params && vue.params.prog} /><RestTimer /></>);
+    return <PlanifierProgramme progId={vue.params && vue.params.prog} />;
   }
   if (vue.nom === 'demarrer') {
-    return (<><DemarrerSeance /><RestTimer /></>);
+    return <DemarrerSeance />;
   }
   if (vue.nom === 'selection') {
-    return (<><SelectionExercices /><RestTimer /></>);
+    return <SelectionExercices />;
   }
   if (vue.nom === 'maseance') {
     return (<><MaSeance /><RestTimer /></>);
   }
   if (vue.nom === 'programmes') {
-    return (<><Programmes /><RestTimer /></>);
+    return <Programmes />;
   }
   if (vue.nom === 'questionnaire') {
     return <Questionnaire />;
@@ -185,13 +190,13 @@ export function OngletEntrainer() {
     const progDeLaSeance = String(p.seanceId || '').replace(/-\d+$/, '');
     return (<><SeanceDetail seanceId={p.seanceId} titre={p.titre}
       retour={versJournal ? retourEntrainer
-        : () => allerVers('programmes', progDeLaSeance ? { prog: progDeLaSeance } : {})} /><RestTimer /></>);
+        : () => allerVers('programmes', progDeLaSeance ? { prog: progDeLaSeance } : {})} /></>);
   }
   return (
     <div class="pg-entrainer">
       <button class="v2-retour" onClick={retourEntrainer} aria-label="Retour">←</button>
       {vue.nom === 'seance' && <SeanceTracker />}
-      <RestTimer />
+      {vue.nom === 'seance' && <RestTimer />}
       <BandeauConfirmation />
     </div>
   );
