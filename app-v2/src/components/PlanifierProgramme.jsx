@@ -210,8 +210,15 @@ export function PlanifierProgramme({ progId }) {
           programme » le 26/08 ; Raci a suivi le lien et est tombe sur
           « Tous les programmes ». Un libelle doit nommer sa
           destination, pas l'intention qu'on prete au geste. */}
+      {/* « Modifier mon programme » ouvre la fiche DE CE programme, pas
+          la liste des categories. Raci, 26/08 : le lien le renvoyait
+          sur « Prendre du muscle / Perdre du poids / Me remettre en
+          forme » — trois objectifs generiques, aucun rapport avec le
+          programme qu'il suit. La fiche montre ses quatre seances,
+          leurs exercices, et rouvre la modification des jours ; on
+          atteint le catalogue depuis la, par la fleche retour. */}
       {actif && actif.id === progId && (
-        <button class="pl-autre" onClick={() => allerVers('programmes')}>
+        <button class="pl-autre" onClick={() => allerVers('programmes', { prog: progId })}>
           {t('pl_autre')}
         </button>
       )}

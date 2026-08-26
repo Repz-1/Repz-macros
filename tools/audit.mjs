@@ -1670,6 +1670,10 @@ const DECALAGE_SW_V2 = 232;
   if (css && !/\.pl-abandon \{/.test(css)) {
     soucis.push('« Abandonner ce programme » n\'a plus de style : bouton brut de navigateur');
   }
+  // Le lien porte le nom du programme suivi : il doit y mener.
+  if (pl && !/allerVers\('programmes', \{ prog: progId \}\)/.test(pl)) {
+    soucis.push('« Modifier mon programme » retombe sur la liste des objectifs au lieu de la fiche du programme suivi');
+  }
   if (soucis.length) faute('R51 replacer une seance', soucis.join(' ; '));
   else passe('R51 replacer une seance');
 }
