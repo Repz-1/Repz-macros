@@ -1702,6 +1702,31 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R53 — Un libelle nomme sa destination.
+// 26/08 : le lien du bas de « Quels jours ? » a ete rebaptise
+// « Modifier mon programme ». Il ouvre la bibliotheque « Tous les
+// programmes » — on n'y modifie rien, on en choisit un autre. Raci
+// l'a suivi et s'est retrouve ailleurs que ce que le mot promettait.
+// La regle relie le libelle a la vue ouverte : tant que le bouton
+// mene a 'programmes', il doit parler de CHANGER, pas de modifier.
+// ------------------------------------------------------------
+{
+  const pl = lire('app-v2/src/components/PlanifierProgramme.jsx');
+  const str = lire('app-v2/src/legacy/strings.js');
+  const soucis = [];
+  if (pl && str) {
+    const versBiblio = /class="pl-autre" onClick=\{\(\) => allerVers\('programmes'\)\}/.test(pl);
+    const m = /pl_autre:"([^"]*)"/.exec(str);
+    const libelle = m ? m[1].toLowerCase() : '';
+    if (versBiblio && /modifier|adapter/.test(libelle)) {
+      soucis.push(`« ${m[1]} » ouvre la bibliotheque des programmes : le mot promet une modification qui n'a pas lieu`);
+    }
+  }
+  if (soucis.length) faute('R53 libelle et destination', soucis.join(' ; '));
+  else passe('R53 libelle et destination');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

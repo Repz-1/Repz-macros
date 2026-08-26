@@ -205,6 +205,11 @@ export function PlanifierProgramme({ progId }) {
         {t('pl_valider')}
       </button>
 
+      {/* Ce lien mene a la BIBLIOTHEQUE, pas a une modification : on y
+          choisit un autre programme. Il s'est appele « Modifier mon
+          programme » le 26/08 ; Raci a suivi le lien et est tombe sur
+          « Tous les programmes ». Un libelle doit nommer sa
+          destination, pas l'intention qu'on prete au geste. */}
       {actif && actif.id === progId && (
         <button class="pl-autre" onClick={() => allerVers('programmes')}>
           {t('pl_autre')}
