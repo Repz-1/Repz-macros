@@ -1918,6 +1918,32 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R60 — La chaine de publication reste verrouillee.
+// Constat du 26/08 : la CI ne lancait que verif-js.js. L'audit, qui
+// porte toutes les regressions deja payees, restait un outil
+// facultatif a cote de la porte de production. Il doit etre DEVANT.
+// Cette regle verifie aussi que la source de verite existe : une IA
+// qui lit un README perime peut decider que la V2 est abandonnee.
+// ------------------------------------------------------------
+{
+  const soucis = [];
+  const ci = (lire('.github/workflows/deploy.yml') || '');
+  if (ci) {
+    if (!/node tools\/verif-js\.js/.test(ci)) soucis.push('verif-js ne tourne plus dans la CI');
+    if (!/node tools\/audit\.mjs/.test(ci)) soucis.push('l\'audit ne bloque plus le deploiement');
+    const iAudit = ci.indexOf('tools/audit.mjs');
+    const iBuild = ci.indexOf('npm run build');
+    if (iAudit > -1 && iBuild > -1 && iAudit > iBuild) soucis.push('l\'audit tourne apres le build : trop tard');
+  }
+  if (!lire('ETAT-DU-PROJET.md')) soucis.push('la source de verite ETAT-DU-PROJET.md a disparu');
+  const rm = lire('app-v2/README.md');
+  if (rm && !/^> \*\*ARCHIVE/.test(rm)) soucis.push('le README v2 perime n\'est plus marque ARCHIVE');
+  if (!lire('tools/sync-version.mjs')) soucis.push('le script de synchronisation des versions a disparu');
+  if (soucis.length) faute('R60 chaine de publication', soucis.join(' ; '));
+  else passe('R60 chaine de publication');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

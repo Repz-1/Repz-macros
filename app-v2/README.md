@@ -1,3 +1,8 @@
+> **ARCHIVE — NE PAS UTILISER COMME SOURCE DE VÉRITÉ.**
+> Ce document date de juillet 2026 et annonce une migration arrêtée.
+> C'est faux : la V2 est active et se construit à chaque push.
+> Voir `ETAT-DU-PROJET.md` à la racine.
+
 
 ---
 

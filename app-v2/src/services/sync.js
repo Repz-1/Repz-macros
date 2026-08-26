@@ -50,7 +50,14 @@ const UID_INVITE = '__invite__';
 export async function chargerDonnees(uid) {
   if (uid !== uidEtat) { etatComplet = {}; uidEtat = uid; }
   const localBrut = localStorage.getItem(cleLocale(uid));
-  const local = localBrut ? JSON.parse(localBrut) : null;
+  // Une entree localStorage corrompue (quota atteint en pleine
+  // ecriture, extension navigateur) ne doit pas bloquer le demarrage :
+  // on repart du cloud plutot que de planter au premier ecran.
+  let local = null;
+  if (localBrut) {
+    try { local = JSON.parse(localBrut); }
+    catch { local = null; }
+  }
   if (uid === UID_INVITE) { etatComplet = { ...(local || {}), ...etatComplet }; return local; }
   try {
     const { fs, db } = await firestore();
