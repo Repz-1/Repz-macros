@@ -1787,6 +1787,37 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R56 — Plus d'ecran-peage avant la liste des programmes.
+// Raci, 26/08 : « cet ecran doit disparaitre, il faisait partie de la
+// V1, enleve-le a jamais ». Il visait « Tous les programmes » et ses
+// trois cartes d'objectif — Prendre du muscle / Perdre du poids / Me
+// remettre en forme. Trois cartes a lire, un appui de plus, pour
+// atteindre une liste de quatorze programmes qui tient dans un ecran
+// filtre par niveau. Meme peage que le questionnaire, retire le meme
+// jour. Les categories restent dans les DONNEES (classement,
+// recommandation) mais n'ont plus d'ecran.
+// ------------------------------------------------------------
+{
+  const pr = lire('app-v2/src/components/Programmes.jsx');
+  const soucis = [];
+  if (pr) {
+    if (/ecran === 'cats'|setEcran\('cats'\)|class="cat-card"|class="cat-list"/.test(pr)) {
+      soucis.push('l\'ecran des trois objectifs est revenu');
+    }
+    if (!/useState\(vise \? 'seances' : 'progs'\)/.test(pr)) {
+      soucis.push('la bibliotheque ne s\'ouvre plus directement sur la liste des programmes');
+    }
+    // Le Full body debutant est range dans « forme » ET repousse dans
+    // « masse » : a plat, il sortait deux fois.
+    if (!/!TOUS\.some\(x => x\.id === p\.id\)/.test(pr)) {
+      soucis.push('la liste a plat n\'est plus dedoublonnee : Full body apparaitra deux fois');
+    }
+  }
+  if (soucis.length) faute('R56 bibliotheque a plat', soucis.join(' ; '));
+  else passe('R56 bibliotheque a plat');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

@@ -1,3 +1,5 @@
+/* Les regles .cat-* ont ete retirees le 26/08 avec l'ecran des trois
+   objectifs (R56). */
 /* ===== Page "Tous les programmes" — transposee du v1 (programmes.html) ===== */
 .pg-programmes{ --orange:#F7B500; --card:#fff; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px; font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:var(--text); padding:16px 16px 120px; max-width:480px; margin:0 auto; min-height:100vh; background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%); }
 .pg-programmes *{ box-sizing:border-box; }
@@ -9,14 +11,6 @@
 .pg-programmes .intro-txt{ font-size:14px; color:var(--text-dim); margin:0 4px 18px; line-height:1.5; }
 
 /* Ecran 1 : Categories */
-.pg-programmes .cat-list{ display:flex; flex-direction:column; gap:12px; }
-.pg-programmes .cat-card{ display:flex; align-items:center; gap:16px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; cursor:pointer; box-shadow:0 4px 16px rgba(15,23,42,.05); transition:transform .15s; }
-.pg-programmes .cat-card:active{ transform:scale(.98); }
-.pg-programmes .cat-emoji{ width:50px; height:50px; flex-shrink:0; border-radius:14px; background:rgba(16,185,129,.12); display:flex; align-items:center; justify-content:center; font-size:26px; }
-.pg-programmes .cat-info{ flex:1; }
-.pg-programmes .cat-name{ font-size:17px; font-weight:700; }
-.pg-programmes .cat-sub{ font-size:13px; color:var(--text-dim); margin-top:2px; }
-.pg-programmes .cat-arrow{ color:var(--orange); font-size:20px; }
 
 /* Ecran 2 : Programmes */
 .pg-programmes .niv-filter{ display:flex; gap:8px; margin:0 2px 18px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }

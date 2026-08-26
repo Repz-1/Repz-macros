@@ -2,13 +2,6 @@ import { useState } from 'preact/hooks';
 import { PROGRAMMES, CATEGORIES } from '../data/programmes.js';
 import { vueEntrainer } from './Entrainer.jsx';
 
-/** Categorie a laquelle appartient un programme (pour l'ouverture directe). */
-function categorieDuProgramme(id) {
-  for (const k of Object.keys(PROGRAMMES)) {
-    if ((PROGRAMMES[k] || []).some(p => p.id === id)) return k;
-  }
-  return null;
-}
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { programmeActif } from '../store/programme.js';
 import { t } from '../i18n/index.js';
@@ -33,28 +26,40 @@ export function Programmes() {
   // Programme cible (arrive du questionnaire) : on ouvre directement
   // sa fiche, comme le lien programmes.html?cat=..&prog=.. de la v1.
   const vise = (vueEntrainer.value.params || {}).prog || null;
-  const catVisee = vise ? categorieDuProgramme(vise) : null;
 
-  // ecran : 'cats' | 'progs' | 'seances'
-  const [ecran, setEcran] = useState(vise && catVisee ? 'seances' : 'cats');
-  const [catKey, setCatKey] = useState(catVisee);
+  // ecran : 'progs' | 'seances'
+  //
+  // L'ECRAN DES TROIS OBJECTIFS A ETE SUPPRIME (Raci, 26/08 : « cet
+  // ecran doit disparaitre, il faisait partie de la V1, enleve-le a
+  // jamais »). « Prendre du muscle / Perdre du poids / Me remettre en
+  // forme » etait un peage de plus : trois cartes a lire pour arriver
+  // a une liste de QUATORZE programmes qu'on peut afficher d'un coup.
+  // Meme raison que le questionnaire retire le meme jour.
+  //
+  // Les 14 programmes sont donc a plat, filtres par NIVEAU. Les
+  // categories restent dans les donnees : elles servent encore au
+  // classement de la liste et a la recommandation.
+  const [ecran, setEcran] = useState(vise ? 'seances' : 'progs');
   const [progId, setProgId] = useState(vise);
-  const [niveau, setNiveau] = useState('Tous');
 
-  const cat = CATEGORIES.find(c => c.k === catKey);
-  const progsCat = catKey ? (PROGRAMMES[catKey] || []) : [];
-  const prog = progId ? progsCat.find(p => p.id === progId) : null;
+  // Tous les programmes, dans l'ordre des categories, SANS DOUBLON :
+  // le Full body debutant est range dans « forme » et repousse dans
+  // « masse » (data/programmes.js, ligne push du v1). A plat, il
+  // apparaissait donc deux fois dans la meme liste.
+  const TOUS = [];
+  for (const c of CATEGORIES) {
+    for (const p of (PROGRAMMES[c.k] || [])) {
+      if (!TOUS.some(x => x.id === p.id)) TOUS.push(p);
+    }
+  }
+  const niveauxPresents = ORDRE_NIVEAUX.filter(n => TOUS.some(p => p.niveau === n));
+  const [niveau, setNiveau] = useState(() => {
+    const nivs = ORDRE_NIVEAUX.filter(n => CATEGORIES.flatMap(c => PROGRAMMES[c.k] || []).some(p => p.niveau === n));
+    return nivs[0] || 'Tous';
+  });
 
-  // Niveaux presents dans la categorie (pour les filtres)
-  const niveauxPresents = ORDRE_NIVEAUX.filter(n => progsCat.some(p => p.niveau === n));
-
-  const ouvrirCat = (k) => {
-    setCatKey(k);
-    const progs = PROGRAMMES[k] || [];
-    const nivs = ORDRE_NIVEAUX.filter(n => progs.some(p => p.niveau === n));
-    setNiveau(nivs[0] || 'Tous');   // premier niveau present, comme en v1
-    setEcran('progs');
-  };
+  const progsCat = TOUS;
+  const prog = progId ? TOUS.find(p => p.id === progId) : null;
   const ouvrirProg = (id) => { setProgId(id); setEcran('seances'); };
 
   const stat = (icone, valeur) => (
@@ -79,39 +84,15 @@ export function Programmes() {
     );
   };
 
-  // ---- Ecran 1 : Categories ----
-  if (ecran === 'cats') {
-    return (
-      <div class="pg-programmes">
-        <div class="top">
-          <button class="back-btn" onClick={retourEntrainer} aria-label="Retour">←</button>
-          <h1>Tous les programmes</h1>
-        </div>
-        <p class="intro-txt">Parcours la bibliothèque complète par objectif.</p>
-        <div class="cat-list">
-          {CATEGORIES.map(c => (
-            <div class="cat-card" key={c.k} onClick={() => ouvrirCat(c.k)}>
-              <div class="cat-emoji">{c.emoji}</div>
-              <div class="cat-info">
-                <div class="cat-name">{c.name}</div>
-                <div class="cat-sub">{c.sub}</div>
-              </div>
-              <div class="cat-arrow">→</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  // ---- Ecran 2 : Programmes de la categorie ----
+  // ---- Ecran 1 : les 14 programmes, a plat ----
   if (ecran === 'progs') {
     return (
       <div class="pg-programmes">
         <div class="top">
-          <button class="back-btn" onClick={() => setEcran('cats')} aria-label="Retour">←</button>
-          <h1>{cat ? cat.name : 'Programmes'}</h1>
+          <button class="back-btn" onClick={retourEntrainer} aria-label="Retour">←</button>
+          <h1>{t('pr_titre')}</h1>
         </div>
+        <p class="intro-txt">{t('pr_sous')}</p>
         {niveauxPresents.length > 1 && (
           <div class="niv-filter">
             {niveauxPresents.map(n => (
