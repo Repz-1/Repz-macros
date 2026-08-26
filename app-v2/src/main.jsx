@@ -21,7 +21,6 @@ import { RestTimer } from './components/RestTimer.jsx';
 import { SeanceTracker } from './components/SeanceTracker.jsx';
 import { Programmes } from './components/Programmes.jsx';
 import { Questionnaire } from './components/Questionnaire.jsx';
-import { DemarrerSeance } from './components/DemarrerSeance.jsx';
 import { PlanifierProgramme } from './components/PlanifierProgramme.jsx';
 import { SelectionExercices } from './components/SelectionExercices.jsx';
 import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './components/Entrainer.jsx';
@@ -157,9 +156,6 @@ export function OngletEntrainer() {
   }
   if (vue.nom === 'planifier') {
     return <PlanifierProgramme progId={vue.params && vue.params.prog} />;
-  }
-  if (vue.nom === 'demarrer') {
-    return <DemarrerSeance />;
   }
   if (vue.nom === 'selection') {
     return <SelectionExercices />;

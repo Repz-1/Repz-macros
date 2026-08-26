@@ -615,12 +615,14 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R17 — Demarrer une seance : le routage suit le schema de Raci.
-//   programme actif ? -> ecran de choix ; sinon -> seance libre.
-// Un ecran de choix affiche SANS programme n'aurait qu'une option :
-// une porte a ouvrir pour rien. Et le calendrier ne doit pas
-// affirmer qu'une seance a eu lieu quand elle est seulement prevue —
-// le planifie se lit en creux, le fait en plein.
+// R17 — Demarrer une seance : un appui, pas deux.
+// L'ecran de choix « Demarrer une seance » a ete supprime le 26/08.
+// Il n'avait qu'une option quand aucun programme n'etait actif, et
+// avec un programme il reposait un choix deja pose sur la carte : la
+// seance du jour en haut, la seance libre juste en dessous. Ce qui
+// reste a proteger : le calendrier ne doit pas affirmer qu'une seance
+// a eu lieu quand elle est seulement prevue — le planifie se lit en
+// creux, le fait en plein.
 // ------------------------------------------------------------
 {
   const entr = lire('app-v2/src/components/Entrainer.jsx');
@@ -628,10 +630,12 @@ const DECALAGE_SW_V2 = 232;
   const main = lire('app-v2/src/main.jsx');
   if (entr && store && main) {
     const soucis = [];
-    if (!/programmeActif\.value \? 'demarrer' : 'selection'/.test(entr)) {
-      soucis.push('le bouton ne route plus selon la presence d\'un programme actif');
+    // Le bouton doit ouvrir directement sa destination.
+    if (/allerVers\('demarrer'\)/.test(entr)) soucis.push('l\'ecran de choix intermediaire est revenu');
+    if (/vue\.nom === 'demarrer'/.test(main)) soucis.push("la vue 'demarrer' est rebranchee dans le routeur");
+    if (!/allerVers\('seanceDetail', \{ seanceId: duJour\.seanceId/.test(entr)) {
+      soucis.push('le bouton du jour n\'ouvre plus la seance elle-meme');
     }
-    if (!/vue\.nom === 'demarrer'/.test(main)) soucis.push("la vue 'demarrer' n'est pas branchee dans le routeur");
     // Le reel prime sur le prevu : on ne planifie que sur un jour vide.
     if (!/if \(!muscles\.length && !repos\)/.test(entr)) {
       soucis.push('une seance prevue peut recouvrir une seance reellement notee');
@@ -1691,13 +1695,16 @@ const DECALAGE_SW_V2 = 232;
   const soucis = [];
   const pages = [
     ['pg-planifier', 'app-v2/src/styles/entrainer-carte.css'],
-    ['pg-demarrer', 'app-v2/src/styles/entrainer-carte.css'],
+    ['pg-programmes', 'app-v2/src/legacy/programmes.scoped.css'],
   ];
   for (const [cls, fichier] of pages) {
     const css = lire(fichier);
     if (!css) continue;
-    const bloc = (css.match(new RegExp('\\.' + cls + ' \\{[^}]*\\}')) || [''])[0];
-    if (!/hauteur-nav/.test(bloc)) {
+    const bloc = (css.match(new RegExp('\\.' + cls + '\\s*\\{[^}]*\\}')) || [''])[0];
+    // Deux facons acceptables de reserver : la variable de hauteur de
+    // la nav, ou un fond de page d'au moins 100 px en dur.
+    const enDur = (bloc.match(/padding:[^;]*?(\d+)px\s*;/) || [])[1];
+    if (!/hauteur-nav/.test(bloc) && !(enDur && Number(enDur) >= 100)) {
       soucis.push(`.${cls} ne reserve pas la hauteur de la barre d'onglets : son dernier bouton est recouvert`);
     }
   }
@@ -1968,6 +1975,25 @@ const DECALAGE_SW_V2 = 232;
   }
   if (soucis.length) faute('R61 chrono la ou il sert', soucis.join(' ; '));
   else passe('R61 chrono la ou il sert');
+}
+
+// ------------------------------------------------------------
+// R62 — Aucun ecran qui ne fait que reposer une question.
+// Raci, 26/08 (capture barree) : « supprime cette page, elle ne sert a
+// rien ». L'ecran « Demarrer une seance » affichait une seule carte
+// — Seance libre — et un lien vers les programmes, alors que les deux
+// choix etaient deja cote a cote sur la carte de pilotage. Un appui de
+// plus pour arriver au meme endroit.
+// ------------------------------------------------------------
+{
+  const soucis = [];
+  if (lire('app-v2/src/components/DemarrerSeance.jsx')) soucis.push('l\'ecran intermediaire est revenu');
+  const css = lire('app-v2/src/styles/entrainer-carte.css');
+  if (css && /\.pg-demarrer/.test(css)) soucis.push('ses styles sont revenus sans son ecran');
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  if (ent && /'demarrer'/.test(ent)) soucis.push('un bouton pointe encore vers l\'ecran supprime');
+  if (soucis.length) faute('R62 pas d\'ecran-peage', soucis.join(' ; '));
+  else passe('R62 pas d\'ecran-peage');
 }
 
 // ------------------------------------------------------------

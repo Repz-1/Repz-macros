@@ -64,7 +64,7 @@ export const vueEntrainer = signal({ nom: 'accueil', params: null });
 // le retour ramene a l'accueil comme depuis n'importe quel ecran.
 // 'questionnaire' est revenu le 26/08, mais comme OFFRE : on y accede
 // par l'aiguillage de la bibliotheque, plus en passage oblige.
-const VUES_ADRESSABLES = ['demarrer', 'selection', 'programmes', 'questionnaire'];
+const VUES_ADRESSABLES = ['selection', 'programmes', 'questionnaire'];
 {
   const demandee = new URLSearchParams(location.search).get('vue');
   if (VUES_ADRESSABLES.includes(demandee)) {
@@ -178,8 +178,9 @@ function CarteProgramme({ today, todayIso, allerVers }) {
     // exercices ? Un jour simplement NOTE n'en a pas — le bouton ne
     // doit donc pas promettre de la demarrer.
     let lancable = true;
-    if (pose) seance = { titre: pose.titre, sub: pose.sub || t('cp_posee') };
-    else if (prog && idx !== undefined) seance = prog.seances[idx];
+    let seanceId = null;
+    if (pose) { seance = { titre: pose.titre, sub: pose.sub || t('cp_posee') }; seanceId = pose.seanceId; }
+    else if (prog && idx !== undefined) { seance = prog.seances[idx]; seanceId = actif.id + '-' + idx; }
     else if (marques.length) {
       // Jour note a la main depuis le calendrier : les muscles
       // deviennent le titre. C'est la planification la plus rapide
@@ -193,6 +194,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
       jour: t('days_short').split('|')[d.getDay()].toUpperCase(),
       seance,
       lancable,
+      seanceId,
       // L'avenir d'abord : un jour futur reste « a venir » meme s'il
       // porte deja des muscles notes. Sans cette priorite, noter
       // « Épaules » pour demain le comptait comme deja fait.
@@ -207,7 +209,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   if (!prog && !lignes.length) return null;
 
   const faites = lignes.filter(l => l.etat === 'fait').length;
-  const duJour = lignes.find(l => l.auj && l.lancable);
+  const duJour = lignes.find(l => l.auj && l.lancable && l.seanceId);
 
   // « Semaine 2 sur 8 » : depuis la date d'adoption, en semaines
   // pleines. La duree du programme est un texte (« 8 semaines ») —
@@ -257,7 +259,15 @@ function CarteProgramme({ today, todayIso, allerVers }) {
       {/* Le bouton nomme ce qu'il lance. Jour de repos : il garde le
           libelle generique plutot que de disparaitre — une seance
           libre reste possible n'importe quel jour. */}
-      <button class="cp-go" onClick={() => allerVers('demarrer')}>
+      {/* Le bouton fait ce qu'il dit, en un seul appui. Il passait par
+          un ecran intermediaire qui reposait un choix deja pose ici :
+          la seance du jour est au-dessus, la seance libre juste en
+          dessous. Raci, 26/08 : « supprime cette page, elle ne sert a
+          rien ». « Demarrer X » ouvre X ; « Seance libre » ouvre les
+          exercices. */}
+      <button class="cp-go" onClick={() => (duJour
+        ? allerVers('seanceDetail', { seanceId: duJour.seanceId, titre: duJour.seance.titre, depuis: 'journal' })
+        : allerVers('selection'))}>
         {duJour ? t('cp_demarrer', { s: duJour.seance.titre }) : t('tr_start_session')}
       </button>
       {/* « Demarrer une seance » reste accessible meme avec un
@@ -453,8 +463,7 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
             demande d'abord quoi faire, sans programme on entre
             directement en seance libre. L'ecran de choix n'apparait
             jamais avec une seule option. */}
-        <button class="ent-go"
-          onClick={() => allerVers(programmeActif.value ? 'demarrer' : 'selection')}>
+        <button class="ent-go" onClick={() => allerVers('selection')}>
           {t('tr_start_session')}
         </button>
         {/* Le lien souligne rouge est devenu une carte (Raci, 17/08) :
