@@ -205,6 +205,18 @@ function CarteProgramme({ today, todayIso, allerVers }) {
       <button class="cp-go" onClick={() => allerVers('demarrer')}>
         {duJour ? t('cp_demarrer', { s: duJour.seance.titre }) : t('tr_start_session')}
       </button>
+      {/* « Demarrer une seance » reste accessible meme avec un
+          programme actif (Raci, 26/08). Un programme dit ce qui est
+          prevu, il n'interdit pas de faire autre chose : rentrer un
+          jour de repos, doubler une seance, s'entrainer sans savoir
+          d'avance. Le retirer fermait cette porte. Il est en second
+          rang, pas en premier — la seance du jour reste l'action
+          principale. */}
+      {duJour && (
+        <button class="cp-libre" onClick={() => allerVers('selection')}>
+          {t('tr_start_session')}
+        </button>
+      )}
       <button class="cp-gerer" onClick={() => allerVers('planifier', { prog: actif.id })}>
         {t('cp_gerer')}
       </button>

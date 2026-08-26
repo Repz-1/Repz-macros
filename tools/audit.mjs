@@ -1631,6 +1631,11 @@ const DECALAGE_SW_V2 = 232;
     if (!/t\('cp_demarrer', \{ s: duJour\.seance\.titre \}\)/.test(ent)) {
       soucis.push('le bouton ne nomme plus la seance du jour');
     }
+    // Raci, 26/08 : un programme dit ce qui est prevu, il n'interdit
+    // pas de faire autre chose. La seance libre doit rester joignable.
+    if (!/class="cp-libre"/.test(ent)) {
+      soucis.push('« Demarrer une seance » a disparu : avec un programme actif, plus moyen de s\'entrainer hors programme');
+    }
     if (!/programmeActif\.value\s*\n?\s*\? <CarteProgramme/.test(ent)) {
       soucis.push('la carte n\'est plus conditionnee au programme actif : sans programme il ne resterait aucun chemin');
     }
@@ -1639,6 +1644,34 @@ const DECALAGE_SW_V2 = 232;
   if (css && !/\.cp-e-auj/.test(css)) soucis.push('les etats de la semaine (FAIT / AUJOURD\'HUI / A VENIR) ont perdu leur style');
   if (soucis.length) faute('R50 carte de programme', soucis.join(' ; '));
   else passe('R50 carte de programme');
+}
+
+// ------------------------------------------------------------
+// R51 — Replacer une seance doit pouvoir aboutir.
+// Raci, 26/08 : « je clique sur replacer, changer et je ne peux rien
+// modifier ». Sur un programme complet, chaque seance etait deja
+// posee quelque part, donc toutes les autres apparaissaient grisees
+// « deja placee un autre jour » : le seul choix offert etait celui
+// deja en place. Un ecran de modification ou rien ne se modifie.
+// Choisir une seance posee ailleurs echange desormais les deux jours.
+// ------------------------------------------------------------
+{
+  const pl = lire('app-v2/src/components/PlanifierProgramme.jsx');
+  const soucis = [];
+  if (pl) {
+    if (/disabled=\{pris\}/.test(pl)) {
+      soucis.push('les seances placees ailleurs sont a nouveau desactivees : l\'ecran redevient un cul-de-sac');
+    }
+    if (!/const ailleurs = Object\.keys\(n\)/.test(pl)) {
+      soucis.push('l\'echange de deux jours a disparu de affecter()');
+    }
+  }
+  const css = lire('app-v2/src/legacy/planifier.scoped.css');
+  if (css && !/\.pl-abandon \{/.test(css)) {
+    soucis.push('« Abandonner ce programme » n\'a plus de style : bouton brut de navigateur');
+  }
+  if (soucis.length) faute('R51 replacer une seance', soucis.join(' ; '));
+  else passe('R51 replacer une seance');
 }
 
 // ------------------------------------------------------------

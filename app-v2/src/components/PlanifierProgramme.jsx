@@ -81,15 +81,37 @@ export function PlanifierProgramme({ progId }) {
   const affecter = (v, index) => {
     const n = { ...aff };
     if (index === null) delete n[v];
-    else n[v] = index;
+    else {
+      // ECHANGE. Raci, 26/08 : « je clique sur replacer et je ne peux
+      // rien modifier ». Sur un programme complet, chaque seance est
+      // deja posee quelque part : toutes les autres etaient donc
+      // grisees « deja placee un autre jour », et le seul choix
+      // possible etait celui deja en place. Cul-de-sac total.
+      // Choisir une seance posee ailleurs echange desormais les deux
+      // jours — c'est ce que « replacer » veut dire.
+      const ailleurs = Object.keys(n).map(Number).find(j => n[j] === index && j !== v);
+      const avant = n[v];
+      n[v] = index;
+      if (ailleurs !== undefined) {
+        if (avant === undefined) delete n[ailleurs];
+        else n[ailleurs] = avant;
+      }
+    }
     setAff(n);
     setJourOuvert(null);
     setBloque(false);
   };
 
-  /** Les jours qui portent deja cette seance, hors celui qu'on edite. */
-  const dejaAilleurs = (index, sauf) =>
-    Object.entries(aff).some(([j, i]) => i === index && Number(j) !== sauf);
+  /**
+   * Le jour qui porte deja cette seance, hors celui qu'on edite, ou
+   * undefined. On renvoie le JOUR et non plus un booleen : le menu
+   * doit pouvoir dire avec qui l'echange se fera.
+   */
+  const dejaAilleurs = (index, sauf) => {
+    const e = Object.entries(aff).find(([j, i]) => i === index && Number(j) !== sauf);
+    return e ? Number(e[0]) : undefined;
+  };
+  const nomJourDe = (v) => t('day_' + (JOURS.find(j => j.v === v) || {}).k);
 
   // Un compte gratuit sur un programme 6 jours ne peut cocher que 4
   // jours : exiger le compte complet le laissait devant un bouton
@@ -139,12 +161,14 @@ export function PlanifierProgramme({ progId }) {
               {ouvert && (
                 <div class="pl-menu">
                   {prog.seances.map((sa, i) => {
-                    const pris = dejaAilleurs(i, j.v);
+                    const pris = dejaAilleurs(i, j.v);   // jour d'echange, ou undefined
                     return (
                       <button key={i} class={'pl-menu-l' + (index === i ? ' on' : '')}
-                        disabled={pris} onClick={() => affecter(j.v, i)}>
+                        onClick={() => affecter(j.v, i)}>
                         <span class="pl-menu-n">{sa.titre}</span>
-                        <span class="pl-menu-s">{pris ? t('pl_deja_placee') : sa.sub}</span>
+                        <span class="pl-menu-s">
+                          {pris !== undefined ? t('pl_echanger', { j: nomJourDe(pris) }) : sa.sub}
+                        </span>
                       </button>
                     );
                   })}

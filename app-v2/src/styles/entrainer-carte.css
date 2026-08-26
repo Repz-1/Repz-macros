@@ -984,6 +984,16 @@
   cursor: pointer;
 }
 .cp-go:active { transform: scale(.985); }
+/* Seance libre : contour, jamais aplat — l'aplat noir du bouton
+   principal doit rester seul de son espece dans la carte. */
+.cp-libre {
+  margin-top: 9px; width: 100%; border: 1.5px solid #DED8CC;
+  border-radius: 15px; padding: 14px 12px; background: transparent;
+  font-family: inherit; font-size: 14.5px; font-weight: 800;
+  color: #3A342C; cursor: pointer;
+}
+.cp-libre:active { transform: scale(.985); background: #F6F3EC; }
+
 .cp-gerer {
   display: block; width: 100%; margin-top: 10px; padding: 6px;
   background: none; border: none; font-family: inherit;
