@@ -2,7 +2,7 @@ import { useState } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
 import { signal } from '@preact/signals';
 import { GROUPES, muscleLog, basculerMuscle, borneCalendrier } from '../store/entrainement.js';
-import { compteDuJour, musclesParJour } from '../services/muscles-jour.js';
+import { compteDuJour, musclesDuJour, musclesParJour } from '../services/muscles-jour.js';
 import { estPremium } from './PremiumPage.jsx';
 import { enDecouverte } from '../services/decouverte.js';
 import { ongletActif } from './BottomNav.jsx';
@@ -10,7 +10,7 @@ import { Entete } from './Entete.jsx';
 import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
 import { BlocSeances, ToutesSeances, DetailSeance } from './Seances.jsx';
-import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId } from '../store/programme.js';
+import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId, normaliserJours } from '../store/programme.js';
 import { seancesDuJour } from '../store/seances.js';
 
 /** « 90 × 8 · 85 × 10 », ou rien si aucune serie notee. */
@@ -103,6 +103,114 @@ function jourLong(d) {
   return `${t('days_long').split('|')[d.getDay()]} ${d.getDate()} ${t('months_long').split('|')[d.getMonth()]}`;
 }
 const nomMuscle = (k) => t('mus_' + k);
+
+// ==========================================================
+// CARTE DE PILOTAGE DU PROGRAMME (classes cp-*)
+//
+// Raci, 24/08 : « je viens surtout pour piloter mon programme ». La
+// zone d'action ne le permettait pas — un bouton jaune « Demarrer une
+// seance » qui ne nommait pas la seance, et le programme relegue en
+// carte secondaire. On ne savait ni ce qu'on faisait aujourd'hui, ni
+// ce qui venait apres.
+//
+// La carte ecrit la semaine du programme : une ligne par jour
+// affecte, avec son etat. Elle ne remplace RIEN d'autre : le
+// calendrier du mois et les mannequins restent en dessous, entiers.
+//
+// Trois etats seulement, ceux de la maquette validee : FAIT,
+// AUJOURD'HUI, A VENIR. Un jour passe non fait ne porte pas de badge
+// — inventer un « manque » serait un jugement que Raci n'a pas
+// demande.
+// ==========================================================
+function CarteProgramme({ today, todayIso, allerVers }) {
+  const actif = programmeActif.value;
+  const prog = actif && progParId(actif.id);
+  if (!prog) return null;
+
+  const aff = normaliserJours(actif.jours, prog.seances.length);
+
+  // Lundi de la semaine affichee, meme calcul que « Ta semaine ».
+  const lundi = new Date(today);
+  lundi.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+
+  // Les jours affectes, du lundi au dimanche.
+  const lignes = [];
+  for (let k = 0; k < 7; k++) {
+    const d = new Date(lundi);
+    d.setDate(lundi.getDate() + k);
+    const idx = aff[d.getDay()];
+    if (idx === undefined) continue;
+    const iso = wlIso(d);
+    const fait = musclesDuJour(iso).some(m => m !== 'repos');
+    lignes.push({
+      iso,
+      jour: t('days_short').split('|')[d.getDay()].toUpperCase(),
+      seance: prog.seances[idx],
+      etat: fait ? 'fait' : (iso === todayIso ? 'auj' : (iso > todayIso ? 'venir' : null)),
+      auj: iso === todayIso,
+    });
+  }
+
+  const faites = lignes.filter(l => l.etat === 'fait').length;
+  const duJour = lignes.find(l => l.auj);
+
+  // « Semaine 2 sur 8 » : depuis la date d'adoption, en semaines
+  // pleines. La duree du programme est un texte (« 8 semaines ») —
+  // on en tire le nombre, et on se tait s'il n'y en a pas.
+  let semaine = null, total = null;
+  if (actif.depuis) {
+    const dep = wlIsoToDate(actif.depuis);
+    dep.setDate(dep.getDate() - ((dep.getDay() + 6) % 7));
+    semaine = Math.floor((lundi - dep) / 604800000) + 1;
+    if (semaine < 1) semaine = 1;
+    const m = /(\d+)/.exec(prog.duree || '');
+    if (m) total = Number(m[1]);
+  }
+
+  return (
+    <div class="cp">
+      <div class="cp-nom">{prog.name}</div>
+      <div class="cp-av">
+        {semaine && (total
+          ? t('cp_semaine', { n: semaine, t: total })
+          : t('cp_semaine_seule', { n: semaine }))}
+        {semaine && ' · '}
+        {faites === 0 ? t('cp_aucune')
+          : t(faites > 1 ? 'cp_faites_p' : 'cp_faites', { n: faites })}
+      </div>
+      {semaine && total && (
+        <div class="cp-barre">
+          <span style={{ width: Math.min(100, Math.round(semaine / total * 100)) + '%' }} />
+        </div>
+      )}
+
+      {lignes.map(l => (
+        <div class={'cp-l' + (l.auj ? ' auj' : '')} key={l.iso}>
+          <div class="cp-j">{l.jour}</div>
+          <div class="cp-t">
+            <b>{l.seance.titre}</b>
+            <small>{l.seance.sub}</small>
+          </div>
+          {l.etat && (
+            <div class={'cp-e cp-e-' + l.etat}>
+              {t(l.etat === 'fait' ? 'cp_fait' : l.etat === 'auj' ? 'cp_auj' : 'cp_venir')}
+            </div>
+          )}
+        </div>
+      ))}
+
+      {/* Le bouton nomme ce qu'il lance. Jour de repos : il garde le
+          libelle generique plutot que de disparaitre — une seance
+          libre reste possible n'importe quel jour. */}
+      <button class="cp-go" onClick={() => allerVers('demarrer')}>
+        {duJour ? t('cp_demarrer', { s: duJour.seance.titre }) : t('tr_start_session')}
+      </button>
+      <button class="cp-gerer" onClick={() => allerVers('planifier', { prog: actif.id })}>
+        {t('cp_gerer')}
+      </button>
+    </div>
+  );
+}
 
 // ==========================================================
 // Journal d'entrainement : calendrier mensuel (classes wlog-*)
@@ -256,9 +364,16 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
         )}
       </div>
 
-      {/* 2 — Zone d'action. Elle reprend les deux destinations des
-          cartes retirees : le gros bouton mene au choix d'exercices,
-          le lien au questionnaire de programme. */}
+      {/* 2 — Zone d'action.
+          AVEC un programme actif, c'est la carte de pilotage : la
+          semaine du programme ecrite en clair (Raci, 24/08 — « je viens
+          piloter mon programme »). Le bouton generique « Demarrer une
+          seance » ne disait pas laquelle ; il fallait deviner.
+          SANS programme, rien ne change : le bloc noir d'origine mene
+          au choix d'exercices et au questionnaire. */}
+      {programmeActif.value
+        ? <CarteProgramme today={today} todayIso={todayIso} allerVers={allerVers} />
+        : (
       <div class="ent-action">
         <div class="ent-action-jour">{jourLong(today)}</div>
         {/* Schema de Raci du 10/08 : avec un programme actif on
@@ -304,6 +419,7 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
           <span class="ent-prog-fl" aria-hidden="true">&rsaquo;</span>
         </button>
       </div>
+      )}
 
       {/* 3 — Calendrier */}
       <div class="ent-bloc">

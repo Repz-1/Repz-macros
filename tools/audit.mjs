@@ -1612,6 +1612,36 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R50 — La carte de programme nomme ce qu'elle lance.
+// Raci, 24/08 : « je viens surtout pour piloter mon programme ». Le
+// bouton « Demarrer une seance » ne disait pas laquelle, et le
+// programme etait relegue sous lui en carte secondaire. La carte de
+// pilotage ecrit la semaine du programme et nomme la seance du jour.
+// Deux garde-fous : elle ne s'affiche QUE si un programme est actif
+// (sans programme, le bloc d'origine reste le chemin), et le
+// calendrier du mois comme « Ta semaine » restent sous elle, entiers
+// — Raci les a explicitement gardes.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const css = lire('app-v2/src/styles/entrainer-carte.css');
+  const soucis = [];
+  if (ent) {
+    if (!/function CarteProgramme/.test(ent)) soucis.push('la carte de pilotage a disparu');
+    if (!/t\('cp_demarrer', \{ s: duJour\.seance\.titre \}\)/.test(ent)) {
+      soucis.push('le bouton ne nomme plus la seance du jour');
+    }
+    if (!/programmeActif\.value\s*\n?\s*\? <CarteProgramme/.test(ent)) {
+      soucis.push('la carte n\'est plus conditionnee au programme actif : sans programme il ne resterait aucun chemin');
+    }
+    if (!/class="ent-bloc"/.test(ent)) soucis.push('le calendrier ou « Ta semaine » a saute — Raci les a gardes');
+  }
+  if (css && !/\.cp-e-auj/.test(css)) soucis.push('les etats de la semaine (FAIT / AUJOURD\'HUI / A VENIR) ont perdu leur style');
+  if (soucis.length) faute('R50 carte de programme', soucis.join(' ; '));
+  else passe('R50 carte de programme');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

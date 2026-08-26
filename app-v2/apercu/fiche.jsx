@@ -9,7 +9,7 @@ import '../src/styles/entrainer-carte.css';
 import { utilisateur, authPrete } from '../src/services/firebase.js';
 import { muscleLog } from '../src/store/entrainement.js';
 import { seances } from '../src/store/seances.js';
-import { planifs } from '../src/store/programme.js';
+import { planifs, programmeActif } from '../src/store/programme.js';
 import { langue } from '../src/i18n/index.js';
 import { Entrainer } from '../src/components/Entrainer.jsx';
 
@@ -37,6 +37,22 @@ seances.value = [{
 if (new URLSearchParams(location.search).get('cas') === 'prevu') {
   seances.value = [];
   planifs.value = { [iso]: { seanceId: 'p-2', titre: 'Jour 3 — Jambes', sub: '5 exercices · ~60 min' } };
+}
+
+// Programme actif : masse-3j, lundi/mercredi/vendredi, depuis 8 jours.
+const depuis = new Date(); depuis.setDate(depuis.getDate() - 8);
+const isoD = depuis.toISOString().slice(0, 10);
+programmeActif.value = { id: 'masse-3j', jours: { 1: 0, 3: 1, 5: 2 }, depuis: isoD };
+
+// ?cas=fait : la seance de lundi a bien ete enregistree, elle doit
+// porter le badge FAIT et compter dans « seances faites cette semaine ».
+if (new URLSearchParams(location.search).get('cas') === 'fait') {
+  const lundi = new Date(); lundi.setDate(lundi.getDate() - ((lundi.getDay() + 6) % 7));
+  const isoL = lundi.getFullYear() + '-' + String(lundi.getMonth() + 1).padStart(2, '0') + '-' + String(lundi.getDate()).padStart(2, '0');
+  seances.value = [...seances.value, {
+    id: 's2', iso: isoL, ts: Date.now(), titre: 'Jour 1 — Pecs / Triceps', duree: 3500,
+    muscles: ['pecs', 'triceps'], exos: [], nbSeries: 18, tonnage: 4200, records: [],
+  }];
 }
 
 setInterval(() => { authPrete.value = true; langue.value = 'fr'; }, 100);
