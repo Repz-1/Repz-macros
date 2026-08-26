@@ -4,7 +4,6 @@ import { t } from '../i18n/index.js';
 import { EXERCISES, IMG_BASE } from '../data/exercices.js';
 import { SESSION_EXOS } from '../data/sessionExos.js';
 import { retourEntrainer } from './Entrainer.jsx';
-import { ongletActif } from './BottomNav.jsx';
 import '../legacy/seance.scoped.css';
 
 // ==========================================================
@@ -135,13 +134,9 @@ export function SeanceDetail({ seanceId, titre, retour }) {
 
   return (
     <div class="pg-seance">
-      <div class="topbar-app">
-        <button class="topbar-home" onClick={revenir} aria-label="Accueil">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5" /><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5" /></svg>
-        </button>
-        <button class="premium-pill" onClick={() => { ongletActif.value = 'premium'; }}>✨ Premium</button>
-      </div>
-
+      {/* Barre orange du v1 retiree le 26/08 (voir Programmes.jsx) :
+          la fleche de l'en-tete de seance ramene deja en arriere, et
+          Premium est un onglet de la barre du bas. */}
       <div class="sess-hero">
         <button class="sh-back" onClick={revenir} aria-label="Retour">←</button>
         <h1 class="sh-title">{titre || 'Ma séance'}</h1>

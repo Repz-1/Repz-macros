@@ -26,11 +26,6 @@
     padding:12px 20px;
     background:linear-gradient(160deg,#F86A0C 0%,#B34700 100%);
 }
-.pg-stats .topbar-home{
-    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    background:rgba(255,255,255,.15); color:#fff; text-decoration:none;
-}
-.pg-stats .topbar-home svg{ width:20px; height:20px; }
 .pg-stats .container{ max-width:900px; margin:0 auto; padding:16px 16px 100px; }
 .pg-stats .page-title{ font-size:24px; font-weight:800; margin:8px 2px 4px; }
 .pg-stats .page-sub{ font-size:14px; color:var(--text-dim); margin:0 2px 20px; }

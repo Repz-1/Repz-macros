@@ -7,21 +7,7 @@
 }
 .pg-seance{ font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:var(--bg); color:var(--text); min-height:100vh; padding:16px 16px 90px; overflow-x:hidden; }
-.pg-seance .topbar-app{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:12px 20px; margin:-16px -16px 8px;
-    background:linear-gradient(160deg,#F7B500 0%,#DFA004 100%);
-}
-.pg-seance .topbar-home{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:40px; height:40px; border-radius:50%;
-    background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.3);
-    color:#fff; text-decoration:none;
-}
-.pg-seance .topbar-home svg{ width:21px; height:21px; }
-.pg-seance .topbar-home:active{ background:rgba(255,255,255,.25); transform:scale(.94); }
-.pg-seance .premium-pill{ display:inline-flex; align-items:center; gap:5px; color:#1a1a1a; text-decoration:none; font-size:13px; font-weight:800; padding:8px 15px; border-radius:30px; background:#f5d76e; border:1.5px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.2); }
-.pg-seance .premium-pill:active{ transform:scale(.95); }
+/* Barre du haut orange du v1 : RETIREE le 26/08 avec son markup. */
 .pg-seance .top{ display:flex; align-items:center; gap:14px; padding:8px 4px 18px; }
 .pg-seance .back-btn{ width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
     background:var(--card); display:flex; align-items:center; justify-content:center;

@@ -1731,6 +1731,28 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R54 — Plus de barre orange du v1 dans la V2.
+// Raci, 26/08 : « elle revient trop souvent et elle fait partie de la
+// V1 ». La topbar-app (maison + pastille Premium) etait recopiee de
+// programmes.html sur deux ecrans V2 : elle faisait un SECOND en-tete
+// au-dessus de celui de l'app, et son bouton maison sortait de la
+// navigation par onglets. Ses deux destinations existent ailleurs :
+// la fleche retour de l'ecran, et l'onglet BelFit+ de la barre du bas.
+// Retiree avec ses regles CSS. Rien ne la remplace.
+// ------------------------------------------------------------
+{
+  const soucis = [];
+  for (const f of ['Programmes', 'SeanceDetail', 'Entrainer', 'Stats', 'PremiumPage']) {
+    const src = lire(`app-v2/src/components/${f}.jsx`);
+    if (src && /class="topbar-app"|class="topbar-home"|class="premium-pill"/.test(src)) {
+      soucis.push(`${f}.jsx a repose la barre orange du v1`);
+    }
+  }
+  if (soucis.length) faute('R54 barre v1', soucis.join(' ; '));
+  else passe('R54 barre v1');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

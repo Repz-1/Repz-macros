@@ -26,19 +26,6 @@
 }
 .pg-journal .app-back-btn svg{ width:22px; height:22px; }
 .pg-journal .app-back-btn:active{ background:#f3f4f6; transform:scale(.94); }
-.pg-journal .topbar-app{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:12px 20px;
-    background:linear-gradient(160deg,#F7B500 0%,#DFA004 100%);
-}
-.pg-journal .topbar-home{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:40px; height:40px; border-radius:50%;
-    background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.3);
-    color:#fff; text-decoration:none;
-}
-.pg-journal .topbar-home svg{ width:21px; height:21px; }
-.pg-journal .topbar-home:active{ background:rgba(255,255,255,.25); transform:scale(.94); }
 .pg-journal .sticky-remaining{
     position:fixed; top:0; left:0; right:0; z-index:50;
     background:var(--carte); border-bottom:1px solid #eef1f5;

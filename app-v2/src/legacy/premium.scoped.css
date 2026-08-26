@@ -25,10 +25,7 @@
 .pg-premium > *{ position:relative; z-index:1; }
 
 /* ---- Topbar (retour + logo) ---- */
-.pg-premium .topbar-app{ display:flex; justify-content:space-between; align-items:center; background:transparent; padding:14px 2px 4px; margin:-16px -16px 6px; }
 .pg-premium .tb-logo{ height:30px; width:auto; }
-.pg-premium .topbar-home{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#fff; border:1px solid #ececec; color:#1c211e; text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,.05); cursor:pointer; }
-.pg-premium .topbar-home svg{ width:20px; height:20px; stroke:#1c211e; }
 
 /* ---- Titre ---- */
 .pg-premium .prem-titre{

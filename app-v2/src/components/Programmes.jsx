@@ -12,21 +12,14 @@ function categorieDuProgramme(id) {
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { programmeActif } from '../store/programme.js';
 import { t } from '../i18n/index.js';
-import { ongletActif } from './BottomNav.jsx';
 import '../legacy/programmes.scoped.css';
 
-// Barre du haut orange (maison -> accueil entrainement, Premium -> onglet Premium),
-// transposee du v1 (topbar-app de programmes.html).
-function TopBar() {
-  return (
-    <div class="topbar-app">
-      <button class="topbar-home" onClick={retourEntrainer} aria-label="Accueil">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5" /><path d="M5 9.5V20a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V9.5" /></svg>
-      </button>
-      <button class="premium-pill" onClick={() => { ongletActif.value = 'premium'; }}>✨ Premium</button>
-    </div>
-  );
-}
+// La barre orange du v1 (maison + Premium) a ete RETIREE le 26/08.
+// Raci : « elle revient trop souvent et elle fait partie de la V1 ».
+// Elle faisait un second en-tete au-dessus de celui de l'app, et son
+// bouton maison sortait de la navigation par onglets. Ses deux
+// destinations existent ailleurs : la fleche retour de chaque ecran,
+// et l'onglet BelFit+ de la barre du bas. Rien n'est compense ici.
 
 // ==========================================================
 // PAGE "Tous les programmes" — transposee du v1 (programmes.html).
@@ -90,7 +83,6 @@ export function Programmes() {
   if (ecran === 'cats') {
     return (
       <div class="pg-programmes">
-        <TopBar />
         <div class="top">
           <button class="back-btn" onClick={retourEntrainer} aria-label="Retour">←</button>
           <h1>Tous les programmes</h1>
@@ -116,7 +108,6 @@ export function Programmes() {
   if (ecran === 'progs') {
     return (
       <div class="pg-programmes">
-        <TopBar />
         <div class="top">
           <button class="back-btn" onClick={() => setEcran('cats')} aria-label="Retour">←</button>
           <h1>{cat ? cat.name : 'Programmes'}</h1>
@@ -138,7 +129,6 @@ export function Programmes() {
   // ---- Ecran 3 : Seances du programme ----
   return (
     <div class="pg-programmes">
-      <TopBar />
       <div class="top">
         <button class="back-btn" onClick={() => setEcran('progs')} aria-label="Retour">←</button>
         <h1>{prog ? prog.name : 'Séances'}</h1>
