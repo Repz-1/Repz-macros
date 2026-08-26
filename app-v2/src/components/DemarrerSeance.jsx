@@ -103,7 +103,8 @@ export function DemarrerSeance() {
         </button>
       </div>
 
-      <button class="dm-changer" onClick={() => allerVers('questionnaire')}>
+      {/* Vers la bibliotheque, plus vers le questionnaire (Raci, 26/08). */}
+      <button class="dm-changer" onClick={() => allerVers('programmes')}>
         {t('tr_prog_change')}
       </button>
     </div>

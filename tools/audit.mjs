@@ -1636,8 +1636,11 @@ const DECALAGE_SW_V2 = 232;
     if (!/class="cp-libre"/.test(ent)) {
       soucis.push('« Demarrer une seance » a disparu : avec un programme actif, plus moyen de s\'entrainer hors programme');
     }
-    if (!/programmeActif\.value\s*\n?\s*\? <CarteProgramme/.test(ent)) {
-      soucis.push('la carte n\'est plus conditionnee au programme actif : sans programme il ne resterait aucun chemin');
+    // La carte ne s'affiche que s'il y a quelque chose a piloter :
+    // un programme actif OU une seance posee dans la semaine (R55).
+    // Sans l'un des deux, le bloc d'action d'origine reprend la main.
+    if (!/\(programmeActif\.value \|\| poseeCetteSemaine\(today\)\)/.test(ent)) {
+      soucis.push('la carte n\'est plus conditionnee : sans programme ni seance posee, il ne resterait aucun chemin');
     }
     if (!/class="ent-bloc"/.test(ent)) soucis.push('le calendrier ou « Ta semaine » a saute — Raci les a gardes');
   }
@@ -1750,6 +1753,37 @@ const DECALAGE_SW_V2 = 232;
   }
   if (soucis.length) faute('R54 barre v1', soucis.join(' ; '));
   else passe('R54 barre v1');
+}
+
+// ------------------------------------------------------------
+// R55 — Une seance posee a la main compte autant qu'un programme.
+// Raci, 26/08 : « j'ai programme deux seances et elles ne s'affichent
+// pas dans mon programme ». Elles etaient bien enregistrees dans
+// planifs, mais la carte de pilotage ne lisait que programmeActif :
+// une seance posee sur une date precise n'apparaissait nulle part.
+// Et le questionnaire de 4 questions est retire : « Mon programme »
+// ouvre la bibliotheque, on ne passe plus par un peage pour atteindre
+// une liste qu'on peut lire directement.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const dm = lire('app-v2/src/components/DemarrerSeance.jsx');
+  const soucis = [];
+  if (ent) {
+    if (!/const pose = planifs\.value\[iso\]/.test(ent)) {
+      soucis.push('la carte ne lit plus les seances posees a la main');
+    }
+    if (!/function poseeCetteSemaine/.test(ent)) {
+      soucis.push('sans garde-fou, la carte peut renvoyer null et faire disparaitre toute la zone d\'action');
+    }
+    if (/allerVers\('questionnaire'\)/.test(ent)) soucis.push('le questionnaire est revenu dans S\'entrainer');
+    if (/'questionnaire'/.test((ent.match(/const VUES_ADRESSABLES = \[[^\]]*\]/) || [''])[0])) {
+      soucis.push('le questionnaire reste ouvrable par l\'adresse');
+    }
+  }
+  if (dm && /allerVers\('questionnaire'\)/.test(dm)) soucis.push('le questionnaire est revenu dans Demarrer une seance');
+  if (soucis.length) faute('R55 seances posees', soucis.join(' ; '));
+  else passe('R55 seances posees');
 }
 
 // ------------------------------------------------------------

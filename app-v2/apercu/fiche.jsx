@@ -44,6 +44,19 @@ const depuis = new Date(); depuis.setDate(depuis.getDate() - 8);
 const isoD = depuis.toISOString().slice(0, 10);
 programmeActif.value = { id: 'masse-3j', jours: { 1: 0, 3: 1, 5: 2 }, depuis: isoD };
 
+// ?cas=posees : AUCUN programme, mais deux seances posees a la main
+// sur le calendrier. Elles doivent apparaitre dans la carte.
+if (new URLSearchParams(location.search).get('cas') === 'posees') {
+  programmeActif.value = null;
+  const l = new Date(); l.setDate(l.getDate() - ((l.getDay() + 6) % 7));
+  const jour = (k) => { const d = new Date(l); d.setDate(l.getDate() + k);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  planifs.value = {
+    [jour(2)]: { seanceId: 'x1', titre: 'Dos / Biceps', sub: '5 exercices · ~50 min' },
+    [jour(4)]: { seanceId: 'x2', titre: 'Jambes', sub: '6 exercices · ~60 min' },
+  };
+}
+
 // ?cas=fait : la seance de lundi a bien ete enregistree, elle doit
 // porter le badge FAIT et compter dans « seances faites cette semaine ».
 if (new URLSearchParams(location.search).get('cas') === 'fait') {

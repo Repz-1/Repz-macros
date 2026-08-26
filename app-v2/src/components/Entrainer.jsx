@@ -62,7 +62,8 @@ export const vueEntrainer = signal({ nom: 'accueil', params: null });
 // leur `prog` ou leur `seanceId` elles s'afficheraient a blanc.
 // Lu une seule fois au chargement, et sans toucher a l'historique :
 // le retour ramene a l'accueil comme depuis n'importe quel ecran.
-const VUES_ADRESSABLES = ['demarrer', 'selection', 'questionnaire', 'programmes'];
+// 'questionnaire' retire le 26/08 : plus aucun chemin, adresse comprise.
+const VUES_ADRESSABLES = ['demarrer', 'selection', 'programmes'];
 {
   const demandee = new URLSearchParams(location.search).get('vue');
   if (VUES_ADRESSABLES.includes(demandee)) {
@@ -122,34 +123,65 @@ const nomMuscle = (k) => t('mus_' + k);
 // — inventer un « manque » serait un jugement que Raci n'a pas
 // demande.
 // ==========================================================
+/**
+ * Y a-t-il une seance posee a la main dans la semaine en cours ?
+ * La carte ne doit s'afficher que si elle a quelque chose a montrer :
+ * sinon elle renverrait null et la zone d'action disparaitrait
+ * entierement, sans que le bloc de secours prenne le relais.
+ */
+function poseeCetteSemaine(today) {
+  const l = new Date(today);
+  l.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+  for (let k = 0; k < 7; k++) {
+    const d = new Date(l);
+    d.setDate(l.getDate() + k);
+    if (planifs.value[wlIso(d)]) return true;
+  }
+  return false;
+}
+
 function CarteProgramme({ today, todayIso, allerVers }) {
   const actif = programmeActif.value;
   const prog = actif && progParId(actif.id);
-  if (!prog) return null;
-
-  const aff = normaliserJours(actif.jours, prog.seances.length);
+  const aff = prog ? normaliserJours(actif.jours, prog.seances.length) : {};
 
   // Lundi de la semaine affichee, meme calcul que « Ta semaine ».
   const lundi = new Date(today);
   lundi.setDate(today.getDate() - ((today.getDay() + 6) % 7));
 
-  // Les jours affectes, du lundi au dimanche.
+  // Les jours de la semaine qui portent une seance, qu'elle vienne du
+  // PROGRAMME ou d'une seance posee a la main sur le calendrier.
+  //
+  // Raci, 26/08 : « j'ai programme deux seances et elles ne s'affichent
+  // pas dans mon programme ». Elles etaient bien enregistrees, mais la
+  // carte ne lisait que le programme actif : une seance posee sur une
+  // date precise n'existait nulle part ici. Une date posee a la main
+  // PRIME sur le programme — c'est une decision explicite contre une
+  // regle (store/programme.js).
   const lignes = [];
   for (let k = 0; k < 7; k++) {
     const d = new Date(lundi);
     d.setDate(lundi.getDate() + k);
-    const idx = aff[d.getDay()];
-    if (idx === undefined) continue;
     const iso = wlIso(d);
+    const pose = planifs.value[iso];
+    const idx = aff[d.getDay()];
+    let seance = null;
+    if (pose) seance = { titre: pose.titre, sub: pose.sub || t('cp_posee') };
+    else if (prog && idx !== undefined) seance = prog.seances[idx];
+    if (!seance) continue;
     const fait = musclesDuJour(iso).some(m => m !== 'repos');
     lignes.push({
       iso,
       jour: t('days_short').split('|')[d.getDay()].toUpperCase(),
-      seance: prog.seances[idx],
+      seance,
       etat: fait ? 'fait' : (iso === todayIso ? 'auj' : (iso > todayIso ? 'venir' : null)),
       auj: iso === todayIso,
     });
   }
+
+  // Sans programme ET sans seance posee, la carte n'a rien a dire :
+  // le bloc d'action d'origine reprend la main.
+  if (!prog && !lignes.length) return null;
 
   const faites = lignes.filter(l => l.etat === 'fait').length;
   const duJour = lignes.find(l => l.auj);
@@ -158,7 +190,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   // pleines. La duree du programme est un texte (« 8 semaines ») —
   // on en tire le nombre, et on se tait s'il n'y en a pas.
   let semaine = null, total = null;
-  if (actif.depuis) {
+  if (prog && actif.depuis) {
     const dep = wlIsoToDate(actif.depuis);
     dep.setDate(dep.getDate() - ((dep.getDay() + 6) % 7));
     semaine = Math.floor((lundi - dep) / 604800000) + 1;
@@ -169,7 +201,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
 
   return (
     <div class="cp">
-      <div class="cp-nom">{prog.name}</div>
+      <div class="cp-nom">{prog ? prog.name : t('cp_posees_t')}</div>
       <div class="cp-av">
         {semaine && (total
           ? t('cp_semaine', { n: semaine, t: total })
@@ -217,8 +249,10 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           {t('tr_start_session')}
         </button>
       )}
-      <button class="cp-gerer" onClick={() => allerVers('planifier', { prog: actif.id })}>
-        {t('cp_gerer')}
+      <button class="cp-gerer" onClick={() => (prog
+        ? allerVers('planifier', { prog: actif.id })
+        : allerVers('programmes'))}>
+        {prog ? t('cp_gerer') : t('cp_choisir')}
       </button>
     </div>
   );
@@ -383,7 +417,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
           seance » ne disait pas laquelle ; il fallait deviner.
           SANS programme, rien ne change : le bloc noir d'origine mene
           au choix d'exercices et au questionnaire. */}
-      {programmeActif.value
+      {/* La carte prend la main des qu'il y a QUELQUE CHOSE a piloter :
+          un programme actif, ou des seances posees a la main sur la
+          semaine. Sinon elle renvoie null et le bloc d'origine
+          s'affiche. */}
+      {(programmeActif.value || poseeCetteSemaine(today))
         ? <CarteProgramme today={today} todayIso={todayIso} allerVers={allerVers} />
         : (
       <div class="ent-action">
@@ -408,9 +446,14 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
             d'abandon existait mais n'etait atteignable qu'apres avoir
             refait les quatre questions, ce qui revient a le cacher
             (Raci, 17/08 : « je ne trouve pas comment supprimer »). */}
+        {/* Sans programme, « Mon programme » ouvre la BIBLIOTHEQUE, plus
+            le questionnaire. Raci, 26/08 : « a la place j'ai le
+            questionnaire, retire-le completement ». Quatre questions
+            pour arriver a une liste qu'on peut lire directement, c'est
+            un peage, pas une aide. */}
         <button class="ent-prog" onClick={() => (programmeActif.value
           ? allerVers('planifier', { prog: programmeActif.value.id })
-          : allerVers('questionnaire'))}>
+          : allerVers('programmes'))}>
           <span class="ent-prog-ic" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
