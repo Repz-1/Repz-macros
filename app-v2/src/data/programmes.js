@@ -92,7 +92,7 @@ export const PROGRAMMES = {
             ]
         },
         {
-            id:'deb-2j', badge:'2 jours/semaine', name:'Remise en route',
+            id:'deb-2j', badge:'2 jours/semaine', name:'Remise en forme',
             desc:'Deux séances par semaine pour reprendre le sport sans se blesser. Parfait pour bien commencer.',
             duree:'4 semaines', niveau:'Débutant',
             seances:[

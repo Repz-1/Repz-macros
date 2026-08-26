@@ -1851,6 +1851,34 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R58 — La fleche d'une seance recule d'UNE page.
+// Raci, 26/08 : depuis « Seance A », le retour sautait deux crans et
+// atterrissait sur la bibliotheque au lieu de la liste des seances du
+// programme. `allerVers('programmes')` etait appele sans parametre :
+// la bibliotheque s'ouvrait donc a plat, comme si l'on n'avait jamais
+// choisi de programme. L'identifiant de seance vaut « progId-index » ;
+// on en retire l'index pour rouvrir la page du programme.
+// ------------------------------------------------------------
+{
+  const m = lire('app-v2/src/main.jsx');
+  const pr = lire('app-v2/src/components/Programmes.jsx');
+  const soucis = [];
+  if (m) {
+    if (!/const progDeLaSeance = String\(p\.seanceId \|\| ''\)\.replace/.test(m)) {
+      soucis.push('le programme n\'est plus deduit de l\'identifiant de seance');
+    }
+    if (/retour=\{versJournal \? retourEntrainer\s*\n?\s*: \(\) => allerVers\('programmes'\)\}/.test(m)) {
+      soucis.push('le retour rouvre la bibliotheque a plat : deux pages en arriere au lieu d\'une');
+    }
+  }
+  if (pr && !/useState\(vise \? 'seances' : 'progs'\)/.test(pr)) {
+    soucis.push('un programme vise n\'ouvre plus directement ses seances : le retour retomberait sur la liste');
+  }
+  if (soucis.length) faute('R58 retour d\'une seance', soucis.join(' ; '));
+  else passe('R58 retour d\'une seance');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

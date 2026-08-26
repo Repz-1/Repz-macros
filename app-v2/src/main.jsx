@@ -176,8 +176,16 @@ export function OngletEntrainer() {
     // seance du jour n'a aucun sens — vu le 10/08 en eprouvant la
     // boucle complete.
     const versJournal = p.depuis === 'journal';
+    // Retour d'UNE page, pas de deux. `allerVers('programmes')` sans
+    // parametre rouvrait la bibliotheque a plat : on remontait deux
+    // crans d'un coup, au lieu de revenir a la liste des seances du
+    // programme (Raci, 26/08). L'identifiant de seance vaut
+    // « progId-index » : on en retire l'index pour retrouver le
+    // programme et rouvrir SA page.
+    const progDeLaSeance = String(p.seanceId || '').replace(/-\d+$/, '');
     return (<><SeanceDetail seanceId={p.seanceId} titre={p.titre}
-      retour={versJournal ? retourEntrainer : () => allerVers('programmes')} /><RestTimer /></>);
+      retour={versJournal ? retourEntrainer
+        : () => allerVers('programmes', progDeLaSeance ? { prog: progDeLaSeance } : {})} /><RestTimer /></>);
   }
   return (
     <div class="pg-entrainer">
