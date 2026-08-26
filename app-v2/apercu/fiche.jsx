@@ -46,6 +46,17 @@ programmeActif.value = { id: 'masse-3j', jours: { 1: 0, 3: 1, 5: 2 }, depuis: is
 
 // ?cas=posees : AUCUN programme, mais deux seances posees a la main
 // sur le calendrier. Elles doivent apparaitre dans la carte.
+// ?cas=notes : AUCUN programme, aucune seance posee — seulement des
+// muscles notes a la main sur demain et apres-demain. Ce sont des
+// jours programmes et ils doivent apparaitre dans la carte.
+if (new URLSearchParams(location.search).get('cas') === 'notes') {
+  programmeActif.value = null;
+  seances.value = [];
+  const j = (n) => { const d = new Date(); d.setDate(d.getDate() + n);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  muscleLog.value = { [j(1)]: ['epaules', 'trapezes'], [j(2)]: ['jambes'] };
+}
+
 if (new URLSearchParams(location.search).get('cas') === 'posees') {
   programmeActif.value = null;
   const l = new Date(); l.setDate(l.getDate() - ((l.getDay() + 6) % 7));

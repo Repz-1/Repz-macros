@@ -1773,6 +1773,21 @@ const DECALAGE_SW_V2 = 232;
     if (!/const pose = planifs\.value\[iso\]/.test(ent)) {
       soucis.push('la carte ne lit plus les seances posees a la main');
     }
+    // Raci, 26/08 : « si je note Épaules pour demain, c'est un jour
+    // programme ». Les pastilles du calendrier sont le chemin le plus
+    // court pour planifier : elles doivent nourrir la carte.
+    if (!/else if \(marques\.length\)/.test(ent)) {
+      soucis.push('un jour simplement note dans le calendrier n\'apparait plus comme jour programme');
+    }
+    // Un jour futur reste « a venir » meme s'il porte deja des muscles.
+    if (!/etat: iso > todayIso \? 'venir'/.test(ent)) {
+      soucis.push('un jour futur note serait compte comme deja fait');
+    }
+    // Un jour note n'a pas d'exercices : le bouton ne doit pas
+    // promettre de le demarrer.
+    if (!/l\.auj && l\.lancable/.test(ent)) {
+      soucis.push('le bouton promet de demarrer un jour simplement note, qui n\'a aucun exercice');
+    }
     if (!/function poseeCetteSemaine/.test(ent)) {
       soucis.push('sans garde-fou, la carte peut renvoyer null et faire disparaitre toute la zone d\'action');
     }

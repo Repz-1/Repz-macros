@@ -135,7 +135,13 @@ function poseeCetteSemaine(today) {
   for (let k = 0; k < 7; k++) {
     const d = new Date(l);
     d.setDate(l.getDate() + k);
-    if (planifs.value[wlIso(d)]) return true;
+    const iso = wlIso(d);
+    if (planifs.value[iso]) return true;
+    // Un jour NOTE compte aussi. Raci, 26/08 : « si je note Épaules
+    // pour demain, c'est un jour programme ». Les pastilles sont le
+    // chemin le plus court pour planifier ; elles doivent donc peser
+    // autant qu'une seance posee.
+    if (musclesDuJour(iso).some(m => m !== 'repos')) return true;
   }
   return false;
 }
@@ -165,16 +171,32 @@ function CarteProgramme({ today, todayIso, allerVers }) {
     const iso = wlIso(d);
     const pose = planifs.value[iso];
     const idx = aff[d.getDay()];
+    const marques = musclesDuJour(iso).filter(m => m !== 'repos');
     let seance = null;
+    // `lancable` : la ligne porte-t-elle une vraie seance, avec ses
+    // exercices ? Un jour simplement NOTE n'en a pas — le bouton ne
+    // doit donc pas promettre de la demarrer.
+    let lancable = true;
     if (pose) seance = { titre: pose.titre, sub: pose.sub || t('cp_posee') };
     else if (prog && idx !== undefined) seance = prog.seances[idx];
+    else if (marques.length) {
+      // Jour note a la main depuis le calendrier : les muscles
+      // deviennent le titre. C'est la planification la plus rapide
+      // qui soit, et elle etait invisible ici jusqu'au 26/08.
+      seance = { titre: marques.map(nomMuscle).join(', '), sub: t('cp_note') };
+      lancable = false;
+    }
     if (!seance) continue;
-    const fait = musclesDuJour(iso).some(m => m !== 'repos');
     lignes.push({
       iso,
       jour: t('days_short').split('|')[d.getDay()].toUpperCase(),
       seance,
-      etat: fait ? 'fait' : (iso === todayIso ? 'auj' : (iso > todayIso ? 'venir' : null)),
+      lancable,
+      // L'avenir d'abord : un jour futur reste « a venir » meme s'il
+      // porte deja des muscles notes. Sans cette priorite, noter
+      // « Épaules » pour demain le comptait comme deja fait.
+      etat: iso > todayIso ? 'venir'
+        : (marques.length ? 'fait' : (iso === todayIso ? 'auj' : null)),
       auj: iso === todayIso,
     });
   }
@@ -184,7 +206,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   if (!prog && !lignes.length) return null;
 
   const faites = lignes.filter(l => l.etat === 'fait').length;
-  const duJour = lignes.find(l => l.auj);
+  const duJour = lignes.find(l => l.auj && l.lancable);
 
   // « Semaine 2 sur 8 » : depuis la date d'adoption, en semaines
   // pleines. La duree du programme est un texte (« 8 semaines ») —
