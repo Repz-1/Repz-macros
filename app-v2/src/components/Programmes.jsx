@@ -2,7 +2,12 @@ import { useState } from 'preact/hooks';
 import { PROGRAMMES, CATEGORIES } from '../data/programmes.js';
 import { vueEntrainer } from './Entrainer.jsx';
 
-import { retourEntrainer, allerVers } from './Entrainer.jsx';
+import { retourEntrainer, allerVers, jourAOuvrir } from './Entrainer.jsx';
+
+const isoDuJour = () => {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+};
 import { programmeActif } from '../store/programme.js';
 import { t } from '../i18n/index.js';
 import '../legacy/programmes.scoped.css';
@@ -101,14 +106,25 @@ export function Programmes() {
         </div>
         <p class="intro-txt">{t('pr_intro')}</p>
 
+        {/* Raci, 26/08 : ce chemin part de « je ne sais pas quoi
+            faire ». Deux reponses possibles — je m'organise moi-meme,
+            ou je reponds a quatre questions et on me guide. */}
+        <button class="voie" onClick={() => {
+          jourAOuvrir.value = isoDuJour();
+          retourEntrainer();
+        }}>
+          <span class="voie-n">{t('pr_voie_plan')}</span>
+          <span class="voie-s">{t('pr_voie_plan_s')}</span>
+        </button>
+
         <button class="voie voie-quiz" onClick={() => allerVers('questionnaire')}>
           <span class="voie-n">{t('pr_voie_quiz')}</span>
           <span class="voie-s">{t('pr_voie_quiz_s')}</span>
         </button>
 
-        <button class="voie" onClick={() => setEcran('progs')}>
-          <span class="voie-n">{t('pr_voie_liste')}</span>
-          <span class="voie-s">{t('pr_voie_liste_s', { n: TOUS.length })}</span>
+        {/* Ceux qui savent deja gardent leur porte, en retrait. */}
+        <button class="voie-lien" onClick={() => setEcran('progs')}>
+          {t('pr_voie_liste')}
         </button>
       </div>
     );

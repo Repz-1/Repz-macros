@@ -66,3 +66,12 @@
 /* La voie du questionnaire porte le liser d'or : c'est un conseil,
    pas une simple liste. */
 .pg-programmes .voie-quiz { border-color: #E8C766; background: #FFFCF3; }
+
+/* Le troisieme chemin — la liste complete — est pour ceux qui savent
+   deja. Il reste atteignable sans peser autant que les deux voies. */
+.pg-programmes .voie-lien {
+  display: block; width: 100%; margin-top: 4px; padding: 12px 6px;
+  background: none; border: none; font-family: inherit;
+  font-size: 13px; font-weight: 700; color: #6B655D; text-decoration: underline;
+  cursor: pointer;
+}

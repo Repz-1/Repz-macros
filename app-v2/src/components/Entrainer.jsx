@@ -53,6 +53,11 @@ import '../styles/entrainer-carte.css';
 // ('accueil' -> 'programmes' -> 'seance'), avec fleche retour.
 export const vueEntrainer = signal({ nom: 'accueil', params: null });
 
+// Fiche d'un jour a ouvrir des le retour sur S'entrainer. Sert au
+// chemin « Planifier mes seances » : on revient sur l'onglet et la
+// fiche du jour s'ouvre, sans ecran supplementaire.
+export const jourAOuvrir = signal(null);
+
 // Ouverture directe d'un ecran par l'adresse, pour partager un lien
 // ou tester sans traverser l'accueil :
 //   belfit.be/v2/?onglet=entrainer&vue=selection
@@ -838,7 +843,12 @@ function ModalePremium({ montre, fermer }) {
 // Page
 // ==========================================================
 export function Entrainer() {
-  const [jourOuvert, setJourOuvert] = useState(null);
+  const [jourOuvertLocal, setJourOuvertLocal] = useState(null);
+  // Une demande venue d'ailleurs prime sur l'etat local le temps d'un
+  // rendu, puis on la consomme : sans quoi la fiche se rouvrirait a
+  // chaque retour sur l'onglet.
+  const jourOuvert = jourAOuvrir.value || jourOuvertLocal;
+  const setJourOuvert = (v) => { jourAOuvrir.value = null; setJourOuvertLocal(v); };
   const [premium, setPremium] = useState(false);
   // Vues internes a l'onglet : liste plein ecran et detail d'une
   // seance. Pas de detour par vueEntrainer — ces deux ecrans partent

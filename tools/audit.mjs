@@ -1914,9 +1914,20 @@ const DECALAGE_SW_V2 = 232;
   if (pr) {
     if (!/useState\(vise \? 'seances' : 'intro'\)/.test(pr)) soucis.push('l\'aiguillage ne s\'ouvre plus en premier');
     if (!/allerVers\('questionnaire'\)/.test(pr)) soucis.push('la voie du questionnaire a disparu');
-    if (!/setEcran\('progs'\)/.test(pr)) soucis.push('la voie directe vers les programmes a disparu');
+    if (!/jourAOuvrir\.value = isoDuJour\(\)/.test(pr)) soucis.push('la voie « Planifier mes seances » a disparu');
+    // La liste complete reste atteignable, meme en retrait : sans
+    // elle, les 14 programmes ne s'ouvrent plus que par le
+    // questionnaire.
+    if (!/setEcran\('progs'\)/.test(pr)) soucis.push('la liste des programmes n\'est plus atteignable');
   }
   if (css && !/\.voie-quiz/.test(css)) soucis.push('les deux voies ont perdu leur style');
+  if (css && !/\.voie-lien/.test(css)) soucis.push('le lien vers la liste complete a perdu son style');
+  // Le libelle du lien doit annoncer le carrefour, pas une seule de
+  // ses branches : « Choisir un programme » promettait un catalogue.
+  const str = lire('app-v2/src/legacy/strings.js');
+  if (str && /cp_choisir:"Choisir un programme"/.test(str)) {
+    soucis.push('le lien promet un catalogue alors qu\'il ouvre un carrefour');
+  }
   if (soucis.length) faute('R59 deux voies', soucis.join(' ; '));
   else passe('R59 deux voies');
 }
