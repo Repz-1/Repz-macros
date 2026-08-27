@@ -2019,6 +2019,33 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R63 — La carte ne repete pas ce qui se lit deja.
+// Raci, 26/08 : « les rubriques sont trop collees, je n'aime pas la
+// mise en page ». Quatre lignes portaient le meme sous-titre mot pour
+// mot, et deux pastilles « A VENIR » disaient ce que l'absence de
+// marque disait deja. Maquette A retenue : une marque au plus par
+// ligne, un sous-titre seulement s'il informe, des filets fins.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const css = lire('app-v2/src/styles/entrainer-carte.css');
+  const soucis = [];
+  if (ent) {
+    if (/cp_venir/.test(ent)) soucis.push('la pastille « a venir » est revenue');
+    if (!/l\.seance\.sub \? <small>/.test(ent)) soucis.push('le sous-titre s\'affiche de nouveau meme vide');
+    if (/sub: t\('cp_note'\)/.test(ent)) soucis.push('« Note depuis le calendrier » est revenu sur chaque ligne');
+    if (!/cp-e-fait" aria-label/.test(ent)) soucis.push('la coche « fait » a perdu son libelle pour les lecteurs d\'ecran');
+  }
+  if (css) {
+    if (!/\.cp-l \+ \.cp-l \{ border-top/.test(css)) soucis.push('les filets entre lignes ont disparu');
+    if (!/\.cp-l \{ display: flex; align-items: baseline/.test(css)) soucis.push('un titre sur deux lignes decalera de nouveau le jour et la marque');
+    if (/\.cp-e-venir/.test(css)) soucis.push('le style de la pastille « a venir » traine encore');
+  }
+  if (soucis.length) faute('R63 carte sans repetition', soucis.join(' ; '));
+  else passe('R63 carte sans repetition');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

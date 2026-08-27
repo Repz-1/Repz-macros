@@ -184,13 +184,13 @@ function CarteProgramme({ today, todayIso, allerVers }) {
     // doit donc pas promettre de la demarrer.
     let lancable = true;
     let seanceId = null;
-    if (pose) { seance = { titre: pose.titre, sub: pose.sub || t('cp_posee') }; seanceId = pose.seanceId; }
+    if (pose) { seance = { titre: pose.titre, sub: pose.sub || '' }; seanceId = pose.seanceId; }
     else if (prog && idx !== undefined) { seance = prog.seances[idx]; seanceId = actif.id + '-' + idx; }
     else if (marques.length) {
       // Jour note a la main depuis le calendrier : les muscles
       // deviennent le titre. C'est la planification la plus rapide
       // qui soit, et elle etait invisible ici jusqu'au 26/08.
-      seance = { titre: marques.map(nomMuscle).join(', '), sub: t('cp_note') };
+      seance = { titre: marques.map(nomMuscle).join(', '), sub: '' };
       lancable = false;
     }
     if (!seance) continue;
@@ -214,6 +214,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   if (!prog && !lignes.length) return null;
 
   const faites = lignes.filter(l => l.etat === 'fait').length;
+  const aVenir = lignes.filter(l => l.etat === 'venir').length;
   const duJour = lignes.find(l => l.auj && l.lancable && l.seanceId);
 
   // « Semaine 2 sur 8 » : depuis la date d'adoption, en semaines
@@ -237,8 +238,12 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           ? t('cp_semaine', { n: semaine, t: total })
           : t('cp_semaine_seule', { n: semaine }))}
         {semaine && ' · '}
+        {/* Trois segments tiennent sur une ligne, pas quatre : des que
+            le compte de ce qui vient s'ajoute, « faites » passe en
+            forme courte. Sinon la phrase debordait sur deux lignes. */}
         {faites === 0 ? t('cp_aucune')
-          : t(faites > 1 ? 'cp_faites_p' : 'cp_faites', { n: faites })}
+          : t(aVenir > 0 ? 'cp_faites_c' : (faites > 1 ? 'cp_faites_p' : 'cp_faites'), { n: faites })}
+        {aVenir > 0 && ' · ' + t('cp_a_venir', { n: aVenir })}
       </div>
       {semaine && total && (
         <div class="cp-barre">
@@ -246,18 +251,20 @@ function CarteProgramme({ today, todayIso, allerVers }) {
         </div>
       )}
 
+      {/* Une marque par ligne, au plus. « Fait » devient une coche :
+          meme information, un dixieme de la surface. « A venir » n'a
+          pas de marque du tout — une ligne sans rien EST a venir, et
+          deux pastilles grises pesaient plus qu'elles n'informaient.
+          Le sous-titre ne s'affiche que s'il dit quelque chose. */}
       {lignes.map(l => (
         <div class={'cp-l' + (l.auj ? ' auj' : '')} key={l.iso}>
           <div class="cp-j">{l.jour}</div>
           <div class="cp-t">
             <b>{l.seance.titre}</b>
-            <small>{l.seance.sub}</small>
+            {l.seance.sub ? <small>{l.seance.sub}</small> : null}
           </div>
-          {l.etat && (
-            <div class={'cp-e cp-e-' + l.etat}>
-              {t(l.etat === 'fait' ? 'cp_fait' : l.etat === 'auj' ? 'cp_auj' : 'cp_venir')}
-            </div>
-          )}
+          {l.etat === 'fait' && <div class="cp-e cp-e-fait" aria-label={t('cp_fait')}>✓</div>}
+          {l.etat === 'auj' && <div class="cp-e cp-e-auj">{t('cp_auj')}</div>}
         </div>
       ))}
 
