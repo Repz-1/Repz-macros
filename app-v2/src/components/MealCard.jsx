@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { DB, NOMS_ALIMENTS, macrosOf, scoreRecherche, facteurCuisson } from '../data/aliments.js';
+import { DB, NOMS_ALIMENTS, macrosOf, scoreRecherche, facteurCuisson, PAIRES_CUISSON } from '../data/aliments.js';
 import { customFoods, Scanner } from './Scanner.jsx';
 import { VocalModal } from './VocalModal.jsx';
 import { PhotoModal } from './PhotoModal.jsx';
@@ -32,8 +32,7 @@ import { MEAL_SVG, TYPE_SVG, MEAL_NEUTRAL_SVG } from '../data/illustrations.js';
 import {
   repas, totauxRepas, setPortion, ajouterIngredient, ajouterPlat,
   supprimerIngredient, supprimerRepas, renommerRepas, basculerCuisson,
-  fourchetteRepas,
-} from '../store/journal.js';
+  fourchetteRepas, remplacerAliment } from '../store/journal.js';
 
 /** Illustration d'un repas : la sienne s'il est fixe, sinon celle de son type. */
 export function illustration(r) {
@@ -106,6 +105,9 @@ export function LigneIngredient({ repasId, ing }) {
   // Pas de bascule cru/cuit sur un aliment compte a la piece : un oeuf
   // reste un oeuf. Sinon, null si la bascule n'a pas de sens.
   const fc = d.unit ? null : facteurCuisson(ing.name);
+  // Aliment dont le nom porte deja la cuisson : la bascule existe
+  // quand meme, elle change d'entree au lieu de convertir.
+  const paire = fc ? null : PAIRES_CUISSON[ing.name];
 
   // La valeur peut changer ailleurs (vocal, scan) : on resynchronise.
   useEffect(() => { setSaisie(String(ing.portion)); }, [ing.portion]);
@@ -149,6 +151,15 @@ export function LigneIngredient({ repasId, ing }) {
           >
             <span class={ing.cuit ? '' : 'actif'}>cru</span>
             <span class={ing.cuit ? 'actif' : ''}>cuit</span>
+          </button>
+        )}
+        {paire && (
+          <button
+            class={'mc-ing-cuisson' + (paire.cuit ? ' est-cuit' : '')}
+            onClick={() => remplacerAliment(repasId, ing.id, paire.autre)}
+          >
+            <span class={paire.cuit ? '' : 'actif'}>cru</span>
+            <span class={paire.cuit ? 'actif' : ''}>cuit</span>
           </button>
         )}
       </div>

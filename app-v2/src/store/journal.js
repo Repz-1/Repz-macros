@@ -207,6 +207,19 @@ export function ajouterPlat(repasId, plat, nbPortions = 1) {
  * que la personne vient de taper serait deroutant ; ce sont les
  * calories qui se recalculent, et c'est bien le but.
  */
+/**
+ * Change l'aliment d'une ligne sans toucher a la quantite pesee.
+ * Sert a la bascule cru/cuit des aliments qui portent deja leur
+ * cuisson dans leur nom : on passe a l'entree jumelle, dont les
+ * valeurs sont exactes, plutot que d'appliquer un facteur devine.
+ */
+export function remplacerAliment(repasId, ingId, nom) {
+  repas.value = repas.value.map(r => r.id !== repasId ? r : {
+    ...r,
+    ings: r.ings.map(i => i.id !== ingId ? i : { ...i, name: nom, cuit: false }),
+  });
+}
+
 export function basculerCuisson(repasId, ingId) {
   repas.value = repas.value.map(r => r.id !== repasId ? r : {
     ...r,

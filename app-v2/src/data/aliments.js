@@ -1387,6 +1387,40 @@ const PREPARATIONS = new Set(['puree', 'croquette', 'sautee', 'rissolee', 'frite
  * ne s'y prete pas (huile, fromage, fruit...). On ne propose la
  * bascule que lorsqu'elle a un sens.
  */
+// ============================================================
+// PAIRES CRU / CUIT
+// 143 aliments portent deja leur cuisson dans leur nom, dont 40 en
+// paire complete (« Riz basmati cru » / « Riz basmati (cuit) »).
+// Ceux-la se voyaient refuser la bascule : leur nom disait la
+// cuisson, donc plus rien a convertir. Resultat, un utilisateur qui
+// avait choisi la mauvaise entree devait la supprimer et
+// recommencer. La bascule change desormais d'entree — valeurs
+// exactes de la base, aucun facteur devine.
+// ============================================================
+const SANS_CUISSON = (n) => n
+  .replace(/\s*\((cuit|cuite|cuits|cuites|cru|crue|crus)\)/gi, '')
+  .replace(/\s+(cuit|cuite|cuits|cuites|cru|crue|crus)\b/gi, '')
+  .trim();
+const EST_CUIT = (n) => /\bcuit/i.test(n);
+
+export const PAIRES_CUISSON = (() => {
+  const par = {};
+  for (const n of Object.keys(DB)) {
+    const base = SANS_CUISSON(n);
+    if (base === n) continue;
+    (par[base] = par[base] || []).push(n);
+  }
+  const out = {};
+  for (const noms of Object.values(par)) {
+    const cru = noms.find(n => !EST_CUIT(n));
+    const cuit = noms.find(n => EST_CUIT(n));
+    if (!cru || !cuit) continue;
+    out[cru] = { autre: cuit, cuit: false };
+    out[cuit] = { autre: cru, cuit: true };
+  }
+  return out;
+})();
+
 export function facteurCuisson(nom) {
   const mots = motsCles(nom);
   // Deja precise dans le nom : l'aliment porte sa propre valeur,

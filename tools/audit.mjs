@@ -2046,6 +2046,32 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R64 — Cru/cuit se corrige sans tout refaire.
+// Raci, 26/08 : « on ne peut pas modifier directement ». Les 84
+// aliments qui portent leur cuisson dans leur nom se voyaient refuser
+// la bascule — leur nom disait la cuisson, donc plus rien a convertir.
+// Qui avait choisi la mauvaise entree devait la supprimer et
+// recommencer. La bascule change maintenant d'entree : valeurs
+// exactes de la base, aucun facteur devine.
+// ------------------------------------------------------------
+{
+  const al = lire('app-v2/src/data/aliments.js');
+  const mc = lire('app-v2/src/components/MealCard.jsx');
+  const jn = lire('app-v2/src/store/journal.js');
+  const soucis = [];
+  if (al && !/export const PAIRES_CUISSON/.test(al)) soucis.push('les paires cru/cuit ne sont plus calculees');
+  if (jn && !/export function remplacerAliment/.test(jn)) soucis.push('le changement d\'entree a disparu du store');
+  if (mc) {
+    if (!/PAIRES_CUISSON\[ing\.name\]/.test(mc)) soucis.push('la ligne ne cherche plus son jumeau');
+    if (!/remplacerAliment\(repasId, ing\.id, paire\.autre\)/.test(mc)) soucis.push('la bascule ne change plus d\'entree');
+    // Les deux bascules ne doivent jamais s'afficher ensemble.
+    if (!/const paire = fc \? null : PAIRES_CUISSON/.test(mc)) soucis.push('les deux bascules peuvent s\'afficher sur la meme ligne');
+  }
+  if (soucis.length) faute('R64 bascule cru/cuit', soucis.join(' ; '));
+  else passe('R64 bascule cru/cuit');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
