@@ -10,8 +10,8 @@ export const DB = {
     'Pâtes blanches cuites':{kcal:158,prot:5.8,carbs:31,lip:0.9},
     'Pain complet':{kcal:247,prot:9,carbs:43,lip:3.4,fibres:6.9,sucres:2.2,satures:0.52,sel:1.12},
     'Pain blanc':{kcal:265,prot:9,carbs:49,lip:3.2,fibres:2.6,satures:0.17,sel:1.45},
-    'Pomme de terre':{kcal:77,prot:2,carbs:17,lip:0.1,fibres:1.8,sucres:0.78,satures:0.04,sel:0.02},
-    'Patate douce':{kcal:86,prot:1.6,carbs:20,lip:0.1,fibres:2.87,sucres:5.64,satures:0.06,sel:0.1},
+    'Pomme de terre':{kcal:77,prot:2,carbs:17,lip:0.1,fibres:1.8,sucres:0.78,satures:0.04,sel:0.02,cache:true},
+    'Patate douce':{kcal:86,prot:1.6,carbs:20,lip:0.1,fibres:2.87,sucres:5.64,satures:0.06,sel:0.1,cache:true},
     'Quinoa cru':{kcal:368,prot:14,carbs:64,lip:6,fibres:7,satures:0.71,sel:0.01},
     'Semoule':{kcal:360,prot:12,carbs:73,lip:1.8,fibres:3.37,sucres:1,satures:0.21,sel:0},
     // Protéines
@@ -91,7 +91,7 @@ export const DB = {
     'Dattes':{kcal:282,prot:2.5,carbs:75,lip:0.4,fibres:7.3,sucres:64.7,satures:0.07,sel:0.1},
     'Raisins secs':{kcal:299,prot:3,carbs:79,lip:0.5},
     // Légumes
-    'Brocoli':{kcal:34,prot:2.8,carbs:7,lip:0.4,fibres:2.9,sucres:1.7,satures:0.06,sel:0.05},
+    'Brocoli':{kcal:34,prot:2.8,carbs:7,lip:0.4,fibres:2.9,sucres:1.7,satures:0.06,sel:0.05,cache:true},
     'Épinards':{kcal:23,prot:2.9,carbs:3.6,lip:0.4,fibres:2.37,sucres:0.32,satures:0.06,sel:0.17},
     'Courgette':{kcal:17,prot:1.2,carbs:3,lip:0.3,fibres:1.5,sucres:2.3,satures:1.3,sel:0.6},
     'Tomate':{kcal:18,prot:0.9,carbs:3.9,lip:0.2,fibres:1.2,sucres:2.48,satures:0.06,sel:0.01},
@@ -105,8 +105,8 @@ export const DB = {
     'Edamame':{kcal:121,prot:12,carbs:9,lip:5},
     'Sardines':{kcal:208,prot:25,carbs:0,lip:11,fibres:0,sucres:0,satures:2.4,sel:0.22},
     'Maquereau':{kcal:205,prot:19,carbs:0,lip:14,fibres:0,sucres:0,satures:3.22,sel:0.16},
-    'Truite':{kcal:119,prot:20,carbs:0,lip:3.5,fibres:0,sucres:0,satures:0.62,sel:0.14},
-    'Colin/Lieu':{kcal:80,prot:17,carbs:0,lip:1},
+    'Truite':{kcal:119,prot:20,carbs:0,lip:3.5,fibres:0,sucres:0,satures:0.62,sel:0.14,cache:true},
+    'Colin/Lieu':{kcal:80,prot:17,carbs:0,lip:1,cache:true},
     'Jambon de dinde':{kcal:105,prot:18,carbs:1,lip:3,fibres:0.39,sucres:1.08,satures:0.54,sel:1.9},
     'Bresaola':{kcal:151,prot:32,carbs:0.5,lip:2,fibres:0,sucres:0,satures:2.04,sel:3.46},
     'Filet de porc':{kcal:143,prot:21,carbs:0,lip:6},
@@ -197,9 +197,9 @@ export const DB = {
     'Pain aux céréales':{kcal:258,prot:10,carbs:43,lip:4.5,fibres:5.2,sucres:2.2,satures:0.45,sel:1.13},
     'Baguette':{kcal:270,prot:9,carbs:55,lip:1.5},
     'Biscotte':{kcal:390,prot:12,carbs:75,lip:5,fibres:4.85,sucres:9.01,satures:6.17,sel:0.99},
-    'Pomme de terre cuite':{kcal:87,prot:2,carbs:20,lip:0.1,fibres:1.8,sucres:0.86,satures:0.09,sel:0.05},
+    'Pomme de terre cuite':{kcal:87,prot:2,carbs:20,lip:0.1,fibres:1.8,sucres:0.86,satures:0.09,sel:0.05,cache:true},
     'Frites four':{kcal:180,prot:3,carbs:28,lip:6,fibres:4.2,sucres:0.29,satures:0.75,sel:0.39},
-    'Patate douce cuite':{kcal:90,prot:2,carbs:21,lip:0.1,fibres:2.9,sucres:6.11,satures:0.04,sel:0.08},
+    'Patate douce cuite':{kcal:90,prot:2,carbs:21,lip:0.1,fibres:2.9,sucres:6.11,satures:0.04,sel:0.08,cache:true},
     // ===== AJOUTS LAITIERS =====
     'Yaourt nature':{kcal:61,prot:3.5,carbs:4.7,lip:3.3,fibres:0.14,sucres:3.9,satures:6.22,sel:0.1},
     'Yaourt 0%':{kcal:38,prot:6.2,carbs:3.6,lip:0.1,fibres:0,sucres:4.1,satures:0.04,sel:0.14},
@@ -438,7 +438,7 @@ export const DB = {
     'Terrine':{kcal:280,prot:18,carbs:0,lip:24,fibres:1,sucres:0.95,satures:7.9,sel:1.84},
     'Rôti de bœuf':{kcal:210,prot:28,carbs:0,lip:10},
     'Côte de boeuf':{kcal:280,prot:26,carbs:0,lip:19},
-    'Entrecôte':{kcal:250,prot:27,carbs:0,lip:15},
+    'Entrecôte':{kcal:250,prot:27,carbs:0,lip:15,cache:true},
     'Côtes levées':{kcal:293,prot:25,carbs:0,lip:22},
     'Boeuf bourguignon':{kcal:180,prot:20,carbs:5,lip:8,fibres:1.25,sucres:1.57,satures:0.88,sel:0.88},
     'Boulettes viande':{kcal:220,prot:18,carbs:6,lip:14},
@@ -453,7 +453,7 @@ export const DB = {
     'Boudin noir':{kcal:405,prot:13,carbs:16,lip:32,fibres:1.42,sucres:1.12,satures:9.57,sel:1.29},
     'Boudin blanc':{kcal:280,prot:15,carbs:3,lip:23,sucres:3.64,satures:7.89,sel:1.42},
     'Confit de canard':{kcal:412,prot:14,carbs:0,lip:40,fibres:0.4,sucres:0.14,satures:7.26,sel:1.44},
-    'Magret de canard':{kcal:230,prot:28,carbs:0,lip:13},
+    'Magret de canard':{kcal:230,prot:28,carbs:0,lip:13,cache:true},
     'Cuisse de canard':{kcal:260,prot:25,carbs:0,lip:17},
     'Oie':{kcal:238,prot:27,carbs:0,lip:14,fibres:0,satures:2.79,sel:0.2},
     'Foie gras mi-cuit':{kcal:461,prot:6,carbs:1,lip:47},
@@ -771,6 +771,7 @@ export const DB = {
     'Ananas':{kcal:50,prot:0.5,carbs:13,lip:0.1,fibres:1.2,sucres:10.5,satures:0.01,sel:0.01},
     'Kiwi':{kcal:61,prot:1.1,carbs:15,lip:0.5,fibres:2.4,sucres:8.9,satures:0.13,sel:0.01},
     'Épinards (crus)':{kcal:23,prot:2.9,carbs:3.6,lip:0.4},
+    'Brocoli (cru)':{kcal:34,prot:2.8,carbs:7,lip:0.4,fibres:2.9,sucres:1.7,satures:0.06,sel:0.05},
     'Brocoli (cuit)':{kcal:35,prot:2.4,carbs:7,lip:0.4,fibres:1.5,sucres:1.1,satures:0.2,sel:0.1},
     'Courgette (crue)':{kcal:17,prot:1.2,carbs:3,lip:0.3,fibres:1.05,sucres:1.79,satures:0.06,sel:0.02},
     'Poivron':{kcal:31,prot:1,carbs:6,lip:0.3,fibres:3.2,sucres:3,satures:0.01,sel:0.01},
@@ -1406,6 +1407,10 @@ const EST_CUIT = (n) => /\bcuit/i.test(n);
 export const PAIRES_CUISSON = (() => {
   const par = {};
   for (const n of Object.keys(DB)) {
+    // Les entrees masquees restent resolubles pour les journaux deja
+    // enregistres, mais la bascule ne doit jamais y renvoyer : on
+    // basculerait vers un aliment introuvable a la recherche.
+    if (DB[n].cache) continue;
     const base = SANS_CUISSON(n);
     if (base === n) continue;
     (par[base] = par[base] || []).push(n);

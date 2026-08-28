@@ -2059,7 +2059,20 @@ const DECALAGE_SW_V2 = 232;
   const mc = lire('app-v2/src/components/MealCard.jsx');
   const jn = lire('app-v2/src/store/journal.js');
   const soucis = [];
-  if (al && !/export const PAIRES_CUISSON/.test(al)) soucis.push('les paires cru/cuit ne sont plus calculees');
+  if (al) {
+    if (!/export const PAIRES_CUISSON/.test(al)) soucis.push('les paires cru/cuit ne sont plus calculees');
+    // La bascule ne doit jamais renvoyer vers une entree masquee :
+    // l'aliment deviendrait introuvable a la recherche.
+    if (!/if \(DB\[n\]\.cache\) continue;/.test(al)) soucis.push('la bascule peut renvoyer vers un aliment masque');
+    // Raci, 26/08 : « precise pommes de terre cru, c'est ecrit cuit ou
+    // rien ». Un aliment cru dont le nom ne dit pas qu'il est cru,
+    // alors qu'une version cuite existe, se lit comme un piege.
+    const noms = [...al.matchAll(/^\s*'([^']+)':\{([^}]*)\}/gm)];
+    const vis = new Set(noms.filter(m => !/cache:true/.test(m[2])).map(m => m[1]));
+    const muets = [...vis].filter(n => !/\b(cru|crue|crus|cuit|cuite|cuits|cuites)\b/i.test(n)
+      && [' cuit', ' cuite', ' (cuit)', ' (cuite)'].some(x => vis.has(n + x)));
+    if (muets.length) soucis.push(muets.length + ' aliment(s) crus ne le disent pas alors que leur version cuite existe : ' + muets.slice(0, 4).join(', '));
+  }
   if (jn && !/export function remplacerAliment/.test(jn)) soucis.push('le changement d\'entree a disparu du store');
   if (mc) {
     if (!/PAIRES_CUISSON\[ing\.name\]/.test(mc)) soucis.push('la ligne ne cherche plus son jumeau');
