@@ -572,3 +572,10 @@
 }
 .ml-modal .ml-retour:active { background: #EFE9DC; }
 .ml-modal .ml-retour:active { transform: scale(.94); }
+
+/* Sans programme : un chemin, pas un mur. */
+.ml-modal .ml-sans-prog{ margin: 6px 0 14px; }
+.ml-modal .ml-sans-prog-s{
+  margin: 8px 2px 0; font-size: 12px; font-weight: 500;
+  line-height: 1.45; color: #8A8378;
+}

@@ -2225,6 +2225,28 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R69 — Aucun bouton ne promet ce qu'il ne peut pas tenir.
+// Raci, 26/08 (capture entouree) : « comment je fais pour programmer
+// une seance ? ». « Programmer une seance ce jour-la » ouvrait un
+// panneau qui repondait « cree d'abord un programme » — deux appuis
+// pour arriver a un mur, sans dire ou aller ensuite. Sans programme,
+// le bouton mene desormais aux quatre questions, et rappelle qu'on
+// peut aussi programmer un jour en cochant ses muscles.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const soucis = [];
+  if (ent) {
+    if (/ml_pas_de_prog/.test(ent)) soucis.push('le cul-de-sac « cree d\'abord un programme » est revenu');
+    if (!/!sessionsProgramme\.length \? \(/.test(ent)) soucis.push('le cas « aucun programme » n\'est plus distingue');
+    if (!/ml_prog_dabord/.test(ent)) soucis.push('le bouton ne mene plus nulle part quand il n\'y a rien a poser');
+    if (!/ml_ou_cocher/.test(ent)) soucis.push('le chemin court — cocher ses muscles — n\'est plus rappele');
+  }
+  if (soucis.length) faute('R69 pas de promesse vide', soucis.join(' ; '));
+  else passe('R69 pas de promesse vide');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

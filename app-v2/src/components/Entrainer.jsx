@@ -763,7 +763,20 @@ function ModaleMuscles({ iso, fermer }) {
             rattraper, ajouter un jour, poser une seance enregistree.
             Reserve au present et au futur : on ne planifie pas hier. */}
         {type !== 'passe' && !faites.length && (
-          choixOuvert ? (
+          !sessionsProgramme.length ? (
+            /* Sans programme, il n'y a aucune seance a poser. Le bouton
+               ouvrait quand meme un panneau qui disait « cree d'abord un
+               programme » : deux appuis pour arriver a un mur (Raci,
+               26/08). Il mene maintenant la ou il faut, et rappelle
+               qu'on peut aussi programmer un jour en cochant simplement
+               ses muscles — c'est le chemin le plus court. */
+            <div class="ml-sans-prog">
+              <button class="ml-programmer" onClick={() => { fermer(); allerVers('questionnaire'); }}>
+                {t('ml_prog_dabord')}
+              </button>
+              <p class="ml-sans-prog-s">{t('ml_ou_cocher')}</p>
+            </div>
+          ) : choixOuvert ? (
             <div class="ml-choix">
               <div class="ml-choix-t">{t('ml_choisir')}</div>
               {sessionsProgramme.map(sa => (
@@ -773,7 +786,6 @@ function ModaleMuscles({ iso, fermer }) {
                   <span class="ml-choix-s">{sa.sub}</span>
                 </button>
               ))}
-              {!sessionsProgramme.length && <p class="ml-rien">{t('ml_pas_de_prog')}</p>}
               <button class="ml-choix-annul" onClick={() => setChoixOuvert(false)}>{t('cancel')}</button>
             </div>
           ) : (
