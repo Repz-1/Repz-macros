@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
 import { signal } from '@preact/signals';
-import { GROUPES, muscleLog, basculerMuscle, borneCalendrier } from '../store/entrainement.js';
+import { GROUPES, muscleLog, basculerMuscle, borneCalendrier, texteSur } from '../store/entrainement.js';
 import { compteDuJour, musclesDuJour, musclesParJour } from '../services/muscles-jour.js';
 import { estPremium } from './PremiumPage.jsx';
 import { enDecouverte } from '../services/decouverte.js';
@@ -390,7 +390,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
     // la deuxieme couleur contre le nombre exact : le jour se lit
     // d'un coup, le detail se lit dans la fiche.
     let cls = 'wlog-cell', style = {};
-    if (muscles.length >= 1) { cls += ' seance'; style = { background: COULEUR[muscles[0]] }; }
+    if (muscles.length >= 1) {
+      cls += ' seance';
+      const c = COULEUR[muscles[0]];
+      style = { background: c, color: texteSur(c) };
+    }
     else if (repos) cls += ' repos';
 
     // Un jour planifie se lit en CREUX : contour de la couleur du

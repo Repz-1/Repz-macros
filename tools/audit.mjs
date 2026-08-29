@@ -2143,6 +2143,51 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R67 — Le chiffre reste lisible sur son disque.
+// Mesure du 26/08 : le chiffre etait blanc sur les dix couleurs. Sur
+// le jaune des epaules, 1,82 de contraste — illisible. Le chiffre
+// sombre y donne 10,06. On ne repeint pas la palette (c'est
+// l'identite du calendrier et de la legende), on choisit le texte par
+// la luminance. Cette regle recalcule les dix paires : une couleur
+// ajoutee demain sans verification serait attrapee ici.
+// ------------------------------------------------------------
+{
+  const st = lire('app-v2/src/store/entrainement.js');
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const soucis = [];
+  if (st) {
+    if (!/export function texteSur/.test(st)) soucis.push('le choix du texte par luminance a disparu');
+    const lum = (hex) => {
+      const v = (i) => parseInt(hex.slice(i, i + 2), 16) / 255;
+      const f = (c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+      return 0.2126 * f(v(1)) + 0.7152 * f(v(3)) + 0.0722 * f(v(5));
+    };
+    const faibles = [];
+    for (const m of st.matchAll(/c: '(#[0-9A-Fa-f]{6})'/g)) {
+      const l = lum(m[1]);
+      const meilleur = Math.max(1.05 / (l + 0.05), (l + 0.05) / 0.0575);
+      if (meilleur < 4.5) faibles.push(m[1] + ' (' + meilleur.toFixed(2) + ')');
+    }
+    if (faibles.length) soucis.push('couleur(s) illisibles quel que soit le texte pose dessus : ' + faibles.join(', '));
+  }
+  if (ent && !/color: texteSur\(c\)/.test(ent)) soucis.push('le calendrier repose un chiffre blanc sur toutes les couleurs');
+  // Stats redeclare la palette de son cote : les deux doivent
+  // s'accorder, sinon un muscle change de couleur d'un onglet a
+  // l'autre.
+  const stt = lire('app-v2/src/components/Stats.jsx');
+  if (st && stt) {
+    for (const m of st.matchAll(/k: '(\w+)',\s*label: '[^']*',\s*c: '(#[0-9A-Fa-f]{6})'/g)) {
+      const dansStats = new RegExp(m[1] + ": '(#[0-9A-Fa-f]{6})'").exec(stt);
+      if (dansStats && dansStats[1].toUpperCase() !== m[2].toUpperCase()) {
+        soucis.push(m[1] + ' : ' + m[2] + ' dans le calendrier, ' + dansStats[1] + ' dans Stats');
+      }
+    }
+  }
+  if (soucis.length) faute('R67 lisibilite des disques', soucis.join(' ; '));
+  else passe('R67 lisibilite des disques');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

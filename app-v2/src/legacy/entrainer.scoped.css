@@ -51,7 +51,7 @@
 .pg-entrainer .wlog-wd{ text-align:center; font-size:10.5px; font-weight:800; color:#8A8279; }
 .pg-entrainer .wlog-cell{ aspect-ratio:1; width:100%; max-width:46px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:14px; font-weight:700; color:#334155; cursor:pointer; position:relative; }
 .pg-entrainer .wlog-cell:active{ transform:scale(.92); }
-.pg-entrainer .wlog-cell.seance{ color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.35); }
+.pg-entrainer .wlog-cell.seance{ font-weight:800; }
 .pg-entrainer .wlog-cell.repos{ background:#EDEFF2; color:#8A8279; }
 .pg-entrainer .wlog-cell.today{ box-shadow:0 0 0 2px #F86A0C; }
 .pg-entrainer .wlog-cell.today.seance{ box-shadow:0 0 0 2px #fff, 0 0 0 4px #F86A0C; }
@@ -61,7 +61,7 @@
 .pg-entrainer .wlog-cell.futur.prevu{ opacity:.5; }
 .pg-entrainer .wlog-cell.futur.repos{ opacity:.55; }
 .pg-entrainer .wlog-legende{ display:flex; flex-wrap:wrap; gap:6px 12px; padding:2px 2px 12px; font-size:11px; font-weight:700; color:#6B655D; }
-.pg-entrainer .wlog-legende .dot{ display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; }
+.pg-entrainer .wlog-legende .dot{ display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; box-shadow:inset 0 0 0 1px rgba(21,21,21,.22); }
 .pg-entrainer .wlog-legende .dot.repos{ background:#E2E6EA; }
 .pg-entrainer .wlog-legende .dot.today{ background:#fff; box-shadow:0 0 0 2px #F86A0C; width:9px; height:9px; }
 .ml-stats{ margin:-4px 0 12px; }

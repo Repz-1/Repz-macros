@@ -746,7 +746,9 @@
 }
 
 /* --- Calendrier : les gris bleutes rejoignent la palette ---------- */
-.pg-entrainer--carte .wlog-cell { color: var(--txt-1); font-weight: 500; }
+/* Le chiffre d'un jour travaille prend sa couleur en ligne, calculee
+   par texteSur() : cette regle ne doit viser que les jours nus. */
+.pg-entrainer--carte .wlog-cell:not(.seance) { color: var(--txt-1); font-weight: 500; }
 .pg-entrainer--carte .wlog-cell.futur { color: var(--txt-3); }
 .pg-entrainer--carte .wlog-wd {
   font-size: 11px; font-weight: 500; color: var(--txt-3);

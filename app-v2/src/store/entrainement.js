@@ -22,10 +22,33 @@ export const GROUPES = [
   { k: 'biceps',  label: 'Biceps',  c: '#10B981' },
   { k: 'triceps', label: 'Triceps', c: '#06B6D4' },
   { k: 'jambes',  label: 'Jambes',  c: '#3B82F6' },
-  { k: 'abdos',   label: 'Abdos',   c: '#8B5CF6' },
+  // Le violet #8B5CF6 plafonnait a 4,31 de contraste, texte blanc ou
+  // noir : c'etait la seule couleur illisible dans les deux sens.
+  // Assombri d'un cran, meme famille, 5,46.
+  { k: 'abdos',   label: 'Abdos',   c: '#7A45E8' },
   { k: 'cardio',  label: 'Cardio',  c: '#EC4899' },
   { k: 'repos',   label: 'Repos',   c: '#26654B' },
 ];
+
+/**
+ * Couleur du chiffre a poser SUR un disque de couleur.
+ *
+ * Mesure du 26/08 : le chiffre etait blanc sur les dix couleurs. Sur
+ * le jaune des epaules cela donnait 1,82 de contraste — illisible.
+ * Sur neuf couleurs sur dix, le chiffre sombre est meilleur, souvent
+ * de loin (10,06 contre 1,82 pour les epaules). On choisit donc au
+ * cas par cas, par la luminance relative, au lieu de repeindre la
+ * palette : les couleurs sont l'identite du calendrier et de la
+ * legende, c'est le texte pose dessus qui etait mal choisi.
+ */
+export function texteSur(hex) {
+  const v = (i) => parseInt(hex.slice(i, i + 2), 16) / 255;
+  const f = (c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  const lum = 0.2126 * f(v(1)) + 0.7152 * f(v(3)) + 0.0722 * f(v(5));
+  const surBlanc = 1.05 / (lum + 0.05);
+  const surNoir = (lum + 0.05) / 0.0575;  // luminance de #151515 + 0,05
+  return surNoir > surBlanc ? '#151515' : '#FFFFFF';
+}
 
 export const muscleLog = signal({});
 
