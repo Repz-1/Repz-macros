@@ -2203,6 +2203,12 @@ const DECALAGE_SW_V2 = 232;
     if (/\(offset === 0 \? ' off' : ''\)/.test(ent)) soucis.push('le calendrier se referme de nouveau sur le mois courant');
     if (!/const apresBorne = offset >= \d+;/.test(ent)) soucis.push('la borne avant a disparu');
     if (!/if \(!apresBorne\) setOffset\(offset \+ 1\)/.test(ent)) soucis.push('la fleche droite n\'avance plus');
+    // Elle porte une action que sa jumelle n'a pas : planifier.
+    if (!/wlog-nav wlog-nav--avant/.test(ent)) soucis.push('la fleche du mois suivant a perdu sa distinction');
+  }
+  const cssE = lire('app-v2/src/legacy/entrainer.scoped.css');
+  if (cssE && !/\.wlog-nav--avant\{/.test(cssE)) {
+    soucis.push('la fleche du mois suivant ressemble de nouveau a celle du passe');
   }
   // Les rubriques doivent respirer entre elles.
   const css = lire('app-v2/src/styles/entrainer-carte.css');

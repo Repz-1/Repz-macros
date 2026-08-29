@@ -578,7 +578,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
           <button class={'wlog-nav' + (avantBorne ? ' off' : '')}
             onClick={(e) => { e.stopPropagation(); if (!avantBorne) setOffset(offset - 1); }}>‹</button>
           <div class="wlog-cal-titre">{titre}</div>
-          <button class={'wlog-nav' + (apresBorne ? ' off' : '')}
+          {/* La fleche avant porte une action de plus que sa jumelle :
+              c'est par elle qu'on planifie les semaines a venir. Elle
+              se distingue donc (Raci, 26/08), sans devenir un bouton
+              principal — le calendrier n'est pas un formulaire. */}
+          <button class={'wlog-nav wlog-nav--avant' + (apresBorne ? ' off' : '')}
             onClick={(e) => { e.stopPropagation(); if (!apresBorne) setOffset(offset + 1); }}>›</button>
         </div>
 
