@@ -41,6 +41,11 @@ export function PlanifierProgramme({ progId }) {
   const premium = estPremium.value;
   const actif = programmeActif.value;
   const [confirmer, setConfirmer] = useState(false);
+  // Raci, 26/08 : la sortie doit exister, et prevenir avant de perdre
+  // un placement en cours. Rien de touche = on sort sans rien demander,
+  // une question posee pour rien est une question de trop.
+  const [touche, setTouche] = useState(false);
+  const [quitter, setQuitter] = useState(false);
 
   // Si ce programme est deja actif, on repart de ses jours plutot que
   // d'une feuille blanche : « adapter mon programme » doit montrer ce
@@ -98,6 +103,7 @@ export function PlanifierProgramme({ progId }) {
       }
     }
     setAff(n);
+    setTouche(true);
     setJourOuvert(null);
     setBloque(false);
   };
@@ -139,7 +145,20 @@ export function PlanifierProgramme({ progId }) {
 
   return (
     <div class="pg-planifier">
-      <button class="v2-retour" onClick={retourEntrainer} aria-label={t('back')}>←</button>
+      <button class="pl-retour" onClick={() => (touche ? setQuitter(true) : retourEntrainer())}>
+        ←&nbsp; {t('ml_retour')}
+      </button>
+
+      {quitter && (
+        <div class="pl-confirme pl-confirme--quitter">
+          <p>{t('pl_quitter_q')}</p>
+          <div class="pl-confirme-btns">
+            <button class="pl-conf-non" onClick={() => setQuitter(false)}>{t('pl_rester')}</button>
+            <button class="pl-conf-oui" onClick={retourEntrainer}>{t('pl_quitter_ok')}</button>
+          </div>
+        </div>
+      )}
+
       <h1 class="pl-titre">{t('pl_titre')}</h1>
       <p class="pl-sous">{prog.name} · {total} {t(total > 1 ? 'sessions' : 'session')}</p>
 

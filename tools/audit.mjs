@@ -2287,6 +2287,34 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R71 — L'ecran de placement se quitte, et previent avant.
+// Raci, 26/08 : « je ne peux plus revenir en arriere, je suis oblige
+// de choisir ». Le disque de 40 px se confondait avec le fond et se
+// calait sous la barre d'etat. Il porte maintenant son mot. Et sortir
+// apres avoir place quelque chose demande confirmation — mais pas si
+// rien n'a ete touche : une question posee pour rien en est une de
+// trop.
+// ------------------------------------------------------------
+{
+  const pl = lire('app-v2/src/components/PlanifierProgramme.jsx');
+  const css = lire('app-v2/src/styles/entrainer-carte.css');
+  const soucis = [];
+  if (pl) {
+    if (!/class="pl-retour"/.test(pl)) soucis.push('l\'ecran n\'a plus de sortie visible');
+    if (!/ml_retour/.test(pl)) soucis.push('la sortie a perdu son mot : un disque nu passait inapercu');
+    if (!/touche \? setQuitter\(true\) : retourEntrainer\(\)/.test(pl)) {
+      soucis.push('la sortie ne distingue plus « rien touche » de « placement en cours »');
+    }
+    if (!/setTouche\(true\)/.test(pl)) soucis.push('poser une seance ne marque plus l\'ecran comme modifie');
+  }
+  if (css) {
+    if (!/\.pg-planifier \.pl-conf-oui/.test(css)) soucis.push('la confirmation retombe aux boutons bruts du navigateur');
+  }
+  if (soucis.length) faute('R71 quitter le placement', soucis.join(' ; '));
+  else passe('R71 quitter le placement');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
