@@ -841,7 +841,10 @@
    idee. On resserre ce qui va ensemble et on garde l'air entre les
    sections, plutot qu'un intervalle unique applique sans distinction. */
 .pg-entrainer--carte .wlog-sum-vide { margin-bottom: 10px; }
-.pg-entrainer--carte .ent-bloc { margin-bottom: 14px; }
+/* 14 px entre deux cartes blanches sur fond creme : la separation se
+   devinait plus qu'elle ne se voyait, et les rubriques semblaient
+   collees (Raci, 26/08). 26 px les detache franchement. */
+.pg-entrainer--carte .ent-bloc { margin-bottom: 26px; }
 .pg-entrainer--carte .ent-bloc:last-of-type { margin-bottom: 0; }
 
 /* Le titre de section ne concurrence pas le bouton : il descend de
@@ -930,6 +933,7 @@
 .cp {
   background: #fff; border-radius: 22px; padding: 18px 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+  margin-bottom: 26px;
 }
 .cp-nom { font-size: 16.5px; font-weight: 800; line-height: 1.25; }
 .cp-av { margin-top: 3px; font-size: 12px; font-weight: 600; color: #8A8378; }

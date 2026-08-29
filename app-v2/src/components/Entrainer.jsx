@@ -345,6 +345,12 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
   // « AAAA-MM » plutot que sur des dates, la borne pouvant tomber au
   // milieu d'un mois.
   const avantBorne = wlIso(ref).slice(0, 7) <= borneCalendrier().slice(0, 7);
+  // Vers l'avant : on planifie. Le calendrier s'arretait au mois
+  // courant, on ne pouvait donc rien poser au-dela du 31 (Raci,
+  // 26/08). Douze mois d'avance suffisent a tout programme, et
+  // bornent la navigation pour qu'un appui repete ne parte pas a
+  // l'infini.
+  const apresBorne = offset >= 12;
 
   // Resume : seances du mois affiche + derniere seance notee
   const prefixeMois = wlIso(ref).slice(0, 7);
@@ -572,8 +578,8 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
           <button class={'wlog-nav' + (avantBorne ? ' off' : '')}
             onClick={(e) => { e.stopPropagation(); if (!avantBorne) setOffset(offset - 1); }}>‹</button>
           <div class="wlog-cal-titre">{titre}</div>
-          <button class={'wlog-nav' + (offset === 0 ? ' off' : '')}
-            onClick={(e) => { e.stopPropagation(); if (offset < 0) setOffset(offset + 1); }}>›</button>
+          <button class={'wlog-nav' + (apresBorne ? ' off' : '')}
+            onClick={(e) => { e.stopPropagation(); if (!apresBorne) setOffset(offset + 1); }}>›</button>
         </div>
 
         <div class="wlog-grid">
@@ -693,16 +699,7 @@ function ModaleMuscles({ iso, fermer }) {
   return createPortal(
     <div class="ml-overlay show" onClick={(e) => { if (e.target.classList.contains('ml-overlay')) fermer(); }}>
       <div class="ml-modal">
-        {/* Fleche de retour. Trois positions essayees : en haut a
-            gauche (17/08), en bas a droite (22/08), puis remontee au
-            niveau du titre (26/08, Raci). En bas elle flottait sur les
-            boutons et frolait la barre systeme d'Android ; ici elle
-            tient sa place dans la mise en page au lieu de se poser
-            par-dessus. */}
-        <div class="ml-tete">
-          <h3 class="ml-date">{jourLong(jour)}</h3>
-          <button class="ml-retour" onClick={fermer} aria-label="Retour">←</button>
-        </div>
+        <h3 class="ml-date">{jourLong(jour)}</h3>
         <div class="ml-type">
           {type === 'passe' ? t('ml_passe') : type === 'auj' ? t('ml_auj') : t('ml_futur')}
         </div>
@@ -833,6 +830,13 @@ function ModaleMuscles({ iso, fermer }) {
           <button class="ml-save" onClick={fermer}>{t('save')}</button>
         </div>
 
+        {/* Fleche de retour (Raci, 17/08 ; descendue en bas a droite le
+            22/08). En haut a gauche elle etait a l'opposé du pouce sur
+            une fiche qui occupe tout l'ecran. Posee en dernier dans le
+            DOM pour que l'ordre de lecture suive l'ordre visuel, elle
+            est calee en fixe dans la reserve de 80 px que la fiche
+            garde sous ses boutons. */}
+        <button class="ml-retour" onClick={fermer} aria-label="Retour">←</button>
       </div>
     </div>,
     document.body

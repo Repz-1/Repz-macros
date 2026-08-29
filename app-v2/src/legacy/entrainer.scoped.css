@@ -89,7 +89,7 @@
 }
 .ml-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
 .ml-overlay.show{ display:flex; }
-.ml-modal{ background:#fff; border-radius:22px 22px 0 0; padding:18px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
+.ml-modal{ background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(80px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
 /* La silhouette vient de Stats.jsx et toute sa feuille est prefixee
    .pg-stats. Dans la modale, montee sur le corps, elle n'heritait
    d'aucune largeur : le SVG prenait les 390 px de l'ecran et poussait
@@ -547,24 +547,15 @@
    Fixe, dans la reserve de 80 px que la fiche garde sous ses boutons —
    elle ne recouvre donc ni « Effacer » ni « Enregistrer », et reste
    atteignable meme quand la fiche est longue. */
-/* Elle ne flotte plus : elle est posee dans la ligne de titre. Un
-   disque creme plutot qu'un pave noir a ombre portee — c'est un
-   retour, pas l'action principale de l'ecran ; « Enregistrer » garde
-   le noir pour lui seul. 44 px, la cible tactile. */
-.ml-modal .ml-tete {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 14px; margin-bottom: 2px;
-}
-.ml-modal .ml-tete .ml-date { margin: 0; }
 .ml-modal .ml-retour {
-  flex: none;
+  position: fixed;
+  right: 18px; bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 2;
   display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; margin: 0;
+  width: 52px; height: 52px; margin: 0;
   border: none; border-radius: 50%;
-  background: #F4EFE5; color: #2A2520;
-  font-size: 19px; line-height: 1; cursor: pointer;
-  transition: background .15s ease, transform .12s ease;
+  background: #16130F; color: #F5A800;
+  box-shadow: 0 6px 18px rgba(22, 19, 15, .28);
+  font-size: 22px; line-height: 1; cursor: pointer;
 }
-.ml-modal .ml-retour:active { background: #E9E1D2; }
 .ml-modal .ml-retour:active { transform: scale(.94); }
-

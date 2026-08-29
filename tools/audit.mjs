@@ -1524,15 +1524,13 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R47 — La fiche d'un jour se ferme sans chercher.
-// Trois positions successives : haut-gauche (17/08), bas-droite
-// (22/08, « plus facile pour revenir »), puis dans la ligne de titre
-// (26/08, « deplace-la plus haut et rends-la plus esthetique »). En
-// bas elle flottait par-dessus « Effacer » et « Enregistrer » et
-// frolait la barre systeme d'Android. Elle tient maintenant sa place
-// dans la mise en page. Ce qui reste a proteger : elle existe, elle
-// est dans l'en-tete, et elle ne reprend pas le noir reserve a
-// l'action principale.
+// R47 — La sortie de la fiche d'un jour est sous le pouce.
+// Raci, 22/08 : « la fleche retour en haut a gauche, je la veux en bas
+// a droite, plus facile pour revenir en arriere ». Sur une fiche qui
+// occupe tout l'ecran, le coin haut-gauche est le point le plus loin
+// du pouce. La fleche doit rester FIXE (elle suit l'ecran, pas le
+// contenu) et posee en dernier dans le DOM, pour que l'ordre de
+// lecture suive l'ordre visuel.
 // ------------------------------------------------------------
 {
   const ent = lire('app-v2/src/components/Entrainer.jsx');
@@ -1542,17 +1540,14 @@ const DECALAGE_SW_V2 = 232;
     const i = ent.indexOf('function ModaleMuscles');
     const fiche = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : '';
     if (!/class="ml-retour"/.test(fiche)) soucis.push('la fiche n\'a plus de fleche de retour a l\'ecran');
-    else if (fiche.indexOf('class="ml-retour"') > fiche.indexOf('class="ml-btns"')) {
-      soucis.push('la fleche est redescendue sous les boutons');
+    else if (fiche.indexOf('class="ml-retour"') < fiche.indexOf('class="ml-btns"')) {
+      soucis.push('la fleche est remontee avant les boutons : elle repasserait en haut de la fiche');
     }
-    if (!/class="ml-tete"/.test(fiche)) soucis.push('la ligne de titre a disparu : la fleche n\'a plus d\'ancrage');
   }
   if (css) {
     const bloc = (css.match(/\.ml-modal \.ml-retour \{[^}]*\}/) || [''])[0];
-    if (/position: fixed/.test(bloc)) soucis.push('la fleche flotte de nouveau au-dessus du contenu');
-    const t = (bloc.match(/width: (\d+)px/) || [])[1];
-    if (!t || Number(t) < 44) soucis.push('la fleche repasse sous la cible tactile de 44 px');
-    if (/#16130F|#151515/.test(bloc)) soucis.push('la fleche reprend le noir reserve a « Enregistrer »');
+    if (!/position: fixed/.test(bloc)) soucis.push('la fleche n\'est plus fixe : elle remonterait avec le contenu');
+    if (!/right:/.test(bloc) || !/bottom:/.test(bloc)) soucis.push('la fleche n\'est plus calee en bas a droite');
   }
   if (soucis.length) faute('R47 sortie de la fiche', soucis.join(' ; '));
   else passe('R47 sortie de la fiche');
@@ -2190,6 +2185,33 @@ const DECALAGE_SW_V2 = 232;
   }
   if (soucis.length) faute('R67 lisibilite des disques', soucis.join(' ; '));
   else passe('R67 lisibilite des disques');
+}
+
+// ------------------------------------------------------------
+// R68 — On peut planifier au-dela du mois courant.
+// Raci, 26/08 : « je peux pas programmer une seance pour le mois
+// prochain ». La fleche droite du calendrier s'eteignait des le mois
+// courant : le passe etait bride volontairement (deux semaines), mais
+// l'avenir l'etait par accident, alors que c'est justement la qu'on
+// planifie. Douze mois d'avance, borne pour qu'un appui repete ne
+// parte pas a l'infini.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  const soucis = [];
+  if (ent) {
+    if (/\(offset === 0 \? ' off' : ''\)/.test(ent)) soucis.push('le calendrier se referme de nouveau sur le mois courant');
+    if (!/const apresBorne = offset >= \d+;/.test(ent)) soucis.push('la borne avant a disparu');
+    if (!/if \(!apresBorne\) setOffset\(offset \+ 1\)/.test(ent)) soucis.push('la fleche droite n\'avance plus');
+  }
+  // Les rubriques doivent respirer entre elles.
+  const css = lire('app-v2/src/styles/entrainer-carte.css');
+  if (css) {
+    const m = (css.match(/\.pg-entrainer--carte \.ent-bloc \{ margin-bottom: (\d+)px/) || [])[1];
+    if (!m || Number(m) < 22) soucis.push('les rubriques se recollent (margin ' + (m || '?') + 'px)');
+  }
+  if (soucis.length) faute('R68 planifier a l\'avance', soucis.join(' ; '));
+  else passe('R68 planifier a l\'avance');
 }
 
 // ------------------------------------------------------------
