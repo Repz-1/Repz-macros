@@ -384,12 +384,14 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
       if (prevu) muscles = musclesPrevus(prevu.titre).filter(k => COULEUR[k]);
     }
 
+    // Une seule couleur par jour, plus un compte (Raci, 26/08).
+    // Le demi-disque a deux couleurs montrait DEUX muscles sur trois,
+    // quatre ou cinq, sans jamais dire qu'il en manquait. On echange
+    // la deuxieme couleur contre le nombre exact : le jour se lit
+    // d'un coup, le detail se lit dans la fiche.
     let cls = 'wlog-cell', style = {};
-    if (muscles.length === 1) { cls += ' seance'; style = { background: COULEUR[muscles[0]] }; }
-    else if (muscles.length > 1) {
-      cls += ' seance';
-      style = { background: `conic-gradient(${COULEUR[muscles[0]]} 0% 50%, ${COULEUR[muscles[1]]} 50% 100%)` };
-    } else if (repos) cls += ' repos';
+    if (muscles.length >= 1) { cls += ' seance'; style = { background: COULEUR[muscles[0]] }; }
+    else if (repos) cls += ' repos';
 
     // Un jour planifie se lit en CREUX : contour de la couleur du
     // muscle, interieur vide. Sans cette difference, le calendrier
@@ -412,11 +414,8 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
             vide : la coche le dit d'un coup d'oeil. Le numero du
             jour se lit toujours par sa position dans la grille. */}
         {repos ? <i class="wlog-coche" aria-label={t('mus_repos')}>✓</i> : j}
-        {/* Le badge portait un « + » nu : il signalait qu'il y avait
-            autre chose sans jamais dire combien. Un jour a trois
-            muscles se lisait comme un jour a cinq. Il porte le
-            compte de ce que les deux demi-disques ne montrent pas. */}
-        {muscles.length > 2 && <i class="wlog-more">+{muscles.length - 2}</i>}
+        {/* Le badge compte ce que la couleur ne montre pas. */}
+        {muscles.length > 1 && <i class="wlog-more">+{muscles.length - 1}</i>}
       </div>
     );
   }

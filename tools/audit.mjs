@@ -2132,8 +2132,11 @@ const DECALAGE_SW_V2 = 232;
     if (!d || Number(d) < 12) soucis.push('les pastilles de legende sont redescendues sous 12 px');
   }
   const ent = lire('app-v2/src/components/Entrainer.jsx');
-  if (ent && !/wlog-more">\+\{muscles\.length - 2\}/.test(ent)) {
+  if (ent && !/wlog-more">\+\{muscles\.length - 1\}/.test(ent)) {
     soucis.push('le badge ne dit plus combien de muscles ne sont pas montres');
+  }
+  if (ent && /conic-gradient\(\$\{COULEUR/.test(ent)) {
+    soucis.push('le demi-disque a deux couleurs est revenu');
   }
   if (soucis.length) faute('R66 calendrier tapable', soucis.join(' ; '));
   else passe('R66 calendrier tapable');
