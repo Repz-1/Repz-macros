@@ -2244,8 +2244,15 @@ const DECALAGE_SW_V2 = 232;
     // Raci, 26/08 : « si j'ai envie de decider que tel jour je fais tel
     // muscle ». Les pastilles enregistrent des le tap, mais rien ne le
     // disait. Le recapitulatif nomme ce qui est retenu.
-    if (!/class="ml-recap"/.test(ent)) soucis.push('le recapitulatif des muscles choisis a disparu');
-    if (!/ml_recap_passe/.test(ent)) soucis.push('le recapitulatif parle au futur sur un jour passe');
+    // Raci a corrige le 26/08 : ce n'est pas un resume, c'est
+    // l'action. Elle nomme ce qu'elle programme et remplace
+    // « Enregistrer », qui ne faisait que refermer la fiche — deux
+    // boutons pour le meme geste.
+    if (!/class="ml-prog-seance"/.test(ent)) soucis.push('l\'action « Programmer cette seance » a disparu');
+    if (!/ml_prog_passe/.test(ent)) soucis.push('l\'action parle au futur sur un jour passe');
+    if (!/sel\.length === 0 && <button class="ml-save"/.test(ent)) {
+      soucis.push('« Enregistrer » et « Programmer cette seance » s\'affichent ensemble');
+    }
     // Et l'appel au questionnaire s'efface des qu'on a choisi.
     if (!/sel\.length \? null :/.test(ent)) soucis.push('« Trouver un programme » reste affiche alors qu\'un choix est fait');
   }

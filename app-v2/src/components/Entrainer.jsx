@@ -852,13 +852,18 @@ function ModaleMuscles({ iso, fermer }) {
             le disait : on cochait sans savoir que le jour venait
             d'entrer dans « Mes seances planifiees ». Le recapitulatif
             nomme ce qui est retenu, et le dit au bon temps. */}
+        {/* Raci, 26/08 : « une fois un ou des muscles selectionnes, un
+            message apparait pour programmer la seance ». Ce n'est pas
+            un resume : c'est l'action. Elle nomme ce qu'on programme
+            et sur quel jour, et remplace « Enregistrer » — qui ne
+            faisait que refermer la fiche. */}
         {sel.length > 0 && (
-          <div class="ml-recap">
-            <div class="ml-recap-t">
-              {t(type === 'passe' ? 'ml_recap_passe' : 'ml_recap')}
-            </div>
-            <div class="ml-recap-m">{sel.map(nomMuscle).join(' · ')}</div>
-          </div>
+          <button class="ml-prog-seance" onClick={fermer}>
+            <span class="ml-prog-t">
+              {t(type === 'passe' ? 'ml_prog_passe' : 'ml_prog_futur')}
+            </span>
+            <span class="ml-prog-m">{sel.map(nomMuscle).join(' · ')}</span>
+          </button>
         )}
 
         <div class="ml-btns">
@@ -866,7 +871,7 @@ function ModaleMuscles({ iso, fermer }) {
             (muscleLog.value[iso] || []).slice().forEach(k => basculerMuscle(iso, k));
             fermer();
           }}>{t('clear')}</button>
-          <button class="ml-save" onClick={fermer}>{t('save')}</button>
+          {sel.length === 0 && <button class="ml-save" onClick={fermer}>{t('save')}</button>}
         </div>
 
         {/* Sortie de la fiche. Quatre etats successifs : haut-gauche
