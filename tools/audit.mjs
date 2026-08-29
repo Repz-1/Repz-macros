@@ -1524,13 +1524,15 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R47 — La sortie de la fiche d'un jour est sous le pouce.
-// Raci, 22/08 : « la fleche retour en haut a gauche, je la veux en bas
-// a droite, plus facile pour revenir en arriere ». Sur une fiche qui
-// occupe tout l'ecran, le coin haut-gauche est le point le plus loin
-// du pouce. La fleche doit rester FIXE (elle suit l'ecran, pas le
-// contenu) et posee en dernier dans le DOM, pour que l'ordre de
-// lecture suive l'ordre visuel.
+// R47 — La sortie de la fiche ne recouvre rien.
+// Quatre positions successives : haut-gauche (17/08), disque noir
+// flottant en bas a droite (22/08), ligne de titre (26/08, refuse),
+// et enfin une barre pleine largeur sous les boutons — maquette C,
+// Raci le 26/08. Le disque flottant passait par-dessus « Effacer » et
+// « Enregistrer » et frolait la barre systeme d'Android. Ce qui reste
+// a proteger : elle existe, elle est apres les boutons dans le DOM
+// comme a l'ecran, elle ne flotte pas, et elle ne reprend pas le noir
+// reserve a l'action principale.
 // ------------------------------------------------------------
 {
   const ent = lire('app-v2/src/components/Entrainer.jsx');
@@ -1539,15 +1541,17 @@ const DECALAGE_SW_V2 = 232;
   if (ent) {
     const i = ent.indexOf('function ModaleMuscles');
     const fiche = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : '';
-    if (!/class="ml-retour"/.test(fiche)) soucis.push('la fiche n\'a plus de fleche de retour a l\'ecran');
+    if (!/class="ml-retour"/.test(fiche)) soucis.push('la fiche n\'a plus de sortie a l\'ecran');
     else if (fiche.indexOf('class="ml-retour"') < fiche.indexOf('class="ml-btns"')) {
-      soucis.push('la fleche est remontee avant les boutons : elle repasserait en haut de la fiche');
+      soucis.push('la sortie est remontee au-dessus des boutons');
     }
+    if (!/ml_retour/.test(fiche)) soucis.push('la barre a perdu son mot : une fleche nue ne dit pas ou elle mene');
   }
   if (css) {
     const bloc = (css.match(/\.ml-modal \.ml-retour \{[^}]*\}/) || [''])[0];
-    if (!/position: fixed/.test(bloc)) soucis.push('la fleche n\'est plus fixe : elle remonterait avec le contenu');
-    if (!/right:/.test(bloc) || !/bottom:/.test(bloc)) soucis.push('la fleche n\'est plus calee en bas a droite');
+    if (/position: fixed|position: absolute/.test(bloc)) soucis.push('la sortie flotte de nouveau au-dessus du contenu');
+    if (!/width: 100%/.test(bloc)) soucis.push('la barre n\'occupe plus toute la largeur');
+    if (/#16130F|#151515/.test(bloc)) soucis.push('la sortie reprend le noir reserve a « Enregistrer »');
   }
   if (soucis.length) faute('R47 sortie de la fiche', soucis.join(' ; '));
   else passe('R47 sortie de la fiche');

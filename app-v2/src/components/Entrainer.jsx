@@ -834,13 +834,13 @@ function ModaleMuscles({ iso, fermer }) {
           <button class="ml-save" onClick={fermer}>{t('save')}</button>
         </div>
 
-        {/* Fleche de retour (Raci, 17/08 ; descendue en bas a droite le
-            22/08). En haut a gauche elle etait a l'opposé du pouce sur
-            une fiche qui occupe tout l'ecran. Posee en dernier dans le
-            DOM pour que l'ordre de lecture suive l'ordre visuel, elle
-            est calee en fixe dans la reserve de 80 px que la fiche
-            garde sous ses boutons. */}
-        <button class="ml-retour" onClick={fermer} aria-label="Retour">←</button>
+        {/* Sortie de la fiche. Quatre etats successifs : haut-gauche
+            (17/08), disque noir flottant en bas a droite (22/08),
+            ligne de titre (26/08, refuse), puis cette barre pleine
+            largeur sous les boutons — maquette C, Raci le 26/08.
+            Elle ne flotte pas, ne recouvre rien, et reste sous le
+            pouce. */}
+        <button class="ml-retour" onClick={fermer}>←&nbsp; {t('ml_retour')}</button>
       </div>
     </div>,
     document.body
