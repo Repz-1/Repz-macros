@@ -2085,6 +2085,23 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R65 — Aucun bloc ne s'affiche pour dire qu'il est vide.
+// Mesure du 26/08 : « Seances enregistrees » occupait 119 px de haut
+// pour annoncer qu'il n'y avait rien a montrer, juste sous un bouton
+// « Seance libre » qui proposait deja d'en creer une.
+// ------------------------------------------------------------
+{
+  const se = lire('app-v2/src/components/Seances.jsx');
+  const soucis = [];
+  if (se) {
+    if (!/if \(liste\.length === 0\) return null;/.test(se)) soucis.push('le bloc s\'affiche de nouveau quand il est vide');
+    if (/sea-vide/.test(se)) soucis.push('le message « aucune seance » est revenu');
+  }
+  if (soucis.length) faute('R65 pas de bloc vide', soucis.join(' ; '));
+  else passe('R65 pas de bloc vide');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

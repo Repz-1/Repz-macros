@@ -69,23 +69,23 @@ function Ligne({ s, ouvrir }) {
  */
 export function BlocSeances({ ouvrir, voirTout }) {
   const liste = seances.value;
-  if (!seancesPretes.value && liste.length === 0) return null;
+  // Un bloc vide occupait 119 px pour annoncer qu'il n'y avait rien.
+  // Le bouton « Seance libre » est juste au-dessus : proposer en plus
+  // « enregistre ta premiere seance » reposerait la meme action. Tant
+  // qu'il n'y a rien a lister, le bloc ne s'affiche pas.
+  if (liste.length === 0) return null;
   return (
     <div class="sea-bloc">
       <div class="sea-titre">
         <h4>{t('sea_title')}</h4>
         {liste.length > 0 && <span>{liste.length} {t('in_total')}</span>}
       </div>
-      {liste.length === 0
-        ? <p class="sea-vide">{t('sea_empty')}</p>
-        : <>
-            {liste.slice(0, 3).map(s => <Ligne key={s.id} s={s} ouvrir={ouvrir} />)}
-            {liste.length > 3 && (
-              <button class="sea-tout" onClick={(e) => { e.stopPropagation(); voirTout(); }}>
-                {t('sea_see_all')} ({liste.length}) →
-              </button>
-            )}
-          </>}
+      {liste.slice(0, 3).map(s => <Ligne key={s.id} s={s} ouvrir={ouvrir} />)}
+      {liste.length > 3 && (
+        <button class="sea-tout" onClick={(e) => { e.stopPropagation(); voirTout(); }}>
+          {t('sea_see_all')} ({liste.length}) →
+        </button>
+      )}
     </div>
   );
 }
