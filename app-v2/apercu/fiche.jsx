@@ -54,7 +54,8 @@ if (new URLSearchParams(location.search).get('cas') === 'notes') {
   seances.value = [];
   const j = (n) => { const d = new Date(); d.setDate(d.getDate() + n);
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
-  muscleLog.value = { [j(1)]: ['epaules', 'trapezes'], [j(2)]: ['jambes'] };
+  // Un jour a quatre muscles : c'est le cas qui fait apparaitre le badge.
+  muscleLog.value = { [j(1)]: ['epaules', 'trapezes', 'triceps', 'abdos'], [j(2)]: ['jambes'] };
 }
 
 if (new URLSearchParams(location.search).get('cas') === 'posees') {

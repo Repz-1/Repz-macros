@@ -412,7 +412,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
             vide : la coche le dit d'un coup d'oeil. Le numero du
             jour se lit toujours par sa position dans la grille. */}
         {repos ? <i class="wlog-coche" aria-label={t('mus_repos')}>✓</i> : j}
-        {muscles.length > 2 && <i class="wlog-more">+</i>}
+        {/* Le badge portait un « + » nu : il signalait qu'il y avait
+            autre chose sans jamais dire combien. Un jour a trois
+            muscles se lisait comme un jour a cinq. Il porte le
+            compte de ce que les deux demi-disques ne montrent pas. */}
+        {muscles.length > 2 && <i class="wlog-more">+{muscles.length - 2}</i>}
       </div>
     );
   }

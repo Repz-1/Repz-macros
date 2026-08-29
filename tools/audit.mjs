@@ -2123,9 +2123,17 @@ const DECALAGE_SW_V2 = 232;
     const grille = (css.match(/\.wlog-grid\{[^}]*\}/) || [''])[0];
     const gap = (grille.match(/gap:\d+px (\d+)px/) || [])[1];
     if (!gap || Number(gap) > 2) soucis.push('la gouttiere horizontale depasse 2 px : les cases ne tiennent plus a 44');
+    // Le badge doit pouvoir accueillir deux caracteres (« +3 ») :
+    // une largeur fixe le recouperait.
+    const more = (css.match(/\.pg-entrainer \.wlog-more\{[^}]*\}/) || [''])[0];
+    if (!/min-width:\d+px/.test(more)) soucis.push('le badge du jour multi-muscles a une largeur fixe : « +3 » y serait coupe');
     const dot = (css.match(/\.wlog-legende \.dot\{[^}]*\}/) || [''])[0];
     const d = (dot.match(/width:(\d+)px/) || [])[1];
     if (!d || Number(d) < 12) soucis.push('les pastilles de legende sont redescendues sous 12 px');
+  }
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  if (ent && !/wlog-more">\+\{muscles\.length - 2\}/.test(ent)) {
+    soucis.push('le badge ne dit plus combien de muscles ne sont pas montres');
   }
   if (soucis.length) faute('R66 calendrier tapable', soucis.join(' ; '));
   else passe('R66 calendrier tapable');
