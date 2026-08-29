@@ -1524,13 +1524,15 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R47 — La sortie de la fiche d'un jour est sous le pouce.
-// Raci, 22/08 : « la fleche retour en haut a gauche, je la veux en bas
-// a droite, plus facile pour revenir en arriere ». Sur une fiche qui
-// occupe tout l'ecran, le coin haut-gauche est le point le plus loin
-// du pouce. La fleche doit rester FIXE (elle suit l'ecran, pas le
-// contenu) et posee en dernier dans le DOM, pour que l'ordre de
-// lecture suive l'ordre visuel.
+// R47 — La fiche d'un jour se ferme sans chercher.
+// Trois positions successives : haut-gauche (17/08), bas-droite
+// (22/08, « plus facile pour revenir »), puis dans la ligne de titre
+// (26/08, « deplace-la plus haut et rends-la plus esthetique »). En
+// bas elle flottait par-dessus « Effacer » et « Enregistrer » et
+// frolait la barre systeme d'Android. Elle tient maintenant sa place
+// dans la mise en page. Ce qui reste a proteger : elle existe, elle
+// est dans l'en-tete, et elle ne reprend pas le noir reserve a
+// l'action principale.
 // ------------------------------------------------------------
 {
   const ent = lire('app-v2/src/components/Entrainer.jsx');
@@ -1540,14 +1542,17 @@ const DECALAGE_SW_V2 = 232;
     const i = ent.indexOf('function ModaleMuscles');
     const fiche = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : '';
     if (!/class="ml-retour"/.test(fiche)) soucis.push('la fiche n\'a plus de fleche de retour a l\'ecran');
-    else if (fiche.indexOf('class="ml-retour"') < fiche.indexOf('class="ml-btns"')) {
-      soucis.push('la fleche est remontee avant les boutons : elle repasserait en haut de la fiche');
+    else if (fiche.indexOf('class="ml-retour"') > fiche.indexOf('class="ml-btns"')) {
+      soucis.push('la fleche est redescendue sous les boutons');
     }
+    if (!/class="ml-tete"/.test(fiche)) soucis.push('la ligne de titre a disparu : la fleche n\'a plus d\'ancrage');
   }
   if (css) {
     const bloc = (css.match(/\.ml-modal \.ml-retour \{[^}]*\}/) || [''])[0];
-    if (!/position: fixed/.test(bloc)) soucis.push('la fleche n\'est plus fixe : elle remonterait avec le contenu');
-    if (!/right:/.test(bloc) || !/bottom:/.test(bloc)) soucis.push('la fleche n\'est plus calee en bas a droite');
+    if (/position: fixed/.test(bloc)) soucis.push('la fleche flotte de nouveau au-dessus du contenu');
+    const t = (bloc.match(/width: (\d+)px/) || [])[1];
+    if (!t || Number(t) < 44) soucis.push('la fleche repasse sous la cible tactile de 44 px');
+    if (/#16130F|#151515/.test(bloc)) soucis.push('la fleche reprend le noir reserve a « Enregistrer »');
   }
   if (soucis.length) faute('R47 sortie de la fiche', soucis.join(' ; '));
   else passe('R47 sortie de la fiche');
