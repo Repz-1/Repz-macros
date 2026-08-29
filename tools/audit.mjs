@@ -2094,8 +2094,12 @@ const DECALAGE_SW_V2 = 232;
   const se = lire('app-v2/src/components/Seances.jsx');
   const soucis = [];
   if (se) {
-    if (!/if \(liste\.length === 0\) return null;/.test(se)) soucis.push('le bloc s\'affiche de nouveau quand il est vide');
-    if (/sea-vide/.test(se)) soucis.push('le message « aucune seance » est revenu');
+    // On ne regarde que l'encart de l'accueil. L'ecran plein « Toutes
+    // les seances », lui, a le droit d'expliquer qu'il est vide : on y
+    // arrive volontairement, une page blanche serait pire.
+    const bloc = (se.match(/export function BlocSeances[\s\S]*?\n\}/) || [''])[0];
+    if (!/if \(liste\.length === 0\) return null;/.test(bloc)) soucis.push('l\'encart s\'affiche de nouveau quand il est vide');
+    if (/sea-vide/.test(bloc)) soucis.push('le message « aucune seance » est revenu dans l\'encart');
   }
   if (soucis.length) faute('R65 pas de bloc vide', soucis.join(' ; '));
   else passe('R65 pas de bloc vide');
