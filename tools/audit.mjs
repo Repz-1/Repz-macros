@@ -2261,6 +2261,32 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R70 — Aucune page ne colle sa sortie contre la barre d'etat.
+// Raci, 26/08 : « une fois qu'il me donne le choix de quel muscle
+// pour quel jour, je ne peux plus revenir en arriere, je suis oblige
+// de choisir ». La fleche etait bien la, visible — mais calee a y=0,
+// donc sous la barre d'etat d'Android, hors d'atteinte du doigt.
+// L'ecran paraissait sans issue. Toute page qui pose une sortie en
+// haut doit reserver env(safe-area-inset-top).
+// ------------------------------------------------------------
+{
+  const pages = [
+    ['pg-planifier', 'app-v2/src/styles/entrainer-carte.css'],
+    ['pg-programmes', 'app-v2/src/legacy/programmes.scoped.css'],
+  ];
+  const soucis = [];
+  for (const [cls, f] of pages) {
+    const css = lire(f); if (!css) continue;
+    const bloc = (css.match(new RegExp('\\.' + cls + '\\s*\\{[^}]*\\}')) || [''])[0];
+    if (!/safe-area-inset-top/.test(bloc)) {
+      soucis.push('.' + cls + ' ne reserve pas la barre d\'etat : sa fleche de retour sera hors d\'atteinte');
+    }
+  }
+  if (soucis.length) faute('R70 sortie atteignable', soucis.join(' ; '));
+  else passe('R70 sortie atteignable');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

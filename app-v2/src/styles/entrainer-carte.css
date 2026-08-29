@@ -426,7 +426,11 @@
    entierement « Abandonner ce programme » (Raci, 26/08 — capture
    annotee). Meme reserve que les autres pages : hauteur de la nav,
    plus une marge, plus la zone de securite du telephone. */
-.pg-planifier { padding: 0 14px calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom)); }
+/* Sans reserve haute, la fleche de retour se calait a y=0, sous la
+   barre d'etat d'Android : elle etait a l'ecran mais hors d'atteinte,
+   et l'ecran paraissait sans issue (Raci, 26/08). Toutes les autres
+   pages reservent deja cette hauteur. */
+.pg-planifier { padding: calc(10px + env(safe-area-inset-top)) 14px calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom)); }
 .pg-planifier .pl-titre { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 8px 0 4px; }
 .pg-planifier .pl-sous { font-size: 13px; color: #736C63; margin-bottom: 20px; }
 .pg-planifier .pl-jours { display: flex; flex-direction: column; gap: 8px; }
