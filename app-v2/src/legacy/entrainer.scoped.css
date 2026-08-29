@@ -579,3 +579,24 @@
   margin: 8px 2px 0; font-size: 12px; font-weight: 500;
   line-height: 1.45; color: #8A8378;
 }
+/* Second choix : il ne doit pas peser plus que le chemin court. */
+.ml-modal .ml-programmer--second{
+  border-style: solid; border-color: #E7E1D4; color: #8A5A00;
+  font-weight: 700; font-size: 13.5px; padding: 12px;
+}
+
+/* Recapitulatif : ce qui vient d'etre coche devient la seance du jour.
+   Bandeau discret, pas une alerte — l'enregistrement est deja fait,
+   on le nomme, on ne le demande pas. */
+.ml-modal .ml-recap{
+  margin: 14px 0 2px; padding: 12px 14px;
+  border-radius: 14px; background: #FBF7EE;
+  box-shadow: inset 0 0 0 1px #EFE6D3;
+}
+.ml-modal .ml-recap-t{
+  font-size: 11px; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; color: #B34700;
+}
+.ml-modal .ml-recap-m{
+  margin-top: 4px; font-size: 14.5px; font-weight: 700; color: #1C1812;
+}

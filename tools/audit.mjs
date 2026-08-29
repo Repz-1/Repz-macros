@@ -2241,6 +2241,13 @@ const DECALAGE_SW_V2 = 232;
     if (!/!sessionsProgramme\.length \? \(/.test(ent)) soucis.push('le cas « aucun programme » n\'est plus distingue');
     if (!/ml_prog_dabord/.test(ent)) soucis.push('le bouton ne mene plus nulle part quand il n\'y a rien a poser');
     if (!/ml_ou_cocher/.test(ent)) soucis.push('le chemin court — cocher ses muscles — n\'est plus rappele');
+    // Raci, 26/08 : « si j'ai envie de decider que tel jour je fais tel
+    // muscle ». Les pastilles enregistrent des le tap, mais rien ne le
+    // disait. Le recapitulatif nomme ce qui est retenu.
+    if (!/class="ml-recap"/.test(ent)) soucis.push('le recapitulatif des muscles choisis a disparu');
+    if (!/ml_recap_passe/.test(ent)) soucis.push('le recapitulatif parle au futur sur un jour passe');
+    // Et l'appel au questionnaire s'efface des qu'on a choisi.
+    if (!/sel\.length \? null :/.test(ent)) soucis.push('« Trouver un programme » reste affiche alors qu\'un choix est fait');
   }
   if (soucis.length) faute('R69 pas de promesse vide', soucis.join(' ; '));
   else passe('R69 pas de promesse vide');

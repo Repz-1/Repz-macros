@@ -763,7 +763,7 @@ function ModaleMuscles({ iso, fermer }) {
             rattraper, ajouter un jour, poser une seance enregistree.
             Reserve au present et au futur : on ne planifie pas hier. */}
         {type !== 'passe' && !faites.length && (
-          !sessionsProgramme.length ? (
+          !sessionsProgramme.length ? (sel.length ? null : 
             /* Sans programme, il n'y a aucune seance a poser. Le bouton
                ouvrait quand meme un panneau qui disait « cree d'abord un
                programme » : deux appuis pour arriver a un mur (Raci,
@@ -771,10 +771,15 @@ function ModaleMuscles({ iso, fermer }) {
                qu'on peut aussi programmer un jour en cochant simplement
                ses muscles — c'est le chemin le plus court. */
             <div class="ml-sans-prog">
-              <button class="ml-programmer" onClick={() => { fermer(); allerVers('questionnaire'); }}>
+              {/* Le chemin court d'abord : decider soi-meme quels
+                  muscles, sans programme et sans questionnaire. Le
+                  programme vient apres, en second choix — il apporte
+                  les exercices, il n'est pas un peage. */}
+              <p class="ml-sans-prog-s">{t('ml_ou_cocher')}</p>
+              <button class="ml-programmer ml-programmer--second"
+                onClick={() => { fermer(); allerVers('questionnaire'); }}>
                 {t('ml_prog_dabord')}
               </button>
-              <p class="ml-sans-prog-s">{t('ml_ou_cocher')}</p>
             </div>
           ) : choixOuvert ? (
             <div class="ml-choix">
@@ -826,7 +831,11 @@ function ModaleMuscles({ iso, fermer }) {
                 fois la meme information sur un demi-ecran. */}
           </div>
         </div>
-        <div class="ml-groups-titre">{t('ml_noter')}</div>
+        {/* « Noter les muscles TRAVAILLES » est au passe : sur un jour
+            a venir, il decrivait une action impossible et masquait le
+            fait qu'on peut decider ici meme ce qu'on fera (Raci,
+            26/08). Le titre suit donc le jour. */}
+        <div class="ml-groups-titre">{t(type === 'futur' ? 'ml_noter_futur' : 'ml_noter')}</div>
         <div class="ml-groups">
           {GROUPES.map(g => (
             <button key={g.k}
@@ -838,6 +847,20 @@ function ModaleMuscles({ iso, fermer }) {
             </button>
           ))}
         </div>
+        {/* Raci, 26/08 : « si j'ai envie de decider que tel jour je fais
+            tel muscle ». Les pastilles enregistrent deja, mais rien ne
+            le disait : on cochait sans savoir que le jour venait
+            d'entrer dans « Mes seances planifiees ». Le recapitulatif
+            nomme ce qui est retenu, et le dit au bon temps. */}
+        {sel.length > 0 && (
+          <div class="ml-recap">
+            <div class="ml-recap-t">
+              {t(type === 'passe' ? 'ml_recap_passe' : 'ml_recap')}
+            </div>
+            <div class="ml-recap-m">{sel.map(nomMuscle).join(' · ')}</div>
+          </div>
+        )}
+
         <div class="ml-btns">
           <button class="ml-clear" onClick={() => {
             (muscleLog.value[iso] || []).slice().forEach(k => basculerMuscle(iso, k));
