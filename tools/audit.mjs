@@ -2106,6 +2106,32 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R66 — Le calendrier reste tapable au doigt.
+// Mesure du 26/08 : les cases faisaient 38 px, la norme tactile est
+// 44. Sur 324 px de large, sept colonnes n'y arrivent qu'en
+// resserrant les gouttieres horizontales a 2 px — (324 - 12) / 7 =
+// 44,5. Le max-width de la case est le plafond a surveiller : le
+// remettre a 38 annulerait tout sans rien casser de visible.
+// ------------------------------------------------------------
+{
+  const css = lire('app-v2/src/legacy/entrainer.scoped.css');
+  const soucis = [];
+  if (css) {
+    const cell = (css.match(/\.wlog-cell\{[^}]*\}/) || [''])[0];
+    const mw = (cell.match(/max-width:(\d+)px/) || [])[1];
+    if (!mw || Number(mw) < 44) soucis.push('la case du calendrier repasse sous 44 px (max-width ' + (mw || '?') + ')');
+    const grille = (css.match(/\.wlog-grid\{[^}]*\}/) || [''])[0];
+    const gap = (grille.match(/gap:\d+px (\d+)px/) || [])[1];
+    if (!gap || Number(gap) > 2) soucis.push('la gouttiere horizontale depasse 2 px : les cases ne tiennent plus a 44');
+    const dot = (css.match(/\.wlog-legende \.dot\{[^}]*\}/) || [''])[0];
+    const d = (dot.match(/width:(\d+)px/) || [])[1];
+    if (!d || Number(d) < 12) soucis.push('les pastilles de legende sont redescendues sous 12 px');
+  }
+  if (soucis.length) faute('R66 calendrier tapable', soucis.join(' ; '));
+  else passe('R66 calendrier tapable');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
