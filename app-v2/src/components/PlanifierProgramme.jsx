@@ -66,7 +66,7 @@ export function PlanifierProgramme({ progId }) {
   if (!prog) {
     return (
       <div class="pg-planifier">
-        <button class="v2-retour" onClick={retourEntrainer} aria-label={t('back')}>←</button>
+        <button class="pl-retour" onClick={retourEntrainer}>←&nbsp; {t('ml_retour')}</button>
         <p class="pl-vide">{t('pl_introuvable')}</p>
       </div>
     );

@@ -2310,6 +2310,19 @@ const DECALAGE_SW_V2 = 232;
   if (css) {
     if (!/\.pg-planifier \.pl-conf-oui/.test(css)) soucis.push('la confirmation retombe aux boutons bruts du navigateur');
   }
+  // Aucune sortie ne se reduit a un chevron nu : Raci ne les trouvait
+  // pas, trois fois de suite. Elles portent toutes leur mot.
+  for (const f of ['app-v2/src/components/SelectionExercices.jsx',
+                   'app-v2/src/components/Programmes.jsx',
+                   'app-v2/src/components/PlanifierProgramme.jsx']) {
+    const c = lire(f);
+    if (!c) continue;
+    for (const m of c.matchAll(/<button class="(back-btn|v2-retour|pl-retour)"[^>]*>([\s\S]{0,60}?)<\/button>/g)) {
+      if (!/ml_retour|Retour/.test(m[2])) soucis.push(f.split('/').pop() + ' : une sortie est reduite a un chevron nu');
+    }
+  }
+  const st = lire('app-v2/src/styles.css');
+  if (st && !/\.v2-retour--mot, \.back-btn\{/.test(st)) soucis.push('les sorties ont perdu leur style commun');
   if (soucis.length) faute('R71 quitter le placement', soucis.join(' ; '));
   else passe('R71 quitter le placement');
 }

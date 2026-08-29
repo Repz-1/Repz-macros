@@ -101,7 +101,7 @@ export function Programmes() {
     return (
       <div class="pg-programmes">
         <div class="top">
-          <button class="back-btn" onClick={retourEntrainer} aria-label="Retour">←</button>
+          <button class="back-btn" onClick={retourEntrainer}>←&nbsp; {t('ml_retour')}</button>
           <h1>{t('pr_titre')}</h1>
         </div>
         <p class="intro-txt">{t('pr_intro')}</p>
@@ -135,7 +135,7 @@ export function Programmes() {
     return (
       <div class="pg-programmes">
         <div class="top">
-          <button class="back-btn" onClick={() => setEcran('intro')} aria-label="Retour">←</button>
+          <button class="back-btn" onClick={() => setEcran('intro')}>←&nbsp; {t('ml_retour')}</button>
           <h1>{t('pr_titre')}</h1>
         </div>
         <p class="intro-txt">{t('pr_sous')}</p>
@@ -157,7 +157,7 @@ export function Programmes() {
   return (
     <div class="pg-programmes">
       <div class="top">
-        <button class="back-btn" onClick={() => setEcran('progs')} aria-label="Retour">←</button>
+        <button class="back-btn" onClick={() => setEcran('progs')}>←&nbsp; {t('ml_retour')}</button>
         <h1>{prog ? prog.name : 'Séances'}</h1>
       </div>
       {prog && <p class="intro-txt">{prog.duree} · niveau {prog.niveau}. Choisis une séance pour voir les exercices.</p>}

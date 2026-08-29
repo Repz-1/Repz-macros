@@ -16,6 +16,7 @@ function choisirNiveau(k) {
 
 
 import { retourEntrainer } from './Entrainer.jsx';
+import { t } from '../i18n/index.js';
 import { GROUPES } from '../store/entrainement.js';
 import '../legacy/selection-exercices.scoped.css';
 // selectionExos vit dans MaSeance.jsx : en etat local ici, la
@@ -107,7 +108,7 @@ export function SelectionExercices() {
   return (
     <div class="pg-selection">
       <div class="top">
-        <button class="back-btn" onClick={retourEntrainer} aria-label="Retour">←</button>
+        <button class="back-btn" onClick={retourEntrainer}>←&nbsp; {t('ml_retour')}</button>
         <h1>Choisir mes exercices</h1>
       </div>
 

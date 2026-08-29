@@ -190,7 +190,7 @@ export function OngletEntrainer() {
   }
   return (
     <div class="pg-entrainer">
-      <button class="v2-retour" onClick={retourEntrainer} aria-label="Retour">←</button>
+      <button class="v2-retour v2-retour--mot" onClick={retourEntrainer}>←&nbsp; Retour</button>
       {vue.nom === 'seance' && <SeanceTracker />}
       {vue.nom === 'seance' && <RestTimer />}
       <BandeauConfirmation />
