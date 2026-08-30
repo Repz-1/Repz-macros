@@ -75,7 +75,7 @@ export function BlocSeances({ ouvrir, voirTout }) {
   // qu'il n'y a rien a lister, le bloc ne s'affiche pas.
   if (liste.length === 0) return null;
   return (
-    <div class="sea-bloc">
+    <div class="ent-bloc sea-bloc">
       <div class="sea-titre">
         <h4>{t('sea_title')}</h4>
         {liste.length > 0 && <span>{liste.length} {t('in_total')}</span>}

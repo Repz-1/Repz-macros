@@ -630,10 +630,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
         </div>
       </div>
 
-      {/* 5 — Seances enregistrees */}
-      <div class="ent-bloc">
-        <BlocSeances ouvrir={ouvrirSeance} voirTout={voirToutesSeances} />
-      </div>
+      {/* 5 — Seances enregistrees. Le composant porte lui-meme sa
+          carte : quand il n'a rien a montrer il ne rend rien, et
+          l'enveloppe qui l'entourait ici laissait une carte blanche
+          vide de 26 px sur le fond (Raci, 26/08). */}
+      <BlocSeances ouvrir={ouvrirSeance} voirTout={voirToutesSeances} />
     </>
   );
 }
