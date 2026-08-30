@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BELFIT</title>
+<meta name="theme-color" content="#F4F3F0">
+<link rel="manifest" href="/assets/manifest-GGyNW8NX.json">
+<link rel="icon" href="/assets/icon-192-v9-B9AcmhqE.png">
+<!-- ============================================================
+     belfit.be redirige vers l'application v2.
+
+     La v1 n'est plus utilisee (Raci, 2 aout 2026). Son ancienne page
+     d'accueil reste disponible sous index-v1.html : rien n'est
+     detruit, et le retour en arriere consiste a remettre ce fichier.
+
+     Trois chemins de redirection, du plus rapide au plus sur :
+     - remplacement d'historique en JS, pour que le bouton retour du
+       telephone ne renvoie pas ici et ne cree pas de boucle ;
+     - rafraichissement meta si le JS est desactive ;
+     - lien visible si les deux echouent.
+     ============================================================ -->
+<script>location.replace('/v2/' + location.search + location.hash);</script>
+<meta http-equiv="refresh" content="0; url=/v2/">
+<style>
+  html,body{margin:0;height:100%;background:#F4F3F0;
+    font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#16130F}
+  .b{height:100%;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:14px;padding:24px;text-align:center}
+  img{width:64px;height:64px;border-radius:18px}
+  p{margin:0;font-size:14px;color:#57514A}
+  a{color:#B34700;font-weight:700;font-size:15px}
+</style>
+</head>
+<body>
+  <div class="b">
+    <img src="/assets/belfit-logo-bf-u1YziBiL.png" alt="BELFIT">
+    <p>Ouverture de BELFIT…</p>
+    <a href="/v2/">Continuer</a>
+  </div>
+</body>
+</html>

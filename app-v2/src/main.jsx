@@ -6,9 +6,9 @@ import './styles/design-system.css';
 import './styles/journal-socle.css';
 // En dernier : l'en-tete commune passe devant les variantes de page.
 import './styles/entete-commune.css';
-import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
+import { utilisateur, authPrete, deconnexion, entrerEnInvite } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
-import { ACCES_INVITE, ONGLET_VITRINE } from './acces-invite.js';
+import { ACCES_INVITE, ONGLET_VITRINE, SANS_COMPTE } from './acces-invite.js';
 import { VERSION_APP } from './version.js';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
 import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
@@ -260,6 +260,13 @@ function AvisAccesInvite() {
 export function App() {
   if (!authPrete.value) {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>…</div>;
+  }
+  // Periode de test sans compte : plutot que d'afficher l'ecran de
+  // connexion, on ouvre la session invite et l'app demarre sur le
+  // Journal. Un seul interrupteur, dans acces-invite.js.
+  if (!utilisateur.value && SANS_COMPTE) {
+    entrerEnInvite();
+    return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;
   }
   if (!utilisateur.value) {
     return <LoginScreen />;

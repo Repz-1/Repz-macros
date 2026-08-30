@@ -2394,6 +2394,34 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R74 — L'entree sans compte s'annonce tant qu'elle est ouverte.
+// Raci, 26/08 : « enleve l'inscription pour le moment, arrivee direct
+// sur la page alimentation ». Comme R73, c'est une porte grande
+// ouverte qu'on ne doit pas retrouver par hasard dans six mois. Deux
+// consequences a ne jamais laisser oublier : les donnees des testeurs
+// vivent dans leur navigateur et disparaissent avec le cache, et le
+// micro et la photo repondront 401 faute de jeton Firebase.
+// ------------------------------------------------------------
+{
+  const ai = lire('app-v2/src/acces-invite.js');
+  const mn = lire('app-v2/src/main.jsx');
+  const fb = lire('app-v2/src/services/firebase.js');
+  const soucis = [];
+  const v = ai && /export const SANS_COMPTE = (true|false);/.exec(ai);
+  if (!v) soucis.push('l\'interrupteur SANS_COMPTE a disparu');
+  if (mn && !/!utilisateur\.value && SANS_COMPTE/.test(mn)) {
+    soucis.push('l\'ecran de connexion est redevenu le passage oblige sans passer par l\'interrupteur');
+  }
+  if (fb && !/SANS_COMPTE && !utilisateur\.value/.test(fb)) {
+    soucis.push('la session invite n\'est plus prete avant le premier rendu : l\'app clignotera');
+  }
+  if (soucis.length) faute('R74 entree sans compte', soucis.join(' ; '));
+  else if (v && v[1] === 'true') {
+    signale('R74 entree sans compte', 'INSCRIPTION DESACTIVEE — tout le monde entre sans compte. Donnees locales uniquement (perdues si le cache est vide) ; micro et photo repondront 401 tant que « Anonymous » n\'est pas active dans la console Firebase.');
+  } else passe('R74 entree sans compte');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

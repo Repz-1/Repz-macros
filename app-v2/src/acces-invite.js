@@ -46,6 +46,38 @@
 // Journal (ONGLET_VITRINE suit ce drapeau).
 export const ACCES_INVITE = false;
 
+// ============================================================
+// SANS COMPTE — PERIODE DE TEST
+//
+// Raci, 26/08 : « enleve l'inscription pour le moment, arrivee direct
+// sur la page alimentation. On remettra tout en meme temps. »
+//
+// A `true`, l'ecran de connexion ne s'affiche plus du tout : la
+// session invite s'ouvre d'elle-meme au premier chargement et
+// l'application demarre sur le Journal. A `false`, l'ecran de
+// connexion redevient le passage oblige, sans qu'aucun autre fichier
+// ait bouge.
+//
+// CE QUE CA IMPLIQUE, ET QUI N'EST PAS RATTRAPABLE PLUS TARD :
+//
+// 1. Les donnees vivent dans le navigateur du testeur, pas dans
+//    Firestore. Vider le cache de Chrome, changer de telephone ou
+//    reinstaller efface tout. Personne ne pourra recuperer ce qui a
+//    ete encode pendant les tests.
+//
+// 2. Le micro et la photo ne repondront pas. Ils exigent un jeton
+//    Firebase que la session invite n'a pas — le serveur repondra 401
+//    avant meme de regarder PREMIUM_OUVERT. Pour les ouvrir aussi, il
+//    faut activer le fournisseur « Anonymous » dans la console
+//    Firebase : les testeurs auraient alors un vrai compte, invisible,
+//    avec sync et jeton. C'est un interrupteur dans la console, rien a
+//    coder.
+//
+// 3. belfit.be/v2/ devient entierement public. N'importe qui tombant
+//    sur l'adresse entre sans rien demander.
+// ============================================================
+export const SANS_COMPTE = true;
+
 // Le temps des essais publics, l'application s'ouvre sur S'entrainer
 // plutot que sur le Journal : c'est la page que Raci veut montrer en
 // premier. Adosse a ACCES_INVITE pour qu'il n'y ait qu'un interrupteur

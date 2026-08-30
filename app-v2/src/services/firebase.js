@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { SANS_COMPTE } from '../acces-invite.js';
 import {
   initializeAuth, indexedDBLocalPersistence, browserLocalPersistence,
   onAuthStateChanged,
@@ -121,6 +122,11 @@ function preparerInvite() {
 try {
   if (new URLSearchParams(location.search).has('invite')) { preparerInvite(); entrerEnInvite(); }
 } catch (e) { /* URL intouchable : le lien sous le formulaire reste */ }
+
+// Periode de test sans compte : la session invite est prete avant le
+// premier rendu. Sans cela, l'app afficherait brievement l'ecran de
+// chargement le temps qu'un effet la cree.
+if (SANS_COMPTE && !utilisateur.value) { preparerInvite(); entrerEnInvite(); }
 
 // --- Actions ---
 /**
