@@ -239,9 +239,11 @@
 .pg-stats .rep-edit:active{ transform:scale(.96); background:#FBEFC7; }
 .pg-stats .rep-edit svg{ width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .pg-stats .bodymap{ cursor:pointer; }
-.pg-stats .ml-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; align-items:flex-end; justify-content:center; }
-.pg-stats .ml-overlay.show{ display:flex; }
-.pg-stats .ml-modal{ background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
+/* La fiche d'un jour est montee sur document.body, jamais dans
+   .pg-stats : ces trois regles ne s'appliquaient donc a rien. Elles
+   decrivaient une feuille collee en bas, contredisant la carte
+   centree d'entrainer.scoped.css — et brouillaient la lecture des
+   deux. Retirees le 26/08. */
 .pg-stats .ml-date{ font-size:17px; font-weight:800; margin-bottom:6px; text-transform:capitalize; }
 .pg-stats .ml-sub{ font-size:12.5px; color:#736C63; font-weight:600; margin-bottom:16px; }
 .pg-stats .ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }

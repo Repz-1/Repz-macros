@@ -101,13 +101,23 @@
    de calendrier grise et inutile en haut, et ses boutons frolaient la
    barre systeme d'Android. Au centre, elle se lit comme une carte
    posee sur la page, avec la meme respiration des deux cotes. */
-.ml-overlay{ display:none; position:fixed; inset:0; background:rgba(28,24,18,.55); z-index:100; align-items:center; justify-content:center; padding:16px; }
+/* Carte posee au MILIEU de l'ecran, pas collee au bas (Raci, 26/08).
+   Une feuille du bas suppose qu'on la fasse glisser ; ici la fiche est
+   courte et se lit d'un coup. Centree, elle respire des deux cotes et
+   ne se confond plus avec la barre d'onglets. La reserve haute et
+   basse tient compte des encoches. */
+.ml-overlay{
+  display:none; position:fixed; inset:0; z-index:100;
+  background:rgba(28,24,18,.55);
+  align-items:center; justify-content:center;
+  padding:calc(20px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
+}
 .ml-overlay.show{ display:flex; }
 .ml-modal{
-  background:#fff; border-radius:24px; padding:20px;
+  background:#fff; border-radius:26px; padding:22px 20px;
   width:100%; max-width:480px;
-  max-height:calc(100dvh - 32px); overflow-y:auto;
-  box-shadow:0 24px 60px rgba(28,24,18,.34);
+  max-height:100%; overflow-y:auto;
+  box-shadow:0 18px 48px rgba(28,24,18,.28), 0 2px 8px rgba(28,24,18,.10);
   -webkit-overflow-scrolling:touch;
 }
 /* La silhouette vient de Stats.jsx et toute sa feuille est prefixee

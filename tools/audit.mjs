@@ -1553,7 +1553,10 @@ const DECALAGE_SW_V2 = 232;
     // La fiche est centree depuis le 26/08 : collee en bas, ses
     // boutons frolaient la barre systeme d'Android.
     if (!/\.ml-overlay\{[^}]*align-items:center/.test(css)) soucis.push('la fiche est redescendue coller au bas de l\'ecran');
-    if (!/\.ml-modal\{[\s\S]{0,200}?max-height:calc\(100dvh/.test(css)) soucis.push('la fiche centree ne borne plus sa hauteur : elle depassera de l\'ecran');
+    // La hauteur est bornee par l'overlay, qui reserve les encoches ;
+    // la carte se contente de ne pas le depasser.
+    if (!/\.ml-modal\{[\s\S]{0,220}?max-height:100%/.test(css)) soucis.push('la fiche centree ne borne plus sa hauteur : elle depassera de l\'ecran');
+    if (!/\.ml-overlay\{[\s\S]{0,260}?safe-area-inset-bottom/.test(css)) soucis.push('la fiche centree ne reserve plus les encoches');
     if (!/width: 100%/.test(bloc)) soucis.push('la barre n\'occupe plus toute la largeur');
     if (/#16130F|#151515/.test(bloc)) soucis.push('la sortie reprend le noir reserve a « Enregistrer »');
   }
