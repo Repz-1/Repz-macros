@@ -659,6 +659,24 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
  * Le marquage manuel des muscles reste accessible dans les trois :
  * c'est lui qui colore le calendrier quand on s'entraine ailleurs.
  */
+/**
+ * Ce que le bouton annonce sous « Programmer cette seance ».
+ *
+ * A quatre groupes, « Epaules · Trapezes · Triceps · Abdos » passait
+ * sur deux lignes et deformait le bouton (Raci, 26/08). On nomme tant
+ * que ca tient, on compte ensuite :
+ *   1        -> « Pecs »
+ *   2        -> « Pecs, Dos »
+ *   3 et +   -> « Pecs, Dos +2 »
+ * Les deux premiers noms restent : ils situent la seance mieux qu'un
+ * nombre seul, et le « +N » dit ce qui manque sans le cacher.
+ */
+function resumeMuscles(cles) {
+  const noms = cles.map(nomMuscle);
+  if (noms.length <= 2) return noms.join(', ');
+  return noms.slice(0, 2).join(', ') + ' +' + (noms.length - 2);
+}
+
 function ModaleMuscles({ iso, fermer }) {
   // Empilee dans la pile de retours : le bouton Android et la touche
   // Echap la ferment, au lieu de changer l'onglet SOUS elle. Le hook
@@ -867,7 +885,7 @@ function ModaleMuscles({ iso, fermer }) {
         {type !== 'passe' && selMuscles.length > 0 && (
           <button class="ml-prog-seance" onClick={fermer}>
             <span class="ml-prog-t">{t('ml_prog_futur')}</span>
-            <span class="ml-prog-m">{selMuscles.map(nomMuscle).join(' · ')}</span>
+            <span class="ml-prog-m">{resumeMuscles(selMuscles)}</span>
           </button>
         )}
 

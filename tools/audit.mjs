@@ -2290,6 +2290,11 @@ const DECALAGE_SW_V2 = 232;
     if (!/type !== 'passe' && selMuscles\.length > 0/.test(ent)) {
       soucis.push('l\'action s\'affiche sur un jour passe ou pour un simple repos');
     }
+    // Au-dela de deux groupes, le bouton compte au lieu de tout
+    // nommer : quatre noms passaient sur deux lignes.
+    if (!/class="ml-prog-m">\{resumeMuscles\(selMuscles\)\}/.test(ent)) {
+      soucis.push('le bouton renomme tous les groupes : son texte debordera a 3 ou 4');
+    }
     if (!/const selMuscles = sel\.filter\(k => k !== 'repos'\)/.test(ent)) {
       soucis.push('« Repos » est de nouveau compte comme un muscle a programmer');
     }
