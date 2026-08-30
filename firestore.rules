@@ -34,5 +34,13 @@ service cloud.firestore {
     match /usernames/{pseudo} {
       allow read, write: if false;
     }
+
+    // Codes premium : fermes au client, comme les pseudonymes.
+    // Lisibles, ils se laisseraient enumerer ; inscriptibles, « une
+    // seule fois » ne voudrait plus rien dire. Seule la Cloud Function
+    // utiliserCode y touche, en admin et dans une transaction.
+    match /codesPremium/{code} {
+      allow read, write: if false;
+    }
   }
 }

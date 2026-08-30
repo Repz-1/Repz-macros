@@ -1275,3 +1275,88 @@ exports.demanderAjustement = onRequest(
     }
   },
 );
+
+/* ============================================================
+ * CODES PREMIUM A USAGE UNIQUE
+ *
+ * Un code vit dans Firestore : codesPremium/{CODE}.
+ *   { utilise:false, uid:null, le:null, mois:<n|null>, note:"..." }
+ *
+ * Trois raisons de passer par une Cloud Function plutot que par le
+ * client :
+ *   - « une seule fois » se decide au serveur. Deux appareils qui
+ *     envoient le meme code a la meme seconde doivent produire un
+ *     gagnant et un perdant : c'est le role de la transaction.
+ *   - la collection reste fermee au client (regles), donc personne ne
+ *     peut lire la liste des codes ni deviner ceux qui restent.
+ *   - premium est ecrit en admin, comme pour les webhooks de paiement.
+ *     La source de verite reste unique : users/{uid}.
+ *
+ * Codes en clair dans le JS de la page (V1 : JETAIME, BELFIT1) : c'est
+ * exactement ce que ceci remplace.
+ * ============================================================ */
+exports.utiliserCode = onRequest(
+  {region: "europe-west1", cors: false},
+  async (req, res) => {
+    if (appliquerCors(req, res)) return;
+    try {
+      const jeton = (req.headers.authorization || "").replace(/^Bearer\s+/i, "");
+      if (!jeton) {
+        res.status(401).json({error: "non_authentifie"});
+        return;
+      }
+      const decode = await admin.auth().verifyIdToken(jeton);
+      const uid = decode.uid;
+
+      // Normalisation : on accepte « belfit1 », « BelFit 1 », etc.
+      const code = String((req.body && req.body.code) || "")
+        .toUpperCase().replace(/[^A-Z0-9]/g, "");
+      if (code.length < 4 || code.length > 32) {
+        res.status(200).json({ok: false, raison: "inconnu"});
+        return;
+      }
+
+      const refCode = db.collection("codesPremium").doc(code);
+      const refUser = db.collection("users").doc(uid);
+
+      const issue = await db.runTransaction(async (tx) => {
+        const snap = await tx.get(refCode);
+        if (!snap.exists) return {ok: false, raison: "inconnu"};
+        const d = snap.data() || {};
+
+        // Deja utilise par quelqu'un d'autre : refus. Deja utilise par
+        // CE compte : on ne refuse pas, on confirme — reappuyer sur le
+        // bouton ne doit pas ressembler a une erreur.
+        if (d.utilise) {
+          if (d.uid === uid) return {ok: true, raison: "deja_le_tien"};
+          return {ok: false, raison: "deja_utilise"};
+        }
+        if (d.expire && Date.now() > Date.parse(d.expire)) {
+          return {ok: false, raison: "expire"};
+        }
+
+        const jusqu = d.mois ?
+          new Date(Date.now() + d.mois * 30 * 864e5).toISOString() : null;
+
+        tx.update(refCode, {
+          utilise: true,
+          uid,
+          le: new Date().toISOString(),
+        });
+        tx.set(refUser, {
+          premium: true,
+          source: "code",
+          codeUtilise: code,
+          premiumJusqu: jusqu,
+        }, {merge: true});
+
+        return {ok: true, raison: "active", jusqu};
+      });
+
+      res.status(200).json(issue);
+    } catch (err) {
+      console.error("utiliserCode", err);
+      res.status(500).json({error: "server"});
+    }
+  },
+);

@@ -2328,6 +2328,42 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R72 — Un code Premium se verifie au serveur, jamais dans la page.
+// La V1 portait JETAIME et BELFIT1 en clair dans le JS public de
+// plans.html : n'importe qui lisant la source s'offrait l'abonnement.
+// Le code part maintenant vers utiliserCode, qui ouvre une transaction
+// sur codesPremium/{CODE} et n'ecrit premium qu'en admin — meme
+// chemin que les webhooks de paiement. La collection est fermee au
+// client : lisible, elle se laisserait enumerer.
+// ------------------------------------------------------------
+{
+  const pp = lire('app-v2/src/components/PremiumPage.jsx');
+  const fn = lire('functions/index.js');
+  const rules = lire('firestore.rules');
+  const soucis = [];
+  if (pp) {
+    if (!/utiliserCode/.test(pp)) soucis.push('la page n\'appelle plus la verification serveur');
+    // Un code en dur dans le composant = la faille de la V1, reprise.
+    const bloc = (pp.match(/function ChampCode\(\)[\s\S]*?\n\}/) || [''])[0];
+    if (/===\s*'[A-Z0-9]{4,}'|includes\('[A-Z0-9]{4,}'\)/.test(bloc)) {
+      soucis.push('un code est compare dans le navigateur : il serait lisible dans la source');
+    }
+  }
+  if (fn) {
+    if (!/exports\.utiliserCode/.test(fn)) soucis.push('la fonction utiliserCode a disparu');
+    const f = (fn.match(/exports\.utiliserCode[\s\S]*?\n\);/) || [''])[0];
+    if (!/runTransaction/.test(f)) soucis.push('l\'usage unique n\'est plus garanti par une transaction');
+    if (!/verifyIdToken/.test(f)) soucis.push('le code s\'utilise sans compte connecte');
+    if (!/utilise: true/.test(f)) soucis.push('le code n\'est plus marque comme consomme');
+  }
+  if (rules && !/match \/codesPremium\/\{code\}[\s\S]{0,80}?allow read, write: if false;/.test(rules)) {
+    soucis.push('la collection des codes n\'est plus fermee au client');
+  }
+  if (soucis.length) faute('R72 code premium', soucis.join(' ; '));
+  else passe('R72 code premium');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

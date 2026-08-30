@@ -248,6 +248,12 @@ export function PremiumPage() {
           </button>
 
 
+          {/* Code a usage unique. Le code n'est jamais compare dans le
+              navigateur : « une seule fois » se decide au serveur, dans
+              une transaction. Deux appareils qui envoient le meme code
+              a la meme seconde produisent un gagnant et un perdant. */}
+          <ChampCode />
+
           <p class="legal">
             <svg class="l-bouclier" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 9.2-8 11-4.5-1.8-8-6-8-11V5l8-3z" /><path d="M9 12l2 2 4-4" /></svg>
             Paiement sécurisé. Facturation auto-renouvelable. Annulez à tout moment.
@@ -273,3 +279,70 @@ export function PremiumPage() {
     </div>
   );
 }
+/**
+ * Saisie d'un code Premium.
+ *
+ * Le code part tel quel vers utiliserCode, qui verifie le jeton
+ * Firebase, ouvre une transaction sur codesPremium/{CODE} et n'ecrit
+ * premium qu'en admin. Rien ici ne sait quels codes existent : la
+ * collection est fermee au client par les regles Firestore.
+ */
+function ChampCode() {
+  const [ouvert, setOuvert] = useState(false);
+  const [code, setCode] = useState('');
+  const [etat, setEtat] = useState(null);      // null | 'envoi' | 'ok' | raison
+  const envoyer = async () => {
+    const u = utilisateur.value;
+    if (!u || !code.trim()) return;
+    setEtat('envoi');
+    try {
+      const jeton = await u.getIdToken();
+      const r = await fetch('https://europe-west1-repz-baf60.cloudfunctions.net/utiliserCode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + jeton },
+        body: JSON.stringify({ code }),
+      });
+      const d = await r.json();
+      setEtat(d.ok ? 'ok' : (d.raison || 'erreur'));
+    } catch {
+      setEtat('erreur');
+    }
+  };
+
+  const MESSAGES = {
+    inconnu: 'Ce code n\'existe pas.',
+    deja_utilise: 'Ce code a déjà servi.',
+    expire: 'Ce code a expiré.',
+    erreur: 'Impossible de vérifier le code. Réessaie.',
+  };
+
+  if (!ouvert) {
+    return (
+      <button class="code-lien" onClick={() => setOuvert(true)}>J'ai un code</button>
+    );
+  }
+
+  return (
+    <div class="code-bloc">
+      {etat === 'ok' ? (
+        <p class="code-ok">Code accepté. Ton accès Premium est activé.</p>
+      ) : (
+        <>
+          <div class="code-ligne">
+            <input
+              class="code-champ" type="text" inputMode="text" autoCapitalize="characters"
+              placeholder="Ton code" value={code} maxLength={32}
+              onInput={(e) => { setCode(e.target.value); if (etat && etat !== 'envoi') setEtat(null); }}
+            />
+            <button class="code-btn" onClick={envoyer} disabled={etat === 'envoi' || !code.trim()}>
+              {etat === 'envoi' ? '…' : 'Valider'}
+            </button>
+          </div>
+          {etat && etat !== 'envoi' && <p class="code-err">{MESSAGES[etat] || MESSAGES.erreur}</p>}
+        </>
+      )}
+    </div>
+  );
+}
+
+
