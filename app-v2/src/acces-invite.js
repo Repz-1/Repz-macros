@@ -1,3 +1,5 @@
+import { signal } from '@preact/signals';
+
 // ============================================================
 // ACCES INVITE — ENTREE PROVISOIRE SANS MOT DE PASSE
 //
@@ -77,6 +79,12 @@ export const ACCES_INVITE = false;
 //    sur l'adresse entre sans rien demander.
 // ============================================================
 export const SANS_COMPTE = true;
+
+// Porte de service pendant la periode sans compte : elle rouvre
+// l'ecran de connexion a la demande, depuis les Reglages. Sans elle,
+// Raci lui-meme ne peut plus atteindre son compte — ses seances et son
+// journal sont sous son uid, la session invite est vide.
+export const demanderConnexion = signal(false);
 
 // Le temps des essais publics, l'application s'ouvre sur S'entrainer
 // plutot que sur le Journal : c'est la page que Raci veut montrer en

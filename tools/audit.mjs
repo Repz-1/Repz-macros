@@ -2422,6 +2422,18 @@ const DECALAGE_SW_V2 = 232;
   if (fb && !/SANS_COMPTE && !utilisateur\.value/.test(fb)) {
     soucis.push('la session invite n\'est plus prete avant le premier rendu : l\'app clignotera');
   }
+  // Une porte de service doit rester : sans elle, un compte existant
+  // ne peut plus atteindre ses propres donnees, qui vivent sous son
+  // uid et non dans la session invite.
+  const rg = lire('app-v2/src/components/Reglages.jsx');
+  if (v && v[1] === 'true') {
+    if (rg && !/demanderConnexion\.value = true/.test(rg)) {
+      soucis.push('les Reglages n\'offrent plus de rejoindre son compte : ses donnees deviennent inatteignables');
+    }
+    if (mn && !/demanderConnexion\.value &&/.test(mn)) {
+      soucis.push('la demande de connexion n\'ouvre plus l\'ecran de connexion');
+    }
+  }
   if (soucis.length) faute('R74 entree sans compte', soucis.join(' ; '));
   else if (v && v[1] === 'true') {
     signale('R74 entree sans compte', 'INSCRIPTION DESACTIVEE — tout le monde entre sans compte. Donnees locales uniquement (perdues si le cache est vide) ; micro et photo repondront 401 tant que « Anonymous » n\'est pas active dans la console Firebase.');

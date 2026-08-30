@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { SANS_COMPTE, demanderConnexion } from '../acces-invite.js';
 import { useRetour } from '../services/retour.js';
 import { definirPrenom } from '../store/perso.js';
 import { useState, useEffect } from 'preact/hooks';
@@ -451,6 +452,16 @@ export function Reglages() {
         </div>
 
         <p class="rg-version">{t('set_ver')} {VERSION_APP}</p>
+
+        {/* Pendant la periode sans compte, l'ecran de connexion n'existe
+            plus : ceci le rouvre. Les donnees d'un compte vivent sous
+            son uid — la session invite ne les voit pas, elles ne sont
+            pas perdues pour autant. */}
+        {SANS_COMPTE && (
+          <button class="rg-connexion" onClick={() => { demanderConnexion.value = true; }}>
+            {t('set_login')}
+          </button>
+        )}
 
         <button class="rg-deconnexion" onClick={() => {
           try {
