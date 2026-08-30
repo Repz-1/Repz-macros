@@ -97,9 +97,19 @@
     --text:#16130F;
     --radius:22px;
 }
-.ml-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-end; justify-content:center; }
+/* Fiche centree (Raci, 26/08). Collee en bas, elle laissait une bande
+   de calendrier grise et inutile en haut, et ses boutons frolaient la
+   barre systeme d'Android. Au centre, elle se lit comme une carte
+   posee sur la page, avec la meme respiration des deux cotes. */
+.ml-overlay{ display:none; position:fixed; inset:0; background:rgba(28,24,18,.55); z-index:100; align-items:center; justify-content:center; padding:16px; }
 .ml-overlay.show{ display:flex; }
-.ml-modal{ background:#fff; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom)); width:100%; max-width:480px; }
+.ml-modal{
+  background:#fff; border-radius:24px; padding:20px;
+  width:100%; max-width:480px;
+  max-height:calc(100dvh - 32px); overflow-y:auto;
+  box-shadow:0 24px 60px rgba(28,24,18,.34);
+  -webkit-overflow-scrolling:touch;
+}
 /* La silhouette vient de Stats.jsx et toute sa feuille est prefixee
    .pg-stats. Dans la modale, montee sur le corps, elle n'heritait
    d'aucune largeur : le SVG prenait les 390 px de l'ecran et poussait
@@ -118,8 +128,8 @@
 .ml-modal .bodymap-legend{ display:none; align-items:center; justify-content:center; gap:5px; font-size:10.5px; color:#8A8279; margin-bottom:14px; font-weight:600; }
 .ml-modal .bodymap-legend i{ width:11px; height:11px; border-radius:3px; display:inline-block; }
 .ml-date{ font-size:17px; font-weight:800; margin-bottom:6px; text-transform:capitalize; }
-.ml-groups{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px; }
-.ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid var(--line); background:#fff; color:var(--text-dim); cursor:pointer; }
+.ml-groups{ display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:10px; }
+.ml-chip{ padding:11px 8px; text-align:center; justify-content:center; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid var(--line); background:#fff; color:var(--text-dim); cursor:pointer; }
 .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
 .ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }
 .ml-chip:active{ transform:scale(.96); }

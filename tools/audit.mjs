@@ -1550,6 +1550,10 @@ const DECALAGE_SW_V2 = 232;
   if (css) {
     const bloc = (css.match(/\.ml-modal \.ml-retour \{[^}]*\}/) || [''])[0];
     if (/position: fixed|position: absolute/.test(bloc)) soucis.push('la sortie flotte de nouveau au-dessus du contenu');
+    // La fiche est centree depuis le 26/08 : collee en bas, ses
+    // boutons frolaient la barre systeme d'Android.
+    if (!/\.ml-overlay\{[^}]*align-items:center/.test(css)) soucis.push('la fiche est redescendue coller au bas de l\'ecran');
+    if (!/\.ml-modal\{[\s\S]{0,200}?max-height:calc\(100dvh/.test(css)) soucis.push('la fiche centree ne borne plus sa hauteur : elle depassera de l\'ecran');
     if (!/width: 100%/.test(bloc)) soucis.push('la barre n\'occupe plus toute la largeur');
     if (/#16130F|#151515/.test(bloc)) soucis.push('la sortie reprend le noir reserve a « Enregistrer »');
   }
@@ -2270,8 +2274,12 @@ const DECALAGE_SW_V2 = 232;
     if (!/const selMuscles = sel\.filter\(k => k !== 'repos'\)/.test(ent)) {
       soucis.push('« Repos » est de nouveau compte comme un muscle a programmer');
     }
-    if (!/!\(type !== 'passe' && selMuscles\.length > 0\) &&\s*<button class="ml-save"/.test(ent)) {
-      soucis.push('« Enregistrer » et l\'action peuvent s\'afficher ensemble');
+    // « Enregistrer » a ete supprime : il ne faisait que refermer, ce
+    // que « Retour » fait deja. Et « Effacer » n'apparait que s'il y a
+    // quelque chose a effacer.
+    if (/class="ml-save"/.test(ent)) soucis.push('« Enregistrer » est revenu : il double « Retour »');
+    if (!/\{sel\.length > 0 && \(\s*<div class="ml-btns">/.test(ent)) {
+      soucis.push('« Effacer » s\'affiche alors qu\'il n\'y a rien a effacer');
     }
 
   }

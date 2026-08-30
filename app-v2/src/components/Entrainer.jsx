@@ -861,14 +861,19 @@ function ModaleMuscles({ iso, fermer }) {
           </button>
         )}
 
-        <div class="ml-btns">
-          <button class="ml-clear" onClick={() => {
-            (muscleLog.value[iso] || []).slice().forEach(k => basculerMuscle(iso, k));
-            fermer();
-          }}>{t('clear')}</button>
-          {!(type !== 'passe' && selMuscles.length > 0) &&
-            <button class="ml-save" onClick={fermer}>{t('save')}</button>}
-        </div>
+        {/* « Effacer » n'a rien a effacer tant que rien n'est coche, et
+            « Enregistrer » ne faisait que refermer — exactement ce que
+            « Retour » fait juste en dessous. Deux boutons pour rien
+            (Raci, 26/08). La rangee ne s'affiche donc que lorsqu'il y
+            a quelque chose a retirer. */}
+        {sel.length > 0 && (
+          <div class="ml-btns">
+            <button class="ml-clear" onClick={() => {
+              (muscleLog.value[iso] || []).slice().forEach(k => basculerMuscle(iso, k));
+              fermer();
+            }}>{t('clear')}</button>
+          </div>
+        )}
 
         {/* Sortie de la fiche. Quatre etats successifs : haut-gauche
             (17/08), disque noir flottant en bas a droite (22/08),
