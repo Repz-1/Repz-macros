@@ -2295,6 +2295,13 @@ const DECALAGE_SW_V2 = 232;
     if (!/class="ml-prog-m">\{resumeMuscles\(selMuscles\)\}/.test(ent)) {
       soucis.push('le bouton renomme tous les groupes : son texte debordera a 3 ou 4');
     }
+    // A quatre groupes, l'enumeration passait sur deux lignes et
+    // deformait le bouton : on nomme les deux premiers, on compte le
+    // reste.
+    if (!/function resumeMuscles\(cles\)/.test(ent)) soucis.push('le resume des muscles choisis a disparu');
+    if (!/class="ml-prog-m">\{resumeMuscles\(selMuscles\)\}/.test(ent)) {
+      soucis.push('le bouton enumere de nouveau tous les muscles choisis');
+    }
     if (!/const selMuscles = sel\.filter\(k => k !== 'repos'\)/.test(ent)) {
       soucis.push('« Repos » est de nouveau compte comme un muscle a programmer');
     }
