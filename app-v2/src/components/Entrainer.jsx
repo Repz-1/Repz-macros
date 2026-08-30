@@ -800,11 +800,11 @@ function ModaleMuscles({ iso, fermer }) {
           </button>
         )}
 
-        {/* Deux colonnes seulement quand il y a quelque chose a nommer.
-            Sans muscle marque, la legende est vide : les silhouettes
-            restaient coincees a gauche avec la moitie droite blanche
-            (Raci, 26/08). Seules, elles se centrent. */}
-        <div class={'ml-corps' + (GROUPES.some(g => COULEUR[g.k] && compte[g.k]) ? '' : ' ml-corps--seul')}>
+        {/* Silhouettes toujours a gauche. Les centrer quand la legende
+            est vide faisait sauter la mise en page d'une disposition a
+            l'autre au premier muscle coche : Raci a tranche pour une
+            seule position, le 26/08. */}
+        <div class="ml-corps">
           <BodyMap compte={compte} />
           <div class="ml-legende">
             {/* La legende ne liste plus les neuf groupes dont sept

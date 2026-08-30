@@ -132,11 +132,8 @@
 /* Silhouette a gauche, legende a droite : les couleurs ne veulent
    rien dire tant qu'on ne peut pas les nommer sans quitter l'ecran. */
 .ml-corps{ display:flex; align-items:flex-start; gap:14px; margin-bottom:12px; }
-/* Silhouettes sans legende : elles se centrent et grandissent un peu,
-   plutot que de laisser la moitie droite vide. */
-.ml-corps--seul{ justify-content:center; }
-.ml-corps--seul .bodymap{ width:130px; }
-.ml-corps--seul .ml-legende{ display:none; }
+/* Position unique, a gauche : voir Entrainer.jsx. La variante centree
+   sautait d'une disposition a l'autre au premier muscle coche. */
 .ml-legende{ flex:1; display:flex; flex-direction:column; gap:4px; padding-top:2px; }
 .ml-legende-titre{ font-size:11px; font-weight:800; color:#8A8279; text-transform:uppercase; letter-spacing:.03em; margin-bottom:2px; }
 .ml-legende span{ display:flex; align-items:center; font-size:12px; font-weight:600; color:#B3ADA5; }

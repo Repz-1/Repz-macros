@@ -1543,7 +1543,6 @@ const DECALAGE_SW_V2 = 232;
   if (ent) {
     const i = ent.indexOf('function ModaleMuscles');
     const fiche = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : '';
-    if (!/ml-corps--seul/.test(fiche)) soucis.push('la fiche ne distingue plus le cas « aucun muscle a nommer »');
     if (!/class="ml-retour"/.test(fiche)) soucis.push('la fiche n\'a plus de sortie a l\'ecran');
     else if (fiche.indexOf('class="ml-retour"') < fiche.indexOf('class="ml-btns"')) {
       soucis.push('la sortie est remontee au-dessus des boutons');
@@ -1556,11 +1555,10 @@ const DECALAGE_SW_V2 = 232;
     // La fiche est centree depuis le 26/08 : collee en bas, ses
     // boutons frolaient la barre systeme d'Android.
     if (!/align-items:center/.test((css.match(/\.ml-overlay\{[^}]*\}/) || [''])[0])) soucis.push('la fiche est redescendue coller au bas de l\'ecran');
-    // Silhouettes sans legende : centrees, sinon la moitie droite de
-    // la fiche reste blanche et tout parait pousse a gauche.
-    if (!/\.ml-corps--seul\{ justify-content:center; \}/.test(css)) {
-      soucis.push('les silhouettes seules retombent contre le bord gauche');
-    }
+    // Les silhouettes gardent une position unique, a gauche : les
+    // centrer quand la legende est vide faisait sauter la mise en page
+    // au premier muscle coche.
+    if (/\.ml-corps--seul/.test(css)) soucis.push('la variante centree des silhouettes est revenue');
     // La hauteur est bornee par l'overlay, qui reserve les encoches ;
     // la carte se contente de ne pas le depasser.
     if (!/\.ml-modal\{[\s\S]{0,220}?max-height:100%/.test(css)) soucis.push('la fiche centree ne borne plus sa hauteur : elle depassera de l\'ecran');
