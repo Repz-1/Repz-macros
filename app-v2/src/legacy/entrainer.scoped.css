@@ -131,11 +131,11 @@
    les pastilles de muscles hors de vue. */
 /* Silhouette a gauche, legende a droite : les couleurs ne veulent
    rien dire tant qu'on ne peut pas les nommer sans quitter l'ecran. */
-.ml-corps{ display:flex; align-items:flex-start; gap:14px; margin-bottom:12px; }
+.ml-corps{ display:flex; align-items:flex-start; gap:14px; margin-bottom:6px; }
 /* Position unique, a gauche : voir Entrainer.jsx. La variante centree
    sautait d'une disposition a l'autre au premier muscle coche. */
 .ml-legende{ flex:1; display:flex; flex-direction:column; gap:4px; padding-top:2px; }
-.ml-legende-titre{ font-size:11px; font-weight:800; color:#8A8279; text-transform:uppercase; letter-spacing:.03em; margin-bottom:2px; }
+.ml-legende-titre{ font-size:12px; font-weight:800; color:#8A8279; text-transform:none; letter-spacing:0; margin-bottom:2px; }
 .ml-legende span{ display:flex; align-items:center; font-size:12px; font-weight:600; color:#B3ADA5; }
 .ml-legende span.fait{ color:#16130F; font-weight:700; }
 .ml-legende .dot{ width:9px; height:9px; border-radius:50%; margin-right:7px; flex-shrink:0; }

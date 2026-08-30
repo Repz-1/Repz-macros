@@ -2517,6 +2517,13 @@ const DECALAGE_SW_V2 = 232;
   if (ent && !/borderColor: g\.c, color: texteSur\(g\.c\)/.test(ent)) {
     soucis.push('le texte des pastilles selectionnees redevient blanc sur toutes les couleurs');
   }
+  // Titres de section en casse normale : en capitales espacees ils
+  // criaient plus fort que la question qu'ils posent (Raci, 26/08).
+  const cc = lire('app-v2/src/styles/entrainer-carte.css');
+  if (cc) {
+    const bloc = (cc.match(/\.ml-groups-titre \{[^}]*\}/) || [''])[0];
+    if (/text-transform: uppercase/.test(bloc)) soucis.push('le titre des muscles repasse tout en capitales');
+  }
   if (soucis.length) faute('R75 pastilles visibles', soucis.join(' ; '));
   else passe('R75 pastilles visibles');
 }

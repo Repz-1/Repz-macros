@@ -547,11 +547,11 @@
   font-size: 11px; font-weight: 700; letter-spacing: .06em;
   text-transform: uppercase; color: #B34700; margin: 0 0 10px;
 }
-.ml-fait-s { margin-bottom: 12px; }
-.ml-fait-t { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.ml-fait-s { margin-bottom: 8px; }
+.ml-fait-t { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
 .ml-fait-d { color: #736C63; font-weight: 500; }
 .ml-fait-e {
-  display: flex; align-items: center; gap: 8px; padding: 6px 0;
+  display: flex; align-items: center; gap: 8px; padding: 4px 0;
   border-bottom: 1px solid rgba(28,24,18,.06);
 }
 .ml-fait-e:last-child { border-bottom: none; }
@@ -577,9 +577,12 @@
   font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
 }
 .ml-rien { font-size: 13px; color: #736C63; margin: 0 0 10px; }
+/* Casse normale et un cran plus petit (Raci, 26/08) : en capitales et
+   espacees, ces titres criaient plus fort que la question qu'ils
+   posent, et prenaient deux lignes en anglais. */
 .ml-groups-titre {
-  font-size: 11px; font-weight: 700; letter-spacing: .06em;
-  text-transform: uppercase; color: #736C63; margin: 2px 0 7px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0;
+  text-transform: none; color: #736C63; margin: 0 0 6px;
 }
 
 /* ---- Programmer une seance depuis une date ---- */
