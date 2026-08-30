@@ -2262,9 +2262,16 @@ const DECALAGE_SW_V2 = 232;
     // « Enregistrer », qui ne faisait que refermer la fiche — deux
     // boutons pour le meme geste.
     if (!/class="ml-prog-seance"/.test(ent)) soucis.push('l\'action « Programmer cette seance » a disparu');
-    if (!/ml_prog_passe/.test(ent)) soucis.push('l\'action parle au futur sur un jour passe');
-    if (!/sel\.length === 0 && <button class="ml-save"/.test(ent)) {
-      soucis.push('« Enregistrer » et « Programmer cette seance » s\'affichent ensemble');
+    // Un jour passe ne se programme pas, et « Repos » n'est pas une
+    // seance : ni l'un ni l'autre ne doit faire apparaitre l'action.
+    if (!/type !== 'passe' && selMuscles\.length > 0/.test(ent)) {
+      soucis.push('l\'action s\'affiche sur un jour passe ou pour un simple repos');
+    }
+    if (!/const selMuscles = sel\.filter\(k => k !== 'repos'\)/.test(ent)) {
+      soucis.push('« Repos » est de nouveau compte comme un muscle a programmer');
+    }
+    if (!/!\(type !== 'passe' && selMuscles\.length > 0\) &&\s*<button class="ml-save"/.test(ent)) {
+      soucis.push('« Enregistrer » et l\'action peuvent s\'afficher ensemble');
     }
 
   }

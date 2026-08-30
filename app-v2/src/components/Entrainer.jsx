@@ -667,6 +667,9 @@ function ModaleMuscles({ iso, fermer }) {
   useRetour(!!iso, fermer);
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
+  // « Repos » n'est pas un muscle : c'est le contraire d'une seance.
+  // Il colore le calendrier, il ne se programme pas (Raci, 26/08).
+  const selMuscles = sel.filter(k => k !== 'repos');
   const isoAuj = wlIso(new Date());
   const type = iso < isoAuj ? 'passe' : (iso === isoAuj ? 'auj' : 'futur');
   const faites = seancesDuJour(iso);
@@ -847,12 +850,14 @@ function ModaleMuscles({ iso, fermer }) {
             un resume : c'est l'action. Elle nomme ce qu'on programme
             et sur quel jour, et remplace « Enregistrer » — qui ne
             faisait que refermer la fiche. */}
-        {sel.length > 0 && (
+        {/* L'action ne s'affiche que pour aujourd'hui et l'avenir : sur
+            un jour passe il n'y a rien a programmer, les pastilles ont
+            deja enregistre au moment du tap. « Enregistrer cette
+            seance » n'y disait rien de vrai (Raci, 26/08). */}
+        {type !== 'passe' && selMuscles.length > 0 && (
           <button class="ml-prog-seance" onClick={fermer}>
-            <span class="ml-prog-t">
-              {t(type === 'passe' ? 'ml_prog_passe' : 'ml_prog_futur')}
-            </span>
-            <span class="ml-prog-m">{sel.map(nomMuscle).join(' · ')}</span>
+            <span class="ml-prog-t">{t('ml_prog_futur')}</span>
+            <span class="ml-prog-m">{selMuscles.map(nomMuscle).join(' · ')}</span>
           </button>
         )}
 
@@ -861,7 +866,8 @@ function ModaleMuscles({ iso, fermer }) {
             (muscleLog.value[iso] || []).slice().forEach(k => basculerMuscle(iso, k));
             fermer();
           }}>{t('clear')}</button>
-          {sel.length === 0 && <button class="ml-save" onClick={fermer}>{t('save')}</button>}
+          {!(type !== 'passe' && selMuscles.length > 0) &&
+            <button class="ml-save" onClick={fermer}>{t('save')}</button>}
         </div>
 
         {/* Sortie de la fiche. Quatre etats successifs : haut-gauche
