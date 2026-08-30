@@ -1570,6 +1570,11 @@ const DECALAGE_SW_V2 = 232;
     if (!voile || Number('0.' + voile[1]) < 0.65) soucis.push('le voile derriere la fiche est trop pale : la page continue de se lire');
     if (!/width: 100%/.test(bloc)) soucis.push('la barre n\'occupe plus toute la largeur');
     if (/#16130F|#151515/.test(bloc)) soucis.push('la sortie reprend le noir reserve a « Enregistrer »');
+    // « Effacer » ne doit pas concurrencer la sortie : c'est un lien,
+    // pas un pave pleine largeur.
+    const clear = (css.match(/\.ml-btns \.ml-clear\{[^}]*\}/) || [''])[0];
+    if (!/background:none/.test(clear)) soucis.push('« Effacer » redevient un pave plein qui pese autant que « Retour »');
+    if (!/min-height:44px/.test(clear)) soucis.push('« Effacer » passe sous la cible tactile de 44 px');
   }
   if (soucis.length) faute('R47 sortie de la fiche', soucis.join(' ; '));
   else passe('R47 sortie de la fiche');

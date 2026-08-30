@@ -257,7 +257,8 @@
 .pg-stats .ml-nav button:disabled{ opacity:.35; }
 .pg-stats .ml-btns{ display:flex; gap:10px; }
 .pg-stats .ml-btns button{ flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; }
-.pg-stats .ml-clear{ background:#f1f5f9; color:#6B655D; }
+/* « Effacer » : voir entrainer.scoped.css. La fiche est montee sur
+   document.body, cette regle ne s'appliquait a rien. */
 .pg-stats .ml-save{ background:#1a1a1a; color:#F5A800; }
 
 /* ===== MODALE POIDS (copie v1 app.html) ===== */

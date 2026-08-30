@@ -163,9 +163,18 @@
 .ml-chip.repos{ grid-column:auto; }
 .ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; color:#fff; }
 .ml-chip:active{ transform:scale(.96); }
-.ml-btns{ display:flex; gap:10px; }
+.ml-btns{ display:flex; gap:10px; justify-content:center; }
 .ml-btns button{ flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; }
-.ml-clear{ background:#f1f5f9; color:#6B655D; }
+/* « Effacer » reste utile mais ne doit pas peser autant que la sortie
+   (Raci, 26/08) : plus de pave gris pleine largeur, un lien souligne
+   qui se trouve quand on le cherche et s'oublie sinon. Il garde ses
+   44 px de hauteur tactile. */
+.ml-btns .ml-clear{
+  flex:0 0 auto; margin:0 auto; padding:11px 14px; min-height:44px;
+  background:none; color:#8A8378;
+  font-size:13px; font-weight:700; text-decoration:underline;
+}
+.ml-btns .ml-clear:active{ color:#57514A; }
 .ml-save{ background:#16130F; color:#F5A800; }
 .pg-entrainer .top{
     display:flex; align-items:center; gap:14px; padding:10px 4px 22px;
