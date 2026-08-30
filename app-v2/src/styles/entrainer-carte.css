@@ -545,7 +545,7 @@
 /* ---- Fenetre d'un jour : trois cas ---- */
 .ml-type {
   font-size: 11px; font-weight: 700; letter-spacing: .06em;
-  text-transform: uppercase; color: #B34700; margin: -6px 0 12px;
+  text-transform: uppercase; color: #B34700; margin: 0 0 10px;
 }
 .ml-fait-s { margin-bottom: 12px; }
 .ml-fait-t { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
@@ -576,10 +576,10 @@
   background: #FAC408; color: #16130F; padding: 13px;
   font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
 }
-.ml-rien { font-size: 13px; color: #736C63; margin: 0 0 12px; }
+.ml-rien { font-size: 13px; color: #736C63; margin: 0 0 10px; }
 .ml-groups-titre {
   font-size: 11px; font-weight: 700; letter-spacing: .06em;
-  text-transform: uppercase; color: #736C63; margin: 4px 0 8px;
+  text-transform: uppercase; color: #736C63; margin: 2px 0 7px;
 }
 
 /* ---- Programmer une seance depuis une date ---- */

@@ -2245,9 +2245,15 @@ const DECALAGE_SW_V2 = 232;
   const soucis = [];
   if (ent) {
     if (/ml_pas_de_prog/.test(ent)) soucis.push('le cul-de-sac « cree d\'abord un programme » est revenu');
-    if (!/!sessionsProgramme\.length \? \(/.test(ent)) soucis.push('le cas « aucun programme » n\'est plus distingue');
-    if (!/ml_prog_dabord/.test(ent)) soucis.push('le bouton ne mene plus nulle part quand il n\'y a rien a poser');
-    if (!/ml_ou_cocher/.test(ent)) soucis.push('le chemin court — cocher ses muscles — n\'est plus rappele');
+    // Raci, 26/08 : « Ou trouver un programme complet, ca ne veut rien
+    // dire » — retire de la fiche. « Trouver mon programme » vit sur
+    // l'accueil, la fiche d'un jour n'a pas a le repeter.
+    if (/ml_prog_dabord|ml_ou_cocher/.test(ent)) {
+      soucis.push('le renvoi vers le questionnaire est revenu dans la fiche d\'un jour');
+    }
+    if (!/!sessionsProgramme\.length \? null/.test(ent)) {
+      soucis.push('la fiche propose de nouveau quelque chose alors qu\'il n\'y a aucune seance a poser');
+    }
     // Raci, 26/08 : « si j'ai envie de decider que tel jour je fais tel
     // muscle ». Les pastilles enregistrent des le tap, mais rien ne le
     // disait. Le recapitulatif nomme ce qui est retenu.
