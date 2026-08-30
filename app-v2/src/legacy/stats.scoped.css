@@ -106,8 +106,8 @@
 .pg-stats .stat-card.acc-blue h2 .h2ic{ stroke:#3B82F6; }
 .pg-stats .stat-card.acc-gold::before{ background:#F86A0C; }
 .pg-stats .stat-card.acc-gold h2 .h2ic{ stroke:#B34700; }
-.pg-stats .stat-card.acc-violet::before{ background:#8B5CF6; }
-.pg-stats .stat-card.acc-violet h2 .h2ic{ stroke:#8B5CF6; }
+.pg-stats .stat-card.acc-violet::before{ background:#7A45E8; }
+.pg-stats .stat-card.acc-violet h2 .h2ic{ stroke:#7A45E8; }
 .pg-stats .chart-bar.weight{ background:linear-gradient(180deg,#059669,#34D399) !important; }
 /* Un seul degrade pour toutes les donnees de la page. Il en cohabitait
    trois — #F8A05A, #F5A800 et #B34700 en haut de barre — qui ne
@@ -135,8 +135,8 @@
 .pg-stats .chart-empty{ text-align:left !important; padding:4px 0 2px !important; display:flex; align-items:flex-start; gap:12px; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
 .pg-stats .chart-empty .ce-ic{ flex-shrink:0; width:34px; height:34px; border-radius:11px; background:#F4F5F7; display:flex; align-items:center; justify-content:center; }
 .pg-stats .chart-empty .ce-ic svg{ width:19px; height:19px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-.pg-stats .pr-rank{ width:26px; height:26px; flex-shrink:0; border-radius:50%; background:#F5F3FF; color:#8B5CF6; font-size:12.5px; font-weight:800; display:flex; align-items:center; justify-content:center; }
-.pg-stats .pr-rank.r1{ background:#8B5CF6; color:#fff; }
+.pg-stats .pr-rank{ width:26px; height:26px; flex-shrink:0; border-radius:50%; background:#F5F3FF; color:#7A45E8; font-size:12.5px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.pg-stats .pr-rank.r1{ background:#7A45E8; color:#fff; }
 /* Bouton borde plutot qu'aplat plein : sur Stats on vient lire, pas
    agir — l'aplat en faisait l'element le plus fort de l'ecran, plus fort
    que les donnees (Raci, 9/08). */
@@ -167,7 +167,7 @@
 .pg-stats .pr-row:first-child{ border-top:none; }
 .pg-stats .pr-medal{ font-size:20px; flex-shrink:0; }
 .pg-stats .pr-name{ font-size:14px; font-weight:700; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.pg-stats .pr-val{ font-size:15px; font-weight:800; color:#8B5CF6; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.pg-stats .pr-val{ font-size:15px; font-weight:800; color:#7A45E8; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .pg-stats .pr-recent{ margin-top:10px; background:#F5F3FF; border:1px solid #DDD6FE; border-radius:12px; padding:10px 13px; font-size:12.5px; color:#6D28D9; font-weight:600; }
 .pg-stats .premium-invite{
     position:relative; background:linear-gradient(145deg,#FFF9E8,#FFFDF5);
@@ -247,7 +247,7 @@
 .pg-stats .ml-date{ font-size:17px; font-weight:800; margin-bottom:6px; text-transform:capitalize; }
 .pg-stats .ml-sub{ font-size:12.5px; color:#736C63; font-weight:600; margin-bottom:16px; }
 .pg-stats .ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
-.pg-stats .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid rgba(28,24,18,.055); background:#fff; color:#6B655D; cursor:pointer; font-family:inherit; }
+.pg-stats .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid rgba(28,24,18,.22); background:#FAF8F3; color:#4A443C; cursor:pointer; font-family:inherit; }
 .pg-stats .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
 .pg-stats .ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }
 .pg-stats .ml-chip:active{ transform:scale(.96); }

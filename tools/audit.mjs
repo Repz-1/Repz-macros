@@ -54,9 +54,11 @@ const DEROGATIONS = new Map([
   ['#10B981', 'palette des groupes musculaires (biceps) — Stats.jsx'],
   ['#06B6D4', 'palette des groupes musculaires (triceps) — Stats.jsx'],
   ['#3B82F6', 'palette des groupes musculaires (jambes) — Stats.jsx'],
-  ['#8B5CF6', 'palette des groupes musculaires (abdos) — Stats.jsx'],
+  ['#7A45E8', 'palette des groupes musculaires (abdos) — Stats.jsx'],
   ['#EC4899', 'palette des groupes musculaires (cardio) — Stats.jsx'],
   ['#D6D3CB', 'palette des groupes musculaires (repos) — Stats.jsx'],
+  ['#FAF8F3', 'fond des pastilles de muscle non selectionnees (R75)'],
+  ['#4A443C', 'texte des pastilles de muscle non selectionnees (R75)'],
   ['#F5F3FF', 'fond de pastille de rang, derive du violet abdos'],
   ['#DDD6FE', 'bordure de pastille de rang, derive du violet abdos'],
   ['#6D28D9', 'texte de pastille de rang, derive du violet abdos'],
@@ -2472,6 +2474,39 @@ const DECALAGE_SW_V2 = 232;
   else if (v && v[1] === 'true') {
     signale('R74 entree sans compte', 'INSCRIPTION DESACTIVEE — tout le monde entre sans compte. Donnees locales uniquement (perdues si le cache est vide) ; micro et photo repondront 401 tant que « Anonymous » n\'est pas active dans la console Firebase.');
   } else passe('R74 entree sans compte');
+}
+
+// ------------------------------------------------------------
+// R75 — Les pastilles non selectionnees restent visibles.
+// Raci, 26/08 : « trop fantomes ». La bordure etait a
+// rgba(28,24,18,.055) sur fond blanc, soit 1,12 de contraste : elle
+// n'existait pas a l'ecran, et les mots flottaient sans forme. Une
+// pastille qu'on ne voit pas ne se lit pas comme un bouton.
+// ------------------------------------------------------------
+{
+  const soucis = [];
+  const lum = (hex) => {
+    const v = (i) => parseInt(hex.slice(i, i + 2), 16) / 255;
+    const f = (c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+    return 0.2126 * f(v(1)) + 0.7152 * f(v(3)) + 0.0722 * f(v(5));
+  };
+  const surBlanc = (a) => {
+    // rgba(28,24,18,alpha) fondu sur blanc
+    const m = (c) => Math.round(c * a + 255 * (1 - a));
+    const hex = '#' + [28, 24, 18].map(c => m(c).toString(16).padStart(2, '0')).join('');
+    return 1.05 / (lum(hex.toUpperCase()) + 0.05);
+  };
+  for (const f of ['app-v2/src/legacy/entrainer.scoped.css', 'app-v2/src/legacy/stats.scoped.css']) {
+    const css = lire(f); if (!css) continue;
+    const bloc = (css.match(/\.ml-chip\{[^}]*\}/) || [''])[0];
+    if (!bloc) continue;
+    const a = (bloc.match(/border:[^;]*rgba\(28,\s*24,\s*18,\s*\.(\d+)\)/) || [])[1];
+    if (!a) { soucis.push(f.split('/').pop() + ' : bordure de pastille illisible dans la feuille'); continue; }
+    const c = surBlanc(Number('0.' + a));
+    if (c < 1.5) soucis.push(f.split('/').pop() + ' : bordure des pastilles a ' + c.toFixed(2) + ', invisible sur le fond');
+  }
+  if (soucis.length) faute('R75 pastilles visibles', soucis.join(' ; '));
+  else passe('R75 pastilles visibles');
 }
 
 // ------------------------------------------------------------

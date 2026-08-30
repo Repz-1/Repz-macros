@@ -149,7 +149,11 @@
 .ml-modal .bodymap-legend i{ width:11px; height:11px; border-radius:3px; display:inline-block; }
 .ml-date{ font-size:17px; font-weight:800; margin-bottom:6px; text-transform:capitalize; }
 .ml-groups{ display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:10px; }
-.ml-chip{ padding:11px 8px; text-align:center; justify-content:center; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid var(--line); background:#fff; color:var(--text-dim); cursor:pointer; }
+/* Non selectionne : la bordure valait 1,12 de contraste sur blanc —
+   invisible, les pastilles flottaient sans forme (Raci, 26/08). Une
+   bordure a 1,6 et un fond legerement creme les posent sur la page
+   sans les faire ressembler a des boutons deja actifs. */
+.ml-chip{ padding:11px 8px; text-align:center; justify-content:center; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid rgba(28,24,18,.22); background:#FAF8F3; color:#4A443C; cursor:pointer; }
 .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
 .ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }
 .ml-chip:active{ transform:scale(.96); }
