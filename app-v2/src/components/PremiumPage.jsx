@@ -1,4 +1,5 @@
 import { signal, effect } from '@preact/signals';
+import { PREMIUM_OUVERT } from '../acces-libre.js';
 import { utilisateur } from '../services/firebase.js';
 import { getApps } from 'firebase/app';
 import { t } from '../i18n/index.js';
@@ -7,6 +8,12 @@ import { BelfitPlus } from './BelfitPlus.jsx';
 
 // Statut Premium lu depuis Firestore (ecrit par le webhook LemonSqueezy)
 export const estPremium = signal(false);
+
+// Periode de test : l'acces complet pour tout le monde, sans compte
+// Premium ni paiement. Un seul interrupteur, dans acces-libre.js.
+// Pose avant tout le reste : ni le cache, ni Firestore, ni l'apercu ne
+// doivent pouvoir le contredire.
+if (PREMIUM_OUVERT) estPremium.value = true;
 
 // Permet de simuler l'etat Premium pour inspecter l'interface dans un
 // navigateur de test. Sans cela, seule la version gratuite est visible
@@ -29,6 +36,7 @@ const CLE_PREM_V1 = 'repz_premium';
 const CLE_PREM_UID = 'belfit_v2_prem_uid';
 
 effect(() => {
+  if (PREMIUM_OUVERT) { estPremium.value = true; return; }
   if (apercuPremium) return;          // l'apercu garde la main
   const u = utilisateur.value;
   if (!u) { estPremium.value = false; return; }   // deconnecte : jamais Premium
@@ -124,7 +132,9 @@ export function PremiumPage() {
   );
 
   // Un abonne ne lit pas une page de vente : il entre dans son espace.
-  if (dejaPremium) return <BelfitPlus />;
+  // Pendant la periode de test, tout le monde est dans ce cas : la page
+  // de vente n'a rien a proposer a quelqu'un qui a deja tout.
+  if (PREMIUM_OUVERT || dejaPremium) return <BelfitPlus />;
 
   return (
     <div class="pg-premium">

@@ -6,6 +6,20 @@ const crypto = require("crypto");
 admin.initializeApp();
 const db = admin.firestore();
 
+/* ============================================================
+ * PERIODE DE TEST OUVERTE
+ * A `true`, les fonctions payantes repondent a tout compte connecte.
+ * Doit valoir la meme chose que PREMIUM_OUVERT dans
+ * app-v2/src/acces-libre.js : l'interface et le serveur ouvrent ou
+ * ferment ensemble, sinon le micro repond 403 sur une app qui promet
+ * l'acces.
+ *
+ * Le compte doit rester CONNECTE : sans jeton, ces fonctions
+ * deviendraient un service Gemini gratuit et anonyme, appelable par
+ * n'importe qui depuis n'importe ou.
+ * ============================================================ */
+const PREMIUM_OUVERT = true;
+
 // Secret partagé avec LemonSqueezy (défini via: firebase functions:secrets:set LEMON_WEBHOOK_SECRET)
 const LEMON_WEBHOOK_SECRET = defineSecret("LEMON_WEBHOOK_SECRET");
 
@@ -151,7 +165,8 @@ exports.transcrireVocal = onRequest(
       }
 
       const userDoc = await db.collection("users").doc(uid).get();
-      const estPremium = userDoc.exists && userDoc.data().premium === true;
+      const estPremium = PREMIUM_OUVERT ||
+        (userDoc.exists && userDoc.data().premium === true);
       if (!estPremium) { res.status(403).json({error: "not_premium"}); return; }
 
       // 2) Recuperer l'audio (base64) et son type
@@ -273,7 +288,8 @@ exports.analyserPhoto = onRequest(
       }
 
       const userDoc = await db.collection("users").doc(uid).get();
-      const estPremium = userDoc.exists && userDoc.data().premium === true;
+      const estPremium = PREMIUM_OUVERT ||
+        (userDoc.exists && userDoc.data().premium === true);
       if (!estPremium) { res.status(403).json({error: "not_premium"}); return; }
 
       // 2) Recuperer l'image (base64) et son type

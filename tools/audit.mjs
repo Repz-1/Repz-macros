@@ -2364,6 +2364,36 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R73 — La periode de test ouverte s'annonce, et s'ouvre des deux
+// cotes a la fois.
+// Un acces gratuit pour tous ne doit pas se decouvrir six mois plus
+// tard dans un fichier oublie : tant qu'il est ouvert, l'audit le
+// rappelle a chaque build. Et l'interface et le serveur doivent porter
+// la meme valeur — sinon l'app promet le micro et le serveur repond
+// 403, ou l'inverse : Gemini facture des comptes gratuits.
+// ------------------------------------------------------------
+{
+  const cli = lire('app-v2/src/acces-libre.js');
+  const srv = lire('functions/index.js');
+  const soucis = [];
+  const vCli = cli && /export const PREMIUM_OUVERT = (true|false);/.exec(cli);
+  const vSrv = srv && /^const PREMIUM_OUVERT = (true|false);/m.exec(srv);
+  if (!vCli) soucis.push('l\'interrupteur de l\'interface a disparu');
+  if (!vSrv) soucis.push('l\'interrupteur du serveur a disparu');
+  if (vCli && vSrv && vCli[1] !== vSrv[1]) {
+    soucis.push('interface ' + vCli[1] + ' mais serveur ' + vSrv[1] + ' : le micro et la photo ne suivront pas');
+  }
+  const pp = lire('app-v2/src/components/PremiumPage.jsx');
+  if (pp && !/if \(PREMIUM_OUVERT \|\| dejaPremium\)/.test(pp)) {
+    soucis.push('la page de vente reste affichee alors que tout est offert');
+  }
+  if (soucis.length) faute('R73 periode de test', soucis.join(' ; '));
+  else if (vCli && vCli[1] === 'true') {
+    signale('R73 periode de test', 'ACCES COMPLET OUVERT A TOUS — pensez a refermer avant le lancement, et a verifier l\'alerte de budget Firebase (Gemini est facture a chaque scan, vocal et photo).');
+  } else passe('R73 periode de test');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);
