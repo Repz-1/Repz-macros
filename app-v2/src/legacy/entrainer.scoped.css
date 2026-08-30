@@ -108,7 +108,12 @@
    basse tient compte des encoches. */
 .ml-overlay{
   display:none; position:fixed; inset:0; z-index:100;
-  background:rgba(28,24,18,.55);
+  /* Le voile passe de .55 a .72 et le fond se brouille : la fiche est
+     une carte posee au milieu, tout ce qui est derriere doit cesser de
+     se lire (Raci, 26/08). Le flou est un bonus — sans lui, le voile
+     seul suffit deja. */
+  background:rgba(18,15,11,.72);
+  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
   align-items:center; justify-content:center;
   padding:calc(20px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
 }
