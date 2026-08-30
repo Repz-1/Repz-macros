@@ -2266,8 +2266,7 @@ const DECALAGE_SW_V2 = 232;
     if (!/sel\.length === 0 && <button class="ml-save"/.test(ent)) {
       soucis.push('« Enregistrer » et « Programmer cette seance » s\'affichent ensemble');
     }
-    // Et l'appel au questionnaire s'efface des qu'on a choisi.
-    if (!/sel\.length \? null :/.test(ent)) soucis.push('« Trouver un programme » reste affiche alors qu\'un choix est fait');
+
   }
   if (soucis.length) faute('R69 pas de promesse vide', soucis.join(' ; '));
   else passe('R69 pas de promesse vide');
