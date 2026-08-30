@@ -246,7 +246,8 @@
    deux. Retirees le 26/08. */
 .pg-stats .ml-date{ font-size:17px; font-weight:800; margin-bottom:6px; text-transform:capitalize; }
 .pg-stats .ml-sub{ font-size:12.5px; color:#736C63; font-weight:600; margin-bottom:16px; }
-.pg-stats .ml-groups{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
+/* Grille des muscles : voir entrainer.scoped.css. La fiche est montee
+   sur document.body, cette regle ne s'appliquait a rien. */
 .pg-stats .ml-chip{ padding:10px 15px; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid rgba(28,24,18,.22); background:#FAF8F3; color:#4A443C; cursor:pointer; font-family:inherit; }
 .pg-stats .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
 .pg-stats .ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }

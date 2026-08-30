@@ -837,7 +837,13 @@ function ModaleMuscles({ iso, fermer }) {
           {GROUPES.map(g => (
             <button key={g.k}
               class={'ml-chip' + (sel.includes(g.k) ? ' on' : '')}
-              style={sel.includes(g.k) && g.k !== 'repos' ? { background: g.c, borderColor: g.c, color: '#fff' } : {}}
+              // Texte blanc sur les neuf couleurs : 1,82 sur le jaune
+              // des epaules, 2,43 sur le cyan des triceps — illisible
+              // (Raci, 26/08). Meme calcul que le calendrier : la
+              // luminance decide. Huit couleurs sur neuf passent au
+              // noir, seul le violet des abdos garde le blanc.
+              style={sel.includes(g.k) && g.k !== 'repos'
+                ? { background: g.c, borderColor: g.c, color: texteSur(g.c) } : {}}
               onClick={() => basculerMuscle(iso, g.k)}>
               {COULEUR[g.k] && <i class="ml-pt" style={{ background: COULEUR[g.k] }} aria-hidden="true" />}
               {nomMuscle(g.k)}

@@ -155,7 +155,16 @@
    sans les faire ressembler a des boutons deja actifs. */
 .ml-chip{ padding:11px 8px; text-align:center; justify-content:center; border-radius:12px; font-size:14px; font-weight:700; border:1.5px solid rgba(28,24,18,.22); background:#FAF8F3; color:#4A443C; cursor:pointer; }
 .ml-chip.on{ background:#B34700; border-color:#B34700; color:#fff; }
-.ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; }
+/* Dix pastilles sur trois colonnes : « Repos » restait seul en bout
+   de grille, comme oublie (Raci, 26/08). Il prend la derniere ligne
+   entiere — ce n'est pas un muscle, il ferme la liste au lieu d'y
+   trainer. */
+/* « Repos » etait etire sur les trois colonnes : seul sur sa ligne, il
+   ressemblait a un bouton d'action plutot qu'a un choix parmi dix
+   (Raci, 26/08). Il reprend la largeur des autres et se range comme
+   le dixieme d'une grille de trois. */
+.ml-chip.repos{ grid-column:auto; }
+.ml-chip.repos.on{ background:#6B655D; border-color:#6B655D; color:#fff; }
 .ml-chip:active{ transform:scale(.96); }
 .ml-btns{ display:flex; gap:10px; }
 .ml-btns button{ flex:1; padding:13px; border:none; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; }

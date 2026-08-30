@@ -2505,6 +2505,20 @@ const DECALAGE_SW_V2 = 232;
     const c = surBlanc(Number('0.' + a));
     if (c < 1.5) soucis.push(f.split('/').pop() + ' : bordure des pastilles a ' + c.toFixed(2) + ', invisible sur le fond');
   }
+  const ce = lire('app-v2/src/legacy/entrainer.scoped.css');
+  if (ce) {
+    // « Repos » ne s'etire plus sur toute la largeur : seul sur sa
+    // ligne, il se lisait comme un bouton d'action.
+    if (/\.ml-chip\.repos\{[^}]*grid-column:1 \/ -1/.test(ce)) {
+      soucis.push('« Repos » est de nouveau etire seul sur sa ligne');
+    }
+  }
+  // Texte des pastilles selectionnees : choisi par luminance, pas
+  // blanc partout (1,82 sur le jaune des epaules).
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  if (ent && !/borderColor: g\.c, color: texteSur\(g\.c\)/.test(ent)) {
+    soucis.push('le texte des pastilles selectionnees redevient blanc sur toutes les couleurs');
+  }
   if (soucis.length) faute('R75 pastilles visibles', soucis.join(' ; '));
   else passe('R75 pastilles visibles');
 }
