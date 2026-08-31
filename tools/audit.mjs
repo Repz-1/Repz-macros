@@ -2546,6 +2546,32 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R76 — Les etiquettes de la fiche « Mes besoins » se lisent.
+// Raci, 26/08 : « la presentation est trop formulaire administratif ».
+// « POIDS (KG) » en capitales espacees a 11 px se lit moins bien que
+// « Poids (kg) » a 12,5. Les textes sont ecrits proprement dans le
+// JSX ; c'etait la feuille qui les mettait en majuscules. Aucun champ
+// n'est retire : ils servent tous au calcul.
+// ------------------------------------------------------------
+{
+  const css = lire('app-v2/src/styles.css');
+  const jsx = lire('app-v2/src/components/TdeeCalculator.jsx');
+  const soucis = [];
+  if (css) {
+    const bloc = (css.match(/\.calc-grille label\{[^}]*\}/) || [''])[0];
+    if (/text-transform:uppercase/.test(bloc)) soucis.push('les etiquettes repassent en capitales');
+    const t = (bloc.match(/font-size:([\d.]+)px/) || [])[1];
+    if (!t || Number(t) < 12) soucis.push('les etiquettes redescendent sous 12 px');
+  }
+  // Les six champs sont necessaires au calcul : aucun ne doit partir.
+  for (const champ of ['Sexe', 'Âge', 'Poids (kg)', 'Taille (cm)', 'Activité quotidienne', 'Objectif']) {
+    if (jsx && !jsx.includes('>' + champ)) soucis.push('le champ « ' + champ + ' » a disparu du calcul');
+  }
+  if (soucis.length) faute('R76 etiquettes des besoins', soucis.join(' ; '));
+  else passe('R76 etiquettes des besoins');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

@@ -100,14 +100,19 @@ button{cursor:pointer}
 /* ---- Calculateur TDEE ---- */
 .modale-calc{max-height:calc(100vh - 96px);max-height:calc(100dvh - 96px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--srf-creme);padding-bottom:0}
 .calc-grille{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px;margin-bottom:16px}
-.calc-grille label{min-width:0;font-size:11px;font-weight:800;color:var(--texte-2);text-transform:uppercase;letter-spacing:.05em;display:flex;flex-direction:column;gap:6px;line-height:1.3}
+/* Labels en casse normale (Raci, 26/08) : « POIDS (KG) » en capitales
+   espacees a 11 px se lit moins bien que « Poids (kg) » a 12,5, et
+   donnait a la fiche un air de formulaire administratif. Les textes
+   sont deja ecrits proprement dans le JSX — c'est la feuille qui les
+   mettait en majuscules. */
+.calc-grille label{min-width:0;font-size:12.5px;font-weight:700;color:var(--texte-2);text-transform:none;letter-spacing:0;display:flex;flex-direction:column;gap:6px;line-height:1.3}
 .calc-grille label.pleine{grid-column:1 / -1}
 /* La note d'ecart portait deja la classe « pleine », mais le selecteur
    ne visait que les label : elle restait coincee dans la demi-colonne,
    a cote de Lipides. Corrige le 23/08 — l'intention etait ecrite, elle
    n'etait pas appliquee. */
 .calc-grille>.pleine{grid-column:1 / -1}
-.calc-grille .opt{color:var(--texte-3);font-weight:500;text-transform:none;letter-spacing:0}
+.calc-grille .opt{color:var(--texte-3);font-weight:500}
 .calc-grille select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236A6558' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 12px center;background-size:18px;padding-right:38px}
