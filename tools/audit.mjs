@@ -2577,6 +2577,12 @@ const DECALAGE_SW_V2 = 232;
     if (!/partDe\(r\.prot \* 4, r\.kcal\)/.test(jsx)) soucis.push('les macros ont perdu leur part en pourcentage');
   }
   if (css) {
+    // Les menus sont en appearance:none : sans le chevron dessine,
+    // rien n'indique qu'ils s'ouvrent. Un « background: » en raccourci
+    // pose apres la regle du chevron l'efface silencieusement.
+    if (/\.calc-grille input,\.calc-grille select\{[^}]*[^-]background:/.test(css)) {
+      soucis.push('un fond en raccourci efface le chevron des menus');
+    }
     const cible = (css.match(/\.calc-res-ligne\.cible strong\{[^}]*\}/) || [''])[0];
     const t = (cible.match(/font-size:(\d+)px/) || [])[1];
     if (!t || Number(t) < 22) soucis.push('l\'objectif ne ressort plus du bloc de resultats');
