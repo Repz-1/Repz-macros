@@ -8,6 +8,17 @@ import { sexe } from '../store/perso.js';
 
 // Calculateur de besoins. Le resultat se recalcule a chaque frappe (pas de bouton
 // "Calculer" : reactif). "Appliquer" pousse le resultat dans les objectifs du jour.
+/**
+ * Part d'une macro dans les calories du jour, arrondie a l'entier.
+ * Les trois parts peuvent totaliser 99 ou 101 : chacune est juste,
+ * c'est l'arrondi qui ne tombe pas rond. Mieux vaut trois chiffres
+ * exacts qu'un total force a 100.
+ */
+function partDe(kcalMacro, kcalTotal) {
+  if (!kcalTotal) return '';
+  return Math.round((kcalMacro / kcalTotal) * 100) + ' %';
+}
+
 export function TdeeCalculator({ montre, fermer, retour }) {
   const [f, setF] = useState({
     sexe: sexe.value || 'h', age: 25, poids: 75, taille: 175, masseGrasse: '',
@@ -17,6 +28,9 @@ export function TdeeCalculator({ montre, fermer, retour }) {
   // 'calc' : formule Mifflin-St Jeor. 'manuel' : saisie directe des
   // 4 valeurs — reserve Premium, toujours (ajustement fin continu).
   const [mode, setMode] = useState('calc');
+  // Options avancees repliees par defaut : masse grasse et jours
+  // d'entrainement ne concernent qu'une minorite.
+  const [avance, setAvance] = useState(false);
   const [man, setMan] = useState(() => ({ ...objectifs.value }));
 
   // Les PROPORTIONS de depart, figees a l'ouverture. C'est la
@@ -206,12 +220,22 @@ export function TdeeCalculator({ montre, fermer, retour }) {
           <label>Taille (cm)
             <input type="number" value={f.taille} onInput={e => num('taille', e.currentTarget.value)} />
           </label>
-          <label>% Masse grasse <span class="opt">(optionnel)</span>
-            <input type="number" value={f.masseGrasse} placeholder="—" onInput={e => num('masseGrasse', e.currentTarget.value)} />
-          </label>
-          <label>Jours d'entraînement / sem.
-            <input type="number" value={f.joursEntrainement} onInput={e => num('joursEntrainement', e.currentTarget.value)} />
-          </label>
+          {/* Deux champs sur six ne servent qu'a une minorite : la
+              plupart des gens ignorent leur masse grasse, et le niveau
+              d'activite porte deja l'essentiel de l'estimation. Ils
+              restent la, replies, avec leur valeur active (Raci,
+              26/08). Les replier ne les neutralise pas : le calcul
+              continue de les lire. */}
+          {avance && (
+            <>
+              <label>% Masse grasse <span class="opt">(optionnel)</span>
+                <input type="number" value={f.masseGrasse} placeholder="—" onInput={e => num('masseGrasse', e.currentTarget.value)} />
+              </label>
+              <label>Jours d'entraînement / sem.
+                <input type="number" value={f.joursEntrainement} onInput={e => num('joursEntrainement', e.currentTarget.value)} />
+              </label>
+            </>
+          )}
           <label class="pleine">Activité quotidienne
             <select value={f.activiteBase} onChange={e => num('activiteBase', e.currentTarget.value)}>
               {NIVEAUX_ACTIVITE.map(n => <option value={n.val}>{n.label}</option>)}
@@ -222,6 +246,10 @@ export function TdeeCalculator({ montre, fermer, retour }) {
               {OBJECTIFS.map(o => <option value={o.val}>{o.label}</option>)}
             </select>
           </label>
+
+          <button class="calc-avance pleine" onClick={() => setAvance(!avance)}>
+            {avance ? 'Masquer les options avancées' : 'Afficher les options avancées'}
+          </button>
         </div>
         )}
 
@@ -229,15 +257,21 @@ export function TdeeCalculator({ montre, fermer, retour }) {
         <div class="calc-res">
           <div class="calc-res-ligne"><span>Métabolisme de base</span><span>{r.bmr} kcal</span></div>
           <div class="calc-res-ligne"><span>Dépense totale (TDEE)</span><span>{r.tdee} kcal</span></div>
-          <div class="calc-res-ligne cible"><span>Objectif</span><span>{r.kcal} kcal</span></div>
+          <div class="calc-res-ligne cible">
+            <span>Objectif</span>
+            <strong>{r.kcal} <em>kcal</em></strong>
+          </div>
         </div>
         )}
 
         {mode === 'calc' && (
         <div class="calc-macros">
-          <div class="cm"><div class="cm-v">{r.prot}g</div><div class="cm-l">Protéines</div></div>
-          <div class="cm"><div class="cm-v">{r.carbs}g</div><div class="cm-l">Glucides</div></div>
-          <div class="cm"><div class="cm-v">{r.lip}g</div><div class="cm-l">Lipides</div></div>
+          {/* Le pourcentage dit ce que les grammes ne disent pas : la
+              part de l'assiette. Calcule sur les calories reelles de
+              chaque macro (4 / 4 / 9), pas sur un ratio theorique. */}
+          <div class="cm"><div class="cm-v">{r.prot}g</div><div class="cm-l">Protéines <em>{partDe(r.prot * 4, r.kcal)}</em></div></div>
+          <div class="cm"><div class="cm-v">{r.carbs}g</div><div class="cm-l">Glucides <em>{partDe(r.carbs * 4, r.kcal)}</em></div></div>
+          <div class="cm"><div class="cm-v">{r.lip}g</div><div class="cm-l">Lipides <em>{partDe(r.lip * 9, r.kcal)}</em></div></div>
         </div>
         )}
 

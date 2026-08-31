@@ -2563,9 +2563,23 @@ const DECALAGE_SW_V2 = 232;
     const t = (bloc.match(/font-size:([\d.]+)px/) || [])[1];
     if (!t || Number(t) < 12) soucis.push('les etiquettes redescendent sous 12 px');
   }
-  // Les six champs sont necessaires au calcul : aucun ne doit partir.
+  // Les six champs restent, mais deux sont replies : les cacher ne les
+  // neutralise pas, le calcul continue de les lire.
   for (const champ of ['Sexe', 'Âge', 'Poids (kg)', 'Taille (cm)', 'Activité quotidienne', 'Objectif']) {
     if (jsx && !jsx.includes('>' + champ)) soucis.push('le champ « ' + champ + ' » a disparu du calcul');
+  }
+  if (jsx) {
+    for (const champ of ['% Masse grasse', "Jours d'entraînement"]) {
+      if (!jsx.includes(champ)) soucis.push('le champ avance « ' + champ + ' » a ete supprime au lieu d\'etre replie');
+    }
+    if (!/\{avance && \(/.test(jsx)) soucis.push('les options avancees ne sont plus repliees');
+    if (!/useState\(false\)/.test(jsx)) soucis.push('les options avancees s\'ouvrent par defaut');
+    if (!/partDe\(r\.prot \* 4, r\.kcal\)/.test(jsx)) soucis.push('les macros ont perdu leur part en pourcentage');
+  }
+  if (css) {
+    const cible = (css.match(/\.calc-res-ligne\.cible strong\{[^}]*\}/) || [''])[0];
+    const t = (cible.match(/font-size:(\d+)px/) || [])[1];
+    if (!t || Number(t) < 22) soucis.push('l\'objectif ne ressort plus du bloc de resultats');
   }
   if (soucis.length) faute('R76 etiquettes des besoins', soucis.join(' ; '));
   else passe('R76 etiquettes des besoins');
