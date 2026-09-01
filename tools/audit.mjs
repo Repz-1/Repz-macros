@@ -2583,6 +2583,13 @@ const DECALAGE_SW_V2 = 232;
     if (/\.calc-grille input,\.calc-grille select\{[^}]*[^-]background:/.test(css)) {
       soucis.push('un fond en raccourci efface le chevron des menus');
     }
+    // Le bouton reste colle en bas : sur les petits ecrans le contenu
+    // depasse encore, il ne doit pas partir avec le defilement.
+    if (!/\.calc-barre\{position:sticky/.test(css)) soucis.push('le bouton « Appliquer » n\'est plus colle en bas');
+    // Grand ecran : la feuille se centre au lieu de coller en bas.
+    if (!/@media \(min-height: 780px\)[\s\S]{0,320}?\.modale-calc\{[\s\S]{0,200}?top:50%/.test(css)) {
+      soucis.push('la fiche ne se centre plus sur les grands ecrans');
+    }
     const cible = (css.match(/\.calc-res-ligne\.cible strong\{[^}]*\}/) || [''])[0];
     const t = (cible.match(/font-size:(\d+)px/) || [])[1];
     if (!t || Number(t) < 22) soucis.push('l\'objectif ne ressort plus du bloc de resultats');
