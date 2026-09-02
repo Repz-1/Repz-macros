@@ -2669,7 +2669,9 @@ const DECALAGE_SW_V2 = 232;
   }
   if (mn) {
     if (/setTimeout\(partir, 1300\)/.test(mn)) soucis.push('le splash est revenu a un delai fixe');
-    if (!/const PLANCHER = 700;/.test(mn)) soucis.push('le splash n\'a plus de plancher');
+    const pl = (mn.match(/const PLANCHER = (\d+);/) || [])[1];
+    if (!pl) soucis.push('le splash n\'a plus de plancher');
+    else if (Number(pl) < 1000) soucis.push('le plancher du splash est retombe a ' + pl + ' ms : le logo passe trop vite');
     if (!/const PLAFOND = 5000;/.test(mn)) soucis.push('le splash peut rester coince si un rendu echoue');
   }
   // Manrope ne doit plus etre citee : sa feuille n'est plus chargee.

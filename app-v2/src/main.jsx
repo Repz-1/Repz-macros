@@ -655,7 +655,12 @@ if (racine) render(<><AvisAccesInvite /><App /></>, racine);
   const s = document.getElementById('splash');
   if (!s) return;
   const depart = Date.now();
-  const PLANCHER = 700;
+  // 700 ms passaient trop vite : on voyait a peine le logo (Raci,
+  // 02/09). 1200 ms rejoint la duree percue d'avant, a une difference
+  // pres — c'est un PLANCHER, pas un delai : quand le chargement
+  // prend plus longtemps, le voile couvre l'attente au lieu de s'y
+  // ajouter.
+  const PLANCHER = 1200;
   const PLAFOND = 5000;
   let fini = false;
 
