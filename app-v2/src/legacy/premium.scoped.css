@@ -3,7 +3,7 @@
    bandeau -50%, trois formules cote a cote, bouton Continuer.
    Accent : vert pastel sobre. Plus aucun dore. */
 .pg-premium{
-  font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-family:'Satoshi',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   color:#1c211e; padding:10px 16px 84px; max-width:480px; margin:0 auto;
   min-height:100vh; min-height:100dvh;   /* dvh : hauteur visible reelle, sinon ~56px de scroll fantome */
   overscroll-behavior-y:none;

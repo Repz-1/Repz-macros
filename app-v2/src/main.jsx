@@ -641,18 +641,40 @@ export function App() {
 const racine = document.getElementById('app');
 if (racine) render(<><AvisAccesInvite /><App /></>, racine);
 
-// Retrait du splash une fois l'interface peinte. 1300ms d'affichage
-// plein + 300ms de fondu (Raci, 8/08 : 400ms ne laissait pas le temps
-// de voir le logo). Le delai ne bloque rien — l'app est deja rendue
-// derriere, le splash n'est qu'un voile.
+// Retrait du splash.
+//
+// C'etait un delai FIXE de 1300 ms, pose pour qu'on ait le temps de
+// voir le logo (Raci, 8/08). Deux defauts : quand l'app etait prete en
+// 200 ms on attendait quand meme, et quand elle tardait les deux temps
+// s'additionnaient — le voile partait sur un ecran pas encore peint.
+//
+// Desormais un PLANCHER : le splash s'efface des que l'interface est
+// reellement peinte, jamais avant 700 ms pour qu'on voie le logo,
+// jamais apres 5 s pour ne pas rester coince si un rendu echoue.
 (function retirerSplash(){
   const s = document.getElementById('splash');
   if (!s) return;
+  const depart = Date.now();
+  const PLANCHER = 700;
+  const PLAFOND = 5000;
+  let fini = false;
+
   const partir = () => {
+    if (fini) return;
+    fini = true;
     s.classList.add('parti');
     setTimeout(() => s.remove(), 300);
     const tc = document.querySelector('meta[name="theme-color"]');
     if (tc) tc.setAttribute('content', '#F4F3F0');
   };
-  setTimeout(partir, 1300);
+
+  const quandPret = () => {
+    const reste = Math.max(0, PLANCHER - (Date.now() - depart));
+    setTimeout(partir, reste);
+  };
+
+  // Deux images successives : la premiere annonce que le navigateur a
+  // calcule la mise en page, la seconde qu'il l'a peinte.
+  requestAnimationFrame(() => requestAnimationFrame(quandPret));
+  setTimeout(partir, PLAFOND);
 })();

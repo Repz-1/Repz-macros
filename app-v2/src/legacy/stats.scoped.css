@@ -18,7 +18,7 @@
 }
 .pg-stats *{ margin:0; padding:0; box-sizing:border-box; }
 .pg-stats{
-    font-family:'Satoshi','Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-family:'Satoshi',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
 }
 .pg-stats .topbar{

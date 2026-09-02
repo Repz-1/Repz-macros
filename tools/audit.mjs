@@ -2637,6 +2637,52 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R77 — Rien d'exterieur ne bloque le premier affichage.
+// Audit du 02/09 : deux feuilles de style distantes (fontshare et
+// Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le
+// navigateur ne peignait rien avant leur retour — deux domaines, deux
+// DNS, deux TLS avant le premier pixel, et un ecran fige de plusieurs
+// secondes quand le reseau traine. Le service worker les ignorait en
+// plus, donc elles repartaient sur le reseau a chaque lancement.
+// ------------------------------------------------------------
+{
+  const html = lire('app-v2/index.html');
+  const sw = lire('app-v2/public/sw.js');
+  const mn = lire('app-v2/src/main.jsx');
+  const soucis = [];
+  if (html) {
+    // Toute feuille distante doit etre hors du chemin critique.
+    // Le <noscript> ne compte pas : il ne s'applique que sans
+    // JavaScript, cas ou l'application ne demarre de toute facon pas.
+    const sansNoscript = html.replace(/<noscript>[\s\S]*?<\/noscript>/g, '');
+    for (const m of sansNoscript.matchAll(/<link[^>]*rel="stylesheet"[^>]*>/g)) {
+      const t = m[0];
+      if (/https?:\/\//.test(t) && !/media="print"/.test(t)) {
+        soucis.push('une feuille de style distante bloque de nouveau la peinture');
+      }
+    }
+    if (/fonts\.googleapis\.com/.test(html)) soucis.push('la feuille Google est revenue : Manrope n\'est plus utilisee nulle part');
+  }
+  if (sw) {
+    if (!/api\.fontshare\.com/.test(sw)) soucis.push('le service worker ne met plus les polices en cache');
+    if (!/setTimeout\(\(\) => r\(null\), 2500\)/.test(sw)) soucis.push('le HTML peut de nouveau attendre le reseau sans limite');
+  }
+  if (mn) {
+    if (/setTimeout\(partir, 1300\)/.test(mn)) soucis.push('le splash est revenu a un delai fixe');
+    if (!/const PLANCHER = 700;/.test(mn)) soucis.push('le splash n\'a plus de plancher');
+    if (!/const PLAFOND = 5000;/.test(mn)) soucis.push('le splash peut rester coince si un rendu echoue');
+  }
+  // Manrope ne doit plus etre citee : sa feuille n'est plus chargee.
+  for (const f of ['app-v2/src/styles.css', 'app-v2/src/legacy/stats.scoped.css',
+                   'app-v2/src/legacy/journal.scoped.css', 'app-v2/src/legacy/entrainer.scoped.css']) {
+    const c = lire(f);
+    if (c && /font-family:\s*'Manrope'/.test(c)) soucis.push(f.split('/').pop() + ' demande Manrope, qui n\'est plus chargee');
+  }
+  if (soucis.length) faute('R77 demarrage sans peage', soucis.join(' ; '));
+  else passe('R77 demarrage sans peage');
+}
+
+// ------------------------------------------------------------
 // Rapport
 // ------------------------------------------------------------
 for (const r of ok) console.log(`  ok    ${r}`);

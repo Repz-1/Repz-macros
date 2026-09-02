@@ -1,7 +1,7 @@
 /* Les regles .cat-* ont ete retirees le 26/08 avec l'ecran des trois
    objectifs (R56). */
 /* ===== Page "Tous les programmes" — transposee du v1 (programmes.html) ===== */
-.pg-programmes{ --orange:#F7B500; --card:#fff; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px; font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:var(--text); padding:calc(16px + env(safe-area-inset-top)) 16px 120px; max-width:480px; margin:0 auto; min-height:100vh; background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%); }
+.pg-programmes{ --orange:#F7B500; --card:#fff; --line:#e5e7eb; --text:#1a1a1a; --text-dim:#6b7280; --radius:20px; font-family:'Satoshi',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:var(--text); padding:calc(16px + env(safe-area-inset-top)) 16px 120px; max-width:480px; margin:0 auto; min-height:100vh; background:radial-gradient(150% 380px at 50% 0,#fbf3dc 0%,#F5F6F8 100%); }
 .pg-programmes *{ box-sizing:border-box; }
 
 .pg-programmes .top{ display:flex; align-items:center; gap:14px; padding:8px 4px 18px; }
