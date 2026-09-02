@@ -154,7 +154,12 @@ export function TdeeCalculator({ montre, fermer, retour }) {
           : partProt > 0.30 ? `Les protéines font ${Math.round(partProt * 100)} % de tes calories, c'est beaucoup. Vérifie ton poids.`
             : null;
 
+  // Un objectif calorique sans aucune macro n'est pas un objectif :
+  // les barres du Journal n'ont plus rien a mesurer.
+  const macrosVides = mode === 'manuel' && kcalVise > 0 && kcalMacros === 0;
+
   const appliquer = () => {
+    if (macrosVides) return;
     if (mode === 'manuel') {
       setObjectifs({ kcal: +man.kcal || 0, prot: +man.prot || 0, carbs: +man.carbs || 0, lip: +man.lip || 0 });
       // Pas de calculBaseFait ni de poidsCalcul : la saisie manuelle
@@ -300,8 +305,16 @@ export function TdeeCalculator({ montre, fermer, retour }) {
         </div>
         )}
 
+        {/* Vider les trois champs et appliquer ecrivait 0 g partout :
+            le Journal affichait « 218g / 0g » et plus aucune barre, sans
+            que rien n'ait prevenu (Raci, 02/09). Un objectif calorique
+            sans macros n'est pas un objectif. */}
+        {mode === 'manuel' && macrosVides && (
+          <p class="calc-alerte">Renseigne au moins une macro : un objectif sans protéines, glucides ni lipides ne veut rien dire.</p>
+        )}
+
         <div class="calc-barre">
-          <button class="calc-appliquer" onClick={appliquer}>
+          <button class="calc-appliquer" onClick={appliquer} disabled={macrosVides}>
             {applique ? '✓ Appliqué !' : 'Appliquer comme objectif'}
           </button>
         </div>

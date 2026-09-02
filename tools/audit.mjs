@@ -2603,6 +2603,11 @@ const DECALAGE_SW_V2 = 232;
     // Une saisie aberrante doit se signaler : 147 kg au lieu de 97
     // donnaient 324 g de proteines sans un mot.
     if (!/class="calc-alerte"/.test(jsx)) soucis.push('une saisie aberrante ne s\'annonce plus');
+    // Un objectif calorique sans aucune macro n'est pas un objectif :
+    // le Journal affichait « 218g / 0g » et plus une seule barre.
+    if (!/const macrosVides = mode === 'manuel'/.test(jsx)) soucis.push('un objectif sans macros peut de nouveau etre applique');
+    if (!/disabled=\{macrosVides\}/.test(jsx)) soucis.push('le bouton reste actif alors qu\'il ecrirait des macros a zero');
+    if (!/if \(macrosVides\) return;/.test(jsx)) soucis.push('le garde-fou n\'existe que dans le bouton, pas dans l\'action');
     const seuil = (jsx.match(/partProt > (0\.\d+)/) || [])[1];
     if (!seuil || Number(seuil) > 0.30) soucis.push('le seuil d\'alerte sur les proteines est trop haut : le cas reel a 34 % passerait');
   }
