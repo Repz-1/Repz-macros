@@ -9,6 +9,30 @@ import { sexe } from '../store/perso.js';
 // Calculateur de besoins. Le resultat se recalcule a chaque frappe (pas de bouton
 // "Calculer" : reactif). "Appliquer" pousse le resultat dans les objectifs du jour.
 /**
+ * Repartitions proposees au moment de repartir les calories.
+ *
+ * Trois usages, trois equilibres. Les lipides descendent quand on
+ * cherche la performance et le volume d'entrainement, ils remontent
+ * en perte ou l'apport calorique est bas et ou ils portent les
+ * hormones. Ce sont des points de depart, tous modifiables a la main
+ * juste au-dessus.
+ */
+const REPARTITIONS = [
+  { cle: 'perte',    nom: 'Perte de poids',  prot: 0.35, carbs: 0.35, lip: 0.30 },
+  { cle: 'maintien', nom: 'Maintien',        prot: 0.28, carbs: 0.45, lip: 0.27 },
+  { cle: 'prise',    nom: 'Prise de masse',  prot: 0.25, carbs: 0.55, lip: 0.20 },
+];
+
+/** Grammes correspondant a une repartition, pour un total de calories. */
+function grammesDe(kcal, r) {
+  return {
+    prot: Math.round((kcal * r.prot) / 4),
+    carbs: Math.round((kcal * r.carbs) / 4),
+    lip: Math.round((kcal * r.lip) / 9),
+  };
+}
+
+/**
  * Part d'une macro dans les calories du jour, arrondie a l'entier.
  * Les trois parts peuvent totaliser 99 ou 101 : chacune est juste,
  * c'est l'arrondi qui ne tombe pas rond. Mieux vaut trois chiffres
@@ -89,6 +113,18 @@ export function TdeeCalculator({ montre, fermer, retour }) {
   const ecartVisible = kcalVise > 0 && Math.abs(ecart) > 50;
   // Macros toutes a zero : « Repartir » est la seule sortie, il ne
   // doit pas dependre du seuil d'ecart.
+  const [choixRep, setChoixRep] = useState(false);
+
+  /** Applique une repartition choisie, et cale le rapport dessus. */
+  const repartirSelon = (r) => setMan(o => {
+    const cible = +o.kcal || 0;
+    if (cible <= 0) return o;
+    const g = grammesDe(cible, r);
+    const nb = g.prot * 4 + g.carbs * 4 + g.lip * 9;
+    partRef.current = { prot: g.prot / nb, carbs: g.carbs / nb, lip: g.lip / nb };
+    return { kcal: cible, ...g };
+  });
+
   const macroManquante = kcalVise > 0 &&
     [man.prot, man.carbs, man.lip].some(v => (+v || 0) === 0);
 
@@ -249,8 +285,30 @@ export function TdeeCalculator({ montre, fermer, retour }) {
                 : <> — <b>{ecart} kcal</b> de trop par rapport à {kcalVise}.</>)}
               {(ecartVisible || macroManquante) && (
                 <div class="calc-accorder">
-                  <button type="button" onClick={repartir}>Répartir les {kcalVise} kcal</button>
+                  <button type="button" class="ac-fort" onClick={() => setChoixRep(v => !v)}>
+                    Répartir les {kcalVise} kcal
+                  </button>
                   {kcalMacros > 0 && <button type="button" onClick={calerCalories}>Calories → {kcalMacros}</button>}
+                </div>
+              )}
+
+              {/* Repartir sans savoir pour quoi n'a pas de sens : la
+                  part de lipides et de glucides depend de l'objectif.
+                  On le redemande au moment ou l'on repartit (Raci,
+                  02/09), avec le resultat en grammes sous chaque
+                  choix — on voit ce qu'on prend. */}
+              {choixRep && kcalVise > 0 && (
+                <div class="calc-rep">
+                  {REPARTITIONS.map(r => {
+                    const g = grammesDe(kcalVise, r);
+                    return (
+                      <button type="button" key={r.cle} class="rep-opt"
+                        onClick={() => { repartirSelon(r); setChoixRep(false); }}>
+                        <span class="rep-n">{r.nom}</span>
+                        <span class="rep-g">{g.prot} P · {g.carbs} G · {g.lip} L</span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -331,14 +389,6 @@ export function TdeeCalculator({ montre, fermer, retour }) {
           <div class="cm"><div class="cm-v">{r.carbs}g</div><div class="cm-l">Glucides <em>{partDe(r.carbs * 4, r.kcal)}</em></div></div>
           <div class="cm"><div class="cm-v">{r.lip}g</div><div class="cm-l">Lipides <em>{partDe(r.lip * 9, r.kcal)}</em></div></div>
         </div>
-        )}
-
-        {/* Vider les trois champs et appliquer ecrivait 0 g partout :
-            le Journal affichait « 218g / 0g » et plus aucune barre, sans
-            que rien n'ait prevenu (Raci, 02/09). Un objectif calorique
-            sans macros n'est pas un objectif. */}
-        {mode === 'manuel' && macrosVides && (
-          <p class="calc-alerte">Renseigne au moins une macro : un objectif sans protéines, glucides ni lipides ne veut rien dire.</p>
         )}
 
         <div class="calc-barre">

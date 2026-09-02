@@ -2616,6 +2616,15 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('un rapport degenere n\'est plus rattrape : une seule macro portera toutes les calories');
     }
     if (!/ecartVisible \|\| macroManquante/.test(jsx)) soucis.push('« Repartir » redevient inatteignable quand une macro est a zero');
+    // Repartir sans savoir pour quoi n'a pas de sens : la part de
+    // lipides depend de l'objectif, on le redemande au moment du clic.
+    if (!/const REPARTITIONS = \[/.test(jsx)) soucis.push('le choix de l\'objectif a disparu de « Repartir »');
+    if (!/class="rep-opt"/.test(jsx)) soucis.push('les repartitions ne sont plus proposees');
+    if (!/class="rep-g">/.test(jsx)) soucis.push('les repartitions n\'annoncent plus leurs grammes');
+    if (/class="calc-alerte">Renseigne au moins/.test(jsx)) soucis.push('le message du bas est revenu sous le bouton');
+  }
+  if (css) {
+    if (!/\.calc-accorder \.ac-fort\{/.test(css)) soucis.push('« Repartir » a perdu son poids visuel');
     const seuil = (jsx.match(/partProt > (0\.\d+)/) || [])[1];
     if (!seuil || Number(seuil) > 0.30) soucis.push('le seuil d\'alerte sur les proteines est trop haut : le cas reel a 34 % passerait');
   }
