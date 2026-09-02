@@ -732,3 +732,54 @@ button{cursor:pointer}
   padding:0;margin:0;width:100%;font-family:inherit;font-size:14px;
   font-weight:800;color:inherit}
 .bs-p--menu select:focus{outline:none}
+
+/* ============================================================
+   « MES BESOINS » EN SOMBRE
+   Raci, 02/09 : la carte noire du résultat détonnait sur une feuille
+   crème. Toute la fiche passe au sombre — le résultat n'est plus une
+   pièce rapportée, il est chez lui. Le jaune reste l'unique accent.
+   ============================================================ */
+.modale-calc{background:#1C1812;color:#F4F3F0}
+.modale-calc h3{color:#F4F3F0}
+
+/* La carte du résultat se détache par un cran plus clair, pas plus
+   sombre : sur fond noir, l'écart doit aller vers la lumière. */
+.modale-calc .bs-hero{background:#26211A;box-shadow:inset 0 0 0 1px #352F26}
+.modale-calc .bs-m{background:#16130F}
+
+.modale-calc .bs-p{
+  background:#26211A;border-color:#3A342B;color:#F4F3F0}
+.modale-calc .bs-p:focus-within{border-color:#FAC408;background:#2E2820}
+.modale-calc .bs-p i{color:#9A938A}
+.modale-calc .bs-p--menu::after{border-color:#9A938A}
+.modale-calc .bs-p--menu select option{background:#26211A;color:#F4F3F0}
+
+.modale-calc .calc-modes{background:#26211A}
+.modale-calc .calc-modes button{color:#9A938A}
+.modale-calc .calc-modes button.active{background:#16130F;color:#FAC408}
+.modale-calc .calc-avance{color:#9A938A}
+.modale-calc .calc-fermer,
+.modale-calc .calc-retour{background:#26211A;color:#F4F3F0}
+
+/* Mode manuel : mêmes règles, la fiche ne change pas de peau d'un
+   onglet à l'autre. */
+.modale-calc .calc-grille label{color:#9A938A}
+.modale-calc .calc-grille input,
+.modale-calc .calc-grille select{
+  background-color:#26211A;border-color:#3A342B;color:#F4F3F0;box-shadow:none}
+.modale-calc .calc-grille input:focus,
+.modale-calc .calc-grille select:focus{
+  background-color:#2E2820;border-color:#FAC408}
+.modale-calc .calc-note{color:#9A938A}
+.modale-calc .calc-note b{color:#F4F3F0}
+.modale-calc .calc-accorder button{
+  background:#26211A;border-color:#3A342B;color:#F4C86A}
+.modale-calc .calc-accorder .ac-fort{background:#FAC408;border-color:#FAC408;color:#16130F}
+.modale-calc .rep-opt{background:#26211A;border-color:#3A342B}
+.modale-calc .rep-n{color:#F4F3F0}
+.modale-calc .rep-g{color:#9A938A}
+.modale-calc .calc-alerte{background:#33261A;box-shadow:inset 0 0 0 1px #5C4520;color:#F5C87A}
+
+/* La barre du bas était crème : sur fond sombre elle coupait la fiche
+   en deux. */
+.modale-calc .calc-barre{background:linear-gradient(to top,#1C1812 70%,rgba(28,24,18,0))}
