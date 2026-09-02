@@ -87,15 +87,43 @@ export function TdeeCalculator({ montre, fermer, retour }) {
   // 50 kcal : le seuil qui existait deja pour la mention d'ecart. En
   // dessous, c'est l'arrondi des grammes, pas une erreur de saisie.
   const ecartVisible = kcalVise > 0 && Math.abs(ecart) > 50;
+  // Macros toutes a zero : « Repartir » est la seule sortie, il ne
+  // doit pas dependre du seuil d'ecart.
+  const macroManquante = kcalVise > 0 &&
+    [man.prot, man.carbs, man.lip].some(v => (+v || 0) === 0);
 
   // Les macros suivent les calories. Elles gardent LEURS proportions
   // (celles affichees a l'instant, pas un ratio type) : on ne fait que
   // les mettre a l'echelle. Sans ce geste, la ligne d'ecart constatait
   // un probleme sans rien offrir pour le regler (Raci, 23/08).
+  // Trois macros a zero : il n'y a plus de rapport a mettre a
+  // l'echelle. Ni la frappe des calories ni « Repartir » ne pouvaient
+  // en sortir — l'ecran devenait un cul-de-sac (Raci, 02/09). Cette
+  // repartition de secours n'est pas un conseil nutritionnel, juste
+  // un point de depart modifiable : 25 % de lipides comme le
+  // calculateur, 2 g/kg de proteines ramenes a une part de 25 %, le
+  // reste en glucides.
+  const REPARTITION_SECOURS = { prot: 0.25, carbs: 0.50, lip: 0.25 };
+
   const repartir = () => setMan(o => {
     const base = (+o.prot || 0) * 4 + (+o.carbs || 0) * 4 + (+o.lip || 0) * 9;
     const cible = +o.kcal || 0;
-    if (base <= 0 || cible <= 0) return o;
+    if (cible <= 0) return o;
+    // Une macro a zero rend le rapport degenere : mise a l'echelle, la
+    // seule qui reste porte toutes les calories (3500 kcal -> 389 g de
+    // lipides et rien d'autre). On repart alors du socle.
+    const degenere = base <= 0 || [o.prot, o.carbs, o.lip].some(v => (+v || 0) === 0);
+    if (degenere) {
+      const suite = {
+        kcal: cible,
+        prot: Math.round((cible * REPARTITION_SECOURS.prot) / 4),
+        carbs: Math.round((cible * REPARTITION_SECOURS.carbs) / 4),
+        lip: Math.round((cible * REPARTITION_SECOURS.lip) / 9),
+      };
+      const nb = suite.prot * 4 + suite.carbs * 4 + suite.lip * 9;
+      partRef.current = { prot: suite.prot / nb, carbs: suite.carbs / nb, lip: suite.lip / nb };
+      return suite;
+    }
     const f = cible / base;
     const suite = {
       kcal: cible,
@@ -219,10 +247,10 @@ export function TdeeCalculator({ montre, fermer, retour }) {
               {ecartVisible && (ecart < 0
                 ? <> — il manque <b>{-ecart} kcal</b> pour atteindre {kcalVise}.</>
                 : <> — <b>{ecart} kcal</b> de trop par rapport à {kcalVise}.</>)}
-              {ecartVisible && (
+              {(ecartVisible || macroManquante) && (
                 <div class="calc-accorder">
                   <button type="button" onClick={repartir}>Répartir les {kcalVise} kcal</button>
-                  <button type="button" onClick={calerCalories}>Calories → {kcalMacros}</button>
+                  {kcalMacros > 0 && <button type="button" onClick={calerCalories}>Calories → {kcalMacros}</button>}
                 </div>
               )}
             </div>

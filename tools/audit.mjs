@@ -2608,6 +2608,14 @@ const DECALAGE_SW_V2 = 232;
     if (!/const macrosVides = mode === 'manuel'/.test(jsx)) soucis.push('un objectif sans macros peut de nouveau etre applique');
     if (!/disabled=\{macrosVides\}/.test(jsx)) soucis.push('le bouton reste actif alors qu\'il ecrirait des macros a zero');
     if (!/if \(macrosVides\) return;/.test(jsx)) soucis.push('le garde-fou n\'existe que dans le bouton, pas dans l\'action');
+    // Un rapport degenere (une macro a zero) mettait toutes les
+    // calories sur la seule qui restait : 3500 kcal -> 389 g de
+    // lipides. « Repartir » doit repartir du socle dans ce cas, et
+    // rester atteignable.
+    if (!/const degenere = base <= 0 \|\| \[o\.prot, o\.carbs, o\.lip\]/.test(jsx)) {
+      soucis.push('un rapport degenere n\'est plus rattrape : une seule macro portera toutes les calories');
+    }
+    if (!/ecartVisible \|\| macroManquante/.test(jsx)) soucis.push('« Repartir » redevient inatteignable quand une macro est a zero');
     const seuil = (jsx.match(/partProt > (0\.\d+)/) || [])[1];
     if (!seuil || Number(seuil) > 0.30) soucis.push('le seuil d\'alerte sur les proteines est trop haut : le cas reel a 34 % passerait');
   }
