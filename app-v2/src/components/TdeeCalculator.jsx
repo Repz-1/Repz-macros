@@ -23,6 +23,12 @@ const REPARTITIONS = [
   { cle: 'prise',    nom: 'Prise de masse',  prot: 0.25, carbs: 0.55, lip: 0.20 },
 ];
 
+/** Largeur d'un champ de pastille, en caracteres, pour qu'il se moule
+ *  sur son chiffre au lieu d'occuper une case fixe. */
+function larg(v) {
+  return Math.max(1, String(v == null ? '' : v).length) + 0.6 + 'ch';
+}
+
 /** Grammes correspondant a une repartition, pour un total de calories. */
 function grammesDe(kcal, r) {
   return {
@@ -314,81 +320,80 @@ export function TdeeCalculator({ montre, fermer, retour }) {
             </div>
           </div>
         ) : (
-        <div class="calc-grille">
-          <label>Sexe
-            <select value={f.sexe} onChange={e => maj('sexe', e.currentTarget.value)}>
-              <option value="h">Homme</option>
-              <option value="f">Femme</option>
-            </select>
-          </label>
-          <label>Âge
-            <input type="number" value={f.age} onInput={e => num('age', e.currentTarget.value)} />
-          </label>
-          <label>Poids (kg)
-            <input type="number" value={f.poids} onInput={e => num('poids', e.currentTarget.value)} />
-          </label>
-          <label>Taille (cm)
-            <input type="number" value={f.taille} onInput={e => num('taille', e.currentTarget.value)} />
-          </label>
-          {/* Deux champs sur six ne servent qu'a une minorite : la
-              plupart des gens ignorent leur masse grasse, et le niveau
-              d'activite porte deja l'essentiel de l'estimation. Ils
-              restent la, replies, avec leur valeur active (Raci,
-              26/08). Les replier ne les neutralise pas : le calcul
-              continue de les lire. */}
-          {avance && (
-            <>
-              <label>% Masse grasse <span class="opt">(optionnel)</span>
-                <input type="number" value={f.masseGrasse} placeholder="—" onInput={e => num('masseGrasse', e.currentTarget.value)} />
-              </label>
-              <label>Jours d'entraînement / sem.
-                <input type="number" value={f.joursEntrainement} onInput={e => num('joursEntrainement', e.currentTarget.value)} />
-              </label>
-            </>
-          )}
-          <label class="pleine">Activité quotidienne
-            <select value={f.activiteBase} onChange={e => num('activiteBase', e.currentTarget.value)}>
-              {NIVEAUX_ACTIVITE.map(n => <option value={n.val}>{n.label}</option>)}
-            </select>
-          </label>
-          <label class="pleine">Objectif
-            <select value={f.ajustement} onChange={e => num('ajustement', e.currentTarget.value)}>
-              {OBJECTIFS.map(o => <option value={o.val}>{o.label}</option>)}
-            </select>
-          </label>
+        <>
+          {/* Le resultat en tete, les entrees en pastilles (maquette A,
+              Raci le 02/09). L'ecran ne se lit plus comme un
+              formulaire : le chiffre qu'on vient chercher est en haut,
+              il bouge a chaque modification, et les valeurs se touchent
+              directement au lieu de remplir des cases etiquetees. */}
+          <div class="bs-hero">
+            <div class="bs-k">{r.kcal} <em>kcal / jour</em></div>
+            <div class="bs-s">
+              Base {r.bmr} · Dépense {r.tdee} · {(OBJECTIFS.find(o => +o.val === +f.ajustement) || {}).label}
+            </div>
+            <div class="bs-mm">
+              <div class="bs-m"><b>{r.prot}g</b><span>Prot · {partDe(r.prot * 4, r.kcal)}</span></div>
+              <div class="bs-m"><b>{r.carbs}g</b><span>Gluc · {partDe(r.carbs * 4, r.kcal)}</span></div>
+              <div class="bs-m"><b>{r.lip}g</b><span>Lip · {partDe(r.lip * 9, r.kcal)}</span></div>
+            </div>
+          </div>
 
-          <button class="calc-avance pleine" onClick={() => setAvance(!avance)}>
+          {alerte && <p class="calc-alerte">{alerte}</p>}
+
+          <div class="bs-pastilles">
+            <label class="bs-p bs-p--menu">
+              <select value={f.sexe} onChange={e => maj('sexe', e.currentTarget.value)}>
+                <option value="h">Homme</option>
+                <option value="f">Femme</option>
+              </select>
+            </label>
+            <label class="bs-p">
+              <input type="number" value={f.age} style={{ width: larg(f.age) }}
+                onInput={e => num('age', e.currentTarget.value)} />
+              <i>ans</i>
+            </label>
+            <label class="bs-p">
+              <input type="number" value={f.poids} style={{ width: larg(f.poids) }}
+                onInput={e => num('poids', e.currentTarget.value)} />
+              <i>kg</i>
+            </label>
+            <label class="bs-p">
+              <input type="number" value={f.taille} style={{ width: larg(f.taille) }}
+                onInput={e => num('taille', e.currentTarget.value)} />
+              <i>cm</i>
+            </label>
+
+            {avance && (
+              <>
+                <label class="bs-p">
+                  <input type="number" value={f.masseGrasse} placeholder="—" style={{ width: larg(f.masseGrasse || '00') }}
+                    onInput={e => num('masseGrasse', e.currentTarget.value)} />
+                  <i>% gras</i>
+                </label>
+                <label class="bs-p">
+                  <input type="number" value={f.joursEntrainement} style={{ width: larg(f.joursEntrainement) }}
+                    onInput={e => num('joursEntrainement', e.currentTarget.value)} />
+                  <i>séances / sem.</i>
+                </label>
+              </>
+            )}
+
+            <label class="bs-p bs-p--large bs-p--menu">
+              <select value={f.activiteBase} onChange={e => num('activiteBase', e.currentTarget.value)}>
+                {NIVEAUX_ACTIVITE.map(n => <option value={n.val}>{n.label}</option>)}
+              </select>
+            </label>
+            <label class="bs-p bs-p--large bs-p--menu">
+              <select value={f.ajustement} onChange={e => num('ajustement', e.currentTarget.value)}>
+                {OBJECTIFS.map(o => <option value={o.val}>{o.label}</option>)}
+              </select>
+            </label>
+          </div>
+
+          <button class="calc-avance" onClick={() => setAvance(!avance)}>
             {avance ? 'Masquer les options avancées' : 'Afficher les options avancées'}
           </button>
-        </div>
-        )}
-
-        {/* Une saisie aberrante produit une repartition aberrante sans
-            que rien ne le signale : 147 kg au lieu de 97 donnaient
-            324 g de proteines, soit 37 % des calories, et personne ne
-            voyait le doigt qui avait glisse (Raci, 02/09). */}
-        {mode === 'calc' && alerte && <p class="calc-alerte">{alerte}</p>}
-
-        {mode === 'calc' && (
-        <div class="calc-res">
-          <div class="calc-res-ligne"><span>Métabolisme de base</span><span>{r.bmr} kcal</span></div>
-          <div class="calc-res-ligne"><span>Dépense totale (TDEE)</span><span>{r.tdee} kcal</span></div>
-          <div class="calc-res-ligne cible">
-            <span>Objectif</span>
-            <strong>{r.kcal} <em>kcal</em></strong>
-          </div>
-        </div>
-        )}
-
-        {mode === 'calc' && (
-        <div class="calc-macros">
-          {/* Le pourcentage dit ce que les grammes ne disent pas : la
-              part de l'assiette. Calcule sur les calories reelles de
-              chaque macro (4 / 4 / 9), pas sur un ratio theorique. */}
-          <div class="cm"><div class="cm-v">{r.prot}g</div><div class="cm-l">Protéines <em>{partDe(r.prot * 4, r.kcal)}</em></div></div>
-          <div class="cm"><div class="cm-v">{r.carbs}g</div><div class="cm-l">Glucides <em>{partDe(r.carbs * 4, r.kcal)}</em></div></div>
-          <div class="cm"><div class="cm-v">{r.lip}g</div><div class="cm-l">Lipides <em>{partDe(r.lip * 9, r.kcal)}</em></div></div>
-        </div>
+        </>
         )}
 
         <div class="calc-barre">

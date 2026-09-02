@@ -2565,24 +2565,37 @@ const DECALAGE_SW_V2 = 232;
   }
   // Les six champs restent, mais deux sont replies : les cacher ne les
   // neutralise pas, le calcul continue de les lire.
-  for (const champ of ['Sexe', 'Âge', 'Poids (kg)', 'Taille (cm)', 'Activité quotidienne', 'Objectif']) {
-    if (jsx && !jsx.includes('>' + champ)) soucis.push('le champ « ' + champ + ' » a disparu du calcul');
+  for (const champ of ['f.sexe', 'f.age', 'f.poids', 'f.taille', 'f.activiteBase', 'f.ajustement']) {
+    if (jsx && !jsx.includes(champ)) soucis.push('l\'entree « ' + champ + ' » a disparu du calcul');
   }
   if (jsx) {
-    for (const champ of ['% Masse grasse', "Jours d'entraînement"]) {
-      if (!jsx.includes(champ)) soucis.push('le champ avance « ' + champ + ' » a ete supprime au lieu d\'etre replie');
+    // Les deux champs avances existent toujours, sous forme de
+    // pastilles : « % gras » et « seances / sem. ».
+    for (const [cle, nom] of [['f.masseGrasse', 'masse grasse'], ['f.joursEntrainement', 'jours d\'entrainement']]) {
+      if (!jsx.includes(cle)) soucis.push('le champ avance « ' + nom + ' » a ete supprime au lieu d\'etre replie');
     }
     if (!/\{avance && \(/.test(jsx)) soucis.push('les options avancees ne sont plus repliees');
     if (!/useState\(false\)/.test(jsx)) soucis.push('les options avancees s\'ouvrent par defaut');
     if (!/partDe\(r\.prot \* 4, r\.kcal\)/.test(jsx)) soucis.push('les macros ont perdu leur part en pourcentage');
   }
+  // Maquette A (Raci, 02/09) : le resultat en tete, les entrees en
+  // pastilles. L'ancienne grille etiquetee se lisait comme un
+  // formulaire administratif.
+  if (jsx) {
+    if (!/class="bs-hero"/.test(jsx)) soucis.push('la carte de resultat en tete a disparu');
+    if (!/class="bs-pastilles"/.test(jsx)) soucis.push('les entrees sont redevenues des champs etiquetes');
+    if (/mode === 'calc' && \(\s*<div class="calc-res">/.test(jsx)) soucis.push('l\'ancien bloc de resultats est revenu sous les champs');
+  }
   if (css) {
+    const p = (css.match(/\.bs-p\{[^}]*\}/) || [''])[0];
+    if (!/min-height:44px/.test(p)) soucis.push('les pastilles passent sous la cible tactile de 44 px');
     // Les menus sont en appearance:none : sans le chevron dessine,
     // rien n'indique qu'ils s'ouvrent. Un « background: » en raccourci
     // pose apres la regle du chevron l'efface silencieusement.
     if (/\.calc-grille input,\.calc-grille select\{[^}]*[^-]background:/.test(css)) {
-      soucis.push('un fond en raccourci efface le chevron des menus');
+      soucis.push('un fond en raccourci efface le chevron des menus du mode manuel');
     }
+    if (!/\.bs-p--menu::after/.test(css)) soucis.push('les pastilles-menu n\'annoncent plus qu\'elles s\'ouvrent');
     // Le bouton reste colle en bas : sur les petits ecrans le contenu
     // depasse encore, il ne doit pas partir avec le defilement.
     if (!/\.calc-barre\{position:sticky/.test(css)) soucis.push('le bouton « Appliquer » n\'est plus colle en bas');
