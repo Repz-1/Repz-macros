@@ -1,6 +1,6 @@
 import { useState, useRef } from 'preact/hooks';
 import { calculerBesoins, NIVEAUX_ACTIVITE, OBJECTIFS } from '../data/tdee.js';
-import { setObjectifs, calculBaseFait, poidsCalcul, objectifs } from '../store/journal.js';
+import { setObjectifs, calculBaseFait, poidsCalcul, objectifs, profilBesoins } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { createPortal } from 'preact/compat';
@@ -20,10 +20,14 @@ function partDe(kcalMacro, kcalTotal) {
 }
 
 export function TdeeCalculator({ montre, fermer, retour }) {
-  const [f, setF] = useState({
+  // Le formulaire rouvre sur ce qui a ete saisi la derniere fois. Les
+  // valeurs en dur ne servent plus que de point de depart au tout
+  // premier passage.
+  const [f, setF] = useState(() => ({
     sexe: sexe.value || 'h', age: 25, poids: 75, taille: 175, masseGrasse: '',
     activiteBase: 1.3, joursEntrainement: 4, intensiteEntrainement: 0.03, ajustement: 300,
-  });
+    ...(profilBesoins.value || {}),
+  }));
   const [applique, setApplique] = useState(false);
   // 'calc' : formule Mifflin-St Jeor. 'manuel' : saisie directe des
   // 4 valeurs — reserve Premium, toujours (ajustement fin continu).
@@ -136,6 +140,20 @@ export function TdeeCalculator({ montre, fermer, retour }) {
     joursEntrainement: Math.max(0, +f.joursEntrainement || 0),
   });
 
+  // Bornes de simple bon sens, larges a dessein : il ne s'agit pas de
+  // juger un corps, seulement d'attraper une frappe qui a derape.
+  const partProt = r.kcal ? (r.prot * 4) / r.kcal : 0;
+  const alerte =
+    (+f.poids < 30 || +f.poids > 250) ? 'Poids inhabituel : vérifie la valeur saisie.'
+      : (+f.taille < 120 || +f.taille > 230) ? 'Taille inhabituelle : vérifie la valeur saisie.'
+        : (+f.age < 14 || +f.age > 100) ? 'Âge inhabituel : vérifie la valeur saisie.'
+          // Seuil a 30 % : le cas reel de Raci (147 kg au lieu de 97)
+          // tombait a 34 % et passait sous un seuil de 35. A 97 kg il
+          // est a 28 %, donc silence. Un avertissement, jamais un
+          // refus : une seche legitime peut monter haut.
+          : partProt > 0.30 ? `Les protéines font ${Math.round(partProt * 100)} % de tes calories, c'est beaucoup. Vérifie ton poids.`
+            : null;
+
   const appliquer = () => {
     if (mode === 'manuel') {
       setObjectifs({ kcal: +man.kcal || 0, prot: +man.prot || 0, carbs: +man.carbs || 0, lip: +man.lip || 0 });
@@ -145,6 +163,7 @@ export function TdeeCalculator({ montre, fermer, retour }) {
       setObjectifs({ kcal: r.kcal, prot: r.prot, carbs: r.carbs, lip: r.lip });
       calculBaseFait.value = true;   // le calcul offert est consomme
       poidsCalcul.value = +f.poids || null;
+      profilBesoins.value = { ...f };   // pour rouvrir sur ces valeurs
     }
     setApplique(true);
     setTimeout(() => { setApplique(false); fermer(); }, 1100);
@@ -252,6 +271,12 @@ export function TdeeCalculator({ montre, fermer, retour }) {
           </button>
         </div>
         )}
+
+        {/* Une saisie aberrante produit une repartition aberrante sans
+            que rien ne le signale : 147 kg au lieu de 97 donnaient
+            324 g de proteines, soit 37 % des calories, et personne ne
+            voyait le doigt qui avait glisse (Raci, 02/09). */}
+        {mode === 'calc' && alerte && <p class="calc-alerte">{alerte}</p>}
 
         {mode === 'calc' && (
         <div class="calc-res">

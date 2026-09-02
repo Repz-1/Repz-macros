@@ -2594,6 +2594,22 @@ const DECALAGE_SW_V2 = 232;
     const t = (cible.match(/font-size:(\d+)px/) || [])[1];
     if (!t || Number(t) < 22) soucis.push('l\'objectif ne ressort plus du bloc de resultats');
   }
+  // Le formulaire doit rouvrir sur les valeurs saisies : initialise en
+  // dur a 75 kg, il repartait de zero a chaque ouverture et une
+  // correction fermee sans appliquer etait perdue (Raci, 02/09).
+  if (jsx) {
+    if (!/\.\.\.\(profilBesoins\.value \|\| \{\}\)/.test(jsx)) soucis.push('le formulaire ne rouvre plus sur les valeurs saisies');
+    if (!/profilBesoins\.value = \{ \.\.\.f \}/.test(jsx)) soucis.push('le formulaire n\'est plus enregistre a l\'application');
+    // Une saisie aberrante doit se signaler : 147 kg au lieu de 97
+    // donnaient 324 g de proteines sans un mot.
+    if (!/class="calc-alerte"/.test(jsx)) soucis.push('une saisie aberrante ne s\'annonce plus');
+    const seuil = (jsx.match(/partProt > (0\.\d+)/) || [])[1];
+    if (!seuil || Number(seuil) > 0.30) soucis.push('le seuil d\'alerte sur les proteines est trop haut : le cas reel a 34 % passerait');
+  }
+  const jn = lire('app-v2/src/store/journal.js');
+  if (jn && !/profilBesoins: profilBesoins\.value/.test(jn)) {
+    soucis.push('le profil des besoins n\'est plus sauvegarde avec le journal');
+  }
   if (soucis.length) faute('R76 etiquettes des besoins', soucis.join(' ; '));
   else passe('R76 etiquettes des besoins');
 }
