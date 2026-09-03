@@ -2,6 +2,7 @@
 export function rayonDe(nom){
     const n = nom.toLowerCase();
     const has = (...mots) => mots.some(m => n.includes(m));
+    if(has('nutrimuscle')) return 'epicerie'; // marque : « chocolat » contient « cola » et partait en boissons
     if(has('oeuf','œuf') && !has('boeuf','bœuf')) return 'oeufs'; // 'boeuf' contient 'oeuf' -> exclure
     if(has('poulet','dinde','boeuf','bœuf','steak','haché','hache','porc','veau','agneau','jambon','saucisse','lardon','viande','escalope','magret','canard')) return 'viandes';
     if(has('saumon','thon','poisson','cabillaud','colin','merlu','crevette','sardine','maquereau','truite','crustac','moule','fruits de mer')) return 'poissons';
@@ -11,7 +12,7 @@ export function rayonDe(nom){
     if(has('riz','pâtes','pates','pain','avoine','flocon','quinoa','semoule','boulgour','blé','ble','farine','céréale','cereale','wrap','tortilla','gnocchi','couscous','polenta')) return 'feculents';
     if(has('brocoli','tomate','courgette','salade','épinard','epinard','haricot','carotte','poivron','oignon','ail','champignon','banane','pomme','poire','fraise','orange','kiwi','avocat','patate','concombre','chou','poireau','aubergine','maïs','mais','petit pois','pois chiche','lentille','légume','legume','fruit','citron','mangue','ananas','myrtille','framboise','raisin','courge','betterave','navet','céleri','celeri','asperge','radis','endive','fenouil','datte','abricot','pêche','peche','melon','pastèque','pasteque')) return 'legumes';
     if(has('eau','jus','soda','boisson','café','cafe','thé','the','sirop','cola','bière','biere','vin')) return 'boissons';
-    if(has('huile','sucre','sel','miel','cacahuète','cacahuete','amande','noix','pécan','pecan','graine','sauce','chocolat','cacao','whey','protéine','proteine','confiture','pâte à tartiner','pate a tartiner','épice','epice','vinaigre','moutarde','ketchup','mayonnaise','bouillon','levure','gâteau','gateau','biscuit','cookie','barre','céréales')) return 'epicerie';
+    if(has('huile','sucre','sel','miel','cacahuète','cacahuete','amande','noix','pécan','pecan','graine','sauce','chocolat','cacao','whey','protéine','proteine','nutrimuscle','caseine','caséine','confiture','pâte à tartiner','pate a tartiner','épice','epice','vinaigre','moutarde','ketchup','mayonnaise','bouillon','levure','gâteau','gateau','biscuit','cookie','barre','céréales')) return 'epicerie';
     return 'autres';
 }
 

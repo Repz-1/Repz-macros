@@ -1194,6 +1194,24 @@ export const DB = {
     'Protéine de lactosérum bio':{kcal:395,prot:80,carbs:7,lip:5},
     'Lait écrémé en poudre':{kcal:355,prot:35,carbs:52,lip:1},
     'Gainer (dose 100g)':{kcal:380,prot:25,carbs:60,lip:5,unit:100,unitLabel:'dose'},
+
+    // ===== NUTRIMUSCLE =====
+    // Valeurs pour 100 g relevees sur les etiquettes officielles.
+    // Les doses reprennent la portion conseillee par la marque.
+    'Nutrimuscle Deep Recovery Protein chocolat':{kcal:360,prot:76.5,carbs:7,lip:2,fibres:3.3,sucres:4.1,satures:1.65,sel:0.48},
+    'Nutrimuscle Deep Recovery Protein chocolat (dose 40g)':{kcal:360,prot:76.5,carbs:7,lip:2,fibres:3.3,sucres:4.1,satures:1.65,sel:0.48,unit:40,unitLabel:'dose'},
+    'Nutrimuscle Deep Recovery Protein vanille':{kcal:360,prot:74.8,carbs:12,lip:1.1,fibres:0.8,sucres:8.8,satures:1.1,sel:0.48},
+    'Nutrimuscle Deep Recovery Protein vanille (dose 40g)':{kcal:360,prot:74.8,carbs:12,lip:1.1,fibres:0.8,sucres:8.8,satures:1.1,sel:0.48,unit:40,unitLabel:'dose'},
+    'Nutrimuscle Whey Native Isolate nature':{kcal:373,prot:85.5,carbs:5.5,lip:1,sucres:5.5,satures:0,sel:0},
+    'Nutrimuscle Whey Native Isolate nature (dose 30g)':{kcal:373,prot:85.5,carbs:5.5,lip:1,sucres:5.5,satures:0,sel:0,unit:30,unitLabel:'dose'},
+    'Nutrimuscle Whey Native Isolate chocolat':{kcal:370,prot:81,carbs:7.2,lip:1.45,sucres:5.58,satures:0.31,sel:0},
+    'Nutrimuscle Whey Native Isolate chocolat (dose 30g)':{kcal:370,prot:81,carbs:7.2,lip:1.45,sucres:5.58,satures:0.31,sel:0,unit:30,unitLabel:'dose'},
+    'Nutrimuscle Whey Native Isolate vanille':{kcal:371,prot:80,carbs:10.2,lip:0.95,sucres:7.23,satures:0.1,sel:0.01},
+    'Nutrimuscle Protimuscle whey + caseine':{kcal:370,prot:77,carbs:11,lip:2},
+    'Nutrimuscle Protimuscle whey + caseine (dose 30g)':{kcal:370,prot:77,carbs:11,lip:2,unit:30,unitLabel:'dose'},
+    'Nutrimuscle Isolat de caseine micellaire chocolat':{kcal:359,prot:78.6,carbs:5.25,lip:2.06,sucres:3.24,satures:1.24,sel:0.23},
+    'Nutrimuscle Isolat de caseine micellaire vanille':{kcal:360,prot:78.2,carbs:8.33,lip:1.4,sucres:5.31,satures:0.84,sel:0.24},
+    'Nutrimuscle Isolat de caseine micellaire (dose 40g)':{kcal:359,prot:78.6,carbs:5.25,lip:2.06,sucres:3.24,satures:1.24,sel:0.23,unit:40,unitLabel:'dose'},
 };
 
 // Macros d'un ingredient {name, portion} a partir de la DB
