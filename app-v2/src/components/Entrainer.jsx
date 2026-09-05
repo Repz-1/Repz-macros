@@ -302,11 +302,12 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           d'avance. Le retirer fermait cette porte. Il est en second
           rang, pas en premier — la seance du jour reste l'action
           principale. */}
-      {duJour && (
-        <button class="cp-libre" onClick={() => allerVers('selection')}>
-          {t('tr_start_session')}
-        </button>
-      )}
+      {/* Raci, 5/09 : « tu intervertis ces deux-la ». « Modifier le
+          programme en cours » parle du bloc au-dessus — les trois
+          lignes de la semaine — donc il le suit immediatement.
+          « Seance libre » n'a rien a voir avec le programme : il
+          descend, separe par un filet, pour qu'on ne le lise pas
+          comme une troisieme option du programme. */}
       {/* Sans programme, ce lien s'adresse a quelqu'un qui ne sait pas
           quoi faire : il ouvre les quatre questions, qui menent au
           programme correspondant a son objectif. Pas de carrefour
@@ -316,6 +317,11 @@ function CarteProgramme({ today, todayIso, allerVers }) {
         : allerVers('questionnaire'))}>
         {prog ? t('cp_gerer') : t('cp_choisir')}
       </button>
+      {duJour && (
+        <button class="cp-libre" onClick={() => allerVers('selection')}>
+          {t('tr_start_session')}
+        </button>
+      )}
     </div>
   );
 }

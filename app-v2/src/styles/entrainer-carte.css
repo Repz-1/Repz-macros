@@ -1078,13 +1078,18 @@ button.cp-l-b:active { background: #FBF3DE; transform: scale(.99); }
 .cp-go:active { transform: scale(.985); }
 /* Seance libre : contour, jamais aplat — l'aplat noir du bouton
    principal doit rester seul de son espece dans la carte. */
+/* « Seance libre » passe SOUS « Modifier le programme en cours »
+   (Raci, 5/09) et se detache : il ne fait pas partie du programme,
+   c'est ce qu'on fait a cote. Un filet et une marge le separent, pour
+   qu'on ne le lise pas comme une troisieme option de la carte. */
 .cp-libre {
-  margin-top: 9px; width: 100%; border: 1.5px solid #DED8CC;
-  border-radius: 15px; padding: 14px 12px; background: transparent;
+  margin-top: 18px; padding-top: 18px; border-top: 1px solid #EFEAE0;
+  width: 100%; border-left: none; border-right: none; border-bottom: none;
+  border-radius: 0; background: transparent;
   font-family: inherit; font-size: 14.5px; font-weight: 800;
   color: #3A342C; cursor: pointer;
 }
-.cp-libre:active { transform: scale(.985); background: #F6F3EC; }
+.cp-libre:active { color: #8A8378; }
 
 /* Raci, 5/09 : « on dirait qu'il est abandonne ». Petit lien souligne
    gris sous deux vrais boutons, il se lisait comme une note de bas de
