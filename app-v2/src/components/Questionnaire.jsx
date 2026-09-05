@@ -309,14 +309,16 @@ export function Questionnaire() {
     // programme. objTxt et MAT_TXT n'avaient plus d'autre usage.
 
     return createPortal(
-      <div class="qz-scene"><div class="qz">
+      <div class="qz-scene"><div class="qz qz--resultat">
         <div class="qz-haut">
           <button class="qz-retour" onClick={retour} aria-label="Retour">
             <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
           </button>
           <span class="qz-pas">Terminé</span>
         </div>
-        <div class="qz-barre"><i style={{ width: '100%' }} /></div>
+        {/* La barre de progression disparait du resultat : pleine a
+            100 %, elle n'apprend rien et coutait une ligne sur un
+            ecran qui doit tenir sans defiler (Raci, 5/09). */}
 
         <div class="qz-corps">
           <div class="qz-badge">Ton programme</div>

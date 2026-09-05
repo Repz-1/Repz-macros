@@ -344,3 +344,42 @@
 }
 .qz-prio-bloc b { font-size: 13px; font-weight: 800; color: #B7860B; text-transform: uppercase; letter-spacing: .06em; }
 .qz-prio-bloc span { font-size: 14px; font-weight: 600; color: #2C2A27; line-height: 1.5; }
+
+/* ============================================================
+   ECRAN RESULTAT — tenir sur une page, sans defiler
+   Raci, 5/09. La fiche empile badge, titre, carte, conseils,
+   trois seances et deux boutons : elle depassait d'environ 130 px
+   sur un ecran de telephone. Rien n'est retire, tout est resserre —
+   marges, rembourrages et corps de texte descendent d'un cran.
+   Ces regles ne touchent QUE le resultat : les questions gardent
+   leur respiration, elles n'ont jamais deborde.
+   ============================================================ */
+.qz--resultat .qz-badge { padding: 5px 10px; margin-bottom: 8px; }
+.qz--resultat .qz-titre { font-size: 21px; }
+
+.qz--resultat .qz-carte { margin-top: 14px; padding: 14px; }
+.qz--resultat .qz-desc { font-size: 13.5px; line-height: 1.5; }
+.qz--resultat .qz-stats { margin-top: 12px; padding-top: 10px; }
+.qz--resultat .qz-stats b { font-size: 15px; }
+
+.qz--resultat .qz-coach { margin-top: 12px; padding: 14px; }
+.qz--resultat .qz-coach-tit { margin-bottom: 7px; }
+.qz--resultat .qz-coach p { font-size: 13.5px; line-height: 1.5; margin-bottom: 8px; }
+
+.qz--resultat .qz-seances { margin-top: 12px; }
+.qz--resultat .qz-seances-tit { margin-bottom: 7px; }
+.qz--resultat .qz-seance {
+  padding: 10px 13px; margin-bottom: 6px; font-size: 14px; gap: 10px;
+}
+.qz--resultat .qz-seance span { width: 22px; height: 22px; font-size: 11.5px; }
+
+.qz--resultat .qz-pied { padding-top: 12px; }
+.qz--resultat .qz-btn { padding: 14px; }
+.qz--resultat .qz-lien { padding: 10px 0 2px; margin-top: 2px; }
+
+/* Filet de securite : sur un tres petit ecran, ou avec une police
+   systeme agrandie, la carte defile plutot que de couper. */
+@media (max-height: 620px) {
+  .qz--resultat .qz-coach p { font-size: 13px; }
+  .qz--resultat .qz-seance { padding: 8px 12px; }
+}

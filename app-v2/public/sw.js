@@ -8,7 +8,7 @@
 //    unique par version, ils sont donc immuables : aucun risque
 //    de servir du perime, et l'ouverture reste instantanee.
 // ============================================================
-const CACHE = 'belfit-v2-217';
+const CACHE = 'belfit-v2-218';
 
 self.addEventListener('install', () => self.skipWaiting());
 
