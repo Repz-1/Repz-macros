@@ -61,7 +61,6 @@ export function SeanceDetail({ seanceId, titre, retour }) {
   const refs = resoudreExercices(seanceId);
   const total = refs.length;
 
-  const [demarree, setDemarree] = useState(false);
   const [faits, setFaits] = useState(() => new Set());       // index coches
   const [ouverts, setOuverts] = useState(() => new Set());   // panneaux series ouverts
   const [secondes, setSecondes] = useState(0);
@@ -115,12 +114,14 @@ export function SeanceDetail({ seanceId, titre, retour }) {
     enregistrer(null);
   };
 
-  // Chrono de seance
+  // Chrono de seance : il court des l'ouverture de l'ecran et s'arrete
+  // a l'enregistrement. Il encadrait auparavant « Commencer » et
+  // « Terminer » ; ces deux appuis n'en font plus qu'un (5/09).
   useEffect(() => {
-    if (!demarree) return;
+    if (fini) return;
     const it = setInterval(() => setSecondes(s => s + 1), 1000);
     return () => clearInterval(it);
-  }, [demarree]);
+  }, [fini]);
 
   const mmss = `${Math.floor(secondes / 60)}:${String(secondes % 60).padStart(2, '0')}`;
   const done = faits.size;
@@ -180,19 +181,21 @@ export function SeanceDetail({ seanceId, titre, retour }) {
         <div class="bar"><div class="fill" style={{ width: pct + '%' }} /></div>
       </div>
 
-      {!demarree && (
-        <button class="start-session-btn" onClick={() => setDemarree(true)}>Commencer</button>
-      )}
+      {/* Raci, 5/09 : « je peux faire Commencer sans avoir selectionne.
+          D'abord il faut pouvoir selectionner les exercices, ensuite
+          le bouton devient operationnel. Une fois que je clique, je
+          veux que ce soit considere comme termine. »
 
-      {/* Fin de seance. Elle n'existait PAS : la branche « programme »
-          de l'organigramme de Raci s'arretait ici, sans rien
-          enregistrer. On terminait une seance de programme et il n'en
-          restait aucune trace — ni dans la liste des seances, ni au
-          calendrier, ni sur le mannequin. Seule la seance libre
-          enregistrait. */}
-      {demarree && !fini && (
-        <button class="sd-terminer" onClick={terminer}>
-          {done === total && total > 0 ? t('sd_terminer') : t('sd_terminer_partiel', { n: done, t: total })}
+          Le parcours passe de deux appuis a un. « Commencer » puis
+          « Terminer » encadraient un chrono que personne ne regardait,
+          et laissaient la seance dans un entre-deux : commencee, non
+          enregistree, perdue si l'on quittait l'ecran. Un seul appui
+          maintenant, et il n'est possible qu'une fois au moins un
+          exercice coche — sans quoi il n'y aurait rien a enregistrer.
+          « Terminer » est supprime. */}
+      {!fini && (
+        <button class="start-session-btn" disabled={done === 0} onClick={terminer}>
+          {done === 0 ? t('sd_choisir_dabord') : t('sd_enregistrer', { n: done, t: total })}
         </button>
       )}
 

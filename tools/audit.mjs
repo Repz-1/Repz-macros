@@ -2722,6 +2722,33 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R79 — Une seance s'enregistre en un appui, jamais a vide.
+// Raci, 5/09 : « je peux faire Commencer sans avoir selectionne.
+// D'abord il faut pouvoir selectionner les exercices, ensuite le
+// bouton devient operationnel. Une fois que je clique, je veux que ce
+// soit considere comme termine. » « Commencer » puis « Terminer »
+// encadraient un chrono que personne ne regardait et laissaient la
+// seance dans un entre-deux : commencee, non enregistree, perdue si
+// l'on quittait l'ecran.
+// ------------------------------------------------------------
+{
+  const sd = lire('app-v2/src/components/SeanceDetail.jsx');
+  const css = lire('app-v2/src/legacy/seance.scoped.css');
+  if (sd) {
+    const soucis = [];
+    if (/class="sd-terminer"/.test(sd)) soucis.push('« Terminer » est revenu : deux appuis pour un seul geste');
+    if (/setDemarree/.test(sd)) soucis.push('l\'etat « demarree » est revenu : la seance retombe dans l\'entre-deux');
+    if (!/disabled=\{done === 0\}/.test(sd)) soucis.push('on peut de nouveau enregistrer une seance sans aucun exercice coche');
+    if (!/onClick=\{terminer\}/.test(sd)) soucis.push('le bouton principal n\'enregistre plus la seance');
+    if (css && !/\.start-session-btn:disabled\{/.test(css)) {
+      soucis.push('le bouton eteint ressemble encore a un bouton actif');
+    }
+    if (soucis.length) faute('R79 seance en un appui', soucis.join(' ; '));
+    else passe('R79 seance en un appui');
+  }
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le

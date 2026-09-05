@@ -107,6 +107,14 @@
     box-shadow:0 6px 18px rgba(247,181,0,.35);
 }
 .pg-seance .start-session-btn:active{ transform:scale(.98); opacity:.92; }
+/* Tant qu'aucun exercice n'est coche, il n'y a rien a enregistrer :
+   le bouton le dit au lieu de faire semblant (Raci, 5/09). Il perd
+   son jaune et son ombre — un bouton eteint ne doit pas ressembler a
+   un bouton qui attend. */
+.pg-seance .start-session-btn:disabled{
+    background:#EDE8DE; color:#A9A29A; box-shadow:none; cursor:default;
+}
+.pg-seance .start-session-btn:disabled:active{ transform:none; opacity:1; }
 .pg-seance #sessionList.locked{ opacity:.45; filter:grayscale(.3); }
 .pg-seance .sets-btn{ margin-top:6px; background:none; border:none; color:#6b7280; padding:4px 2px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:4px; }
 .pg-seance .sets-btn::after{ content:''; width:7px; height:7px; border-right:2px solid #9aa0aa; border-bottom:2px solid #9aa0aa; transform:rotate(45deg) translateY(-2px); transition:transform .2s; }
