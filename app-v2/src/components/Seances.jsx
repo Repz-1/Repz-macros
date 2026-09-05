@@ -104,9 +104,14 @@ export function BlocSeances({ ouvrir, ancre }) {
         </button>
       )}
 
+      {/* Une seule seance : « Tout supprimer » sonne faux, et
+          « les 1 seances » plus encore (Raci, 5/09). Le libelle suit
+          le nombre. */}
       {confirmeTout ? (
         <div class="sea-vider-conf">
-          <span>{t('sea_tout_suppr_ask', { n: liste.length })}</span>
+          <span>{liste.length > 1
+            ? t('sea_tout_suppr_ask', { n: liste.length })
+            : t('sea_suppr_une_ask')}</span>
           <button class="sea-vider-non" onClick={() => setConfirmeTout(false)}>{t('cancel')}</button>
           <button class="sea-vider-oui"
             onClick={() => { viderSeances(); setConfirmeTout(false); setDeplie(false); }}>
@@ -115,7 +120,7 @@ export function BlocSeances({ ouvrir, ancre }) {
         </div>
       ) : (
         <button class="sea-vider" onClick={() => setConfirmeTout(true)}>
-          {t('sea_tout_suppr')}
+          {liste.length > 1 ? t('sea_tout_suppr') : t('sea_suppr_une')}
         </button>
       )}
     </div>
