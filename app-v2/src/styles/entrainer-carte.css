@@ -525,20 +525,23 @@
   background: #16130F; color: #F8F2E8;
   font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
 }
-/* Arbitrage d'un doublon (Raci, 5/09). Meme gabarit que la carte de
-   fin de seance, mais bordee de rouge : elle interrompt, elle ne
-   felicite pas. */
+/* Arbitrage d'un doublon (Raci, 5/09). Pas de rouge : les DEUX
+   boutons effacent une seance, aucun n'est plus dangereux que
+   l'autre, et le rouge sert ailleurs — onglet Stats actif, macro
+   depassee, « Abandonner ce programme ». Ici c'est un choix, pas un
+   avertissement : noir de la marque sur l'issue la plus probable —
+   on vient de finir CETTE seance — creme sur l'autre. */
 .sd-conflit {
   margin: 16px 14px 0; padding: 18px 16px;
-  background: #FFF; border: 2px solid #E3B4AB; border-radius: 18px; text-align: center;
+  background: #FFF; border: 1.5px solid #E7E1D5; border-radius: 18px; text-align: center;
 }
-.sd-conflit-t { font-size: 16px; font-weight: 700; color: #A0301E; margin-bottom: 6px; }
+.sd-conflit-t { font-size: 16px; font-weight: 700; color: #181818; margin-bottom: 6px; }
 .sd-conflit-l { font-size: 13px; color: #6B655D; line-height: 1.45; margin-bottom: 14px; }
 .sd-conflit-oui, .sd-conflit-non {
   display: block; width: 100%; border: none; border-radius: 13px; padding: 14px;
   font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
 }
-.sd-conflit-oui { background: #A0301E; color: #FFF; }
+.sd-conflit-oui { background: #151515; color: #F8F2E8; }
 .sd-conflit-non { background: #F3EFE5; color: #6B655D; margin-top: 8px; }
 
 .sd-fini {
