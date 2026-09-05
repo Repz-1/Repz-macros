@@ -69,7 +69,7 @@ export const jourAOuvrir = signal(null);
 // le retour ramene a l'accueil comme depuis n'importe quel ecran.
 // 'questionnaire' est revenu le 26/08, mais comme OFFRE : on y accede
 // par l'aiguillage de la bibliotheque, plus en passage oblige.
-const VUES_ADRESSABLES = ['selection', 'programmes', 'questionnaire'];
+const VUES_ADRESSABLES = ['selection', 'questionnaire'];
 {
   const demandee = new URLSearchParams(location.search).get('vue');
   if (VUES_ADRESSABLES.includes(demandee)) {

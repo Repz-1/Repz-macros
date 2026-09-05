@@ -1698,13 +1698,22 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('l\'echange de deux jours a disparu de affecter()');
     }
   }
-  const css = lire('app-v2/src/legacy/planifier.scoped.css');
+  // La feuille legacy/planifier.scoped.css n'etait importee nulle part :
+  // ses regles vivent depuis le 5/09 dans styles/entrainer-carte.css.
+  const css = lire('app-v2/src/styles/entrainer-carte.css');
   if (css && !/\.pl-abandon \{/.test(css)) {
     soucis.push('« Abandonner ce programme » n\'a plus de style : bouton brut de navigateur');
   }
-  // Le lien porte le nom du programme suivi : il doit y mener.
-  if (pl && !/allerVers\('programmes', \{ prog: progId \}\)/.test(pl)) {
-    soucis.push('« Modifier mon programme » retombe sur la liste des objectifs au lieu de la fiche du programme suivi');
+  if (css && !/\.pl-autre \{/.test(css)) {
+    soucis.push('« Changer de programme » est redevenu un lien souligne');
+  }
+  // « Changer de programme » refait les quatre questions (Raci, 5/09).
+  // Il ouvrait la fiche du programme COURANT : on ne changeait rien.
+  if (pl && !/allerVers\('questionnaire'\)/.test(pl)) {
+    soucis.push('« Changer de programme » ne refait plus le questionnaire');
+  }
+  if (pl && /allerVers\('programmes'/.test(pl)) {
+    soucis.push('« Changer de programme » rouvre la bibliotheque supprimee');
   }
   if (soucis.length) faute('R51 replacer une seance', soucis.join(' ; '));
   else passe('R51 replacer une seance');
@@ -1913,19 +1922,18 @@ const DECALAGE_SW_V2 = 232;
 // on en retire l'index pour rouvrir la page du programme.
 // ------------------------------------------------------------
 {
+  // 5/09 : la bibliotheque est supprimee. Le retour d'une seance ne
+  // reconstruit plus rien — il rend la main a S'entrainer, d'ou qu'on
+  // vienne. Ce qui reste a proteger : qu'il n'y retourne jamais.
   const m = lire('app-v2/src/main.jsx');
-  const pr = lire('app-v2/src/components/Programmes.jsx');
   const soucis = [];
   if (m) {
-    if (!/const progDeLaSeance = String\(p\.seanceId \|\| ''\)\.replace/.test(m)) {
-      soucis.push('le programme n\'est plus deduit de l\'identifiant de seance');
+    if (!/retour=\{retourEntrainer\}/.test(m)) {
+      soucis.push('le retour d\'une seance ne rend plus la main a S\'entrainer');
     }
-    if (/retour=\{versJournal \? retourEntrainer\s*\n?\s*: \(\) => allerVers\('programmes'\)\}/.test(m)) {
-      soucis.push('le retour rouvre la bibliotheque a plat : deux pages en arriere au lieu d\'une');
+    if (/allerVers\('programmes'/.test(m)) {
+      soucis.push('le routeur rouvre la bibliotheque supprimee');
     }
-  }
-  if (pr && !/useState\(vise \? 'seances' : /.test(pr)) {
-    soucis.push('un programme vise n\'ouvre plus directement ses seances : le retour retomberait sur la liste');
   }
   if (soucis.length) faute('R58 retour d\'une seance', soucis.join(' ; '));
   else passe('R58 retour d\'une seance');
@@ -2011,10 +2019,12 @@ const DECALAGE_SW_V2 = 232;
   const soucis = [];
   if (m) {
     const n = (m.match(/<RestTimer \/>/g) || []).length;
-    if (n !== 3) soucis.push('le chrono est monte ' + n + ' fois au lieu de 3 (accueil, seance en cours, suivi)');
+    // L'ecran 'seance' (SeanceTracker) etait orphelin : aucun
+    // allerVers('seance') n'existait. Retire le 5/09, avec son chrono.
+    if (n !== 2) soucis.push('le chrono est monte ' + n + ' fois au lieu de 2 (accueil, seance en cours)');
     if (!/<Entrainer \/><RestTimer \/>/.test(m)) soucis.push('le chrono a quitte l\'accueil de S\'entrainer');
     if (!/<MaSeance \/><RestTimer \/>/.test(m)) soucis.push('le chrono a quitte la seance en cours');
-    for (const [vue, comp] of [['la bibliotheque', 'Programmes'], ['le choix des exercices', 'SelectionExercices'],
+    for (const [vue, comp] of [['le choix des exercices', 'SelectionExercices'],
                                ['la planification', 'PlanifierProgramme'], ['« Demarrer une seance »', 'DemarrerSeance']]) {
       if (new RegExp('<' + comp + '[^>]*\\/><RestTimer').test(m)) soucis.push('le chrono est revenu sur ' + vue);
     }

@@ -373,19 +373,19 @@
    disque discret cale a droite du titre ; il pivote de 180 deg quand
    le bloc est ouvert, ce qui suffit a dire ce qu'il fera. */
 .pg-entrainer--carte .ent-bloc-tete {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
 }
 .pg-entrainer--carte .ent-bloc-tete h3 { margin: 0; }
 .pg-entrainer--carte .ent-plier {
-  flex: none; width: 30px; height: 30px; margin: -4px -4px -4px 0;
+  flex: none; width: 28px; height: 28px; margin: 0;
   display: flex; align-items: center; justify-content: center;
-  background: #F3EFE5; border: none; border-radius: 50%;
-  color: #6B655D; cursor: pointer;
-  transition: background .15s ease, transform .18s ease;
+  background: none; border: none; padding: 0;
+  color: #A9A29A; cursor: pointer;
+  transition: color .15s ease, transform .18s ease;
 }
-.pg-entrainer--carte .ent-plier svg { width: 17px; height: 17px; display: block; }
+.pg-entrainer--carte .ent-plier svg { width: 18px; height: 18px; display: block; }
 .pg-entrainer--carte .ent-plier.ouvert { transform: rotate(180deg); }
-.pg-entrainer--carte .ent-plier:active { background: #E8E2D5; }
+.pg-entrainer--carte .ent-plier:active { color: #6B655D; }
 .pg-entrainer--carte .ent-sous {
   font-size: 12.5px; color: #736C63; margin: 2px 0 14px;
 }

@@ -18,8 +18,6 @@ import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
 import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
-import { SeanceTracker } from './components/SeanceTracker.jsx';
-import { Programmes } from './components/Programmes.jsx';
 import { Questionnaire } from './components/Questionnaire.jsx';
 import { PlanifierProgramme } from './components/PlanifierProgramme.jsx';
 import { SelectionExercices } from './components/SelectionExercices.jsx';
@@ -163,36 +161,25 @@ export function OngletEntrainer() {
   if (vue.nom === 'maseance') {
     return (<><MaSeance /><RestTimer /></>);
   }
-  if (vue.nom === 'programmes') {
-    return <Programmes />;
-  }
+  // La bibliotheque des 14 programmes est supprimee (5/09). Plus aucun
+  // bouton n'y menait, et elle n'avait jamais ete alignee sur l'
+  // identite de V2 : fond degrade, pastilles vertes, cartes a lisere.
+  // Les programmes s'atteignent par les quatre questions.
   if (vue.nom === 'questionnaire') {
     return <Questionnaire />;
   }
   if (vue.nom === 'seanceDetail') {
     const p = vue.params || {};
-    // Le retour depend d'ou l'on vient. Depuis la bibliotheque, on y
-    // retourne. Depuis « Démarrer une séance », on revient au journal :
-    // renvoyer vers « Tous les programmes » apres avoir termine sa
-    // seance du jour n'a aucun sens — vu le 10/08 en eprouvant la
-    // boucle complete.
-    const versJournal = p.depuis === 'journal';
-    // Retour d'UNE page, pas de deux. `allerVers('programmes')` sans
-    // parametre rouvrait la bibliotheque a plat : on remontait deux
-    // crans d'un coup, au lieu de revenir a la liste des seances du
-    // programme (Raci, 26/08). L'identifiant de seance vaut
-    // « progId-index » : on en retire l'index pour retrouver le
-    // programme et rouvrir SA page.
-    const progDeLaSeance = String(p.seanceId || '').replace(/-\d+$/, '');
+    // Le retour rend la main a S'entrainer, d'ou qu'on vienne. Il
+    // rouvrait la fiche du programme quand on n'arrivait pas du
+    // journal — un ecran de plus a traverser pour sortir, et le
+    // dernier chemin qui menait encore a la bibliotheque (5/09).
     return (<><SeanceDetail seanceId={p.seanceId} titre={p.titre}
-      retour={versJournal ? retourEntrainer
-        : () => allerVers('programmes', progDeLaSeance ? { prog: progDeLaSeance } : {})} /></>);
+      retour={retourEntrainer} /></>);
   }
   return (
     <div class="pg-entrainer">
       <button class="v2-retour v2-retour--mot" onClick={retourEntrainer}>←&nbsp; Retour</button>
-      {vue.nom === 'seance' && <SeanceTracker />}
-      {vue.nom === 'seance' && <RestTimer />}
       <BandeauConfirmation />
     </div>
   );
