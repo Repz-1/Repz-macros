@@ -2310,9 +2310,13 @@ const DECALAGE_SW_V2 = 232;
     // que « Retour » fait deja. Et « Effacer » n'apparait que s'il y a
     // quelque chose a effacer.
     if (/class="ml-save"/.test(ent)) soucis.push('« Enregistrer » est revenu : il double « Retour »');
-    if (!/\{sel\.length > 0 && \(\s*<div class="ml-btns">/.test(ent)) {
-      soucis.push('« Effacer » s\'affiche alors qu\'il n\'y a rien a effacer');
-    }
+    // Raci, 5/09 : « Effacer » retire pour de bon. Il refermait la
+    // fiche apres avoir tout decoche, alors que les pastilles se
+    // decochent une a une sans quitter l'ecran. La sortie est une
+    // rangee de deux : « Retour » et « Confirmer ».
+    if (/class="ml-clear"/.test(ent)) soucis.push('« Effacer » est revenu dans la fiche d\'un jour');
+    if (!/class="ml-sortie"/.test(ent)) soucis.push('la rangee de sortie « Retour / Confirmer » a disparu');
+    if (!/class="ml-confirmer"/.test(ent)) soucis.push('« Confirmer » a disparu a cote de « Retour »');
 
   }
   if (soucis.length) faute('R69 pas de promesse vide', soucis.join(' ; '));

@@ -889,27 +889,20 @@ function ModaleMuscles({ iso, fermer }) {
           </button>
         )}
 
-        {/* « Effacer » n'a rien a effacer tant que rien n'est coche, et
-            « Enregistrer » ne faisait que refermer — exactement ce que
-            « Retour » fait juste en dessous. Deux boutons pour rien
-            (Raci, 26/08). La rangee ne s'affiche donc que lorsqu'il y
-            a quelque chose a retirer. */}
-        {sel.length > 0 && (
-          <div class="ml-btns">
-            <button class="ml-clear" onClick={() => {
-              (muscleLog.value[iso] || []).slice().forEach(k => basculerMuscle(iso, k));
-              fermer();
-            }}>{t('clear')}</button>
-          </div>
-        )}
-
-        {/* Sortie de la fiche. Quatre etats successifs : haut-gauche
+        {/* Sortie de la fiche. Cinq etats successifs : haut-gauche
             (17/08), disque noir flottant en bas a droite (22/08),
-            ligne de titre (26/08, refuse), puis cette barre pleine
-            largeur sous les boutons — maquette C, Raci le 26/08.
-            Elle ne flotte pas, ne recouvre rien, et reste sous le
-            pouce. */}
-        <button class="ml-retour" onClick={fermer}>←&nbsp; {t('ml_retour')}</button>
+            ligne de titre (26/08, refuse), barre pleine largeur
+            (maquette C, 26/08), puis cette rangee de deux — Raci le
+            5/09 : « un bouton Confirmer a cote de Retour, et retire
+            Effacer ». « Effacer » disparait : la fiche se decoche
+            pastille par pastille, et il refermait la fiche au lieu de
+            rendre la main. Les deux boutons ferment la fiche ; les
+            pastilles ayant deja enregistre au tap, « Confirmer » ne
+            valide pas un formulaire, il clot le geste. */}
+        <div class="ml-sortie">
+          <button class="ml-retour" onClick={fermer}>←&nbsp; {t('ml_retour')}</button>
+          <button class="ml-confirmer" onClick={fermer}>{t('ml_confirmer')}</button>
+        </div>
       </div>
     </div>,
     document.body

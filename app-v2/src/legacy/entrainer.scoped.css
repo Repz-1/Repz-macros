@@ -610,6 +610,26 @@
    flotte plus : elle recouvrait les boutons et frolait la barre
    systeme d'Android. Fond creme, pas de noir — « Enregistrer » reste
    la seule action principale de la fiche. */
+/* Raci, 5/09 : « Confirmer » a cote de « Retour ». La barre pleine
+   largeur devient une rangee de deux, largeurs egales, meme hauteur.
+   « Confirmer » porte le noir de la marque — c'est la sortie qu'on
+   vise ; « Retour » garde le creme, il n'est plus seul a devoir se
+   distinguer du fond. */
+.ml-modal .ml-sortie {
+  display: flex; gap: 10px; margin-top: 8px;
+}
+.ml-modal .ml-sortie > button { flex: 1; margin-top: 0; }
+.ml-modal .ml-confirmer {
+  display: flex; align-items: center; justify-content: center;
+  padding: 13px 12px;
+  border: none; border-radius: 14px;
+  background: #151515; color: #F8F2E8;
+  font-family: inherit; font-size: 15px; font-weight: 800;
+  line-height: 1; cursor: pointer;
+  transition: background .15s ease, transform .12s ease;
+}
+.ml-modal .ml-confirmer:active { background: #2A2A2A; transform: scale(.94); }
+
 .ml-modal .ml-retour {
   display: flex; align-items: center; justify-content: center;
   width: 100%; margin-top: 8px; padding: 13px 12px;
