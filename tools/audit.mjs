@@ -2745,6 +2745,13 @@ const DECALAGE_SW_V2 = 232;
     // demandait ou aller, alors que la seule chose a faire etait de
     // sortir. L'enregistrement rend la main directement.
     if (/class="sd-fini"/.test(sd)) soucis.push('la carte « Seance enregistree » est revenue au milieu de la liste');
+    // Raci, 5/09 : « si l'utilisateur enregistre la seance, ca ecrase
+    // la precedente et c'est tout ». L'alerte d'arbitrage posait une
+    // question dont la reponse etait toujours la meme.
+    if (/class="sd-conflit"/.test(sd)) soucis.push('l\'alerte de doublon est revenue au-dessus de la liste');
+    if (!/enregistrer\(seanceMemeJour\(/.test(sd)) {
+      soucis.push('un second enregistrement du jour n\'ecrase plus le premier');
+    }
     if (!/setFini\(true\);[\s\S]{0,120}revenir\(\);/.test(sd)) {
       soucis.push('l\'enregistrement ne rend plus la main tout seul');
     }

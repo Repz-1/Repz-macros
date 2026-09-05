@@ -70,7 +70,6 @@ export function SeanceDetail({ seanceId, titre, retour }) {
   const revenir = retour || retourEntrainer;
   const [fini, setFini] = useState(null);
   const [apercu, setApercu] = useState(null);   // index de l'exercice montre en grand
-  const [conflit, setConflit] = useState(null); // seance deja notee ce jour-la, en attente d'arbitrage
 
   /**
    * Termine la seance : elle rejoint « Mes seances », et ses muscles
@@ -92,24 +91,22 @@ export function SeanceDetail({ seanceId, titre, retour }) {
       muscles: [...new Set(retenus.map(e => e.mKey).filter(Boolean))],
       exos: retenus,
     });
-    setConflit(null);
     setFini(true);        // fige le chrono et neutralise un second appui
     revenir();
   };
 
   /**
-   * Raci, 5/09 : « s'il y a risque de doublon, un message d'alerte ».
-   * Le remplacement automatique decidait a sa place. On demande : la
-   * meme seance est deja notee aujourd'hui, veut-il corriger celle-la
-   * ou en garder deux ? Les deux reponses sont legitimes — on peut
-   * refaire un entrainement dans la journee.
+   * Raci, 5/09, dernier mot : « si l'utilisateur enregistre la seance,
+   * ca ecrase la precedente et c'est tout ». L'alerte d'arbitrage
+   * s'intercalait au-dessus de la liste et posait une question dont
+   * la reponse etait toujours la meme — on rouvre une seance pour la
+   * corriger, pas pour en creer une seconde. Le remplacement est
+   * silencieux ; une seance du programme = un enregistrement par jour.
    */
   const terminer = () => {
     if (fini) return;
     const iso = new Date().toISOString().slice(0, 10);
-    const deja = seanceMemeJour(iso, titre || t('session'));
-    if (deja) { setConflit(deja); return; }
-    enregistrer(null);
+    enregistrer(seanceMemeJour(iso, titre || t('session')));
   };
 
   // Chrono de seance : il court des l'ouverture de l'ecran et s'arrete
@@ -202,29 +199,6 @@ export function SeanceDetail({ seanceId, titre, retour }) {
           « Retour au journal » meme quand elle ramenait a la page du
           programme. Deux sorties nommees pour ce qu'elles font, et un
           acces direct a la planification des jours restants. */}
-      {/* Arbitrage du doublon (Raci, 5/09 : deux choix, pas trois).
-          Les deux boutons nomment la seance qu'ils GARDENT, jamais
-          celle qu'ils effacent — « remplacer l'ancienne » et « garder
-          les deux » demandaient de deviner ce qui restait. L'heure
-          identifie l'enregistrement existant : sans elle, « une seance
-          existe deja » ne dit pas laquelle. Garder l'ancienne
-          n'enregistre rien et rend la main. */}
-      {conflit && (
-        <div class="sd-conflit">
-          <div class="sd-conflit-t">Cette séance est déjà enregistrée aujourd'hui</div>
-          <div class="sd-conflit-l">
-            « {conflit.titre} » est déjà notée à {heureDe(conflit.ts)}.
-            Une seule des deux sera gardée.
-          </div>
-          <button class="sd-conflit-oui" onClick={() => enregistrer(conflit)}>
-            Remplacer par celle-ci
-          </button>
-          <button class="sd-conflit-non" onClick={() => { setConflit(null); revenir(); }}>
-            Garder celle de {heureDe(conflit.ts)}
-          </button>
-        </div>
-      )}
-
       {/* Raci, 5/09 : « j'ai fait commencer et il y a les deux choix
           inutiles ». La carte « Seance enregistree » s'inserait au
           milieu de la liste et demandait ou aller ensuite, alors que
@@ -299,12 +273,6 @@ export function SeanceDetail({ seanceId, titre, retour }) {
 // seule ne dit pas le mouvement. Lecture seule : depuis la seance
 // l'exercice est deja choisi, il n'y a rien a ajouter ni a retirer.
 // ============================================================
-/** « 16:02 » — l'heure d'enregistrement d'une seance. */
-function heureDe(ts) {
-  const d = new Date(ts);
-  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-}
-
 function ApercuExercice({ mKey, ex, fermer }) {
   if (!ex) return null;
   const vues = ex.imgId ? [0, 1] : [];
