@@ -659,6 +659,12 @@ function resumeMuscles(cles) {
   return noms.slice(0, 2).join(', ') + ' +' + (noms.length - 2);
 }
 
+/** « 16:02 » — l'heure d'enregistrement d'une seance. */
+function heureDe(ts) {
+  const d = new Date(ts);
+  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+
 function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
   // Empilee dans la pile de retours : le bouton Android et la touche
   // Echap la ferment, au lieu de changer l'onglet SOUS elle. Le hook
@@ -736,6 +742,9 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
                 <button class="ml-fait-ouvrir"
                   onClick={() => { fermer(); ouvrirSeance && ouvrirSeance(sa); }}>
                   <span class="ml-fait-t">{sa.titre}</span>
+                  {/* L'heure distingue deux seances du meme jour qui
+                      portent le meme nom (Raci, 5/09). */}
+                  <span class="ml-fait-h">{heureDe(sa.ts)}</span>
                   <span class="ml-fait-fl" aria-hidden="true">&rsaquo;</span>
                 </button>
                 <button class="ml-fait-x"

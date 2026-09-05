@@ -604,6 +604,10 @@
   font-size: 13.5px; font-weight: 700; color: #2C2A27;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.ml-fait-h {
+  flex: none; font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 11.5px; color: #A9A29A; font-variant-numeric: tabular-nums;
+}
 .ml-fait-fl { flex: none; font-size: 17px; color: #B5AFA4; line-height: 1; }
 .ml-fait-ouvrir:active .ml-fait-fl { color: #6B655D; }
 .ml-fait-x {
