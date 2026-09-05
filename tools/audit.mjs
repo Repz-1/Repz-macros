@@ -2715,45 +2715,40 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R79 — Une seance s'enregistre en un appui, jamais a vide.
-// Raci, 5/09 : « je peux faire Commencer sans avoir selectionne.
-// D'abord il faut pouvoir selectionner les exercices, ensuite le
-// bouton devient operationnel. Une fois que je clique, je veux que ce
-// soit considere comme termine. » « Commencer » puis « Terminer »
-// encadraient un chrono que personne ne regardait et laissaient la
-// seance dans un entre-deux : commencee, non enregistree, perdue si
-// l'on quittait l'ecran.
+// R79 — La seance se deroule, elle ne se coche pas.
+// Raci, 5/09 : « Demarrer la seance fera demarrer la seance en
+// partant du principe que l'utilisateur est au sport et qu'il veut
+// commencer. Et pour chaque serie tu feras en sorte qu'il puisse
+// faire suivant suivant suivant jusqu'a l'exercice suivant. »
+// La liste a cocher demandait de se souvenir apres coup de ce qu'on
+// avait fait ; le deroule avance avec la seance. Ce qui doit tenir :
+// un seul bouton, un enregistrement en fin de parcours seulement, et
+// une reprise si l'on quitte l'ecran au milieu.
 // ------------------------------------------------------------
 {
-  const sd = lire('app-v2/src/components/SeanceDetail.jsx');
-  const css = lire('app-v2/src/legacy/seance.scoped.css');
-  if (sd) {
-    const soucis = [];
-    if (/class="sd-terminer"/.test(sd)) soucis.push('« Terminer » est revenu : deux appuis pour un seul geste');
-    if (/setDemarree/.test(sd)) soucis.push('l\'etat « demarree » est revenu : la seance retombe dans l\'entre-deux');
-    if (!/disabled=\{done === 0\}/.test(sd)) soucis.push('on peut de nouveau enregistrer une seance sans aucun exercice coche');
-    if (!/onClick=\{terminer\}/.test(sd)) soucis.push('le bouton principal n\'enregistre plus la seance');
-    // Raci, 5/09 : « il y a les deux choix inutiles ». La carte
-    // « Seance enregistree » s'inserait au milieu de la liste et
-    // demandait ou aller, alors que la seule chose a faire etait de
-    // sortir. L'enregistrement rend la main directement.
-    if (/class="sd-fini"/.test(sd)) soucis.push('la carte « Seance enregistree » est revenue au milieu de la liste');
-    // Raci, 5/09 : « si l'utilisateur enregistre la seance, ca ecrase
-    // la precedente et c'est tout ». L'alerte d'arbitrage posait une
-    // question dont la reponse etait toujours la meme.
-    if (/class="sd-conflit"/.test(sd)) soucis.push('l\'alerte de doublon est revenue au-dessus de la liste');
-    if (!/enregistrer\(seanceMemeJour\(/.test(sd)) {
-      soucis.push('un second enregistrement du jour n\'ecrase plus le premier');
+  const sg = lire('app-v2/src/components/SeanceGuidee.jsx');
+  const main = lire('app-v2/src/main.jsx');
+  const css = lire('app-v2/src/styles/seance-guidee.css');
+  const soucis = [];
+  if (!sg) soucis.push('l\'ecran de seance guidee a disparu');
+  else {
+    if (!/const suivant = \(\) => \{/.test(sg)) soucis.push('« Suivant » ne valide plus la serie');
+    if (!/setRepos\(reposDe\(/.test(sg)) soucis.push('le repos ne se declenche plus entre deux series');
+    // La seance ne s'ecrit qu'a la fin : tant qu'on n'y est pas, elle
+    // est en cours. Sans ca on retombe dans l'entre-deux d'aout, ou
+    // une seance commencee disparaissait en quittant l'ecran.
+    if (!/ecrireEnCours\(/.test(sg)) soucis.push('la seance en cours n\'est plus sauvegardee : quitter l\'ecran perdrait tout');
+    if (!/lireEnCours\(seanceId\)/.test(sg)) soucis.push('une seance interrompue ne se reprend plus');
+    if (!/oublierEnCours\(\)/.test(sg)) soucis.push('la seance reste « en cours » apres avoir ete enregistree');
+    if (!/seanceMemeJour\(iso, titre/.test(sg)) soucis.push('un second enregistrement du jour n\'ecrase plus le premier');
+    if (/class="sd-fini"|class="sd-conflit"|class="sd-terminer"/.test(sg)) {
+      soucis.push('les ecrans intermediaires supprimes le 5/09 sont revenus');
     }
-    if (!/setFini\(true\);[\s\S]{0,120}revenir\(\);/.test(sd)) {
-      soucis.push('l\'enregistrement ne rend plus la main tout seul');
-    }
-    if (css && !/\.start-session-btn:disabled\{/.test(css)) {
-      soucis.push('le bouton eteint ressemble encore a un bouton actif');
-    }
-    if (soucis.length) faute('R79 seance en un appui', soucis.join(' ; '));
-    else passe('R79 seance en un appui');
   }
+  if (main && /SeanceDetail/.test(main)) soucis.push('la liste a cocher est rebranchee dans le routeur');
+  if (css && !/\.sg-go \{/.test(css)) soucis.push('le bouton unique a perdu son style');
+  if (soucis.length) faute('R79 seance guidee', soucis.join(' ; '));
+  else passe('R79 seance guidee');
 }
 
 // ------------------------------------------------------------

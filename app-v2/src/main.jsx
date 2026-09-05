@@ -25,7 +25,7 @@ import { Entrainer, vueEntrainer, retourEntrainer, allerVers } from './component
 import { Reglages, vueReglages } from './components/Reglages.jsx';
 import { StatsAvancees, statsAvOuvertes } from './components/StatsAvancees.jsx';
 import { depilerRetour, retourEnAttente } from './services/retour.js';
-import { SeanceDetail } from './components/SeanceDetail.jsx';
+import { SeanceGuidee } from './components/SeanceGuidee.jsx';
 import { MaSeance } from './components/MaSeance.jsx';
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif, allerOnglet, scrollSortant, defileur } from './components/BottomNav.jsx';
@@ -168,13 +168,16 @@ export function OngletEntrainer() {
   if (vue.nom === 'questionnaire') {
     return <Questionnaire />;
   }
+  // Raci, 5/09 : « Demarrer la seance fera demarrer la seance ». La
+  // liste a cocher laisse place au deroule guide — une serie apres
+  // l'autre, « Suivant » jusqu'a l'exercice suivant.
   if (vue.nom === 'seanceDetail') {
     const p = vue.params || {};
     // Le retour rend la main a S'entrainer, d'ou qu'on vienne. Il
     // rouvrait la fiche du programme quand on n'arrivait pas du
     // journal — un ecran de plus a traverser pour sortir, et le
     // dernier chemin qui menait encore a la bibliotheque (5/09).
-    return (<><SeanceDetail seanceId={p.seanceId} titre={p.titre}
+    return (<><SeanceGuidee seanceId={p.seanceId} titre={p.titre}
       retour={retourEntrainer} /></>);
   }
   return (

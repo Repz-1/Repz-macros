@@ -1,0 +1,118 @@
+/* ==========================================================
+   SEANCE GUIDEE (sg-*)
+   Maquette validee par Raci le 5/09. Un exercice a la fois, une serie
+   a la fois, un seul bouton. L'ecran tient sans defiler : tout ce qui
+   compte pendant une serie doit etre visible d'un coup, on n'a pas
+   les mains libres entre deux repetitions.
+   ========================================================== */
+
+.sg {
+  max-width: 520px; margin: 0 auto;
+  padding: 16px 14px calc(var(--hauteur-nav, 74px) + 20px + env(safe-area-inset-bottom));
+}
+
+/* ---- en-tete : ou l'on en est, depuis combien de temps ---- */
+.sg-hd {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.sg-hd-t { font-size: 13px; font-weight: 700; color: #8A8378; }
+.sg-hd-c {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 13px; color: #8A8378; font-variant-numeric: tabular-nums;
+}
+.sg-prog {
+  height: 6px; background: #EDE8DE; border-radius: 99px;
+  overflow: hidden; margin: 8px 0 16px;
+}
+.sg-prog span {
+  display: block; height: 100%; background: #FAC408; border-radius: 99px;
+  transition: width .25s ease;
+}
+
+/* ---- exercice en cours ---- */
+.sg-exo { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+.sg-vig {
+  width: 76px; height: 76px; border-radius: 16px; flex: none;
+  background: #E4DFD4 center/cover no-repeat;
+}
+.sg-exo-n { font-size: 18px; font-weight: 800; letter-spacing: -.02em; line-height: 1.2; }
+.sg-exo-s { font-size: 12.5px; color: #8A8378; margin-top: 4px; }
+
+/* ---- serie en cours ---- */
+.sg-serie-t {
+  font-size: 11px; font-weight: 800; letter-spacing: .08em;
+  color: #B34700; margin-bottom: 8px;
+}
+.sg-champs { display: flex; gap: 10px; }
+.sg-ch {
+  flex: 1; background: #F5F1E8; border-radius: 14px; padding: 10px 12px;
+  display: block; cursor: text;
+}
+.sg-ch span {
+  display: block; font-size: 10.5px; font-weight: 700;
+  letter-spacing: .05em; color: #8A8378;
+}
+/* Les champs sont larges et hauts : on les touche avec des mains
+   moites, entre deux series, sans viser. */
+.sg-ch input {
+  width: 100%; border: none; background: none; padding: 0; margin-top: 2px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 26px; font-weight: 500; color: #181818;
+  -moz-appearance: textfield;
+}
+.sg-ch input::-webkit-outer-spin-button,
+.sg-ch input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.sg-ch input:focus { outline: none; }
+.sg-ch:focus-within { box-shadow: inset 0 0 0 2px #FAC408; }
+
+/* ---- pastilles des series ---- */
+.sg-pts { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.sg-pt {
+  width: 30px; height: 30px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', ui-monospace, monospace; font-size: 11px;
+  background: #F3EFE5; color: #B0A99C;
+}
+.sg-pt.ok { background: #151515; color: #F8F2E8; }
+.sg-pt.now { background: #FAC408; color: #151515; font-weight: 700; }
+
+/* ---- le bouton unique ---- */
+.sg-go {
+  display: block; width: 100%; margin-top: 14px; padding: 16px;
+  border: none; border-radius: 16px;
+  background: #FAC408; color: #151515;
+  font-family: inherit; font-size: 16px; font-weight: 800; cursor: pointer;
+  transition: transform .12s ease;
+}
+.sg-go:active { transform: scale(.985); }
+
+/* Deux sorties permanentes : on n'est jamais coince au milieu d'une
+   seance, y compris quand la salle ferme. */
+.sg-sec { display: flex; gap: 8px; margin-top: 8px; }
+.sg-sec button {
+  flex: 1; padding: 11px; border: none; border-radius: 12px;
+  background: #F3EFE5; color: #8A8378;
+  font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+}
+.sg-sec button:active { background: #EAE5D8; }
+
+/* ---- repos ---- */
+.sg-repos { text-align: center; padding: 10px 0 0; }
+.sg-repos-l { font-size: 11px; font-weight: 800; letter-spacing: .08em; color: #B34700; }
+.sg-repos-c {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 56px; font-weight: 400; letter-spacing: -.02em;
+  margin: 6px 0; font-variant-numeric: tabular-nums;
+}
+.sg-repos-s { font-size: 13px; color: #8A8378; line-height: 1.45; }
+
+/* ---- fin de seance ---- */
+.sg-fin-t { font-size: 20px; font-weight: 800; text-align: center; margin: 14px 0 4px; }
+.sg-fin-s { font-size: 13.5px; color: #8A8378; text-align: center; margin-bottom: 16px; }
+.sg-recap { background: #F5F1E8; border-radius: 16px; padding: 12px 14px; font-size: 13.5px; }
+.sg-recap div { display: flex; justify-content: space-between; padding: 7px 0; }
+.sg-recap div + div { border-top: 1px solid #E7E1D5; }
+.sg-recap b {
+  font-family: 'DM Mono', ui-monospace, monospace; font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
