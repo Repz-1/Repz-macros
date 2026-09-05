@@ -1422,8 +1422,13 @@ const DECALAGE_SW_V2 = 232;
     const soucis = [];
     const i = ent.indexOf('function JournalEntrainement');
     const bloc = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : ent;
-    if (!/wlog-resume/.test(bloc))
-      soucis.push('les resumes ne sont plus sous le titre du calendrier');
+    // Raci, 5/09 : « finalement ca aussi ca sert a rien ». Les deux
+    // pastilles sont supprimees — le calendrier montrait deja ce
+    // qu'elles racontaient. Ce qui reste a proteger : qu'elles ne
+    // remontent pas au-dessus de la carte d'action, la ou elles
+    // dealignaient le haut de page en aout.
+    if (/wlog-resume/.test(bloc))
+      soucis.push('les pastilles de resume sont revenues sous le titre du calendrier');
     const haut = bloc.slice(bloc.indexOf('class="wlog-sum"'), bloc.indexOf('ent-action'));
     if (/wlog-sum-pill/.test(haut))
       soucis.push('une pastille de resume est remontee au-dessus de la carte d\'action : le haut se dealigne a nouveau');

@@ -369,31 +369,15 @@
 .pg-entrainer--carte .ent-bloc h3 {
   font-size: 15.5px; font-weight: 600; margin: 0 0 2px;
 }
-/* En-tete pliable du calendrier (Raci, 5/09). Le chevron est un
-   disque discret cale a droite du titre ; il pivote de 180 deg quand
-   le bloc est ouvert, ce qui suffit a dire ce qu'il fera. */
-.pg-entrainer--carte .ent-bloc-tete {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
-}
-.pg-entrainer--carte .ent-bloc-tete h3 { margin: 0; }
-.pg-entrainer--carte .ent-plier {
-  flex: none; width: 28px; height: 28px; margin: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: none; border: none; padding: 0;
-  color: #A9A29A; cursor: pointer;
-  transition: color .15s ease, transform .18s ease;
-}
-.pg-entrainer--carte .ent-plier svg { width: 18px; height: 18px; display: block; }
-.pg-entrainer--carte .ent-plier.ouvert { transform: rotate(180deg); }
-.pg-entrainer--carte .ent-plier:active { color: #6B655D; }
 .pg-entrainer--carte .ent-sous {
   font-size: 12.5px; color: #736C63; margin: 2px 0 14px;
 }
-/* Replie, le titre touche le calendrier : on lui rend une marge. */
 /* La ligne du mois se resserre : elle n'est plus qu'un reperage entre
    deux fleches, pas un titre. Le bloc d'en-tete replie la laisse
    monter contre le titre de la carte. */
-.pg-entrainer--carte .ent-bloc-tete + .wlog-cal-head { margin-top: 6px; }
+/* Le titre du calendrier n'a plus ni sous-titre ni pastilles sous
+   lui : la ligne du mois vient s'y appuyer directement. */
+.pg-entrainer--carte h3 + .wlog-cal-head { margin-top: 8px; }
 .pg-entrainer--carte .wlog-cal-head { padding: 6px 2px 4px; }
 .pg-entrainer--carte .wlog-nav { width: 28px; height: 28px; font-size: 16px; color: #A9A29A; }
 

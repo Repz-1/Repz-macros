@@ -331,9 +331,6 @@ function CarteProgramme({ today, todayIso, allerVers }) {
  */
 function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
   const [offset, setOffset] = useState(0);
-  // L'en-tete du calendrier est replie par defaut : la phrase et les
-  // deux resumes se relisent une fois, pas a chaque ouverture.
-  const [enTeteOuvert, setEnTeteOuvert] = useState(false);
 
   // Source unique : marquage manuel + seances enregistrees, reunis a
   // la lecture (services/muscles-jour.js). Le calendrier ne depend
@@ -361,7 +358,8 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
   // l'infini.
   const apresBorne = offset >= 12;
 
-  // Resume : seances du mois affiche + derniere seance notee
+  // Ne sert plus qu'a une chose depuis le 5/09 : savoir s'il faut
+  // afficher le bandeau d'accueil des journaux vides.
   const prefixeMois = wlIso(ref).slice(0, 7);
   let nbSeancesMois = 0, dernierIso = null;
   Object.keys(log).forEach(iso => {
@@ -370,12 +368,6 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
     if (iso.slice(0, 7) === prefixeMois && iso <= todayIso) nbSeancesMois++;
     if (iso <= todayIso && (!dernierIso || iso > dernierIso)) dernierIso = iso;
   });
-
-  let dernierTxt = null;
-  if (dernierIso) {
-    const dm = (log[dernierIso] || []).filter(v => v !== 'repos').map(nomMuscle);
-    dernierTxt = dm.slice(0, 2).join(', ') + (dm.length > 2 ? ' +' + (dm.length - 2) : '');
-  }
 
   // Grille du mois, semaine demarrant le lundi
   const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
@@ -556,45 +548,14 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
 
       {/* 3 — Calendrier */}
       <div class="ent-bloc">
-        {/* Raci, 5/09 : « replie ce texte pour alleger la page ». Le
-            titre reste, l'explication et les deux resumes se plient.
-            Le chevron pivote pour dire dans quel sens il agit ; il ne
-            ferme pas le calendrier, il ne cache que ce en-tete. */}
-        <div class="ent-bloc-tete">
-          <h3>{t('tr_log_title')}</h3>
-          <button class={'ent-plier' + (enTeteOuvert ? ' ouvert' : '')}
-            onClick={() => setEnTeteOuvert(v => !v)}
-            aria-expanded={enTeteOuvert}
-            aria-label={enTeteOuvert ? 'Replier' : 'Déplier'}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-        </div>
-        {enTeteOuvert && <p class="ent-sous">{t('tr_log_sub')}</p>}
-
-        {/* Les deux resumes comptent les seances du MOIS AFFICHE, donc
-            ils appartiennent au calendrier. Sans emoji — un
-            halterophile et un biceps en couleur devant chaque ligne
-            juraient avec le reste de la page, et ne disaient rien que
-            le texte ne dise deja. */}
-        {enTeteOuvert && (nbSeancesMois || dernierIso) && (
-          <div class="wlog-resume">
-            <span class="wlog-sum-pill">
-              {nbSeancesMois} {t(nbSeancesMois > 1 ? 'sessions' : 'session')} {t('in_month')} {t('months_long').split('|')[ref.getMonth()]}
-            </span>
-            {dernierTxt && (
-              <span class="wlog-sum-pill">
-                {/* « Dernière : Triceps · Ven 14 août » etait trop long
-                    (Raci, 12/08). Quand c'est proche, le jour se dit en
-                    un mot — aujourd'hui, hier — et la date complete ne
-                    sert plus a rien. Elle ne revient qu'au-dela. */}
-                {t('last_session')} : {dernierTxt} · {quandCourt(dernierIso, todayIso)}
-              </span>
-            )}
-          </div>
-        )}
+        {/* Raci, 5/09 : « finalement ca aussi ca sert a rien ». La
+            phrase decrivait un geste qu'on decouvre en touchant un
+            jour, et les deux pastilles redisaient ce que le calendrier
+            montre deja — les jours colores comptent les seances du
+            mois, le plus recent est cerne. Repliees le matin, puis
+            retirees. Le pliage n'a plus d'objet : le titre seul reste.
+            Le compte du mois se lit dans Stats. */}
+        <h3>{t('tr_log_title')}</h3>
 
         {/* Le calendrier ne retient plus que deux semaines (v355) :
             reculer au-dela n'ouvre que des mois vides, ce qui se lit
