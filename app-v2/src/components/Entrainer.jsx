@@ -331,6 +331,9 @@ function CarteProgramme({ today, todayIso, allerVers }) {
  */
 function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
   const [offset, setOffset] = useState(0);
+  // L'en-tete du calendrier est replie par defaut : la phrase et les
+  // deux resumes se relisent une fois, pas a chaque ouverture.
+  const [enTeteOuvert, setEnTeteOuvert] = useState(false);
 
   // Source unique : marquage manuel + seances enregistrees, reunis a
   // la lecture (services/muscles-jour.js). Le calendrier ne depend
@@ -547,15 +550,30 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
 
       {/* 3 — Calendrier */}
       <div class="ent-bloc">
-        <h3>{t('tr_log_title')}</h3>
-        <p class="ent-sous">{t('tr_log_sub')}</p>
+        {/* Raci, 5/09 : « replie ce texte pour alleger la page ». Le
+            titre reste, l'explication et les deux resumes se plient.
+            Le chevron pivote pour dire dans quel sens il agit ; il ne
+            ferme pas le calendrier, il ne cache que ce en-tete. */}
+        <div class="ent-bloc-tete">
+          <h3>{t('tr_log_title')}</h3>
+          <button class={'ent-plier' + (enTeteOuvert ? ' ouvert' : '')}
+            onClick={() => setEnTeteOuvert(v => !v)}
+            aria-expanded={enTeteOuvert}
+            aria-label={enTeteOuvert ? 'Replier' : 'Déplier'}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+        </div>
+        {enTeteOuvert && <p class="ent-sous">{t('tr_log_sub')}</p>}
 
-        {/* Les deux resumes, descendus du haut de page : ils comptent
-            les seances du MOIS AFFICHE, donc ils appartiennent au
-            calendrier. Sans emoji — un halterophile et un biceps en
-            couleur devant chaque ligne juraient avec le reste de la
-            page, et ne disaient rien que le texte ne dise deja. */}
-        {(nbSeancesMois || dernierIso) && (
+        {/* Les deux resumes comptent les seances du MOIS AFFICHE, donc
+            ils appartiennent au calendrier. Sans emoji — un
+            halterophile et un biceps en couleur devant chaque ligne
+            juraient avec le reste de la page, et ne disaient rien que
+            le texte ne dise deja. */}
+        {enTeteOuvert && (nbSeancesMois || dernierIso) && (
           <div class="wlog-resume">
             <span class="wlog-sum-pill">
               {nbSeancesMois} {t(nbSeancesMois > 1 ? 'sessions' : 'session')} {t('in_month')} {t('months_long').split('|')[ref.getMonth()]}

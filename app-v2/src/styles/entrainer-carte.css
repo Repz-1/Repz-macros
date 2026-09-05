@@ -369,9 +369,28 @@
 .pg-entrainer--carte .ent-bloc h3 {
   font-size: 15.5px; font-weight: 600; margin: 0 0 2px;
 }
-.pg-entrainer--carte .ent-sous {
-  font-size: 12.5px; color: #736C63; margin: 0 0 14px;
+/* En-tete pliable du calendrier (Raci, 5/09). Le chevron est un
+   disque discret cale a droite du titre ; il pivote de 180 deg quand
+   le bloc est ouvert, ce qui suffit a dire ce qu'il fera. */
+.pg-entrainer--carte .ent-bloc-tete {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
+.pg-entrainer--carte .ent-bloc-tete h3 { margin: 0; }
+.pg-entrainer--carte .ent-plier {
+  flex: none; width: 30px; height: 30px; margin: -4px -4px -4px 0;
+  display: flex; align-items: center; justify-content: center;
+  background: #F3EFE5; border: none; border-radius: 50%;
+  color: #6B655D; cursor: pointer;
+  transition: background .15s ease, transform .18s ease;
+}
+.pg-entrainer--carte .ent-plier svg { width: 17px; height: 17px; display: block; }
+.pg-entrainer--carte .ent-plier.ouvert { transform: rotate(180deg); }
+.pg-entrainer--carte .ent-plier:active { background: #E8E2D5; }
+.pg-entrainer--carte .ent-sous {
+  font-size: 12.5px; color: #736C63; margin: 2px 0 14px;
+}
+/* Replie, le titre touche le calendrier : on lui rend une marge. */
+.pg-entrainer--carte .ent-bloc-tete + .wlog-cal-head { margin-top: 12px; }
 
 /* Semaine + silhouette cote a cote. */
 /* Les chiffres en haut, les deux silhouettes EN DESSOUS et en pleine
