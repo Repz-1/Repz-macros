@@ -11,7 +11,7 @@ import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
 import { BlocSeances, ToutesSeances, DetailSeance } from './Seances.jsx';
 import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId, normaliserJours } from '../store/programme.js';
-import { seancesDuJour } from '../store/seances.js';
+import { seancesDuJour, supprimerSeance } from '../store/seances.js';
 
 /** « 90 × 8 · 85 × 10 », ou rien si aucune serie notee. */
 function resumeSeries(series) {
@@ -671,13 +671,17 @@ function ModaleMuscles({ iso, fermer }) {
   // doit etre appele avant tout retour anticipe — d'ou le `!!iso`
   // plutot qu'un `if (!iso) return null` place au-dessus.
   useRetour(!!iso, fermer);
+  // Ces deux etats sont declares AVANT le retour anticipe : sinon le
+  // nombre de hooks change entre un rendu sans `iso` et un rendu avec,
+  // ce que Preact n'accepte pas.
+  const [aSupprimer, setASupprimer] = useState(null);
+  const [choixOuvert, setChoixOuvert] = useState(false);
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
   const isoAuj = wlIso(new Date());
   const type = iso < isoAuj ? 'passe' : (iso === isoAuj ? 'auj' : 'futur');
   const faites = seancesDuJour(iso);
   const prevue = seancePrevue(iso);
-  const [choixOuvert, setChoixOuvert] = useState(false);
 
   // Les seances proposables : celles du programme actif. Sans
   // programme, la liste est vide et on le dit plutot que d'ouvrir un
@@ -715,7 +719,13 @@ function ModaleMuscles({ iso, fermer }) {
           {type === 'passe' ? t('ml_passe') : type === 'auj' ? t('ml_auj') : t('ml_futur')}
         </div>
 
-        {/* ---- Ce qui a ete FAIT ce jour-la ---- */}
+        {/* ---- Ce qui a ete FAIT ce jour-la ----
+            Raci, 5/09 : quatre « Jour 2 — Dos / Biceps » empiles sur le
+            5 septembre, chacun d'une minute — des essais enregistres
+            l'un apres l'autre. Rien de faux, mais rien pour les
+            retirer : la fiche ne savait qu'ajouter. Chaque seance
+            porte desormais sa croix. Le geste est irreversible, donc
+            elle demande confirmation. */}
         {faites.length > 0 && (
           <div class="ml-fait">
             {faites.map(sa => (
@@ -723,7 +733,18 @@ function ModaleMuscles({ iso, fermer }) {
                 <div class="ml-fait-t">
                   {sa.titre}
                   {sa.duree > 0 && <span class="ml-fait-d"> · {Math.max(1, Math.round(sa.duree / 60))} min</span>}
+                  <button class="ml-fait-x"
+                    aria-label={'Supprimer ' + sa.titre}
+                    onClick={() => setASupprimer(sa.id)}>×</button>
                 </div>
+                {aSupprimer === sa.id && (
+                  <div class="ml-fait-conf">
+                    <span>Supprimer cette séance ?</span>
+                    <button class="ml-fait-non" onClick={() => setASupprimer(null)}>Annuler</button>
+                    <button class="ml-fait-oui"
+                      onClick={() => { supprimerSeance(sa.id); setASupprimer(null); }}>Supprimer</button>
+                  </div>
+                )}
                 {(sa.exos || []).slice(0, 6).map((e, i) => (
                   <div key={i} class="ml-fait-e">
                     <i class="dot" style={{ background: COULEUR[e.mKey] || '#C9C3B8' }} />
