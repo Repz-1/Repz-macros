@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
 import { signal } from '@preact/signals';
 import { GROUPES, muscleLog, basculerMuscle, borneCalendrier, texteSur } from '../store/entrainement.js';
@@ -9,7 +9,7 @@ import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
 import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
-import { BlocSeances, DetailSeance } from './Seances.jsx';
+import { DetailSeance } from './Seances.jsx';
 import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId, normaliserJours } from '../store/programme.js';
 import { seancesDuJour, supprimerSeance } from '../store/seances.js';
 
@@ -340,7 +340,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
  * Plus d'etat replie : le calendrier est l'objet de la page, le
  * masquer derriere un bouton n'avait plus de sens une fois seul.
  */
-function JournalEntrainement({ ouvrirJour, ouvrirSeance, ancreSeances }) {
+function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
   const [offset, setOffset] = useState(0);
 
   // Source unique : marquage manuel + seances enregistrees, reunis a
@@ -459,12 +459,12 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, ancreSeances }) {
 
   return (
     <>
-      {/* 0 — Seances enregistrees, en tete (Raci, 5/09 : « tu le
-          remontes egalement tout en haut en 1ere rubrique a la
-          condition qu'il existe des seances programmees »). Le
-          composant se tait de lui-meme quand la liste est vide : la
-          page s'ouvre alors sur l'accueil, comme avant. */}
-      <BlocSeances ouvrir={ouvrirSeance} ancre={ancreSeances} />
+      {/* L'encart « Seances enregistrees » a quitte cette page le 5/09 :
+          « je ne veux pas voir ca, je veux voir juste la seance Jour 1
+          qui est en dessous ». Il ouvrait l'onglet sur ce qui est
+          derriere soi, avant ce qu'on doit faire. L'historique se lit
+          dans le calendrier — un jour, sa fiche, « Voir la seance » —
+          et dans Stats. */}
 
       {/* 1 — Le haut de page ne porte plus que l'accueil du premier
           jour. Les deux pastilles de resume flottaient ici, de largeurs
@@ -983,19 +983,7 @@ export function Entrainer() {
   const [seanceOuverte, setSeanceOuverte] = useState(null);
   useRetour(!!seanceOuverte, () => setSeanceOuverte(null));
 
-  // Raci, 5/09 : « quand je reviens en arriere, que l'ecran revienne
-  // automatiquement au niveau de Seances enregistrees ». En sortant du
-  // detail on retombait en haut de page, a chercher d'ou l'on venait.
-  // L'ancre pointe le bloc ; on l'y ramene apres le rendu du journal.
-  const ancreSeances = useRef(null);
-  const [revenirAuxSeances, setRevenirAuxSeances] = useState(false);
-  useEffect(() => {
-    if (!revenirAuxSeances) return;
-    setRevenirAuxSeances(false);
-    const n = ancreSeances.current;
-    if (n && n.scrollIntoView) n.scrollIntoView({ block: 'start', behavior: 'auto' });
-  }, [revenirAuxSeances]);
-  const fermerSeance = () => { setSeanceOuverte(null); setRevenirAuxSeances(true); };
+  const fermerSeance = () => setSeanceOuverte(null);
 
   if (seanceOuverte) {
     return (
@@ -1029,8 +1017,7 @@ export function Entrainer() {
           d'action du journal, en haut : `selection` sur le gros
           bouton, `questionnaire` sur le lien. Aucune n'est perdue. */}
       <JournalEntrainement ouvrirJour={setJourOuvert}
-        ouvrirSeance={setSeanceOuverte}
-        ancreSeances={ancreSeances} />
+        ouvrirSeance={setSeanceOuverte} />
 
       <ModaleMuscles iso={jourOuvert} fermer={() => setJourOuvert(null)}
         ouvrirSeance={setSeanceOuverte} />

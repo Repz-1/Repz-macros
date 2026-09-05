@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { seances, supprimerSeance, viderSeances } from '../store/seances.js';
+import { supprimerSeance } from '../store/seances.js';
 import { GROUPES } from '../store/entrainement.js';
 import { t } from '../i18n/index.js';
 import '../styles/seances.css';
@@ -37,95 +37,11 @@ function heure(ts) {
   return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
 }
 
-// ---------- une ligne de la liste ----------
-function Ligne({ s, ouvrir }) {
-  const muscles = (s.muscles || []).filter(m => COULEUR[m]).slice(0, 3);
-  const bouts = [`${s.exos.length} ${t(s.exos.length > 1 ? 'exercices' : 'exercice')}`];
-  if (s.tonnage > 0) bouts.push(`${s.tonnage.toLocaleString('fr-BE')} kg`);
-
-  return (
-    <div class="sea-ligne" onClick={(e) => { e.stopPropagation(); ouvrir(s); }}>
-      <div class="sea-pastilles">
-        {muscles.length
-          ? muscles.map(m => <i key={m} style={{ background: COULEUR[m] }} />)
-          : <i class="vide" />}
-      </div>
-      <div class="sea-corps">
-        <div class="sea-jour">
-          {libelleJour(s.iso)} · {s.titre}
-          {s.records && s.records.length > 0 && <span class="sea-record">{t('record')}</span>}
-        </div>
-        <div class="sea-detail">{bouts.join(' · ')}</div>
-      </div>
-      <div class="sea-chiffre">{duree(s.duree)}<small>min</small></div>
-    </div>
-  );
-}
-
-/**
- * Bloc insere sous le calendrier du journal. Trois seances : la carte
- * porte deja les pastilles, le calendrier et sa legende — y deverser
- * la liste entiere la rendrait illisible.
- */
-export function BlocSeances({ ouvrir, ancre }) {
-  const liste = seances.value;
-  // Raci, 5/09 : « une fleche pour menu deroulant plutot que me
-  // retrouver dans une autre page ». « Voir toutes les seances »
-  // ouvrait un ecran plein, alors qu'il n'y a qu'une liste a rallonger.
-  // Elle se deplie sur place.
-  const [deplie, setDeplie] = useState(false);
-  // Supprimer une par une etait le seul moyen de repartir de zero
-  // apres des essais. La suppression groupee demande confirmation :
-  // elle efface tout l'historique.
-  const [confirmeTout, setConfirmeTout] = useState(false);
-  // Un bloc vide occupait 119 px pour annoncer qu'il n'y avait rien.
-  // Le bouton « Seance libre » est juste au-dessus : proposer en plus
-  // « enregistre ta premiere seance » reposerait la meme action. Tant
-  // qu'il n'y a rien a lister, le bloc ne s'affiche pas.
-  if (liste.length === 0) return null;
-  const montrees = deplie ? liste : liste.slice(0, 3);
-  return (
-    <div class="ent-bloc sea-bloc" ref={ancre}>
-      <div class="sea-titre">
-        <h4>{t('sea_title')}</h4>
-        <span>{liste.length} {t('in_total')}</span>
-      </div>
-      {montrees.map(s => <Ligne key={s.id} s={s} ouvrir={ouvrir} />)}
-
-      {liste.length > 3 && (
-        <button class={'sea-tout' + (deplie ? ' sea-tout--ouvert' : '')}
-          aria-expanded={deplie}
-          onClick={(e) => { e.stopPropagation(); setDeplie(v => !v); }}>
-          <span>{deplie ? t('sea_replier') : `${t('sea_see_all')} (${liste.length})`}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </button>
-      )}
-
-      {/* Une seule seance : « Tout supprimer » sonne faux, et
-          « les 1 seances » plus encore (Raci, 5/09). Le libelle suit
-          le nombre. */}
-      {confirmeTout ? (
-        <div class="sea-vider-conf">
-          <span>{liste.length > 1
-            ? t('sea_tout_suppr_ask', { n: liste.length })
-            : t('sea_suppr_une_ask')}</span>
-          <button class="sea-vider-non" onClick={() => setConfirmeTout(false)}>{t('cancel')}</button>
-          <button class="sea-vider-oui"
-            onClick={() => { viderSeances(); setConfirmeTout(false); setDeplie(false); }}>
-            {t('delete')}
-          </button>
-        </div>
-      ) : (
-        <button class="sea-vider" onClick={() => setConfirmeTout(true)}>
-          {liste.length > 1 ? t('sea_tout_suppr') : t('sea_suppr_une')}
-        </button>
-      )}
-    </div>
-  );
-}
+// L'encart « Seances enregistrees » est supprime le 5/09 (Raci) :
+// « je ne veux pas voir ca, je veux voir juste la seance Jour 1 qui
+// est en dessous ». Il ouvrait l'onglet S'entrainer sur l'historique,
+// avant l'action du jour. Ce qui a ete fait se lit dans le calendrier
+// — un jour, sa fiche, « Voir la seance » — et dans Stats.
 
 // L'ecran plein « Toutes les seances » est supprime le 5/09 (Raci) :
 // « une fleche pour menu deroulant plutot que me retrouver dans une

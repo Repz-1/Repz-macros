@@ -2149,21 +2149,14 @@ const DECALAGE_SW_V2 = 232;
 // « Seance libre » qui proposait deja d'en creer une.
 // ------------------------------------------------------------
 {
-  const se = lire('app-v2/src/components/Seances.jsx');
   const soucis = [];
-  if (se) {
-    // L'ecran plein « Toutes les seances » est supprime le 5/09 : la
-    // liste se deplie sur place. Il ne reste que cet encart.
-    const bloc = (se.match(/export function BlocSeances[\s\S]*?\n\}/) || [''])[0];
-    if (!/if \(liste\.length === 0\) return null;/.test(bloc)) soucis.push('l\'encart s\'affiche de nouveau quand il est vide');
-    // Le composant doit porter sa propre carte : enveloppe a
-    // l'exterieur, la carte blanche restait a l'ecran meme vide.
-    if (!/class="ent-bloc sea-bloc"/.test(bloc)) soucis.push('l\'encart ne porte plus sa carte : une enveloppe vide reapparaitra');
-    if (/class="sea-vide"/.test(bloc)) soucis.push('le message « aucune seance » est revenu dans l\'encart');
-  }
   const ent = lire('app-v2/src/components/Entrainer.jsx');
-  if (ent && /<div class="ent-bloc">\s*<BlocSeances/.test(ent)) {
-    soucis.push('l\'encart est de nouveau enveloppe dans une carte qui survit a son absence');
+  if (ent && /<BlocSeances/.test(ent)) {
+    soucis.push('l\'encart « Seances enregistrees » est revenu en tete de S\'entrainer');
+  }
+  const se = lire('app-v2/src/components/Seances.jsx');
+  if (se && /export function BlocSeances/.test(se)) {
+    soucis.push('le composant de l\'encart a ete recree : il finira par etre rebranche');
   }
   if (soucis.length) faute('R65 pas de bloc vide', soucis.join(' ; '));
   else passe('R65 pas de bloc vide');
