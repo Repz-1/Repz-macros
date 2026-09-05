@@ -724,29 +724,25 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
             avec confirmation. */}
         {faites.length > 0 && (
           <div class="ml-fait">
-            {faites.map(sa => (
-              <div key={sa.id} class="ml-fait-s">
-                <div class="ml-fait-t">
-                  {sa.titre}
-                  <button class="ml-fait-x"
-                    aria-label={'Supprimer ' + sa.titre}
-                    onClick={() => setASupprimer(sa.id)}>×</button>
-                </div>
-                {aSupprimer === sa.id ? (
-                  <div class="ml-fait-conf">
-                    <span>Supprimer cette séance ?</span>
-                    <button class="ml-fait-non" onClick={() => setASupprimer(null)}>Annuler</button>
-                    <button class="ml-fait-oui"
-                      onClick={() => { supprimerSeance(sa.id); setASupprimer(null); }}>Supprimer</button>
-                  </div>
-                ) : (
-                  <button class="ml-fait-voir"
-                    onClick={() => { fermer(); ouvrirSeance && ouvrirSeance(sa); }}>
-                    {t('ml_voir_seance')}
-                  </button>
-                )}
+            {faites.map(sa => (aSupprimer === sa.id ? (
+              <div key={sa.id} class="ml-fait-conf">
+                <span>Supprimer cette séance ?</span>
+                <button class="ml-fait-non" onClick={() => setASupprimer(null)}>Annuler</button>
+                <button class="ml-fait-oui"
+                  onClick={() => { supprimerSeance(sa.id); setASupprimer(null); }}>Supprimer</button>
               </div>
-            ))}
+            ) : (
+              <div key={sa.id} class="ml-fait-s">
+                <button class="ml-fait-ouvrir"
+                  onClick={() => { fermer(); ouvrirSeance && ouvrirSeance(sa); }}>
+                  <span class="ml-fait-t">{sa.titre}</span>
+                  <span class="ml-fait-fl" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <button class="ml-fait-x"
+                  aria-label={'Supprimer ' + sa.titre}
+                  onClick={() => setASupprimer(sa.id)}>×</button>
+              </div>
+            )))}
           </div>
         )}
 

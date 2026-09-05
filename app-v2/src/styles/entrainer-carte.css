@@ -584,33 +584,38 @@
   text-transform: uppercase; color: #B34700; margin: 0 0 10px;
 }
 .ml-fait-s { margin-bottom: 8px; }
-.ml-fait-t {
-  font-size: 14px; font-weight: 700; margin-bottom: 4px;
-  display: flex; align-items: baseline; gap: 6px;
+/* Une seance enregistree = UNE ligne (Raci, 5/09). Titre, chevron,
+   croix. Le bouton « Voir la seance » pleine largeur faisait trois
+   lignes par seance : sur un jour a trois essais, la fiche ne montrait
+   plus rien d'autre. Le detail s'ouvre en touchant la ligne. */
+.ml-fait-s {
+  display: flex; align-items: center; gap: 4px;
+  margin-bottom: 4px; padding: 0 2px 0 0;
+  background: #F7F4EE; border-radius: 12px;
 }
-/* La croix de suppression d'une seance enregistree (Raci, 5/09).
-   Discrete : elle cale a droite du titre et ne prend la couleur de
-   l'avertissement qu'au contact. */
+.ml-fait-ouvrir {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; align-items: center; gap: 8px;
+  background: none; border: none; padding: 11px 4px 11px 12px;
+  font-family: inherit; text-align: left; cursor: pointer;
+}
+.ml-fait-t {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 13.5px; font-weight: 700; color: #2C2A27;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ml-fait-fl { flex: none; font-size: 17px; color: #B5AFA4; line-height: 1; }
+.ml-fait-ouvrir:active .ml-fait-fl { color: #6B655D; }
 .ml-fait-x {
-  margin-left: auto; flex: none;
-  background: none; border: none; padding: 0 2px;
-  font-family: inherit; font-size: 19px; line-height: 1;
+  flex: none; width: 34px; align-self: stretch;
+  background: none; border: none; padding: 0;
+  font-family: inherit; font-size: 18px; line-height: 1;
   color: #C9C3B8; cursor: pointer;
 }
 .ml-fait-x:active { color: #A0301E; }
-/* « Voir la seance » remplace la liste d'exercices deroulee sous
-   chaque seance (Raci, 5/09). Discret : la fiche d'un jour sert a
-   noter des muscles, pas a relire un entrainement. */
-.ml-fait-voir {
-  display: block; width: 100%; margin-top: 6px; padding: 10px;
-  background: #F3EFE5; border: none; border-radius: 12px;
-  font-family: inherit; font-size: 13px; font-weight: 700;
-  color: #B34700; cursor: pointer;
-}
-.ml-fait-voir:active { background: #EAE5D8; }
 .ml-fait-conf {
   display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
-  margin: 6px 0 8px; padding: 9px 11px;
+  margin-bottom: 4px; padding: 9px 11px;
   background: #FBEFEC; border-radius: 12px;
   font-size: 12.5px; font-weight: 600; color: #5C4A46;
 }
@@ -621,18 +626,6 @@
 }
 .ml-fait-non { background: #EFE9DC; color: #6B655D; }
 .ml-fait-oui { background: #A0301E; color: #FFF; }
-.ml-fait-d { color: #736C63; font-weight: 500; }
-.ml-fait-e {
-  display: flex; align-items: center; gap: 8px; padding: 4px 0;
-  border-bottom: 1px solid rgba(28,24,18,.06);
-}
-.ml-fait-e:last-child { border-bottom: none; }
-.ml-fait-e .dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 9px; }
-.ml-fait-n { flex: 1 1 auto; min-width: 0; font-size: 13px; font-weight: 600; }
-.ml-fait-v {
-  flex: 0 0 auto; font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 11.5px; color: #736C63;
-}
 .ml-prevu {
   background: #FFF6EC; border: 1px solid rgba(179,71,0,.18);
   border-radius: 13px; padding: 12px; margin-bottom: 12px;
@@ -892,7 +885,6 @@
    11 legendes. Les valeurs intermediaires heritees (12, 12.5, 11.5)
    se rangent sur les barreaux voisins. */
 .pg-entrainer--carte .ent-sem-oubli,
-.pg-entrainer--carte .ml-fait-v { font-size: 12.5px; }
 
 /* =====================================================================
    HARMONISATION AVEC LE JOURNAL — 17/08.

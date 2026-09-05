@@ -2689,8 +2689,11 @@ const DECALAGE_SW_V2 = 232;
     if (/class="ml-fait-d"/.test(bloc)) {
       soucis.push('la duree « 1 min » est revenue a cote du titre de la seance');
     }
-    if (!/class="ml-fait-voir"/.test(bloc)) {
-      soucis.push('« Voir la seance » a disparu : le detail n\'est plus atteignable depuis un jour');
+    if (/class="ml-fait-voir"/.test(bloc)) {
+      soucis.push('le bouton « Voir la seance » pleine largeur est revenu : trois lignes par seance');
+    }
+    if (!/class="ml-fait-ouvrir"/.test(bloc)) {
+      soucis.push('la ligne d\'une seance n\'ouvre plus son detail');
     }
     if (!/class="ml-fait-x"/.test(bloc)) {
       soucis.push('une seance enregistree ne peut plus etre supprimee depuis le calendrier');
