@@ -119,6 +119,31 @@ export function PlanifierProgramme({ progId }) {
   };
   const nomJourDe = (v) => t('day_' + (JOURS.find(j => j.v === v) || {}).k);
 
+  /**
+   * Les seances proposees pour un jour donne.
+   *
+   * Raci, 5/09 : Mercredi porte deja « Jour 1 — Pecs », et en ouvrant
+   * Samedi la meme seance revient en tete de liste. Sur un jour vide,
+   * la choisir ne l'echange pas — elle la deplace et laisse Mercredi
+   * vide. La liste proposait donc de defaire ce qui venait d'etre
+   * fait, en l'appelant « echanger ».
+   *
+   * Sur un jour VIDE on ne montre que ce qui reste a poser. Sur un
+   * jour DEJA rempli on garde tout : la, choisir une seance placee
+   * ailleurs est un vrai echange, et c'est le seul moyen de permuter
+   * deux jours.
+   *
+   * Cas limite : toutes les seances sont placees et on ouvre un jour
+   * vide. Une liste vide serait un cul-de-sac — on remontre tout,
+   * sous le nom exact du geste : « deplacer depuis X ».
+   */
+  const choixDuJour = (v) => {
+    const tous = prog.seances.map((sa, i) => ({ sa, i, pris: dejaAilleurs(i, v) }));
+    if (aff[v] !== undefined) return tous;
+    const libres = tous.filter(c => c.pris === undefined);
+    return libres.length ? libres : tous;
+  };
+
   // Un compte gratuit sur un programme 6 jours ne peut cocher que 4
   // jours : exiger le compte complet le laissait devant un bouton
   // eteint qui ne s'allumerait jamais. Cul-de-sac trouve le 10/08 en
@@ -179,18 +204,17 @@ export function PlanifierProgramme({ progId }) {
 
               {ouvert && (
                 <div class="pl-menu">
-                  {prog.seances.map((sa, i) => {
-                    const pris = dejaAilleurs(i, j.v);   // jour d'echange, ou undefined
-                    return (
+                  {choixDuJour(j.v).map(({ sa, i, pris }) => (
                       <button key={i} class={'pl-menu-l' + (index === i ? ' on' : '')}
                         onClick={() => affecter(j.v, i)}>
                         <span class="pl-menu-n">{sa.titre}</span>
                         <span class="pl-menu-s">
-                          {pris !== undefined ? t('pl_echanger', { j: nomJourDe(pris) }) : sa.sub}
+                          {pris === undefined ? sa.sub
+                            : on ? t('pl_echanger', { j: nomJourDe(pris) })
+                              : t('pl_deplacer', { j: nomJourDe(pris) })}
                         </span>
                       </button>
-                    );
-                  })}
+                  ))}
                   {on && (
                     <button class="pl-menu-vider" onClick={() => affecter(j.v, null)}>
                       {t('pl_jour_vider')}
