@@ -73,7 +73,9 @@ effect(() => {
   chargerDonnees(u).then(d => {
     if (uidCharge !== u) return; // changement de compte entre-temps
     repas.value = migrerRepas(d && d.repas ? d.repas : structuredClone(DEFAUTS.repas));
-    objectifs.value = d && d.objectifs ? d.objectifs : structuredClone(DEFAUTS.objectifs);
+    objectifs.value = d && d.objectifs
+      ? completerMacros(d.objectifs, (d && typeof d.poidsCalcul === 'number') ? d.poidsCalcul : null)
+      : structuredClone(DEFAUTS.objectifs);
     eau.value = d && typeof d.eau === 'number' ? d.eau : 0;
     dateJour.value = (d && d.dateJour) || aujourdhui();
     calculBaseFait.value = !!(d && d.calculBaseFait);
@@ -303,6 +305,25 @@ export function resetEau() {
  * du coach, saisie manuelle complete) n'est jamais retouche : ce qu'il
  * ecrit fait foi.
  */
+/**
+ * Un objectif calorique sans macros n'est pas un objectif : les trois
+ * barres du Journal n'ont plus rien a mesurer et affichent « / 0g »
+ * (vecu par Raci le 5/09 : 3500 kcal, macros a zero). Ca arrive quand
+ * un enregistrement ancien ou partiel ne porte que les calories.
+ * On reconstruit alors la meme repartition que le calculateur :
+ * 2,2 g de proteines par kilo (a defaut 25 % des calories), 25 % des
+ * calories en lipides, le reste en glucides.
+ */
+export function completerMacros(o, poids) {
+  const kcal = +(o && o.kcal) || 0;
+  const somme = (+(o && o.prot) || 0) + (+(o && o.carbs) || 0) + (+(o && o.lip) || 0);
+  if (kcal <= 0 || somme > 0) return o;
+  const prot = Math.round(+poids > 0 ? poids * 2.2 : (kcal * 0.25) / 4);
+  const lip = Math.round((kcal * 0.25) / 9);
+  const carbs = Math.max(0, Math.round((kcal - prot * 4 - lip * 9) / 4));
+  return { ...o, kcal, prot, carbs, lip };
+}
+
 export function setObjectifs(nouveaux) {
   const avant = objectifs.value;
   const macrosFournies = ['prot', 'carbs', 'lip'].some(k => nouveaux[k] != null);
@@ -322,7 +343,7 @@ export function setObjectifs(nouveaux) {
       return;
     }
   }
-  objectifs.value = { ...avant, ...nouveaux };
+  objectifs.value = completerMacros({ ...avant, ...nouveaux }, poidsCalcul.value);
 }
 
 /**
