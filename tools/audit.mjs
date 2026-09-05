@@ -2087,7 +2087,7 @@ const DECALAGE_SW_V2 = 232;
   }
   if (css) {
     if (!/\.cp-l \+ \.cp-l \{ border-top/.test(css)) soucis.push('les filets entre lignes ont disparu');
-    if (!/\.cp-l \{ display: flex; align-items: baseline/.test(css)) soucis.push('un titre sur deux lignes decalera de nouveau le jour et la marque');
+    if (!/\.cp-l-h \{ display: flex; align-items: baseline/.test(css)) soucis.push('un titre sur deux lignes decalera de nouveau le jour et la marque');
     if (/\.cp-e-venir/.test(css)) soucis.push('le style de la pastille « a venir » traine encore');
   }
   if (soucis.length) faute('R63 carte sans repetition', soucis.join(' ; '));

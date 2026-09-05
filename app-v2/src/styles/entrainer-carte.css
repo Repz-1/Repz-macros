@@ -1041,7 +1041,8 @@
 /* Lignes calmes : un filet fin plutot qu'un grand vide entre chaque,
    et alignement sur la PREMIERE ligne de texte — un titre qui passe
    sur deux lignes ne decale plus le jour ni la marque. */
-.cp-l { display: flex; align-items: baseline; gap: 12px; padding: 10px 2px; }
+.cp-l { display: block; padding: 10px 2px; }
+.cp-l-h { display: flex; align-items: baseline; gap: 12px; }
 .cp-l + .cp-l { border-top: 1px solid #F0EBE1; }
 .cp-j { width: 34px; flex: none; font-size: 11px; font-weight: 800; color: #B0A99C; letter-spacing: .06em; }
 .cp-t { flex: 1; min-width: 0; }
@@ -1059,9 +1060,7 @@
   padding: 2px 6px; border-radius: 5px;
   font-size: 8.5px; font-weight: 800; letter-spacing: .03em;
 }
-.cp-e-col {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
-}
+
 
 /* Le jour courant se distingue par son fond, pas par un cadre. */
 .cp-l.auj { background: #FFFAEC; border-radius: 10px; padding-left: 8px; padding-right: 8px; margin: 0 -6px; }
@@ -1076,10 +1075,14 @@ button.cp-l-b {
   cursor: pointer; transition: background .15s ease, transform .12s ease;
 }
 button.cp-l-b:active { background: #FBF3DE; transform: scale(.99); }
+/* L'action sur sa propre ligne, pleine largeur, separee par un filet.
+   Elle ne rivalise plus avec le titre : elle vient apres lui. */
 .cp-demarrer {
-  display: flex; align-items: center; gap: 3px;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  margin-top: 9px; padding-top: 9px;
+  border-top: 1px solid rgba(179, 71, 0, .16);
   font-size: 14.5px; font-weight: 800; color: #B34700;
-  letter-spacing: -.01em; text-transform: none; white-space: nowrap;
+  letter-spacing: -.01em; text-transform: none;
 }
 .cp-demarrer-fl { font-size: 17px; line-height: 1; }
 button.cp-l-b:active .cp-demarrer { color: #8A3A00; }

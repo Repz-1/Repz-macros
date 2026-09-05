@@ -249,48 +249,39 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           deux pastilles grises pesaient plus qu'elles n'informaient.
           Le sous-titre ne s'affiche que s'il dit quelque chose. */}
       {lignes.map(l => {
-        // Raci, 5/09 : « quand c'est la seance du jour, mets tout dans
-        // la meme case, retire le fond noir ». Le pave noir repetait
-        // le titre de la ligne juste au-dessus — deux fois la meme
-        // seance, dont une en 15 px sur fond noir. La ligne du jour
-        // devient elle-meme le bouton : le badge AUJOURD'HUI reste,
-        // « Demarrer la seance » s'ecrit dessous, en texte normal.
+        // Raci, 5/09, en trois passes. 1) « Mets tout dans la meme
+        // case, retire le fond noir » : le pave noir repetait le titre
+        // affiche juste au-dessus. 2) « Le plus important c'est
+        // Demarrer la seance » : l'action prend le pas sur le badge.
+        // 3) « C'est devenu le foutoir, rien n'est distinct » —
+        // l'action a 14,5 px dans la colonne de droite rivalisait avec
+        // le titre et le poussait sur deux lignes. Elle descend sur sa
+        // PROPRE ligne, pleine largeur, sous un filet : identification
+        // en haut, action en bas. Plus rien ne se dispute la place.
         const estAction = l.etat === 'auj' && duJour;
-        const contenu = (
-          <>
+        const entete = (
+          <div class="cp-l-h">
             <div class="cp-j">{l.jour}</div>
-            {/* Raci, 5/09 : le sous-titre « 7 exercices · ~60 min »
-                disparait. Il chiffrait une seance qu'on n'a pas
-                encore ouverte, sous chaque ligne de la semaine, et
-                faisait de la carte un tableau. Le detail est dans la
-                seance. */}
+            {/* Le sous-titre « 7 exercices · ~60 min » a ete retire le
+                5/09 : il chiffrait une seance qu'on n'a pas encore
+                ouverte, sous chaque ligne de la semaine. */}
             <div class="cp-t"><b>{l.seance.titre}</b></div>
             {l.etat === 'fait' && <div class="cp-e cp-e-fait" aria-label={t('cp_fait')}>✓</div>}
-            {/* Raci, 5/09 : « Démarrer la séance » passe SOUS le badge,
-                dans la colonne de droite, a la taille du sous-titre de
-                gauche — les deux lignes se repondent. Le badge
-                retrecit : il etiquette, il ne titre pas. */}
-            {l.etat === 'auj' && (
-              <div class="cp-e cp-e-col">
-                <span class="cp-e-auj">{t('cp_auj')}</span>
-                {estAction && (
-                  <span class="cp-demarrer">
-                    {t('cp_demarrer_simple')}
-                    <span class="cp-demarrer-fl" aria-hidden="true">&rsaquo;</span>
-                  </span>
-                )}
-              </div>
-            )}
-          </>
+            {l.etat === 'auj' && <div class="cp-e cp-e-auj">{t('cp_auj')}</div>}
+          </div>
         );
         return estAction ? (
           <button class="cp-l auj cp-l-b" key={l.iso}
             onClick={() => allerVers('seanceDetail',
               { seanceId: duJour.seanceId, titre: duJour.seance.titre, depuis: 'journal' })}>
-            {contenu}
+            {entete}
+            <span class="cp-demarrer">
+              {t('cp_demarrer_simple')}
+              <span class="cp-demarrer-fl" aria-hidden="true">&rsaquo;</span>
+            </span>
           </button>
         ) : (
-          <div class={'cp-l' + (l.auj ? ' auj' : '')} key={l.iso}>{contenu}</div>
+          <div class={'cp-l' + (l.auj ? ' auj' : '')} key={l.iso}>{entete}</div>
         );
       })}
 
