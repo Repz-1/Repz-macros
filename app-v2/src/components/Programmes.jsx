@@ -157,7 +157,13 @@ export function Programmes() {
   return (
     <div class="pg-programmes">
       <div class="top">
-        <button class="back-btn" onClick={() => setEcran('progs')}>←&nbsp; {t('ml_retour')}</button>
+        {/* Le retour rend la main a l'ecran d'ou l'on vient. Ouverte
+            avec un programme vise (depuis la carte du jour ou la
+            planification), cette fiche n'a pas d'empilement derriere
+            elle : redescendre vers la liste par niveau puis vers
+            l'aiguillage faisait traverser deux ecrans jamais vus
+            (Raci, 5/09). */}
+        <button class="back-btn" onClick={() => (vise ? retourEntrainer() : setEcran('progs'))}>←&nbsp; {t('ml_retour')}</button>
         <h1>{prog ? prog.name : 'Séances'}</h1>
       </div>
       {prog && <p class="intro-txt">{prog.duree} · niveau {prog.niveau}. Choisis une séance pour voir les exercices.</p>}

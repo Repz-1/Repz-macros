@@ -372,9 +372,12 @@ export function Questionnaire() {
           <button class="qz-btn" onClick={() => allerVers('planifier', { prog: progId })}>
             Choisir mes jours
           </button>
-          <button class="qz-lien" onClick={() => allerVers('programmes', { prog: progId })}>
-            Voir le détail du programme
-          </button>
+          {/* « Voir le detail du programme » retire le 5/09 (Raci). La
+              fiche est deja sous les yeux — nom, duree, niveau,
+              conseils, liste des seances. Le lien n'ajoutait rien et
+              ouvrait la bibliotheque, dont la fleche retour
+              redescendait un empilement que personne n'avait monte :
+              fiche, puis liste par niveau, puis aiguillage. */}
           <button class="qz-lien" onClick={refaire}>Refaire le test</button>
         </div>
       </div>
