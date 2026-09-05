@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { seances, seancesPretes, supprimerSeance } from '../store/seances.js';
+import { seances, supprimerSeance, viderSeances } from '../store/seances.js';
 import { GROUPES } from '../store/entrainement.js';
 import { t } from '../i18n/index.js';
 import '../styles/seances.css';
@@ -67,45 +67,64 @@ function Ligne({ s, ouvrir }) {
  * porte deja les pastilles, le calendrier et sa legende — y deverser
  * la liste entiere la rendrait illisible.
  */
-export function BlocSeances({ ouvrir, voirTout }) {
+export function BlocSeances({ ouvrir, ancre }) {
   const liste = seances.value;
+  // Raci, 5/09 : « une fleche pour menu deroulant plutot que me
+  // retrouver dans une autre page ». « Voir toutes les seances »
+  // ouvrait un ecran plein, alors qu'il n'y a qu'une liste a rallonger.
+  // Elle se deplie sur place.
+  const [deplie, setDeplie] = useState(false);
+  // Supprimer une par une etait le seul moyen de repartir de zero
+  // apres des essais. La suppression groupee demande confirmation :
+  // elle efface tout l'historique.
+  const [confirmeTout, setConfirmeTout] = useState(false);
   // Un bloc vide occupait 119 px pour annoncer qu'il n'y avait rien.
   // Le bouton « Seance libre » est juste au-dessus : proposer en plus
   // « enregistre ta premiere seance » reposerait la meme action. Tant
   // qu'il n'y a rien a lister, le bloc ne s'affiche pas.
   if (liste.length === 0) return null;
+  const montrees = deplie ? liste : liste.slice(0, 3);
   return (
-    <div class="ent-bloc sea-bloc">
+    <div class="ent-bloc sea-bloc" ref={ancre}>
       <div class="sea-titre">
         <h4>{t('sea_title')}</h4>
-        {liste.length > 0 && <span>{liste.length} {t('in_total')}</span>}
+        <span>{liste.length} {t('in_total')}</span>
       </div>
-      {liste.slice(0, 3).map(s => <Ligne key={s.id} s={s} ouvrir={ouvrir} />)}
+      {montrees.map(s => <Ligne key={s.id} s={s} ouvrir={ouvrir} />)}
+
       {liste.length > 3 && (
-        <button class="sea-tout" onClick={(e) => { e.stopPropagation(); voirTout(); }}>
-          {t('sea_see_all')} ({liste.length}) →
+        <button class={'sea-tout' + (deplie ? ' sea-tout--ouvert' : '')}
+          aria-expanded={deplie}
+          onClick={(e) => { e.stopPropagation(); setDeplie(v => !v); }}>
+          <span>{deplie ? t('sea_replier') : `${t('sea_see_all')} (${liste.length})`}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+      )}
+
+      {confirmeTout ? (
+        <div class="sea-vider-conf">
+          <span>{t('sea_tout_suppr_ask', { n: liste.length })}</span>
+          <button class="sea-vider-non" onClick={() => setConfirmeTout(false)}>{t('cancel')}</button>
+          <button class="sea-vider-oui"
+            onClick={() => { viderSeances(); setConfirmeTout(false); setDeplie(false); }}>
+            {t('delete')}
+          </button>
+        </div>
+      ) : (
+        <button class="sea-vider" onClick={() => setConfirmeTout(true)}>
+          {t('sea_tout_suppr')}
         </button>
       )}
     </div>
   );
 }
 
-// ---------- liste plein ecran ----------
-export function ToutesSeances({ ouvrir }) {
-  const liste = seances.value;
-  const pret = seancesPretes.value;
-  return (
-    <div class="pg-seances">
-      <div class="sea-tete">
-        <h2>{t('sea_title')}</h2>
-        <p>{liste.length} {t(liste.length > 1 ? 'sessions' : 'session')}</p>
-      </div>
-      {liste.length === 0
-        ? (pret ? <p class="sea-vide">{t('sea_empty')}</p> : null)
-        : liste.map(s => <Ligne key={s.id} s={s} ouvrir={ouvrir} />)}
-    </div>
-  );
-}
+// L'ecran plein « Toutes les seances » est supprime le 5/09 (Raci) :
+// « une fleche pour menu deroulant plutot que me retrouver dans une
+// autre page ». La liste se rallonge sur place dans BlocSeances.
 
 // ---------- detail d'une seance ----------
 export function DetailSeance({ seance, apresSuppression }) {

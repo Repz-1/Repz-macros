@@ -145,6 +145,16 @@ export function supprimerSeance(id) {
   seances.value = seances.value.filter(s => s.id !== id);
 }
 
+/**
+ * Efface tout l'historique. Raci, 5/09 : « il m'est impossible de
+ * supprimer toutes les seances en une fois » — apres une serie
+ * d'essais, il fallait les retirer une par une. L'appelant demande
+ * confirmation : rien ici ne peut etre annule.
+ */
+export function viderSeances() {
+  seances.value = [];
+}
+
 export function seancesDuJour(iso) {
   return seances.value.filter(s => s.iso === iso);
 }

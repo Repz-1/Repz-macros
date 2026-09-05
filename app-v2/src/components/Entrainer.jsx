@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState, useRef, useEffect } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
 import { signal } from '@preact/signals';
 import { GROUPES, muscleLog, basculerMuscle, borneCalendrier, texteSur } from '../store/entrainement.js';
@@ -9,7 +9,7 @@ import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
 import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
-import { BlocSeances, ToutesSeances, DetailSeance } from './Seances.jsx';
+import { BlocSeances, DetailSeance } from './Seances.jsx';
 import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId, normaliserJours } from '../store/programme.js';
 import { seancesDuJour, supprimerSeance } from '../store/seances.js';
 
@@ -321,7 +321,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
  * Plus d'etat replie : le calendrier est l'objet de la page, le
  * masquer derriere un bouton n'avait plus de sens une fois seul.
  */
-function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
+function JournalEntrainement({ ouvrirJour, ouvrirSeance, ancreSeances }) {
   const [offset, setOffset] = useState(0);
 
   // Source unique : marquage manuel + seances enregistrees, reunis a
@@ -440,6 +440,13 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
 
   return (
     <>
+      {/* 0 — Seances enregistrees, en tete (Raci, 5/09 : « tu le
+          remontes egalement tout en haut en 1ere rubrique a la
+          condition qu'il existe des seances programmees »). Le
+          composant se tait de lui-meme quand la liste est vide : la
+          page s'ouvre alors sur l'accueil, comme avant. */}
+      <BlocSeances ouvrir={ouvrirSeance} ancre={ancreSeances} />
+
       {/* 1 — Le haut de page ne porte plus que l'accueil du premier
           jour. Les deux pastilles de resume flottaient ici, de largeurs
           inegales, au-dessus de la carte d'action : elles cassaient
@@ -610,11 +617,6 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
         </div>
       </div>
 
-      {/* 5 — Seances enregistrees. Le composant porte lui-meme sa
-          carte : quand il n'a rien a montrer il ne rend rien, et
-          l'enveloppe qui l'entourait ici laissait une carte blanche
-          vide de 26 px sur le fond (Raci, 26/08). */}
-      <BlocSeances ouvrir={ouvrirSeance} voirTout={voirToutesSeances} />
     </>
   );
 }
@@ -931,25 +933,27 @@ export function Entrainer() {
   // seance. Pas de detour par vueEntrainer — ces deux ecrans partent
   // du journal et y reviennent.
   const [seanceOuverte, setSeanceOuverte] = useState(null);
-  const [toutesSeances, setToutesSeances] = useState(false);
-  // Retour Android : un cran ferme l'ecran ouvert, dans l'ordre
-  // d'empilement (detail par-dessus la liste).
-  useRetour(toutesSeances, () => setToutesSeances(false));
   useRetour(!!seanceOuverte, () => setSeanceOuverte(null));
+
+  // Raci, 5/09 : « quand je reviens en arriere, que l'ecran revienne
+  // automatiquement au niveau de Seances enregistrees ». En sortant du
+  // detail on retombait en haut de page, a chercher d'ou l'on venait.
+  // L'ancre pointe le bloc ; on l'y ramene apres le rendu du journal.
+  const ancreSeances = useRef(null);
+  const [revenirAuxSeances, setRevenirAuxSeances] = useState(false);
+  useEffect(() => {
+    if (!revenirAuxSeances) return;
+    setRevenirAuxSeances(false);
+    const n = ancreSeances.current;
+    if (n && n.scrollIntoView) n.scrollIntoView({ block: 'start', behavior: 'auto' });
+  }, [revenirAuxSeances]);
+  const fermerSeance = () => { setSeanceOuverte(null); setRevenirAuxSeances(true); };
 
   if (seanceOuverte) {
     return (
       <div class="pg-entrainer pg-entrainer--carte">
-        <Entete retour={() => setSeanceOuverte(null)} />
-        <DetailSeance seance={seanceOuverte} apresSuppression={() => setSeanceOuverte(null)} />
-      </div>
-    );
-  }
-  if (toutesSeances) {
-    return (
-      <div class="pg-entrainer pg-entrainer--carte">
-        <Entete retour={() => setToutesSeances(false)} />
-        <ToutesSeances ouvrir={setSeanceOuverte} />
+        <Entete retour={fermerSeance} />
+        <DetailSeance seance={seanceOuverte} apresSuppression={fermerSeance} />
       </div>
     );
   }
@@ -978,7 +982,7 @@ export function Entrainer() {
           bouton, `questionnaire` sur le lien. Aucune n'est perdue. */}
       <JournalEntrainement ouvrirJour={setJourOuvert}
         ouvrirSeance={setSeanceOuverte}
-        voirToutesSeances={() => setToutesSeances(true)} />
+        ancreSeances={ancreSeances} />
 
       <ModaleMuscles iso={jourOuvert} fermer={() => setJourOuvert(null)}
         ouvrirSeance={setSeanceOuverte} />

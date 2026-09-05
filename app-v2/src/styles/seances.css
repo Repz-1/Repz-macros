@@ -13,12 +13,41 @@
 
 .pg-entrainer .sea-vide { font-size: 12px; font-weight: 400; color: #8A8279; padding: 6px 2px 12px; line-height: 1.45; margin: 0; }
 
+/* Deplie la liste sur place (Raci, 5/09) : le chevron pivote, il ne
+   renvoie plus vers un ecran plein. */
 .pg-entrainer .sea-tout {
   width: 100%; background: none; border: none; font-family: inherit;
-  font-size: 12px; font-weight: 700; color: #675D54; padding: 8px 0 4px; text-align: center;
+  font-size: 12px; font-weight: 700; color: #675D54; padding: 8px 0 4px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
   cursor: pointer;
 }
+.pg-entrainer .sea-tout svg {
+  width: 15px; height: 15px; transition: transform .18s ease;
+}
+.pg-entrainer .sea-tout--ouvert svg { transform: rotate(180deg); }
 .pg-entrainer .sea-tout:active { opacity: .6; }
+
+/* Vider l'historique. En retrait sous la liste : c'est une sortie, pas
+   une action courante. Le rouge n'arrive qu'a la confirmation. */
+.pg-entrainer .sea-vider {
+  width: 100%; margin-top: 4px; padding: 9px 0 2px;
+  background: none; border: none; font-family: inherit;
+  font-size: 12px; font-weight: 700; color: #A9A29A; cursor: pointer;
+}
+.pg-entrainer .sea-vider:active { color: #A0301E; }
+.pg-entrainer .sea-vider-conf {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  margin-top: 8px; padding: 10px 12px;
+  background: #FBEFEC; border-radius: 12px;
+  font-size: 12.5px; font-weight: 600; color: #5C4A46;
+}
+.pg-entrainer .sea-vider-conf span { flex: 1 1 auto; }
+.pg-entrainer .sea-vider-non, .pg-entrainer .sea-vider-oui {
+  flex: none; border: none; border-radius: 9px; padding: 7px 12px;
+  font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+}
+.pg-entrainer .sea-vider-non { background: #EFE9DC; color: #6B655D; }
+.pg-entrainer .sea-vider-oui { background: #A0301E; color: #FFF; }
 
 /* ---------- une ligne de seance ---------- */
 .pg-entrainer .sea-ligne {

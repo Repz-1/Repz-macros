@@ -2137,15 +2137,14 @@ const DECALAGE_SW_V2 = 232;
   const se = lire('app-v2/src/components/Seances.jsx');
   const soucis = [];
   if (se) {
-    // On ne regarde que l'encart de l'accueil. L'ecran plein « Toutes
-    // les seances », lui, a le droit d'expliquer qu'il est vide : on y
-    // arrive volontairement, une page blanche serait pire.
+    // L'ecran plein « Toutes les seances » est supprime le 5/09 : la
+    // liste se deplie sur place. Il ne reste que cet encart.
     const bloc = (se.match(/export function BlocSeances[\s\S]*?\n\}/) || [''])[0];
     if (!/if \(liste\.length === 0\) return null;/.test(bloc)) soucis.push('l\'encart s\'affiche de nouveau quand il est vide');
     // Le composant doit porter sa propre carte : enveloppe a
     // l'exterieur, la carte blanche restait a l'ecran meme vide.
     if (!/class="ent-bloc sea-bloc"/.test(bloc)) soucis.push('l\'encart ne porte plus sa carte : une enveloppe vide reapparaitra');
-    if (/sea-vide/.test(bloc)) soucis.push('le message « aucune seance » est revenu dans l\'encart');
+    if (/class="sea-vide"/.test(bloc)) soucis.push('le message « aucune seance » est revenu dans l\'encart');
   }
   const ent = lire('app-v2/src/components/Entrainer.jsx');
   if (ent && /<div class="ent-bloc">\s*<BlocSeances/.test(ent)) {
