@@ -195,8 +195,13 @@ function CarteProgramme({ today, todayIso, allerVers }) {
       // L'avenir d'abord : un jour futur reste « a venir » meme s'il
       // porte deja des muscles notes. Sans cette priorite, noter
       // « Épaules » pour demain le comptait comme deja fait.
+      // Raci, 5/09 : « comment l'utilisateur distingue un mardi d'un
+      // mercredi ». Un jour passe non fait et un jour a venir
+      // s'ecrivaient a l'identique — rien ne disait lequel etait
+      // derriere soi. Quatrieme etat : « passe ». Il ne juge pas, il
+      // situe dans le temps ; la ligne s'eteint, sans croix ni mot.
       etat: iso > todayIso ? 'venir'
-        : (marques.length ? 'fait' : (iso === todayIso ? 'auj' : null)),
+        : (marques.length ? 'fait' : (iso === todayIso ? 'auj' : 'passe')),
       auj: iso === todayIso,
     });
   }
@@ -243,47 +248,32 @@ function CarteProgramme({ today, todayIso, allerVers }) {
         </div>
       )}
 
-      {/* Une marque par ligne, au plus. « Fait » devient une coche :
-          meme information, un dixieme de la surface. « A venir » n'a
-          pas de marque du tout — une ligne sans rien EST a venir, et
-          deux pastilles grises pesaient plus qu'elles n'informaient.
-          Le sous-titre ne s'affiche que s'il dit quelque chose. */}
-      {lignes.map(l => {
-        // Raci, 5/09, en trois passes. 1) « Mets tout dans la meme
-        // case, retire le fond noir » : le pave noir repetait le titre
-        // affiche juste au-dessus. 2) « Le plus important c'est
-        // Demarrer la seance » : l'action prend le pas sur le badge.
-        // 3) « C'est devenu le foutoir, rien n'est distinct » —
-        // l'action a 14,5 px dans la colonne de droite rivalisait avec
-        // le titre et le poussait sur deux lignes. Elle descend sur sa
-        // PROPRE ligne, pleine largeur, sous un filet : identification
-        // en haut, action en bas. Plus rien ne se dispute la place.
-        const estAction = l.etat === 'auj' && duJour;
-        const entete = (
-          <div class="cp-l-h">
-            <div class="cp-j">{l.jour}</div>
-            {/* Le sous-titre « 7 exercices · ~60 min » a ete retire le
-                5/09 : il chiffrait une seance qu'on n'a pas encore
-                ouverte, sous chaque ligne de la semaine. */}
-            <div class="cp-t"><b>{l.seance.titre}</b></div>
-            {l.etat === 'fait' && <div class="cp-e cp-e-fait" aria-label={t('cp_fait')}>✓</div>}
-            {l.etat === 'auj' && <div class="cp-e cp-e-auj">{t('cp_auj')}</div>}
-          </div>
-        );
-        return estAction ? (
-          <button class="cp-l auj cp-l-b" key={l.iso}
-            onClick={() => allerVers('seanceDetail',
-              { seanceId: duJour.seanceId, titre: duJour.seance.titre, depuis: 'journal' })}>
-            {entete}
-            <span class="cp-demarrer">
-              {t('cp_demarrer_simple')}
-              <span class="cp-demarrer-fl" aria-hidden="true">&rsaquo;</span>
-            </span>
-          </button>
-        ) : (
-          <div class={'cp-l' + (l.auj ? ' auj' : '')} key={l.iso}>{entete}</div>
-        );
-      })}
+      {/* Maquette C, retenue par Raci le 5/09 : « on va enlever et
+          laisser juste la seance d'aujourd'hui ». La semaine entiere
+          etait ecrite ligne par ligne — un jour fait, un jour manque,
+          un jour a venir, tous a la meme taille, et l'action du jour
+          coincee au milieu. Les etats se ressemblaient au point qu'on
+          ne distinguait plus un mardi passe d'un mercredi a venir.
+          La carte ne montre plus que le jour courant, en tuile : ce
+          qu'on doit faire maintenant. Le calendrier du mois, juste en
+          dessous, dit deja le reste de la semaine — couleur par jour,
+          coche sur les jours notes. */}
+      {duJour ? (
+        <button class="cp-tuile" onClick={() => allerVers('seanceDetail',
+          { seanceId: duJour.seanceId, titre: duJour.seance.titre, depuis: 'journal' })}>
+          <span class="cp-tuile-j">{t('cp_auj')} · {jourLong(today).toUpperCase()}</span>
+          <span class="cp-tuile-t">{duJour.seance.titre}</span>
+          <span class="cp-tuile-go">
+            {t('cp_demarrer_simple')}
+            <span class="cp-demarrer-fl" aria-hidden="true">&rsaquo;</span>
+          </span>
+        </button>
+      ) : (
+        /* Jour de repos, ou seance du jour deja notee : la tuile n'a
+           rien a lancer. Une ligne calme le dit, et « Seance libre »
+           plus bas reste la porte de sortie. */
+        <div class="cp-repos">{t('cp_rien_auj')}</div>
+      )}
 
       {/* Le bouton nomme ce qu'il lance. Jour de repos : il garde le
           libelle generique plutot que de disparaitre — une seance

@@ -1041,51 +1041,39 @@
 /* Lignes calmes : un filet fin plutot qu'un grand vide entre chaque,
    et alignement sur la PREMIERE ligne de texte — un titre qui passe
    sur deux lignes ne decale plus le jour ni la marque. */
-.cp-l { display: block; padding: 10px 2px; }
-.cp-l-h { display: flex; align-items: baseline; gap: 12px; }
-.cp-l + .cp-l { border-top: 1px solid #F0EBE1; }
-.cp-j { width: 34px; flex: none; font-size: 11px; font-weight: 800; color: #B0A99C; letter-spacing: .06em; }
-.cp-t { flex: 1; min-width: 0; }
-.cp-t b { display: block; font-size: 14.5px; font-weight: 700; line-height: 1.35; }
-.cp-e { flex: none; font-size: 10.5px; font-weight: 800; letter-spacing: .05em; }
-.cp-e-fait { color: #1F7A50; font-size: 13px; }
-/* Raci, 5/09 : « le plus important c'est Demarrer la seance ». Le
-   badge etait le plus gros element de la ligne alors qu'il ne fait que
-   redire ce que la date dit deja — le fond creme et le SAM orange
-   signalent le jour courant. Il devient une etiquette de 8,5 px :
-   present, jamais dominant. Le noir sur jaune reste (Raci, plus tot
-   dans la journee), et tient encore a 11,3:1. */
-.cp-e-auj {
-  background: #FAC408; color: #151515;
-  padding: 2px 6px; border-radius: 5px;
-  font-size: 8.5px; font-weight: 800; letter-spacing: .03em;
+/* MAQUETTE C (Raci, 5/09). La carte ne porte plus la semaine ligne
+   par ligne : seulement le jour courant, en tuile noire. Le noir
+   revient — mais cette fois il ne repete rien, puisqu'il n'y a plus
+   de ligne au-dessus de lui. Il porte le jour, la seance et l'action
+   dans un seul objet. */
+.cp-tuile {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  border: none; font-family: inherit;
+  background: #151515; color: #F8F2E8;
+  border-radius: 18px; padding: 16px; margin-top: 14px;
+  transition: transform .12s ease;
 }
-
-
-/* Le jour courant se distingue par son fond, pas par un cadre. */
-.cp-l.auj { background: #FFFAEC; border-radius: 10px; padding-left: 8px; padding-right: 8px; margin: 0 -6px; }
-.cp-l.auj .cp-j { color: #B34700; }
-
-/* La ligne du jour EST le bouton de demarrage (Raci, 5/09). Elle
-   reste une ligne : meme fond creme, meme gabarit, aucun aplat noir.
-   Seul « Demarrer la seance » s'ajoute sous le titre, en texte
-   normal — le badge AUJOURD'HUI porte deja la couleur. */
-button.cp-l-b {
-  width: 100%; border: none; font-family: inherit; text-align: left;
-  cursor: pointer; transition: background .15s ease, transform .12s ease;
+.cp-tuile:active { transform: scale(.985); }
+.cp-tuile-j {
+  display: block; font-size: 10.5px; font-weight: 800;
+  letter-spacing: .1em; color: #FAC408;
 }
-button.cp-l-b:active { background: #FBF3DE; transform: scale(.99); }
-/* L'action sur sa propre ligne, pleine largeur, separee par un filet.
-   Elle ne rivalise plus avec le titre : elle vient apres lui. */
-.cp-demarrer {
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  margin-top: 9px; padding-top: 9px;
-  border-top: 1px solid rgba(179, 71, 0, .16);
-  font-size: 14.5px; font-weight: 800; color: #B34700;
-  letter-spacing: -.01em; text-transform: none;
+.cp-tuile-t {
+  display: block; font-size: 19px; font-weight: 800;
+  letter-spacing: -.02em; line-height: 1.2; margin: 5px 0 12px;
+}
+.cp-tuile-go {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  background: #FAC408; color: #151515; border-radius: 12px; padding: 12px;
+  font-size: 14.5px; font-weight: 800;
 }
 .cp-demarrer-fl { font-size: 17px; line-height: 1; }
-button.cp-l-b:active .cp-demarrer { color: #8A3A00; }
+
+/* Jour de repos : une ligne calme, pas une tuile vide. */
+.cp-repos {
+  margin-top: 14px; padding: 16px 4px;
+  text-align: center; font-size: 13.5px; font-weight: 600; color: #8A8378;
+}
 
 .cp-go {
   margin-top: 16px; width: 100%; border: none; border-radius: 15px;

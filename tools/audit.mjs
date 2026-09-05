@@ -1662,14 +1662,22 @@ const DECALAGE_SW_V2 = 232;
   const soucis = [];
   if (ent) {
     if (!/function CarteProgramme/.test(ent)) soucis.push('la carte de pilotage a disparu');
-    if (/class="cp-go"[\s\S]{0,400}cp_demarrer'/.test(ent)) {
-      soucis.push('le pave noir est revenu au-dessus de la ligne du jour : il repete son titre');
+    // Raci, 5/09 : « on va enlever et laisser juste la seance
+    // d'aujourd'hui » (maquette C). La semaine ligne par ligne est
+    // supprimee — un jour passe non fait et un jour a venir
+    // s'ecrivaient a l'identique. Le calendrier du mois, juste en
+    // dessous, dit deja le reste de la semaine.
+    if (/lignes\.map\(/.test(ent)) {
+      soucis.push('la semaine est de nouveau ecrite ligne par ligne dans la carte');
     }
-    if (!/class="cp-l auj cp-l-b"/.test(ent)) {
-      soucis.push('la ligne du jour n\'est plus le bouton de demarrage');
+    if (!/class="cp-tuile"/.test(ent)) {
+      soucis.push('la tuile du jour a disparu : plus rien ne lance la seance');
     }
-    if (!/class="cp-demarrer">[\s\S]{0,60}t\('cp_demarrer_simple'\)/.test(ent)) {
-      soucis.push('« Demarrer la seance » a disparu de la ligne du jour');
+    if (!/class="cp-tuile-go">[\s\S]{0,60}t\('cp_demarrer_simple'\)/.test(ent)) {
+      soucis.push('« Demarrer la seance » a disparu de la tuile du jour');
+    }
+    if (!/t\('cp_rien_auj'\)/.test(ent)) {
+      soucis.push('un jour sans seance prevue n\'affiche plus rien du tout');
     }
     // Raci, 26/08 : un programme dit ce qui est prevu, il n'interdit
     // pas de faire autre chose. La seance libre doit rester joignable.
@@ -1684,7 +1692,8 @@ const DECALAGE_SW_V2 = 232;
     }
     if (!/class="ent-bloc"/.test(ent)) soucis.push('le calendrier ou « Ta semaine » a saute — Raci les a gardes');
   }
-  if (css && !/\.cp-e-auj/.test(css)) soucis.push('les etats de la semaine (FAIT / AUJOURD\'HUI / A VENIR) ont perdu leur style');
+  if (css && !/\.cp-tuile \{/.test(css)) soucis.push('la tuile du jour a perdu son style');
+  if (css && !/\.cp-repos \{/.test(css)) soucis.push('le jour sans seance n\'a plus de mise en forme');
   if (soucis.length) faute('R50 carte de programme', soucis.join(' ; '));
   else passe('R50 carte de programme');
 }
@@ -2080,14 +2089,14 @@ const DECALAGE_SW_V2 = 232;
   const css = lire('app-v2/src/styles/entrainer-carte.css');
   const soucis = [];
   if (ent) {
+    // 5/09 : la carte n'a plus de lignes de semaine. Ce qui reste a
+    // proteger : qu'aucune des repetitions d'aout n'y revienne avec
+    // elles.
     if (/cp_venir/.test(ent)) soucis.push('la pastille « a venir » est revenue');
-    if (/l\.seance\.sub/.test(ent)) soucis.push('le sous-titre « N exercices · ~M min » est revenu sur les lignes de la semaine');
+    if (/l\.seance\.sub/.test(ent)) soucis.push('le sous-titre « N exercices · ~M min » est revenu');
     if (/sub: t\('cp_note'\)/.test(ent)) soucis.push('« Note depuis le calendrier » est revenu sur chaque ligne');
-    if (!/cp-e-fait" aria-label/.test(ent)) soucis.push('la coche « fait » a perdu son libelle pour les lecteurs d\'ecran');
   }
   if (css) {
-    if (!/\.cp-l \+ \.cp-l \{ border-top/.test(css)) soucis.push('les filets entre lignes ont disparu');
-    if (!/\.cp-l-h \{ display: flex; align-items: baseline/.test(css)) soucis.push('un titre sur deux lignes decalera de nouveau le jour et la marque');
     if (/\.cp-e-venir/.test(css)) soucis.push('le style de la pastille « a venir » traine encore');
   }
   if (soucis.length) faute('R63 carte sans repetition', soucis.join(' ; '));
