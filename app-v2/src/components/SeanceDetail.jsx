@@ -201,22 +201,25 @@ export function SeanceDetail({ seanceId, titre, retour }) {
           « Retour au journal » meme quand elle ramenait a la page du
           programme. Deux sorties nommees pour ce qu'elles font, et un
           acces direct a la planification des jours restants. */}
-      {/* Arbitrage du doublon. Nomme l'heure de la seance deja notee :
-          sans elle, « une seance existe deja » ne dit pas laquelle.
-          « Garder les deux » est a droite et discret — c'est le choix
-          qui laisse le desordre. */}
+      {/* Arbitrage du doublon (Raci, 5/09 : deux choix, pas trois).
+          Les deux boutons nomment la seance qu'ils GARDENT, jamais
+          celle qu'ils effacent — « remplacer l'ancienne » et « garder
+          les deux » demandaient de deviner ce qui restait. L'heure
+          identifie l'enregistrement existant : sans elle, « une seance
+          existe deja » ne dit pas laquelle. Garder l'ancienne
+          n'enregistre rien et rend la main. */}
       {conflit && (
         <div class="sd-conflit">
           <div class="sd-conflit-t">Cette séance est déjà enregistrée aujourd'hui</div>
           <div class="sd-conflit-l">
-            « {conflit.titre} », notée à {heureDe(conflit.ts)}. Tu peux la remplacer
-            par celle-ci, ou garder les deux.
+            « {conflit.titre} » est déjà notée à {heureDe(conflit.ts)}.
+            Une seule des deux sera gardée.
           </div>
           <button class="sd-conflit-oui" onClick={() => enregistrer(conflit)}>
-            Remplacer l'ancienne
+            Remplacer par celle-ci
           </button>
-          <button class="sd-conflit-non" onClick={() => enregistrer(null)}>
-            Garder les deux
+          <button class="sd-conflit-non" onClick={() => { setConflit(null); revenir(); }}>
+            Garder celle de {heureDe(conflit.ts)}
           </button>
         </div>
       )}
