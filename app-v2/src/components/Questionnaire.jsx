@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { programmeParId } from '../data/programmes.js';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import '../legacy/quiz2.css';
@@ -265,7 +266,7 @@ export function Questionnaire() {
     ];
     const etape = Math.min(2, Math.floor(calcul / 34));
     const R = 62, C = 2 * Math.PI * R;
-    return (
+    return createPortal(
       <div class="qz-scene"><div class="qz qz--calc">
         <div class="qz-calc">
           <div class="qz-calc-anneau">
@@ -292,7 +293,8 @@ export function Questionnaire() {
             {TEXTES[etape]}
           </div>
         </div>
-      </div></div>
+      </div></div>,
+      document.body
     );
   }
 
@@ -315,7 +317,7 @@ export function Questionnaire() {
     };
     const materielTxt = MAT_TXT[reponses.materiel] || '';
 
-    return (
+    return createPortal(
       <div class="qz-scene"><div class="qz">
         <div class="qz-haut">
           <button class="qz-retour" onClick={retour} aria-label="Retour">
@@ -380,13 +382,14 @@ export function Questionnaire() {
               fiche, puis liste par niveau, puis aiguillage. */}
           <button class="qz-lien" onClick={refaire}>Refaire le test</button>
         </div>
-      </div></div>
+      </div></div>,
+      document.body
     );
   }
 
   // ---------- Questions ----------
   const q = QUESTIONS[etape];
-  return (
+  return createPortal(
     <div class="qz-scene"><div class="qz">
       <div class="qz-haut">
         <button class="qz-retour" onClick={retour} aria-label="Retour">
@@ -424,6 +427,7 @@ export function Questionnaire() {
           {i === total - 1 ? 'Voir mon programme' : 'Continuer'}
         </button>
       </div>
-    </div></div>
+    </div></div>,
+    document.body
   );
 }
