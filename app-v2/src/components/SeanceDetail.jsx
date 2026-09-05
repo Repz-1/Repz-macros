@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { enregistrerSeance } from '../store/seances.js';
 import { t } from '../i18n/index.js';
 import { EXERCISES, IMG_BASE } from '../data/exercices.js';
 import { SESSION_EXOS } from '../data/sessionExos.js';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import '../legacy/seance.scoped.css';
+// La fiche agrandie reutilise les regles .exo-fiche, ecrites pour
+// l'ecran de selection mais non prefixees : elles s'appliquent ici.
+import '../legacy/selection-exercices.scoped.css';
 
 // ==========================================================
 // ECRAN "Ma seance" — transpose du v1 (seance.body.html, ecran 2).
@@ -66,6 +70,7 @@ export function SeanceDetail({ seanceId, titre, retour }) {
 
   const revenir = retour || retourEntrainer;
   const [fini, setFini] = useState(null);
+  const [apercu, setApercu] = useState(null);   // index de l'exercice montre en grand
   // « progId-index » : on retire l'index pour retrouver le programme,
   // et donc l'ecran ou l'on pose ses jours.
   const progId = String(seanceId || '').replace(/-\d+$/, '') || null;
@@ -204,7 +209,15 @@ export function SeanceDetail({ seanceId, titre, retour }) {
           const meta = (ex.meta || '').replace(/\s*×\s*/g, ' × ');
           return (
             <div class={'done-item' + (estFait ? ' done' : '')} key={i} onClick={() => basculerFait(i)} style="flex-wrap:wrap">
-              <div class="done-photo">
+              {/* Raci, 5/09 : « les images ne s'agrandissent plus, elles
+                  se selectionnent directement ». Depuis que la liste
+                  n'est plus verrouillee, toucher la vignette cochait
+                  l'exercice. Elle ouvre desormais la fiche, comme sur
+                  l'ecran de selection : on voit le mouvement avant de
+                  decider. Le clic ne remonte pas a la ligne. */}
+              <div class="done-photo" role="button" tabIndex={0}
+                aria-label={'Voir ' + ex.nom}
+                onClick={(e) => { e.stopPropagation(); setApercu(i); }}>
                 <img src={`${IMG_BASE}${ex.imgId}/0.jpg`} alt={ex.nom} loading="lazy"
                   onError={(e) => e.currentTarget.parentElement.classList.add('no-img')} />
               </div>
@@ -240,6 +253,46 @@ export function SeanceDetail({ seanceId, titre, retour }) {
           );
         })}
       </div>
+
+      {apercu !== null && refs[apercu] && (
+        <ApercuExercice mKey={refs[apercu].mKey} ex={refs[apercu].ex}
+          fermer={() => setApercu(null)} />
+      )}
     </div>
+  );
+}
+
+// ============================================================
+// APERCU D'UN EXERCICE
+// Les deux vues de la base — depart et fin — parce qu'une pose
+// seule ne dit pas le mouvement. Lecture seule : depuis la seance
+// l'exercice est deja choisi, il n'y a rien a ajouter ni a retirer.
+// ============================================================
+function ApercuExercice({ mKey, ex, fermer }) {
+  if (!ex) return null;
+  const vues = ex.imgId ? [0, 1] : [];
+  const meta = (ex.meta || '').replace(/\s*×\s*/g, ' × ');
+  return createPortal(
+    <div class="exo-fiche" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
+      <div class="exo-fiche-carte exo-fiche--bande">
+        <div class="exo-fiche-bande" style={{ background: '#151515' }}>
+          <div class="exo-fiche-muscle">{NOMS_MUSCLES[mKey] || ''}</div>
+          <h2>{ex.nom}</h2>
+          <button class="exo-fiche-fermer" onClick={fermer} aria-label="Fermer">×</button>
+        </div>
+
+        <div class="exo-fiche-vues">
+          {vues.map(n => (
+            <div key={n} class="exo-fiche-vue"
+              style={{ backgroundImage: `url('${IMG_BASE}${ex.imgId}/${n}.jpg')` }} />
+          ))}
+        </div>
+
+        {meta && (
+          <div class="exo-fiche-meta"><span>{meta}</span></div>
+        )}
+      </div>
+    </div>,
+    document.body
   );
 }
