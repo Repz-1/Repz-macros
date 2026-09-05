@@ -20,6 +20,11 @@ import '../legacy/quiz2.css';
 // ni aux besoins caloriques, qui sont poses ailleurs, dans Besoins.
 // Le lieu ne servait qu'a precocher le materiel : la question 4 le
 // demande maintenant directement.
+// Duree du tour d'anneau, en ms. Raci le veut entre 2000 et 3000
+// (5/09) : au-dela l'attente se voit, en deca les trois messages ne
+// se lisent pas.
+const DUREE_TOUR = 2600;
+
 const ETAPES = ['objectif', 'niveau', 'frequence', 'materiel'];
 
 // Etapes a reglette (taille / poids / age) : bornes et unite
@@ -228,14 +233,16 @@ export function Questionnaire() {
     if (i === total - 1) {
       // Cinematique avant le resultat : progression reguliere,
       // textes decrivant ce que le code fait reellement.
-      // 4 tours d'anneau (demande Raci) : noir, rouge, jaune, dore —
-      // le B tricolore puis l'or. ~0,9 s par tour.
+      // Raci, 5/09 : « reduis le temps, fais juste un tour ». Trois
+      // tours a 0,9 s faisaient 7,2 s d'attente pour un calcul
+      // instantane. Un seul tour de 2,6 s : assez pour que les trois
+      // messages se lisent, assez court pour ne pas peser.
       setCalcul(1);
       const debut = Date.now();
       const it = setInterval(() => {
-        const p = Math.min(300, Math.round((Date.now() - debut) / 24));
+        const p = Math.min(100, Math.round((Date.now() - debut) / DUREE_TOUR * 100));
         setCalcul(p);
-        if (p >= 300) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 420); }
+        if (p >= 100) { clearInterval(it); setTimeout(() => { setCalcul(0); setI(x => x + 1); }, 320); }
       }, 40);
       return;
     }
@@ -246,36 +253,43 @@ export function Questionnaire() {
 
   // ---------- Cinematique ----------
   if (calcul > 0) {
-    // 3 tours (Raci, version definitive) : l'ARC change de couleur a
-    // chaque tour — il se remplit en NOIR, puis en ROUGE par-dessus le
-    // noir, puis en JAUNE par-dessus le rouge, et le resultat suit.
-    const COULEURS = ['#1F1F1F', '#DE2F14', 'var(--or)'];
-    const tour = Math.min(2, Math.floor((calcul - 1) / 100));
-    const dansTour = Math.min(100, calcul - tour * 100);
-    const arc = COULEURS[tour];
-    const piste = tour === 0 ? '#EFEBE2' : COULEURS[tour - 1];
+    // Un seul tour, arc en degrade tricolore BelFit — jaune, orange,
+    // rouge, les trois couleurs du logo dans l'ordre du B (Raci,
+    // 5/09). Les tours qui changeaient de couleur l'un apres l'autre
+    // demandaient trois tours pour montrer la palette ; le degrade la
+    // montre en un seul.
     const TEXTES = [
       'Analyse de tes réponses…',
       'Choix du programme adapté…',
       'Calage de tes temps de repos…',
     ];
+    const etape = Math.min(2, Math.floor(calcul / 34));
     const R = 62, C = 2 * Math.PI * R;
     return (
       <div class="qz qz--calc">
         <div class="qz-calc">
           <div class="qz-calc-anneau">
             <svg viewBox="0 0 150 150">
+              <defs>
+                <linearGradient id="qzArc" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#FAC408" />
+                  <stop offset="50%" stop-color="#F86A0C" />
+                  <stop offset="100%" stop-color="#D71016" />
+                </linearGradient>
+              </defs>
               <circle cx="75" cy="75" r={R} fill="none"
-                stroke={piste} stroke-width="9" />
-              <circle cx="75" cy="75" r={R} fill="none" stroke={arc} stroke-width="9"
+                stroke="#EFEBE2" stroke-width="9" />
+              <circle cx="75" cy="75" r={R} fill="none" stroke="url(#qzArc)" stroke-width="9"
                 stroke-linecap="round" transform="rotate(-90 75 75)"
-                stroke-dasharray={`${(dansTour / 100 * C).toFixed(1)} ${C.toFixed(1)}`} />
+                stroke-dasharray={`${(calcul / 100 * C).toFixed(1)} ${C.toFixed(1)}`} />
             </svg>
-            <div class="qz-calc-pct">{Math.round(calcul / 3)}<span>%</span></div>
+            <div class="qz-calc-pct">{calcul}<span>%</span></div>
           </div>
-          <div class="qz-calc-txt" key={tour}
-            style={{ color: ['#1F1F1F', '#DE2F14', 'var(--or-fonce)'][tour] }}>
-            {TEXTES[tour]}
+          {/* Le texte reste noir : le jaune et l'orange du degrade sont
+              des remplissages, jamais de l'ecriture — 1,7:1 sur le
+              creme. */}
+          <div class="qz-calc-txt" key={etape} style={{ color: '#1F1F1F' }}>
+            {TEXTES[etape]}
           </div>
         </div>
       </div>
