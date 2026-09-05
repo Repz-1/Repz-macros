@@ -259,10 +259,12 @@ function CarteProgramme({ today, todayIso, allerVers }) {
         const contenu = (
           <>
             <div class="cp-j">{l.jour}</div>
-            <div class="cp-t">
-              <b>{l.seance.titre}</b>
-              {l.seance.sub ? <small>{l.seance.sub}</small> : null}
-            </div>
+            {/* Raci, 5/09 : le sous-titre « 7 exercices · ~60 min »
+                disparait. Il chiffrait une seance qu'on n'a pas
+                encore ouverte, sous chaque ligne de la semaine, et
+                faisait de la carte un tableau. Le detail est dans la
+                seance. */}
+            <div class="cp-t"><b>{l.seance.titre}</b></div>
             {l.etat === 'fait' && <div class="cp-e cp-e-fait" aria-label={t('cp_fait')}>✓</div>}
             {/* Raci, 5/09 : « Démarrer la séance » passe SOUS le badge,
                 dans la colonne de droite, a la taille du sous-titre de

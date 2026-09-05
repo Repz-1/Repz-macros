@@ -2081,7 +2081,7 @@ const DECALAGE_SW_V2 = 232;
   const soucis = [];
   if (ent) {
     if (/cp_venir/.test(ent)) soucis.push('la pastille « a venir » est revenue');
-    if (!/l\.seance\.sub \? <small>/.test(ent)) soucis.push('le sous-titre s\'affiche de nouveau meme vide');
+    if (/l\.seance\.sub/.test(ent)) soucis.push('le sous-titre « N exercices · ~M min » est revenu sur les lignes de la semaine');
     if (/sub: t\('cp_note'\)/.test(ent)) soucis.push('« Note depuis le calendrier » est revenu sur chaque ligne');
     if (!/cp-e-fait" aria-label/.test(ent)) soucis.push('la coche « fait » a perdu son libelle pour les lecteurs d\'ecran');
   }
