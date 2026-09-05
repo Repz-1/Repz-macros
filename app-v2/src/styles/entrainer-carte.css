@@ -1013,12 +1013,19 @@
 }
 .cp-libre:active { transform: scale(.985); background: #F6F3EC; }
 
+/* Raci, 5/09 : « on dirait qu'il est abandonne ». Petit lien souligne
+   gris sous deux vrais boutons, il se lisait comme une note de bas de
+   page — alors que c'est par la qu'on trouve son programme quand on
+   n'en a pas. Meme gabarit que les deux autres, troisieme niveau de
+   la hierarchie : aplat noir, puis contour, puis creme plein. */
 .cp-gerer {
-  display: block; width: 100%; margin-top: 10px; padding: 6px;
-  background: none; border: none; font-family: inherit;
-  font-size: 13px; font-weight: 700; color: #6B655D;
-  text-decoration: underline; cursor: pointer;
+  display: block; width: 100%; margin-top: 9px; padding: 14px 12px;
+  background: #F3EFE5; border: none; border-radius: 15px;
+  font-family: inherit; font-size: 14.5px; font-weight: 800;
+  color: #B34700; cursor: pointer;
+  transition: background .15s ease, transform .12s ease;
 }
+.cp-gerer:active { background: #EAE5D8; transform: scale(.985); }
 
 /* Sortie de l'ecran de placement. Le disque de 40 px se confondait
    avec le fond et se calait sous la barre d'etat : Raci ne l'a jamais
