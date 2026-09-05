@@ -689,8 +689,32 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
   const actif = programmeActif.value;
   const prog = actif ? progParId(actif.id) : null;
   const sessionsProgramme = prog
-    ? prog.seances.map((sa, i) => ({ seanceId: `${actif.id}-${i}`, titre: sa.titre, sub: sa.sub }))
+    ? prog.seances.map((sa, i) => ({ seanceId: `${actif.id}-${i}`, titre: sa.titre, sub: sa.sub, index: i }))
     : [];
+
+  /**
+   * Raci, 5/09 : « ca ne fonctionne pas, car s'il remplace il n'y en a
+   * pas d'autre — les autres muscles ont deja ete attitres aux autres
+   * jours ». « Remplacer par une autre seance » proposait les quatre
+   * seances du programme, y compris celles deja posees ailleurs dans
+   * la semaine : en choisir une la mettait sur DEUX jours. Ne restent
+   * que les seances qui ne sont nulle part, et le bouton disparait
+   * quand il n'y en a aucune — ce qui est le cas d'un programme
+   * entierement place, justement celui de Raci.
+   */
+  const joursPris = prog ? normaliserJours(actif.jours, prog.seances.length) : {};
+  const indexAilleurs = new Set();
+  const jourDuIso = (() => {
+    const [a, m, j] = iso.split('-').map(Number);
+    return new Date(a, m - 1, j).getDay();
+  })();
+  Object.keys(joursPris).forEach(jr => {
+    if (Number(jr) !== jourDuIso) indexAilleurs.add(joursPris[jr]);
+  });
+  // La seance deja prevue ICI sort aussi de la liste : « remplacer »
+  // par elle-meme ne remplace rien.
+  const sessionsLibres = sessionsProgramme.filter(sa =>
+    !indexAilleurs.has(sa.index) && !(prevue && prevue.index === sa.index));
 
   // La fiche ne montre QUE le jour ouvert (Raci, 16/08). Elle a
   // agrege la semaine entiere pendant un temps : on ouvrait mardi et
@@ -795,11 +819,11 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
              a ete retire le 26/08 — « Ou trouver un programme complet »
              ne voulait rien dire a cet endroit, et « Trouver mon
              programme » est deja sur la page d'accueil. */
-          !sessionsProgramme.length ? null
+          !sessionsLibres.length ? null
           : choixOuvert ? (
             <div class="ml-choix">
               <div class="ml-choix-t">{t('ml_choisir')}</div>
-              {sessionsProgramme.map(sa => (
+              {sessionsLibres.map(sa => (
                 <button key={sa.seanceId} class="ml-choix-l"
                   onClick={() => { planifierSeance(iso, sa); setChoixOuvert(false); }}>
                   <span class="ml-choix-n">{sa.titre}</span>

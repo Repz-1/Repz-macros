@@ -2289,8 +2289,11 @@ const DECALAGE_SW_V2 = 232;
     if (/ml_prog_dabord|ml_ou_cocher/.test(ent)) {
       soucis.push('le renvoi vers le questionnaire est revenu dans la fiche d\'un jour');
     }
-    if (!/!sessionsProgramme\.length \? null/.test(ent)) {
+    if (!/!sessionsLibres\.length \? null/.test(ent)) {
       soucis.push('la fiche propose de nouveau quelque chose alors qu\'il n\'y a aucune seance a poser');
+    }
+    if (!/const sessionsLibres = sessionsProgramme\.filter/.test(ent)) {
+      soucis.push('le choix reproposait des seances deja posees un autre jour : elles seraient sur deux jours');
     }
     // Raci, 26/08 : « si j'ai envie de decider que tel jour je fais tel
     // muscle ». Les pastilles enregistrent des le tap, mais rien ne le
