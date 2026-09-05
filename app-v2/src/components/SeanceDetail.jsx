@@ -71,9 +71,6 @@ export function SeanceDetail({ seanceId, titre, retour }) {
   const [fini, setFini] = useState(null);
   const [apercu, setApercu] = useState(null);   // index de l'exercice montre en grand
   const [conflit, setConflit] = useState(null); // seance deja notee ce jour-la, en attente d'arbitrage
-  // « progId-index » : on retire l'index pour retrouver le programme,
-  // et donc l'ecran ou l'on pose ses jours.
-  const progId = String(seanceId || '').replace(/-\d+$/, '') || null;
 
   /**
    * Termine la seance : elle rejoint « Mes seances », et ses muscles
@@ -96,7 +93,8 @@ export function SeanceDetail({ seanceId, titre, retour }) {
       exos: retenus,
     });
     setConflit(null);
-    setFini({ exos: retenus.length, min: Math.max(1, Math.round(secondes / 60)) });
+    setFini(true);        // fige le chrono et neutralise un second appui
+    revenir();
   };
 
   /**
@@ -227,22 +225,12 @@ export function SeanceDetail({ seanceId, titre, retour }) {
         </div>
       )}
 
-      {fini && (
-        <div class="sd-fini">
-          <div class="sd-fini-t">{t('sd_bravo')}</div>
-          <div class="sd-fini-l">
-            {t('sd_fini_resume', { n: fini.exos, min: fini.min })}
-          </div>
-          {progId && (
-            <button class="sd-fini-b" onClick={() => allerVers('planifier', { prog: progId })}>
-              {t('sd_planifier')}
-            </button>
-          )}
-          <button class={'sd-fini-b' + (progId ? ' sd-fini-b--second' : '')} onClick={revenir}>
-            {retour ? t('sd_retour_prog') : t('sd_retour_journal')}
-          </button>
-        </div>
-      )}
+      {/* Raci, 5/09 : « j'ai fait commencer et il y a les deux choix
+          inutiles ». La carte « Seance enregistree » s'inserait au
+          milieu de la liste et demandait ou aller ensuite, alors que
+          la seule chose a faire etait de sortir. L'enregistrement rend
+          la main directement — le calendrier et le journal montrent le
+          resultat. */}
 
       <div id="sessionList">
         {refs.map(({ mKey, ex }, i) => {

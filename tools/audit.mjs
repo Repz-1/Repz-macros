@@ -2740,6 +2740,14 @@ const DECALAGE_SW_V2 = 232;
     if (/setDemarree/.test(sd)) soucis.push('l\'etat « demarree » est revenu : la seance retombe dans l\'entre-deux');
     if (!/disabled=\{done === 0\}/.test(sd)) soucis.push('on peut de nouveau enregistrer une seance sans aucun exercice coche');
     if (!/onClick=\{terminer\}/.test(sd)) soucis.push('le bouton principal n\'enregistre plus la seance');
+    // Raci, 5/09 : « il y a les deux choix inutiles ». La carte
+    // « Seance enregistree » s'inserait au milieu de la liste et
+    // demandait ou aller, alors que la seule chose a faire etait de
+    // sortir. L'enregistrement rend la main directement.
+    if (/class="sd-fini"/.test(sd)) soucis.push('la carte « Seance enregistree » est revenue au milieu de la liste');
+    if (!/setFini\(true\);[\s\S]{0,120}revenir\(\);/.test(sd)) {
+      soucis.push('l\'enregistrement ne rend plus la main tout seul');
+    }
     if (css && !/\.start-session-btn:disabled\{/.test(css)) {
       soucis.push('le bouton eteint ressemble encore a un bouton actif');
     }
