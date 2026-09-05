@@ -1857,7 +1857,7 @@ const DECALAGE_SW_V2 = 232;
     }
     // Depuis le 26/08 l'entree est l'aiguillage a deux voies (R59) :
     // la liste reste a UN appui, sans ecran d'objectifs entre les deux.
-    if (!/useState\(vise \? 'seances' : 'intro'\)/.test(pr)) {
+    if (!/useState\(vise \? 'seances' : 'progs'\)/.test(pr)) {
       soucis.push('l\'entree de la bibliotheque a change sans passer par R59');
     }
     // Le Full body debutant est range dans « forme » ET repousse dans
@@ -1944,16 +1944,16 @@ const DECALAGE_SW_V2 = 232;
   const css = lire('app-v2/src/legacy/programmes.scoped.css');
   const soucis = [];
   if (pr) {
-    if (!/useState\(vise \? 'seances' : 'intro'\)/.test(pr)) soucis.push('l\'aiguillage ne s\'ouvre plus en premier');
-    if (!/allerVers\('questionnaire'\)/.test(pr)) soucis.push('la voie du questionnaire a disparu');
-    if (!/jourAOuvrir\.value = isoDuJour\(\)/.test(pr)) soucis.push('la voie « Planifier mes seances » a disparu');
-    // La liste complete reste atteignable, meme en retrait : sans
-    // elle, les 14 programmes ne s'ouvrent plus que par le
-    // questionnaire.
-    if (!/setEcran\('progs'\)/.test(pr)) soucis.push('la liste des programmes n\'est plus atteignable');
+    // Raci, 5/09 : l'aiguillage est supprime. « L'utilisateur n'est
+    // pas cense acceder a ca » — il s'intercalait entre le bouton et
+    // la bibliotheque, et son retour redescendait un empilement que
+    // personne n'avait monte. La bibliotheque s'ouvre donc en premier.
+    if (/ecran === 'intro'/.test(pr)) soucis.push('l\'aiguillage « Par ou veux-tu commencer ? » est revenu');
+    if (!/useState\(vise \? 'seances' : 'progs'\)/.test(pr)) {
+      soucis.push('la bibliotheque ne s\'ouvre plus directement');
+    }
   }
-  if (css && !/\.voie-quiz/.test(css)) soucis.push('les deux voies ont perdu leur style');
-  if (css && !/\.voie-lien/.test(css)) soucis.push('le lien vers la liste complete a perdu son style');
+  if (css && !/\.prog-card/.test(css)) soucis.push('les cartes de programme ont perdu leur style');
   // Le libelle du lien doit annoncer le carrefour, pas une seule de
   // ses branches : « Choisir un programme » promettait un catalogue.
   // Le lien de la carte mene DIRECTEMENT aux quatre questions : celui

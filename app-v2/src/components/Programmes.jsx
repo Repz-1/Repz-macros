@@ -2,12 +2,8 @@ import { useState } from 'preact/hooks';
 import { PROGRAMMES, CATEGORIES } from '../data/programmes.js';
 import { vueEntrainer } from './Entrainer.jsx';
 
-import { retourEntrainer, allerVers, jourAOuvrir } from './Entrainer.jsx';
+import { retourEntrainer, allerVers } from './Entrainer.jsx';
 
-const isoDuJour = () => {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-};
 import { programmeActif } from '../store/programme.js';
 import { t } from '../i18n/index.js';
 import '../legacy/programmes.scoped.css';
@@ -51,7 +47,7 @@ export function Programmes() {
   // meme jour : repondre aux quatre questions, ou aller droit aux
   // programmes classes par niveau. Le questionnaire redevient une
   // OFFRE, il n'est plus un passage oblige.
-  const [ecran, setEcran] = useState(vise ? 'seances' : 'intro');
+  const [ecran, setEcran] = useState(vise ? 'seances' : 'progs');
   const [progId, setProgId] = useState(vise);
 
   // Tous les programmes, dans l'ordre des categories, SANS DOUBLON :
@@ -96,46 +92,20 @@ export function Programmes() {
     );
   };
 
-  // ---- Ecran 0 : deux voies ----
-  if (ecran === 'intro') {
-    return (
-      <div class="pg-programmes">
-        <div class="top">
-          <button class="back-btn" onClick={retourEntrainer}>←&nbsp; {t('ml_retour')}</button>
-          <h1>{t('pr_titre')}</h1>
-        </div>
-        <p class="intro-txt">{t('pr_intro')}</p>
-
-        {/* Raci, 26/08 : ce chemin part de « je ne sais pas quoi
-            faire ». Deux reponses possibles — je m'organise moi-meme,
-            ou je reponds a quatre questions et on me guide. */}
-        <button class="voie" onClick={() => {
-          jourAOuvrir.value = isoDuJour();
-          retourEntrainer();
-        }}>
-          <span class="voie-n">{t('pr_voie_plan')}</span>
-          <span class="voie-s">{t('pr_voie_plan_s')}</span>
-        </button>
-
-        <button class="voie voie-quiz" onClick={() => allerVers('questionnaire')}>
-          <span class="voie-n">{t('pr_voie_quiz')}</span>
-          <span class="voie-s">{t('pr_voie_quiz_s')}</span>
-        </button>
-
-        {/* Ceux qui savent deja gardent leur porte, en retrait. */}
-        <button class="voie-lien" onClick={() => setEcran('progs')}>
-          {t('pr_voie_liste')}
-        </button>
-      </div>
-    );
-  }
+  // L'aiguillage « Par ou veux-tu commencer ? » est supprime le 5/09
+  // (Raci) : « l'utilisateur n'est pas cense acceder a ca ». Il
+  // s'intercalait entre le bouton et la bibliotheque, et sa fleche
+  // retour faisait redescendre un empilement que personne n'avait
+  // monte. Les deux voies qu'il offrait existent ailleurs : le
+  // questionnaire par « Trouver mon programme », la planification a la
+  // main en touchant un jour du calendrier.
 
   // ---- Ecran 1 : les 14 programmes, a plat ----
   if (ecran === 'progs') {
     return (
       <div class="pg-programmes">
         <div class="top">
-          <button class="back-btn" onClick={() => setEcran('intro')}>←&nbsp; {t('ml_retour')}</button>
+          <button class="back-btn" onClick={retourEntrainer}>←&nbsp; {t('ml_retour')}</button>
           <h1>{t('pr_titre')}</h1>
         </div>
         <p class="intro-txt">{t('pr_sous')}</p>
