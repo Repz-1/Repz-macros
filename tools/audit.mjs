@@ -2295,27 +2295,17 @@ const DECALAGE_SW_V2 = 232;
     // l'action. Elle nomme ce qu'elle programme et remplace
     // « Enregistrer », qui ne faisait que refermer la fiche — deux
     // boutons pour le meme geste.
-    if (!/class="ml-prog-seance"/.test(ent)) soucis.push('l\'action « Programmer cette seance » a disparu');
-    // Un jour passe ne se programme pas, et « Repos » n'est pas une
-    // seance : ni l'un ni l'autre ne doit faire apparaitre l'action.
-    if (!/type !== 'passe' && selMuscles\.length > 0/.test(ent)) {
-      soucis.push('l\'action s\'affiche sur un jour passe ou pour un simple repos');
-    }
-    // Au-dela de deux groupes, le bouton compte au lieu de tout
-    // nommer : quatre noms passaient sur deux lignes.
-    if (!/class="ml-prog-m">\{resumeMuscles\(selMuscles\)\}/.test(ent)) {
-      soucis.push('le bouton renomme tous les groupes : son texte debordera a 3 ou 4');
+    // Raci, 5/09 : « Confirmer suffit ». « Programmer cette seance »
+    // apparaissait des la premiere pastille, juste au-dessus de
+    // « Confirmer », et les deux refermaient la fiche. Deux boutons
+    // pour un seul geste — le meme defaut qu'« Enregistrer » en aout.
+    if (/class="ml-prog-seance"/.test(ent)) {
+      soucis.push('« Programmer cette seance » est revenu : il double « Confirmer »');
     }
     // A quatre groupes, l'enumeration passait sur deux lignes et
     // deformait le bouton : on nomme les deux premiers, on compte le
     // reste.
     if (!/function resumeMuscles\(cles\)/.test(ent)) soucis.push('le resume des muscles choisis a disparu');
-    if (!/class="ml-prog-m">\{resumeMuscles\(selMuscles\)\}/.test(ent)) {
-      soucis.push('le bouton enumere de nouveau tous les muscles choisis');
-    }
-    if (!/const selMuscles = sel\.filter\(k => k !== 'repos'\)/.test(ent)) {
-      soucis.push('« Repos » est de nouveau compte comme un muscle a programmer');
-    }
     // « Enregistrer » a ete supprime : il ne faisait que refermer, ce
     // que « Retour » fait deja. Et « Effacer » n'apparait que s'il y a
     // quelque chose a effacer.

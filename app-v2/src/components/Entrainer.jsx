@@ -712,9 +712,6 @@ function ModaleMuscles({ iso, fermer }) {
   useRetour(!!iso, fermer);
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
-  // « Repos » n'est pas un muscle : c'est le contraire d'une seance.
-  // Il colore le calendrier, il ne se programme pas (Raci, 26/08).
-  const selMuscles = sel.filter(k => k !== 'repos');
   const isoAuj = wlIso(new Date());
   const type = iso < isoAuj ? 'passe' : (iso === isoAuj ? 'auj' : 'futur');
   const faites = seancesDuJour(iso);
@@ -900,22 +897,12 @@ function ModaleMuscles({ iso, fermer }) {
             le disait : on cochait sans savoir que le jour venait
             d'entrer dans « Mes seances planifiees ». Le recapitulatif
             nomme ce qui est retenu, et le dit au bon temps. */}
-        {/* Raci, 26/08 : « une fois un ou des muscles selectionnes, un
-            message apparait pour programmer la seance ». Ce n'est pas
-            un resume : c'est l'action. Elle nomme ce qu'on programme
-            et sur quel jour, et remplace « Enregistrer » — qui ne
-            faisait que refermer la fiche. */}
-        {/* L'action ne s'affiche que pour aujourd'hui et l'avenir : sur
-            un jour passe il n'y a rien a programmer, les pastilles ont
-            deja enregistre au moment du tap. « Enregistrer cette
-            seance » n'y disait rien de vrai (Raci, 26/08). */}
-        {type !== 'passe' && selMuscles.length > 0 && (
-          <button class="ml-prog-seance" onClick={fermer}>
-            <span class="ml-prog-t">{t('ml_prog_futur')}</span>
-            <span class="ml-prog-m">{resumeMuscles(selMuscles)}</span>
-          </button>
-        )}
-
+        {/* « Programmer cette seance » est retire le 5/09 (Raci) :
+            « Confirmer suffit ». Il apparaissait des la premiere
+            pastille cochee, juste au-dessus de « Confirmer », et les
+            deux faisaient la meme chose — fermer la fiche. Les
+            pastilles ayant deja enregistre au tap, un seul bouton de
+            sortie suffit. */}
         {/* Sortie de la fiche. Cinq etats successifs : haut-gauche
             (17/08), disque noir flottant en bas a droite (22/08),
             ligne de titre (26/08, refuse), barre pleine largeur
