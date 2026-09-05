@@ -2669,6 +2669,39 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R78 — La fiche d'un jour ne deroule pas les exercices.
+// Raci, 5/09 : sur le 5 septembre, cinq seances empilees — quatre
+// « Jour 2 » et un « Jour 4 » — chacune deroulant jusqu'a six
+// exercices, chacune marquee « 1 min ». « C'est a ne rien comprendre.
+// Ca ne doit plus jamais apparaitre. » Une ligne par seance, un
+// bouton « Voir la seance » qui ouvre son detail. La duree ne
+// s'affiche plus ici : sur des essais d'une minute elle brouille au
+// lieu d'informer.
+// ------------------------------------------------------------
+{
+  const ent = lire('app-v2/src/components/Entrainer.jsx');
+  if (ent) {
+    const soucis = [];
+    const i = ent.indexOf('function ModaleMuscles');
+    const bloc = i >= 0 ? ent.slice(i, ent.indexOf('\nfunction ', i + 10)) : ent;
+    if (/class="ml-fait-e"/.test(bloc)) {
+      soucis.push('les exercices sont de nouveau deroules sous chaque seance');
+    }
+    if (/class="ml-fait-d"/.test(bloc)) {
+      soucis.push('la duree « 1 min » est revenue a cote du titre de la seance');
+    }
+    if (!/class="ml-fait-voir"/.test(bloc)) {
+      soucis.push('« Voir la seance » a disparu : le detail n\'est plus atteignable depuis un jour');
+    }
+    if (!/class="ml-fait-x"/.test(bloc)) {
+      soucis.push('une seance enregistree ne peut plus etre supprimee depuis le calendrier');
+    }
+    if (soucis.length) faute('R78 fiche d\'un jour sans liste', soucis.join(' ; '));
+    else passe('R78 fiche d\'un jour sans liste');
+  }
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le

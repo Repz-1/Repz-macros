@@ -13,14 +13,6 @@ import { BlocSeances, ToutesSeances, DetailSeance } from './Seances.jsx';
 import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId, normaliserJours } from '../store/programme.js';
 import { seancesDuJour, supprimerSeance } from '../store/seances.js';
 
-/** « 90 × 8 · 85 × 10 », ou rien si aucune serie notee. */
-function resumeSeries(series) {
-  if (!series || !series.length) return '';
-  return series.slice(0, 3)
-    .filter(x => x && (x.kg || x.reps))
-    .map(x => `${x.kg || '—'} × ${x.reps || '—'}`)
-    .join(' · ');
-}
 import { t } from '../i18n/index.js';
 
 /* ------------------------------------------------------------
@@ -665,7 +657,7 @@ function resumeMuscles(cles) {
   return noms.slice(0, 2).join(', ') + ' +' + (noms.length - 2);
 }
 
-function ModaleMuscles({ iso, fermer }) {
+function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
   // Empilee dans la pile de retours : le bouton Android et la touche
   // Echap la ferment, au lieu de changer l'onglet SOUS elle. Le hook
   // doit etre appele avant tout retour anticipe — d'ou le `!!iso`
@@ -720,38 +712,37 @@ function ModaleMuscles({ iso, fermer }) {
         </div>
 
         {/* ---- Ce qui a ete FAIT ce jour-la ----
-            Raci, 5/09 : quatre « Jour 2 — Dos / Biceps » empiles sur le
-            5 septembre, chacun d'une minute — des essais enregistres
-            l'un apres l'autre. Rien de faux, mais rien pour les
-            retirer : la fiche ne savait qu'ajouter. Chaque seance
-            porte desormais sa croix. Le geste est irreversible, donc
-            elle demande confirmation. */}
+            Raci, 5/09 : « il n'est pas cense me montrer tous les
+            exercices sous forme de liste ». Sur un jour a plusieurs
+            seances, la fiche deroulait jusqu'a six exercices CHACUNE :
+            quatre « Jour 2 » et un « Jour 4 » empiles, marques « 1 min »
+            a chaque fois, illisibles. Une ligne par seance, et un
+            bouton qui ouvre son detail — c'est la qu'on lit les
+            exercices, les series et le tonnage. La croix supprime,
+            avec confirmation. */}
         {faites.length > 0 && (
           <div class="ml-fait">
             {faites.map(sa => (
               <div key={sa.id} class="ml-fait-s">
                 <div class="ml-fait-t">
                   {sa.titre}
-                  {sa.duree > 0 && <span class="ml-fait-d"> · {Math.max(1, Math.round(sa.duree / 60))} min</span>}
                   <button class="ml-fait-x"
                     aria-label={'Supprimer ' + sa.titre}
                     onClick={() => setASupprimer(sa.id)}>×</button>
                 </div>
-                {aSupprimer === sa.id && (
+                {aSupprimer === sa.id ? (
                   <div class="ml-fait-conf">
                     <span>Supprimer cette séance ?</span>
                     <button class="ml-fait-non" onClick={() => setASupprimer(null)}>Annuler</button>
                     <button class="ml-fait-oui"
                       onClick={() => { supprimerSeance(sa.id); setASupprimer(null); }}>Supprimer</button>
                   </div>
+                ) : (
+                  <button class="ml-fait-voir"
+                    onClick={() => { fermer(); ouvrirSeance && ouvrirSeance(sa); }}>
+                    {t('ml_voir_seance')}
+                  </button>
                 )}
-                {(sa.exos || []).slice(0, 6).map((e, i) => (
-                  <div key={i} class="ml-fait-e">
-                    <i class="dot" style={{ background: COULEUR[e.mKey] || '#C9C3B8' }} />
-                    <span class="ml-fait-n">{e.nom}</span>
-                    <span class="ml-fait-v">{resumeSeries(e.series)}</span>
-                  </div>
-                ))}
               </div>
             ))}
           </div>
@@ -989,7 +980,8 @@ export function Entrainer() {
         ouvrirSeance={setSeanceOuverte}
         voirToutesSeances={() => setToutesSeances(true)} />
 
-      <ModaleMuscles iso={jourOuvert} fermer={() => setJourOuvert(null)} />
+      <ModaleMuscles iso={jourOuvert} fermer={() => setJourOuvert(null)}
+        ouvrirSeance={setSeanceOuverte} />
       <ModalePremium montre={premium} fermer={() => setPremium(false)} />
     </div>
   );

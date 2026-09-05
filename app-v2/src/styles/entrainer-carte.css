@@ -598,6 +598,16 @@
   color: #C9C3B8; cursor: pointer;
 }
 .ml-fait-x:active { color: #A0301E; }
+/* « Voir la seance » remplace la liste d'exercices deroulee sous
+   chaque seance (Raci, 5/09). Discret : la fiche d'un jour sert a
+   noter des muscles, pas a relire un entrainement. */
+.ml-fait-voir {
+  display: block; width: 100%; margin-top: 6px; padding: 10px;
+  background: #F3EFE5; border: none; border-radius: 12px;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  color: #B34700; cursor: pointer;
+}
+.ml-fait-voir:active { background: #EAE5D8; }
 .ml-fait-conf {
   display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
   margin: 6px 0 8px; padding: 9px 11px;
