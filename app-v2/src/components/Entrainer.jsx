@@ -210,8 +210,6 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   // le bloc d'action d'origine reprend la main.
   if (!prog && !lignes.length) return null;
 
-  const faites = lignes.filter(l => l.etat === 'fait').length;
-  const aVenir = lignes.filter(l => l.etat === 'venir').length;
   const duJour = lignes.find(l => l.auj && l.lancable && l.seanceId);
 
   // « Semaine 2 sur 8 » : depuis la date d'adoption, en semaines
@@ -230,17 +228,15 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   return (
     <div class="cp">
       <div class="cp-nom">{prog ? prog.name : t('cp_posees_t')}</div>
+      {/* Raci, 5/09 : « 1 seance faite cette semaine » est retiree.
+          La barre juste en dessous mesure deja l'avancee, et le
+          calendrier compte les seances jour par jour. Reste la seule
+          chose que ni l'un ni l'autre ne dit : ou l'on en est dans
+          les huit semaines. */}
       <div class="cp-av">
         {semaine && (total
           ? t('cp_semaine', { n: semaine, t: total })
           : t('cp_semaine_seule', { n: semaine }))}
-        {semaine && ' · '}
-        {/* Trois segments tiennent sur une ligne, pas quatre : des que
-            le compte de ce qui vient s'ajoute, « faites » passe en
-            forme courte. Sinon la phrase debordait sur deux lignes. */}
-        {faites === 0 ? t('cp_aucune')
-          : t(aVenir > 0 ? 'cp_faites_c' : (faites > 1 ? 'cp_faites_p' : 'cp_faites'), { n: faites })}
-        {aVenir > 0 && ' · ' + t('cp_a_venir', { n: aVenir })}
       </div>
       {semaine && total && (
         <div class="cp-barre">
