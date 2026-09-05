@@ -248,17 +248,36 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           pas de marque du tout — une ligne sans rien EST a venir, et
           deux pastilles grises pesaient plus qu'elles n'informaient.
           Le sous-titre ne s'affiche que s'il dit quelque chose. */}
-      {lignes.map(l => (
-        <div class={'cp-l' + (l.auj ? ' auj' : '')} key={l.iso}>
-          <div class="cp-j">{l.jour}</div>
-          <div class="cp-t">
-            <b>{l.seance.titre}</b>
-            {l.seance.sub ? <small>{l.seance.sub}</small> : null}
-          </div>
-          {l.etat === 'fait' && <div class="cp-e cp-e-fait" aria-label={t('cp_fait')}>✓</div>}
-          {l.etat === 'auj' && <div class="cp-e cp-e-auj">{t('cp_auj')}</div>}
-        </div>
-      ))}
+      {lignes.map(l => {
+        // Raci, 5/09 : « quand c'est la seance du jour, mets tout dans
+        // la meme case, retire le fond noir ». Le pave noir repetait
+        // le titre de la ligne juste au-dessus — deux fois la meme
+        // seance, dont une en 15 px sur fond noir. La ligne du jour
+        // devient elle-meme le bouton : le badge AUJOURD'HUI reste,
+        // « Demarrer la seance » s'ecrit dessous, en texte normal.
+        const estAction = l.etat === 'auj' && duJour;
+        const contenu = (
+          <>
+            <div class="cp-j">{l.jour}</div>
+            <div class="cp-t">
+              <b>{l.seance.titre}</b>
+              {l.seance.sub ? <small>{l.seance.sub}</small> : null}
+              {estAction && <span class="cp-demarrer">{t('cp_demarrer_simple')}</span>}
+            </div>
+            {l.etat === 'fait' && <div class="cp-e cp-e-fait" aria-label={t('cp_fait')}>✓</div>}
+            {l.etat === 'auj' && <div class="cp-e cp-e-auj">{t('cp_auj')}</div>}
+          </>
+        );
+        return estAction ? (
+          <button class="cp-l auj cp-l-b" key={l.iso}
+            onClick={() => allerVers('seanceDetail',
+              { seanceId: duJour.seanceId, titre: duJour.seance.titre, depuis: 'journal' })}>
+            {contenu}
+          </button>
+        ) : (
+          <div class={'cp-l' + (l.auj ? ' auj' : '')} key={l.iso}>{contenu}</div>
+        );
+      })}
 
       {/* Le bouton nomme ce qu'il lance. Jour de repos : il garde le
           libelle generique plutot que de disparaitre — une seance
@@ -269,11 +288,13 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           dessous. Raci, 26/08 : « supprime cette page, elle ne sert a
           rien ». « Demarrer X » ouvre X ; « Seance libre » ouvre les
           exercices. */}
-      <button class="cp-go" onClick={() => (duJour
-        ? allerVers('seanceDetail', { seanceId: duJour.seanceId, titre: duJour.seance.titre, depuis: 'journal' })
-        : allerVers('selection'))}>
-        {duJour ? t('cp_demarrer', { s: duJour.seance.titre }) : t('tr_start_session')}
-      </button>
+      {/* Le pave noir ne subsiste que les jours SANS seance prevue :
+          il n'y a alors aucune ligne du jour pour le porter. */}
+      {!duJour && (
+        <button class="cp-go" onClick={() => allerVers('selection')}>
+          {t('tr_start_session')}
+        </button>
+      )}
       {/* « Demarrer une seance » reste accessible meme avec un
           programme actif (Raci, 26/08). Un programme dit ce qui est
           prevu, il n'interdit pas de faire autre chose : rentrer un

@@ -635,7 +635,7 @@ const DECALAGE_SW_V2 = 232;
     // Le bouton doit ouvrir directement sa destination.
     if (/allerVers\('demarrer'\)/.test(entr)) soucis.push('l\'ecran de choix intermediaire est revenu');
     if (/vue\.nom === 'demarrer'/.test(main)) soucis.push("la vue 'demarrer' est rebranchee dans le routeur");
-    if (!/allerVers\('seanceDetail', \{ seanceId: duJour\.seanceId/.test(entr)) {
+    if (!/allerVers\('seanceDetail',\s*\n?\s*\{ seanceId: duJour\.seanceId/.test(entr)) {
       soucis.push('le bouton du jour n\'ouvre plus la seance elle-meme');
     }
     // Le reel prime sur le prevu : on ne planifie que sur un jour vide.
@@ -1662,8 +1662,14 @@ const DECALAGE_SW_V2 = 232;
   const soucis = [];
   if (ent) {
     if (!/function CarteProgramme/.test(ent)) soucis.push('la carte de pilotage a disparu');
-    if (!/t\('cp_demarrer', \{ s: duJour\.seance\.titre \}\)/.test(ent)) {
-      soucis.push('le bouton ne nomme plus la seance du jour');
+    if (/class="cp-go"[\s\S]{0,400}cp_demarrer'/.test(ent)) {
+      soucis.push('le pave noir est revenu au-dessus de la ligne du jour : il repete son titre');
+    }
+    if (!/class="cp-l auj cp-l-b"/.test(ent)) {
+      soucis.push('la ligne du jour n\'est plus le bouton de demarrage');
+    }
+    if (!/class="cp-demarrer">\{t\('cp_demarrer_simple'\)\}/.test(ent)) {
+      soucis.push('« Demarrer la seance » a disparu de la ligne du jour');
     }
     // Raci, 26/08 : un programme dit ce qui est prevu, il n'interdit
     // pas de faire autre chose. La seance libre doit rester joignable.

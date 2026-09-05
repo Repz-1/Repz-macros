@@ -1055,6 +1055,20 @@
 .cp-l.auj { background: #FFFAEC; border-radius: 10px; padding-left: 8px; padding-right: 8px; margin: 0 -6px; }
 .cp-l.auj .cp-j { color: #B34700; }
 
+/* La ligne du jour EST le bouton de demarrage (Raci, 5/09). Elle
+   reste une ligne : meme fond creme, meme gabarit, aucun aplat noir.
+   Seul « Demarrer la seance » s'ajoute sous le titre, en texte
+   normal — le badge AUJOURD'HUI porte deja la couleur. */
+button.cp-l-b {
+  width: 100%; border: none; font-family: inherit; text-align: left;
+  cursor: pointer; transition: background .15s ease, transform .12s ease;
+}
+button.cp-l-b:active { background: #FBF3DE; transform: scale(.99); }
+.cp-demarrer {
+  display: block; margin-top: 5px;
+  font-size: 13px; font-weight: 700; color: #B34700;
+}
+
 .cp-go {
   margin-top: 16px; width: 100%; border: none; border-radius: 15px;
   padding: 16px 12px; background: #16130F; color: #F5A800;
