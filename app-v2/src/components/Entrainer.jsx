@@ -271,7 +271,12 @@ function CarteProgramme({ today, todayIso, allerVers }) {
             {l.etat === 'auj' && (
               <div class="cp-e cp-e-col">
                 <span class="cp-e-auj">{t('cp_auj')}</span>
-                {estAction && <span class="cp-demarrer">{t('cp_demarrer_simple')}</span>}
+                {estAction && (
+                  <span class="cp-demarrer">
+                    {t('cp_demarrer_simple')}
+                    <span class="cp-demarrer-fl" aria-hidden="true">&rsaquo;</span>
+                  </span>
+                )}
               </div>
             )}
           </>

@@ -1049,16 +1049,19 @@
 .cp-t small { display: block; font-size: 11.5px; font-weight: 500; color: #8A8378; margin-top: 3px; }
 .cp-e { flex: none; font-size: 10.5px; font-weight: 800; letter-spacing: .05em; }
 .cp-e-fait { color: #1F7A50; font-size: 13px; }
-/* Le badge etiquette la ligne, il ne la titre pas : il retrecit
-   (Raci, 5/09). La colonne de droite empile badge et action, alignes
-   a droite, la seconde ligne a la hauteur du sous-titre de gauche. */
+/* Raci, 5/09 : « le plus important c'est Demarrer la seance ». Le
+   badge etait le plus gros element de la ligne alors qu'il ne fait que
+   redire ce que la date dit deja — le fond creme et le SAM orange
+   signalent le jour courant. Il devient une etiquette de 8,5 px :
+   present, jamais dominant. Le noir sur jaune reste (Raci, plus tot
+   dans la journee), et tient encore a 11,3:1. */
 .cp-e-auj {
   background: #FAC408; color: #151515;
-  padding: 3px 7px; border-radius: 6px;
-  font-size: 9.5px; letter-spacing: .04em;
+  padding: 2px 6px; border-radius: 5px;
+  font-size: 8.5px; font-weight: 800; letter-spacing: .03em;
 }
 .cp-e-col {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
 }
 
 /* Le jour courant se distingue par son fond, pas par un cadre. */
@@ -1075,9 +1078,12 @@ button.cp-l-b {
 }
 button.cp-l-b:active { background: #FBF3DE; transform: scale(.99); }
 .cp-demarrer {
-  font-size: 11.5px; font-weight: 700; color: #B34700;
-  letter-spacing: 0; text-transform: none; white-space: nowrap;
+  display: flex; align-items: center; gap: 3px;
+  font-size: 14.5px; font-weight: 800; color: #B34700;
+  letter-spacing: -.01em; text-transform: none; white-space: nowrap;
 }
+.cp-demarrer-fl { font-size: 17px; line-height: 1; }
+button.cp-l-b:active .cp-demarrer { color: #8A3A00; }
 
 .cp-go {
   margin-top: 16px; width: 100%; border: none; border-radius: 15px;

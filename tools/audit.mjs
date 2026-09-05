@@ -1668,7 +1668,7 @@ const DECALAGE_SW_V2 = 232;
     if (!/class="cp-l auj cp-l-b"/.test(ent)) {
       soucis.push('la ligne du jour n\'est plus le bouton de demarrage');
     }
-    if (!/class="cp-demarrer">\{t\('cp_demarrer_simple'\)\}/.test(ent)) {
+    if (!/class="cp-demarrer">[\s\S]{0,60}t\('cp_demarrer_simple'\)/.test(ent)) {
       soucis.push('« Demarrer la seance » a disparu de la ligne du jour');
     }
     // Raci, 26/08 : un programme dit ce qui est prevu, il n'interdit
