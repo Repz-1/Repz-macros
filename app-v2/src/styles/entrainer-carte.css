@@ -1049,7 +1049,17 @@
 .cp-t small { display: block; font-size: 11.5px; font-weight: 500; color: #8A8378; margin-top: 3px; }
 .cp-e { flex: none; font-size: 10.5px; font-weight: 800; letter-spacing: .05em; }
 .cp-e-fait { color: #1F7A50; font-size: 13px; }
-.cp-e-auj { background: #FAC408; color: #151515; padding: 4px 8px; border-radius: 7px; }
+/* Le badge etiquette la ligne, il ne la titre pas : il retrecit
+   (Raci, 5/09). La colonne de droite empile badge et action, alignes
+   a droite, la seconde ligne a la hauteur du sous-titre de gauche. */
+.cp-e-auj {
+  background: #FAC408; color: #151515;
+  padding: 3px 7px; border-radius: 6px;
+  font-size: 9.5px; letter-spacing: .04em;
+}
+.cp-e-col {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+}
 
 /* Le jour courant se distingue par son fond, pas par un cadre. */
 .cp-l.auj { background: #FFFAEC; border-radius: 10px; padding-left: 8px; padding-right: 8px; margin: 0 -6px; }
@@ -1065,8 +1075,8 @@ button.cp-l-b {
 }
 button.cp-l-b:active { background: #FBF3DE; transform: scale(.99); }
 .cp-demarrer {
-  display: block; margin-top: 5px;
-  font-size: 13px; font-weight: 700; color: #B34700;
+  font-size: 11.5px; font-weight: 700; color: #B34700;
+  letter-spacing: 0; text-transform: none; white-space: nowrap;
 }
 
 .cp-go {

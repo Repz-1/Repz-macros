@@ -262,10 +262,18 @@ function CarteProgramme({ today, todayIso, allerVers }) {
             <div class="cp-t">
               <b>{l.seance.titre}</b>
               {l.seance.sub ? <small>{l.seance.sub}</small> : null}
-              {estAction && <span class="cp-demarrer">{t('cp_demarrer_simple')}</span>}
             </div>
             {l.etat === 'fait' && <div class="cp-e cp-e-fait" aria-label={t('cp_fait')}>✓</div>}
-            {l.etat === 'auj' && <div class="cp-e cp-e-auj">{t('cp_auj')}</div>}
+            {/* Raci, 5/09 : « Démarrer la séance » passe SOUS le badge,
+                dans la colonne de droite, a la taille du sous-titre de
+                gauche — les deux lignes se repondent. Le badge
+                retrecit : il etiquette, il ne titre pas. */}
+            {l.etat === 'auj' && (
+              <div class="cp-e cp-e-col">
+                <span class="cp-e-auj">{t('cp_auj')}</span>
+                {estAction && <span class="cp-demarrer">{t('cp_demarrer_simple')}</span>}
+              </div>
+            )}
           </>
         );
         return estAction ? (
