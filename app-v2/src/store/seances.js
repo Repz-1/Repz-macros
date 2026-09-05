@@ -131,21 +131,6 @@ export function enregistrerSeance(s) {
     tonnage: typeof s.tonnage === 'number' ? s.tonnage : tonnageDe(s.exos),
     records: s.records || [],
   };
-  // Raci, 5/09 : « 3 doublons ». Rouvrir la meme seance et retoucher
-  // « Terminer » empilait une entree de plus a chaque fois, toutes
-  // identiques. Si la meme seance du meme jour vient d'etre
-  // enregistree il y a moins de cinq minutes, on REMPLACE au lieu
-  // d'ajouter : personne ne refait le meme entrainement en cinq
-  // minutes, alors qu'on le reouvre souvent pour corriger une serie.
-  const RECENT = 5 * 60 * 1000;
-  const precedente = seances.value.findIndex(x =>
-    x.iso === seance.iso && x.titre === seance.titre && (seance.ts - x.ts) < RECENT);
-  if (precedente >= 0) {
-    const copie = seances.value.slice();
-    copie.splice(precedente, 1);
-    seances.value = [seance, ...copie].slice(0, MAX_SEANCES);
-    return seance;
-  }
   // La plus recente en tete : c'est l'ordre d'affichage attendu.
   seances.value = [seance, ...seances.value].slice(0, MAX_SEANCES);
   // Le calendrier et le mannequin lisent cette liste EN DIRECT, via
@@ -158,6 +143,17 @@ export function enregistrerSeance(s) {
 
 export function supprimerSeance(id) {
   seances.value = seances.value.filter(s => s.id !== id);
+}
+
+/**
+ * La seance deja enregistree ce jour-la sous le meme nom, s'il y en a
+ * une. Raci, 5/09 : plutot qu'un remplacement automatique dans une
+ * fenetre de cinq minutes — qui decidait a sa place et ratait la
+ * correction faite deux heures plus tard — l'appelant demande. C'est
+ * lui qui sait s'il refait la seance ou s'il corrige la precedente.
+ */
+export function seanceMemeJour(iso, titre) {
+  return seances.value.find(s => s.iso === iso && s.titre === titre) || null;
 }
 
 /**

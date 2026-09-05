@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { enregistrerSeance } from '../store/seances.js';
+import { enregistrerSeance, supprimerSeance, seanceMemeJour } from '../store/seances.js';
 import { t } from '../i18n/index.js';
 import { EXERCISES, IMG_BASE } from '../data/exercices.js';
 import { SESSION_EXOS } from '../data/sessionExos.js';
@@ -71,6 +71,7 @@ export function SeanceDetail({ seanceId, titre, retour }) {
   const revenir = retour || retourEntrainer;
   const [fini, setFini] = useState(null);
   const [apercu, setApercu] = useState(null);   // index de l'exercice montre en grand
+  const [conflit, setConflit] = useState(null); // seance deja notee ce jour-la, en attente d'arbitrage
   // « progId-index » : on retire l'index pour retrouver le programme,
   // et donc l'ecran ou l'on pose ses jours.
   const progId = String(seanceId || '').replace(/-\d+$/, '') || null;
@@ -81,21 +82,37 @@ export function SeanceDetail({ seanceId, titre, retour }) {
    * noterMuscles. C'est la convergence des deux branches de
    * l'organigramme vers « Fin de seance ».
    */
-  const terminer = () => {
-    if (fini) return;
+  const enregistrer = (aRemplacer) => {
     const exos = refs
       .map(({ mKey, ex }, i) => ({ mKey, nom: ex.nom, fait: faits.has(i), series: series[i] || [] }))
       .filter(e => e.fait);
     // Rien de coche : on enregistre quand meme la seance ouverte,
     // sinon un entrainement fait sans cocher disparaitrait.
     const retenus = exos.length ? exos : refs.map(({ mKey, ex }) => ({ mKey, nom: ex.nom, fait: true, series: [] }));
+    if (aRemplacer) supprimerSeance(aRemplacer.id);
     enregistrerSeance({
       titre: titre || t('session'),
       duree: secondes,
       muscles: [...new Set(retenus.map(e => e.mKey).filter(Boolean))],
       exos: retenus,
     });
+    setConflit(null);
     setFini({ exos: retenus.length, min: Math.max(1, Math.round(secondes / 60)) });
+  };
+
+  /**
+   * Raci, 5/09 : « s'il y a risque de doublon, un message d'alerte ».
+   * Le remplacement automatique decidait a sa place. On demande : la
+   * meme seance est deja notee aujourd'hui, veut-il corriger celle-la
+   * ou en garder deux ? Les deux reponses sont legitimes — on peut
+   * refaire un entrainement dans la journee.
+   */
+  const terminer = () => {
+    if (fini) return;
+    const iso = new Date().toISOString().slice(0, 10);
+    const deja = seanceMemeJour(iso, titre || t('session'));
+    if (deja) { setConflit(deja); return; }
+    enregistrer(null);
   };
 
   // Chrono de seance
@@ -184,6 +201,26 @@ export function SeanceDetail({ seanceId, titre, retour }) {
           « Retour au journal » meme quand elle ramenait a la page du
           programme. Deux sorties nommees pour ce qu'elles font, et un
           acces direct a la planification des jours restants. */}
+      {/* Arbitrage du doublon. Nomme l'heure de la seance deja notee :
+          sans elle, « une seance existe deja » ne dit pas laquelle.
+          « Garder les deux » est a droite et discret — c'est le choix
+          qui laisse le desordre. */}
+      {conflit && (
+        <div class="sd-conflit">
+          <div class="sd-conflit-t">Cette séance est déjà enregistrée aujourd'hui</div>
+          <div class="sd-conflit-l">
+            « {conflit.titre} », notée à {heureDe(conflit.ts)}. Tu peux la remplacer
+            par celle-ci, ou garder les deux.
+          </div>
+          <button class="sd-conflit-oui" onClick={() => enregistrer(conflit)}>
+            Remplacer l'ancienne
+          </button>
+          <button class="sd-conflit-non" onClick={() => enregistrer(null)}>
+            Garder les deux
+          </button>
+        </div>
+      )}
+
       {fini && (
         <div class="sd-fini">
           <div class="sd-fini-t">{t('sd_bravo')}</div>
@@ -268,6 +305,12 @@ export function SeanceDetail({ seanceId, titre, retour }) {
 // seule ne dit pas le mouvement. Lecture seule : depuis la seance
 // l'exercice est deja choisi, il n'y a rien a ajouter ni a retirer.
 // ============================================================
+/** « 16:02 » — l'heure d'enregistrement d'une seance. */
+function heureDe(ts) {
+  const d = new Date(ts);
+  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+
 function ApercuExercice({ mKey, ex, fermer }) {
   if (!ex) return null;
   const vues = ex.imgId ? [0, 1] : [];
