@@ -368,10 +368,11 @@ export function App() {
       // « Tous les programmes ». D'ou la page qui revenait sans qu'on
       // l'ait demandee (Raci, 17/08). Les deux retours suivent
       // desormais la meme regle.
-      else if (vue.nom === 'seanceDetail') {
-        if (vue.params && vue.params.depuis === 'journal') retourEntrainer();
-        else allerVers('programmes');
-      }
+      // 5/09 : plus rien ne mene a la bibliotheque. Le retour materiel
+      // d'Android y renvoyait encore depuis une fiche de seance, et
+      // faisait apparaitre un ecran que l'utilisateur n'avait pas
+      // ouvert. Il rend la main a S'entrainer, comme la fleche visible.
+      else if (vue.nom === 'seanceDetail') retourEntrainer();
       else if (vue.nom !== 'accueil') retourEntrainer();
       // Le retour ramene sur l'onglet d'OUVERTURE, pas sur un journal
       // ecrit en dur : en mode vitrine il renvoyait sur une page que

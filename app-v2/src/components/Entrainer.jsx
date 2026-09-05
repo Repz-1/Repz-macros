@@ -507,14 +507,17 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
             d'abandon existait mais n'etait atteignable qu'apres avoir
             refait les quatre questions, ce qui revient a le cacher
             (Raci, 17/08 : « je ne trouve pas comment supprimer »). */}
-        {/* Sans programme, « Mon programme » ouvre la BIBLIOTHEQUE, plus
-            le questionnaire. Raci, 26/08 : « a la place j'ai le
-            questionnaire, retire-le completement ». Quatre questions
-            pour arriver a une liste qu'on peut lire directement, c'est
-            un peage, pas une aide. */}
+        {/* Raci, 5/09 : « cette page apparait quand un client clique sur
+            trouver mon programme » — la bibliotheque des 14 programmes.
+            Deux boutons portaient le meme libelle et menaient a deux
+            endroits differents : celui de la carte du jour ouvrait les
+            quatre questions, celui-ci la liste brute. Meme mot, meme
+            destination : le questionnaire. Cela revient sur le choix du
+            26/08, ou la bibliotheque avait ete preferee au peage des
+            quatre questions. */}
         <button class="ent-prog" onClick={() => (programmeActif.value
           ? allerVers('planifier', { prog: programmeActif.value.id })
-          : allerVers('programmes'))}>
+          : allerVers('questionnaire'))}>
           <span class="ent-prog-ic" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
