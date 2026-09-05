@@ -303,19 +303,10 @@ export function Questionnaire() {
     const { progId, conseil, desc } = recommander(reponses);
     const prog = programmeParId(progId);
     const perso = conseilsPersonnels(reponses);
-    const objTxt = reponses.objectif === 'masse' ? 'prendre du muscle'
-      : reponses.objectif === 'seche' ? 'perdre du poids'
-      : reponses.objectif === 'force' ? 'gagner en force'
-      : 'maintenir ta forme';
-    // La duree n'est plus demandee (questionnaire ramene a quatre
-    // questions le 12/08). La phrase reprend le MATERIEL a la place :
-    // repeter « 2 jours par semaine, a raison de 2 seances par
-    // semaine » disait deux fois la meme chose.
-    const MAT_TXT = {
-      'salle': ' en salle', 'maison': ' avec haltères et banc',
-      'poids-corps': ' au poids du corps', 'limite': ' avec un équipement limité',
-    };
-    const materielTxt = MAT_TXT[reponses.materiel] || '';
+    // La phrase « Tu veux prendre du muscle, 3 jours par semaine… »
+    // est retiree le 5/09 (Raci) : elle recitait les reponses de
+    // l'ecran precedent au-dessus d'une fiche qui les traduit deja en
+    // programme. objTxt et MAT_TXT n'avaient plus d'autre usage.
 
     return createPortal(
       <div class="qz-scene"><div class="qz">
@@ -330,16 +321,15 @@ export function Questionnaire() {
         <div class="qz-corps">
           <div class="qz-badge">Ton programme</div>
           <h1 class="qz-titre">{prog ? prog.name : '—'}</h1>
-          <p class="qz-sous">
-            Tu veux {objTxt}, {reponses.frequence} jours par semaine{materielTxt}.
-          </p>
 
           <div class="qz-carte">
             <p class="qz-desc">{desc}</p>
+            {/* Libelle d'abord, valeur ensuite (Raci, 5/09) : on lit ce
+                qu'on regarde avant de lire combien. */}
             <div class="qz-stats">
-              <span><b>{prog ? prog.duree : '—'}</b><small>durée</small></span>
-              <span><b>{prog ? prog.niveau : '—'}</b><small>niveau</small></span>
-              <span><b>{prog ? prog.seances.length : 0}</b><small>séances</small></span>
+              <span><small>durée</small><b>{prog ? prog.duree : '—'}</b></span>
+              <span><small>niveau</small><b>{prog ? prog.niveau : '—'}</b></span>
+              <span><small>séances</small><b>{prog ? prog.seances.length : 0}</b></span>
             </div>
           </div>
 

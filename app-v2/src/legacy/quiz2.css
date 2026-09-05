@@ -139,8 +139,8 @@
 }
 .qz-stats span { flex: 1; text-align: center; display: flex; flex-direction: column; gap: 3px; }
 .qz-stats span + span { border-left: 1px solid #F2EEE7; }
-.qz-stats b { font-size: 15px; font-weight: 800; color: #181818; }
-.qz-stats small { font-size: 11px; font-weight: 600; color: #A9A49C; text-transform: uppercase; letter-spacing: .06em; }
+.qz-stats b { font-size: 16px; font-weight: 800; color: #181818; }
+.qz-stats small { font-size: 10.5px; font-weight: 700; color: #A9A49C; text-transform: uppercase; letter-spacing: .06em; }
 
 .qz-coach {
   margin-top: 18px; background: #FFFDF6;
