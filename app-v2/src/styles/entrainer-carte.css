@@ -390,7 +390,12 @@
   font-size: 12.5px; color: #736C63; margin: 2px 0 14px;
 }
 /* Replie, le titre touche le calendrier : on lui rend une marge. */
-.pg-entrainer--carte .ent-bloc-tete + .wlog-cal-head { margin-top: 12px; }
+/* La ligne du mois se resserre : elle n'est plus qu'un reperage entre
+   deux fleches, pas un titre. Le bloc d'en-tete replie la laisse
+   monter contre le titre de la carte. */
+.pg-entrainer--carte .ent-bloc-tete + .wlog-cal-head { margin-top: 6px; }
+.pg-entrainer--carte .wlog-cal-head { padding: 6px 2px 4px; }
+.pg-entrainer--carte .wlog-nav { width: 28px; height: 28px; font-size: 16px; color: #A9A29A; }
 
 /* Semaine + silhouette cote a cote. */
 /* Les chiffres en haut, les deux silhouettes EN DESSOUS et en pleine
@@ -766,8 +771,8 @@
 /* 1. Titre principal — 17 px / 700 */
 .pg-entrainer--carte .ent-bloc > h3,
 .pg-entrainer--carte .wlog-cal-titre {
-  font-size: 17px; font-weight: 700; letter-spacing: -.015em;
-  color: var(--txt-1);
+  font-size: 12px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: #A9A29A;
 }
 /* 2. Secondaire — 13 px / 400 */
 .pg-entrainer--carte .ent-sous,

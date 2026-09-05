@@ -342,7 +342,13 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance, voirToutesSeances }) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const todayIso = wlIso(today);
   const ref = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-  const titre = t('months_long').split('|')[ref.getMonth()] + ' ' + ref.getFullYear();
+  // Raci, 5/09 : « Septembre 2026 » beaucoup plus discret, en « Sept
+  // 2026 ». Le mois etait le texte le plus gros de la carte alors
+  // qu'on le lit une fois ; ce sont les jours qu'on regarde. Le point
+  // des abreviations saute — « SEPT. 2026 » ferait deux ponctuations
+  // pour trois mots.
+  const moisCourt = t('months_short').split('|')[ref.getMonth()].replace('.', '');
+  const titre = moisCourt + ' ' + ref.getFullYear();
   // Le calendrier ne retient plus que deux semaines : le mois de la
   // borne est le dernier qui contienne quelque chose. On compare sur
   // « AAAA-MM » plutot que sur des dates, la borne pouvant tomber au
