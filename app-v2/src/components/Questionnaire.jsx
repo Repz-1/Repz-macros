@@ -266,7 +266,7 @@ export function Questionnaire() {
     const etape = Math.min(2, Math.floor(calcul / 34));
     const R = 62, C = 2 * Math.PI * R;
     return (
-      <div class="qz qz--calc">
+      <div class="qz-scene"><div class="qz qz--calc">
         <div class="qz-calc">
           <div class="qz-calc-anneau">
             <svg viewBox="0 0 150 150">
@@ -292,7 +292,7 @@ export function Questionnaire() {
             {TEXTES[etape]}
           </div>
         </div>
-      </div>
+      </div></div>
     );
   }
 
@@ -316,7 +316,7 @@ export function Questionnaire() {
     const materielTxt = MAT_TXT[reponses.materiel] || '';
 
     return (
-      <div class="qz">
+      <div class="qz-scene"><div class="qz">
         <div class="qz-haut">
           <button class="qz-retour" onClick={retour} aria-label="Retour">
             <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
@@ -380,14 +380,14 @@ export function Questionnaire() {
               fiche, puis liste par niveau, puis aiguillage. */}
           <button class="qz-lien" onClick={refaire}>Refaire le test</button>
         </div>
-      </div>
+      </div></div>
     );
   }
 
   // ---------- Questions ----------
   const q = QUESTIONS[etape];
   return (
-    <div class="qz">
+    <div class="qz-scene"><div class="qz">
       <div class="qz-haut">
         <button class="qz-retour" onClick={retour} aria-label="Retour">
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
@@ -424,6 +424,6 @@ export function Questionnaire() {
           {i === total - 1 ? 'Voir mon programme' : 'Continuer'}
         </button>
       </div>
-    </div>
+    </div></div>
   );
 }
