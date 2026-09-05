@@ -507,6 +507,14 @@
   display: block; width: 100%; border: none; border-radius: 13px; padding: 15px;
   background: #FAC408; color: #16130F; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
 }
+/* Deux sorties depuis la fin de seance (Raci, 5/09). La premiere mene
+   a la planification des jours restants et garde le jaune ; la
+   seconde repart en arriere et s'efface — un seul jaune par carte,
+   sinon aucune des deux actions ne se distingue. */
+.sd-fini-b + .sd-fini-b { margin-top: 8px; }
+.sd-fini-b--second {
+  background: #F7F3EA; color: #6B655D;
+}
 
 /* ---- Silhouette double : face et dos ---- */
 .bodymap--double { display: flex; gap: 6px; align-items: flex-start; }

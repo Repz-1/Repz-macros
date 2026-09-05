@@ -3,7 +3,7 @@ import { enregistrerSeance } from '../store/seances.js';
 import { t } from '../i18n/index.js';
 import { EXERCISES, IMG_BASE } from '../data/exercices.js';
 import { SESSION_EXOS } from '../data/sessionExos.js';
-import { retourEntrainer } from './Entrainer.jsx';
+import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import '../legacy/seance.scoped.css';
 
 // ==========================================================
@@ -66,6 +66,9 @@ export function SeanceDetail({ seanceId, titre, retour }) {
 
   const revenir = retour || retourEntrainer;
   const [fini, setFini] = useState(null);
+  // « progId-index » : on retire l'index pour retrouver le programme,
+  // et donc l'ecran ou l'on pose ses jours.
+  const progId = String(seanceId || '').replace(/-\d+$/, '') || null;
 
   /**
    * Termine la seance : elle rejoint « Mes seances », et ses muscles
@@ -101,8 +104,12 @@ export function SeanceDetail({ seanceId, titre, retour }) {
   const done = faits.size;
   const pct = total ? Math.round((done / total) * 100) : 0;
 
+  // Raci, 5/09 : « pouvoir cocher les exercices sans avoir demarre le
+  // chrono ». La liste etait verrouillee jusqu'a « Commencer » : on ne
+  // pouvait pas preparer sa seance, seulement la subir dans l'ordre.
+  // Cocher avant de demarrer ne lance rien — « Commencer » ne sert
+  // plus qu'a lancer le chrono.
   const basculerFait = (i) => {
-    if (!demarree) return;               // exercices verrouilles tant que pas commence
     setFaits(prev => {
       const s = new Set(prev);
       s.has(i) ? s.delete(i) : s.add(i);
@@ -167,17 +174,29 @@ export function SeanceDetail({ seanceId, titre, retour }) {
         </button>
       )}
 
+      {/* Raci, 5/09 : « pas pratique de devoir faire retour au journal
+          pour faire la suite ». Une seule sortie, et elle s'appelait
+          « Retour au journal » meme quand elle ramenait a la page du
+          programme. Deux sorties nommees pour ce qu'elles font, et un
+          acces direct a la planification des jours restants. */}
       {fini && (
         <div class="sd-fini">
           <div class="sd-fini-t">{t('sd_bravo')}</div>
           <div class="sd-fini-l">
             {t('sd_fini_resume', { n: fini.exos, min: fini.min })}
           </div>
-          <button class="sd-fini-b" onClick={revenir}>{t('sd_retour_journal')}</button>
+          {progId && (
+            <button class="sd-fini-b" onClick={() => allerVers('planifier', { prog: progId })}>
+              {t('sd_planifier')}
+            </button>
+          )}
+          <button class={'sd-fini-b' + (progId ? ' sd-fini-b--second' : '')} onClick={revenir}>
+            {retour ? t('sd_retour_prog') : t('sd_retour_journal')}
+          </button>
         </div>
       )}
 
-      <div id="sessionList" class={demarree ? '' : 'locked'}>
+      <div id="sessionList">
         {refs.map(({ mKey, ex }, i) => {
           const last = dernierePerf(ex.nom);
           const estFait = faits.has(i);
