@@ -7,7 +7,7 @@
    ========================================================== */
 
 .sg {
-  max-width: 520px; margin: 0 auto;
+  max-width: 440px; margin: 0 auto;
   padding: 16px 14px calc(var(--hauteur-nav, 74px) + 20px + env(safe-area-inset-bottom));
 }
 
@@ -29,46 +29,70 @@
   transition: width .25s ease;
 }
 
-/* ---- exercice en cours ---- */
-.sg-exo { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
-.sg-vig {
-  width: 76px; height: 76px; border-radius: 16px; flex: none;
-  background: #E4DFD4 center/cover no-repeat;
+/* ---- exercice en cours : l'image porte l'ecran ----
+   Maquette C (Raci, 5/09). La photo passe en fond sur 290 px, le nom
+   et les deux champs poses dessus. Le degrade est plus dense en bas
+   qu'en haut : c'est la que se trouvent les chiffres qu'on lit et les
+   champs qu'on touche, ils ne peuvent pas flotter sur une photo
+   claire. */
+.sg-scene {
+  position: relative; overflow: hidden;
+  height: 290px; border-radius: 20px;
+  background: #C9C2B4 center/cover no-repeat;
 }
-.sg-exo-n { font-size: 18px; font-weight: 800; letter-spacing: -.02em; line-height: 1.2; }
-.sg-exo-s { font-size: 12.5px; color: #8A8378; margin-top: 4px; }
+.sg-voile {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top,
+    rgba(15, 15, 15, .88) 0%,
+    rgba(15, 15, 15, .15) 55%,
+    rgba(15, 15, 15, .35) 100%);
+}
+.sg-haut {
+  position: absolute; top: 12px; left: 14px; right: 14px;
+  display: flex; justify-content: space-between; gap: 10px;
+}
+.sg-haut span {
+  font-size: 11px; font-weight: 800; letter-spacing: .06em;
+  color: rgba(255, 255, 255, .85); text-transform: uppercase;
+}
+.sg-bas { position: absolute; left: 14px; right: 14px; bottom: 14px; color: #FFF; }
+.sg-exo-n {
+  font-size: 23px; font-weight: 800; letter-spacing: -.02em;
+  line-height: 1.15; margin-top: 4px;
+}
 
-/* ---- serie en cours ---- */
 .sg-serie-t {
-  font-size: 11px; font-weight: 800; letter-spacing: .08em;
-  color: #B34700; margin-bottom: 8px;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .1em; color: #FAC408;
 }
-.sg-champs { display: flex; gap: 10px; }
+
+/* Les champs sont translucides sur le voile, avec un flou derriere :
+   ils restent lisibles quelle que soit la photo. */
+.sg-champs { display: flex; gap: 10px; margin-top: 12px; }
 .sg-ch {
-  flex: 1; background: #F5F1E8; border-radius: 14px; padding: 10px 12px;
-  display: block; cursor: text;
+  flex: 1; display: block; cursor: text; text-align: center;
+  background: rgba(255, 255, 255, .13); border-radius: 14px; padding: 9px 10px;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
 }
-.sg-ch span {
-  display: block; font-size: 10.5px; font-weight: 700;
-  letter-spacing: .05em; color: #8A8378;
-}
-/* Les champs sont larges et hauts : on les touche avec des mains
-   moites, entre deux series, sans viser. */
 .sg-ch input {
-  width: 100%; border: none; background: none; padding: 0; margin-top: 2px;
+  width: 100%; border: none; background: none; padding: 0; text-align: center;
   font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 26px; font-weight: 500; color: #181818;
+  font-size: 28px; font-weight: 500; line-height: 1.1; color: #FFF;
   -moz-appearance: textfield;
 }
+.sg-ch input::placeholder { color: rgba(255, 255, 255, .45); }
 .sg-ch input::-webkit-outer-spin-button,
 .sg-ch input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .sg-ch input:focus { outline: none; }
+.sg-ch span {
+  display: block; font-size: 9.5px; font-weight: 700; letter-spacing: .06em;
+  color: rgba(255, 255, 255, .7);
+}
 .sg-ch:focus-within { box-shadow: inset 0 0 0 2px #FAC408; }
 
 /* ---- pastilles des series ---- */
-.sg-pts { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.sg-pts { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
 .sg-pt {
-  width: 30px; height: 30px; border-radius: 9px;
+  width: 32px; height: 32px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   font-family: 'DM Mono', ui-monospace, monospace; font-size: 11px;
   background: #F3EFE5; color: #B0A99C;
@@ -130,7 +154,7 @@
 /* ---- fin de seance ---- */
 .sg-fin-t { font-size: 20px; font-weight: 800; text-align: center; margin: 14px 0 4px; }
 .sg-fin-s { font-size: 13.5px; color: #8A8378; text-align: center; margin-bottom: 16px; }
-.sg-recap { background: #F5F1E8; border-radius: 16px; padding: 12px 14px; font-size: 13.5px; }
+.sg-recap { background: #F5F1E8; border-radius: 16px; padding: 14px 16px; font-size: 13.5px; }
 .sg-recap div { display: flex; justify-content: space-between; padding: 7px 0; }
 .sg-recap div + div { border-top: 1px solid #E7E1D5; }
 .sg-recap b {
