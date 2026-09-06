@@ -2818,6 +2818,44 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R80 — Les programmes DEBUTANT ne tiennent que sur machine.
+// Raci, 5/09 : « j'ai simule un programme prise de muscle pour
+// debutant, il m'a donne uniquement des exercices polyarticulaires ;
+// je voudrais que tout soit a base de machine tout le long ». Squat
+// barre, souleve, developpe couche et tractions demandent une
+// technique qu'un debutant n'a pas : la machine tient la trajectoire
+// a sa place. La regle lit la base d'exercices, pas une liste ecrite
+// a la main — elle suit donc les futures modifications.
+// ------------------------------------------------------------
+{
+  const se = lire('app-v2/src/data/sessionExos.js');
+  const ex = lire('app-v2/src/data/exercices.js');
+  if (se && ex) {
+    const soucis = [];
+    // Les identifiants des programmes de niveau Debutant.
+    const DEBUTANTS = ['deb-full-3j', 'deb-2j', 'seche-2j'];
+    // Nom -> materiel, releve dans la base.
+    const mat = new Map();
+    for (const m of ex.matchAll(/\{nom:'([^']+)'[^}]*?mat:'([^']+)'/g)) mat.set(m[1], m[2]);
+    for (const id of DEBUTANTS) {
+      const bloc = se.match(new RegExp('"' + id + '-\\d+": \\[([^\\]]*)\\]', 'g')) || [];
+      if (!bloc.length) { soucis.push('le programme debutant ' + id + ' n\'a plus de seances'); continue; }
+      for (const b of bloc) {
+        for (const m of b.matchAll(/"[a-z]+:([^"]+)"/g)) {
+          const materiel = mat.get(m[1]);
+          if (!materiel) soucis.push(id + ' : « ' + m[1] + ' » est introuvable dans la base');
+          else if (materiel !== 'machine') {
+            soucis.push(id + ' : « ' + m[1] + ' » n\'est pas sur machine (' + materiel + ')');
+          }
+        }
+      }
+    }
+    if (soucis.length) faute('R80 debutant sur machine', soucis.join(' ; '));
+    else passe('R80 debutant sur machine');
+  }
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le

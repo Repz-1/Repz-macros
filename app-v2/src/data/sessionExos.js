@@ -117,39 +117,39 @@ export const SESSION_EXOS = {
     "triceps:Extension Triceps Un Bras (Haltère)"
   ],
   "deb-full-3j-0": [
-    "pecs:Développé Couché (Barre)",
-    "dos:Rowing (Barre)",
-    "jambes:Squat (Barre)",
-    "epaules:Développé Militaire Debout (Barre)",
-    "abdos:Planche"
+    "pecs:Chest Press (Machine)",
+    "dos:Rowing (Machine)",
+    "jambes:Presse à Cuisses (Machine)",
+    "epaules:Presse Épaules (Machine)",
+    "abdos:Crunch (Machine)"
   ],
   "deb-full-3j-1": [
-    "pecs:Pompes",
+    "pecs:Chest Press Incliné (Machine)",
     "dos:Tirage Poitrine (Poulie)",
-    "jambes:Presse à Cuisses (Machine)",
-    "biceps:Curl Biceps (Barre)",
-    "abdos:Crunch"
+    "jambes:Extension Jambes (Machine)",
+    "biceps:Curl Biceps (Machine)",
+    "abdos:Crunch (Poulie)"
   ],
   "deb-full-3j-2": [
-    "pecs:Développé Couché Incliné (Haltère)",
-    "dos:Tractions",
-    "jambes:Fentes (Haltère)",
-    "triceps:Extension Triceps (Poulie)",
-    "abdos:Rotation Russe"
+    "pecs:Écarté (Pec Deck) (Machine)",
+    "dos:Rowing Assis (Poulie)",
+    "jambes:Leg Curl Assis (Machine)",
+    "triceps:Extension Triceps (Machine)",
+    "abdos:Rotation Russe (Poulie)"
   ],
   "deb-2j-0": [
-    "pecs:Développé Couché (Barre)",
+    "pecs:Chest Press (Machine)",
     "dos:Tirage Poitrine (Poulie)",
-    "epaules:Élévation Latérale (Haltère)",
-    "biceps:Curl Biceps (Barre)",
-    "triceps:Extension Triceps (Poulie)"
+    "epaules:Presse Épaules (Machine)",
+    "biceps:Curl Biceps (Machine)",
+    "triceps:Extension Triceps (Machine)"
   ],
   "deb-2j-1": [
-    "jambes:Squat (Barre)",
     "jambes:Presse à Cuisses (Machine)",
+    "jambes:Extension Jambes (Machine)",
     "jambes:Leg Curl Allongé (Machine)",
-    "abdos:Planche",
-    "abdos:Crunch"
+    "jambes:Extension Mollets Assises (Machine)",
+    "abdos:Crunch (Machine)"
   ],
   "seche-full-3j-0": [
     "jambes:Squat (Barre)",
@@ -480,20 +480,20 @@ export const SESSION_EXOS = {
     "abdos:Planche"
   ],
   "seche-2j-0": [
-    "jambes:Squat (Barre)",
-    "pecs:Pompes",
+    "jambes:Presse à Cuisses (Machine)",
+    "pecs:Chest Press (Machine)",
     "dos:Tirage Poitrine (Poulie)",
-    "epaules:Élévation Latérale (Haltère)",
-    "abdos:Relevé de Bassin Genoux Fléchis",
-    "abdos:Planche"
+    "epaules:Presse Épaules (Machine)",
+    "abdos:Crunch (Machine)",
+    "abdos:Flexion Latérale (Poulie)"
   ],
   "seche-2j-1": [
-    "jambes:Presse à Cuisses (Machine)",
-    "pecs:Développé Couché (Barre)",
-    "dos:Rowing (Barre)",
-    "triceps:Extension Triceps (Poulie)",
-    "abdos:Rotation Russe",
-    "abdos:Crunch"
+    "jambes:Extension Jambes (Machine)",
+    "jambes:Leg Curl Assis (Machine)",
+    "pecs:Écarté (Pec Deck) (Machine)",
+    "dos:Rowing (Machine)",
+    "triceps:Extension Triceps (Machine)",
+    "abdos:Crunch (Poulie)"
   ],
   "seche-5j-0": [
     "pecs:Développé Couché (Barre)",
