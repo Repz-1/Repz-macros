@@ -30,22 +30,37 @@
 }
 
 /* ---- exercice en cours ----
-   Raci, 5/09 : « les images ne sont pas totalement visibles ». Le nom
-   et les champs, poses SUR la photo, en cachaient la moitie basse —
-   celle ou se trouve le mouvement. La photo garde ses deux etiquettes
-   de coin, et rien d'autre ; le voile ne teinte plus que le haut,
-   juste assez pour que le texte blanc tienne. */
+   Le nom et les champs sont poses SUR la photo (maquette C), mais la
+   photo reste entiere : Raci, 5/09, « je voudrais que les mains
+   soient visibles ». Deux mesures pour ca.
+
+   1. `contain` au lieu de `cover` : rien n'est rogne. Une copie de la
+      meme image, floutee et agrandie, bouche les cotes — sans elle on
+      aurait deux bandes grises quand la photo n'a pas le format du
+      cadre.
+   2. L'image se cale en HAUT du cadre, et le cadre est plus grand
+      (350 px). Le bloc de texte n'occupe plus que le tiers bas, la ou
+      il n'y a generalement que le sol. */
 .sg-scene {
   position: relative; overflow: hidden;
-  height: 250px; border-radius: 20px;
-  background: #C9C2B4 center/cover no-repeat;
+  height: 350px; border-radius: 20px; background: #241F1A;
+}
+.sg-fond {
+  position: absolute; inset: -24px;
+  background: center/cover no-repeat;
+  filter: blur(18px) brightness(.6) saturate(1.1);
+}
+.sg-photo {
+  position: absolute; inset: 0;
+  background: center top/contain no-repeat;
 }
 .sg-voile {
   position: absolute; inset: 0;
-  background: linear-gradient(to bottom,
-    rgba(15, 15, 15, .55) 0%,
-    rgba(15, 15, 15, .12) 26%,
-    rgba(15, 15, 15, 0) 45%);
+  background: linear-gradient(to top,
+    rgba(15, 15, 15, .94) 0%,
+    rgba(15, 15, 15, .82) 22%,
+    rgba(15, 15, 15, .10) 46%,
+    rgba(15, 15, 15, .48) 100%);
 }
 .sg-haut {
   position: absolute; top: 12px; left: 14px; right: 14px;
@@ -54,37 +69,39 @@
 .sg-haut span {
   font-size: 11px; font-weight: 800; letter-spacing: .06em;
   color: #FFF; text-transform: uppercase;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, .55);
 }
+.sg-bas { position: absolute; left: 14px; right: 14px; bottom: 13px; color: #FFF; }
 
-/* ---- serie en cours, sous la photo et centree ---- */
 .sg-serie-t {
-  font-size: 11px; font-weight: 800; letter-spacing: .08em;
-  color: #B34700; text-align: center; margin-top: 16px;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .1em; color: #FAC408;
 }
 .sg-exo-n {
   font-size: 22px; font-weight: 800; letter-spacing: -.02em;
-  line-height: 1.2; text-align: center; margin-top: 5px;
+  line-height: 1.15; margin-top: 4px;
 }
 
-.sg-champs { display: flex; gap: 10px; margin-top: 14px; }
+/* Champs translucides avec un flou derriere : lisibles quelle que
+   soit la photo, sans masquer davantage l'image. */
+.sg-champs { display: flex; gap: 10px; margin-top: 11px; }
 .sg-ch {
   flex: 1; display: block; cursor: text; text-align: center;
-  background: #F5F1E8; border-radius: 16px; padding: 12px 10px;
+  background: rgba(255, 255, 255, .14); border-radius: 14px; padding: 9px 10px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
 .sg-ch input {
   width: 100%; border: none; background: none; padding: 0; text-align: center;
   font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 32px; font-weight: 500; line-height: 1.05; color: #181818;
+  font-size: 30px; font-weight: 500; line-height: 1.05; color: #FFF;
   -moz-appearance: textfield;
 }
-.sg-ch input::placeholder { color: #C3BCAF; }
+.sg-ch input::placeholder { color: rgba(255, 255, 255, .45); }
 .sg-ch input::-webkit-outer-spin-button,
 .sg-ch input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .sg-ch input:focus { outline: none; }
 .sg-ch span {
-  display: block; margin-top: 5px;
-  font-size: 10px; font-weight: 700; letter-spacing: .06em; color: #756E64;
+  display: block; margin-top: 3px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: .06em;
+  color: rgba(255, 255, 255, .78);
 }
 .sg-ch:focus-within { box-shadow: inset 0 0 0 2px #FAC408; }
 
