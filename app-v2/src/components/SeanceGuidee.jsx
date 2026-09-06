@@ -124,8 +124,16 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
   // elle existe, sinon celle de la derniere seance.
   useEffect(() => {
     if (!courant) return;
-    const faites = journal[iExo] || [];
-    const precedente = faites.length ? faites[faites.length - 1] : derniereSerie(courant.ex.nom);
+    const posees = journal[iExo] || [];
+    // On revient sur une serie deja faite : on affiche SES valeurs,
+    // pas une proposition (Raci, 5/09).
+    if (iSerie < posees.length) {
+      const s = posees[iSerie];
+      setKg(s && s.w != null ? String(s.w) : '');
+      setReps(s && s.r != null ? String(s.r) : '');
+      return;
+    }
+    const precedente = posees.length ? posees[posees.length - 1] : derniereSerie(courant.ex.nom);
     setKg(precedente && precedente.w != null ? String(precedente.w) : '');
     setReps(precedente && precedente.r != null ? String(precedente.r) : '');
   }, [iExo, iSerie]);
@@ -172,6 +180,21 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
     }
     setISerie(ligne.length);
     setRepos(reposDe(courant.ex.nom));
+  };
+
+  /**
+   * Raci, 5/09 : « je veux pouvoir revenir sur une serie quelconque
+   * pour modifier charge et/ou reps, mais elle ne doit plus pouvoir se
+   * relancer si elle a deja ete faite ». Corriger n'avance donc rien :
+   * ni serie suivante, ni repos, ni exercice. On reecrit la ligne et
+   * on revient la ou l'on en etait.
+   */
+  const corriger = () => {
+    const posees = (journal[iExo] || []).slice();
+    if (iSerie >= posees.length) return;
+    posees[iSerie] = { w: kg, r: reps };
+    setJournal({ ...journal, [iExo]: posees });
+    setISerie(posees.length);
   };
 
   const passerExercice = () => {
@@ -250,6 +273,8 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
 
   const faites = journal[iExo] || [];
   const pastilles = Array.from({ length: seriesAttendues }, (_, n) => n);
+  // On regarde une serie deja posee : le bouton corrige, il n'avance pas.
+  const enCorrection = iSerie < faites.length;
 
   return (
     <div class="sg">
@@ -279,7 +304,9 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
           <span>{courant.ex.meta}</span>
         </div>
         <div class="sg-bas">
-          <div class="sg-serie-t">SÉRIE {iSerie + 1} SUR {seriesAttendues}</div>
+          <div class="sg-serie-t">
+            {enCorrection ? 'CORRECTION · ' : ''}SÉRIE {iSerie + 1} SUR {seriesAttendues}
+          </div>
           <div class="sg-exo-n">{courant.ex.nom}</div>
           <div class="sg-champs">
             <label class="sg-ch">
@@ -296,11 +323,18 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
         </div>
       </div>
 
+      {/* Les series deja posees se touchent : c'est le chemin du
+          retour en arriere. Celle qui attend ne se touche pas, elle
+          est deja a l'ecran. */}
       <div class="sg-pts">
         {pastilles.map(n => (
-          <span key={n} class={'sg-pt' + (n < faites.length ? ' ok' : (n === faites.length ? ' now' : ''))}>
-            {n + 1}
-          </span>
+          n < faites.length ? (
+            <button key={n} class={'sg-pt ok' + (n === iSerie ? ' vue' : '')}
+              aria-label={'Corriger la série ' + (n + 1)}
+              onClick={() => setISerie(n)}>{n + 1}</button>
+          ) : (
+            <span key={n} class={'sg-pt' + (n === iSerie ? ' now' : '')}>{n + 1}</span>
+          )
         ))}
       </div>
 
@@ -314,9 +348,11 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
         </div>
       )}
 
-      <button class="sg-go" onClick={suivant}>
-        {faites.length + 1 >= seriesAttendues && iExo + 1 >= refs.length
-          ? 'Terminer ›' : 'Suivant ›'}
+      <button class={'sg-go' + (enCorrection ? ' sg-go--corr' : '')}
+        onClick={enCorrection ? corriger : suivant}>
+        {enCorrection ? 'Reprendre ma série ›'
+          : (faites.length + 1 >= seriesAttendues && iExo + 1 >= refs.length
+            ? 'Terminer ›' : 'Suivant ›')}
       </button>
       <div class="sg-sec">
         <button onClick={passerExercice}>Passer l'exercice</button>

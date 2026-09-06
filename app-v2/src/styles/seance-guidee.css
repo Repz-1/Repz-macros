@@ -99,6 +99,17 @@
 }
 .sg-pt.ok { background: #151515; color: #F8F2E8; }
 .sg-pt.now { background: #FAC408; color: #151515; font-weight: 700; }
+/* Une serie posee se touche pour la corriger (Raci, 5/09). */
+button.sg-pt { border: none; font-family: inherit; cursor: pointer; }
+button.sg-pt:active { transform: scale(.92); }
+/* Celle qu'on est en train de relire porte un contour, pas un fond :
+   elle reste « faite », on ne la refait pas. */
+.sg-pt.vue { box-shadow: 0 0 0 2px #FAC408; }
+
+/* En correction, le bouton quitte le jaune : il ne fait pas avancer
+   la seance, il referme une parenthese. */
+.sg-go--corr { background: #F3EFE5; color: #B34700; }
+.sg-go--corr:active { background: #EAE5D8; }
 
 /* ---- le bouton unique ---- */
 .sg-go {

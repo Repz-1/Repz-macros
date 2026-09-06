@@ -2741,6 +2741,16 @@ const DECALAGE_SW_V2 = 232;
     if (/repos > 0 \? \(/.test(sg)) soucis.push('le repos reprend tout l\'ecran au lieu d\'un bandeau');
     if (!/\{repos > 0 && \(/.test(sg)) soucis.push('le bandeau de repos a disparu');
     if (!/class="sg-repos-x"/.test(sg)) soucis.push('le repos ne peut plus etre arrete');
+    // Raci, 5/09 : « je veux pouvoir revenir sur une serie quelconque
+    // pour modifier charge et/ou reps, mais elle ne doit plus pouvoir
+    // se relancer si elle a deja ete faite ».
+    if (!/const enCorrection = iSerie < faites\.length/.test(sg)) {
+      soucis.push('on ne distingue plus une serie relue d\'une serie a faire');
+    }
+    if (!/const corriger = \(\) => \{/.test(sg)) soucis.push('une serie posee ne peut plus etre corrigee');
+    if (!/onClick=\{enCorrection \? corriger : suivant\}/.test(sg)) {
+      soucis.push('revenir sur une serie deja faite la relancerait');
+    }
     if (!/setRepos\(r => r \+ 30\)/.test(sg) || !/setRepos\(r => Math\.max\(1, r - 30\)\)/.test(sg)) {
       soucis.push('le repos ne peut plus etre prolonge ni raccourci');
     }
