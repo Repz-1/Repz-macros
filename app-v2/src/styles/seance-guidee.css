@@ -7,8 +7,8 @@
    ========================================================== */
 
 .sg {
-  max-width: 440px; margin: 0 auto;
-  padding: 16px 14px calc(var(--hauteur-nav, 74px) + 20px + env(safe-area-inset-bottom));
+  max-width: 520px; margin: 0 auto;
+  padding: 14px 12px calc(var(--hauteur-nav, 74px) + 20px + env(safe-area-inset-bottom));
 }
 
 /* ---- en-tete : ou l'on en est, depuis combien de temps ---- */
@@ -41,9 +41,13 @@
    2. L'image se cale en HAUT du cadre, et le cadre est plus grand
       (350 px). Le bloc de texte n'occupe plus que le tiers bas, la ou
       il n'y a generalement que le sol. */
+/* Raci, 5/09 : « agrandir encore un peu ». Le cadre passe de 350 a
+   420 px et la colonne s'elargit avec lui : gagner en hauteur sans
+   gagner en largeur aurait seulement ajoute deux bandes floutees sur
+   les cotes, l'image etant calee en `contain`. */
 .sg-scene {
   position: relative; overflow: hidden;
-  height: 350px; border-radius: 20px; background: #241F1A;
+  height: 420px; border-radius: 22px; background: #241F1A;
 }
 .sg-fond {
   position: absolute; inset: -24px;
@@ -76,7 +80,7 @@
   font-size: 10.5px; font-weight: 800; letter-spacing: .1em; color: #FAC408;
 }
 .sg-exo-n {
-  font-size: 22px; font-weight: 800; letter-spacing: -.02em;
+  font-size: 24px; font-weight: 800; letter-spacing: -.02em;
   line-height: 1.15; margin-top: 4px;
 }
 
@@ -91,7 +95,7 @@
 .sg-ch input {
   width: 100%; border: none; background: none; padding: 0; text-align: center;
   font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 30px; font-weight: 500; line-height: 1.05; color: #FFF;
+  font-size: 33px; font-weight: 500; line-height: 1.05; color: #FFF;
   -moz-appearance: textfield;
 }
 .sg-ch input::placeholder { color: rgba(255, 255, 255, .45); }
