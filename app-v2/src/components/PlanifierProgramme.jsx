@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
+import { seancesDuJour } from '../store/seances.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import {
@@ -76,6 +77,7 @@ export function PlanifierProgramme({ progId }) {
   const choisis = Object.keys(aff).map(Number);
 
   const ouvrirJour = (v) => {
+    if (v === jourFait) return;
     if (aff[v] !== undefined) { setJourOuvert(jourOuvert === v ? null : v); return; }
     // Le quota gratuit mord ICI, au moment du 5e jour affecte.
     if (quotaAtteint(choisis.length, premium)) { setBloque(true); return; }
@@ -84,6 +86,7 @@ export function PlanifierProgramme({ progId }) {
   };
 
   const affecter = (v, index) => {
+    if (v === jourFait) return;   // un jour deja entraine ne se replace plus
     const n = { ...aff };
     if (index === null) delete n[v];
     else {
@@ -118,6 +121,22 @@ export function PlanifierProgramme({ progId }) {
     return e ? Number(e[0]) : undefined;
   };
   const nomJourDe = (v) => t('day_' + (JOURS.find(j => j.v === v) || {}).k);
+
+  /**
+   * Le jour courant est-il verrouille ?
+   *
+   * Raci, 5/09 : « une fois que la seance est faite elle est faite ;
+   * plus possible de modifier le jour qui a deja ete fait ». On
+   * pouvait replacer une autre seance sur aujourd'hui apres l'avoir
+   * entrainee : le calendrier gardait la seance reelle, mais le
+   * programme en annonçait une autre, et la tuile reproposait de la
+   * demarrer. Le jour se ferme des qu'il porte un entrainement.
+   */
+  const auj = new Date();
+  const isoAuj = auj.getFullYear() + '-'
+    + String(auj.getMonth() + 1).padStart(2, '0') + '-'
+    + String(auj.getDate()).padStart(2, '0');
+  const jourFait = seancesDuJour(isoAuj).length ? auj.getDay() : null;
 
   /**
    * Les seances proposees pour un jour donne.
@@ -207,11 +226,14 @@ export function PlanifierProgramme({ progId }) {
           const ouvert = jourOuvert === j.v;
           return (
             <div key={j.v} class="pl-jour-bloc">
-              <button class={'pl-jour' + (on ? ' on' : '') + (ouvert ? ' ouvert' : '')}
+              <button class={'pl-jour' + (on ? ' on' : '') + (ouvert ? ' ouvert' : '')
+                  + (j.v === jourFait ? ' fige' : '')}
+                disabled={j.v === jourFait}
                 aria-expanded={ouvert ? 'true' : 'false'} onClick={() => ouvrirJour(j.v)}>
                 <span class="pl-jour-nom">{t('day_' + j.k)}</span>
                 <span class="pl-jour-seance">
-                  {on ? prog.seances[index].titre : t('pl_choisir_seance')}
+                  {j.v === jourFait ? '✓ ' + t('pl_jour_fait')
+                    : on ? prog.seances[index].titre : t('pl_choisir_seance')}
                 </span>
               </button>
 

@@ -1685,8 +1685,8 @@ const DECALAGE_SW_V2 = 232;
     if (!/class="cp-tuile cp-tuile--fait"/.test(ent)) {
       soucis.push('la tuile propose encore de lancer une seance deja enregistree');
     }
-    if (!/const faitAuj = duJour/.test(ent)) {
-      soucis.push('on ne verifie plus si la seance du jour est deja notee');
+    if (!/const faitAuj = seancesDuJour\(todayIso\)\[0\]/.test(ent)) {
+      soucis.push('la tuile reproposera de demarrer des qu\'on change la seance du jour');
     }
     if (!/\{type === 'auj' && \(\s*\n?\s*<button class="ml-prevu-b"/.test(ent)) {
       soucis.push('une seance d\'un autre jour peut de nouveau etre demarree depuis le calendrier');
@@ -1735,6 +1735,14 @@ const DECALAGE_SW_V2 = 232;
   const css = lire('app-v2/src/styles/entrainer-carte.css');
   if (css && !/\.pl-abandon \{/.test(css)) {
     soucis.push('« Abandonner ce programme » n\'a plus de style : bouton brut de navigateur');
+  }
+  // Raci, 5/09 : « plus possible de modifier le jour qui a deja ete
+  // fait, et pas de deuxieme seance le meme jour ».
+  if (pl && !/if \(v === jourFait\) return;/.test(pl)) {
+    soucis.push('un jour deja entraine peut de nouveau etre replace');
+  }
+  if (pl && !/t\('pl_jour_fait'\)/.test(pl)) {
+    soucis.push('rien n\'indique qu\'un jour est verrouille parce qu\'il a ete fait');
   }
   if (css && !/\.pl-autre \{/.test(css)) {
     soucis.push('« Changer de programme » est redevenu un lien souligne');
@@ -2804,6 +2812,16 @@ const DECALAGE_SW_V2 = 232;
     // l'autre suffisait.
     if (!/setRepos\(reposDe\(refs\[iExo \+ 1\]\.ex\.nom\)\)/.test(sg)) {
       soucis.push('on enchaine deux exercices sans aucun repos');
+    }
+    // Raci, 5/09 : « un bouton dans le cas ou l'utilisateur ne
+    // possede pas le materiel — proposer un equivalent machine si
+    // c'etait une machine, et vice-versa halteres ».
+    if (!/class="sg-swap"/.test(sg)) soucis.push('le remplacement faute de materiel a disparu');
+    if (!/function equivalents\(mKey, ex\)/.test(sg)) {
+      soucis.push('plus rien ne calcule d\'exercice equivalent');
+    }
+    if (!/const GESTES = \[/.test(sg)) {
+      soucis.push('les equivalences ne se font plus par geste : elles retomberont sur des mouvements sans rapport');
     }
     if (!/class="sg-scene-fin"/.test(sg)) soucis.push('l\'ecran de fin n\'est plus une modale posee sur le voile');
     if (!/seanceMemeJour\(iso, titre/.test(sg)) soucis.push('un second enregistrement du jour n\'ecrase plus le premier');

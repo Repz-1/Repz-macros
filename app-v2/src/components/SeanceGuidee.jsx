@@ -44,6 +44,85 @@ function resoudreExercices(seanceId) {
   }).filter(Boolean);
 }
 
+/**
+ * Les exercices de rechange quand on n'a pas le materiel.
+ *
+ * Raci, 5/09 : « un bouton dans le cas ou l'utilisateur ne possede
+ * pas la possibilite de faire tel exercice — proposer un equivalent
+ * machine si c'etait une machine au depart, et vice-versa halteres
+ * si c'etait un exercice pour halteres ». On bascule donc de famille :
+ * une machine renvoie vers du libre (halteres, barre, poids du
+ * corps), un mouvement libre renvoie vers la machine.
+ *
+ * Le classement se fait par mots communs avec le nom d'origine :
+ * « Chest Press (Machine) » remonte « Developpe Couche (Haltere) »
+ * avant « Curl Biceps », parce qu'on cherche le meme geste, pas
+ * seulement le meme muscle.
+ */
+const LIBRE = new Set(['halteres', 'barre', 'rien', 'traction']);
+
+/**
+ * Le GESTE, deduit du nom. Les mots communs ne suffisent pas :
+ * « Presse a Cuisses (Machine) » et « Squat (Barre) » ne partagent
+ * aucun mot alors que c'est le meme mouvement, tandis que
+ * « Presse a Cuisses » et « Presse Epaules » en partagent un sans
+ * rien avoir en commun. On range donc les mouvements par famille.
+ */
+const GESTES = [
+  ['pousse-jambes', /presse a cuisses|hack squat|squat|fente|split squat|box squat/],
+  ['ischios', /leg curl|ischio|souleve de terre jambes tendues|glute ham/],
+  ['quadriceps', /extension jambes/],
+  ['mollets', /mollet/],
+  ['hanche', /souleve de terre|hip thrust|bassin|good morning|adduction|abduction/],
+  ['pousse-horizontal', /chest press|developpe couche|pompe|dips/],
+  ['pousse-vertical', /presse epaules|developpe militaire|developpe epaules|overhead/],
+  ['ouverture', /ecarte|pec deck|oiseau|ecart inverse|elevation laterale/],
+  ['tirage-vertical', /tirage poitrine|traction|tirage nuque|pull ?over/],
+  ['tirage-horizontal', /rowing|tirage assis|tirage horizontal/],
+  ['biceps', /curl/],
+  ['triceps', /extension triceps|kickback|barre au front/],
+  ['abdos', /crunch|planche|rotation|releve|flexion laterale|pallof/],
+];
+/**
+ * Certains gestes n'ont pas d'equivalent dans l'autre famille :
+ * l'extension de jambes n'existe qu'a la machine. On se rabat alors
+ * sur le geste voisin qui travaille le meme muscle.
+ */
+const REPLI = { quadriceps: 'pousse-jambes', ischios: 'hanche', ouverture: 'pousse-horizontal' };
+
+function gesteDe(nom) {
+  const n = String(nom).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const g = GESTES.find(([, re]) => re.test(n));
+  return g ? g[0] : null;
+}
+function motsDe(nom) {
+  return new Set(String(nom).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(m => m.length > 2));
+}
+function equivalents(mKey, ex) {
+  const versLibre = ex.mat === 'machine';
+  const mots = motsDe(ex.nom);
+  const geste = gesteDe(ex.nom);
+  return (EXERCISES[mKey] || [])
+    .filter(x => x.nom !== ex.nom && (versLibre ? LIBRE.has(x.mat) : x.mat === 'machine'))
+    .map(x => {
+      const c = motsDe(x.nom);
+      let communs = 0;
+      mots.forEach(m => { if (c.has(m)) communs++; });
+      // Le geste passe avant les mots : c'est lui qui fait
+      // l'equivalence, le nom n'est qu'un indice.
+      const g = gesteDe(x.nom);
+      const memeGeste = geste && g === geste ? 10
+        : (geste && REPLI[geste] && g === REPLI[geste] ? 6 : 0);
+      return { ex: x, score: memeGeste + communs };
+    })
+    .sort((a, b) => b.score - a.score)
+    .filter((o, i, l) => o.score > 0 || l[0].score === 0)
+    .slice(0, 4)
+    .map(o => o.ex);
+}
+
 /** « 4 séries × 8-10 reps » -> 4. Trois series par defaut. */
 function nbSeries(meta) {
   const m = String(meta || '').match(/(\d+)\s*s[ée]rie/i);
@@ -111,7 +190,12 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
   const [secondes, setSecondes] = useState(repris ? repris.secondes : 0);
   const [termine, setTermine] = useState(false);
 
-  const courant = refs[iExo] || null;
+  // Remplacements choisis pendant la seance, par position. Raci,
+  // 5/09 : la salle n'a pas toujours la machine du programme.
+  const [remplaces, setRemplaces] = useState({});
+  const [choixMateriel, setChoixMateriel] = useState(false);
+
+  const courant = remplaces[iExo] || refs[iExo] || null;
   const seriesAttendues = courant ? nbSeries(courant.ex.meta) : 0;
 
   // Champs de la serie en cours. Pre-remplis avec la derniere serie
@@ -342,6 +426,13 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
           <span>{NOMS_MUSCLES[courant.mKey] || ''}</span>
           <span>{courant.ex.meta}</span>
         </div>
+        {/* Raci, 5/09 : « un bouton dans le cas ou l'utilisateur ne
+            possede pas la possibilite de faire tel exercice, car il
+            n'a pas le materiel ». Pose sur l'image, la ou l'on
+            constate que la machine est prise ou absente. */}
+        <button class="sg-swap" onClick={() => setChoixMateriel(true)}>
+          {courant.ex.mat === 'machine' ? 'Pas cette machine ?' : 'Pas ce matériel ?'}
+        </button>
         <div class="sg-bas">
           <div class="sg-serie-t">
             {enCorrection ? 'CORRECTION · ' : ''}SÉRIE {iSerie + 1} SUR {seriesAttendues}
@@ -397,6 +488,30 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
         <button onClick={passerExercice}>Passer l'exercice</button>
         <button onClick={() => setTermine(true)}>Terminer la séance</button>
       </div>
+
+      {choixMateriel && (
+        <div class="sg-swap-voile" onClick={(e) => { if (e.target === e.currentTarget) setChoixMateriel(false); }}>
+          <div class="sg-swap-carte">
+            <div class="sg-swap-t">
+              {courant.ex.mat === 'machine' ? 'Sans machine' : 'Sur machine'}
+            </div>
+            <div class="sg-swap-l">
+              Même muscle, même geste — choisis ce que tu as sous la main.
+            </div>
+            {equivalents(courant.mKey, courant.ex).map(alt => (
+              <button key={alt.nom} class="sg-swap-o"
+                onClick={() => {
+                  setRemplaces({ ...remplaces, [iExo]: { mKey: courant.mKey, ex: alt } });
+                  setChoixMateriel(false);
+                }}>
+                <span class="sg-swap-n">{alt.nom}</span>
+                <span class="sg-swap-fl" aria-hidden="true">&rsaquo;</span>
+              </button>
+            ))}
+            <button class="sg-swap-x" onClick={() => setChoixMateriel(false)}>Annuler</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -211,11 +211,16 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   if (!prog && !lignes.length) return null;
 
   const duJour = lignes.find(l => l.auj && l.lancable && l.seanceId);
-  // La seance du jour a-t-elle deja ete enregistree ? On la reconnait
-  // a son titre : c'est celui que la tuile propose de lancer.
-  const faitAuj = duJour
-    ? seancesDuJour(todayIso).find(sa => sa.titre === duJour.seance.titre)
-    : null;
+  // Une seance a-t-elle deja ete enregistree aujourd'hui ?
+  //
+  // Raci, 5/09 : « si je selectionne de nouveau un autre muscle pour
+  // le jour en cours, il est de nouveau disponible pour refaire une
+  // seance ». Je comparais les TITRES : changer la seance du jour
+  // dans la planification donnait un titre different, donc plus de
+  // correspondance, donc la tuile reproposait « Demarrer ». On ne
+  // regarde plus quoi a ete fait, mais SI quelque chose l'a ete —
+  // une seance par jour, quel qu'en soit le nom. */
+  const faitAuj = seancesDuJour(todayIso)[0] || null;
 
   // « Semaine 2 sur 8 » : depuis la date d'adoption, en semaines
   // pleines. La duree du programme est un texte (« 8 semaines ») —

@@ -714,6 +714,13 @@
 /* Jour sans seance : l'invite reste discrete, elle n'est pas un etat. */
 .pg-planifier .pl-jour:not(.on) .pl-jour-seance { color: #A9A29A; font-weight: 500; }
 .pg-planifier .pl-jour.ouvert { box-shadow: inset 3px 0 0 #B34700; background: #FBF7EE; }
+/* Jour deja entraine : il se lit, il ne se touche plus (Raci, 5/09).
+   Vert plutot que gris : ce n'est pas une indisponibilite, c'est un
+   acquis. */
+.pg-planifier .pl-jour.fige {
+  background: #F2F8F4; box-shadow: inset 3px 0 0 #1F7A50; cursor: default;
+}
+.pg-planifier .pl-jour.fige .pl-jour-seance { color: #1F7A50; font-weight: 700; }
 .pg-planifier .pl-menu { margin: 0; padding: 4px 12px 10px 26px; background: #FBF7EE; }
 .pg-planifier .pl-menu-l {
   display: block; width: 100%; text-align: left; margin-bottom: 5px;

@@ -227,3 +227,47 @@ button.sg-pt:active { transform: scale(.92); }
   font-family: 'DM Mono', ui-monospace, monospace;
   font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums;
 }
+
+/* ---- Changer d'exercice faute de materiel (Raci, 5/09) ----
+   Le bouton se pose en bas a gauche de l'image, dans la zone deja
+   assombrie par le voile : il ne cache rien du mouvement et se
+   trouve la ou l'on regarde en constatant que la machine est prise. */
+.sg-swap {
+  position: absolute; left: 14px; bottom: 14px; z-index: 2;
+  background: rgba(255, 255, 255, .16); color: #FFF;
+  border: 1px solid rgba(255, 255, 255, .22); border-radius: 11px;
+  padding: 8px 12px; font-family: inherit;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.sg-swap:active { background: rgba(255, 255, 255, .3); }
+
+.sg-swap-voile {
+  position: fixed; inset: 0; z-index: 95;
+  background: rgba(0, 0, 0, .45);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 14px;
+}
+.sg-swap-carte {
+  width: 100%; max-width: 440px;
+  background: var(--fond, #FAF9F6); border-radius: 22px;
+  padding: 20px 16px calc(16px + env(safe-area-inset-bottom));
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, .28);
+}
+.sg-swap-t { font-size: 19px; font-weight: 800; letter-spacing: -.02em; }
+.sg-swap-l { font-size: 13px; color: #8A8378; margin: 4px 0 14px; line-height: 1.45; }
+.sg-swap-o {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; margin-bottom: 8px; padding: 14px 14px;
+  background: #FFF; border: none; border-radius: 14px;
+  font-family: inherit; text-align: left; cursor: pointer;
+}
+.sg-swap-o:active { background: #F3EFE5; }
+.sg-swap-n { flex: 1 1 auto; min-width: 0; font-size: 14.5px; font-weight: 700; }
+.sg-swap-fl { flex: none; font-size: 17px; color: #B5AFA4; line-height: 1; }
+.sg-swap-x {
+  display: block; width: 100%; margin-top: 4px; padding: 13px;
+  background: none; border: none;
+  font-family: inherit; font-size: 13.5px; font-weight: 700; color: #8A8378;
+  cursor: pointer;
+}
