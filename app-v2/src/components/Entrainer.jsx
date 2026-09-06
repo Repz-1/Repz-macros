@@ -211,6 +211,11 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   if (!prog && !lignes.length) return null;
 
   const duJour = lignes.find(l => l.auj && l.lancable && l.seanceId);
+  // La seance du jour a-t-elle deja ete enregistree ? On la reconnait
+  // a son titre : c'est celui que la tuile propose de lancer.
+  const faitAuj = duJour
+    ? seancesDuJour(todayIso).find(sa => sa.titre === duJour.seance.titre)
+    : null;
 
   // « Semaine 2 sur 8 » : depuis la date d'adoption, en semaines
   // pleines. La duree du programme est un texte (« 8 semaines ») —
@@ -254,7 +259,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           qu'on doit faire maintenant. Le calendrier du mois, juste en
           dessous, dit deja le reste de la semaine — couleur par jour,
           coche sur les jours notes. */}
-      {duJour ? (
+      {duJour && !faitAuj ? (
         <button class="cp-tuile" onClick={() => allerVers('seanceDetail',
           { seanceId: duJour.seanceId, titre: duJour.seance.titre, depuis: 'journal' })}>
           <span class="cp-tuile-j">{t('cp_auj')} · {jourLong(today).toUpperCase()}</span>
@@ -264,10 +269,20 @@ function CarteProgramme({ today, todayIso, allerVers }) {
             <span class="cp-demarrer-fl" aria-hidden="true">&rsaquo;</span>
           </span>
         </button>
+      ) : faitAuj ? (
+        /* Raci, 5/09 : « une fois que la seance est faite elle doit
+           etre indiquee comme realisee ». La tuile garde sa place et
+           son noir, mais elle ne propose plus de lancer ce qui est
+           deja derriere soi : elle constate. */
+        <div class="cp-tuile cp-tuile--fait">
+          <span class="cp-tuile-j">{t('cp_auj')} · {jourLong(today).toUpperCase()}</span>
+          <span class="cp-tuile-t">{faitAuj.titre}</span>
+          <span class="cp-tuile-fait">✓ {t('cp_realisee')}</span>
+        </div>
       ) : (
-        /* Jour de repos, ou seance du jour deja notee : la tuile n'a
-           rien a lancer. Une ligne calme le dit, et « Seance libre »
-           plus bas reste la porte de sortie. */
+        /* Jour de repos : la tuile n'a rien a lancer. Une ligne calme
+           le dit, et « Seance libre » plus bas reste la porte de
+           sortie. */
         <div class="cp-repos">{t('cp_rien_auj')}</div>
       )}
 
@@ -809,12 +824,18 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
                 tu as fait » — et contredisait les muscles affiches
                 dessous (Raci, 22/08). */}
             {type === 'passe' && <div class="ml-prevu-non">{t('ml_prevu_non')}</div>}
-            {type !== 'passe' && (
+            {/* Raci, 5/09 : « je veux qu'il soit possible de demarrer
+                uniquement la seance du jour en cours ». Un jour futur
+                se lisait mais se lançait aussi : la seance se serait
+                enregistree a la date d'aujourd'hui, pas a la sienne.
+                Seul AUJOURD'HUI porte le bouton. */}
+            {type === 'auj' && (
               <button class="ml-prevu-b" onClick={() => {
                 fermer();
                 allerVers('seanceDetail', { seanceId: prevue.seanceId, titre: prevue.titre, depuis: 'journal' });
               }}>{t('ml_demarrer')}</button>
             )}
+            {type === 'futur' && <div class="ml-prevu-non">{t('ml_prevu_futur')}</div>}
           </div>
         )}
 

@@ -1679,6 +1679,18 @@ const DECALAGE_SW_V2 = 232;
     if (!/t\('cp_rien_auj'\)/.test(ent)) {
       soucis.push('un jour sans seance prevue n\'affiche plus rien du tout');
     }
+    // Raci, 5/09 : « une fois que la seance est faite elle doit etre
+    // indiquee comme realisee », et « il doit etre possible de
+    // demarrer uniquement la seance du jour en cours ».
+    if (!/class="cp-tuile cp-tuile--fait"/.test(ent)) {
+      soucis.push('la tuile propose encore de lancer une seance deja enregistree');
+    }
+    if (!/const faitAuj = duJour/.test(ent)) {
+      soucis.push('on ne verifie plus si la seance du jour est deja notee');
+    }
+    if (!/\{type === 'auj' && \(\s*\n?\s*<button class="ml-prevu-b"/.test(ent)) {
+      soucis.push('une seance d\'un autre jour peut de nouveau etre demarree depuis le calendrier');
+    }
     // Raci, 26/08 : un programme dit ce qui est prevu, il n'interdit
     // pas de faire autre chose. La seance libre doit rester joignable.
     if (!/class="cp-libre"/.test(ent)) {

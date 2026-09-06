@@ -1025,6 +1025,18 @@
   display: block; font-size: 19px; font-weight: 800;
   letter-spacing: -.02em; line-height: 1.2; margin: 5px 0 12px;
 }
+/* Seance du jour deja enregistree : la tuile constate au lieu de
+   proposer (Raci, 5/09). Elle garde son noir — c'est toujours le jour
+   courant — mais son bandeau passe au vert, et il ne se touche pas. */
+.cp-tuile--fait { cursor: default; }
+.cp-tuile-fait {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: rgba(31, 122, 80, .22); color: #7FE0AE;
+  border: 1px solid rgba(127, 224, 174, .3);
+  border-radius: 12px; padding: 12px;
+  font-size: 14.5px; font-weight: 800;
+}
+
 .cp-tuile-go {
   display: flex; align-items: center; justify-content: center; gap: 5px;
   background: #FAC408; color: #151515; border-radius: 12px; padding: 12px;
