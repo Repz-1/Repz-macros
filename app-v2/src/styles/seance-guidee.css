@@ -96,15 +96,36 @@
 }
 .sg-sec button:active { background: #EAE5D8; }
 
-/* ---- repos ---- */
-.sg-repos { text-align: center; padding: 10px 0 0; }
-.sg-repos-l { font-size: 11px; font-weight: 800; letter-spacing: .08em; color: #B34700; }
-.sg-repos-c {
-  font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 56px; font-weight: 400; letter-spacing: -.02em;
-  margin: 6px 0; font-variant-numeric: tabular-nums;
+/* ---- repos : un bandeau, pas un ecran (Raci, 5/09) ----
+   Il s'intercale au-dessus du bouton sans rien cacher. La serie
+   suivante reste affichee et saisissable pendant qu'il tourne, et
+   trois commandes tiennent sur la ligne : raccourcir, prolonger,
+   arreter. */
+.sg-repos {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 14px; padding: 10px 10px 10px 14px;
+  background: #151515; border-radius: 16px;
 }
-.sg-repos-s { font-size: 13px; color: #8A8378; line-height: 1.45; }
+.sg-repos-l {
+  font-size: 10px; font-weight: 800; letter-spacing: .1em; color: #FAC408;
+}
+.sg-repos-c {
+  flex: 1 1 auto;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 26px; font-weight: 400; color: #F8F2E8;
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+}
+.sg-repos-b, .sg-repos-x {
+  flex: none; border: none; border-radius: 10px; padding: 9px 10px;
+  font-family: inherit; font-size: 12.5px; font-weight: 800; cursor: pointer;
+}
+.sg-repos-b {
+  background: rgba(248, 242, 232, .14); color: #F8F2E8;
+  font-family: 'DM Mono', ui-monospace, monospace; font-weight: 500;
+}
+.sg-repos-b:active { background: rgba(248, 242, 232, .26); }
+.sg-repos-x { background: #FAC408; color: #151515; }
+.sg-repos-x:active { background: #E0AE07; }
 
 /* ---- fin de seance ---- */
 .sg-fin-t { font-size: 20px; font-weight: 800; text-align: center; margin: 14px 0 4px; }

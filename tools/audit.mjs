@@ -2734,6 +2734,16 @@ const DECALAGE_SW_V2 = 232;
   else {
     if (!/const suivant = \(\) => \{/.test(sg)) soucis.push('« Suivant » ne valide plus la serie');
     if (!/setRepos\(reposDe\(/.test(sg)) soucis.push('le repos ne se declenche plus entre deux series');
+    // Raci, 5/09 : « le chrono apparait sur la MEME page et je peux
+    // l'arreter a n'importe quel moment, en plus de pouvoir le
+    // prolonger ou le raccourcir ». Il occupait tout l'ecran et
+    // cachait l'exercice en cours.
+    if (/repos > 0 \? \(/.test(sg)) soucis.push('le repos reprend tout l\'ecran au lieu d\'un bandeau');
+    if (!/\{repos > 0 && \(/.test(sg)) soucis.push('le bandeau de repos a disparu');
+    if (!/class="sg-repos-x"/.test(sg)) soucis.push('le repos ne peut plus etre arrete');
+    if (!/setRepos\(r => r \+ 30\)/.test(sg) || !/setRepos\(r => Math\.max\(1, r - 30\)\)/.test(sg)) {
+      soucis.push('le repos ne peut plus etre prolonge ni raccourci');
+    }
     // La seance ne s'ecrit qu'a la fin : tant qu'on n'y est pas, elle
     // est en cours. Sans ca on retombe dans l'entre-deux d'aout, ou
     // une seance commencee disparaissait en quittant l'ecran.

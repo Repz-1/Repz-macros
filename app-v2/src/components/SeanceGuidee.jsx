@@ -259,66 +259,64 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
       </div>
       <div class="sg-prog"><span style={{ width: avance + '%' }} /></div>
 
-      {repos > 0 ? (
-        /* ---------- Repos ---------- */
-        <div class="sg-repos">
-          <div class="sg-repos-l">REPOS</div>
-          <div class="sg-repos-c">{mmss(repos)}</div>
-          <div class="sg-repos-s">
-            Ensuite : série {iSerie + 1} sur {seriesAttendues} — {courant.ex.nom}
-          </div>
-          <button class="sg-go" onClick={() => setRepos(0)}>Passer le repos ›</button>
-          <div class="sg-sec">
-            <button onClick={() => setRepos(r => r + 30)}>+ 30 s</button>
-            <button onClick={() => setRepos(r => Math.max(1, r - 30))}>− 30 s</button>
+      {/* Raci, 5/09 : « le chrono apparait sur la MEME page et je peux
+          l'arreter a n'importe quel moment, en plus de pouvoir le
+          prolonger ou le raccourcir ». Le repos occupait tout l'ecran
+          et cachait l'exercice : on ne voyait plus ce qu'on allait
+          faire, ni ce qu'on venait de saisir. Il devient un bandeau
+          au-dessus du bouton — la serie suivante est deja affichee et
+          reste saisissable pendant qu'il tourne. */}
+      <div class="sg-exo">
+        <div class="sg-vig"
+          style={{ backgroundImage: `url('${IMG_BASE}${courant.ex.imgId}/0.jpg')` }} />
+        <div>
+          <div class="sg-exo-n">{courant.ex.nom}</div>
+          <div class="sg-exo-s">
+            {courant.ex.meta}{NOMS_MUSCLES[courant.mKey] ? ' · ' + NOMS_MUSCLES[courant.mKey] : ''}
           </div>
         </div>
-      ) : (
-        /* ---------- Serie a saisir ---------- */
-        <>
-          <div class="sg-exo">
-            <div class="sg-vig"
-              style={{ backgroundImage: `url('${IMG_BASE}${courant.ex.imgId}/0.jpg')` }} />
-            <div>
-              <div class="sg-exo-n">{courant.ex.nom}</div>
-              <div class="sg-exo-s">
-                {courant.ex.meta}{NOMS_MUSCLES[courant.mKey] ? ' · ' + NOMS_MUSCLES[courant.mKey] : ''}
-              </div>
-            </div>
-          </div>
+      </div>
 
-          <div class="sg-serie-t">SÉRIE {iSerie + 1} SUR {seriesAttendues}</div>
-          <div class="sg-champs">
-            <label class="sg-ch">
-              <span>CHARGE (KG)</span>
-              <input type="number" inputMode="decimal" value={kg}
-                onInput={(e) => setKg(e.currentTarget.value)} placeholder="—" />
-            </label>
-            <label class="sg-ch">
-              <span>RÉPÉTITIONS</span>
-              <input type="number" inputMode="numeric" value={reps}
-                onInput={(e) => setReps(e.currentTarget.value)} placeholder="—" />
-            </label>
-          </div>
+      <div class="sg-serie-t">SÉRIE {iSerie + 1} SUR {seriesAttendues}</div>
+      <div class="sg-champs">
+        <label class="sg-ch">
+          <span>CHARGE (KG)</span>
+          <input type="number" inputMode="decimal" value={kg}
+            onInput={(e) => setKg(e.currentTarget.value)} placeholder="—" />
+        </label>
+        <label class="sg-ch">
+          <span>RÉPÉTITIONS</span>
+          <input type="number" inputMode="numeric" value={reps}
+            onInput={(e) => setReps(e.currentTarget.value)} placeholder="—" />
+        </label>
+      </div>
 
-          <div class="sg-pts">
-            {pastilles.map(n => (
-              <span key={n} class={'sg-pt' + (n < faites.length ? ' ok' : (n === faites.length ? ' now' : ''))}>
-                {n + 1}
-              </span>
-            ))}
-          </div>
+      <div class="sg-pts">
+        {pastilles.map(n => (
+          <span key={n} class={'sg-pt' + (n < faites.length ? ' ok' : (n === faites.length ? ' now' : ''))}>
+            {n + 1}
+          </span>
+        ))}
+      </div>
 
-          <button class="sg-go" onClick={suivant}>
-            {faites.length + 1 >= seriesAttendues && iExo + 1 >= refs.length
-              ? 'Terminer ›' : 'Suivant ›'}
-          </button>
-          <div class="sg-sec">
-            <button onClick={passerExercice}>Passer l'exercice</button>
-            <button onClick={() => setTermine(true)}>Terminer la séance</button>
-          </div>
-        </>
+      {repos > 0 && (
+        <div class="sg-repos">
+          <span class="sg-repos-l">REPOS</span>
+          <span class="sg-repos-c">{mmss(repos)}</span>
+          <button class="sg-repos-b" onClick={() => setRepos(r => Math.max(1, r - 30))}>−30</button>
+          <button class="sg-repos-b" onClick={() => setRepos(r => r + 30)}>+30</button>
+          <button class="sg-repos-x" onClick={() => setRepos(0)}>Arrêter</button>
+        </div>
       )}
+
+      <button class="sg-go" onClick={suivant}>
+        {faites.length + 1 >= seriesAttendues && iExo + 1 >= refs.length
+          ? 'Terminer ›' : 'Suivant ›'}
+      </button>
+      <div class="sg-sec">
+        <button onClick={passerExercice}>Passer l'exercice</button>
+        <button onClick={() => setTermine(true)}>Terminer la séance</button>
+      </div>
     </div>
   );
 }
