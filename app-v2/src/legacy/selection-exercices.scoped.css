@@ -279,6 +279,28 @@
    au-dela, les fonds sombres virent au gris laiteux. */
 .pg-selection .ex-photo{ filter:brightness(1.08) contrast(1.07) saturate(1.06); }
 
+/* ---- Focale au defilement (Raci, 5/09) ----
+   La vignette au centre de l'ecran est a taille pleine, celles qui
+   s'en eloignent descendent jusqu'a 3/4. La variable --focale est
+   posee par useFocale() a chaque image de defilement.
+
+   L'agrandissement passe par `transform`, pas par la largeur : la
+   ligne garde sa hauteur, rien ne se decale sous le doigt pendant
+   qu'on fait defiler. Sans valeur, la vignette reste a 1 — si le
+   script ne tourne pas, la liste est simplement normale. */
+.pg-selection .ex-photo{
+  transform: scale(var(--focale, 1));
+  transform-origin: center;
+  will-change: transform;
+}
+/* Le voisin agrandi ne doit pas mordre sur le texte : la ligne lui
+   reserve la place du plus grand etat. */
+.pg-selection .ex-item{ overflow: visible; }
+
+@media (prefers-reduced-motion: reduce){
+  .pg-selection .ex-photo{ transform: none; }
+}
+
 /* Le chrono de repos a quitte cette page le 26/08 (Raci) : il n'y
    avait rien a chronometrer pendant qu'on choisit ses exercices.
    Les regles qui le repositionnaient ici — reduit, decale a gauche,

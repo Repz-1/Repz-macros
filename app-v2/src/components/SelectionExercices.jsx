@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
 import { MUSCLES, EXERCISES, FILTERS, NIVEAUX, IMG_BASE,
          NIVEAUX_PRATIQUE, PROTOCOLES } from '../data/exercices.js';
@@ -39,6 +39,53 @@ const EQUIP = {
 };
 const equipLabel = (mat) => EQUIP[mat] || (mat ? mat[0].toUpperCase() + mat.slice(1) : '—');
 
+/**
+ * Effet de focale sur les vignettes de la liste.
+ *
+ * Raci, 5/09 : « agrandir les images du menu deroulant uniquement
+ * lorsque l'image se trouve au centre de l'ecran, et 3/4 avant et
+ * apres le centre ». La vignette la plus proche du milieu de l'ecran
+ * est a taille pleine ; plus elle s'en eloigne, plus elle retrecit,
+ * jusqu'a 3/4 aux extremites. On parcourt la liste pendant qu'elle
+ * defile et on lit celle qui est au centre, sans s'arreter.
+ *
+ * Le calcul suit le defilement dans un requestAnimationFrame — un
+ * ecouteur de scroll qui redimensionne a chaque evenement ferait
+ * tressauter la liste sur un telephone. Rien n'est mesure hors ecran :
+ * les vignettes qui ne sont pas visibles gardent leur taille.
+ */
+function useFocale() {
+  useEffect(() => {
+    let brut = null;
+    const MIN = 0.75;                       // 3/4 aux extremites
+    const appliquer = () => {
+      brut = null;
+      const h = window.innerHeight || 800;
+      const centre = h / 2;
+      // Au-dela de cette distance du centre, la vignette est au plus
+      // petit. Une demi-hauteur d'ecran : la decroissance se voit sur
+      // trois a quatre lignes, pas sur toute la page.
+      const portee = h * 0.42;
+      document.querySelectorAll('[data-focale]').forEach((n) => {
+        const r = n.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > h) return;     // hors ecran : on ne touche a rien
+        const d = Math.abs(r.top + r.height / 2 - centre);
+        const k = Math.max(0, 1 - d / portee);     // 1 au centre, 0 aux bords
+        n.style.setProperty('--focale', (MIN + (1 - MIN) * k).toFixed(3));
+      });
+    };
+    const surDefilement = () => { if (brut == null) brut = requestAnimationFrame(appliquer); };
+    appliquer();
+    window.addEventListener('scroll', surDefilement, { passive: true });
+    window.addEventListener('resize', surDefilement, { passive: true });
+    return () => {
+      if (brut != null) cancelAnimationFrame(brut);
+      window.removeEventListener('scroll', surDefilement);
+      window.removeEventListener('resize', surDefilement);
+    };
+  });
+}
+
 export function SelectionExercices() {
   const [muscle, setMuscle] = useState(0);          // index dans MUSCLES
   const [filtre, setFiltre] = useState('tout');     // key dans FILTERS
@@ -70,6 +117,8 @@ export function SelectionExercices() {
     const cible = normaliser(ex.nom);
     return mots.every(m => cible.includes(m));
   };
+
+  useFocale();
 
   const liste = (EXERCISES[mKey] || [])
     .map((ex, i) => ({ ex, i }))
@@ -210,7 +259,7 @@ export function SelectionExercices() {
                   l'ajouter a sa seance pour decouvrir a quoi il
                   ressemblait, donc s'engager avant de savoir. */}
               <div class="ex-photo" style={bg} role="button" tabIndex={0}
-                aria-label={'Voir ' + ex.nom}
+                aria-label={'Voir ' + ex.nom} data-focale
                 onClick={() => setFiche(i)} />
               <div class="ex-info" onClick={() => setFiche(i)}>
                 <div class="ex-name">{ex.nom}</div>
