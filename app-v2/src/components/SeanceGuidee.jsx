@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { enregistrerSeance, supprimerSeance, seanceMemeJour } from '../store/seances.js';
 import { t } from '../i18n/index.js';
 import { EXERCISES, IMG_BASE } from '../data/exercices.js';
@@ -223,7 +224,8 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
     const exos = refs
       .map(({ mKey, ex }, i) => ({ mKey, nom: ex.nom, fait: !!(journal[i] || []).length, series: journal[i] || [] }))
       .filter(e => e.fait);
-    if (!exos.length) { oublierEnCours(); revenir(); return; }
+    oublierEnCours();
+    if (!exos.length) return;
     memoriserCharges();
     const iso = new Date().toISOString().slice(0, 10);
     const deja = seanceMemeJour(iso, titre || t('session'));
@@ -234,30 +236,51 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
       muscles: [...new Set(exos.map(e => e.mKey).filter(Boolean))],
       exos,
     });
-    oublierEnCours();
-    revenir();
   };
+
+  /**
+   * Raci, 5/09 : « termine c'est termine, on part du principe qu'elle
+   * a ete faite ». Plus de bouton pour confirmer ni pour revenir en
+   * arriere : atteindre l'ecran de fin ENREGISTRE. On felicite, puis
+   * un compte a rebours de 20 s ramene a S'entrainer — et le bouton
+   * du compte a rebours est ce retour, touchable a tout moment.
+   */
+  const [rebours, setRebours] = useState(20);
+  const dejaEcrit = useRef(false);
+  useEffect(() => {
+    if (!termine) return;
+    if (!dejaEcrit.current) { dejaEcrit.current = true; enregistrer(); }
+    const it = setInterval(() => setRebours(r => {
+      if (r <= 1) { clearInterval(it); revenir(); return 0; }
+      return r - 1;
+    }), 1000);
+    return () => clearInterval(it);
+  }, [termine]);
 
   // ---------- Ecran de fin ----------
   if (termine) {
     const nbExos = Object.keys(journal).filter(i => (journal[i] || []).length).length;
     const tonnage = Object.values(journal).flat()
       .reduce((n, s) => n + (parseFloat(s.w) || 0) * (parseFloat(s.r) || 0), 0);
-    return (
-      <div class="sg">
-        <div class="sg-fin-t">Séance terminée</div>
-        <div class="sg-fin-s">{titre}</div>
-        <div class="sg-recap">
-          <div><span>Exercices</span><b>{nbExos} / {refs.length}</b></div>
-          <div><span>Séries effectuées</span><b>{faitesTotal} / {totalSeries}</b></div>
-          {tonnage > 0 && <div><span>Tonnage total</span><b>{Math.round(tonnage).toLocaleString('fr-BE')} kg</b></div>}
-          <div><span>Durée</span><b>{mmss(secondes)}</b></div>
+    return createPortal(
+      <div class="sg-scene-fin">
+        <div class="sg-fin">
+          <div class="sg-fin-t">Bravo</div>
+          <div class="sg-fin-s">{titre} — c'est plié.</div>
+          <div class="sg-recap">
+            <div><span>Exercices</span><b>{nbExos} / {refs.length}</b></div>
+            <div><span>Séries effectuées</span><b>{faitesTotal} / {totalSeries}</b></div>
+            {tonnage > 0 && <div><span>Tonnage total</span><b>{Math.round(tonnage).toLocaleString('fr-BE')} kg</b></div>}
+            <div><span>Durée</span><b>{mmss(secondes)}</b></div>
+          </div>
+          {/* Le compte a rebours EST le bouton de retour : on n'attend
+              que si on veut relire ses chiffres. */}
+          <button class="sg-go" onClick={revenir}>
+            Revenir à S'entraîner <span class="sg-rebours">{rebours}</span>
+          </button>
         </div>
-        <button class="sg-go" onClick={enregistrer}>Enregistrer la séance</button>
-        <div class="sg-sec">
-          <button onClick={() => setTermine(false)}>Reprendre</button>
-        </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 

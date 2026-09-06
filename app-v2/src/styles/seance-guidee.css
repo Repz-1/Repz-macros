@@ -182,13 +182,45 @@ button.sg-pt:active { transform: scale(.92); }
 .sg-repos-x { background: #FAC408; color: #151515; }
 .sg-repos-x:active { background: #E0AE07; }
 
-/* ---- fin de seance ---- */
-.sg-fin-t { font-size: 20px; font-weight: 800; text-align: center; margin: 14px 0 4px; }
-.sg-fin-s { font-size: 13.5px; color: #8A8378; text-align: center; margin-bottom: 16px; }
-.sg-recap { background: #F5F1E8; border-radius: 16px; padding: 14px 16px; font-size: 13.5px; }
-.sg-recap div { display: flex; justify-content: space-between; padding: 7px 0; }
-.sg-recap div + div { border-top: 1px solid #E7E1D5; }
+/* ---- fin de seance ----
+   Raci, 5/09 : « plus centree comme d'habitude, avec un
+   assombrissement autour ». Meme voile et meme plan que les autres
+   modales de l'app. Plus de bouton pour enregistrer ni pour
+   reprendre : atteindre cet ecran vaut enregistrement. */
+.sg-scene-fin {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(0, 0, 0, .35);
+  display: flex; align-items: center; justify-content: center;
+  padding: calc(14px + env(safe-area-inset-top)) 14px
+           calc(14px + env(safe-area-inset-bottom));
+}
+.sg-fin {
+  width: 100%; max-width: 400px; max-height: 100%; overflow-y: auto;
+  background: var(--fond, #FAF9F6); border-radius: 22px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .3);
+  padding: 24px 20px 20px; text-align: center;
+}
+.sg-fin-t { font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+.sg-fin-s { font-size: 14px; color: #8A8378; margin: 4px 0 18px; }
+.sg-recap {
+  background: #FFF; border-radius: 16px; padding: 4px 14px;
+  font-size: 13.5px; text-align: left;
+}
+.sg-recap div { display: flex; justify-content: space-between; padding: 10px 0; }
+.sg-recap div + div { border-top: 1px solid #EFEAE0; }
 .sg-recap b {
   font-family: 'DM Mono', ui-monospace, monospace; font-weight: 500;
   font-variant-numeric: tabular-nums;
+}
+/* Le compte a rebours vit DANS le bouton de retour : il annonce ce
+   qui va arriver tout seul, et le bouton fait la meme chose tout de
+   suite. */
+.sg-fin .sg-go {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.sg-rebours {
+  min-width: 26px; padding: 2px 6px; border-radius: 8px;
+  background: rgba(21, 21, 21, .14);
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;
 }

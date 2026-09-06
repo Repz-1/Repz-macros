@@ -2760,6 +2760,15 @@ const DECALAGE_SW_V2 = 232;
     if (!/ecrireEnCours\(/.test(sg)) soucis.push('la seance en cours n\'est plus sauvegardee : quitter l\'ecran perdrait tout');
     if (!/lireEnCours\(seanceId\)/.test(sg)) soucis.push('une seance interrompue ne se reprend plus');
     if (!/oublierEnCours\(\)/.test(sg)) soucis.push('la seance reste « en cours » apres avoir ete enregistree');
+    // Raci, 5/09 : « termine c'est termine ». Atteindre l'ecran de fin
+    // vaut enregistrement ; il ne reste ni bouton pour confirmer ni
+    // bouton pour revenir en arriere, seulement le retour au menu.
+    if (!/dejaEcrit\.current = true; enregistrer\(\);/.test(sg)) {
+      soucis.push('l\'ecran de fin n\'enregistre plus tout seul');
+    }
+    if (/setTermine\(false\)/.test(sg)) soucis.push('« Reprendre » est revenu : une seance terminee se rouvrirait');
+    if (!/setRebours\(/.test(sg)) soucis.push('le compte a rebours de retour a disparu');
+    if (!/class="sg-scene-fin"/.test(sg)) soucis.push('l\'ecran de fin n\'est plus une modale posee sur le voile');
     if (!/seanceMemeJour\(iso, titre/.test(sg)) soucis.push('un second enregistrement du jour n\'ecrase plus le premier');
     if (/class="sd-fini"|class="sd-conflit"|class="sd-terminer"/.test(sg)) {
       soucis.push('les ecrans intermediaires supprimes le 5/09 sont revenus');
