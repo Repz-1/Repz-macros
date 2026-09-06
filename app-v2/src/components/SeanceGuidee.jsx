@@ -291,11 +291,12 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
           faire, ni ce qu'on venait de saisir. Il devient un bandeau
           au-dessus du bouton — la serie suivante est deja affichee et
           reste saisissable pendant qu'il tourne. */}
-      {/* Maquette C, retenue par Raci le 5/09 : l'image devient le
-          fond de l'ecran, nom et champs poses dessus sur un degrade
-          sombre. Le voile monte a 88 % en bas — les champs se
-          touchent avec des mains moites, ils ne peuvent pas flotter
-          sur une photo claire. */}
+      {/* Raci, 5/09 : « les images ne sont pas totalement visibles ».
+          Le nom et les deux champs etaient poses SUR la photo et en
+          mangeaient la moitie basse — celle ou se trouve justement le
+          mouvement. La photo ne porte plus que ses deux etiquettes de
+          coin ; tout ce qui se lit et se touche descend en dessous,
+          centre. */}
       <div class="sg-scene"
         style={{ backgroundImage: `url('${IMG_BASE}${courant.ex.imgId}/0.jpg')` }}>
         <div class="sg-voile" />
@@ -303,24 +304,23 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
           <span>{NOMS_MUSCLES[courant.mKey] || ''}</span>
           <span>{courant.ex.meta}</span>
         </div>
-        <div class="sg-bas">
-          <div class="sg-serie-t">
-            {enCorrection ? 'CORRECTION · ' : ''}SÉRIE {iSerie + 1} SUR {seriesAttendues}
-          </div>
-          <div class="sg-exo-n">{courant.ex.nom}</div>
-          <div class="sg-champs">
-            <label class="sg-ch">
-              <input type="number" inputMode="decimal" value={kg}
-                onInput={(e) => setKg(e.currentTarget.value)} placeholder="—" />
-              <span>CHARGE (KG)</span>
-            </label>
-            <label class="sg-ch">
-              <input type="number" inputMode="numeric" value={reps}
-                onInput={(e) => setReps(e.currentTarget.value)} placeholder="—" />
-              <span>RÉPÉTITIONS</span>
-            </label>
-          </div>
-        </div>
+      </div>
+
+      <div class="sg-serie-t">
+        {enCorrection ? 'CORRECTION · ' : ''}SÉRIE {iSerie + 1} SUR {seriesAttendues}
+      </div>
+      <div class="sg-exo-n">{courant.ex.nom}</div>
+      <div class="sg-champs">
+        <label class="sg-ch">
+          <input type="number" inputMode="decimal" value={kg}
+            onInput={(e) => setKg(e.currentTarget.value)} placeholder="—" />
+          <span>CHARGE (KG)</span>
+        </label>
+        <label class="sg-ch">
+          <input type="number" inputMode="numeric" value={reps}
+            onInput={(e) => setReps(e.currentTarget.value)} placeholder="—" />
+          <span>RÉPÉTITIONS</span>
+        </label>
       </div>
 
       {/* Les series deja posees se touchent : c'est le chemin du
