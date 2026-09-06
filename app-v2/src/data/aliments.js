@@ -1152,6 +1152,23 @@ export const DB = {
     'Huile de poisson (capsule 1g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:25,sel:0,unit:1,unitLabel:'capsule'},
     'Huile de krill (capsule 1g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:30,sel:0,unit:1,unitLabel:'capsule'},
     'Huile MCT':{kcal:830,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:97,sel:0},
+
+    // ===== HUILES A LA CUILLERE A SOUPE =====
+    // Raci, 5/09. Personne ne pese son filet d'huile : on compte a la
+    // cuillere. Une cuillere a soupe rase = 10 g (~11 ml, l'huile pese
+    // 0,92 g/ml) — c'est la mesure de reference de l'ANSES, et celle
+    // du protocole de Raci, 11 ml par repas.
+    'Huile d\'olive (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:15.2,sel:0.01,unit:10,unitLabel:'c. à s.'},
+    'Huile de colza (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:7.26,sel:0,unit:10,unitLabel:'c. à s.'},
+    'Huile de tournesol (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:11.1,sel:0.03,unit:10,unitLabel:'c. à s.'},
+    'Huile de coco (cuillère à soupe, 10g)':{kcal:862,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:86.5,sel:0,unit:10,unitLabel:'c. à s.'},
+    'Huile de lin (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:9.19,sel:0,unit:10,unitLabel:'c. à s.'},
+    'Huile de sésame (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:14.9,sel:0,unit:10,unitLabel:'c. à s.'},
+    'Huile d\'arachide (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,unit:10,unitLabel:'c. à s.'},
+    'Huile de noix (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:10,sel:0,unit:10,unitLabel:'c. à s.'},
+    'Huile de noisette (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:8.34,sel:0,unit:10,unitLabel:'c. à s.'},
+    'Huile d\'avocat (cuillère à soupe, 10g)':{kcal:900,prot:0,carbs:0,lip:100,unit:10,unitLabel:'c. à s.'},
+    'Huile MCT (cuillère à soupe, 10g)':{kcal:830,prot:0,carbs:0,lip:100,fibres:0,sucres:0,satures:97,sel:0,unit:10,unitLabel:'c. à s.'},
     // Les micronutriments n'apportent pas d'energie : ils sont a zero.
     // Ils restent dans la base pour figurer au journal, pas pour peser
     // dans le total.
