@@ -57,7 +57,8 @@ const equipLabel = (mat) => EQUIP[mat] || (mat ? mat[0].toUpperCase() + mat.slic
 function useFocale() {
   useEffect(() => {
     let brut = null;
-    const MIN = 0.75;                       // 3/4 aux extremites
+    const MIN = 0.78;                       // au plus loin du centre
+    const MAX = 1.45;                       // 76 px -> 110 px au centre
     const appliquer = () => {
       brut = null;
       const h = window.innerHeight || 800;
@@ -70,17 +71,24 @@ function useFocale() {
         const r = n.getBoundingClientRect();
         if (r.bottom < 0 || r.top > h) return;     // hors ecran : on ne touche a rien
         const d = Math.abs(r.top + r.height / 2 - centre);
-        const k = Math.max(0, 1 - d / portee);     // 1 au centre, 0 aux bords
-        n.style.setProperty('--focale', (MIN + (1 - MIN) * k).toFixed(3));
+        // Courbe en cloche plutot que lineaire : l'agrandissement se
+        // concentre sur la vignette centrale au lieu de s'etaler
+        // mollement sur toute la hauteur.
+        const k = Math.max(0, 1 - d / portee);
+        const cloche = k * k * (3 - 2 * k);        // adoucissement aux deux bouts
+        n.style.setProperty('--focale', (MIN + (MAX - MIN) * cloche).toFixed(3));
       });
     };
     const surDefilement = () => { if (brut == null) brut = requestAnimationFrame(appliquer); };
     appliquer();
-    window.addEventListener('scroll', surDefilement, { passive: true });
+    // En capture sur le document, pas sur window : si la liste defile
+    // dans un conteneur interne, l'evenement ne remonte pas jusqu'a
+    // window et rien ne bougeait (constate le 5/09).
+    document.addEventListener('scroll', surDefilement, { capture: true, passive: true });
     window.addEventListener('resize', surDefilement, { passive: true });
     return () => {
       if (brut != null) cancelAnimationFrame(brut);
-      window.removeEventListener('scroll', surDefilement);
+      document.removeEventListener('scroll', surDefilement, { capture: true });
       window.removeEventListener('resize', surDefilement);
     };
   });

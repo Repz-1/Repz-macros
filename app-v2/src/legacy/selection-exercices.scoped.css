@@ -290,12 +290,19 @@
    script ne tourne pas, la liste est simplement normale. */
 .pg-selection .ex-photo{
   transform: scale(var(--focale, 1));
-  transform-origin: center;
+  /* L'agrandissement part du bord GAUCHE : la vignette grandit vers
+     le centre de la ligne, jamais vers l'exterieur de la carte. */
+  transform-origin: left center;
   will-change: transform;
+  /* Un lissage court rattrape les images de defilement sautees sur un
+     telephone lent, sans donner l'impression d'un retard. */
+  transition: transform .08s linear;
 }
-/* Le voisin agrandi ne doit pas mordre sur le texte : la ligne lui
-   reserve la place du plus grand etat. */
-.pg-selection .ex-item{ overflow: visible; }
+/* La vignette centrale depasse son gabarit : la carte doit la laisser
+   sortir, et la ligne lui reserver la place au lieu de la laisser
+   recouvrir le nom. */
+.pg-selection .ex-item{ overflow: visible; padding-right: 4px; }
+.pg-selection .ex-info{ padding-left: 26px; }
 
 @media (prefers-reduced-motion: reduce){
   .pg-selection .ex-photo{ transform: none; }
