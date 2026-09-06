@@ -441,23 +441,54 @@
 .pg-planifier { padding: calc(10px + env(safe-area-inset-top)) 14px calc(var(--hauteur-nav) + 40px + env(safe-area-inset-bottom)); }
 .pg-planifier .pl-titre { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 8px 0 4px; }
 .pg-planifier .pl-sous { font-size: 13px; color: #736C63; margin-bottom: 20px; }
-.pg-planifier .pl-jours { display: flex; flex-direction: column; gap: 8px; }
+/* ==========================================================
+   MAQUETTE A (Raci, 5/09) — « aucune distinction entre les
+   differents parametres ». Sept jours, deux liens et un bouton
+   avaient tous le meme fond blanc et le meme poids : rien ne disait
+   ou finissait un reglage et ou commencait le suivant.
+
+   La semaine devient UN objet a filets internes, annonce par une
+   etiquette de section. Les actions forment un second groupe. Et
+   « Abandonner », seule action qui efface, sort dans une zone a part.
+   ========================================================== */
+.pg-planifier .pl-sect {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; margin: 0 4px 8px;
+}
+.pg-planifier .pl-sect b {
+  font-size: 10.5px; font-weight: 800; letter-spacing: .1em; color: #7D766B;
+}
+.pg-planifier .pl-sect i {
+  font-style: normal; font-size: 11.5px; font-weight: 700; color: #6B655D;
+}
+.pg-planifier .pl-sect i.ok { color: #1F7A50; }
+
+/* Une seule carte, des filets a l'interieur. */
+.pg-planifier .pl-jours {
+  display: flex; flex-direction: column;
+  background: #FFF; border-radius: 18px; overflow: hidden;
+}
+.pg-planifier .pl-jour-bloc + .pl-jour-bloc { border-top: 1px solid #EFEAE0; }
 .pg-planifier .pl-jour {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   width: 100%; text-align: left; cursor: pointer;
-  background: #FFF; border: 1px solid rgba(28,24,18,.06); border-radius: 14px;
+  background: none; border: none; border-radius: 0;
   padding: 14px 16px; font-family: inherit;
 }
 /* Un jour choisi porte le jaune en FOND, pas en texte : sur creme,
-   #FAC408 tombe a 1.7:1 et le nom deviendrait illisible. */
-.pg-planifier .pl-jour.on { background: #FFF6E0; border-color: #FAC408; }
+   #FAC408 tombe a 1.7:1 et le nom deviendrait illisible. Un liseré a
+   gauche le marque sans redecouper la carte. */
+.pg-planifier .pl-jour.on {
+  background: #FFFAEC;
+  box-shadow: inset 3px 0 0 #FAC408;
+}
 .pg-planifier .pl-jour-nom { font-size: 15px; font-weight: 600; color: #16130F; }
 .pg-planifier .pl-jour-seance {
   font-size: 11.5px; font-weight: 600; color: #B34700; text-align: right;
   flex: 1 1 auto; min-width: 0;
 }
 .pg-planifier .pl-compte {
-  text-align: center; font-size: 12.5px; color: #736C63; margin: 16px 0 10px;
+  text-align: center; font-size: 12.5px; color: #B34700; margin: 16px 0 10px;
 }
 .pg-planifier .pl-valider {
   display: block; width: 100%; border: none; border-radius: 14px; padding: 17px;
@@ -474,7 +505,7 @@
    largeur, de meme gabarit que « Enregistrer », dans l'ordre du moins
    au plus definitif : changer, puis abandonner. */
 .pg-planifier .pl-autre {
-  display: block; width: 100%; margin-top: 10px; padding: 15px;
+  display: block; width: 100%; margin-top: 8px; padding: 15px;
   background: #F7F3EA; border: none; border-radius: 14px;
   color: #B34700; font-family: inherit; font-size: 15px; font-weight: 700;
   cursor: pointer; transition: background .15s ease, transform .12s ease;
@@ -483,8 +514,19 @@
 /* Abandonner efface le programme : il porte un contour plutot qu'un
    fond, et le rouge n'apparait que sur le texte — un pave rouge pleine
    largeur sous deux autres boutons se lirait comme l'action a faire. */
+/* La seule action de la page qui efface quelque chose : elle quitte
+   le groupe des reglages, derriere un filet, avec la phrase qui dit
+   ce qu'on perd. */
+.pg-planifier .pl-zone-danger {
+  margin-top: 22px; padding-top: 16px; border-top: 1px solid #E4DDD0;
+}
+.pg-planifier .pl-danger-txt {
+  margin: 8px 6px 0; text-align: center;
+  font-size: 11.5px; line-height: 1.45; color: #7D766B;
+}
+
 .pg-planifier .pl-abandon {
-  display: block; width: 100%; margin-top: 10px; padding: 15px;
+  display: block; width: 100%; margin-top: 0; padding: 14px;
   background: none; border: 1.5px solid #E3DED4; border-radius: 14px;
   color: #A0301E; font-family: inherit; font-size: 15px; font-weight: 700;
   cursor: pointer; transition: background .15s ease, transform .12s ease;
@@ -663,7 +705,7 @@
 }
 
 /* ---- Planification : on choisit le jour ET la seance ---- */
-.pg-planifier .pl-jour-bloc { margin-bottom: 8px; }
+
 .pg-planifier .pl-jour {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
   width: 100%; text-align: left;
@@ -671,8 +713,8 @@
 .pg-planifier .pl-jour .pl-jour-seance { text-align: right; }
 /* Jour sans seance : l'invite reste discrete, elle n'est pas un etat. */
 .pg-planifier .pl-jour:not(.on) .pl-jour-seance { color: #A9A29A; font-weight: 500; }
-.pg-planifier .pl-jour.ouvert { border-color: #B34700; }
-.pg-planifier .pl-menu { margin: 6px 0 4px; padding-left: 10px; }
+.pg-planifier .pl-jour.ouvert { box-shadow: inset 3px 0 0 #B34700; background: #FBF7EE; }
+.pg-planifier .pl-menu { margin: 0; padding: 4px 12px 10px 26px; background: #FBF7EE; }
 .pg-planifier .pl-menu-l {
   display: block; width: 100%; text-align: left; margin-bottom: 5px;
   border: 1px solid rgba(28,24,18,.08); border-radius: 11px;

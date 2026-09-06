@@ -1739,6 +1739,21 @@ const DECALAGE_SW_V2 = 232;
   if (css && !/\.pl-autre \{/.test(css)) {
     soucis.push('« Changer de programme » est redevenu un lien souligne');
   }
+  // Maquette A (Raci, 5/09) : « aucune distinction entre les
+  // differents parametres ». Trois groupes distincts — la semaine en
+  // une carte, les actions, et l'irreversible a part.
+  if (css && !/\.pl-jours \{[^}]*background: #FFF/.test(css)) {
+    soucis.push('les jours sont redevenus sept cartes flottantes au lieu d\'une seule');
+  }
+  if (pl && !/class="pl-sect"/.test(pl)) {
+    soucis.push('l\'etiquette de section a disparu : plus rien n\'annonce la semaine ni le compte');
+  }
+  if (pl && !/class="pl-zone-danger"/.test(pl)) {
+    soucis.push('« Abandonner » est retourne dans le groupe des reglages');
+  }
+  if (pl && !/t\('pl_abandon_perte'\)/.test(pl)) {
+    soucis.push('« Abandonner » ne dit plus ce qu\'il efface');
+  }
   // « Changer de programme » refait les quatre questions (Raci, 5/09).
   // Il ouvrait la fiche du programme COURANT : on ne changeait rien.
   if (pl && !/allerVers\('questionnaire'\)/.test(pl)) {

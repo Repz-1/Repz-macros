@@ -187,6 +187,19 @@ export function PlanifierProgramme({ progId }) {
       <h1 class="pl-titre">{t('pl_titre')}</h1>
       <p class="pl-sous">{prog.name} · {total} {t(total > 1 ? 'sessions' : 'session')}</p>
 
+      {/* Maquette A, retenue par Raci le 5/09 : « aucune distinction
+          entre les differents parametres ». Sept jours, deux liens et
+          un bouton portaient le meme fond blanc et le meme poids.
+          Une etiquette annonce chaque groupe, et le compteur remonte
+          ici — en bas de page il disparaissait des qu'on faisait
+          defiler, au moment ou l'on en a besoin. */}
+      <div class="pl-sect">
+        <b>{t('pl_sect_semaine')}</b>
+        <i class={complet ? 'ok' : ''}>
+          {choisis.length} / {total} {t('pl_jours_choisis')}
+        </i>
+      </div>
+
       <div class="pl-jours">
         {JOURS.map(j => {
           const index = aff[j.v];
@@ -237,12 +250,9 @@ export function PlanifierProgramme({ progId }) {
         </div>
       )}
 
-      <p class="pl-compte">
-        {choisis.length} / {total} {t('pl_jours_choisis')}
-        {partiel && (
-          <span class="pl-partiel">{t('pl_partiel', { n: total - choisis.length })}</span>
-        )}
-      </p>
+      {partiel && (
+        <p class="pl-compte">{t('pl_partiel', { n: total - choisis.length })}</p>
+      )}
 
       <button class="pl-valider" disabled={!complet} onClick={valider}>
         {t('pl_valider')}
@@ -271,7 +281,7 @@ export function PlanifierProgramme({ progId }) {
           c'est une action qu'on ne fait pas deux fois par mois. */}
       {actif && actif.id === progId && (
         confirmer ? (
-          <div class="pl-confirme">
+          <div class="pl-confirme pl-zone-danger">
             <p>{t('pl_abandon_q')}</p>
             <div class="pl-confirme-btns">
               <button class="pl-conf-non" onClick={() => setConfirmer(false)}>
@@ -283,9 +293,16 @@ export function PlanifierProgramme({ progId }) {
             </div>
           </div>
         ) : (
-          <button class="pl-abandon" onClick={() => setConfirmer(true)}>
-            {t('pl_abandon')}
-          </button>
+          /* Zone a part, separee par un filet : c'est la seule action
+             de la page qui efface quelque chose. La phrase dit ce
+             qu'on perd — sans elle, « Abandonner » ressemble a un
+             troisieme bouton de reglage (Raci, 5/09). */
+          <div class="pl-zone-danger">
+            <button class="pl-abandon" onClick={() => setConfirmer(true)}>
+              {t('pl_abandon')}
+            </button>
+            <p class="pl-danger-txt">{t('pl_abandon_perte')}</p>
+          </div>
         )
       )}
     </div>
