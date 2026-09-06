@@ -11,7 +11,7 @@ import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
 import { DetailSeance } from './Seances.jsx';
 import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId, normaliserJours } from '../store/programme.js';
-import { seancesDuJour, supprimerSeance } from '../store/seances.js';
+import { seancesDuJour } from '../store/seances.js';
 
 import { t } from '../i18n/index.js';
 
@@ -708,7 +708,6 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
   // Ces deux etats sont declares AVANT le retour anticipe : sinon le
   // nombre de hooks change entre un rendu sans `iso` et un rendu avec,
   // ce que Preact n'accepte pas.
-  const [aSupprimer, setASupprimer] = useState(null);
   const [choixOuvert, setChoixOuvert] = useState(false);
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
@@ -784,18 +783,18 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
             quatre « Jour 2 » et un « Jour 4 » empiles, marques « 1 min »
             a chaque fois, illisibles. Une ligne par seance, et un
             bouton qui ouvre son detail — c'est la qu'on lit les
-            exercices, les series et le tonnage. La croix supprime,
-            avec confirmation. */}
+            exercices, les series et le tonnage.
+
+            La croix de suppression est retiree le 5/09 : « lorsque je
+            la supprime elle revient comme non faite ; si la seance a
+            ete faite elle ne doit pas etre supprimable ». Effacer un
+            entrainement reel faisait mentir le calendrier et la tuile
+            du jour, qui repassait a « Demarrer ». Une seance se
+            corrige en la refaisant : l'enregistrement ecrase celui du
+            jour. */}
         {faites.length > 0 && (
           <div class="ml-fait">
-            {faites.map(sa => (aSupprimer === sa.id ? (
-              <div key={sa.id} class="ml-fait-conf">
-                <span>Supprimer cette séance ?</span>
-                <button class="ml-fait-non" onClick={() => setASupprimer(null)}>Annuler</button>
-                <button class="ml-fait-oui"
-                  onClick={() => { supprimerSeance(sa.id); setASupprimer(null); }}>Supprimer</button>
-              </div>
-            ) : (
+            {faites.map(sa => (
               <div key={sa.id} class="ml-fait-s">
                 <button class="ml-fait-ouvrir"
                   onClick={() => { fermer(); ouvrirSeance && ouvrirSeance(sa); }}>
@@ -805,13 +804,11 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
                   <span class="ml-fait-h">{heureDe(sa.ts)}</span>
                   <span class="ml-fait-fl" aria-hidden="true">&rsaquo;</span>
                 </button>
-                <button class="ml-fait-x"
-                  aria-label={'Supprimer ' + sa.titre}
-                  onClick={() => setASupprimer(sa.id)}>×</button>
               </div>
-            )))}
+            ))}
           </div>
         )}
+
 
         {/* ---- Ce qui est PREVU ---- */}
         {!faites.length && prevue && (
@@ -835,7 +832,11 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
                 allerVers('seanceDetail', { seanceId: prevue.seanceId, titre: prevue.titre, depuis: 'journal' });
               }}>{t('ml_demarrer')}</button>
             )}
-            {type === 'futur' && <div class="ml-prevu-non">{t('ml_prevu_futur')}</div>}
+            {type === 'futur' && (
+              <div class="ml-prevu-non">
+                {t('ml_prevu_futur', { j: jourLong(new Date(iso + 'T12:00:00')) })}
+              </div>
+            )}
           </div>
         )}
 
@@ -1010,7 +1011,7 @@ export function Entrainer() {
     return (
       <div class="pg-entrainer pg-entrainer--carte">
         <Entete retour={fermerSeance} />
-        <DetailSeance seance={seanceOuverte} apresSuppression={fermerSeance} />
+        <DetailSeance seance={seanceOuverte} />
       </div>
     );
   }

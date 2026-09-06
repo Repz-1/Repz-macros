@@ -2166,6 +2166,10 @@ const DECALAGE_SW_V2 = 232;
   if (ent && /<BlocSeances/.test(ent)) {
     soucis.push('l\'encart « Seances enregistrees » est revenu en tete de S\'entrainer');
   }
+  const seDet = lire('app-v2/src/components/Seances.jsx');
+  if (seDet && /class="det-suppr"/.test(seDet)) {
+    soucis.push('la suppression est revenue dans le detail d\'une seance : la faille se deplace, elle ne se ferme pas');
+  }
   const se = lire('app-v2/src/components/Seances.jsx');
   if (se && /export function BlocSeances/.test(se)) {
     soucis.push('le composant de l\'encart a ete recree : il finira par etre rebranche');
@@ -2718,8 +2722,8 @@ const DECALAGE_SW_V2 = 232;
     if (!/class="ml-fait-ouvrir"/.test(bloc)) {
       soucis.push('la ligne d\'une seance n\'ouvre plus son detail');
     }
-    if (!/class="ml-fait-x"/.test(bloc)) {
-      soucis.push('une seance enregistree ne peut plus etre supprimee depuis le calendrier');
+    if (/class="ml-fait-x"/.test(bloc)) {
+      soucis.push('la croix de suppression est revenue : une seance faite redeviendrait non faite');
     }
     if (soucis.length) faute('R78 fiche d\'un jour sans liste', soucis.join(' ; '));
     else passe('R78 fiche d\'un jour sans liste');

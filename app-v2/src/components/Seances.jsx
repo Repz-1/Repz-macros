@@ -1,5 +1,3 @@
-import { useState } from 'preact/hooks';
-import { supprimerSeance } from '../store/seances.js';
 import { GROUPES } from '../store/entrainement.js';
 import { t } from '../i18n/index.js';
 import '../styles/seances.css';
@@ -48,8 +46,7 @@ function heure(ts) {
 // autre page ». La liste se rallonge sur place dans BlocSeances.
 
 // ---------- detail d'une seance ----------
-export function DetailSeance({ seance, apresSuppression }) {
-  const [confirme, setConfirme] = useState(false);
+export function DetailSeance({ seance }) {
   if (!seance) return null;
   const s = seance;
 
@@ -91,17 +88,6 @@ export function DetailSeance({ seance, apresSuppression }) {
         </div>
       ))}
 
-      <div class="det-supprimer">
-        {confirme ? (
-          <>
-            <span>{t('sea_delete_ask')}</span>
-            <button class="det-oui" onClick={() => { supprimerSeance(s.id); apresSuppression(); }}>{t('delete')}</button>
-            <button class="det-non" onClick={() => setConfirme(false)}>{t('cancel')}</button>
-          </>
-        ) : (
-          <button class="det-suppr" onClick={() => setConfirme(true)}>{t('sea_delete')}</button>
-        )}
-      </div>
     </div>
   );
 }
