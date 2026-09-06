@@ -200,18 +200,21 @@ button.sg-pt:active { transform: scale(.92); }
   box-shadow: 0 24px 60px rgba(0, 0, 0, .3);
   padding: 24px 20px 20px; text-align: center;
 }
-.sg-fin-t { font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
-.sg-fin-s { font-size: 14px; color: #8A8378; margin: 4px 0 18px; }
+.sg-fin-t { font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+.sg-fin-s { font-size: 16px; font-weight: 600; color: #8A8378; margin: 6px 0 20px; }
 .sg-recap {
-  background: #FFF; border-radius: 16px; padding: 4px 14px;
-  font-size: 13.5px; text-align: left;
+  background: #FFF; border-radius: 16px; padding: 6px 16px;
+  font-size: 16px; text-align: left;
 }
-.sg-recap div { display: flex; justify-content: space-between; padding: 10px 0; }
+.sg-recap div { display: flex; justify-content: space-between; gap: 12px; padding: 13px 0; }
 .sg-recap div + div { border-top: 1px solid #EFEAE0; }
+.sg-recap span { font-weight: 600; }
 .sg-recap b {
-  font-family: 'DM Mono', ui-monospace, monospace; font-weight: 500;
-  font-variant-numeric: tabular-nums;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums;
 }
+/* Le bouton se met a l'echelle du reste de la carte. */
+.sg-fin-b { margin-top: 18px; padding: 18px; font-size: 17px; }
 /* Le compte a rebours vit DANS le bouton de retour : il annonce ce
    qui va arriver tout seul, et le bouton fait la meme chose tout de
    suite. */
@@ -219,8 +222,8 @@ button.sg-pt:active { transform: scale(.92); }
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .sg-rebours {
-  min-width: 26px; padding: 2px 6px; border-radius: 8px;
+  min-width: 28px; padding: 3px 7px; border-radius: 9px;
   background: rgba(21, 21, 21, .14);
   font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;
+  font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums;
 }

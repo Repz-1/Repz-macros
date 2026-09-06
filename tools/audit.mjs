@@ -2780,6 +2780,12 @@ const DECALAGE_SW_V2 = 232;
     }
     if (/setTermine\(false\)/.test(sg)) soucis.push('« Reprendre » est revenu : une seance terminee se rouvrirait');
     if (!/setRebours\(/.test(sg)) soucis.push('le compte a rebours de retour a disparu');
+    // Raci, 5/09 : « prevoir un temps de repos entre les differents
+    // exercices ». Je supposais que le deplacement d'un poste a
+    // l'autre suffisait.
+    if (!/setRepos\(reposDe\(refs\[iExo \+ 1\]\.ex\.nom\)\)/.test(sg)) {
+      soucis.push('on enchaine deux exercices sans aucun repos');
+    }
     if (!/class="sg-scene-fin"/.test(sg)) soucis.push('l\'ecran de fin n\'est plus une modale posee sur le voile');
     if (!/seanceMemeJour\(iso, titre/.test(sg)) soucis.push('un second enregistrement du jour n\'ecrase plus le premier');
     if (/class="sd-fini"|class="sd-conflit"|class="sd-terminer"/.test(sg)) {

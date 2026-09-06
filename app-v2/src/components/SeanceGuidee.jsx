@@ -172,11 +172,20 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
     setJournal(maj);
 
     if (ligne.length >= seriesAttendues) {
-      // Exercice termine : au suivant, sans repos — on change de
-      // poste, le deplacement fait le repos.
-      setRepos(0);
-      if (iExo + 1 < refs.length) { setIExo(iExo + 1); setISerie(0); }
-      else setTermine(true);
+      // Raci, 5/09 : « il faut egalement prevoir un temps de repos
+      // entre les differents exercices ». Je supposais que le
+      // deplacement d'un poste a l'autre suffisait ; il ne suffit pas,
+      // et c'est justement la que la fatigue s'accumule. Le repos
+      // inter-exercices est celui du mouvement QUI VIENT — trois
+      // minutes avant un squat, 1 min 15 avant une isolation.
+      if (iExo + 1 < refs.length) {
+        setIExo(iExo + 1);
+        setISerie(0);
+        setRepos(reposDe(refs[iExo + 1].ex.nom));
+      } else {
+        setRepos(0);
+        setTermine(true);
+      }
       return;
     }
     setISerie(ligne.length);
@@ -245,7 +254,7 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
    * un compte a rebours de 20 s ramene a S'entrainer — et le bouton
    * du compte a rebours est ce retour, touchable a tout moment.
    */
-  const [rebours, setRebours] = useState(20);
+  const [rebours, setRebours] = useState(7);   // 20 s etait une attente, pas une pause (Raci, 5/09)
   const dejaEcrit = useRef(false);
   useEffect(() => {
     if (!termine) return;
@@ -266,17 +275,19 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
       <div class="sg-scene-fin">
         <div class="sg-fin">
           <div class="sg-fin-t">Bravo</div>
-          <div class="sg-fin-s">{titre} — c'est plié.</div>
+          <div class="sg-fin-s">{titre}</div>
           <div class="sg-recap">
             <div><span>Exercices</span><b>{nbExos} / {refs.length}</b></div>
             <div><span>Séries effectuées</span><b>{faitesTotal} / {totalSeries}</b></div>
             {tonnage > 0 && <div><span>Tonnage total</span><b>{Math.round(tonnage).toLocaleString('fr-BE')} kg</b></div>}
             <div><span>Durée</span><b>{mmss(secondes)}</b></div>
           </div>
-          {/* Le compte a rebours EST le bouton de retour : on n'attend
-              que si on veut relire ses chiffres. */}
-          <button class="sg-go" onClick={revenir}>
-            Revenir à S'entraîner <span class="sg-rebours">{rebours}</span>
+          {/* Le compte a rebours EST le bouton : on n'attend que si on
+              veut relire ses chiffres. Un seul mot — « Revenir a
+              S'entrainer » nommait un ecran, alors que le geste est
+              simplement de fermer ce qui est fini (Raci, 5/09). */}
+          <button class="sg-go sg-fin-b" onClick={revenir}>
+            Terminer <span class="sg-rebours">{rebours}</span>
           </button>
         </div>
       </div>,
