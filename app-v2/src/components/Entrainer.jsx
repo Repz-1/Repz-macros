@@ -389,17 +389,6 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
   // l'infini.
   const apresBorne = offset >= 12;
 
-  // Ne sert plus qu'a une chose depuis le 5/09 : savoir s'il faut
-  // afficher le bandeau d'accueil des journaux vides.
-  const prefixeMois = wlIso(ref).slice(0, 7);
-  let nbSeancesMois = 0, dernierIso = null;
-  Object.keys(log).forEach(iso => {
-    const vals = (log[iso] || []).filter(v => v !== 'repos');
-    if (!vals.length) return;
-    if (iso.slice(0, 7) === prefixeMois && iso <= todayIso) nbSeancesMois++;
-    if (iso <= todayIso && (!dernierIso || iso > dernierIso)) dernierIso = iso;
-  });
-
   // Grille du mois, semaine demarrant le lundi
   const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
   const decal = (new Date(ref.getFullYear(), ref.getMonth(), 1).getDay() + 6) % 7;
@@ -486,30 +475,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
           dans le calendrier — un jour, sa fiche, « Voir la seance » —
           et dans Stats. */}
 
-      {/* 1 — Le haut de page ne porte plus que l'accueil du premier
-          jour. Les deux pastilles de resume flottaient ici, de largeurs
-          inegales, au-dessus de la carte d'action : elles cassaient
-          l'alignement du haut sans etre a leur place — elles parlent du
-          MOIS AFFICHE au calendrier, pas de la journee. Elles sont
-          descendues sous le titre du calendrier (Raci, 21/08). */}
-      <div class="wlog-sum">
-        {(nbSeancesMois || dernierIso) ? null : (
-          /* Etat vide : le bandeau etait une pastille grise a coin
-             arrondi, de la meme famille que les compteurs qui
-             l'entourent d'habitude — sauf qu'ici il est seul, et que
-             c'est la premiere chose qu'un nouveau venu lit. Il devient
-             une ligne accueillante, avec un point d'accroche a gauche
-             et la phrase coupee en deux : l'invitation d'abord, la
-             precision ensuite, plus discrete. */
-          <span class="wlog-sum-vide">
-            <span class="wsv-ic" aria-hidden="true">👋</span>
-            <span class="wsv-txt">
-              <b>{t('first_session_t')}</b>
-              <i>{t('first_session_s')}</i>
-            </span>
-          </span>
-        )}
-      </div>
+      {/* Le bandeau d'accueil « Ta premiere seance t'attend » est
+          retire le 9/09 (Raci). Il occupait le haut de page pour dire
+          qu'il n'y avait rien a dire, juste au-dessus d'une carte qui
+          propose deja « Seance libre » et « Trouver mon programme » —
+          l'invitation et l'action, l'une sur l'autre. La carte suffit. */}
 
       {/* 2 — Zone d'action.
           AVEC un programme actif, c'est la carte de pilotage : la

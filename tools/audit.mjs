@@ -1429,11 +1429,12 @@ const DECALAGE_SW_V2 = 232;
     // dealignaient le haut de page en aout.
     if (/wlog-resume/.test(bloc))
       soucis.push('les pastilles de resume sont revenues sous le titre du calendrier');
-    const haut = bloc.slice(bloc.indexOf('class="wlog-sum"'), bloc.indexOf('ent-action'));
-    if (/wlog-sum-pill/.test(haut))
-      soucis.push('une pastille de resume est remontee au-dessus de la carte d\'action : le haut se dealigne a nouveau');
-    if (/🏋|💪/.test(bloc))
-      soucis.push('un emoji est revenu devant les resumes');
+    if (/class="wlog-sum"/.test(bloc))
+      soucis.push('le haut de page porte de nouveau quelque chose avant la carte d\'action');
+    if (/wlog-sum-vide|first_session_t/.test(bloc))
+      soucis.push('le bandeau « Ta premiere seance t\'attend » est revenu au-dessus de la carte');
+    if (/🏋|💪|👋/.test(bloc))
+      soucis.push('un emoji est revenu en haut de S\'entrainer');
     if (soucis.length) faute('R43 haut de S\'entrainer', soucis.join(' ; '));
     else passe('R43 haut de S\'entrainer');
   }
