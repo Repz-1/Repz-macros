@@ -2697,7 +2697,9 @@ const DECALAGE_SW_V2 = 232;
     if (!/const degenere = base <= 0 \|\| \[o\.prot, o\.carbs, o\.lip\]/.test(jsx)) {
       soucis.push('un rapport degenere n\'est plus rattrape : une seule macro portera toutes les calories');
     }
-    if (!/ecartVisible \|\| macroManquante/.test(jsx)) soucis.push('« Repartir » redevient inatteignable quand une macro est a zero');
+    if (!/\{kcalVise > 0 && \(\s*\n?\s*<div class="calc-accorder">/.test(jsx)) {
+      soucis.push('« Repartir » redevient conditionnel : il disparaitra des que les macros tombent juste');
+    }
     // Repartir sans savoir pour quoi n'a pas de sens : la part de
     // lipides depend de l'objectif, on le redemande au moment du clic.
     if (!/const REPARTITIONS = \[/.test(jsx)) soucis.push('le choix de l\'objectif a disparu de « Repartir »');

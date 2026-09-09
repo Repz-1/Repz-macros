@@ -289,12 +289,22 @@ export function TdeeCalculator({ montre, fermer, retour }) {
               {ecartVisible && (ecart < 0
                 ? <> — il manque <b>{-ecart} kcal</b> pour atteindre {kcalVise}.</>
                 : <> — <b>{ecart} kcal</b> de trop par rapport à {kcalVise}.</>)}
-              {(ecartVisible || macroManquante) && (
+              {/* Raci, 9/09 : « ou est le bouton repartir les calories ? »
+                  Il ne sortait que sur un ecart de plus de 50 kcal ou
+                  une macro vide. A 4503 pour 4500 vises, rien ne le
+                  declenchait — alors que changer la repartition de ses
+                  4500 kcal est un geste normal, pas un depannage. Il
+                  s'affiche des qu'un objectif calorique est pose.
+                  « Calories → N » reste conditionne a l'ecart : lui ne
+                  sert vraiment qu'a rattraper un desaccord. */}
+              {kcalVise > 0 && (
                 <div class="calc-accorder">
                   <button type="button" class="ac-fort" onClick={() => setChoixRep(v => !v)}>
                     Répartir les {kcalVise} kcal
                   </button>
-                  {kcalMacros > 0 && <button type="button" onClick={calerCalories}>Calories → {kcalMacros}</button>}
+                  {(ecartVisible || macroManquante) && kcalMacros > 0 && (
+                    <button type="button" onClick={calerCalories}>Calories → {kcalMacros}</button>
+                  )}
                 </div>
               )}
 
