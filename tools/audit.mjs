@@ -2700,11 +2700,12 @@ const DECALAGE_SW_V2 = 232;
     if (!/\{kcalVise > 0 && \(\s*\n?\s*<div class="calc-accorder">/.test(jsx)) {
       soucis.push('« Repartir » redevient conditionnel : il disparaitra des que les macros tombent juste');
     }
-    // Repartir sans savoir pour quoi n'a pas de sens : la part de
-    // lipides depend de l'objectif, on le redemande au moment du clic.
-    if (!/const REPARTITIONS = \[/.test(jsx)) soucis.push('le choix de l\'objectif a disparu de « Repartir »');
-    if (!/class="rep-opt"/.test(jsx)) soucis.push('les repartitions ne sont plus proposees');
-    if (!/class="rep-g">/.test(jsx)) soucis.push('les repartitions n\'annoncent plus leurs grammes');
+    if (/const REPARTITIONS = \[/.test(jsx)) {
+      soucis.push('le choix d\'objectif est revenu dans « Repartir » : il en refait une question');
+    }
+    if (!/class="ac-fort" onClick=\{repartir\}/.test(jsx)) {
+      soucis.push('« Repartir » ne repartit plus directement');
+    }
     if (/class="calc-alerte">Renseigne au moins/.test(jsx)) soucis.push('le message du bas est revenu sous le bouton');
   }
   if (css) {

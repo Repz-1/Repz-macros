@@ -8,35 +8,10 @@ import { sexe } from '../store/perso.js';
 
 // Calculateur de besoins. Le resultat se recalcule a chaque frappe (pas de bouton
 // "Calculer" : reactif). "Appliquer" pousse le resultat dans les objectifs du jour.
-/**
- * Repartitions proposees au moment de repartir les calories.
- *
- * Trois usages, trois equilibres. Les lipides descendent quand on
- * cherche la performance et le volume d'entrainement, ils remontent
- * en perte ou l'apport calorique est bas et ou ils portent les
- * hormones. Ce sont des points de depart, tous modifiables a la main
- * juste au-dessus.
- */
-const REPARTITIONS = [
-  { cle: 'perte',    nom: 'Perte de poids',  prot: 0.35, carbs: 0.35, lip: 0.30 },
-  { cle: 'maintien', nom: 'Maintien',        prot: 0.28, carbs: 0.45, lip: 0.27 },
-  { cle: 'prise',    nom: 'Prise de masse',  prot: 0.25, carbs: 0.55, lip: 0.20 },
-];
-
-/** Largeur d'un champ de pastille, en caracteres, pour qu'il se moule
- *  sur son chiffre au lieu d'occuper une case fixe. */
-function larg(v) {
-  return Math.max(1, String(v == null ? '' : v).length) + 0.6 + 'ch';
-}
-
-/** Grammes correspondant a une repartition, pour un total de calories. */
-function grammesDe(kcal, r) {
-  return {
-    prot: Math.round((kcal * r.prot) / 4),
-    carbs: Math.round((kcal * r.carbs) / 4),
-    lip: Math.round((kcal * r.lip) / 9),
-  };
-}
+// Les trois repartitions par objectif sont retirees le 9/09 (Raci) :
+// « tu repartis tout simplement sans rien ajouter ». L'objectif est
+// deja choisi ailleurs, et les macros a l'ecran portent deja un
+// rapport — c'est celui-la qu'on met a l'echelle.
 
 /**
  * Part d'une macro dans les calories du jour, arrondie a l'entier.
@@ -119,17 +94,7 @@ export function TdeeCalculator({ montre, fermer, retour }) {
   const ecartVisible = kcalVise > 0 && Math.abs(ecart) > 50;
   // Macros toutes a zero : « Repartir » est la seule sortie, il ne
   // doit pas dependre du seuil d'ecart.
-  const [choixRep, setChoixRep] = useState(false);
 
-  /** Applique une repartition choisie, et cale le rapport dessus. */
-  const repartirSelon = (r) => setMan(o => {
-    const cible = +o.kcal || 0;
-    if (cible <= 0) return o;
-    const g = grammesDe(cible, r);
-    const nb = g.prot * 4 + g.carbs * 4 + g.lip * 9;
-    partRef.current = { prot: g.prot / nb, carbs: g.carbs / nb, lip: g.lip / nb };
-    return { kcal: cible, ...g };
-  });
 
   const macroManquante = kcalVise > 0 &&
     [man.prot, man.carbs, man.lip].some(v => (+v || 0) === 0);
@@ -299,7 +264,7 @@ export function TdeeCalculator({ montre, fermer, retour }) {
                   sert vraiment qu'a rattraper un desaccord. */}
               {kcalVise > 0 && (
                 <div class="calc-accorder">
-                  <button type="button" class="ac-fort" onClick={() => setChoixRep(v => !v)}>
+                  <button type="button" class="ac-fort" onClick={repartir}>
                     Répartir les {kcalVise} kcal
                   </button>
                   {(ecartVisible || macroManquante) && kcalMacros > 0 && (
@@ -308,25 +273,13 @@ export function TdeeCalculator({ montre, fermer, retour }) {
                 </div>
               )}
 
-              {/* Repartir sans savoir pour quoi n'a pas de sens : la
-                  part de lipides et de glucides depend de l'objectif.
-                  On le redemande au moment ou l'on repartit (Raci,
-                  02/09), avec le resultat en grammes sous chaque
-                  choix — on voit ce qu'on prend. */}
-              {choixRep && kcalVise > 0 && (
-                <div class="calc-rep">
-                  {REPARTITIONS.map(r => {
-                    const g = grammesDe(kcalVise, r);
-                    return (
-                      <button type="button" key={r.cle} class="rep-opt"
-                        onClick={() => { repartirSelon(r); setChoixRep(false); }}>
-                        <span class="rep-n">{r.nom}</span>
-                        <span class="rep-g">{g.prot} P · {g.carbs} G · {g.lip} L</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+              {/* Raci, 9/09 : « tu repartis tout simplement sans rien
+                  ajouter ». Le bouton ouvrait trois objectifs — perte
+                  de poids, maintien, prise de masse — alors que
+                  l'objectif est deja choisi ailleurs et que les macros
+                  affichees portent deja un rapport. Repartir, c'est
+                  mettre CE rapport a l'echelle des calories visees,
+                  pas en proposer un autre. Un appui, rien a lire. */}
             </div>
           </div>
         ) : (
