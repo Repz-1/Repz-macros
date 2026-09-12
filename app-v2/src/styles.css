@@ -710,6 +710,25 @@ button{cursor:pointer}
   white-space:nowrap}
 
 .bs-pastilles{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+/* Etiquettes de groupe (Raci, 9/09). Elles separent ce qui ne se
+   melange pas : la journee, le sport, l'objectif. Sans elles, six
+   menus identiques se suivaient sans qu'on sache lequel parlait de
+   quoi. */
+.bs-titre{
+  grid-column:1 / -1;margin:8px 2px 0;
+  font-size:10px;font-weight:800;letter-spacing:.09em;color:#7D766B;
+  text-transform:uppercase}
+.bs-titre:first-child{margin-top:0}
+
+/* Oui / Non : deux boutons de meme largeur, un seul allume. Un menu
+   deroulant pour deux choix demande un geste de trop. */
+.bs-oui-non{grid-column:1 / -1;display:flex;gap:6px}
+.bs-oui-non button{
+  flex:1;min-height:44px;border:1.5px solid #E2DACA;border-radius:999px;
+  background:#FAF8F3;font-family:inherit;font-size:14px;font-weight:800;
+  color:#7D766B;cursor:pointer}
+.bs-oui-non button.on{
+  background:#1C1812;border-color:#1C1812;color:#F8F2E8}
 .bs-pastilles>label.bs-p{justify-content:center}
 .bs-pastilles>label.bs-p--large{grid-column:1 / -1}
 .bs-p{display:inline-flex;align-items:center;gap:6px;min-height:44px;
@@ -780,6 +799,8 @@ button{cursor:pointer}
   .modale-calc .bs-pastilles{gap:6px}
   .modale-calc .bs-s{font-size:11px;margin-top:6px}
   .modale-calc .calc-avance{padding:7px 0;font-size:12.5px}
+  .modale-calc .bs-titre{margin:5px 2px 0;font-size:9px}
+  .modale-calc .bs-oui-non button{min-height:44px}
 }
 
 .bs-anneau{position:relative;width:124px;height:124px;flex:none}

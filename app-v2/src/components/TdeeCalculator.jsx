@@ -1,5 +1,5 @@
 import { useState, useRef } from 'preact/hooks';
-import { calculerBesoins, NIVEAUX_ACTIVITE, OBJECTIFS } from '../data/tdee.js';
+import { calculerBesoins, NIVEAUX_ACTIVITE, INTENSITES, OBJECTIFS } from '../data/tdee.js';
 import { setObjectifs, calculBaseFait, poidsCalcul, objectifs, profilBesoins } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
@@ -423,25 +423,56 @@ export function TdeeCalculator({ montre, fermer, retour }) {
             </label>
 
             {avance && (
-              <>
-                <label class="bs-p">
-                  <input type="number" value={f.masseGrasse} placeholder="—" style={{ width: larg(f.masseGrasse || '00') }}
-                    onInput={e => num('masseGrasse', e.currentTarget.value)} />
-                  <i>% gras</i>
-                </label>
-                <label class="bs-p">
-                  <input type="number" value={f.joursEntrainement} style={{ width: larg(f.joursEntrainement) }}
-                    onInput={e => num('joursEntrainement', e.currentTarget.value)} />
-                  <i>séances / sem.</i>
-                </label>
-              </>
+              <label class="bs-p bs-p--large">
+                <input type="number" value={f.masseGrasse} placeholder="—" style={{ width: larg(f.masseGrasse || '00') }}
+                  onInput={e => num('masseGrasse', e.currentTarget.value)} />
+                <i>% de masse grasse</i>
+              </label>
             )}
 
+            {/* Raci, 9/09 : « activite physique : peu actif etc. Ensuite
+                je demanderais s'il fait du sport et la frequence, et
+                ainsi calculer en fonction de tous ces parametres. »
+
+                Les deux variables existaient — activiteBase pour la
+                journee, joursEntrainement x intensite pour le sport —
+                mais le sport etait enterre dans les options avancees,
+                avec une intensite figee a 0,03 que personne ne voyait.
+                Le calcul n'a pas change ; la question, oui. Deux
+                etiquettes separent ce qui ne se melange pas : ce qu'on
+                fait toute la journee, et ce qu'on fait a la salle. */}
+            <div class="bs-titre">Au quotidien, hors sport</div>
             <label class="bs-p bs-p--large bs-p--menu">
               <select value={f.activiteBase} onChange={e => num('activiteBase', e.currentTarget.value)}>
                 {NIVEAUX_ACTIVITE.map(n => <option value={n.val}>{n.label}</option>)}
               </select>
             </label>
+
+            <div class="bs-titre">Du sport ?</div>
+            <div class="bs-oui-non">
+              <button type="button" class={+f.joursEntrainement > 0 ? '' : 'on'}
+                onClick={() => num('joursEntrainement', 0)}>Non</button>
+              <button type="button" class={+f.joursEntrainement > 0 ? 'on' : ''}
+                onClick={() => num('joursEntrainement', f.joursEntrainement > 0 ? f.joursEntrainement : 3)}>
+                Oui
+              </button>
+            </div>
+            {+f.joursEntrainement > 0 && (
+              <>
+                <label class="bs-p">
+                  <input type="number" value={f.joursEntrainement} style={{ width: larg(f.joursEntrainement) }}
+                    onInput={e => num('joursEntrainement', e.currentTarget.value)} />
+                  <i>séances / sem.</i>
+                </label>
+                <label class="bs-p bs-p--menu">
+                  <select value={f.intensiteEntrainement}
+                    onChange={e => num('intensiteEntrainement', e.currentTarget.value)}>
+                    {INTENSITES.map(n => <option value={n.val}>{n.label.split(' — ')[0]}</option>)}
+                  </select>
+                </label>
+              </>
+            )}
+            <div class="bs-titre">Ton objectif</div>
             <label class="bs-p bs-p--large bs-p--menu">
               <select value={f.ajustement} onChange={e => num('ajustement', e.currentTarget.value)}>
                 {OBJECTIFS.map(o => <option value={o.val}>{o.label}</option>)}

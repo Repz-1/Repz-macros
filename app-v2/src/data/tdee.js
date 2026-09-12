@@ -44,6 +44,26 @@ export const NIVEAUX_ACTIVITE = [
   { val: 1.6,  label: 'Très actif (travail physique)' },
 ];
 
+/**
+ * Intensite d'une seance, en points de multiplicateur par seance.
+ *
+ * Raci, 9/09 : « je demanderais s'il fait du sport et la frequence, et
+ * ainsi calculer en fonction de tous ces parametres ». Les deux
+ * variables existaient deja — joursEntrainement et
+ * intensiteEntrainement — mais elles etaient enterrees dans les
+ * options avancees, avec une intensite figee a 0,03 que personne ne
+ * voyait. Une seance de musculation d'une heure et un footing de
+ * trente minutes ne coutent pas la meme chose : on le demande.
+ *
+ * Les valeurs encadrent celle d'origine (0,03) plutot que de la
+ * remplacer : le calcul d'avant tombe exactement sur « Modérée ».
+ */
+export const INTENSITES = [
+  { val: 0.02, label: 'Légère — cardio doux, 30 min' },
+  { val: 0.03, label: 'Modérée — muscu ou cardio, 1 h' },
+  { val: 0.045, label: 'Intense — lourd ou long, 1 h 30' },
+];
+
 // Ajustements d'objectif (kcal/jour ajoutees ou retirees au TDEE)
 export const OBJECTIFS = [
   { val: 500,  label: 'Prise de masse (+500)' },
