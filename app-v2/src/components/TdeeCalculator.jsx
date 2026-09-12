@@ -44,7 +44,7 @@ function larg(v) {
  */
 const R_ANNEAU = 50;
 const C_ANNEAU = 2 * Math.PI * R_ANNEAU;
-function Anneau({ prot, carbs, lip, centre, unite }) {
+function Anneau({ prot, carbs, lip, centre, unite, etiquette }) {
   const kp = (+prot || 0) * 4, kg = (+carbs || 0) * 4, kl = (+lip || 0) * 9;
   const tot = kp + kg + kl;
   // Rien de saisi : l'anneau reste une piste vide plutot que de
@@ -53,21 +53,22 @@ function Anneau({ prot, carbs, lip, centre, unite }) {
     ? [kp / tot, kg / tot, kl / tot].map(x => x * C_ANNEAU)
     : [0, 0, 0];
   const traits = [
-    { c: 'var(--mac-prot, #2E7D6F)', l: seg[0], o: 0 },
-    { c: 'var(--mac-carbs, #A96410)', l: seg[1], o: -seg[0] },
-    { c: 'var(--mac-lip, #8E5BA6)', l: seg[2], o: -(seg[0] + seg[1]) },
+    { c: 'var(--mac-prot)', l: seg[0], o: 0 },
+    { c: 'var(--mac-carbs)', l: seg[1], o: -seg[0] },
+    { c: 'var(--mac-lip)', l: seg[2], o: -(seg[0] + seg[1]) },
   ];
   return (
     <div class="bs-anneau">
       <svg viewBox="0 0 118 118" aria-hidden="true">
-        <circle cx="59" cy="59" r={R_ANNEAU} fill="none" stroke="var(--piste-anneau, #EFEAE0)" stroke-width="12" />
+        <circle cx="59" cy="59" r={R_ANNEAU} fill="none" stroke="var(--piste-anneau, #EFEAE0)" stroke-width="11" />
         {traits.map((t, i) => (
-          <circle key={i} cx="59" cy="59" r={R_ANNEAU} fill="none" stroke={t.c} stroke-width="12"
+          <circle key={i} cx="59" cy="59" r={R_ANNEAU} fill="none" stroke={t.c} stroke-width="11"
             stroke-dasharray={`${t.l.toFixed(1)} ${(C_ANNEAU - t.l).toFixed(1)}`}
             stroke-dashoffset={t.o.toFixed(1)} />
         ))}
       </svg>
       <div class="bs-anneau-mid">
+        {etiquette && <i>{etiquette}</i>}
         <b>{centre}</b>
         <span>{unite}</span>
       </div>
@@ -307,13 +308,13 @@ export function TdeeCalculator({ montre, fermer, retour }) {
                 qu'aucun des chiffres saisis ne donne. */}
             <div class="bs-hero pleine">
               <Anneau prot={man.prot} carbs={man.carbs} lip={man.lip}
-                centre={kcalMacros} unite="kcal" />
+                etiquette="TES MACROS" centre={kcalMacros} unite="kcal / jour" />
               <div class="bs-leg">
-                <LigneMacro teinte="var(--mac-prot, #2E7D6F)" nom="Protéines"
+                <LigneMacro teinte="var(--mac-prot)" nom="Protéines"
                   g={+man.prot || 0} part={partDe((+man.prot || 0) * 4, kcalMacros)} />
-                <LigneMacro teinte="var(--mac-carbs, #A96410)" nom="Glucides"
+                <LigneMacro teinte="var(--mac-carbs)" nom="Glucides"
                   g={+man.carbs || 0} part={partDe((+man.carbs || 0) * 4, kcalMacros)} />
-                <LigneMacro teinte="var(--mac-lip, #8E5BA6)" nom="Lipides"
+                <LigneMacro teinte="var(--mac-lip)" nom="Lipides"
                   g={+man.lip || 0} part={partDe((+man.lip || 0) * 9, kcalMacros)} />
               </div>
             </div>
@@ -381,13 +382,14 @@ export function TdeeCalculator({ montre, fermer, retour }) {
               il bouge a chaque modification, et les valeurs se touchent
               directement au lieu de remplir des cases etiquetees. */}
           <div class="bs-hero">
-            <Anneau prot={r.prot} carbs={r.carbs} lip={r.lip} centre={r.kcal} unite="kcal / jour" />
+            <Anneau prot={r.prot} carbs={r.carbs} lip={r.lip}
+              etiquette="OBJECTIF" centre={r.kcal} unite="kcal / jour" />
             <div class="bs-leg">
-              <LigneMacro teinte="var(--mac-prot, #2E7D6F)" nom="Protéines"
+              <LigneMacro teinte="var(--mac-prot)" nom="Protéines"
                 g={r.prot} part={partDe(r.prot * 4, r.kcal)} />
-              <LigneMacro teinte="var(--mac-carbs, #A96410)" nom="Glucides"
+              <LigneMacro teinte="var(--mac-carbs)" nom="Glucides"
                 g={r.carbs} part={partDe(r.carbs * 4, r.kcal)} />
-              <LigneMacro teinte="var(--mac-lip, #8E5BA6)" nom="Lipides"
+              <LigneMacro teinte="var(--mac-lip)" nom="Lipides"
                 g={r.lip} part={partDe(r.lip * 9, r.kcal)} />
             </div>
           </div>

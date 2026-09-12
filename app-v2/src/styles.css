@@ -709,7 +709,9 @@ button{cursor:pointer}
 .bs-m span{display:block;font-size:10.5px;color:#9A938A;margin-top:2px;font-weight:600;
   white-space:nowrap}
 
-.bs-pastilles{display:flex;flex-wrap:wrap;gap:7px}
+.bs-pastilles{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.bs-pastilles>label.bs-p{justify-content:center}
+.bs-pastilles>label.bs-p--large{grid-column:1 / -1}
 .bs-p{display:inline-flex;align-items:center;gap:6px;min-height:44px;
   padding:0 14px;border:1.5px solid #E2DACA;border-radius:999px;
   background:#FAF8F3;font-size:14px;font-weight:800;color:#1C1812}
@@ -749,26 +751,50 @@ button{cursor:pointer}
 /* Une teinte par macro. Elles ne decorent pas : ce sont les seules
    cles de lecture de l'anneau, et elles se retrouvent dans la
    legende. */
-:root{
-  --mac-prot:#2E7D6F; --mac-carbs:#A96410; --mac-lip:#8E5BA6;
+.modale-calc{
+  --mac-prot:var(--proteines,#1F1F1F);
+  --mac-carbs:var(--glucides,#F5A800);
+  --mac-lip:var(--lipides,#E4610B);
   --piste-anneau:#EFEAE0;
 }
 
 .modale-calc .bs-hero{
-  display:flex;align-items:center;gap:16px;
-  background:#FFF;border-radius:18px;padding:18px 16px;
+  display:flex;align-items:center;gap:14px;
+  background:#FFF;border-radius:18px;padding:12px 14px;
   box-shadow:0 1px 3px rgba(24,24,24,.06)}
 
-.bs-anneau{position:relative;width:118px;height:118px;flex:none}
-.bs-anneau svg{width:118px;height:118px;display:block;transform:rotate(-90deg)}
+/* Raci, 9/09 : « l'objectif reste le zero scroll — verifie sur un
+   petit ecran ». La fiche depassait de 28 px sur un iPhone SE et de
+   55 px sur un Android de 640. Trois pastilles de 44 px et la carte
+   de l'anneau portaient l'essentiel du surplus : le seuil descend a
+   40 px de hauteur de frappe (la cible tactile reste atteinte, les
+   pastilles font toute la largeur d'une demi-colonne) et les marges
+   internes se resserrent. Rien n'est retire. */
+@media (max-height:720px){
+  .modale-calc .bs-hero{padding:10px 12px;gap:12px}
+  .modale-calc .bs-anneau{width:100px;height:100px}
+  .modale-calc .bs-anneau svg{width:100px;height:100px}
+  .modale-calc .bs-anneau-mid b{font-size:25px}
+  .modale-calc .bs-anneau-mid i{font-size:7.5px}
+  .modale-calc .bs-lg{padding:4px 0}
+  .modale-calc .bs-pastilles{gap:6px}
+  .modale-calc .bs-s{font-size:11px;margin-top:6px}
+  .modale-calc .calc-avance{padding:7px 0;font-size:12.5px}
+}
+
+.bs-anneau{position:relative;width:124px;height:124px;flex:none}
+.bs-anneau svg{width:124px;height:124px;display:block;transform:rotate(-90deg)}
 .bs-anneau circle{transition:stroke-dasharray .25s ease,stroke-dashoffset .25s ease}
 .bs-anneau-mid{
   position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;padding:0 8px}
+  align-items:center;justify-content:center;text-align:center;padding:0 10px}
+.bs-anneau-mid i{
+  font-style:normal;font-size:8px;font-weight:800;letter-spacing:.1em;
+  color:#A9A29A;line-height:1}
 .bs-anneau-mid b{
-  font-family:'DM Mono',ui-monospace,monospace;font-size:26px;font-weight:500;
-  line-height:1;font-variant-numeric:tabular-nums}
-.bs-anneau-mid span{font-size:9.5px;font-weight:700;color:#8A8378;margin-top:3px;line-height:1.2}
+  font-family:'DM Mono',ui-monospace,monospace;font-size:31px;font-weight:500;
+  line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.bs-anneau-mid span{font-size:8.5px;font-weight:700;color:#8A8378;line-height:1.2}
 
 .bs-leg{flex:1;min-width:0}
 .bs-lg{display:flex;align-items:center;gap:8px;padding:7px 0}

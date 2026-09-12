@@ -2656,8 +2656,14 @@ const DECALAGE_SW_V2 = 232;
     if (/mode === 'calc' && \(\s*<div class="calc-res">/.test(jsx)) soucis.push('l\'ancien bloc de resultats est revenu sous les champs');
   }
   if (css) {
-    const p = (css.match(/\.bs-p\{[^}]*\}/) || [''])[0];
+    const p = (css.match(/^\.bs-p\{[^}]*\}/m) || [''])[0];
     if (!/min-height:44px/.test(p)) soucis.push('les pastilles passent sous la cible tactile de 44 px');
+    // Une surcharge de hauteur ailleurs annulerait la cible sans que
+    // la regle ci-dessus le voie.
+    for (const m of css.matchAll(/\.bs-p\b[^{}]*\{([^}]*)\}/g)) {
+      const h = (m[1].match(/min-height:\s*(\d+)px/) || [])[1];
+      if (h && +h < 44) soucis.push('une surcharge ramene les pastilles a ' + h + ' px');
+    }
     if (/\.modale-calc\{background:#1C1812/.test(css)) {
       soucis.push('la fiche est repassee en sombre : le rendu que Raci a refuse le 9/09');
     }
