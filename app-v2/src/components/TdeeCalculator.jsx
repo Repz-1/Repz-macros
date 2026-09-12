@@ -13,6 +13,19 @@ import { sexe } from '../store/perso.js';
 // deja choisi ailleurs, et les macros a l'ecran portent deja un
 // rapport — c'est celui-la qu'on met a l'echelle.
 
+/** Largeur d'un champ de pastille, en caracteres, pour qu'il se moule
+ *  sur son chiffre au lieu d'occuper une case fixe.
+ *
+ *  Retiree par erreur le 9/09 en meme temps que le bloc des trois
+ *  repartitions — elle etait rangee entre REPARTITIONS et grammesDe.
+ *  Consequence : « larg is not defined » a l'ouverture du
+ *  calculateur, l'app plantait apres son premier affichage et plus
+ *  aucun bouton ne repondait. Le build passait : une fonction absente
+ *  ne se voit qu'a l'execution. */
+function larg(v) {
+  return Math.max(1, String(v == null ? '' : v).length) + 0.6 + 'ch';
+}
+
 /**
  * Part d'une macro dans les calories du jour, arrondie a l'entier.
  * Les trois parts peuvent totaliser 99 ou 101 : chacune est juste,

@@ -2886,6 +2886,37 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R81 — Le filet de diagnostic reste en place.
+// Le 9/09, `larg()` est partie avec le bloc des trois repartitions du
+// calculateur : elle etait rangee au milieu. Le build passait — une
+// fonction absente ne se voit qu'a l'execution. « Mes besoins » ne
+// s'ouvrait plus, l'app plantait apres son premier affichage, et plus
+// aucun bouton ne repondait, pas meme l'engrenage. Raci a cherche
+// longtemps pour un nom de dix caracteres.
+//
+// J'ai tente une regle qui verifie que tout appel est defini : elle
+// prenait url(), rotate(), async et des mots francais dans des
+// chaines pour des fonctions — cinquante fausses alertes. Une regle
+// qui crie faux se fait ignorer, donc elle n'existe pas. Ce qui reste,
+// et qui a effectivement trouve la panne en une capture d'ecran :
+// l'erreur s'affiche A L'ECRAN. Sur telephone la console est hors
+// d'atteinte ; sans ce bandeau on cherche a l'aveugle.
+// ------------------------------------------------------------
+{
+  const m = lire('app-v2/src/main.jsx');
+  const soucis = [];
+  if (m) {
+    if (!/function montrerErreur\(/.test(m)) soucis.push('le bandeau d\'erreur a disparu');
+    if (!/addEventListener\('error'/.test(m)) soucis.push('les exceptions ne sont plus attrapees');
+    if (!/addEventListener\('unhandledrejection'/.test(m)) {
+      soucis.push('les promesses rejetees passent de nouveau sous silence');
+    }
+  }
+  if (soucis.length) faute('R81 erreurs visibles a l\'ecran', soucis.join(' ; '));
+  else passe('R81 erreurs visibles a l\'ecran');
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le
