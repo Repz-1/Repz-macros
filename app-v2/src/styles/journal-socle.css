@@ -753,8 +753,17 @@
   border-color: var(--or); background: var(--srf-carte-2);
   box-shadow: 0 0 0 3px rgba(247, 181, 0, .12);
 }
+/* Le « + » de tete (Raci, 9/09). Il remplace la loupe : on n'ouvre
+   pas une recherche, on ajoute un aliment. Il ne bouge pas quand le
+   champ se remplit — c'est l'invite qui disparait, pas le signe. */
+.pg-journal .mc-ajout-plus {
+  flex: none; width: 34px; text-align: center;
+  font-size: 21px; font-weight: 400; line-height: 1;
+  color: var(--or-fonce, #B34700); pointer-events: none;
+  padding-left: 4px;
+}
 .pg-journal .mc-ajout input {
-  flex: 1; min-width: 0; padding: 9px 12px;
+  flex: 1; min-width: 0; padding: 9px 10px 9px 0;
   border: none; background: transparent;
   font-size: 14px; font-family: inherit;
   scroll-margin: 140px;
@@ -2992,11 +3001,20 @@
 .couche-repas .rp-colonne .mc-ajout,
 .couche-repas .rp-liste .mc-ing-champ,
 .couche-repas .rp-colonne .mc-scan { border-radius: 13px; }
+/* Raci, 9/09, style de la barre : « fond blanc ou tres legerement
+   gris, bordure fine grise, texte noir ou gris fonce, icone + a
+   gauche, hauteur identique aux autres boutons secondaires, coins
+   arrondis comme le reste ». L'ombre portee saute : un champ de
+   saisie ne flotte pas, il s'encastre. */
 .couche-repas .rp-colonne .mc-ajout {
-  background: var(--carte);
-  border: 1px solid rgba(28, 24, 18, .055);
-  box-shadow: 0 1px 2px rgba(40, 32, 22, .04), 0 3px 10px rgba(40, 32, 22, .035);
+  background: #FFF;
+  border: 1px solid #8A8378;
+  box-shadow: none;
+  min-height: 52px;
 }
+.couche-repas .rp-colonne .mc-ajout input { color: #1F1F1F; font-size: 14.5px; }
+.couche-repas .rp-colonne .mc-ajout input::placeholder { color: #7D766B; }
+.couche-repas .rp-colonne .mc-ajout-plus { color: var(--orange-fonce, #B34700); }
 .couche-repas .rp-colonne .mc-scan {
   background: var(--carte);
   border: 1px solid rgba(28, 24, 18, .05);

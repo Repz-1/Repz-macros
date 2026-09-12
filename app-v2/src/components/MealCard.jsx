@@ -386,6 +386,13 @@ export function Recherche({ repasId, phCourt }) {
   return (
     <div class="mc-ajout-zone" ref={zoneRef}>
       <div class="mc-ajout">
+        {/* Raci, 9/09 : « le texte + Ajouter un aliment dans la barre
+            de recherche, il disparait a chaque clic et ca nous evite un
+            bouton supplementaire ». La loupe annoncait une recherche ;
+            le « + » annonce ce qu'on vient faire — ajouter. Le signe
+            reste visible quand le champ est rempli, l'invite non : elle
+            a fait son travail. */}
+        <span class="mc-ajout-plus" aria-hidden="true">+</span>
         <input
           ref={champRef}
           placeholder={t(phCourt ? 'mc_add_ph_court' : 'mc_add_ph')}
