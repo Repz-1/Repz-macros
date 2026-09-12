@@ -2982,6 +2982,40 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R83 — « Terminer » reste atteignable sans defiler.
+// Raci, 9/09 : « le bouton Terminer sort du flux normal de la page,
+// en sticky en bas, et tu laisses un padding en bas de la liste pour
+// qu'elle ne passe pas dessous. Le but : ne pas devoir scroller quand
+// j'ai termine d'encoder les aliments. » Il etait en fin de page :
+// chaque aliment ajoute le repoussait plus bas, et il fallait faire
+// defiler pour clore un repas qu'on venait de finir.
+// ------------------------------------------------------------
+{
+  const css = lire('app-v2/src/styles/journal-socle.css');
+  const soucis = [];
+  if (css) {
+    const bloc = (css.match(/\.pg-journal \.rp-actions \{[^}]*\}/) || [''])[0];
+    if (!/position: sticky/.test(bloc)) {
+      soucis.push('« Terminer » est retourne dans le flux : il redescendra a chaque aliment ajoute');
+    }
+    if (!/bottom: calc\(var\(--hauteur-nav\)/.test(bloc)) {
+      soucis.push('« Terminer » ne se cale plus au-dessus de la barre d\'onglets');
+    }
+    // Sans fond derriere, la liste defile A TRAVERS le bouton et le
+    // texte se lit par-dessus les aliments.
+    if (!/background: linear-gradient/.test(bloc)) {
+      soucis.push('le bouton colle n\'a plus de fond : la liste defilera au travers');
+    }
+    // La loupe et le « + » ont cohabite un temps devant le meme champ.
+    if (/\.mc-ajout::before \{[^}]*circle cx='11'/.test(css)) {
+      soucis.push('la loupe est revenue a cote du « + »');
+    }
+  }
+  if (soucis.length) faute('R83 « Terminer » sans defilement', soucis.join(' ; '));
+  else passe('R83 « Terminer » sans defilement');
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le

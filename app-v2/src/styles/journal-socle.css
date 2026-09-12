@@ -1810,6 +1810,10 @@
            calc(var(--hauteur-nav) + 28px + env(safe-area-inset-bottom));
   display: flex; flex-direction: column; gap: 14px;
 }
+/* La liste ne passe pas sous le bouton colle : elle s'arrete au-dessus
+   de lui. Sans cette reserve, le dernier aliment se cachait derriere
+   « Terminer ». */
+.pg-journal .rp-section:last-of-type { padding-bottom: 8px; }
 /* Fond creme propre a la page repas (maquette) */
 .pg-journal.couche-repas { background: var(--fond); }
 /* Pendant le retour par glissement, la couche se decolle du journal. */
@@ -1916,7 +1920,18 @@
 .pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: var(--texte-3); margin-left: 3px; }
 
 /* ---------- Boutons de bas de page ---------- */
-.pg-journal .rp-actions { display: flex; flex-direction: column; gap: 11px; margin-top: 4px; }
+.pg-journal .rp-actions {
+  display: flex; flex-direction: column; gap: 11px; margin-top: 4px;
+  position: sticky; z-index: 3;
+  bottom: calc(var(--hauteur-nav) + 10px + env(safe-area-inset-bottom));
+  /* Un degrade derriere : sans lui, la liste defilerait a travers le
+     bouton et le texte se lirait par-dessus les aliments. */
+  padding: 12px 0 4px;
+  background: linear-gradient(to top,
+    var(--fond) 62%, rgba(245, 241, 232, .92) 84%, rgba(245, 241, 232, 0));
+  margin-left: -16px; margin-right: -16px;
+  padding-left: 16px; padding-right: 16px;
+}
 .pg-journal .rp-btn-plat {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 16px; border-radius: 16px;
@@ -1963,11 +1978,7 @@
   box-shadow: 0 2px 12px rgba(60, 50, 40, .06);
   padding: 4px 4px 4px 14px; margin-top: 0; gap: 8px;
 }
-.pg-journal .rp-colonne .mc-ajout::before {
-  content: ''; flex: none; width: 19px; height: 19px; opacity: .45;
-  background: no-repeat center/contain
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23191919' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E");
-}
+/* Plus de loupe : le « + » dit ce qu'on vient faire (9/09). */
 .pg-journal .rp-colonne .mc-ajout:focus-within {
   border: none; box-shadow: 0 0 0 2px rgba(224, 162, 28, .28), 0 2px 12px rgba(60, 50, 40, .06);
 }
@@ -2788,7 +2799,11 @@
    Sur fond clair le contour suffit a poser l'objet — la surface
    ajoutee en sombre n'a plus lieu d'etre.
    ------------------------------------------------------------ */
-.couche-repas .rp-actions { gap: 20px; }
+.couche-repas .rp-actions {
+  gap: 12px;
+  background: linear-gradient(to top,
+    var(--fond) 62%, rgba(245, 241, 232, .92) 84%, rgba(245, 241, 232, 0));
+}
 .couche-repas .rp-btn-plat {
   padding: 12px;
   font-size: 14.5px; font-weight: 600;
