@@ -65,7 +65,11 @@ function EditeurPlat({ initial, fermer }) {
   const complet = plat.nom.trim() && plat.ings.length > 0;
 
   return createPortal(
-    <div class="mp-plein">
+    <div class="mp-plein" onClick={(e) => { if (e.target === e.currentTarget) fermer(); }}>
+      {/* Raci, 9/09 : « assombri autour comme les autres ». L'editeur
+          etait le dernier ecran plein de l'app : il recouvrait tout
+          sans dire d'ou l'on venait. Il devient une carte sur le voile,
+          comme la fiche d'un jour, le questionnaire et Mes besoins. */}
       <div class="mp-defile">
         <div class="mp-entete">
           <button class="mp-x" onClick={fermer} aria-label="Fermer">✕</button>
@@ -82,8 +86,7 @@ function EditeurPlat({ initial, fermer }) {
             />
           </label>
 
-          <div class="mp-sec">{t('mp_ingredients')}</div>
-          <p class="mp-aide">{t('mp_aide_poids')}</p>
+          <div class="mp-sec">{t('mp_ingredients')}<i>{t('mp_aide_poids_court')}</i></div>
 
           {plat.ings.map(i => (
             <div class="mp-ing" key={i.id}>
@@ -101,8 +104,7 @@ function EditeurPlat({ initial, fermer }) {
 
           <ChampAliment ajouter={ajouterIng} />
 
-          <div class="mp-sec">{t('mp_portions')}</div>
-          <p class="mp-aide">{t('mp_aide_portions')}</p>
+          <div class="mp-sec">{t('mp_portions')}<i>{t('mp_aide_portions_court')}</i></div>
           <div class="mp-compteur">
             <button onClick={() => maj('portions', Math.max(1, (plat.portions || 1) - 1))}>−</button>
             <span>{plat.portions || 1}</span>

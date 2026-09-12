@@ -2940,6 +2940,48 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R82 — L'editeur de plat est une carte, pas un ecran plein.
+// Raci, 9/09 : « epurer cette page, la rendre non scrollable,
+// assombri autour comme les autres ». C'etait le dernier ecran de
+// l'app a recouvrir tout sans dire d'ou l'on venait, et ses deux
+// phrases d'aide prenaient quatre lignes pour redire ce que les
+// etiquettes disaient deja.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/MesPlats.jsx');
+  const css = lire('app-v2/src/styles/journal-socle.css');
+  const soucis = [];
+  if (jsx) {
+    if (/class="mp-aide"/.test(jsx)) {
+      soucis.push('les phrases d\'aide longues sont revenues sous les etiquettes');
+    }
+    if (!/t\('mp_aide_poids_court'\)/.test(jsx) || !/t\('mp_aide_portions_court'\)/.test(jsx)) {
+      soucis.push('l\'aide courte a disparu : plus rien ne precise le poids ni les portions');
+    }
+  }
+  if (css) {
+    const bloc = (css.match(/\.mp-plein \{[^}]*\}/) || [''])[0];
+    if (!/background: rgba\(12, 10, 8, \.55\)/.test(bloc)) {
+      soucis.push('l\'editeur est redevenu un ecran plein sans voile');
+    }
+    if (!/\.mp-defile \{[^}]*max-width: 460px/.test(css)) {
+      soucis.push('la carte reprend toute la largeur : elle ne se lit plus comme une modale');
+    }
+    if (!/@media \(max-height:720px\)[\s\S]{0,600}?\.mp-ing\{/.test(css)) {
+      soucis.push('le palier petit ecran a disparu : la carte defilera des trois ingredients');
+    }
+    // Les cibles tactiles ne se resserrent pas : c'est la regle posee
+    // apres les erreurs de frappe de fin aout.
+    for (const m of css.matchAll(/\.mp-compteur button\s*\{([^}]*)\}/g)) {
+      const h = (m[1].match(/height:\s*(\d+)px/) || [])[1];
+      if (h && +h < 44) soucis.push('les boutons de portions passent a ' + h + ' px');
+    }
+  }
+  if (soucis.length) faute('R82 editeur de plat', soucis.join(' ; '));
+  else passe('R82 editeur de plat');
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le
