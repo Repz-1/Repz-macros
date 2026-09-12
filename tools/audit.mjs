@@ -2646,6 +2646,21 @@ const DECALAGE_SW_V2 = 232;
     // La couronne montre le RAPPORT des macros, que trois chiffres
     // alignes ne donnaient pas (maquette C, 9/09).
     if (!/function Anneau\(/.test(jsx)) soucis.push('la couronne des macros a disparu');
+    // Raci, 9/09 : « un bouton Calculer, et ensuite appliquer aux
+    // objectifs ». Le resultat se recalculait a chaque frappe, ce qui
+    // faisait sauter la fiche.
+    if (!/class="calc-lancer"/.test(jsx)) soucis.push('« Calculer mes besoins » a disparu : le resultat redevient permanent');
+    if (!/setCalcule\(false\)/.test(jsx)) {
+      soucis.push('modifier une valeur ne retire plus le resultat : il resterait calcule sur d\'anciennes entrees');
+    }
+    if (!/\(mode === 'manuel' \|\| calcule\)/.test(jsx)) {
+      soucis.push('« Appliquer » s\'offre avant qu\'un chiffre existe');
+    }
+    // Les deux modes doivent porter LES MEMES teintes : sinon on croit
+    // que les proportions ont change alors qu'elles n'ont pas bouge.
+    if ((jsx.match(/var\(--mac-prot\)/g) || []).length < 2) {
+      soucis.push('les deux modes n\'utilisent plus les memes teintes de macro');
+    }
     if (!/kp \/ tot, kg \/ tot, kl \/ tot/.test(jsx)) {
       soucis.push('les segments ne sont plus proportionnels aux calories : 100 g de lipides pesent double');
     }
@@ -2682,9 +2697,11 @@ const DECALAGE_SW_V2 = 232;
     // Le bouton reste colle en bas : sur les petits ecrans le contenu
     // depasse encore, il ne doit pas partir avec le defilement.
     if (!/\.calc-barre\{position:sticky/.test(css)) soucis.push('le bouton « Appliquer » n\'est plus colle en bas');
-    // Grand ecran : la feuille se centre au lieu de coller en bas.
-    if (!/@media \(min-height: 780px\)[\s\S]{0,320}?\.modale-calc\{[\s\S]{0,200}?top:50%/.test(css)) {
-      soucis.push('la fiche ne se centre plus sur les grands ecrans');
+    if (!/@media \(min-height: 780px\)[\s\S]{0,320}?\.modale-calc\{[\s\S]{0,200}?top:32px/.test(css)) {
+      soucis.push('la fiche est recentree verticalement : elle sautera de nouveau a chaque changement de hauteur');
+    }
+    if (/\.modale-calc\{[^}]*translate\(0,-50%\)/.test(css)) {
+      soucis.push('le centrage par translate(-50%) est revenu');
     }
     const cible = (css.match(/\.calc-res-ligne\.cible strong\{[^}]*\}/) || [''])[0];
     const t = (cible.match(/font-size:(\d+)px/) || [])[1];

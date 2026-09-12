@@ -44,7 +44,7 @@ function larg(v) {
  */
 const R_ANNEAU = 50;
 const C_ANNEAU = 2 * Math.PI * R_ANNEAU;
-function Anneau({ prot, carbs, lip, centre, unite, etiquette }) {
+function Anneau({ prot, carbs, lip, centre }) {
   const kp = (+prot || 0) * 4, kg = (+carbs || 0) * 4, kl = (+lip || 0) * 9;
   const tot = kp + kg + kl;
   // Rien de saisi : l'anneau reste une piste vide plutot que de
@@ -67,10 +67,15 @@ function Anneau({ prot, carbs, lip, centre, unite, etiquette }) {
             stroke-dashoffset={t.o.toFixed(1)} />
         ))}
       </svg>
+      {/* Raci, 9/09 : « mettre le chiffre principal en tres grand au
+          centre, et en dessous, en plus petit, kcal / jour. Le donut
+          ne sert plus seulement de decoration, il porte l'information
+          principale. » L'etiquette OBJECTIF / TES MACROS disparait :
+          elle volait la place au chiffre pour dire ce que le contexte
+          dit deja. */}
       <div class="bs-anneau-mid">
-        {etiquette && <i>{etiquette}</i>}
         <b>{centre}</b>
-        <span>{unite}</span>
+        <span>kcal / jour</span>
       </div>
     </div>
   );
@@ -109,6 +114,10 @@ export function TdeeCalculator({ montre, fermer, retour }) {
   // Options avancees repliees par defaut : masse grasse et jours
   // d'entrainement ne concernent qu'une minorite.
   const [avance, setAvance] = useState(false);
+  // Le resultat n'existe qu'apres demande (Raci, 9/09). Toucher une
+  // valeur le retire : afficher un chiffre calcule sur d'anciennes
+  // entrees serait pire que ne rien afficher.
+  const [calcule, setCalcule] = useState(false);
   const [man, setMan] = useState(() => ({ ...objectifs.value }));
 
   // Les PROPORTIONS de depart, figees a l'ouverture. C'est la
@@ -233,6 +242,7 @@ export function TdeeCalculator({ montre, fermer, retour }) {
   // ailleurs — il n'etait ecrit nulle part jusqu'au 17/08.
   const maj = (cle, val) => {
     if (cle === 'sexe') sexe.value = val;
+    setCalcule(false);
     setF(o => ({ ...o, [cle]: val }));
   };
   const num = (cle, val) => maj(cle, val === '' ? '' : parseFloat(val));
@@ -307,8 +317,7 @@ export function TdeeCalculator({ montre, fermer, retour }) {
                 frappe et rend visible le rapport des trois macros,
                 qu'aucun des chiffres saisis ne donne. */}
             <div class="bs-hero pleine">
-              <Anneau prot={man.prot} carbs={man.carbs} lip={man.lip}
-                etiquette="TES MACROS" centre={kcalMacros} unite="kcal / jour" />
+              <Anneau prot={man.prot} carbs={man.carbs} lip={man.lip} centre={kcalMacros} />
               <div class="bs-leg">
                 <LigneMacro teinte="var(--mac-prot)" nom="Protéines"
                   g={+man.prot || 0} part={partDe((+man.prot || 0) * 4, kcalMacros)} />
@@ -382,8 +391,7 @@ export function TdeeCalculator({ montre, fermer, retour }) {
               il bouge a chaque modification, et les valeurs se touchent
               directement au lieu de remplir des cases etiquetees. */}
           <div class="bs-hero">
-            <Anneau prot={r.prot} carbs={r.carbs} lip={r.lip}
-              etiquette="OBJECTIF" centre={r.kcal} unite="kcal / jour" />
+            <Anneau prot={r.prot} carbs={r.carbs} lip={r.lip} centre={r.kcal} />
             <div class="bs-leg">
               <LigneMacro teinte="var(--mac-prot)" nom="Protéines"
                 g={r.prot} part={partDe(r.prot * 4, r.kcal)} />
@@ -483,14 +491,43 @@ export function TdeeCalculator({ montre, fermer, retour }) {
           <button class="calc-avance" onClick={() => setAvance(!avance)}>
             {avance ? 'Masquer les options avancées' : 'Afficher les options avancées'}
           </button>
+
+          {/* Le calcul se demande. Tant qu'on ne l'a pas demande, la
+              fiche ne bouge pas pendant la saisie. */}
+          {!calcule ? (
+            <button class="calc-lancer" onClick={() => setCalcule(true)}>
+              Calculer mes besoins
+            </button>
+          ) : (
+            <>
+              <div class="bs-hero">
+                <Anneau prot={r.prot} carbs={r.carbs} lip={r.lip} centre={r.kcal} />
+                <div class="bs-leg">
+                  <LigneMacro teinte="var(--mac-prot)" nom="Protéines"
+                    g={r.prot} part={partDe(r.prot * 4, r.kcal)} />
+                  <LigneMacro teinte="var(--mac-carbs)" nom="Glucides"
+                    g={r.carbs} part={partDe(r.carbs * 4, r.kcal)} />
+                  <LigneMacro teinte="var(--mac-lip)" nom="Lipides"
+                    g={r.lip} part={partDe(r.lip * 9, r.kcal)} />
+                </div>
+              </div>
+              <p class="bs-s">
+                Base {r.bmr} · Dépense {r.tdee} · {(OBJECTIFS.find(o => +o.val === +f.ajustement) || {}).label}
+              </p>
+            </>
+          )}
         </>
         )}
 
-        <div class="calc-barre">
-          <button class="calc-appliquer" onClick={appliquer} disabled={macrosVides}>
-            {applique ? '✓ Appliqué !' : 'Appliquer comme objectif'}
-          </button>
-        </div>
+        {/* « Appliquer » ne s'offre qu'une fois le chiffre obtenu : en
+            mode calcule il n'y a rien a appliquer avant. */}
+        {(mode === 'manuel' || calcule) && (
+          <div class="calc-barre">
+            <button class="calc-appliquer" onClick={appliquer} disabled={macrosVides}>
+              {applique ? '✓ Appliqué !' : 'Appliquer aux objectifs'}
+            </button>
+          </div>
+        )}
       </div>
     </>
   , document.body);
