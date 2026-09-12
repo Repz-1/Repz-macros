@@ -630,6 +630,41 @@ export function App() {
 // L'apercu importe ce fichier pour rendre UNE page a la fois : sans ce
 // garde-fou, l'import demarrerait l'application entiere par effet de bord.
 const racine = document.getElementById('app');
+/**
+ * Filet de diagnostic (9/09).
+ *
+ * Raci : « rien ne se lance », puis « le bouton parametres non plus ne
+ * reagit pas ». Deux boutons morts d'un coup, dont l'engrenage : ce
+ * n'est pas un bouton, c'est une exception apres le premier
+ * affichage. Le DOM reste peint, plus rien n'ecoute, et sur telephone
+ * la console est hors d'atteinte — on cherche a l'aveugle.
+ *
+ * Le bandeau affiche le message et l'endroit. Il ne repare rien : il
+ * rend le silence lisible.
+ */
+function montrerErreur(quoi, ou) {
+  try {
+    if (document.getElementById('bf-err')) return;
+    const n = document.createElement('div');
+    n.id = 'bf-err';
+    n.setAttribute('style', [
+      'position:fixed', 'left:0', 'right:0', 'bottom:0', 'z-index:99999',
+      'background:#A0301E', 'color:#fff', 'padding:12px 14px',
+      'font:600 12px/1.45 system-ui,sans-serif', 'white-space:pre-wrap',
+      'max-height:45vh', 'overflow:auto',
+    ].join(';'));
+    n.textContent = 'Erreur — ' + quoi + (ou ? '\n' + ou : '');
+    document.body.appendChild(n);
+  } catch (e) { /* le filet ne doit jamais etre la cause */ }
+}
+window.addEventListener('error', (e) => {
+  montrerErreur(e.message, (e.filename || '') + ':' + (e.lineno || '') + ':' + (e.colno || ''));
+});
+window.addEventListener('unhandledrejection', (e) => {
+  const r = e && e.reason;
+  montrerErreur((r && (r.message || r)) || 'promesse rejetee', r && r.stack ? String(r.stack).split('\n')[1] : '');
+});
+
 if (racine) render(<><AvisAccesInvite /><App /></>, racine);
 
 // Retrait du splash.
