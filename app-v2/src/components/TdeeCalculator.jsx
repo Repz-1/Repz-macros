@@ -19,6 +19,61 @@ import { sexe } from '../store/perso.js';
  * c'est l'arrondi qui ne tombe pas rond. Mieux vaut trois chiffres
  * exacts qu'un total force a 100.
  */
+/**
+ * La couronne des macros. Maquette C, retenue par Raci le 9/09 —
+ * inspiree de la fiche MyFitnessPal qu'il m'a envoyee : « c'est pour
+ * analyser la page et voir ce qu'elle a en plus de la mienne ».
+ *
+ * Trois chiffres alignes disent combien de chaque macro, jamais leur
+ * RAPPORT : il fallait le calculer de tete. L'anneau le montre. Les
+ * segments sont proportionnels aux CALORIES de chaque macro, pas aux
+ * grammes — 100 g de lipides ne pesent pas comme 100 g de glucides.
+ */
+const R_ANNEAU = 50;
+const C_ANNEAU = 2 * Math.PI * R_ANNEAU;
+function Anneau({ prot, carbs, lip, centre, unite }) {
+  const kp = (+prot || 0) * 4, kg = (+carbs || 0) * 4, kl = (+lip || 0) * 9;
+  const tot = kp + kg + kl;
+  // Rien de saisi : l'anneau reste une piste vide plutot que de
+  // disparaitre — sa place ne bouge pas d'une frappe a l'autre.
+  const seg = tot > 0
+    ? [kp / tot, kg / tot, kl / tot].map(x => x * C_ANNEAU)
+    : [0, 0, 0];
+  const traits = [
+    { c: 'var(--mac-prot, #2E7D6F)', l: seg[0], o: 0 },
+    { c: 'var(--mac-carbs, #A96410)', l: seg[1], o: -seg[0] },
+    { c: 'var(--mac-lip, #8E5BA6)', l: seg[2], o: -(seg[0] + seg[1]) },
+  ];
+  return (
+    <div class="bs-anneau">
+      <svg viewBox="0 0 118 118" aria-hidden="true">
+        <circle cx="59" cy="59" r={R_ANNEAU} fill="none" stroke="var(--piste-anneau, #EFEAE0)" stroke-width="12" />
+        {traits.map((t, i) => (
+          <circle key={i} cx="59" cy="59" r={R_ANNEAU} fill="none" stroke={t.c} stroke-width="12"
+            stroke-dasharray={`${t.l.toFixed(1)} ${(C_ANNEAU - t.l).toFixed(1)}`}
+            stroke-dashoffset={t.o.toFixed(1)} />
+        ))}
+      </svg>
+      <div class="bs-anneau-mid">
+        <b>{centre}</b>
+        <span>{unite}</span>
+      </div>
+    </div>
+  );
+}
+
+/** Une ligne de legende : pastille, nom, grammes, part. */
+function LigneMacro({ teinte, nom, g, part }) {
+  return (
+    <div class="bs-lg">
+      <i class="bs-lg-pt" style={{ background: teinte }} />
+      <span class="bs-lg-n">{nom}</span>
+      <span class="bs-lg-g">{g}g</span>
+      <span class="bs-lg-p">{part}</span>
+    </div>
+  );
+}
+
 function partDe(kcalMacro, kcalTotal) {
   if (!kcalTotal) return '';
   return Math.round((kcalMacro / kcalTotal) * 100) + ' %';
@@ -211,7 +266,7 @@ export function TdeeCalculator({ montre, fermer, retour }) {
 
   return createPortal(
     <>
-      <div class={`voile ${montre ? 'montre' : ''}`} onClick={fermer} />
+      <div class={`voile voile--fonce ${montre ? 'montre' : ''}`} onClick={fermer} />
       <div class={`modale modale-calc ${montre ? 'montre' : ''}`}>
         {/* La feuille occupe quasi tout l'ecran : le voile n'est plus une
             sortie atteignable, il faut une sortie explicite.
@@ -234,6 +289,21 @@ export function TdeeCalculator({ montre, fermer, retour }) {
 
         {mode === 'manuel' ? (
           <div class="calc-grille">
+            {/* La meme couronne qu'en mode calcule : elle bouge a chaque
+                frappe et rend visible le rapport des trois macros,
+                qu'aucun des chiffres saisis ne donne. */}
+            <div class="bs-hero pleine">
+              <Anneau prot={man.prot} carbs={man.carbs} lip={man.lip}
+                centre={kcalMacros} unite="kcal" />
+              <div class="bs-leg">
+                <LigneMacro teinte="var(--mac-prot, #2E7D6F)" nom="Protéines"
+                  g={+man.prot || 0} part={partDe((+man.prot || 0) * 4, kcalMacros)} />
+                <LigneMacro teinte="var(--mac-carbs, #A96410)" nom="Glucides"
+                  g={+man.carbs || 0} part={partDe((+man.carbs || 0) * 4, kcalMacros)} />
+                <LigneMacro teinte="var(--mac-lip, #8E5BA6)" nom="Lipides"
+                  g={+man.lip || 0} part={partDe((+man.lip || 0) * 9, kcalMacros)} />
+              </div>
+            </div>
             <label class="pleine">Calories (kcal)
               <input type="number" value={man.kcal} onInput={e => majMan('kcal', e.currentTarget.value)} />
             </label>
@@ -247,7 +317,15 @@ export function TdeeCalculator({ montre, fermer, retour }) {
               <input type="number" value={man.lip} onInput={e => majMan('lip', e.currentTarget.value)} />
             </label>
             <div class="calc-note pleine">
-              P×4 + G×4 + L×9 = <b>{kcalMacros} kcal</b>
+              {/* « P×4 + G×4 + L×9 = 4503 kcal » est un reste de
+                  tableur : le total est deja au centre de l'anneau.
+                  Ne reste que ce qu'on ne voit pas — l'ecart avec
+                  l'objectif saisi (Raci, 9/09). */}
+              {ecart === 0
+                ? <>Tes macros tombent juste sur {kcalVise} kcal.</>
+                : Math.abs(ecart) <= 50
+                  ? <><b>{Math.abs(ecart)} kcal</b> d'écart avec ton objectif — c'est l'arrondi des grammes.</>
+                  : null}
               {/* L'ecart porte son chiffre et son sens : « ecart avec tes
                   calories » disait qu'il y avait un probleme sans dire
                   lequel, ni de combien, ni comment en sortir. */}
@@ -290,16 +368,19 @@ export function TdeeCalculator({ montre, fermer, retour }) {
               il bouge a chaque modification, et les valeurs se touchent
               directement au lieu de remplir des cases etiquetees. */}
           <div class="bs-hero">
-            <div class="bs-k">{r.kcal} <em>kcal / jour</em></div>
-            <div class="bs-s">
-              Base {r.bmr} · Dépense {r.tdee} · {(OBJECTIFS.find(o => +o.val === +f.ajustement) || {}).label}
-            </div>
-            <div class="bs-mm">
-              <div class="bs-m"><b>{r.prot}g</b><span>Prot · {partDe(r.prot * 4, r.kcal)}</span></div>
-              <div class="bs-m"><b>{r.carbs}g</b><span>Gluc · {partDe(r.carbs * 4, r.kcal)}</span></div>
-              <div class="bs-m"><b>{r.lip}g</b><span>Lip · {partDe(r.lip * 9, r.kcal)}</span></div>
+            <Anneau prot={r.prot} carbs={r.carbs} lip={r.lip} centre={r.kcal} unite="kcal / jour" />
+            <div class="bs-leg">
+              <LigneMacro teinte="var(--mac-prot, #2E7D6F)" nom="Protéines"
+                g={r.prot} part={partDe(r.prot * 4, r.kcal)} />
+              <LigneMacro teinte="var(--mac-carbs, #A96410)" nom="Glucides"
+                g={r.carbs} part={partDe(r.carbs * 4, r.kcal)} />
+              <LigneMacro teinte="var(--mac-lip, #8E5BA6)" nom="Lipides"
+                g={r.lip} part={partDe(r.lip * 9, r.kcal)} />
             </div>
           </div>
+          <p class="bs-s">
+            Base {r.bmr} · Dépense {r.tdee} · {(OBJECTIFS.find(o => +o.val === +f.ajustement) || {}).label}
+          </p>
 
           {alerte && <p class="calc-alerte">{alerte}</p>}
 

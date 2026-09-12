@@ -2643,21 +2643,29 @@ const DECALAGE_SW_V2 = 232;
   // formulaire administratif.
   if (jsx) {
     if (!/class="bs-hero"/.test(jsx)) soucis.push('la carte de resultat en tete a disparu');
+    // La couronne montre le RAPPORT des macros, que trois chiffres
+    // alignes ne donnaient pas (maquette C, 9/09).
+    if (!/function Anneau\(/.test(jsx)) soucis.push('la couronne des macros a disparu');
+    if (!/kp \/ tot, kg \/ tot, kl \/ tot/.test(jsx)) {
+      soucis.push('les segments ne sont plus proportionnels aux calories : 100 g de lipides pesent double');
+    }
+    if (/>\s*P×4 \+ G×4 \+ L×9/.test(jsx)) {
+      soucis.push('la formule de tableur est revenue sous les champs');
+    }
     if (!/class="bs-pastilles"/.test(jsx)) soucis.push('les entrees sont redevenues des champs etiquetes');
     if (/mode === 'calc' && \(\s*<div class="calc-res">/.test(jsx)) soucis.push('l\'ancien bloc de resultats est revenu sous les champs');
   }
   if (css) {
     const p = (css.match(/\.bs-p\{[^}]*\}/) || [''])[0];
     if (!/min-height:44px/.test(p)) soucis.push('les pastilles passent sous la cible tactile de 44 px');
-    // Fiche en sombre (Raci, 02/09) : la carte du resultat ne doit
-    // plus etre une piece rapportee sur du creme.
-    if (!/\.modale-calc\{background:#1C1812/.test(css)) soucis.push('la fiche est repassee en clair sous une carte sombre');
-    // Sur fond noir, la carte se detache vers la LUMIERE : plus
-    // sombre, elle disparaitrait.
-    if (!/\.modale-calc \.bs-hero\{background:#26211A/.test(css)) soucis.push('la carte du resultat ne se detache plus du fond');
-    if (!/\.modale-calc \.calc-barre\{background:linear-gradient\(to top,#1C1812/.test(css)) {
-      soucis.push('la barre du bouton est restee creme : elle coupe la fiche en deux');
+    if (/\.modale-calc\{background:#1C1812/.test(css)) {
+      soucis.push('la fiche est repassee en sombre : le rendu que Raci a refuse le 9/09');
     }
+    if (!/\.voile--fonce\{background:rgba\(12,10,8,\.62\)/.test(css)) {
+      soucis.push('le voile a perdu son assombrissement : la fiche claire flotte dans du creme');
+    }
+    if (!/\.bs-anneau\{/.test(css)) soucis.push('la couronne des macros a perdu son style');
+    if (!/--mac-prot:/.test(css)) soucis.push('les teintes par macro ont disparu : l\'anneau devient illisible');
     // Les menus sont en appearance:none : sans le chevron dessine,
     // rien n'indique qu'ils s'ouvrent. Un « background: » en raccourci
     // pose apres la regle du chevron l'efface silencieusement.

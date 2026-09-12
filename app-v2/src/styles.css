@@ -734,52 +734,51 @@ button{cursor:pointer}
 .bs-p--menu select:focus{outline:none}
 
 /* ============================================================
-   « MES BESOINS » EN SOMBRE
-   Raci, 02/09 : la carte noire du résultat détonnait sur une feuille
-   crème. Toute la fiche passe au sombre — le résultat n'est plus une
-   pièce rapportée, il est chez lui. Le jaune reste l'unique accent.
+   « MES BESOINS » — MAQUETTE C
+   Raci, 9/09. La fiche etait entierement sombre depuis le 02/09 :
+   « tres sombre, je n'aime pas le rendu ». Elle repasse en clair, et
+   c'est la COURONNE qui porte l'ecran — elle montre le rapport des
+   trois macros, que trois chiffres alignes ne donnaient pas.
+
+   « Assombri autour, sinon ca fait trop de couleur creme » : le voile
+   passe de 35 a 62 % de noir. La fiche claire a besoin que le fond
+   recule, sinon elle flotte dans du creme sur du creme.
    ============================================================ */
-.modale-calc{background:#1C1812;color:#F4F3F0}
-.modale-calc h3{color:#F4F3F0}
+.voile--fonce{background:rgba(12,10,8,.62)}
 
-/* La carte du résultat se détache par un cran plus clair, pas plus
-   sombre : sur fond noir, l'écart doit aller vers la lumière. */
-.modale-calc .bs-hero{background:#26211A;box-shadow:inset 0 0 0 1px #352F26}
-.modale-calc .bs-m{background:#16130F}
+/* Une teinte par macro. Elles ne decorent pas : ce sont les seules
+   cles de lecture de l'anneau, et elles se retrouvent dans la
+   legende. */
+:root{
+  --mac-prot:#2E7D6F; --mac-carbs:#A96410; --mac-lip:#8E5BA6;
+  --piste-anneau:#EFEAE0;
+}
 
-.modale-calc .bs-p{
-  background:#26211A;border-color:#3A342B;color:#F4F3F0}
-.modale-calc .bs-p:focus-within{border-color:#FAC408;background:#2E2820}
-.modale-calc .bs-p i{color:#9A938A}
-.modale-calc .bs-p--menu::after{border-color:#9A938A}
-.modale-calc .bs-p--menu select option{background:#26211A;color:#F4F3F0}
+.modale-calc .bs-hero{
+  display:flex;align-items:center;gap:16px;
+  background:#FFF;border-radius:18px;padding:18px 16px;
+  box-shadow:0 1px 3px rgba(24,24,24,.06)}
 
-.modale-calc .calc-modes{background:#26211A}
-.modale-calc .calc-modes button{color:#9A938A}
-.modale-calc .calc-modes button.active{background:#16130F;color:#FAC408}
-.modale-calc .calc-avance{color:#9A938A}
-.modale-calc .calc-fermer,
-.modale-calc .calc-retour{background:#26211A;color:#F4F3F0}
+.bs-anneau{position:relative;width:118px;height:118px;flex:none}
+.bs-anneau svg{width:118px;height:118px;display:block;transform:rotate(-90deg)}
+.bs-anneau circle{transition:stroke-dasharray .25s ease,stroke-dashoffset .25s ease}
+.bs-anneau-mid{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:0 8px}
+.bs-anneau-mid b{
+  font-family:'DM Mono',ui-monospace,monospace;font-size:26px;font-weight:500;
+  line-height:1;font-variant-numeric:tabular-nums}
+.bs-anneau-mid span{font-size:9.5px;font-weight:700;color:#8A8378;margin-top:3px;line-height:1.2}
 
-/* Mode manuel : mêmes règles, la fiche ne change pas de peau d'un
-   onglet à l'autre. */
-.modale-calc .calc-grille label{color:#9A938A}
-.modale-calc .calc-grille input,
-.modale-calc .calc-grille select{
-  background-color:#26211A;border-color:#3A342B;color:#F4F3F0;box-shadow:none}
-.modale-calc .calc-grille input:focus,
-.modale-calc .calc-grille select:focus{
-  background-color:#2E2820;border-color:#FAC408}
-.modale-calc .calc-note{color:#9A938A}
-.modale-calc .calc-note b{color:#F4F3F0}
-.modale-calc .calc-accorder button{
-  background:#26211A;border-color:#3A342B;color:#F4C86A}
-.modale-calc .calc-accorder .ac-fort{background:#FAC408;border-color:#FAC408;color:#16130F}
-.modale-calc .rep-opt{background:#26211A;border-color:#3A342B}
-.modale-calc .rep-n{color:#F4F3F0}
-.modale-calc .rep-g{color:#9A938A}
-.modale-calc .calc-alerte{background:#33261A;box-shadow:inset 0 0 0 1px #5C4520;color:#F5C87A}
+.bs-leg{flex:1;min-width:0}
+.bs-lg{display:flex;align-items:center;gap:8px;padding:7px 0}
+.bs-lg+.bs-lg{border-top:1px solid #EFEAE0}
+.bs-lg-pt{width:9px;height:9px;border-radius:50%;flex:none}
+.bs-lg-n{flex:1;min-width:0;font-size:12.5px;font-weight:700}
+.bs-lg-g{
+  font-family:'DM Mono',ui-monospace,monospace;font-size:14px;font-weight:500;
+  font-variant-numeric:tabular-nums}
+.bs-lg-p{width:36px;text-align:right;font-size:11px;color:#8A8378;font-weight:600}
 
-/* La barre du bas était crème : sur fond sombre elle coupait la fiche
-   en deux. */
-.modale-calc .calc-barre{background:linear-gradient(to top,#1C1812 70%,rgba(28,24,18,0))}
+.modale-calc .bs-s{
+  font-size:11.5px;color:#736C63;text-align:center;margin:10px 0 0}
