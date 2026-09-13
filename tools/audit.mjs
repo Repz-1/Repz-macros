@@ -3031,6 +3031,18 @@ const DECALAGE_SW_V2 = 232;
     const haut = (css.match(/\.pg-journal \.rp-fin-haut \{[^}]*\}/) || [''])[0];
     const h = (haut.match(/min-height: (\d+)px/) || [])[1];
     if (!h || +h < 44) soucis.push('« Terminer » passe sous la cible tactile de 44 px');
+    // Raci, 9/09, cinquieme passe : « ca fonctionne pour un aliment
+    // mais une fois que j'ajoute un deuxieme le bouton disparait de
+    // nouveau ». L'en-tete etait bien hors d'atteinte du clavier, mais
+    // il defilait avec la page. Ici `sticky` marche : l'en-tete est le
+    // PREMIER enfant, il a toute la page devant lui pour coller.
+    const tb = (css.match(/\.pg-journal \.rp-topbar \{[^}]*\}/) || [''])[0];
+    if (!/position: sticky/.test(tb)) {
+      soucis.push('l\'en-tete defile avec la page : « Terminer » sortira par le haut au deuxieme aliment');
+    }
+    if (!/background: var\(--fond\)/.test(tb)) {
+      soucis.push('l\'en-tete colle est transparent : les aliments defileront au travers');
+    }
   }
   if (soucis.length) faute('R83 « Terminer » hors d\'atteinte du clavier', soucis.join(' ; '));
   else passe('R83 « Terminer » hors d\'atteinte du clavier');

@@ -1821,7 +1821,12 @@
 /* ---------- Topbar : retour | titre centre | Terminer ---------- */
 .pg-journal .rp-topbar {
   display: grid; grid-template-columns: 40px 1fr auto;
-  align-items: center; gap: 10px; padding: 2px 0 6px;
+  align-items: center; gap: 10px; padding: 8px 0;
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  /* Les cartes passent dessous : le fond doit etre opaque, et
+     s'etendre au-dela des marges de la colonne. */
+  margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+  background: var(--fond);
 }
 .pg-journal .rp-retour {
   width: 47px; height: 47px; border-radius: 50%;
