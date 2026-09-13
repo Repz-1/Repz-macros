@@ -233,11 +233,11 @@ button.sg-pt:active { transform: scale(.92); }
    assombrie par le voile : il ne cache rien du mouvement et se
    trouve la ou l'on regarde en constatant que la machine est prise. */
 .sg-swap {
-  position: absolute; left: 14px; bottom: 14px; z-index: 2;
+  position: absolute; right: 14px; top: 38px; z-index: 3;
   background: rgba(255, 255, 255, .16); color: #FFF;
   border: 1px solid rgba(255, 255, 255, .22); border-radius: 11px;
-  padding: 8px 12px; font-family: inherit;
-  font-size: 12px; font-weight: 700; cursor: pointer;
+  padding: 7px 11px; font-family: inherit;
+  font-size: 11.5px; font-weight: 700; cursor: pointer;
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
 .sg-swap:active { background: rgba(255, 255, 255, .3); }

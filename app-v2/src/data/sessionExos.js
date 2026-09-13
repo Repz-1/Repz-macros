@@ -121,11 +121,11 @@ export const SESSION_EXOS = {
     "dos:Rowing (Machine)",
     "jambes:Presse à Cuisses (Machine)",
     "epaules:Presse Épaules (Machine)",
-    "abdos:Crunch (Machine)"
+    "abdos:Crunch Assis (Poulie)"
   ],
   "deb-full-3j-1": [
     "pecs:Chest Press Incliné (Machine)",
-    "dos:Tirage Poitrine (Poulie)",
+    "dos:Tirage Poitrine Prise Large (Poulie)",
     "jambes:Extension Jambes (Machine)",
     "biceps:Curl Biceps (Machine)",
     "abdos:Crunch (Poulie)"
@@ -134,22 +134,22 @@ export const SESSION_EXOS = {
     "pecs:Écarté (Pec Deck) (Machine)",
     "dos:Rowing Assis (Poulie)",
     "jambes:Leg Curl Assis (Machine)",
-    "triceps:Extension Triceps (Machine)",
-    "abdos:Rotation Russe (Poulie)"
+    "triceps:Extension Triceps Corde (Poulie)",
+    "abdos:Crunch Corde (Poulie)"
   ],
   "deb-2j-0": [
     "pecs:Chest Press (Machine)",
-    "dos:Tirage Poitrine (Poulie)",
+    "dos:Tirage Poitrine Prise Large (Poulie)",
     "epaules:Presse Épaules (Machine)",
     "biceps:Curl Biceps (Machine)",
-    "triceps:Extension Triceps (Machine)"
+    "triceps:Extension Triceps Corde (Poulie)"
   ],
   "deb-2j-1": [
     "jambes:Presse à Cuisses (Machine)",
     "jambes:Extension Jambes (Machine)",
     "jambes:Leg Curl Allongé (Machine)",
     "jambes:Extension Mollets Assises (Machine)",
-    "abdos:Crunch (Machine)"
+    "abdos:Crunch Assis (Poulie)"
   ],
   "seche-full-3j-0": [
     "jambes:Squat (Barre)",
@@ -482,9 +482,9 @@ export const SESSION_EXOS = {
   "seche-2j-0": [
     "jambes:Presse à Cuisses (Machine)",
     "pecs:Chest Press (Machine)",
-    "dos:Tirage Poitrine (Poulie)",
+    "dos:Tirage Poitrine Prise Large (Poulie)",
     "epaules:Presse Épaules (Machine)",
-    "abdos:Crunch (Machine)",
+    "abdos:Crunch Assis (Poulie)",
     "abdos:Flexion Latérale (Poulie)"
   ],
   "seche-2j-1": [
@@ -492,7 +492,7 @@ export const SESSION_EXOS = {
     "jambes:Leg Curl Assis (Machine)",
     "pecs:Écarté (Pec Deck) (Machine)",
     "dos:Rowing (Machine)",
-    "triceps:Extension Triceps (Machine)",
+    "triceps:Extension Triceps Corde (Poulie)",
     "abdos:Crunch (Poulie)"
   ],
   "seche-5j-0": [

@@ -2903,6 +2903,20 @@ const DECALAGE_SW_V2 = 232;
         }
       }
     }
+    // Machine ne veut pas dire simple. La base classe les mouvements
+    // par niveau : un programme debutant ne doit contenir que du
+    // niveau 1.
+    const niveaux = new Map();
+    for (const m of ex.matchAll(/\{nom:'([^']+)'[^}]*?lvl:(\d+)/g)) niveaux.set(m[1], +m[2]);
+    for (const id of DEBUTANTS) {
+      const bloc = se.match(new RegExp('"' + id + '-\\d+": \\[([^\\]]*)\\]', 'g')) || [];
+      for (const b of bloc) {
+        for (const m of b.matchAll(/"[a-z]+:([^"]+)"/g)) {
+          const n = niveaux.get(m[1]);
+          if (n && n > 1) soucis.push(id + ' : « ' + m[1] + ' » est de niveau ' + n);
+        }
+      }
+    }
     if (soucis.length) faute('R80 debutant sur machine', soucis.join(' ; '));
     else passe('R80 debutant sur machine');
   }
