@@ -3041,6 +3041,46 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R84 — La focale des vignettes ne recouvre jamais rien.
+// Raci, 9/09 : « l'agrandissement fait bien lors du defilement, mais
+// ca reste trop petit », puis, apres l'avoir pousse a x1,38 :
+// « superposition ». `transform: scale()` ne pousse pas ses voisins —
+// la mise en page ignore l'echelle — donc toute valeur au-dessus de 1
+// fait recouvrir les lignes d'a cote.
+//
+// L'effet est inverse : la vignette du centre est a sa taille POSEE,
+// que la ligne reserve, et ce sont les autres qui retrecissent. Le
+// contraste est le meme et le debordement devient impossible.
+// ------------------------------------------------------------
+{
+  const jsx = lire('app-v2/src/components/SelectionExercices.jsx');
+  const css = lire('app-v2/src/legacy/selection-exercices.scoped.css');
+  const soucis = [];
+  if (jsx) {
+    const max = (jsx.match(/const MAX = ([\d.]+);/) || [])[1];
+    if (!max) soucis.push('le plafond d\'echelle a disparu de la focale');
+    else if (+max > 1) soucis.push('l\'echelle monte a ' + max + ' : les vignettes recouvriront leurs voisines');
+    if (!/requestAnimationFrame\(appliquer\)/.test(jsx)) {
+      soucis.push('la focale ne passe plus par requestAnimationFrame : la liste tressautera');
+    }
+    if (!/capture: true/.test(jsx)) {
+      soucis.push('le defilement n\'est plus ecoute en capture : rien ne bougera dans un conteneur interne');
+    }
+  }
+  if (css) {
+    const ph = (css.match(/\.pg-selection \.ex-photo\{[^}]*\}/) || [''])[0];
+    const t = (ph.match(/width:(\d+)px/) || [])[1];
+    const it = (css.match(/\.pg-selection \.ex-item\{ min-height: (\d+)px/) || [])[1];
+    if (!t) soucis.push('la vignette n\'a plus de taille fixe : la focale n\'a plus de reference');
+    else if (!it || +it < +t) {
+      soucis.push('la ligne ne reserve plus la hauteur de la vignette (' + t + ' px)');
+    }
+  }
+  if (soucis.length) faute('R84 focale sans recouvrement', soucis.join(' ; '));
+  else passe('R84 focale sans recouvrement');
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le

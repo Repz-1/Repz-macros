@@ -33,7 +33,7 @@
 .pg-selection .ex-list{ display:flex; flex-direction:column; gap:12px; }
 .pg-selection .ex-item{ display:flex; align-items:center; gap:14px; background:var(--card); border:1.5px solid var(--line); border-radius:18px; padding:12px; transition:border-color .15s, background .15s; }
 .pg-selection .ex-item.selected{ border-color:#F7B500; background:#FFFBEF; }
-.pg-selection .ex-photo{ width:96px; height:96px; flex-shrink:0; border-radius:14px; background:#e5e7eb center/cover no-repeat; display:flex; align-items:center; justify-content:center; font-size:10px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; cursor:pointer; position:relative; }
+.pg-selection .ex-photo{ width:116px; height:116px; flex-shrink:0; border-radius:14px; background:#e5e7eb center/cover no-repeat; display:flex; align-items:center; justify-content:center; font-size:10px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; cursor:pointer; position:relative; }
 .pg-selection .ex-info{ flex:1; min-width:0; cursor:pointer; }
 .pg-selection .ex-name{ font-size:15.5px; font-weight:800; letter-spacing:-.01em; }
 .pg-selection .ex-equip{ font-size:12.5px; color:var(--text-dim); font-weight:600; margin-top:2px; }
@@ -292,7 +292,7 @@
   transform: scale(var(--focale, 1));
   /* L'agrandissement part du bord GAUCHE : la vignette grandit vers
      le centre de la ligne, jamais vers l'exterieur de la carte. */
-  transform-origin: left center;
+  transform-origin: center center;
   will-change: transform;
   /* Un lissage court rattrape les images de defilement sautees sur un
      telephone lent, sans donner l'impression d'un retard. */
@@ -301,8 +301,8 @@
 /* La vignette centrale depasse son gabarit : la carte doit la laisser
    sortir, et la ligne lui reserver la place au lieu de la laisser
    recouvrir le nom. */
-.pg-selection .ex-item{ overflow: visible; padding-right: 4px; }
-.pg-selection .ex-info{ padding-left: 34px; }
+.pg-selection .ex-item{ padding-right: 4px; }
+.pg-selection .ex-info{ padding-left: 12px; }
 
 @media (prefers-reduced-motion: reduce){
   .pg-selection .ex-photo{ transform: none; }
@@ -392,3 +392,10 @@
   .pg-selection .muscle-case { transition: none; }
   .pg-selection .muscle-case:active { transform: none; }
 }
+
+/* Raci, 9/09 : « superposition ». L'echelle est desormais plafonnee a
+   1 et la vignette fait 116 px posees : la ligne reserve donc toute
+   la place dont la plus grande a besoin, et rien ne peut recouvrir
+   quoi que ce soit. Cette hauteur minimale l'ecrit noir sur blanc —
+   si la vignette grandit encore un jour, la ligne suivra. */
+.pg-selection .ex-item{ min-height: 132px; }

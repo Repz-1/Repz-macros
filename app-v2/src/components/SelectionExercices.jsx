@@ -57,8 +57,8 @@ const equipLabel = (mat) => EQUIP[mat] || (mat ? mat[0].toUpperCase() + mat.slic
 function useFocale() {
   useEffect(() => {
     let brut = null;
-    const MIN = 0.84;                       // au plus loin du centre
-    const MAX = 1.38;                       // 96 px -> 132 px au centre
+    const MIN = 0.76;                       // au plus loin du centre
+    const MAX = 1;                          // au centre : la taille posee, jamais plus
     const appliquer = () => {
       brut = null;
       const h = window.innerHeight || 800;
