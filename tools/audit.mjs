@@ -2982,70 +2982,48 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R83 — « Terminer » est en haut, hors d'atteinte du clavier.
+// R83 — « Terminer » : problem OUVERT, ne pas re-tenter sans accord.
 //
-// Raci, 9/09, quatre passes. « Le bouton Terminer doit etre visible a
-// n'importe quel moment, encodage ou pas », et « on ne voit plus les
-// calories au moment d'appuyer, ce qui est une condition ».
+// Raci, 9/09 : « le bouton Terminer doit etre visible a n'importe quel
+// moment, encodage ou pas », puis, apres cinq tentatives, « remets
+// comme avant ».
 //
-// Trois tentatives ont echoue, toutes au meme endroit : le bas de
-// l'ecran, la ou le clavier apparait.
-//   1. En fin de page : il descendait avec la liste.
-//   2. En `sticky` : dernier enfant de son parent, aucune course, donc
-//      aucun collage — il n'a jamais colle.
-//   3. En `fixed` : cache sous le clavier, puis, apres correction par
-//      visualViewport, flottant au milieu des aliments parce que
-//      Chrome redimensionnait deja le contenu et que le clavier etait
-//      compte deux fois.
+// Ce qui a ete essaye, et pourquoi chaque piste est tombee :
+//   1. En fin de page — descend avec la liste a chaque aliment.
+//   2. `sticky` en bas — dernier enfant de son parent : aucune course
+//      sous lui, donc il n'a jamais colle.
+//   3. `fixed` en bas — cache sous le clavier, que Chrome superpose
+//      sans reduire la fenetre de mise en page.
+//   4. `fixed` + mesure par visualViewport — flottait au milieu des
+//      aliments : Chrome redimensionnait deja le contenu, le clavier
+//      etait compte deux fois.
+//   5. Dans l'en-tete, puis en-tete collant — accepte techniquement,
+//      refuse a l'usage.
+// Deux propositions ont ete faites et refusees : un pave numerique
+// maison (pas de clavier systeme, donc plus de conflit) et une feuille
+// par aliment, le motif de MyFitnessPal et Yazio.
 //
-// Ce n'etait pas la technique, c'etait l'endroit. Le bouton est monte
-// dans l'en-tete : le clavier n'atteint jamais le haut de l'ecran. Il
-// porte le total, donc la condition sur les calories tient aussi.
+// Le bouton est donc revenu dans le flux, en fin de page. Cette regle
+// ne protege plus une solution : elle garde la trace des impasses pour
+// qu'aucune ne soit re-tentee par inadvertance. Le probleme reste
+// entier, et sa resolution demande une decision de Raci, pas une
+// nouvelle tentative technique.
 // ------------------------------------------------------------
 {
-  const mp = lire('app-v2/src/components/MealPage.jsx');
   const css = lire('app-v2/src/styles/journal-socle.css');
   const soucis = [];
-  if (mp) {
-    if (!/class="rp-fin-haut"/.test(mp)) {
-      soucis.push('« Terminer » a quitte l\'en-tete : il retombera sous le clavier');
-    }
-    if (/class="rp-btn-fin"/.test(mp)) {
-      soucis.push('un second « Terminer » est revenu en bas de page');
-    }
-    if (!/class="rp-fin-kcal"/.test(mp)) {
-      soucis.push('le total a quitte le bouton : on valide sans voir ce qu\'on valide');
-    }
-    if (/window\.visualViewport/.test(mp)) {
-      soucis.push('la mesure du clavier est revenue : plus rien ne flotte, elle n\'a plus d\'objet');
-    }
-  }
   if (css) {
     const bloc = (css.match(/\.pg-journal \.rp-actions \{[^}]*\}/) || [''])[0];
     if (/position: (fixed|sticky)/.test(bloc)) {
-      soucis.push('la barre du bas est redevenue flottante : elle se battra avec le clavier');
+      soucis.push('la barre du bas est redevenue flottante : pistes 2, 3 et 4, toutes refusees');
     }
-    if (/rp-btn-fin/.test(css)) {
-      soucis.push('les regles de l\'ancien bouton du bas sont revenues');
-    }
-    const haut = (css.match(/\.pg-journal \.rp-fin-haut \{[^}]*\}/) || [''])[0];
-    const h = (haut.match(/min-height: (\d+)px/) || [])[1];
-    if (!h || +h < 44) soucis.push('« Terminer » passe sous la cible tactile de 44 px');
-    // Raci, 9/09, cinquieme passe : « ca fonctionne pour un aliment
-    // mais une fois que j'ajoute un deuxieme le bouton disparait de
-    // nouveau ». L'en-tete etait bien hors d'atteinte du clavier, mais
-    // il defilait avec la page. Ici `sticky` marche : l'en-tete est le
-    // PREMIER enfant, il a toute la page devant lui pour coller.
     const tb = (css.match(/\.pg-journal \.rp-topbar \{[^}]*\}/) || [''])[0];
-    if (!/position: sticky/.test(tb)) {
-      soucis.push('l\'en-tete defile avec la page : « Terminer » sortira par le haut au deuxieme aliment');
-    }
-    if (!/background: var\(--fond\)/.test(tb)) {
-      soucis.push('l\'en-tete colle est transparent : les aliments defileront au travers');
+    if (/position: sticky/.test(tb)) {
+      soucis.push('l\'en-tete est redevenu collant : piste 5, refusee a l\'usage');
     }
   }
-  if (soucis.length) faute('R83 « Terminer » hors d\'atteinte du clavier', soucis.join(' ; '));
-  else passe('R83 « Terminer » hors d\'atteinte du clavier');
+  if (soucis.length) faute('R83 « Terminer » : impasses connues', soucis.join(' ; '));
+  else passe('R83 « Terminer » : impasses connues');
 }
 
 // ------------------------------------------------------------
