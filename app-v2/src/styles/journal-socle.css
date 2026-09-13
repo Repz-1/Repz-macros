@@ -723,12 +723,14 @@
   font-size: 12px; font-weight: 500; color: var(--texte-3);
 }
 
-.pg-journal .mc-ing-macros { text-align: right; line-height: 1.2; min-width: 0; }
+.pg-journal .mc-ing-macros { text-align: right; line-height: 1.25; flex: none; min-width: 110px; }
 .pg-journal .mc-ing-kcal { font-size: 14px; font-weight: 500; color: var(--txt-1-doux); white-space: nowrap; }
 .pg-journal .mc-ing-sub {
   font-size: 10px; font-weight: 500; color: var(--texte-3);
-  margin-top: 2px; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis;
+  margin-top: 2px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: normal; overflow-wrap: anywhere;
 }
 
 .pg-journal .mc-ing-del {

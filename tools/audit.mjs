@@ -3007,8 +3007,19 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('le bouton colle n\'a plus de fond : la liste defilera au travers');
     }
     // La loupe et le « + » ont cohabite un temps devant le meme champ.
-    if (/\.mc-ajout::before \{[^}]*circle cx='11'/.test(css)) {
+    if (/circle cx='11' cy='11'/.test(css)) {
       soucis.push('la loupe est revenue a cote du « + »');
+    }
+    // Raci, 9/09 : « 26P · 132C · 1… ». Le pire cas fait 18
+    // caracteres — 115P · 303C · 100L — soit 108 px en DM Mono 10 px.
+    // En dessous, la ligne se coupe et les lipides disparaissent.
+    const mac = (css.match(/\.mc-ing-macros \{[^}]*\}/) || [''])[0];
+    const larg = (mac.match(/min-width: (\d+)px/) || [])[1];
+    if (!larg || +larg < 110) {
+      soucis.push('la colonne des macros repasse sous 110 px : les lipides seront tronques');
+    }
+    if (/\.mc-ing-sub \{[^}]*white-space: nowrap/.test(css)) {
+      soucis.push('la ligne des macros est de nouveau coupee par une ellipse');
     }
   }
   if (soucis.length) faute('R83 « Terminer » sans defilement', soucis.join(' ; '));
