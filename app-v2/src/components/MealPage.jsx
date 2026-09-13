@@ -53,7 +53,52 @@ function AnneauRepas({ kcal, cible }) {
   );
 }
 
+/**
+ * Garde la barre « Terminer » au-dessus du clavier.
+ *
+ * Raci, 9/09 : « le bouton Terminer doit etre visible a n'importe quel
+ * moment, encodage ou pas ». En `position: fixed`, la barre se cale
+ * sur le bas de la fenetre de MISE EN PAGE, que le clavier ne change
+ * pas sur Android Chrome : il se pose par-dessus. La barre etait donc
+ * bien la, dessous.
+ *
+ * `visualViewport` donne la zone reellement visible. On mesure ce que
+ * le clavier recouvre et on remonte la barre d'autant. Quand le
+ * clavier est ouvert, la barre d'onglets est de toute facon masquee :
+ * la barre se cale alors sur le clavier, pas sur les onglets.
+ */
+function useBarreAuDessusDuClavier() {
+  useEffect(() => {
+    const vv = window.visualViewport;
+    const racine = document.documentElement;
+    const poser = () => {
+      let bas = 0;
+      if (vv) {
+        // Ce que le clavier mange en bas : hauteur de mise en page
+        // moins la partie visible, moins ce qui a defile au-dessus.
+        bas = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      }
+      racine.style.setProperty('--clavier', bas + 'px');
+    };
+    poser();
+    if (vv) {
+      vv.addEventListener('resize', poser);
+      vv.addEventListener('scroll', poser);
+    }
+    window.addEventListener('orientationchange', poser);
+    return () => {
+      if (vv) {
+        vv.removeEventListener('resize', poser);
+        vv.removeEventListener('scroll', poser);
+      }
+      window.removeEventListener('orientationchange', poser);
+      racine.style.removeProperty('--clavier');
+    };
+  }, []);
+}
+
 export function MealPage() {
+  useBarreAuDessusDuClavier();
   const id = repasOuvertId.value;
   const r = repas.value.find(x => x.id === id);
 
@@ -231,9 +276,16 @@ export function MealPage() {
                 {/* Terminer d'abord : c'est l'action que l'utilisateur est
                     venu faire. Enregistrer comme plat reste dessous, offert
                     sans etre propose. */}
+                {/* Raci, 9/09 : « meme si tu remontes le bouton avec le
+                    clavier, on ne voit plus les calories en haut au
+                    moment d'appuyer sur Terminer, ce qui est une
+                    condition ». Le total monte SUR le bouton : plus
+                    besoin de voir l'en-tete pour savoir ce qu'on
+                    valide, et la condition tient meme clavier ouvert. */}
                 <button class="rp-btn-fin" onClick={() => { repasOuvertId.value = null; }}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8.5 12.5l2.5 2.5 4.5-5" /></svg>
-                  {t('rp_terminer')}
+                  <span class="rp-fin-txt">{t('rp_terminer')}</span>
+                  <span class="rp-fin-kcal">{totAff.kcal} kcal</span>
                 </button>
                 <button class="rp-btn-plat" onClick={() => { setNomPlat(''); setEnrego(true); }}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2z" /></svg>

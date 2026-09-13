@@ -3007,8 +3007,15 @@ const DECALAGE_SW_V2 = 232;
     if (!/padding-bottom: calc\(var\(--hauteur-nav\) \+ 1\d\dpx/.test(col)) {
       soucis.push('la colonne ne reserve plus la hauteur de la barre : le dernier aliment passera dessous');
     }
-    if (!/bottom: calc\(var\(--hauteur-nav\)/.test(bloc)) {
-      soucis.push('« Terminer » ne se cale plus au-dessus de la barre d\'onglets');
+    if (!/bottom: calc\(var\(--clavier, 0px\) \+ var\(--hauteur-nav\)/.test(bloc)) {
+      soucis.push('« Terminer » ne tient plus compte du clavier : il disparaitra dessous');
+    }
+    const jsx = lire('app-v2/src/components/MealPage.jsx');
+    if (jsx && !/visualViewport/.test(jsx)) {
+      soucis.push('plus rien ne mesure le clavier : --clavier restera a zero');
+    }
+    if (jsx && !/class="rp-fin-kcal"/.test(jsx)) {
+      soucis.push('le total a quitte le bouton : on valide sans voir ce qu\'on valide');
     }
     // Sans fond derriere, la liste defile A TRAVERS le bouton et le
     // texte se lit par-dessus les aliments.
