@@ -53,59 +53,12 @@ function AnneauRepas({ kcal, cible }) {
   );
 }
 
-/**
- * Garde la barre « Terminer » au-dessus du clavier.
- *
- * Raci, 9/09 : « le bouton Terminer doit etre visible a n'importe quel
- * moment, encodage ou pas. »
- *
- * Premiere tentative : remonter la barre de la hauteur du clavier,
- * mesuree par `window.innerHeight - visualViewport.height`. Resultat,
- * « il se superpose sur les aliments » — Chrome redimensionnait DEJA
- * la zone de contenu de son cote, et mon decalage s'ajoutait au sien.
- * Le clavier etait compte deux fois.
- *
- * On ne suppose donc plus quel comportement le navigateur applique.
- * `visualViewport` donne directement le bas de la zone visible en
- * coordonnees de la fenetre de mise en page — celles qu'utilise
- * `position: fixed`. On y pose la barre, un point c'est tout. La
- * formule est vraie que Chrome redimensionne ou qu'il superpose.
- */
-function useBarreAuDessusDuClavier(ref) {
-  useEffect(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;                       // sans l'API, la barre garde son `bottom`
-    const racine = document.documentElement;
-    let brut = null;
-    const poser = () => {
-      brut = null;
-      const n = ref.current;
-      if (!n) return;
-      // Bas de la zone visible, exprime depuis le BAS de la fenetre de
-      // mise en page : c'est exactement ce que `bottom` attend.
-      const basVisible = window.innerHeight - (vv.offsetTop + vv.height);
-      racine.style.setProperty('--clavier', Math.max(0, Math.round(basVisible)) + 'px');
-      // Clavier ouvert, la barre d'onglets est masquee dessous : on
-      // arrete de lui reserver sa hauteur, sinon la barre flotte.
-      racine.style.setProperty('--nav-barre', basVisible > 24 ? '0px' : 'var(--hauteur-nav)');
-    };
-    const surChangement = () => { if (brut == null) brut = requestAnimationFrame(poser); };
-    poser();
-    vv.addEventListener('resize', surChangement);
-    vv.addEventListener('scroll', surChangement);
-    return () => {
-      if (brut != null) cancelAnimationFrame(brut);
-      vv.removeEventListener('resize', surChangement);
-      vv.removeEventListener('scroll', surChangement);
-      racine.style.removeProperty('--clavier');
-      racine.style.removeProperty('--nav-barre');
-    };
-  }, []);
-}
+/* La mesure du clavier par `visualViewport` est retiree le 9/09 :
+   plus rien ne flotte en bas de cet ecran, donc plus rien a remonter.
+   Elle avait servi a trois tentatives successives, toutes vaines —
+   voir le commentaire de « Terminer » dans l'en-tete. */
 
 export function MealPage() {
-  const barreRef = useRef(null);
-  useBarreAuDessusDuClavier(barreRef);
   const id = repasOuvertId.value;
   const r = repas.value.find(x => x.id === id);
 
@@ -213,10 +166,23 @@ export function MealPage() {
           ) : (
             <h1 class="rp-titre" onClick={() => setEdite(true)}>{r.nom}</h1>
           )}
-          {/* Une seule sortie : la barre du bas. Un second « Terminer »
-              ici laissait croire que la fleche retour annulait quelque
-              chose — tout est sauve en continu, rien n'est annulable. */}
-          <span class="rp-terminer-esp" />
+          {/* Raci, 9/09 : « le bouton se superpose, on doit trouver une
+              autre solution pour ne pas tout desequilibrer ».
+
+              Trois tentatives de barre flottante ont echoue : en fin
+              de page elle descendait avec la liste, en sticky elle ne
+              collait pas, en fixed elle se battait avec le clavier.
+              Le probleme etait le bas de l'ecran lui-meme — c'est la
+              que le clavier apparait.
+
+              « Terminer » monte donc dans l'en-tete, qui est toujours
+              visible et que le clavier n'atteint jamais. Il porte le
+              total : on voit ce qu'on valide au moment de valider.
+              Plus rien ne flotte au-dessus de la liste. */}
+          <button class="rp-fin-haut" onClick={() => { repasOuvertId.value = null; }}>
+            <span class="rp-fin-txt">{t('rp_terminer')}</span>
+            {!vide && <span class="rp-fin-kcal">{totAff.kcal}</span>}
+          </button>
         </div>
 
         {/* Resume : total du repas + repere recommande */}
@@ -279,21 +245,7 @@ export function MealPage() {
                 <button class="mc-plat-annul" onClick={() => { setEnrego(false); setNomPlat(''); }}>✕</button>
               </div>
             ) : (
-              <div class="rp-actions" ref={barreRef}>
-                {/* Terminer d'abord : c'est l'action que l'utilisateur est
-                    venu faire. Enregistrer comme plat reste dessous, offert
-                    sans etre propose. */}
-                {/* Raci, 9/09 : « meme si tu remontes le bouton avec le
-                    clavier, on ne voit plus les calories en haut au
-                    moment d'appuyer sur Terminer, ce qui est une
-                    condition ». Le total monte SUR le bouton : plus
-                    besoin de voir l'en-tete pour savoir ce qu'on
-                    valide, et la condition tient meme clavier ouvert. */}
-                <button class="rp-btn-fin" onClick={() => { repasOuvertId.value = null; }}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8.5 12.5l2.5 2.5 4.5-5" /></svg>
-                  <span class="rp-fin-txt">{t('rp_terminer')}</span>
-                  <span class="rp-fin-kcal">{totAff.kcal} kcal</span>
-                </button>
+              <div class="rp-actions">
                 <button class="rp-btn-plat" onClick={() => { setNomPlat(''); setEnrego(true); }}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2z" /></svg>
                   {t('mc_plat_btn')}

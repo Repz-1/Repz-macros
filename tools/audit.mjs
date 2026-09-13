@@ -2982,71 +2982,58 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R83 — « Terminer » reste atteignable sans defiler.
-// Raci, 9/09 : « le bouton Terminer sort du flux normal de la page,
-// en sticky en bas, et tu laisses un padding en bas de la liste pour
-// qu'elle ne passe pas dessous. Le but : ne pas devoir scroller quand
-// j'ai termine d'encoder les aliments. » Il etait en fin de page :
-// chaque aliment ajoute le repoussait plus bas, et il fallait faire
-// defiler pour clore un repas qu'on venait de finir.
+// R83 — « Terminer » est en haut, hors d'atteinte du clavier.
+//
+// Raci, 9/09, quatre passes. « Le bouton Terminer doit etre visible a
+// n'importe quel moment, encodage ou pas », et « on ne voit plus les
+// calories au moment d'appuyer, ce qui est une condition ».
+//
+// Trois tentatives ont echoue, toutes au meme endroit : le bas de
+// l'ecran, la ou le clavier apparait.
+//   1. En fin de page : il descendait avec la liste.
+//   2. En `sticky` : dernier enfant de son parent, aucune course, donc
+//      aucun collage — il n'a jamais colle.
+//   3. En `fixed` : cache sous le clavier, puis, apres correction par
+//      visualViewport, flottant au milieu des aliments parce que
+//      Chrome redimensionnait deja le contenu et que le clavier etait
+//      compte deux fois.
+//
+// Ce n'etait pas la technique, c'etait l'endroit. Le bouton est monte
+// dans l'en-tete : le clavier n'atteint jamais le haut de l'ecran. Il
+// porte le total, donc la condition sur les calories tient aussi.
 // ------------------------------------------------------------
 {
+  const mp = lire('app-v2/src/components/MealPage.jsx');
   const css = lire('app-v2/src/styles/journal-socle.css');
   const soucis = [];
-  if (css) {
-    const bloc = (css.match(/\.pg-journal \.rp-actions \{[^}]*\}/) || [''])[0];
-    if (!/position: fixed/.test(bloc)) {
-      soucis.push('« Terminer » est retourne dans le flux : il redescendra a chaque aliment ajoute');
+  if (mp) {
+    if (!/class="rp-fin-haut"/.test(mp)) {
+      soucis.push('« Terminer » a quitte l\'en-tete : il retombera sous le clavier');
     }
-    if (/position: sticky/.test(bloc)) {
-      soucis.push('« Terminer » repasse en sticky : dernier enfant, il n\'a aucune course pour coller');
+    if (/class="rp-btn-fin"/.test(mp)) {
+      soucis.push('un second « Terminer » est revenu en bas de page');
     }
-    // Hors du flux, la barre ne pousse plus rien : la colonne doit lui
-    // reserver sa hauteur, sinon le dernier aliment finit dessous.
-    const col = (css.match(/\.pg-journal \.rp-colonne \{[^}]*padding-bottom[^}]*\}/) || [''])[0];
-    if (!/padding-bottom: calc\(var\(--hauteur-nav\) \+ 1\d\dpx/.test(col)) {
-      soucis.push('la colonne ne reserve plus la hauteur de la barre : le dernier aliment passera dessous');
-    }
-    if (!/bottom: calc\(var\(--clavier, 0px\) \+ var\(--nav-barre, var\(--hauteur-nav\)\)/.test(bloc)) {
-      soucis.push('« Terminer » ne tient plus compte du clavier : il disparaitra dessous, ou flottera au milieu des aliments');
-    }
-    const mp = lire('app-v2/src/components/MealPage.jsx');
-    if (mp && !/--nav-barre/.test(mp)) {
-      soucis.push('la hauteur des onglets reste reservee clavier ouvert : le bouton flottera');
-    }
-    if (mp && !/window\.innerHeight - \(vv\.offsetTop \+ vv\.height\)/.test(mp)) {
-      soucis.push('le bas visible n\'est plus mesure directement : le clavier sera compte deux fois');
-    }
-    const jsx = lire('app-v2/src/components/MealPage.jsx');
-    if (jsx && !/visualViewport/.test(jsx)) {
-      soucis.push('plus rien ne mesure le clavier : --clavier restera a zero');
-    }
-    if (jsx && !/class="rp-fin-kcal"/.test(jsx)) {
+    if (!/class="rp-fin-kcal"/.test(mp)) {
       soucis.push('le total a quitte le bouton : on valide sans voir ce qu\'on valide');
     }
-    // Sans fond derriere, la liste defile A TRAVERS le bouton et le
-    // texte se lit par-dessus les aliments.
-    if (!/background: linear-gradient/.test(bloc)) {
-      soucis.push('le bouton colle n\'a plus de fond : la liste defilera au travers');
-    }
-    // La loupe et le « + » ont cohabite un temps devant le meme champ.
-    if (/circle cx='11' cy='11'/.test(css)) {
-      soucis.push('la loupe est revenue a cote du « + »');
-    }
-    // Raci, 9/09 : « 26P · 132C · 1… ». Le pire cas fait 18
-    // caracteres — 115P · 303C · 100L — soit 108 px en DM Mono 10 px.
-    // En dessous, la ligne se coupe et les lipides disparaissent.
-    const mac = (css.match(/\.mc-ing-macros \{[^}]*\}/) || [''])[0];
-    const larg = (mac.match(/min-width: (\d+)px/) || [])[1];
-    if (!larg || +larg < 110) {
-      soucis.push('la colonne des macros repasse sous 110 px : les lipides seront tronques');
-    }
-    if (/\.mc-ing-sub \{[^}]*white-space: nowrap/.test(css)) {
-      soucis.push('la ligne des macros est de nouveau coupee par une ellipse');
+    if (/window\.visualViewport/.test(mp)) {
+      soucis.push('la mesure du clavier est revenue : plus rien ne flotte, elle n\'a plus d\'objet');
     }
   }
-  if (soucis.length) faute('R83 « Terminer » sans defilement', soucis.join(' ; '));
-  else passe('R83 « Terminer » sans defilement');
+  if (css) {
+    const bloc = (css.match(/\.pg-journal \.rp-actions \{[^}]*\}/) || [''])[0];
+    if (/position: (fixed|sticky)/.test(bloc)) {
+      soucis.push('la barre du bas est redevenue flottante : elle se battra avec le clavier');
+    }
+    if (/rp-btn-fin/.test(css)) {
+      soucis.push('les regles de l\'ancien bouton du bas sont revenues');
+    }
+    const haut = (css.match(/\.pg-journal \.rp-fin-haut \{[^}]*\}/) || [''])[0];
+    const h = (haut.match(/min-height: (\d+)px/) || [])[1];
+    if (!h || +h < 44) soucis.push('« Terminer » passe sous la cible tactile de 44 px');
+  }
+  if (soucis.length) faute('R83 « Terminer » hors d\'atteinte du clavier', soucis.join(' ; '));
+  else passe('R83 « Terminer » hors d\'atteinte du clavier');
 }
 
 // ------------------------------------------------------------

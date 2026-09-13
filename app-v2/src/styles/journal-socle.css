@@ -1812,12 +1812,7 @@
            calc(var(--hauteur-nav) + 28px + env(safe-area-inset-bottom));
   display: flex; flex-direction: column; gap: 14px;
 }
-/* La barre est hors du flux : la colonne lui reserve sa hauteur, sinon
-   le dernier aliment finit dessous. Deux boutons empiles font 150 px
-   avec leurs marges ; un seul, 78 px. On reserve pour deux. */
-.pg-journal .rp-colonne {
-  padding-bottom: calc(var(--hauteur-nav) + 168px + env(safe-area-inset-bottom));
-}
+
 /* Fond creme propre a la page repas (maquette) */
 .pg-journal.couche-repas { background: var(--fond); }
 /* Pendant le retour par glissement, la couche se decolle du journal. */
@@ -1849,7 +1844,23 @@
   padding: 3px 8px; font-family: inherit;
 }
 .pg-journal .rp-titre-champ:focus { outline: none; }
-.pg-journal .rp-terminer-esp { width: 44px; flex: none; } /* equilibre la fleche retour */
+/* « Terminer » dans l'en-tete (Raci, 9/09). Il remplace l'espaceur qui
+   equilibrait la fleche retour : il en tient le role tout en portant
+   l'action. Le clavier n'atteint jamais le haut de l'ecran, donc il
+   est visible a tout moment, encodage ou pas. */
+.pg-journal .rp-fin-haut {
+  flex: none; display: flex; align-items: center; gap: 7px;
+  min-height: 44px; padding: 0 14px; border: none; border-radius: 999px;
+  background: #1F2430; color: #F4F3F0;
+  font-family: inherit; font-size: 14.5px; font-weight: 800; cursor: pointer;
+}
+.pg-journal .rp-fin-haut:active { background: #2C3342; transform: scale(.97); }
+.pg-journal .rp-fin-kcal {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;
+  padding: 2px 7px; border-radius: 8px;
+  background: rgba(244, 243, 240, .16);
+}
 .pg-journal .rp-terminer {
   background: none; border: none; cursor: pointer; padding: 6px 2px;
   font-family: inherit; font-size: 16px; font-weight: 700; color: var(--txt-accent-or);
@@ -1924,44 +1935,14 @@
 .pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: var(--texte-3); margin-left: 3px; }
 
 /* ---------- Boutons de bas de page ---------- */
-/* Raci, 9/09 : « le bouton Terminer ne se voit pas apres que j'encode
-   plusieurs aliments ». Ma correction en `sticky` ne pouvait pas
-   marcher : sticky colle un element A L'INTERIEUR de la boite de
-   CONTENU de son parent, et .rp-actions en est le dernier enfant — il
-   n'y a rien sous lui, donc aucune course, donc aucun collage. Le
-   rembourrage bas de .rp-colonne appartient a la boite de rembourrage,
-   pas a la boite de contenu : il ne compte pas.
+/* Raci, 9/09 : trois tentatives de barre flottante, trois echecs — en
+   fin de page elle descendait avec la liste, en sticky elle ne collait
+   pas (dernier enfant, aucune course), en fixed elle se battait avec le
+   clavier. Le bas de l'ecran est justement la ou le clavier apparait :
+   c'etait l'endroit, pas la technique. « Terminer » est monte dans
+   l'en-tete. Ce qui reste ici ne flotte plus. */
+.pg-journal .rp-actions { display: flex; flex-direction: column; gap: 11px; margin-top: 4px; }
 
-   `fixed` ne depend d'aucun parent : la barre se cale sur la fenetre,
-   au-dessus des onglets, quel que soit le nombre d'aliments. */
-.pg-journal .rp-actions {
-  display: flex; flex-direction: column; gap: 11px;
-  position: fixed; z-index: 30;
-  left: 0; right: 0;
-  bottom: calc(var(--clavier, 0px) + var(--nav-barre, var(--hauteur-nav)) + env(safe-area-inset-bottom));
-  width: 100%; max-width: 640px; margin: 0 auto;
-  /* Un degrade derriere : sans lui, la liste defilerait a travers le
-     bouton et le texte se lirait par-dessus les aliments. */
-  padding: 14px 16px 12px;
-  background: linear-gradient(to top,
-    var(--fond) 62%, rgba(245, 241, 232, .92) 84%, rgba(245, 241, 232, 0));
-  /* Le degrade laisse passer le doigt : seuls les boutons captent. */
-  pointer-events: none;
-}
-.pg-journal .rp-actions > * { pointer-events: auto; }
-
-/* Le total monte SUR le bouton (Raci, 9/09) : « on ne voit plus les
-   calories au moment d'appuyer sur Terminer, ce qui est une
-   condition ». Les deux tiennent maintenant sur le meme objet, donc
-   la condition est vraie meme quand l'en-tete est hors champ. */
-.pg-journal .rp-btn-fin { gap: 10px; }
-.pg-journal .rp-fin-txt { font-weight: 700; }
-.pg-journal .rp-fin-kcal {
-  font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums;
-  padding: 3px 9px; border-radius: 9px;
-  background: rgba(248, 242, 232, .16); color: inherit;
-}
 .pg-journal .rp-btn-plat {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 16px; border-radius: 16px;
@@ -1970,26 +1951,11 @@
 }
 .pg-journal .rp-btn-plat svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .pg-journal .rp-btn-plat:active { background: #FFFAF2; }
-.pg-journal .rp-btn-fin {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  width: 100%; padding: 17px; border-radius: 999px;
-  background: var(--encre); border: none; color: var(--txt-inverse);
-  font-family: inherit; font-size: 16.5px; font-weight: 700; cursor: pointer;
-  position: relative; overflow: hidden;
-}
 /* Reflet traversant, meme mecanique que les CTA Premium et « Creer
    mon programme » — plus discret ici, le noir suffit deja a porter. */
 @keyframes ctaShineRepas { 0%,62% { left: -55%; } 90%,100% { left: 130%; } }
-.pg-journal .rp-btn-fin::after {
-  content: ''; position: absolute; top: 0; left: -55%; width: 38%; height: 100%;
-  background: linear-gradient(100deg, transparent, rgba(255,255,255,.22), transparent);
-  transform: skewX(-20deg); animation: ctaShineRepas 4s ease-in-out infinite;
-}
 @media (prefers-reduced-motion: reduce) {
-  .pg-journal .rp-btn-fin::after { animation: none; display: none; }
 }
-.pg-journal .rp-btn-fin svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.9; position: relative; z-index: 1; }
-.pg-journal .rp-btn-fin:active { transform: scale(.99); opacity: .92; }
 
 /* La zone d'ajout occupe la page, pas une carte */
 .pg-journal .rp-colonne .mc-ajout-zone { margin: 0; }
@@ -2805,19 +2771,6 @@
    La MATIERE revient au noir d'origine : le gradient bleu-gris
    n'existait que pour s'accorder aux cartes sombres.
    ============================================================ */
-.couche-repas .rp-btn-fin {
-  padding: 14.5px;
-  font-size: 15.5px; letter-spacing: -.005em;
-  background: var(--encre);
-  box-shadow: 0 1px 2px rgba(58,44,24,.10), 0 6px 16px rgba(58,44,24,.14);
-}
-.couche-repas .rp-btn-fin::after { animation: none; display: none; }
-.couche-repas .rp-btn-fin svg { width: 17.5px; height: 17.5px; stroke-width: 1.8; }
-.couche-repas .rp-btn-fin:active {
-  transform: none; opacity: 1;
-  box-shadow: inset 0 3px 9px rgba(0,0,0,.28), 0 1px 3px rgba(58,44,24,.12);
-}
-
 /* ------------------------------------------------------------
    Hierarchie des actions. « Terminer » d'abord : c'est ce que
    l'utilisateur est venu faire. « Enregistrer comme plat » reste
@@ -3192,18 +3145,6 @@
    Aucun accent orange ici — l'orange signale ce avec quoi on
    interagit en cours de route, pas le point d'arrivee.
    ------------------------------------------------------------ */
-.couche-repas .rp-btn-fin {
-  background: linear-gradient(168deg, var(--graphite-haut) 0%, var(--graphite) 58%, var(--graphite-bas) 100%);
-  color: var(--sur-graphite);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .07),
-    0 2px 6px rgba(18, 22, 28, .16),
-    0 10px 24px rgba(18, 22, 28, .18);
-}
-.couche-repas .rp-btn-fin:active {
-  box-shadow: inset 0 3px 9px rgba(0, 0, 0, .30), 0 1px 3px rgba(18, 22, 28, .14);
-}
-
 /* ============================================================
    MES COURSES — d'apres la maquette, MESUREE au pixel (PIL).
      fond page (248,245,241) · carte (252,249,245)
