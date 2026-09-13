@@ -33,7 +33,7 @@
 .pg-selection .ex-list{ display:flex; flex-direction:column; gap:12px; }
 .pg-selection .ex-item{ display:flex; align-items:center; gap:14px; background:var(--card); border:1.5px solid var(--line); border-radius:18px; padding:12px; transition:border-color .15s, background .15s; }
 .pg-selection .ex-item.selected{ border-color:#F7B500; background:#FFFBEF; }
-.pg-selection .ex-photo{ width:76px; height:76px; flex-shrink:0; border-radius:14px; background:#e5e7eb center/cover no-repeat; display:flex; align-items:center; justify-content:center; font-size:10px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; cursor:pointer; position:relative; }
+.pg-selection .ex-photo{ width:96px; height:96px; flex-shrink:0; border-radius:14px; background:#e5e7eb center/cover no-repeat; display:flex; align-items:center; justify-content:center; font-size:10px; color:#9ca3af; text-align:center; line-height:1.2; font-weight:600; cursor:pointer; position:relative; }
 .pg-selection .ex-info{ flex:1; min-width:0; cursor:pointer; }
 .pg-selection .ex-name{ font-size:15.5px; font-weight:800; letter-spacing:-.01em; }
 .pg-selection .ex-equip{ font-size:12.5px; color:var(--text-dim); font-weight:600; margin-top:2px; }
@@ -302,7 +302,7 @@
    sortir, et la ligne lui reserver la place au lieu de la laisser
    recouvrir le nom. */
 .pg-selection .ex-item{ overflow: visible; padding-right: 4px; }
-.pg-selection .ex-info{ padding-left: 26px; }
+.pg-selection .ex-info{ padding-left: 34px; }
 
 @media (prefers-reduced-motion: reduce){
   .pg-selection .ex-photo{ transform: none; }
