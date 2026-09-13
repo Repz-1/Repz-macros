@@ -142,19 +142,6 @@
 .qz-stats b { font-size: 16px; font-weight: 800; color: #181818; }
 .qz-stats small { font-size: 10.5px; font-weight: 700; color: #A9A49C; text-transform: uppercase; letter-spacing: .06em; }
 
-.qz-coach {
-  margin-top: 18px; background: #FFFDF6;
-  border: 1px solid #F0E4C4; border-radius: 18px; padding: 18px;
-}
-.qz-coach-tit {
-  font-size: 11.5px; font-weight: 800; letter-spacing: .12em;
-  text-transform: uppercase; color: #B7860B; margin-bottom: 10px;
-}
-.qz-coach p {
-  margin: 0 0 11px; font-size: 14.5px; font-weight: 500;
-  color: #3A3630; line-height: 1.6;
-}
-.qz-coach p:last-child { margin-bottom: 0; }
 
 .qz-seances { margin-top: 18px; }
 .qz-seances-tit {
@@ -362,9 +349,6 @@
 .qz--resultat .qz-stats { margin-top: 12px; padding-top: 10px; }
 .qz--resultat .qz-stats b { font-size: 15px; }
 
-.qz--resultat .qz-coach { margin-top: 12px; padding: 14px; }
-.qz--resultat .qz-coach-tit { margin-bottom: 7px; }
-.qz--resultat .qz-coach p { font-size: 13.5px; line-height: 1.5; margin-bottom: 8px; }
 
 .qz--resultat .qz-seances { margin-top: 12px; }
 .qz--resultat .qz-seances-tit { margin-bottom: 7px; }
@@ -380,6 +364,5 @@
 /* Filet de securite : sur un tres petit ecran, ou avec une police
    systeme agrandie, la carte defile plutot que de couper. */
 @media (max-height: 620px) {
-  .qz--resultat .qz-coach p { font-size: 13px; }
   .qz--resultat .qz-seance { padding: 8px 12px; }
 }

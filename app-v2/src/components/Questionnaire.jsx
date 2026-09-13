@@ -165,41 +165,11 @@ function recommander({ objectif, niveau, frequence }) {
   return { progId, conseil, desc, jours };
 }
 
-/**
- * Conseils composes a partir des reponses supplementaires : temps de
- * repos cales sur la duree voulue, recuperation selon l'age, materiel
- * disponible, priorite, et le cas 7 jours. C'est ce qui rend le
- * resultat reellement personnel.
- */
-function conseilsPersonnels(r) {
-  const out = [];
+/* `conseilsPersonnels()` est retiree le 9/09 avec le bloc « Les
+   conseils de ton coach » : elle n'alimentait que lui. Laisser une
+   fonction morte qui a l'air active est le piege qui m'a coute une
+   heure ce matin avec legacy/planifier.scoped.css. */
 
-  // Les conseils qui dependaient de la duree et de l'age ont ete
-  // retires avec leurs questions, le 12/08. Plutot que de laisser des
-  // branches mortes qui ne se declencheraient plus jamais, le conseil
-  // sur les temps de repos se cale sur le NIVEAU, qu'on demande
-  // toujours. Aucune donnee inventee : seulement une reponse qu'on a.
-  if (r.niveau === 'debutant') {
-    out.push("Sur les temps de repos, vise 1 min 30 entre les séries : assez pour récupérer, assez court pour rester dans la séance. Le chrono de l\u2019app se lance à chaque fin de série.");
-  } else if (r.niveau === 'confirme') {
-    out.push("Sur les mouvements lourds — squat, développé, soulevé de terre — prends 3 minutes de repos, tu chargeras plus. 1 min 15 suffit sur l\u2019isolation.");
-  } else {
-    out.push("Vise 2 minutes de repos sur les exercices classiques et 1 min 15 sur l\u2019isolation. Lance le chrono à chaque fin de série plutôt que de compter dans ta tête.");
-  }
-
-  const m = materielsDe(r.materiel);
-  if (m.length === 0) {
-    out.push("Au poids du corps, la progression passe par la difficulté du mouvement et le tempo plutôt que par la charge : ralentis la descente, resserre les appuis, augmente les répétitions.");
-  } else if (!m.includes('machine') && !m.includes('poulie')) {
-    out.push("Sans machines, remplace chaque exercice guidé du programme par sa variante libre : mêmes muscles, plus de gainage.");
-  }
-
-  if (r.frequence === '7') {
-    out.push("Sept jours d\u2019affilée, c\u2019est trop pour de la musculation pure. On te donne le programme le plus dense, et on te conseille de compléter par une ou deux journées légères : marche rapide, vélo, mobilité. Le muscle pousse pendant le repos.");
-  }
-
-  return out;
-}
 
 export function Questionnaire() {
   // Plus de valeurs de reglette : ces trois questions ont quitte le
@@ -300,9 +270,8 @@ export function Questionnaire() {
 
   // ---------- Resultat ----------
   if (surResultat) {
-    const { progId, conseil, desc } = recommander(reponses);
+    const { progId, desc } = recommander(reponses);
     const prog = programmeParId(progId);
-    const perso = conseilsPersonnels(reponses);
     // La phrase « Tu veux prendre du muscle, 3 jours par semaine… »
     // est retiree le 5/09 (Raci) : elle recitait les reponses de
     // l'ecran precedent au-dessus d'une fiche qui les traduit deja en
@@ -334,14 +303,6 @@ export function Questionnaire() {
               <span><small>séances</small><b>{prog ? prog.seances.length : 0}</b></span>
             </div>
           </div>
-
-          {(conseil || perso.length > 0) && (
-            <div class="qz-coach">
-              <div class="qz-coach-tit">Les conseils de ton coach</div>
-              {conseil && <p>{conseil}</p>}
-              {perso.map((c, k) => <p key={k}>{c}</p>)}
-            </div>
-          )}
 
           {prog && (
             <div class="qz-seances">
