@@ -2995,8 +2995,17 @@ const DECALAGE_SW_V2 = 232;
   const soucis = [];
   if (css) {
     const bloc = (css.match(/\.pg-journal \.rp-actions \{[^}]*\}/) || [''])[0];
-    if (!/position: sticky/.test(bloc)) {
+    if (!/position: fixed/.test(bloc)) {
       soucis.push('« Terminer » est retourne dans le flux : il redescendra a chaque aliment ajoute');
+    }
+    if (/position: sticky/.test(bloc)) {
+      soucis.push('« Terminer » repasse en sticky : dernier enfant, il n\'a aucune course pour coller');
+    }
+    // Hors du flux, la barre ne pousse plus rien : la colonne doit lui
+    // reserver sa hauteur, sinon le dernier aliment finit dessous.
+    const col = (css.match(/\.pg-journal \.rp-colonne \{[^}]*padding-bottom[^}]*\}/) || [''])[0];
+    if (!/padding-bottom: calc\(var\(--hauteur-nav\) \+ 1\d\dpx/.test(col)) {
+      soucis.push('la colonne ne reserve plus la hauteur de la barre : le dernier aliment passera dessous');
     }
     if (!/bottom: calc\(var\(--hauteur-nav\)/.test(bloc)) {
       soucis.push('« Terminer » ne se cale plus au-dessus de la barre d\'onglets');

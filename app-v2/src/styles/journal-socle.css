@@ -1812,10 +1812,12 @@
            calc(var(--hauteur-nav) + 28px + env(safe-area-inset-bottom));
   display: flex; flex-direction: column; gap: 14px;
 }
-/* La liste ne passe pas sous le bouton colle : elle s'arrete au-dessus
-   de lui. Sans cette reserve, le dernier aliment se cachait derriere
-   « Terminer ». */
-.pg-journal .rp-section:last-of-type { padding-bottom: 8px; }
+/* La barre est hors du flux : la colonne lui reserve sa hauteur, sinon
+   le dernier aliment finit dessous. Deux boutons empiles font 150 px
+   avec leurs marges ; un seul, 78 px. On reserve pour deux. */
+.pg-journal .rp-colonne {
+  padding-bottom: calc(var(--hauteur-nav) + 168px + env(safe-area-inset-bottom));
+}
 /* Fond creme propre a la page repas (maquette) */
 .pg-journal.couche-repas { background: var(--fond); }
 /* Pendant le retour par glissement, la couche se decolle du journal. */
@@ -1922,18 +1924,31 @@
 .pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: var(--texte-3); margin-left: 3px; }
 
 /* ---------- Boutons de bas de page ---------- */
+/* Raci, 9/09 : « le bouton Terminer ne se voit pas apres que j'encode
+   plusieurs aliments ». Ma correction en `sticky` ne pouvait pas
+   marcher : sticky colle un element A L'INTERIEUR de la boite de
+   CONTENU de son parent, et .rp-actions en est le dernier enfant — il
+   n'y a rien sous lui, donc aucune course, donc aucun collage. Le
+   rembourrage bas de .rp-colonne appartient a la boite de rembourrage,
+   pas a la boite de contenu : il ne compte pas.
+
+   `fixed` ne depend d'aucun parent : la barre se cale sur la fenetre,
+   au-dessus des onglets, quel que soit le nombre d'aliments. */
 .pg-journal .rp-actions {
-  display: flex; flex-direction: column; gap: 11px; margin-top: 4px;
-  position: sticky; z-index: 3;
-  bottom: calc(var(--hauteur-nav) + 10px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 11px;
+  position: fixed; z-index: 30;
+  left: 0; right: 0;
+  bottom: calc(var(--hauteur-nav) + env(safe-area-inset-bottom));
+  width: 100%; max-width: 640px; margin: 0 auto;
   /* Un degrade derriere : sans lui, la liste defilerait a travers le
      bouton et le texte se lirait par-dessus les aliments. */
-  padding: 12px 0 4px;
+  padding: 14px 16px 12px;
   background: linear-gradient(to top,
     var(--fond) 62%, rgba(245, 241, 232, .92) 84%, rgba(245, 241, 232, 0));
-  margin-left: -16px; margin-right: -16px;
-  padding-left: 16px; padding-right: 16px;
+  /* Le degrade laisse passer le doigt : seuls les boutons captent. */
+  pointer-events: none;
 }
+.pg-journal .rp-actions > * { pointer-events: auto; }
 .pg-journal .rp-btn-plat {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 16px; border-radius: 16px;
