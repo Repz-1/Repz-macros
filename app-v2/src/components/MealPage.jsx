@@ -57,48 +57,55 @@ function AnneauRepas({ kcal, cible }) {
  * Garde la barre « Terminer » au-dessus du clavier.
  *
  * Raci, 9/09 : « le bouton Terminer doit etre visible a n'importe quel
- * moment, encodage ou pas ». En `position: fixed`, la barre se cale
- * sur le bas de la fenetre de MISE EN PAGE, que le clavier ne change
- * pas sur Android Chrome : il se pose par-dessus. La barre etait donc
- * bien la, dessous.
+ * moment, encodage ou pas. »
  *
- * `visualViewport` donne la zone reellement visible. On mesure ce que
- * le clavier recouvre et on remonte la barre d'autant. Quand le
- * clavier est ouvert, la barre d'onglets est de toute facon masquee :
- * la barre se cale alors sur le clavier, pas sur les onglets.
+ * Premiere tentative : remonter la barre de la hauteur du clavier,
+ * mesuree par `window.innerHeight - visualViewport.height`. Resultat,
+ * « il se superpose sur les aliments » — Chrome redimensionnait DEJA
+ * la zone de contenu de son cote, et mon decalage s'ajoutait au sien.
+ * Le clavier etait compte deux fois.
+ *
+ * On ne suppose donc plus quel comportement le navigateur applique.
+ * `visualViewport` donne directement le bas de la zone visible en
+ * coordonnees de la fenetre de mise en page — celles qu'utilise
+ * `position: fixed`. On y pose la barre, un point c'est tout. La
+ * formule est vraie que Chrome redimensionne ou qu'il superpose.
  */
-function useBarreAuDessusDuClavier() {
+function useBarreAuDessusDuClavier(ref) {
   useEffect(() => {
     const vv = window.visualViewport;
+    if (!vv) return;                       // sans l'API, la barre garde son `bottom`
     const racine = document.documentElement;
+    let brut = null;
     const poser = () => {
-      let bas = 0;
-      if (vv) {
-        // Ce que le clavier mange en bas : hauteur de mise en page
-        // moins la partie visible, moins ce qui a defile au-dessus.
-        bas = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
-      }
-      racine.style.setProperty('--clavier', bas + 'px');
+      brut = null;
+      const n = ref.current;
+      if (!n) return;
+      // Bas de la zone visible, exprime depuis le BAS de la fenetre de
+      // mise en page : c'est exactement ce que `bottom` attend.
+      const basVisible = window.innerHeight - (vv.offsetTop + vv.height);
+      racine.style.setProperty('--clavier', Math.max(0, Math.round(basVisible)) + 'px');
+      // Clavier ouvert, la barre d'onglets est masquee dessous : on
+      // arrete de lui reserver sa hauteur, sinon la barre flotte.
+      racine.style.setProperty('--nav-barre', basVisible > 24 ? '0px' : 'var(--hauteur-nav)');
     };
+    const surChangement = () => { if (brut == null) brut = requestAnimationFrame(poser); };
     poser();
-    if (vv) {
-      vv.addEventListener('resize', poser);
-      vv.addEventListener('scroll', poser);
-    }
-    window.addEventListener('orientationchange', poser);
+    vv.addEventListener('resize', surChangement);
+    vv.addEventListener('scroll', surChangement);
     return () => {
-      if (vv) {
-        vv.removeEventListener('resize', poser);
-        vv.removeEventListener('scroll', poser);
-      }
-      window.removeEventListener('orientationchange', poser);
+      if (brut != null) cancelAnimationFrame(brut);
+      vv.removeEventListener('resize', surChangement);
+      vv.removeEventListener('scroll', surChangement);
       racine.style.removeProperty('--clavier');
+      racine.style.removeProperty('--nav-barre');
     };
   }, []);
 }
 
 export function MealPage() {
-  useBarreAuDessusDuClavier();
+  const barreRef = useRef(null);
+  useBarreAuDessusDuClavier(barreRef);
   const id = repasOuvertId.value;
   const r = repas.value.find(x => x.id === id);
 
@@ -272,7 +279,7 @@ export function MealPage() {
                 <button class="mc-plat-annul" onClick={() => { setEnrego(false); setNomPlat(''); }}>✕</button>
               </div>
             ) : (
-              <div class="rp-actions">
+              <div class="rp-actions" ref={barreRef}>
                 {/* Terminer d'abord : c'est l'action que l'utilisateur est
                     venu faire. Enregistrer comme plat reste dessous, offert
                     sans etre propose. */}

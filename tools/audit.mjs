@@ -3007,8 +3007,15 @@ const DECALAGE_SW_V2 = 232;
     if (!/padding-bottom: calc\(var\(--hauteur-nav\) \+ 1\d\dpx/.test(col)) {
       soucis.push('la colonne ne reserve plus la hauteur de la barre : le dernier aliment passera dessous');
     }
-    if (!/bottom: calc\(var\(--clavier, 0px\) \+ var\(--hauteur-nav\)/.test(bloc)) {
-      soucis.push('« Terminer » ne tient plus compte du clavier : il disparaitra dessous');
+    if (!/bottom: calc\(var\(--clavier, 0px\) \+ var\(--nav-barre, var\(--hauteur-nav\)\)/.test(bloc)) {
+      soucis.push('« Terminer » ne tient plus compte du clavier : il disparaitra dessous, ou flottera au milieu des aliments');
+    }
+    const mp = lire('app-v2/src/components/MealPage.jsx');
+    if (mp && !/--nav-barre/.test(mp)) {
+      soucis.push('la hauteur des onglets reste reservee clavier ouvert : le bouton flottera');
+    }
+    if (mp && !/window\.innerHeight - \(vv\.offsetTop \+ vv\.height\)/.test(mp)) {
+      soucis.push('le bas visible n\'est plus mesure directement : le clavier sera compte deux fois');
     }
     const jsx = lire('app-v2/src/components/MealPage.jsx');
     if (jsx && !/visualViewport/.test(jsx)) {

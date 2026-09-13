@@ -1938,7 +1938,7 @@
   display: flex; flex-direction: column; gap: 11px;
   position: fixed; z-index: 30;
   left: 0; right: 0;
-  bottom: calc(var(--clavier, 0px) + var(--hauteur-nav) + env(safe-area-inset-bottom));
+  bottom: calc(var(--clavier, 0px) + var(--nav-barre, var(--hauteur-nav)) + env(safe-area-inset-bottom));
   width: 100%; max-width: 640px; margin: 0 auto;
   /* Un degrade derriere : sans lui, la liste defilerait a travers le
      bouton et le texte se lirait par-dessus les aliments. */
