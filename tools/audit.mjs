@@ -3081,6 +3081,39 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R85 — Une seance libre commencee survit a la fermeture de l'app.
+// Raci, 9/09 : « j'avais deux trois exercices dans seance libre, j'ai
+// quitte la page pour venir te parler, et au retour les exercices ne
+// sont plus la ». seanceRefs et selectionExos ne vivaient qu'en
+// memoire : Chrome decharge un onglet passe en arriere-plan et la
+// selection partait avec. La seance GUIDEE avait sa reprise depuis le
+// 5/09 ; la libre n'en avait aucune.
+// ------------------------------------------------------------
+{
+  const ms = lire('app-v2/src/components/MaSeance.jsx');
+  const soucis = [];
+  if (ms) {
+    if (!/const CLE_LIBRE = /.test(ms)) soucis.push('la seance libre n\'est plus conservee sur le disque');
+    if (!/signal\(reprise \? reprise\.refs : \[\]\)/.test(ms)) {
+      soucis.push('les exercices choisis ne repartent plus de la reprise');
+    }
+    if (!/signal\(reprise \? reprise\.selection : \{\}\)/.test(ms)) {
+      soucis.push('la selection ne repart plus de la reprise');
+    }
+    // Les Set ne passent pas par JSON : sans reconstruction, la
+    // reprise rendrait des tableaux et les `.has()` casseraient.
+    if (!/new Set\(e\.selection\[k\]\)/.test(ms)) {
+      soucis.push('les Set ne sont plus rebatis a la lecture : la selection sera inutilisable');
+    }
+    if (!/effect\(\(\) => \{ seanceRefs\.value; selectionExos\.value; ecrireLibre\(\); \}\)/.test(ms)) {
+      soucis.push('la sauvegarde n\'est plus automatique : elle manquera un tap sur deux');
+    }
+  }
+  if (soucis.length) faute('R85 reprise de la seance libre', soucis.join(' ; '));
+  else passe('R85 reprise de la seance libre');
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le

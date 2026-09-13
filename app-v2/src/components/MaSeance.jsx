@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { signal } from '@preact/signals';
+import { signal, effect } from '@preact/signals';
 import { EXERCISES, IMG_BASE, PROTOCOLES } from '../data/exercices.js';
 import { niveauPratique } from './SelectionExercices.jsx';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
@@ -18,13 +18,56 @@ import '../legacy/maseance.scoped.css';
 // (variables globales, innerHTML, onclick) passe en signals/hooks.
 // ==========================================================
 
+/**
+ * La seance libre en cours, conservee sur le disque.
+ *
+ * Raci, 9/09 : « j'avais deux trois exercices dans seance libre,
+ * j'ai quitte la page pour venir te parler, et au retour les
+ * exercices ne sont plus la ». Les deux signaux ne vivaient qu'en
+ * memoire : Chrome decharge un onglet passe en arriere-plan, et la
+ * selection partait avec. La seance GUIDEE avait sa reprise depuis le
+ * 5/09 ; la seance libre n'en avait jamais eu.
+ *
+ * Les Set ne passent pas par JSON : on les ecrit en tableaux et on
+ * les rebatit a la lecture.
+ */
+const CLE_LIBRE = 'belfit_seance_libre';
+
+function lireLibre() {
+  try {
+    const e = JSON.parse(localStorage.getItem(CLE_LIBRE) || 'null');
+    if (!e) return null;
+    const sel = {};
+    Object.keys(e.selection || {}).forEach(k => { sel[k] = new Set(e.selection[k]); });
+    return { refs: e.refs || [], selection: sel };
+  } catch { return null; }
+}
+
+function ecrireLibre() {
+  try {
+    const refs = seanceRefs.value;
+    const sel = selectionExos.value;
+    const vide = !refs.length && !Object.values(sel).some(x => x && x.size);
+    if (vide) { localStorage.removeItem(CLE_LIBRE); return; }
+    const plat = {};
+    Object.keys(sel).forEach(k => { if (sel[k] && sel[k].size) plat[k] = [...sel[k]]; });
+    localStorage.setItem(CLE_LIBRE, JSON.stringify({ refs, selection: plat }));
+  } catch (e) { /* le stockage plein ne doit pas casser la seance */ }
+}
+
+const reprise = lireLibre();
+
 // Exercices choisis dans SelectionExercices : [{mKey, i}]
-export const seanceRefs = signal([]);
+export const seanceRefs = signal(reprise ? reprise.refs : []);
 // Selection d'exercices de l'ecran precedent. Vit ICI (module deja
 // importe par SelectionExercices — l'inverse creerait un cycle) pour
 // survivre a l'aller-retour selection <-> seance, comme en v1.
 // Videe uniquement quand la seance se TERMINE.
-export const selectionExos = signal({});
+export const selectionExos = signal(reprise ? reprise.selection : {});
+
+// Toute modification part sur le disque : il n'y a pas de « moment »
+// ou sauvegarder, la selection change a chaque tap.
+effect(() => { seanceRefs.value; selectionExos.value; ecrireLibre(); });
 
 const NOMS_MUSCLES = {
   pecs: 'Pecs', dos: 'Dos', epaules: 'Épaules', biceps: 'Biceps',
