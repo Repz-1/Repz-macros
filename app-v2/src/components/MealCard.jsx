@@ -185,7 +185,7 @@ export function LigneIngredient({ repasId, ing }) {
       <div class="mc-ing-macros">
         <div class="mc-ing-kcal">{m.kcal.toFixed(0)} kcal</div>
         <div class="mc-ing-sub">
-          {m.prot.toFixed(0)}P · {m.carbs.toFixed(0)}C · {m.lip.toFixed(0)}L
+          {m.prot.toFixed(0)}P·{m.carbs.toFixed(0)}C·{m.lip.toFixed(0)}L
         </div>
       </div>
 

@@ -682,7 +682,7 @@
   border: 1px solid #EEF1F5;
   border-radius: 10px;
   padding: 10px; margin-bottom: 6px;
-  display: grid; grid-template-columns: 1fr 54px 10px 72px 18px;
+  display: grid; grid-template-columns: 1fr 54px 10px 96px 34px;
   gap: 6px; align-items: center;
 }
 /* Vignette de l'aliment : carre discret devant le nom. La variante
@@ -723,7 +723,7 @@
   font-size: 12px; font-weight: 500; color: var(--texte-3);
 }
 
-.pg-journal .mc-ing-macros { text-align: right; line-height: 1.25; flex: none; min-width: 110px; }
+.pg-journal .mc-ing-macros { text-align: right; line-height: 1.25; min-width: 0; }
 .pg-journal .mc-ing-kcal { font-size: 14px; font-weight: 500; color: var(--txt-1-doux); white-space: nowrap; }
 .pg-journal .mc-ing-sub {
   font-size: 10px; font-weight: 500; color: var(--texte-3);
@@ -735,8 +735,10 @@
 
 .pg-journal .mc-ing-del {
   background: none; border: none; cursor: pointer;
-  /* 2px de padding = cible de ~18px, sous le minimum tactile. */
-  padding: 10px; margin: -8px; border-radius: 10px;
+  /* La zone de frappe s'agrandit vers le HAUT et le BAS seulement :
+     34 px de large dans sa colonne, 50 px de haut. Le retrait
+     horizontal d'avant la faisait mordre sur les macros. */
+  padding: 10px; margin: -8px 0; border-radius: 10px;
   color: #B9B0A3; font-size: 14px; line-height: 1; font-family: inherit;
 }
 .pg-journal .mc-ing-del:active { color: var(--txt-alerte-vif); }

@@ -3114,6 +3114,39 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
+// R86 — La ligne d'un aliment ne se chevauche pas.
+// Raci, 9/09, deux passes sur la meme ligne. D'abord « 26P · 132C ·
+// 1… » : les macros etaient tronquees. J'ai elargi avec `min-width`
+// sur l'element — sauf que la ligne est une GRILLE : la piste restait
+// a 72 px et le contenu debordait sur la colonne voisine, celle de la
+// croix. « La croix pour fermer est superposee avec le reste. »
+// Dans une grille, c'est la PISTE qui porte la largeur. Et la croix
+// agrandissait sa zone de frappe avec `margin: -8px` sur ses quatre
+// cotes : le retrait horizontal la faisait mordre sur les macros.
+// ------------------------------------------------------------
+{
+  const css = lire('app-v2/src/styles/journal-socle.css');
+  const soucis = [];
+  if (css) {
+    const grille = (css.match(/\.pg-journal \.mc-ing \{[^}]*\}/) || [''])[0];
+    const pistes = (grille.match(/grid-template-columns: ([^;]+);/) || [])[1] || '';
+    const cols = pistes.trim().split(/\s+/);
+    const mac = parseInt(cols[3] || '0', 10);
+    const croix = parseInt(cols[4] || '0', 10);
+    if (!mac || mac < 96) soucis.push('la piste des macros repasse sous 96 px : elles seront tronquees');
+    if (!croix || croix < 34) soucis.push('la croix n\'a plus sa colonne de 34 px : elle remontera sur les macros');
+    if (/\.mc-ing-macros \{[^}]*min-width: [1-9]/.test(css)) {
+      soucis.push('une largeur minimale est remise sur l\'element : dans une grille, elle fait deborder la piste');
+    }
+    if (/\.pg-journal \.mc-ing-del \{[^}]*margin: -\d+px;/.test(css)) {
+      soucis.push('la croix reprend un retrait sur ses quatre cotes : elle mordra sur les macros');
+    }
+  }
+  if (soucis.length) faute('R86 ligne d\'aliment sans chevauchement', soucis.join(' ; '));
+  else passe('R86 ligne d\'aliment sans chevauchement');
+}
+
+// ------------------------------------------------------------
 // R77 — Rien d'exterieur ne bloque le premier affichage.
 // Audit du 02/09 : deux feuilles de style distantes (fontshare et
 // Google) etaient chargees en <link rel="stylesheet"> ordinaire. Le
