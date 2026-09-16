@@ -1912,11 +1912,25 @@
 
 /* Total du repas, au pied de la carte */
 .pg-journal .rp-total {
-  display: flex; align-items: center; justify-content: space-between;
-  border-top: 1px solid var(--piste); padding: 13px 0 8px; margin-top: 2px;
+  display: flex; align-items: center; gap: 10px;
+  border-top: 1px solid var(--piste); padding: 11px 0 8px; margin-top: 2px;
 }
-.pg-journal .rp-total-lb { font-size: 16px; font-weight: 600; color: var(--texte); }
-.pg-journal .rp-total-val { font-size: 19px; font-weight: 500; color: var(--txt-1); font-variant-numeric: tabular-nums; }
+.pg-journal .rp-total-fin {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 44px; padding: 0 12px;
+  border: none; border-radius: 999px;
+  background: #1F2430; color: #F4F3F0;
+  font-family: inherit; font-size: 14.5px; font-weight: 800; cursor: pointer;
+}
+.pg-journal .rp-total-fin svg {
+  width: 17px; height: 17px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.pg-journal .rp-total-fin:active { background: #2C3342; transform: scale(.985); }
+.pg-journal .rp-total-lb { flex: none; font-size: 15px; font-weight: 600; color: var(--texte); }
+.pg-journal .rp-total-val { flex: none; font-size: 18px; font-weight: 500; color: var(--txt-1); font-variant-numeric: tabular-nums; }
 .pg-journal .rp-total-val span { font-size: 12.5px; font-weight: 600; color: var(--texte-3); margin-left: 3px; }
 
 /* ---------- Boutons de bas de page ---------- */

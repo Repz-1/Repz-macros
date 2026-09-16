@@ -2996,48 +2996,59 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R83 — « Terminer » : problem OUVERT, ne pas re-tenter sans accord.
+// R83 — « Terminer » vit sur la ligne du total.
 //
-// Raci, 9/09 : « le bouton Terminer doit etre visible a n'importe quel
-// moment, encodage ou pas », puis, apres cinq tentatives, « remets
-// comme avant ».
+// Raci, 9/09, apres cinq tentatives : « j'ai une idee, le bouton
+// Terminer on va le placer la » — au milieu de la ligne « Total
+// repas », dans la place vide entre le libelle et la valeur.
 //
-// Ce qui a ete essaye, et pourquoi chaque piste est tombee :
-//   1. En fin de page — descend avec la liste a chaque aliment.
-//   2. `sticky` en bas — dernier enfant de son parent : aucune course
-//      sous lui, donc il n'a jamais colle.
-//   3. `fixed` en bas — cache sous le clavier, que Chrome superpose
-//      sans reduire la fenetre de mise en page.
-//   4. `fixed` + mesure par visualViewport — flottait au milieu des
-//      aliments : Chrome redimensionnait deja le contenu, le clavier
-//      etait compte deux fois.
-//   5. Dans l'en-tete, puis en-tete collant — accepte techniquement,
-//      refuse a l'usage.
-// Deux propositions ont ete faites et refusees : un pave numerique
-// maison (pas de clavier systeme, donc plus de conflit) et une feuille
-// par aliment, le motif de MyFitnessPal et Yazio.
+// C'est la premiere solution qui tient, et pour une raison que je
+// n'avais pas vue : elle ne cherche pas a garder le bouton en place,
+// elle le met LA OU L'ON REGARDE DEJA. La ligne du total suit
+// immediatement le dernier aliment encode — plus aucune carte a
+// traverser — et le total est a sa droite, donc on voit ce qu'on
+// valide sans rien dupliquer.
 //
-// Le bouton est donc revenu dans le flux, en fin de page. Cette regle
-// ne protege plus une solution : elle garde la trace des impasses pour
-// qu'aucune ne soit re-tentee par inadvertance. Le probleme reste
-// entier, et sa resolution demande une decision de Raci, pas une
-// nouvelle tentative technique.
+// Les impasses, pour qu'aucune ne soit re-tentee : en fin de page il
+// descendait avec la liste ; en `sticky` il n'avait aucune course
+// (dernier enfant) ; en `fixed` il passait sous le clavier, puis
+// flottait au milieu des aliments quand j'ai corrige par
+// visualViewport (Chrome redimensionnait deja, le clavier etait
+// compte deux fois) ; dans l'en-tete, puis en-tete collant, refuse a
+// l'usage. Un pave numerique maison et une feuille par aliment ont
+// aussi ete proposes et refuses.
 // ------------------------------------------------------------
 {
+  const mp = lire('app-v2/src/components/MealPage.jsx');
   const css = lire('app-v2/src/styles/journal-socle.css');
   const soucis = [];
-  if (css) {
-    const bloc = (css.match(/\.pg-journal \.rp-actions \{[^}]*\}/) || [''])[0];
-    if (/position: (fixed|sticky)/.test(bloc)) {
-      soucis.push('la barre du bas est redevenue flottante : pistes 2, 3 et 4, toutes refusees');
+  if (mp) {
+    if (!/class="rp-total-fin"/.test(mp)) {
+      soucis.push('« Terminer » a quitte la ligne du total');
     }
-    const tb = (css.match(/\.pg-journal \.rp-topbar \{[^}]*\}/) || [''])[0];
-    if (/position: sticky/.test(tb)) {
-      soucis.push('l\'en-tete est redevenu collant : piste 5, refusee a l\'usage');
+    if (/class="rp-btn-fin"/.test(mp) || /class="rp-fin-haut"/.test(mp)) {
+      soucis.push('un second « Terminer » est revenu : deux sorties pour un seul geste');
+    }
+    if (!/t\('rp_total_court'\)/.test(mp)) {
+      soucis.push('le libelle long est revenu : le bouton retombe a 90 px sur un ecran de 360');
+    }
+    if (/window\.visualViewport/.test(mp)) {
+      soucis.push('la mesure du clavier est revenue : plus rien ne flotte, elle n\'a plus d\'objet');
     }
   }
-  if (soucis.length) faute('R83 « Terminer » : impasses connues', soucis.join(' ; '));
-  else passe('R83 « Terminer » : impasses connues');
+  if (css) {
+    const act = (css.match(/\.pg-journal \.rp-actions \{[^}]*\}/) || [''])[0];
+    if (/position: (fixed|sticky)/.test(act)) {
+      soucis.push('la barre du bas est redevenue flottante : impasses 2, 3 et 4');
+    }
+    const tb = (css.match(/\.pg-journal \.rp-topbar \{[^}]*\}/) || [''])[0];
+    if (/position: sticky/.test(tb)) soucis.push('l\'en-tete est redevenu collant : impasse 5');
+    const fin = (css.match(/\.pg-journal \.rp-total-fin \{[^}]*\}/) || [''])[0];
+    const h = (fin.match(/min-height: (\d+)px/) || [])[1];
+    if (!h || +h < 44) soucis.push('« Terminer » passe sous la cible tactile de 44 px');
+  }
+  if (soucis.length) faute('R83 « Terminer » sur la ligne du total', soucis.join(' ; '));
+  else passe('R83 « Terminer » sur la ligne du total');
 }
 
 // ------------------------------------------------------------
