@@ -3030,7 +3030,11 @@ const DECALAGE_SW_V2 = 232;
       soucis.push('un second « Terminer » est revenu : deux sorties pour un seul geste');
     }
     if (!/t\('rp_total_court'\)/.test(mp)) {
-      soucis.push('le libelle long est revenu : le bouton retombe a 90 px sur un ecran de 360');
+      soucis.push('le libelle long est revenu : la ligne devient trop chargee sur un ecran de 360');
+    }
+    // Variante B : la valeur est DANS le libelle, a gauche.
+    if (!/class="rp-total-lb">[\s\S]{0,200}class="rp-total-val"/.test(mp)) {
+      soucis.push('le total a quitte le libelle : il se retrouvera de nouveau a droite du bouton');
     }
     if (/window\.visualViewport/.test(mp)) {
       soucis.push('la mesure du clavier est revenue : plus rien ne flotte, elle n\'a plus d\'objet');
@@ -3046,6 +3050,13 @@ const DECALAGE_SW_V2 = 232;
     const fin = (css.match(/\.pg-journal \.rp-total-fin \{[^}]*\}/) || [''])[0];
     const h = (fin.match(/min-height: (\d+)px/) || [])[1];
     if (!h || +h < 44) soucis.push('« Terminer » passe sous la cible tactile de 44 px');
+    if (!/flex: none/.test(fin)) {
+      soucis.push('le bouton reprend la place libre : il repousse le total contre le bord (variante A, ecartee)');
+    }
+    const lb = (css.match(/\.pg-journal \.rp-total-lb \{[^}]*\}/) || [''])[0];
+    if (!/flex: 1 1 auto/.test(lb)) {
+      soucis.push('le libelle ne prend plus la place libre : le bouton ne sera plus cale a droite');
+    }
   }
   if (soucis.length) faute('R83 « Terminer » sur la ligne du total', soucis.join(' ; '));
   else passe('R83 « Terminer » sur la ligne du total');

@@ -199,18 +199,13 @@ export function MealPage() {
                 <LigneIngredient key={ing.id} repasId={r.id} ing={ing} />
               ))}
               <div class="rp-total">
-                <span class="rp-total-lb">{t('rp_total_court')}</span>
-                {/* Raci, 9/09 : « j'ai une idee, le bouton Terminer on
-                    va le placer la ». La ligne du total avait une
-                    place vide au milieu, et elle suit immediatement le
-                    dernier aliment encode — plus de carte a traverser
-                    pour l'atteindre. Le total est deja a sa droite,
-                    donc on voit ce qu'on valide sans rien dupliquer. */}
+                <span class="rp-total-lb">
+                  {t('rp_total_court')}
+                  <span class="rp-total-val">{totAff.kcal}<span>kcal</span></span>
+                </span>
                 <button class="rp-total-fin" onClick={() => { repasOuvertId.value = null; }}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8.5 12.5l2.5 2.5 4.5-5" /></svg>
                   {t('rp_terminer')}
                 </button>
-                <span class="rp-total-val">{totAff.kcal}<span>kcal</span></span>
               </div>
             </div>
           </div>
