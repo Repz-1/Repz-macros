@@ -385,26 +385,6 @@ export function TdeeCalculator({ montre, fermer, retour }) {
           </div>
         ) : (
         <>
-          {/* Le resultat en tete, les entrees en pastilles (maquette A,
-              Raci le 02/09). L'ecran ne se lit plus comme un
-              formulaire : le chiffre qu'on vient chercher est en haut,
-              il bouge a chaque modification, et les valeurs se touchent
-              directement au lieu de remplir des cases etiquetees. */}
-          <div class="bs-hero">
-            <Anneau prot={r.prot} carbs={r.carbs} lip={r.lip} centre={r.kcal} />
-            <div class="bs-leg">
-              <LigneMacro teinte="var(--mac-prot)" nom="Protéines"
-                g={r.prot} part={partDe(r.prot * 4, r.kcal)} />
-              <LigneMacro teinte="var(--mac-carbs)" nom="Glucides"
-                g={r.carbs} part={partDe(r.carbs * 4, r.kcal)} />
-              <LigneMacro teinte="var(--mac-lip)" nom="Lipides"
-                g={r.lip} part={partDe(r.lip * 9, r.kcal)} />
-            </div>
-          </div>
-          <p class="bs-s">
-            Base {r.bmr} · Dépense {r.tdee} · {(OBJECTIFS.find(o => +o.val === +f.ajustement) || {}).label}
-          </p>
-
           {alerte && <p class="calc-alerte">{alerte}</p>}
 
           <div class="bs-pastilles">
@@ -438,6 +418,18 @@ export function TdeeCalculator({ montre, fermer, retour }) {
               </label>
             )}
 
+            <div class="bs-titre">Ton objectif</div>
+            <label class="bs-p bs-p--large bs-p--menu">
+              <select value={f.ajustement} onChange={e => num('ajustement', e.currentTarget.value)}>
+                {OBJECTIFS.map(o => <option value={o.val}>{o.label}</option>)}
+              </select>
+            </label>
+
+            {/* Raci, 9/09 : « faudrait demander la question de l'objectif
+                en premier ». Il commande tout le reste — le signe de
+                l'ajustement, la repartition des macros — et le lire en
+                dernier laissait croire que le calcul etait fait avant
+                qu'on ait dit ce qu'on cherchait. */}
             {/* Raci, 9/09 : « activite physique : peu actif etc. Ensuite
                 je demanderais s'il fait du sport et la frequence, et
                 ainsi calculer en fonction de tous ces parametres. »
@@ -480,12 +472,6 @@ export function TdeeCalculator({ montre, fermer, retour }) {
                 </label>
               </>
             )}
-            <div class="bs-titre">Ton objectif</div>
-            <label class="bs-p bs-p--large bs-p--menu">
-              <select value={f.ajustement} onChange={e => num('ajustement', e.currentTarget.value)}>
-                {OBJECTIFS.map(o => <option value={o.val}>{o.label}</option>)}
-              </select>
-            </label>
           </div>
 
           <button class="calc-avance" onClick={() => setAvance(!avance)}>

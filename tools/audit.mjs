@@ -2650,6 +2650,19 @@ const DECALAGE_SW_V2 = 232;
     // objectifs ». Le resultat se recalculait a chaque frappe, ce qui
     // faisait sauter la fiche.
     if (!/class="calc-lancer"/.test(jsx)) soucis.push('« Calculer mes besoins » a disparu : le resultat redevient permanent');
+    if ((jsx.match(/class="bs-hero"/g) || []).length > 1) {
+      soucis.push('le bloc de resultat est de nouveau en double : un anneau s\'affichera avant tout calcul');
+    }
+    // L'objectif commande le signe de l'ajustement et la repartition
+    // des macros : il se demande avant le reste.
+    const iObj = jsx.indexOf('>Ton objectif<');
+    const iQuo = jsx.indexOf('>Au quotidien, hors sport<');
+    const iSport = jsx.indexOf('>Du sport ?<');
+    if (iObj < 0 || iQuo < 0 || iSport < 0) {
+      soucis.push('un des trois groupes de questions a disparu');
+    } else if (!(iObj < iQuo && iQuo < iSport)) {
+      soucis.push('l\'ordre des questions a change : l\'objectif doit venir en premier');
+    }
     if (!/setCalcule\(false\)/.test(jsx)) {
       soucis.push('modifier une valeur ne retire plus le resultat : il resterait calcule sur d\'anciennes entrees');
     }
@@ -2681,6 +2694,12 @@ const DECALAGE_SW_V2 = 232;
     }
     if (/\.modale-calc\{background:#1C1812/.test(css)) {
       soucis.push('la fiche est repassee en sombre : le rendu que Raci a refuse le 9/09');
+    }
+    // La feuille est a `padding-bottom:0` : la barre collee fournit sa
+    // marge. Avant le calcul cette barre n'existe pas, donc le bouton
+    // doit porter la sienne — sinon il tombe a ras de l'arrondi.
+    if (!/\.calc-lancer\{[^}]*margin-bottom:calc\(14px/.test(css)) {
+      soucis.push('« Calculer mes besoins » n\'a plus sa marge basse : il se superposera au bord de la carte');
     }
     if (!/\.voile--fonce\{background:rgba\(12,10,8,\.62\)/.test(css)) {
       soucis.push('le voile a perdu son assombrissement : la fiche claire flotte dans du creme');
