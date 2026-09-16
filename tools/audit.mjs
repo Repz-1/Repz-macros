@@ -3163,6 +3163,17 @@ const DECALAGE_SW_V2 = 232;
     if (/\.pg-journal \.mc-ing-del \{[^}]*margin: -\d+px;/.test(css)) {
       soucis.push('la croix reprend un retrait sur ses quatre cotes : elle mordra sur les macros');
     }
+    const rpIng = (css.match(/\.pg-journal \.rp-liste \.mc-ing \{[^}]*\}/) || [''])[0];
+    const p = (rpIng.match(/padding: (\d+)px 0/) || [])[1];
+    if (!p) soucis.push('le rembourrage des lignes n\'est plus lisible dans la feuille');
+    else if (+p < 8) {
+      soucis.push('les lignes passent a ' + p + ' px de rembourrage : sous 8 px, le champ de poids se touche au millimetre');
+    }
+    const champ = (css.match(/\.pg-journal \.mc-ing input \{[^}]*\}/) || [''])[0];
+    const hc = (champ.match(/(?:min-)?height: (\d+)px/) || [])[1];
+    if (hc && +hc < 40) {
+      soucis.push('le champ de poids descend a ' + hc + ' px : c\'est la variante D, ecartee');
+    }
   }
   if (soucis.length) faute('R86 ligne d\'aliment sans chevauchement', soucis.join(' ; '));
   else passe('R86 ligne d\'aliment sans chevauchement');
