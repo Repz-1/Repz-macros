@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { demanderCoach } from '../services/coach.js';
+import { parserLocal } from '../services/coach-local.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient } from '../store/journal.js';
 import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
 import { langue } from '../i18n/index.js';
@@ -21,11 +22,34 @@ function repasCible(cle) {
     liste[liste.length - 1];
 }
 
+function versLignes(aliments) {
+  return (aliments || []).map((a) => {
+    const cle = trouverAliment(a.aliment);
+    if (!cle) return null;
+    const d = DB[cle];
+    const portion = a.unite === 'piece' && d && d.unit ? a.quantite * d.unit : a.quantite;
+    return {
+      cle,
+      portion: Math.round(portion),
+      dit: a.aliment,
+      repasCle: a.repasCle,
+    };
+  }).filter(Boolean);
+}
+
 export function CoachBar() {
   const [texte, setTexte] = useState('');
   const [etat, setEtat] = useState('pret');
   const [msg, setMsg] = useState('');
   const [lignes, setLignes] = useState([]);
+
+  const appliquer = (out) => {
+    const trouves = versLignes(out.aliments);
+    setMsg(out.texte || (trouves.length ? 'Vérifie et ajoute.' : 'Rien à mettre au journal.'));
+    setLignes(trouves);
+    setEtat(trouves.length ? 'proposition' : 'pret');
+    if (trouves.length) setTexte('');
+  };
 
   const envoyer = async () => {
     const dit = texte.trim();
@@ -39,41 +63,13 @@ export function CoachBar() {
         objectifs: objectifs.value,
         totaux: totauxJourAff.value,
         repas: repas.value.map((r) => ({
-          id: r.id,
-          nom: r.nom,
-          cle: r.cle,
-          nbAliments: (r.ings || []).length,
+          id: r.id, nom: r.nom, cle: r.cle, nbAliments: (r.ings || []).length,
         })),
       };
       const out = await demanderCoach(dit, ctx);
-      const trouves = (out.aliments || []).map((a) => {
-        const cle = trouverAliment(a.aliment);
-        if (!cle) return null;
-        const d = DB[cle];
-        const portion = a.unite === 'piece' && d && d.unit ? a.quantite * d.unit : a.quantite;
-        return {
-          cle,
-          portion: Math.round(portion),
-          dit: a.aliment,
-          repasCle: a.repasCle,
-        };
-      }).filter(Boolean);
-      setMsg(out.texte || (trouves.length ? 'V\u00e9rifie et ajoute.' : 'Je n\u2019ai rien \u00e0 mettre au journal.'));
-      setLignes(trouves);
-      setEtat(trouves.length ? 'proposition' : 'pret');
-      if (trouves.length) setTexte('');
+      appliquer(out);
     } catch (err) {
-      const code = err && err.code;
-      setEtat('erreur');
-      if (code === 'no_auth') {
-        setMsg('Le coach a besoin d\u2019un vrai compte (R\u00e9glages \u2192 Se connecter). Le mode invit\u00e9 n\u2019a pas de jeton.');
-      } else if (code === 'not_deployed') {
-        setMsg('Le coach n\u2019est pas encore d\u00e9ploy\u00e9 c\u00f4t\u00e9 serveur. Le champ est l\u00e0 ; il manque firebase deploy --only functions:coachAgent.');
-      } else if (code === 'not_premium') {
-        setMsg('R\u00e9serv\u00e9 aux membres Premium.');
-      } else {
-        setMsg('Coach indisponible pour le moment. Tu peux encore encoder \u00e0 la main.');
-      }
+      appliquer(parserLocal(dit));
     }
   };
 
@@ -97,7 +93,7 @@ export function CoachBar() {
           class="coach-bar-champ"
           type="text"
           maxlength="240"
-          placeholder="Dis ce que tu as mang\u00e9\u2026"
+          placeholder="Dis ce que tu as mangé\u2026"
           value={texte}
           disabled={etat === 'attente'}
           onInput={(e) => setTexte(e.target.value)}
