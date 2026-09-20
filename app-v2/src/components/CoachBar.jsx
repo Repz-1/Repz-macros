@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { parserLocal, proposerRepas } from '../services/coach-local.js';
+import { parserLocal } from '../services/coach-local.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
 import { DB } from '../data/aliments.js';
 import '../styles/coach-bar.css';
@@ -27,22 +27,20 @@ export function CoachBar() {
   const [msg, setMsg] = useState('');
   const [lignes, setLignes] = useState([]);
   const [eauLitres, setEauLitres] = useState(0);
-  const [diner, setDiner] = useState(null);
 
   const appliquer = (out) => {
     const trouves = versLignes(out.aliments);
     const eau = Number(out.eauLitres) || 0;
     setEauLitres(eau);
-    setMsg(out.texte || (trouves.length || eau ? 'Verifie et ajoute.' : 'Rien a mettre.'));
+    setMsg(out.texte || (trouves.length || eau ? 'Verifie les lignes puis ajoute.' : 'Rien a mettre.'));
     setLignes(trouves);
-    setDiner(null);
     setEtat((trouves.length || eau) ? 'proposition' : 'pret');
     if (trouves.length || eau) setTexte('');
   };
 
   const envoyer = () => {
     const dit = texte.trim();
-    if (!dit || etat === 'attente') return;
+    if (!dit) return;
     appliquer(parserLocal(dit, {
       objectifs: objectifs.value,
       totaux: totauxJourAff.value,
@@ -62,33 +60,7 @@ export function CoachBar() {
     if (eau > 0) ajouterEau(eau);
     setLignes([]);
     setEauLitres(0);
-    if (n || eau) {
-      const prop = proposerRepas(objectifs.value, totauxJourAff.value);
-      if (prop) {
-        setDiner(prop);
-        setMsg('C\u2019est dans le journal. Ce soir, une idee : ' + prop.nom + '.');
-        setEtat('diner');
-      } else {
-        setMsg('C\u2019est dans le journal.');
-        setEtat('pret');
-      }
-    } else {
-      setMsg('');
-      setEtat('pret');
-    }
-  };
-
-  const confirmerDiner = () => {
-    if (!diner) return;
-    diner.ings.forEach((a) => {
-      const cible = repasCible('diner');
-      if (!cible) return;
-      const d = DB[a.aliment];
-      const portion = a.unite === 'piece' && d && d.unit ? a.quantite * d.unit : a.quantite;
-      ajouterIngredient(cible.id, a.aliment, Math.round(portion));
-    });
-    setDiner(null);
-    setMsg('Diner ajoute.');
+    setMsg(n || eau ? 'C\u2019est dans le journal.' : '');
     setEtat('pret');
   };
 
@@ -125,16 +97,6 @@ export function CoachBar() {
           ))}
           <button class="coach-bar-ajout" type="button" onClick={confirmer}>Ajouter au journal</button>
         </>
-      )}
-      {etat === 'diner' && diner && (
-        <div class="coach-bar-diner">
-          <p class="coach-bar-diner-nom">{diner.nom}</p>
-          <p class="coach-bar-diner-macros">{diner.kcal} kcal</p>
-          <button class="coach-bar-ajout" type="button" onClick={confirmerDiner}>Ajouter ce diner</button>
-          <button class="coach-bar-passe" type="button" onClick={() => { setDiner(null); setEtat('pret'); setMsg(''); }}>
-            Pas maintenant
-          </button>
-        </div>
       )}
     </div>
   );
