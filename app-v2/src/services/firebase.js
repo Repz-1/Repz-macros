@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { SANS_COMPTE, demanderConnexion } from '../acces-invite.js';
+import { demanderConnexion } from '../acces-invite.js';
 import {
   initializeAuth, indexedDBLocalPersistence, browserLocalPersistence,
   onAuthStateChanged,
@@ -65,19 +65,6 @@ function oublierSortie() {
   try { localStorage.removeItem(CLE_SORTIE); } catch (e) { /* tant pis */ }
 }
 
-function veutInvite() {
-  if (sortieEnCours() || demanderConnexion.value) return false;
-  try {
-    const q = new URLSearchParams(window.location.search);
-    if (q.get('logout') === '1') return false;
-    if (q.has('invite')) return true;
-    const h = window.location.hostname;
-    if (h === 'localhost' || h === '127.0.0.1') return true;
-    if (!/(^|\.)belfit\.be$/i.test(h)) return true;
-  } catch (e) { /* URL intouchable */ }
-  return SANS_COMPTE;
-}
-
 onAuthStateChanged(auth, (u) => {
   if (u && sortieEnCours()) {
     utilisateur.value = null;
@@ -99,15 +86,6 @@ onAuthStateChanged(auth, (u) => {
     authPrete.value = true;
     return;
   }
-  if (utilisateur.value && utilisateur.value.uid === '__invite__') {
-    authPrete.value = true;
-    return;
-  }
-  if (veutInvite()) {
-    preparerInvite();
-    entrerEnInvite();
-    return;
-  }
   utilisateur.value = null;
   authPrete.value = true;
 });
@@ -117,62 +95,6 @@ if (auth.currentUser && !sortieEnCours()) {
   authPrete.value = true;
 }
 
-/**
- * Entree sans compte (voir src/acces-invite.js). Aucun appel a
- * Firebase : on pose un utilisateur local dont l'uid est celui que
- * services/sync.js reconnait deja pour court-circuiter Firestore.
- */
-export function entrerEnInvite() {
-  oublierSortie();
-  demanderConnexion.value = false;
-  utilisateur.value = { uid: '__invite__', email: null, displayName: 'Invité', isAnonymous: true };
-  authPrete.value = true;
-}
-
-/**
- * Prepare le compte invite pour qu'il ouvre DIRECTEMENT sur le
- * Journal. Sans cela, l'entree invite tombait sur « Tes besoins » :
- * un compte neuf n'a pas d'objectifs, et besoinsRequis() le renvoie
- * la tant qu'ils valent les valeurs par defaut. Etape legitime pour
- * une vraie inscription, obstacle inutile pour un coup d'oeil a
- * l'application (Raci, 10/08).
- *
- * On ecrit dans localStorage AVANT que le store ne charge : c'est la
- * meme cle que sync.js lira pour l'identifiant invite, donc les
- * objectifs arrivent par le chemin normal, sans cas particulier dans
- * le journal. Si une session invite existe deja, on n'y touche pas —
- * ce qui a ete encode d'une visite a l'autre reste en place.
- */
-function preparerInvite() {
-  const cle = 'belfit_v2_journal___invite__';
-  try {
-    const brut = localStorage.getItem(cle);
-    if (brut) {
-      const d = JSON.parse(brut);
-      // v534 : l'invite 2700/fait sautait Tes besoins. On le rouvre
-      // une fois, seulement si rien n'a encore ete encode.
-      if (d && d.calculBaseFait && d.objectifs && d.objectifs.kcal === 2700 && !d.repas) {
-        d.calculBaseFait = false;
-        d.objectifs = { kcal: 4300, prot: 217, carbs: 538, lip: 96 };
-        localStorage.setItem(cle, JSON.stringify(d));
-      }
-      return;
-    }
-    localStorage.setItem(cle, JSON.stringify({
-      objectifs: { kcal: 4300, prot: 217, carbs: 538, lip: 96 },
-      calculBaseFait: false,
-      ts: Date.now(),
-    }));
-  } catch (e) { /* stockage refuse : « Tes besoins » servira d'entree */ }
-}
-
-// --- Actions ---
-/**
- * Connexion par e-mail. La connexion par pseudo a ete abandonnee
- * (decision Raci 25/07) : le prenom suffit, l'inscription est plus
- * courte. Les Cloud Functions du pseudo restent deployees mais ne
- * sont plus appelees.
- */
 function memoriserPrenom(user) {
   try {
     const prenom = (user.displayName || '').split(' ')[0] || '';

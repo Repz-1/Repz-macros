@@ -6,9 +6,9 @@ import './styles/design-system.css';
 import './styles/journal-socle.css';
 // En dernier : l'en-tete commune passe devant les variantes de page.
 import './styles/entete-commune.css';
-import { utilisateur, authPrete, deconnexion, entrerEnInvite } from './services/firebase.js';
+import { utilisateur, authPrete, deconnexion } from './services/firebase.js';
 import { LoginScreen } from './components/LoginScreen.jsx';
-import { ACCES_INVITE, ONGLET_VITRINE, SANS_COMPTE, demanderConnexion } from './acces-invite.js';
+import { ACCES_INVITE, ONGLET_VITRINE, demanderConnexion } from './acces-invite.js';
 import { VERSION_APP } from './version.js';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
 import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
@@ -206,10 +206,6 @@ export function App() {
   // connexion pour rejoindre son vrai compte.
   if (demanderConnexion.value) {
     return <LoginScreen />;
-  }
-  if (!utilisateur.value && SANS_COMPTE) {
-    entrerEnInvite();
-    return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;
   }
   if (!utilisateur.value) {
     return <LoginScreen />;

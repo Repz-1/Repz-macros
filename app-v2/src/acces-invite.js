@@ -46,7 +46,7 @@ import { signal } from '@preact/signals';
 // Referme le 24/08 : l'ecran de connexion redevient le seul chemin,
 // la banniere rouge disparait, et l'application se rouvre sur le
 // Journal (ONGLET_VITRINE suit ce drapeau).
-export const ACCES_INVITE = true;
+export const ACCES_INVITE = false;
 
 // ============================================================
 // SANS COMPTE — PERIODE DE TEST
