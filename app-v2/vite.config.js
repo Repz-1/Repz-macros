@@ -5,7 +5,8 @@ import preact from '@preact/preset-vite';
 // Le site live (app.html, main.html...) n'est jamais touche par ce chantier.
 export default defineConfig({
   plugins: [preact()],
-  base: '/',
+  // Dev (aperçu) à la racine. Production sur belfit.be/v2/.
+  base: process.env.NODE_ENV === 'production' ? '/v2/' : '/',
   server: {
     host: '0.0.0.0',
     port: 8080,
