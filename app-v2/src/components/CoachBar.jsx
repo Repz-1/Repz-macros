@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { demanderCoach } from '../services/coach.js';
 import { parserLocal } from '../services/coach-local.js';
-import { repas, objectifs, totauxJourAff, ajouterIngredient } from '../store/journal.js';
+import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
 import { DB } from '../data/aliments.js';
 import { resoudreAliment } from '../data/alias-aliments.js';
 import { langue } from '../i18n/index.js';
@@ -29,13 +29,16 @@ export function CoachBar() {
   const [etat, setEtat] = useState('pret');
   const [msg, setMsg] = useState('');
   const [lignes, setLignes] = useState([]);
+  const [eauLitres, setEauLitres] = useState(0);
 
   const appliquer = (out) => {
     const trouves = versLignes(out.aliments);
-    setMsg(out.texte || (trouves.length ? 'Verifie et ajoute.' : 'Rien a mettre au journal.'));
+    const eau = Number(out.eauLitres) || 0;
+    setEauLitres(eau);
+    setMsg(out.texte || (trouves.length || eau ? 'Verifie et ajoute.' : 'Rien a mettre.'));
     setLignes(trouves);
-    setEtat(trouves.length ? 'proposition' : 'pret');
-    if (trouves.length) setTexte('');
+    setEtat((trouves.length || eau) ? 'proposition' : 'pret');
+    if (trouves.length || eau) setTexte('');
   };
 
   const envoyer = async () => {
@@ -44,6 +47,7 @@ export function CoachBar() {
     setEtat('attente');
     setMsg('Un instant...');
     setLignes([]);
+    setEauLitres(0);
     try {
       const ctx = {
         langue: langue.value || 'fr',
@@ -63,15 +67,20 @@ export function CoachBar() {
 
   const confirmer = () => {
     const n = lignes.length;
+    const eau = eauLitres;
     lignes.forEach((l) => {
       if (l.portion <= 0) return;
       const cible = repasCible(l.repasCle);
       if (cible) ajouterIngredient(cible.id, l.cle, l.portion);
     });
+    if (eau > 0) ajouterEau(eau);
     setLignes([]);
-    setMsg(n ? 'Cest dans le journal.' : '');
+    setEauLitres(0);
+    setMsg(n || eau ? 'C\u2019est dans le journal.' : '');
     setEtat('pret');
   };
+
+  const aConfirmer = lignes.length > 0 || eauLitres > 0;
 
   return (
     <div class="coach-bar">
@@ -80,7 +89,7 @@ export function CoachBar() {
           class="coach-bar-champ"
           type="text"
           maxlength="240"
-          placeholder="Ex. patate, 2 cas d huile, 200 g riz"
+          placeholder="Ex. 200 g riz, j'ai bu 50 cl"
           value={texte}
           disabled={etat === 'attente'}
           onInput={(e) => setTexte(e.target.value)}
@@ -91,8 +100,14 @@ export function CoachBar() {
         </button>
       </div>
       {msg && <p class="coach-bar-msg">{msg}</p>}
-      {etat === 'proposition' && lignes.length > 0 && (
+      {etat === 'proposition' && aConfirmer && (
         <>
+          {eauLitres > 0 && (
+            <div class="coach-bar-ligne-alim">
+              <span>Eau - {String(eauLitres).replace('.', ',')} L</span>
+              <button type="button" onClick={() => setEauLitres(0)} aria-label="Retirer">x</button>
+            </div>
+          )}
           {lignes.map((l, i) => (
             <div class="coach-bar-ligne-alim" key={i}>
               <span>{l.cle} - {l.portion} g</span>
