@@ -51,6 +51,9 @@ ok('noms developpe + curl',
 const pec2 = composerSeance('seance pecs biceps');
 ok('seance pecs biceps', pec2 && pec2.action === 'composerSeance', pec2 && pec2.action);
 
+const mix = parserLocal('séance pecs, une pomme', { objectifs: obj, totaux: tot });
+ok('mix séance + pomme', mix.action === 'composerSeance' && (mix.aliments || []).some((a) => /pomme/i.test(a.aliment)), JSON.stringify(mix.aliments));
+
 if (fails) { console.error(fails + ' echec(s)'); process.exit(1); }
 console.log('tous les tests coach-local passent');
 

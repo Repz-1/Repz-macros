@@ -42,7 +42,7 @@ export function CoachBar() {
   const [diner, setDiner] = useState(null);
   const [seance, setSeance] = useState(null);
   const ajoutRef = useRef(null);
-  const ouvert = etat === 'proposition' || etat === 'diner' || etat === 'seance';
+  const ouvert = etat === 'proposition' || etat === 'diner' || etat === 'seance' || etat === 'seancePosee';
 
   useEffect(() => {
     if (!ouvert) return;
@@ -91,8 +91,8 @@ export function CoachBar() {
         noms: out.noms || [],
         texte: out.texte,
       });
-      setLignes([]);
-      setEauLitres(0);
+      setLignes(versLignes(out.aliments));
+      setEauLitres(Number(out.eauLitres) || 0);
       setDiner(null);
       setMsg(out.texte);
       setEtat('seance');
@@ -130,14 +130,18 @@ export function CoachBar() {
     }));
   };
 
-  const confirmer = () => {
+  const ecrireAliments = () => {
     lignes.forEach((l) => {
       if (l.portion <= 0) return;
       const cible = repasCible(l.repasCle);
       if (cible) ajouterIngredient(cible.id, l.cle, l.portion);
     });
     if (eauLitres > 0) ajouterEau(eauLitres);
-    const n = lignes.length || eauLitres;
+    return lignes.length || eauLitres;
+  };
+
+  const confirmer = () => {
+    const n = ecrireAliments();
     setLignes([]);
     setEauLitres(0);
     if (!n) { setMsg(''); setEtat('pret'); return; }
@@ -152,8 +156,16 @@ export function CoachBar() {
     }
   };
 
+  const allerMaSeance = () => {
+    ongletActif.value = 'entrainer';
+    demandeVueEntrainer.value = { nom: 'maseance', params: null };
+  };
+
   const confirmerSeance = () => {
     if (!seance) return;
+    ecrireAliments();
+    setLignes([]);
+    setEauLitres(0);
     if (seance.composer && seance.refs && seance.refs.length) {
       const sel = {};
       seance.refs.forEach((r) => {
@@ -168,7 +180,7 @@ export function CoachBar() {
       });
       setSeance(null);
       setMsg(t('coach_seance_posee'));
-      setEtat('pret');
+      setEtat('seancePosee');
       return;
     }
     if (seance.swaps && seance.swaps.length) {
@@ -274,6 +286,15 @@ export function CoachBar() {
               <span>{s.deNom} → {s.versNom}</span>
             </div>
           ))}
+          {lignes.map((l, i) => (
+            <div class="coach-bar-ligne-alim" key={'a' + i}>
+              <span>
+                {l.cle} — {l.portion} g
+                {kcalDe(l) ? ' · ' + kcalDe(l) + ' kcal' : ''}
+              </span>
+              <button type="button" onClick={() => setLignes(lignes.filter((_, j) => j !== i))}>x</button>
+            </div>
+          ))}
           {seance.composer && seance.refs && seance.refs.length > 0 && (
             <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmerSeance}>
               {t('coach_poser_seance')}
@@ -284,8 +305,13 @@ export function CoachBar() {
               {t('coach_appliquer_seance')}
             </button>
           )}
-          <button class="coach-bar-passe" type="button" onClick={() => { setSeance(null); setEtat('pret'); setMsg(''); }}>{t('coach_pas_maintenant')}</button>
+          <button class="coach-bar-passe" type="button" onClick={() => { setSeance(null); setLignes([]); setEtat('pret'); setMsg(''); }}>{t('coach_pas_maintenant')}</button>
         </div>
+      )}
+      {etat === 'seancePosee' && (
+        <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={allerMaSeance}>
+          {t('coach_commencer')}
+        </button>
       )}
     </div>
   );

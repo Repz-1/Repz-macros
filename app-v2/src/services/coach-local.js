@@ -241,12 +241,7 @@ export function parserLocal(message, contexte = {}) {
   }
 
   const composee = composerSeance(brut);
-  if (composee) return composee;
-
-  const seance = proposerAdaptation(brut, contexte.seanceRefs);
-  if (seance) {
-    return { texte: seance.texte, aliments: [], eauLitres: 0, seance, local: true };
-  }
+  const seance = composee ? null : proposerAdaptation(brut, contexte.seanceRefs);
 
   const eauLitres = extraireEau(brut);
   const skip = new Set();
@@ -272,6 +267,17 @@ export function parserLocal(message, contexte = {}) {
     if (!new RegExp('(?:^| )' + a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?: |$)').test(n)) continue;
     const cle = resoudreAliment(a);
     push(cle, extraireQuantite(n, a) || PORTION[cle] || 100);
+  }
+
+  if (composee) {
+    const extra = aliments.length
+      ? ' Aussi : ' + aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', ') + '.'
+      : '';
+    return { ...composee, aliments, eauLitres: eauLitres || 0, texte: composee.texte + extra };
+  }
+
+  if (seance) {
+    return { texte: seance.texte, aliments, eauLitres: eauLitres || 0, seance, local: true };
   }
 
   if (!aliments.length && !eauLitres) {
