@@ -120,11 +120,11 @@ export function DayDashboard() {
   const moisCourt = t('months_min').split('|');
   const isoAuj = new Date().toISOString().slice(0, 10);
   const retard = !!dateJour.value && dateJour.value !== isoAuj;
-  const dOuvert = retard ? new Date(dateJour.value + 'T00:00') : null;
+  const dOuvert = retard ? new Date(dateJour.value + 'T00:00') : d;
   const dateTexte = retard
     ? `${jours[dOuvert.getDay()] || ''} ${dOuvert.getDate()} ${moisCourt[dOuvert.getMonth()] || ''}`
-    : `${t('today')}, ${d.getDate()} ${moisCourt[dOuvert.getMonth()] || ''}`;
-  const jourOuvert = dOuvert
+    : `${t('today')}, ${d.getDate()} ${moisCourt[d.getMonth()] || ''}`;
+  const jourOuvert = retard
     ? `${(jours[dOuvert.getDay()] || '').toLowerCase()} ${dOuvert.getDate()} ${moisCourt[dOuvert.getMonth()] || ''}`.trim()
     : '';
 
