@@ -120,16 +120,19 @@ Repas disponibles: ${JSON.stringify(ctx.repas || [])}
 
 Reponds UNIQUEMENT avec un JSON valide, sans texte autour:
 {
-  "texte": "phrase courte (1-2 phrases) en ${ctx.langue || "fr"}, tutoiement, sans jargon",
+  "texte": "phrase courte (1-2 phrases) en ${ctx.langue || "fr"}, tutoiement, sans jargon. Si tu ajoutes des aliments, dis les kcal approx et ce qu'il resterait.",
   "aliments": [
     {"aliment":"nom simple","quantite":nombre,"unite":"g"|"ml"|"piece","repasCle":"pdej"|"dej"|"diner"|"snack"}
-  ]
+  ],
+  "eauLitres": 0
 }
 
 Regles:
-- Si le message decrit un repas, remplis aliments. Convertis en g/ml si possible (un oeuf=60g, une banane=120g, un durum=350g, frites portion=200g, une biere=330ml).
+- Si le message decrit un repas, remplis aliments. Convertis en g/ml si possible (un oeuf=60g, une banane=120g, une biere=330ml).
+- Un durum / durüm / doner kebab = Pain blanc 120g + Viande de kebab 150g. PAS du pain seul. Les frites s'ajoutent si elles sont dites (portion 200g).
+- Eau : verre=0.25 L, bouteille=0.5 L, 50 cl=0.5. Remplis eauLitres, n'invente pas un aliment Eau.
 - repasCle: petit-dejeuner=pdej, midi=dej, soir=diner, snack/collation=snack. Si l'heure n'est pas dite, choisis le premier repas encore peu rempli, sinon diner.
-- Noms d'aliments simples (poulet, riz cuit, frites, pain, fromage).
+- Noms d'aliments simples (poulet, riz cuit, frites, pain, fromage, Viande de kebab).
 - Si ce n'est pas un repas (question, salutation), aliments=[] et reponds brievement en renvoyant vers le journal.
 - N'invente pas d'aliments absents du message.
 - Maximum 8 aliments.`;
@@ -143,9 +146,12 @@ Regles:
           a.repasCle : "diner",
       })).filter((a) => a.aliment && a.quantite > 0) : [];
 
+      const eauLitres = Math.max(0, Math.min(4, Number(out.eauLitres) || 0));
+
       res.status(200).json({
         texte: String(out.texte || "").slice(0, 280),
         aliments,
+        eauLitres,
       });
     } catch (err) {
       console.error("coachAgent", err);

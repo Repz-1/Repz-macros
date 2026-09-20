@@ -1233,7 +1233,8 @@ export const DB = {
 
 // Macros d'un ingredient {name, portion} a partir de la DB
 export function macrosOf(ing){
-    const d = DB[ing.name] || (window.__customFoods && window.__customFoods[ing.name]);
+    const custom = typeof window !== 'undefined' && window.__customFoods;
+    const d = DB[ing.name] || (custom && custom[ing.name]);
     if(!d) return { kcal:0, prot:0, carbs:0, lip:0 };
     // Aliment a l'unite (oeuf, canette, dose de whey...) : la portion
     // COMPTE des pieces, pas des grammes — comme dans la reference v1.

@@ -144,13 +144,13 @@ Tant que Réglages / Profil / Aide / légal vivent en V1, un agent qui
 
 ### Couche 3 — le coach
 
-- [ ] Function `coachAgent` (auth + Premium + contexte + outils)
-- [ ] Premier outil : `ajouterAliment` (réutiliser le pipeline vocal/photo)
-- [ ] Deuxième outil : `proposerRepas` calé sur le reste de macros du jour
-- [ ] Troisième : `adapterSeance` (contrainte du jour, pas rewrite du programme)
-- [ ] Quatrième : `majCourses`
-- [ ] Entrée unique dans l'UI : champ texte + micro + photo, collés au
-      Journal — pas un cinquième onglet « IA »
+- [x] Function `coachAgent` (squelette auth + Premium + contexte + `ajouterAliment`)
+- [x] Coach local hors-ligne (alias, eau, durum = pain + kebab)
+- [x] Deuxieme outil local : `proposerRepas` calé sur le reste de macros du jour
+- [ ] Premier outil serveur : `ajouterAliment` (redeployer `coachAgent`)
+- [ ] Troisieme : `adapterSeance` (contrainte du jour, pas rewrite du programme)
+- [ ] Quatrieme : `majCourses`
+- [x] Entrée unique dans l'UI : champ texte collé au Journal — pas un cinquième onglet « IA »
 - [ ] Relance du soir (Cloud Scheduler), désactivable dans Réglages
 
 Premier usage qui justifie tout le reste :
@@ -197,8 +197,11 @@ porte.
 
 ## Prochaine action concrète
 
-Pas un nouveau composant. Fermer la couche 1, puis poser le squelette
-`functions/coachAgent` avec un seul outil (`ajouterAliment`) branché
-sur le même contrat JSON que le vocal.
+Le coach local tient le premier usage : « durum frites » → lignes +
+écart macros + un dîner confirmable. Prochaine main : `adapterSeance`
+(« j'ai mal au genou ») sans réécrire le programme.
 
-Tant que le vocal n'est pas redéployé, ce squelette resterait mort.
+Le squelette `functions/coachAgent` attend toujours un `firebase deploy`
+(couche 1) pour parler Gemini. Tant que le vocal n'est pas redéployé,
+le navigateur tombe sur le coach local — c'est voulu, et c'est testable
+sans Firebase.

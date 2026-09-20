@@ -25,7 +25,7 @@ const ALIAS_BRUT = {
   pates: 'Pates blanches cuites', pate: 'Pates blanches cuites', pasta: 'Pates blanches cuites',
   spaghetti: 'Pates blanches cuites', nouilles: 'Pates blanches cuites',
   quinoa: 'Quinoa cuit', couscous: 'Couscous cuit', pain: 'Pain blanc', brood: 'Pain blanc',
-  pistolet: 'Pistolet (petit pain)', durum: 'Pain blanc', kebab: 'Viande de kebab', doner: 'Viande de kebab',
+  pistolet: 'Pistolet (petit pain)', kebab: 'Viande de kebab', doner: 'Viande de kebab',
   frites: 'Frites', frite: 'Frites', friet: 'Frites', frieten: 'Frites', fries: 'Frites',
   poulet: 'Poulet cuit', chicken: 'Poulet cuit', kip: 'Poulet cuit',
   'blanc de poulet': 'Blanc de poulet (cuit)', dinde: 'Blanc de dinde (cuit)',
