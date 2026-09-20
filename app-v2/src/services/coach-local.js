@@ -1,8 +1,9 @@
 import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
 
 /**
- * Coach local : sans serveur. On cherche des NOMS dans la phrase,
- * pas des bouts de mots au hasard.
+ * Coach local. Compare chaque mot a la base d'aliments,
+ * convertit les unites courantes, refuse les faux amis
+ * (« cuillere a soupe » n'est pas une soupe).
  */
 
 const ALIAS = {
@@ -32,6 +33,17 @@ const ALIAS = {
   beer: 'Biere blonde',
 };
 
+const HUILES = [
+  ['arachide', "Huile d'arachide"],
+  ['olive', "Huile d'olive"],
+  ['colza', 'Huile de colza'],
+  ['tournesol', 'Huile de tournesol'],
+  ['coco', 'Huile de coco'],
+  ['sesame', 'Huile de sesame'],
+  ['noix', 'Huile de noix'],
+  ['noisette', 'Huile de noisette'],
+];
+
 const PORTION = {
   'Pain blanc': 120,
   'Frites four': 200,
@@ -43,20 +55,24 @@ const PORTION = {
   Avoine: 40,
   'Whey Iso': 30,
   'Biere blonde': 330,
+  "Huile d'olive": 10,
+  "Huile d'arachide": 10,
+  'Huile de colza': 10,
 };
 
 const STOP = new Set([
-  'que', 'qui', 'une', 'des', 'les', 'une', 'aux', 'pour', 'avec', 'dans',
+  'que', 'qui', 'une', 'des', 'les', 'aux', 'pour', 'avec', 'dans',
   'plus', 'mais', 'pas', 'rien', 'tout', 'tous', 'cette', 'cet',
-  'manger', 'mange', 'mange', 'pris', 'prise', 'eu', 'avais', 'ete',
+  'manger', 'mange', 'pris', 'prise', 'avais',
   'repas', 'midi', 'soir', 'matin', 'aujourd', 'hui', 'hier',
-  'dis', 'dit', 'jai', 'jai', 'un', 'une', 'du', 'de', 'la', 'le',
-  'soupe', 'huile', 'blanc', 'legumes', 'legume',
+  'dis', 'dit', 'jai', 'un', 'du', 'de', 'la', 'le',
+  'cuillere', 'cuilleres', 'soupe', 'cafe', 'cas', 'cac',
+  'grammes', 'gramme',
 ]);
 
 const REPAS = [
-  ['petit dejeuner', 'pdej'], ['petit-dejeuner', 'pdej'], ['breakfast', 'pdej'],
-  ['matin', 'pdej'], ['dejeuner', 'dej'], ['midi', 'dej'], ['lunch', 'dej'],
+  ['petit dejeuner', 'pdej'], ['breakfast', 'pdej'], ['matin', 'pdej'],
+  ['dejeuner', 'dej'], ['midi', 'dej'], ['lunch', 'dej'],
   ['diner', 'diner'], ['soir', 'diner'], ['dinner', 'diner'],
   ['collation', 'snack'], ['snack', 'snack'],
 ];
@@ -68,8 +84,10 @@ function norm(s) {
     .trim();
 }
 
-function motEntier(phrase, mot) {
-  return new RegExp('(?:^| )' + mot + '(?: |$)').test(phrase);
+function dbKey(nom) {
+  if (DB[nom]) return nom;
+  const n = norm(nom);
+  return Object.keys(DB).find((k) => norm(k) === n) || null;
 }
 
 function repasCle(phrase) {
@@ -84,21 +102,41 @@ function repasCle(phrase) {
   return 'snack';
 }
 
-function quantiteDevant(phrase, mot) {
-  const re = new RegExp('(\\d+[\\.,]?\\d*)\\s*(g|gr|grammes?|ml|kg)?\\s*(de )?' + mot);
-  const m = phrase.match(re);
-  if (!m) return null;
-  let q = parseFloat(m[1].replace(',', '.'));
-  if (!isFinite(q) || q <= 0) return null;
-  if (m[2] && m[2] === 'kg') q *= 1000;
-  return q;
+/** 1 c. a soupe = 10 g, 1 c. a cafe = 5 g. Sinon grammes explicites. */
+function extraireQuantite(n, apresMot) {
+  const zone = apresMot
+    ? n.slice(0, n.indexOf(apresMot) + apresMot.length + 8)
+    : n;
+
+  const cas = zone.match(/(\d+[\.,]?\d*)\s*(cuillere(?:s)?(?: a soupe)?|cas)\b/);
+  if (cas) {
+    const nb = parseFloat(cas[1].replace(',', '.'));
+    if (nb > 0) return nb * 10;
+  }
+  const cac = zone.match(/(\d+[\.,]?\d*)\s*(cuillere(?:s)? a cafe|cac)\b/);
+  if (cac) {
+    const nb = parseFloat(cac[1].replace(',', '.'));
+    if (nb > 0) return nb * 5;
+  }
+  const g = zone.match(/(\d+[\.,]?\d*)\s*(g|gr|grammes?|ml)\b/);
+  if (g) {
+    const nb = parseFloat(g[1].replace(',', '.'));
+    if (nb > 0) return nb;
+  }
+  const kg = zone.match(/(\d+[\.,]?\d*)\s*kg\b/);
+  if (kg) {
+    const nb = parseFloat(kg[1].replace(',', '.'));
+    if (nb > 0) return nb * 1000;
+  }
+  return null;
 }
 
-function resoudreAlias(mot) {
-  const cle = ALIAS[mot];
-  if (cle && DB[cle]) return cle;
-  const sansAccent = Object.keys(DB).find((k) => norm(k) === norm(cle || ''));
-  return sansAccent || null;
+function huileDans(n) {
+  if (!/\bhuile\b/.test(n)) return null;
+  for (const [mot, nom] of HUILES) {
+    if (n.includes(mot)) return dbKey(nom);
+  }
+  return dbKey("Huile d'olive");
 }
 
 export function parserLocal(message) {
@@ -110,48 +148,43 @@ export function parserLocal(message) {
   const aliments = [];
   const cleRepas = repasCle(brut);
 
-  const ajouter = (cle, mot) => {
-    if (!cle || vus.has(cle) || !DB[cle]) return;
-    vus.add(cle);
-    const q = quantiteDevant(n, mot) || PORTION[cle] || 100;
+  const push = (cle, q) => {
+    const k = dbKey(cle);
+    if (!k || vus.has(k)) return;
+    vus.add(k);
     aliments.push({
-      aliment: cle,
+      aliment: k,
       quantite: Math.round(q),
       unite: 'g',
       repasCle: cleRepas,
     });
   };
 
-  // 1. Alias connus, mot entier uniquement.
-  const tokens = n.split(' ').filter((t) => t.length > 2 && !STOP.has(t));
-  for (const mot of tokens) {
-    if (!motEntier(n, mot)) continue;
-    ajouter(resoudreAlias(mot), mot);
+  // Huile + cuillere : avant le reste, pour ne pas creer une soupe.
+  const huile = huileDans(n);
+  if (huile) {
+    push(huile, extraireQuantite(n, 'huile') || PORTION[huile] || 10);
   }
 
-  // 2. Noms complets de la base, du plus long au plus court (min 5 lettres).
-  if (!aliments.length) {
-    const noms = NOMS_ALIMENTS
-      .filter((a) => norm(a).length >= 5)
-      .sort((a, b) => norm(b).length - norm(a).length);
-    for (const nom of noms) {
-      const nn = norm(nom);
-      if (n.includes(nn)) ajouter(nom, nn.split(' ')[0]);
-      if (aliments.length >= 4) break;
-    }
+  const tokens = n.split(' ').filter((t) => t.length > 2 && !STOP.has(t));
+  for (const mot of tokens) {
+    if (mot === 'huile' || HUILES.some(([m]) => m === mot)) continue;
+    const alias = ALIAS[mot];
+    if (!alias) continue;
+    push(alias, extraireQuantite(n, mot) || PORTION[alias] || 100);
   }
 
   if (!aliments.length) {
     return {
-      texte: "Je n'ai reconnu aucun aliment. Ecris les noms simples : « riz poulet », « durum frites », « 200 g riz ».",
+      texte: "Je n'ai reconnu aucun aliment de la base. Exemple : « 2 cuilleres a soupe d'huile d'olive », « 200 g riz ».",
       aliments: [],
       local: true,
     };
   }
 
-  const noms = aliments.map((a) => a.aliment).join(', ');
+  const detail = aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', ');
   return {
-    texte: 'Version locale : ' + noms + '. Verifie les quantites puis ajoute.',
+    texte: 'Compare a la base BelFit : ' + detail + '. Verifie puis ajoute.',
     aliments,
     local: true,
   };
