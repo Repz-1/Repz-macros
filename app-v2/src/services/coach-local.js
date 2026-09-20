@@ -29,7 +29,6 @@ const COMBOS = [
     ],
     extra: [
       { si: /\b(frite|frites|friet|frieten|fries)\b/, aliment: 'Frites', quantite: 200 },
-      { si: /\bandalouse\b/, aliment: 'Sauce andalouse', quantite: 30 },
     ],
   },
 ];
@@ -124,7 +123,7 @@ export function parserLocal(message, contexte = {}) {
   const n = normNom(brut);
   if (!n) return { texte: '', aliments: [], local: true };
 
-  const seance = proposerAdaptation(brut);
+  const seance = proposerAdaptation(brut, contexte.seanceRefs);
   if (seance) {
     return { texte: seance.texte, aliments: [], eauLitres: 0, seance, local: true };
   }
