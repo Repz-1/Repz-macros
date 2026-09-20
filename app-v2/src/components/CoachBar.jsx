@@ -1,10 +1,7 @@
 import { useState } from 'preact/hooks';
-import { demanderCoach } from '../services/coach.js';
 import { parserLocal, proposerRepas } from '../services/coach-local.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
 import { DB } from '../data/aliments.js';
-import { resoudreAliment } from '../data/alias-aliments.js';
-import { langue } from '../i18n/index.js';
 import '../styles/coach-bar.css';
 
 function repasCible(cle) {
@@ -16,11 +13,11 @@ function repasCible(cle) {
 
 function versLignes(aliments) {
   return (aliments || []).map((a) => {
-    const cle = resoudreAliment(a.aliment) || (DB[a.aliment] ? a.aliment : null);
+    const cle = DB[a.aliment] ? a.aliment : null;
     if (!cle) return null;
     const d = DB[cle];
     const portion = a.unite === 'piece' && d && d.unit ? a.quantite * d.unit : a.quantite;
-    return { cle, portion: Math.round(portion), dit: a.aliment, repasCle: a.repasCle, unite: a.unite };
+    return { cle, portion: Math.round(portion), repasCle: a.repasCle };
   }).filter(Boolean);
 }
 
@@ -43,41 +40,16 @@ export function CoachBar() {
     if (trouves.length || eau) setTexte('');
   };
 
-  const envoyer = async () => {
+  const envoyer = () => {
     const dit = texte.trim();
     if (!dit || etat === 'attente') return;
-    setEtat('attente');
-    setMsg('Un instant...');
-    setLignes([]);
-    setEauLitres(0);
-    setDiner(null);
-    const ctx = {
-      langue: langue.value || 'fr',
+    appliquer(parserLocal(dit, {
       objectifs: objectifs.value,
       totaux: totauxJourAff.value,
-      repas: repas.value.map((r) => ({
-        id: r.id, nom: r.nom, cle: r.cle, nbAliments: (r.ings || []).length,
-      })),
-    };
-    try {
-      appliquer(await demanderCoach(dit, ctx));
-    } catch (err) {
-      appliquer(parserLocal(dit, ctx));
-    }
+    }));
   };
 
   const retirer = (i) => setLignes(lignes.filter((_, j) => j !== i));
-
-  const proposerDiner = () => {
-    const prop = proposerRepas(objectifs.value, totauxJourAff.value);
-    if (!prop) return;
-    setDiner(prop);
-    setMsg('Il te reste ' + Math.round(kcalRestantes()) + ' kcal. Ce soir : ' + prop.nom + ' (' + prop.kcal + ' kcal).');
-    setEtat('diner');
-  };
-
-  const kcalRestantes = () =>
-    (objectifs.value.kcal || 0) - (totauxJourAff.value.kcal || 0);
 
   const confirmer = () => {
     const n = lignes.length;
@@ -91,8 +63,15 @@ export function CoachBar() {
     setLignes([]);
     setEauLitres(0);
     if (n || eau) {
-      setMsg('C\u2019est dans le journal.');
-      proposerDiner();
+      const prop = proposerRepas(objectifs.value, totauxJourAff.value);
+      if (prop) {
+        setDiner(prop);
+        setMsg('C\u2019est dans le journal. Ce soir, une idee : ' + prop.nom + '.');
+        setEtat('diner');
+      } else {
+        setMsg('C\u2019est dans le journal.');
+        setEtat('pret');
+      }
     } else {
       setMsg('');
       setEtat('pret');
@@ -124,13 +103,10 @@ export function CoachBar() {
           maxlength="240"
           placeholder="Ex. durum frites, j'ai bu 50 cl"
           value={texte}
-          disabled={etat === 'attente'}
           onInput={(e) => setTexte(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') envoyer(); }}
         />
-        <button class="coach-bar-go" type="button" disabled={etat === 'attente' || !texte.trim()} onClick={envoyer}>
-          {etat === 'attente' ? '...' : 'OK'}
-        </button>
+        <button class="coach-bar-go" type="button" disabled={!texte.trim()} onClick={envoyer}>OK</button>
       </div>
       {msg && <p class="coach-bar-msg">{msg}</p>}
       {etat === 'proposition' && aConfirmer && (
@@ -153,13 +129,8 @@ export function CoachBar() {
       {etat === 'diner' && diner && (
         <div class="coach-bar-diner">
           <p class="coach-bar-diner-nom">{diner.nom}</p>
-          <p class="coach-bar-diner-macros">{diner.kcal} kcal · P {diner.prot} · G {diner.carbs} · L {diner.lip}</p>
-          <ul class="coach-bar-diner-ings">
-            {diner.ings.map((a, i) => (
-              <li key={i}>{a.aliment} — {a.quantite} {a.unite === 'piece' ? 'p' : 'g'}</li>
-            ))}
-          </ul>
-          <button class="coach-bar-ajout" type="button" onClick={confirmerDiner}>Ajouter ce dîner</button>
+          <p class="coach-bar-diner-macros">{diner.kcal} kcal</p>
+          <button class="coach-bar-ajout" type="button" onClick={confirmerDiner}>Ajouter ce diner</button>
           <button class="coach-bar-passe" type="button" onClick={() => { setDiner(null); setEtat('pret'); setMsg(''); }}>
             Pas maintenant
           </button>

@@ -4,11 +4,10 @@ import { EAT_IDEAS } from '../data/idees.js';
 import { limitesPortion } from '../data/portions.js';
 
 const PORTION = {
-  'Pain blanc': 120, 'Frites four': 200, 'Frites': 200, 'Poulet cuit': 150,
+  'Pain blanc': 120, 'Frites': 200, 'Frites four': 200, 'Poulet cuit': 150,
   'Riz cuit': 200, Banane: 120, 'Oeuf entier M (50g)': 50, Avoine: 40,
   'Whey Iso': 30, 'Biere blonde': 330, "Huile d'olive": 10,
-  "Huile d'arachide": 10, 'Pomme de terre cuite': 200,
-  'Viande de kebab': 150,
+  'Pomme de terre cuite': 200, 'Viande de kebab': 150,
 };
 
 const STOP = new Set([
@@ -19,14 +18,18 @@ const STOP = new Set([
   'bouteilles','eau','bu','bois','boire','cl','ml',
 ]);
 
-/** Plats belges qui sont PLUSIEURS aliments. Un durum n'est pas du pain. */
 const COMBOS = [
   {
-    re: /\b(durum|durums|doner kebab)\b/,
-    skip: ['durum', 'durums', 'doner', 'kebab'],
+    re: /\b(durum|durums|doner|doner kebab)\b/,
+    skip: ['durum', 'durums', 'doner', 'kebab', 'pain'],
     aliments: [
       { aliment: 'Pain blanc', quantite: 120 },
       { aliment: 'Viande de kebab', quantite: 150 },
+    ],
+    extra: [
+      { si: /\b(frite|frites|friet|frieten|fries)\b/, aliment: 'Frites', quantite: 200 },
+      { si: /\bandalouse\b/, aliment: 'Sauce andalouse', quantite: 30 },
+      { si: /\bsamourai\b/, aliment: 'Sauce samourai', quantite: 30 },
     ],
   },
 ];
@@ -53,19 +56,16 @@ function extraireQuantite(n, apresMot) {
   return null;
 }
 
-/** Litres d'eau dans la phrase, ou null. */
 export function extraireEau(phrase) {
   const n = normNom(phrase);
   const parleEau = /\b(eau|bu|bois|boire|verre|verres|bouteille|hydrate)\b/.test(n);
   if (!parleEau) return null;
-
   const l = n.match(/(\d+[\.,]?\d*)\s*l\b/);
   if (l) return parseFloat(l[1].replace(',', '.'));
   const cl = n.match(/(\d+[\.,]?\d*)\s*cl\b/);
   if (cl) return parseFloat(cl[1].replace(',', '.')) / 100;
   const ml = n.match(/(\d+[\.,]?\d*)\s*ml\b/);
   if (ml) return parseFloat(ml[1].replace(',', '.')) / 1000;
-
   if (/\bbouteille/.test(n)) return 0.5;
   if (/\bverres\b/.test(n)) {
     const nb = n.match(/(\d+)\s*verres/);
@@ -83,10 +83,6 @@ export function macrosAliments(aliments) {
   }, { kcal: 0, prot: 0, carbs: 0, lip: 0 });
 }
 
-/**
- * Un diner qui rattrape le reste de la journee.
- * Une seule idee, portion calée, ou null si plus rien a rattraper.
- */
 export function proposerRepas(objectifs, totaux, dejaAjoutes = []) {
   const obj = objectifs || {};
   const tot = totaux || {};
@@ -95,7 +91,6 @@ export function proposerRepas(objectifs, totaux, dejaAjoutes = []) {
   if (resteKcal < 280) return null;
   const plafond = (obj.kcal || 2000) * 0.28;
   const cible = Math.max(280, Math.min(resteKcal, plafond));
-
   let meilleur = null;
   let meilleurScore = Infinity;
   for (const cat of Object.values(EAT_IDEAS)) {
@@ -166,11 +161,12 @@ export function parserLocal(message, contexte = {}) {
     if (!c.re.test(n)) continue;
     c.skip.forEach((s) => skip.add(s));
     c.aliments.forEach((a) => push(a.aliment, a.quantite));
+    (c.extra || []).forEach((e) => { if (e.si.test(n)) push(e.aliment, e.quantite); });
   }
 
   const cles = Object.keys(ALIAS).sort((a, b) => b.length - a.length);
   for (const a of cles) {
-    if (STOP.has(a) || skip.has(a) || a.length < 3) continue;
+    if (STOP.has(a) || skip.has(a) || a.length < 4) continue;
     if (!new RegExp('(?:^| )' + a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?: |$)').test(n)) continue;
     const cle = resoudreAliment(a);
     push(cle, extraireQuantite(n, a) || PORTION[cle] || 100);
@@ -179,7 +175,7 @@ export function parserLocal(message, contexte = {}) {
   if (!aliments.length && !eauLitres) {
     noterManque(brut);
     return {
-      texte: "Pas trouve. Nourriture : « 200 g riz ». Eau : « j'ai bu 50 cl ».",
+      texte: "Pas trouve. Nourriture : « durum frites ». Eau : « j'ai bu 50 cl ».",
       aliments: [],
       local: true,
     };
@@ -187,14 +183,13 @@ export function parserLocal(message, contexte = {}) {
 
   const macros = macrosAliments(aliments);
   const bits = [];
-  if (eauLitres) bits.push(eauLitres.toString().replace('.', ',') + ' L d\u2019eau');
+  if (eauLitres) bits.push(String(eauLitres).replace('.', ',') + ' L d\u2019eau');
   if (aliments.length) bits.push(aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', '));
-
-  const obj = contexte.objectifs || {};
-  const tot = contexte.totaux || {};
   let texte = 'Base BelFit : ' + bits.join(' + ') + '.';
   if (aliments.length) {
     texte += ' \u2248 ' + Math.round(macros.kcal) + ' kcal.';
+    const obj = contexte.objectifs || {};
+    const tot = contexte.totaux || {};
     const reste = (obj.kcal || 0) - (tot.kcal || 0) - macros.kcal;
     if (obj.kcal) {
       texte += reste > 0
