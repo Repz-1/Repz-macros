@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { parserLocal, proposerRepas } from '../services/coach-local.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
 import { DB } from '../data/aliments.js';
@@ -28,13 +28,25 @@ export function CoachBar() {
   const [lignes, setLignes] = useState([]);
   const [eauLitres, setEauLitres] = useState(0);
   const [diner, setDiner] = useState(null);
+  const ajoutRef = useRef(null);
+
+  const ouvert = etat === 'proposition' || etat === 'diner';
+
+  useEffect(() => {
+    if (!ouvert) return;
+    const el = ajoutRef.current;
+    if (!el) return;
+    requestAnimationFrame(() => {
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  }, [ouvert, lignes.length, diner]);
 
   const appliquer = (out) => {
     const trouves = versLignes(out.aliments);
     const eau = Number(out.eauLitres) || 0;
     setEauLitres(eau);
     setDiner(null);
-    setMsg(out.texte || (trouves.length || eau ? 'Verifie les lignes puis ajoute.' : 'Rien a mettre.'));
+    setMsg(out.texte || (trouves.length || eau ? 'Verifie puis ajoute.' : 'Rien a mettre.'));
     setLignes(trouves);
     setEtat((trouves.length || eau) ? 'proposition' : 'pret');
     if (trouves.length || eau) setTexte('');
@@ -99,20 +111,20 @@ export function CoachBar() {
       ajouterIngredient(cible.id, a.aliment, Math.round(portion));
     });
     setDiner(null);
-    setMsg('Repas ajoute au journal. Tu as la liste pour le preparer.');
+    setMsg('Liste ajoutee. Tu peux preparer ce repas.');
     setEtat('pret');
   };
 
   const aConfirmer = lignes.length > 0 || eauLitres > 0;
 
   return (
-    <div class="coach-bar">
+    <div class={'coach-bar' + (ouvert ? ' coach-bar--ouvert' : '')}>
       <div class="coach-bar-ligne">
         <input
           class="coach-bar-champ"
           type="text"
           maxlength="240"
-          placeholder="Ex. une pomme, durum frites, j'ai bu 50 cl"
+          placeholder="Ex. une pomme, durum frites"
           value={texte}
           onInput={(e) => setTexte(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') envoyer(); }}
@@ -134,7 +146,7 @@ export function CoachBar() {
               <button type="button" onClick={() => retirer(i)} aria-label="Retirer">x</button>
             </div>
           ))}
-          <button class="coach-bar-ajout" type="button" onClick={confirmer}>Ajouter au journal</button>
+          <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmer}>Ajouter au journal</button>
         </>
       )}
       {etat === 'diner' && diner && (
@@ -150,7 +162,7 @@ export function CoachBar() {
               <button type="button" onClick={() => retirerIngDiner(i)} aria-label="Retirer">x</button>
             </div>
           ))}
-          <button class="coach-bar-ajout" type="button" onClick={confirmerDiner}>Ajouter cette liste au journal</button>
+          <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmerDiner}>Ajouter cette liste au journal</button>
           <button class="coach-bar-passe" type="button" onClick={() => { setDiner(null); setEtat('pret'); setMsg(''); }}>
             Pas maintenant
           </button>
