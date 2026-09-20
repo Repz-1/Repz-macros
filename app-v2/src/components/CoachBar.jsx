@@ -45,7 +45,7 @@ export function CoachBar() {
 
   const appliquer = (out) => {
     const trouves = versLignes(out.aliments);
-    setMsg(out.texte || (trouves.length ? 'Vérifie et ajoute.' : 'Rien à mettre au journal.'));
+    setMsg(out.texte || (trouves.length ? 'Verifie et ajoute.' : 'Rien a mettre au journal.'));
     setLignes(trouves);
     setEtat(trouves.length ? 'proposition' : 'pret');
     if (trouves.length) setTexte('');
@@ -55,7 +55,7 @@ export function CoachBar() {
     const dit = texte.trim();
     if (!dit || etat === 'attente') return;
     setEtat('attente');
-    setMsg('Un instant\u2026');
+    setMsg('Un instant...');
     setLignes([]);
     try {
       const ctx = {
@@ -76,13 +76,14 @@ export function CoachBar() {
   const retirer = (i) => setLignes(lignes.filter((_, j) => j !== i));
 
   const confirmer = () => {
+    const n = lignes.length;
     lignes.forEach((l) => {
       if (l.portion <= 0) return;
       const cible = repasCible(l.repasCle);
       if (cible) ajouterIngredient(cible.id, l.cle, l.portion);
     });
     setLignes([]);
-    setMsg(lignes.length ? 'C\u2019est dans le journal.' : '');
+    setMsg(n ? 'Cest dans le journal.' : '');
     setEtat('pret');
   };
 
@@ -93,7 +94,7 @@ export function CoachBar() {
           class="coach-bar-champ"
           type="text"
           maxlength="240"
-          placeholder="Dis ce que tu as mangé\u2026"
+          placeholder="Dis ce que tu as mange..."
           value={texte}
           disabled={etat === 'attente'}
           onInput={(e) => setTexte(e.target.value)}
@@ -104,15 +105,15 @@ export function CoachBar() {
           type="button"
           disabled={etat === 'attente' || !texte.trim()}
           onClick={envoyer}
-        >{etat === 'attente' ? '\u2026' : 'OK'}</button>
+        >{etat === 'attente' ? '...' : 'OK'}</button>
       </div>
       {msg && <p class="coach-bar-msg">{msg}</p>}
       {etat === 'proposition' && lignes.length > 0 && (
         <>
           {lignes.map((l, i) => (
             <div class="coach-bar-ligne-alim" key={i}>
-              <span>{l.cle} \u00b7 {l.portion} g</span>
-              <button type="button" onClick={() => retirer(i)} aria-label="Retirer">\u2715</button>
+              <span>{l.cle} - {l.portion} g</span>
+              <button type="button" onClick={() => retirer(i)} aria-label="Retirer">x</button>
             </div>
           ))}
           <button class="coach-bar-ajout" type="button" onClick={confirmer}>

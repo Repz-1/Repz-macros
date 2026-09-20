@@ -1,16 +1,13 @@
 import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
 
 /**
- * Coach local : marche sans Cloud Function ni compte Firebase.
- * Ce n'est PAS Gemini. C'est assez pour tester le geste
- * « je dis → je vérifie → c'est dans le journal » depuis le téléphone.
+ * Coach local : sans serveur. On cherche des NOMS dans la phrase,
+ * pas des bouts de mots au hasard.
  */
 
 const ALIAS = {
   durum: 'Pain blanc',
-  dürüm: 'Pain blanc',
   kebab: 'Pain blanc',
-  döner: 'Pain blanc',
   doner: 'Pain blanc',
   frites: 'Frites four',
   frite: 'Frites four',
@@ -20,25 +17,19 @@ const ALIAS = {
   chicken: 'Poulet cuit',
   riz: 'Riz cuit',
   rice: 'Riz cuit',
-  pates: 'Pâtes blanches cuites',
-  pâtes: 'Pâtes blanches cuites',
-  pasta: 'Pâtes blanches cuites',
+  pates: 'Pates blanches cuites',
+  pasta: 'Pates blanches cuites',
   banane: 'Banane',
   banana: 'Banane',
-  oeuf: 'Œuf',
-  oeufs: 'Œuf',
-  'œuf': 'Œuf',
-  'œufs': 'Œuf',
-  egg: 'Œuf',
+  oeuf: 'Oeuf entier M (50g)',
+  oeufs: 'Oeuf entier M (50g)',
+  egg: 'Oeuf entier M (50g)',
   pain: 'Pain blanc',
   bread: 'Pain blanc',
   avoine: 'Avoine',
   whey: 'Whey Iso',
-  biere: 'Bière blonde',
-  bière: 'Bière blonde',
-  beer: 'Bière blonde',
-  eau: 'Eau',
-  water: 'Eau',
+  biere: 'Biere blonde',
+  beer: 'Biere blonde',
 };
 
 const PORTION = {
@@ -46,21 +37,28 @@ const PORTION = {
   'Frites four': 200,
   'Poulet cuit': 150,
   'Riz cuit': 200,
-  'Pâtes blanches cuites': 200,
+  'Pates blanches cuites': 200,
   Banane: 120,
-  'Œuf': 60,
+  'Oeuf entier M (50g)': 50,
   Avoine: 40,
   'Whey Iso': 30,
-  'Bière blonde': 330,
-  Eau: 250,
+  'Biere blonde': 330,
 };
 
+const STOP = new Set([
+  'que', 'qui', 'une', 'des', 'les', 'une', 'aux', 'pour', 'avec', 'dans',
+  'plus', 'mais', 'pas', 'rien', 'tout', 'tous', 'cette', 'cet',
+  'manger', 'mange', 'mange', 'pris', 'prise', 'eu', 'avais', 'ete',
+  'repas', 'midi', 'soir', 'matin', 'aujourd', 'hui', 'hier',
+  'dis', 'dit', 'jai', 'jai', 'un', 'une', 'du', 'de', 'la', 'le',
+  'soupe', 'huile', 'blanc', 'legumes', 'legume',
+]);
+
 const REPAS = [
-  ['petit dejeuner', 'pdej'], ['petit-dejeuner', 'pdej'], ['petit déjeuner', 'pdej'],
-  ['breakfast', 'pdej'], ['matin', 'pdej'], ['ontbijt', 'pdej'],
-  ['dejeuner', 'dej'], ['déjeuner', 'dej'], ['midi', 'dej'], ['lunch', 'dej'],
-  ['diner', 'diner'], ['dîner', 'diner'], ['soir', 'diner'], ['dinner', 'diner'],
-  ['collation', 'snack'], ['snack', 'snack'], ['encas', 'snack'],
+  ['petit dejeuner', 'pdej'], ['petit-dejeuner', 'pdej'], ['breakfast', 'pdej'],
+  ['matin', 'pdej'], ['dejeuner', 'dej'], ['midi', 'dej'], ['lunch', 'dej'],
+  ['diner', 'diner'], ['soir', 'diner'], ['dinner', 'diner'],
+  ['collation', 'snack'], ['snack', 'snack'],
 ];
 
 function norm(s) {
@@ -68,6 +66,10 @@ function norm(s) {
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
+}
+
+function motEntier(phrase, mot) {
+  return new RegExp('(?:^| )' + mot + '(?: |$)').test(phrase);
 }
 
 function repasCle(phrase) {
@@ -82,24 +84,21 @@ function repasCle(phrase) {
   return 'snack';
 }
 
-function quantiteDevant(n, alias) {
-  const re = new RegExp('(\\d+[\\.,]?\\d*)\\s*(g|gr|grammes?|ml|kilo|kg)?\\s*' + alias);
-  const m = n.match(re);
+function quantiteDevant(phrase, mot) {
+  const re = new RegExp('(\\d+[\\.,]?\\d*)\\s*(g|gr|grammes?|ml|kg)?\\s*(de )?' + mot);
+  const m = phrase.match(re);
   if (!m) return null;
   let q = parseFloat(m[1].replace(',', '.'));
   if (!isFinite(q) || q <= 0) return null;
-  if (m[2] && /kg|kilo/.test(m[2])) q *= 1000;
+  if (m[2] && m[2] === 'kg') q *= 1000;
   return q;
 }
 
-function trouverCle(mot) {
-  if (ALIAS[mot] && DB[ALIAS[mot]]) return ALIAS[mot];
-  const exact = NOMS_ALIMENTS.find((a) => norm(a) === mot);
-  if (exact) return exact;
-  return NOMS_ALIMENTS.find((a) => {
-    const na = norm(a);
-    return na === mot || na.startsWith(mot + ' ') || mot.startsWith(na);
-  }) || null;
+function resoudreAlias(mot) {
+  const cle = ALIAS[mot];
+  if (cle && DB[cle]) return cle;
+  const sansAccent = Object.keys(DB).find((k) => norm(k) === norm(cle || ''));
+  return sansAccent || null;
 }
 
 export function parserLocal(message) {
@@ -109,32 +108,50 @@ export function parserLocal(message) {
 
   const vus = new Set();
   const aliments = [];
-  const tokens = n.split(' ').filter((t) => t.length > 2);
+  const cleRepas = repasCle(brut);
 
-  for (const mot of tokens) {
-    const cle = trouverCle(mot);
-    if (!cle || vus.has(cle)) continue;
+  const ajouter = (cle, mot) => {
+    if (!cle || vus.has(cle) || !DB[cle]) return;
     vus.add(cle);
     const q = quantiteDevant(n, mot) || PORTION[cle] || 100;
     aliments.push({
       aliment: cle,
       quantite: Math.round(q),
       unite: 'g',
-      repasCle: repasCle(brut),
+      repasCle: cleRepas,
     });
+  };
+
+  // 1. Alias connus, mot entier uniquement.
+  const tokens = n.split(' ').filter((t) => t.length > 2 && !STOP.has(t));
+  for (const mot of tokens) {
+    if (!motEntier(n, mot)) continue;
+    ajouter(resoudreAlias(mot), mot);
+  }
+
+  // 2. Noms complets de la base, du plus long au plus court (min 5 lettres).
+  if (!aliments.length) {
+    const noms = NOMS_ALIMENTS
+      .filter((a) => norm(a).length >= 5)
+      .sort((a, b) => norm(b).length - norm(a).length);
+    for (const nom of noms) {
+      const nn = norm(nom);
+      if (n.includes(nn)) ajouter(nom, nn.split(' ')[0]);
+      if (aliments.length >= 4) break;
+    }
   }
 
   if (!aliments.length) {
     return {
-      texte: 'Je n\u2019ai pas reconnu d\u2019aliment. Essaie « 200 g de riz » ou « durum frites ».',
+      texte: "Je n'ai reconnu aucun aliment. Ecris les noms simples : « riz poulet », « durum frites », « 200 g riz ».",
       aliments: [],
       local: true,
     };
   }
 
-  const noms = aliments.map((a) => a.aliment.toLowerCase()).join(', ');
+  const noms = aliments.map((a) => a.aliment).join(', ');
   return {
-    texte: 'Version locale (sans serveur) : ' + noms + '. Vérifie les quantités puis ajoute.',
+    texte: 'Version locale : ' + noms + '. Verifie les quantites puis ajoute.',
     aliments,
     local: true,
   };
