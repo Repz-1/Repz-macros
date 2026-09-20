@@ -2,18 +2,10 @@ import { useState } from 'preact/hooks';
 import { demanderCoach } from '../services/coach.js';
 import { parserLocal } from '../services/coach-local.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient } from '../store/journal.js';
-import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
+import { DB } from '../data/aliments.js';
+import { resoudreAliment } from '../data/alias-aliments.js';
 import { langue } from '../i18n/index.js';
 import '../styles/coach-bar.css';
-
-function trouverAliment(nom) {
-  const n = (nom || '').toLowerCase().trim();
-  if (!n) return null;
-  if (DB[nom]) return nom;
-  const exact = NOMS_ALIMENTS.find((a) => a.toLowerCase() === n);
-  if (exact) return exact;
-  return NOMS_ALIMENTS.find((a) => a.toLowerCase().includes(n) || n.includes(a.toLowerCase())) || null;
-}
 
 function repasCible(cle) {
   const liste = repas.value;
@@ -24,16 +16,11 @@ function repasCible(cle) {
 
 function versLignes(aliments) {
   return (aliments || []).map((a) => {
-    const cle = trouverAliment(a.aliment);
+    const cle = resoudreAliment(a.aliment) || (DB[a.aliment] ? a.aliment : null);
     if (!cle) return null;
     const d = DB[cle];
     const portion = a.unite === 'piece' && d && d.unit ? a.quantite * d.unit : a.quantite;
-    return {
-      cle,
-      portion: Math.round(portion),
-      dit: a.aliment,
-      repasCle: a.repasCle,
-    };
+    return { cle, portion: Math.round(portion), dit: a.aliment, repasCle: a.repasCle };
   }).filter(Boolean);
 }
 
@@ -66,8 +53,7 @@ export function CoachBar() {
           id: r.id, nom: r.nom, cle: r.cle, nbAliments: (r.ings || []).length,
         })),
       };
-      const out = await demanderCoach(dit, ctx);
-      appliquer(out);
+      appliquer(await demanderCoach(dit, ctx));
     } catch (err) {
       appliquer(parserLocal(dit));
     }
@@ -94,18 +80,15 @@ export function CoachBar() {
           class="coach-bar-champ"
           type="text"
           maxlength="240"
-          placeholder="Dis ce que tu as mange..."
+          placeholder="Ex. patate, 2 cas d huile, 200 g riz"
           value={texte}
           disabled={etat === 'attente'}
           onInput={(e) => setTexte(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') envoyer(); }}
         />
-        <button
-          class="coach-bar-go"
-          type="button"
-          disabled={etat === 'attente' || !texte.trim()}
-          onClick={envoyer}
-        >{etat === 'attente' ? '...' : 'OK'}</button>
+        <button class="coach-bar-go" type="button" disabled={etat === 'attente' || !texte.trim()} onClick={envoyer}>
+          {etat === 'attente' ? '...' : 'OK'}
+        </button>
       </div>
       {msg && <p class="coach-bar-msg">{msg}</p>}
       {etat === 'proposition' && lignes.length > 0 && (
@@ -116,9 +99,7 @@ export function CoachBar() {
               <button type="button" onClick={() => retirer(i)} aria-label="Retirer">x</button>
             </div>
           ))}
-          <button class="coach-bar-ajout" type="button" onClick={confirmer}>
-            Ajouter au journal
-          </button>
+          <button class="coach-bar-ajout" type="button" onClick={confirmer}>Ajouter au journal</button>
         </>
       )}
     </div>
