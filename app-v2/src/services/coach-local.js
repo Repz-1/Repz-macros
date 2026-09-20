@@ -2,12 +2,13 @@ import { DB, macrosOf } from '../data/aliments.js';
 import { ALIAS, normNom, resoudreAliment, noterManque } from '../data/alias-aliments.js';
 import { EAT_IDEAS } from '../data/idees.js';
 import { limitesPortion } from '../data/portions.js';
+import { proposerAdaptation } from '../store/adaptations.js';
 
 const PORTION = {
-  'Pain blanc': 120, 'Frites': 200, 'Frites four': 200, 'Poulet cuit': 150,
-  'Riz cuit': 200, Banane: 120, 'Oeuf entier M (50g)': 50, Avoine: 40,
-  'Whey Iso': 30, 'Biere blonde': 330, "Huile d'olive": 10,
-  'Pomme de terre cuite': 200, 'Viande de kebab': 150,
+  'Pain blanc': 120, 'Frites': 200, 'Poulet cuit': 150,
+  'Riz cuit': 200, Banane: 120, 'Oeuf entier M (50g)': 50,
+  'Whey Iso': 30, "Huile d'olive": 10, 'Pomme de terre cuite': 200,
+  'Viande de kebab': 150,
 };
 
 const STOP = new Set([
@@ -15,7 +16,7 @@ const STOP = new Set([
   'pas','rien','tout','manger','mange','pris','repas','midi','soir','matin',
   'dis','dit','jai','un','du','de','la','le','cuillere','cuilleres','soupe',
   'cas','cac','grammes','gramme','blanc','verre','verres','bouteille',
-  'bouteilles','eau','bu','bois','boire','cl','ml',
+  'eau','bu','bois','boire','cl','ml','genou','genoux',
 ]);
 
 const COMBOS = [
@@ -29,7 +30,6 @@ const COMBOS = [
     extra: [
       { si: /\b(frite|frites|friet|frieten|fries)\b/, aliment: 'Frites', quantite: 200 },
       { si: /\bandalouse\b/, aliment: 'Sauce andalouse', quantite: 30 },
-      { si: /\bsamourai\b/, aliment: 'Sauce samourai', quantite: 30 },
     ],
   },
 ];
@@ -67,11 +67,7 @@ export function extraireEau(phrase) {
   const ml = n.match(/(\d+[\.,]?\d*)\s*ml\b/);
   if (ml) return parseFloat(ml[1].replace(',', '.')) / 1000;
   if (/\bbouteille/.test(n)) return 0.5;
-  if (/\bverres\b/.test(n)) {
-    const nb = n.match(/(\d+)\s*verres/);
-    return (nb ? parseInt(nb[1], 10) : 2) * 0.25;
-  }
-  if (/\bverre\b/.test(n)) return 0.25;
+  if (/\bverre/.test(n)) return 0.25;
   return 0.25;
 }
 
@@ -107,34 +103,16 @@ export function proposerRepas(objectifs, totaux, dejaAjoutes = []) {
         const d = DB[i.n];
         const lim = limitesPortion(i.n);
         if (d.unit) {
-          return {
-            aliment: i.n,
-            quantite: Math.min(lim.max, Math.max(lim.min, Math.round(i.q * ratio))),
-            unite: 'piece',
-            repasCle: 'diner',
-          };
+          return { aliment: i.n, quantite: Math.min(lim.max, Math.max(lim.min, Math.round(i.q * ratio))), unite: 'piece', repasCle: 'diner' };
         }
         const brut = Math.round((i.q * ratio) / lim.step) * lim.step;
-        return {
-          aliment: i.n,
-          quantite: Math.min(lim.max, Math.max(lim.min, brut)),
-          unite: 'g',
-          repasCle: 'diner',
-        };
+        return { aliment: i.n, quantite: Math.min(lim.max, Math.max(lim.min, brut)), unite: 'g', repasCle: 'diner' };
       });
       const m = macrosAliments(ings);
       const score = Math.abs(m.kcal - cible);
       if (score < meilleurScore) {
         meilleurScore = score;
-        meilleur = {
-          nom: idee.nom,
-          kcal: Math.round(m.kcal),
-          prot: Math.round(m.prot),
-          carbs: Math.round(m.carbs),
-          lip: Math.round(m.lip),
-          ings,
-          resteApres: Math.round(resteKcal - m.kcal),
-        };
+        meilleur = { nom: idee.nom, kcal: Math.round(m.kcal), prot: Math.round(m.prot), carbs: Math.round(m.carbs), lip: Math.round(m.lip), ings };
       }
     }
   }
@@ -145,6 +123,11 @@ export function parserLocal(message, contexte = {}) {
   const brut = String(message || '').trim();
   const n = normNom(brut);
   if (!n) return { texte: '', aliments: [], local: true };
+
+  const seance = proposerAdaptation(brut);
+  if (seance) {
+    return { texte: seance.texte, aliments: [], eauLitres: 0, seance, local: true };
+  }
 
   const eauLitres = extraireEau(brut);
   const skip = new Set();
@@ -175,7 +158,7 @@ export function parserLocal(message, contexte = {}) {
   if (!aliments.length && !eauLitres) {
     noterManque(brut);
     return {
-      texte: "Pas trouve. Nourriture : « durum frites ». Eau : « j'ai bu 50 cl ».",
+      texte: "Pas trouve. Nourriture, eau, ou « j'ai mal au genou ».",
       aliments: [],
       local: true,
     };
@@ -197,20 +180,13 @@ export function parserLocal(message, contexte = {}) {
         : ' Ca depasse l\u2019objectif de ' + Math.round(-reste) + ' kcal.';
     }
     texte += ' Verifie puis ajoute.';
-  } else {
-    texte += ' Verifie puis ajoute.';
-  }
+  } else texte += ' Verifie puis ajoute.';
 
   return {
     texte,
     aliments,
     eauLitres: eauLitres || 0,
-    macros: {
-      kcal: Math.round(macros.kcal),
-      prot: Math.round(macros.prot),
-      carbs: Math.round(macros.carbs),
-      lip: Math.round(macros.lip),
-    },
+    macros: { kcal: Math.round(macros.kcal), prot: Math.round(macros.prot), carbs: Math.round(macros.carbs), lip: Math.round(macros.lip) },
     local: true,
   };
 }
