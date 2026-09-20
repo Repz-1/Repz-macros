@@ -271,3 +271,22 @@ button.sg-pt:active { transform: scale(.92); }
   font-family: inherit; font-size: 13.5px; font-weight: 700; color: #8A8378;
   cursor: pointer;
 }
+.sg-jeter {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  color: #8A8378;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.sg-jeter-ok {
+  background: #A0301E !important;
+  color: #fff !important;
+  margin-top: 12px;
+}

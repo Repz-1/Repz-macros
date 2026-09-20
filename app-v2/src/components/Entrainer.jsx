@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
-import { signal } from '@preact/signals';
+import { signal, effect } from '@preact/signals';
 import { GROUPES, muscleLog, basculerMuscle, borneCalendrier, texteSur } from '../store/entrainement.js';
 import { compteDuJour, musclesDuJour, musclesParJour } from '../services/muscles-jour.js';
 import { estPremium } from './PremiumPage.jsx';
@@ -12,8 +12,10 @@ import { BodyMap } from './Stats.jsx';
 import { DetailSeance } from './Seances.jsx';
 import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId, normaliserJours } from '../store/programme.js';
 import { seancesDuJour } from '../store/seances.js';
-
+import { portraitSeanceDuJour, ETAT, demandeVueEntrainer } from '../store/seance-active.js';
+import { CarteSeanceJour } from './CarteSeanceJour.jsx';
 import { t } from '../i18n/index.js';
+import '../styles/seance-jour.css';
 
 /* ------------------------------------------------------------
    Fonds de cartes : charges a la PREMIERE visite de l'onglet.
@@ -73,6 +75,12 @@ export function allerVers(nom, params = null) {
   vueEntrainer.value = { nom, params };
   window.scrollTo(0, 0);
 }
+effect(() => {
+  const d = demandeVueEntrainer.value;
+  if (!d) return;
+  allerVers(d.nom, d.params);
+  demandeVueEntrainer.value = null;
+});
 export function retourEntrainer() {
   vueEntrainer.value = { nom: 'accueil', params: null };
   window.scrollTo(0, 0);
@@ -1001,6 +1009,15 @@ export function Entrainer() {
   return (
     <div class="pg-entrainer pg-entrainer--carte">
       <Entete />
+      {(() => {
+        const p = portraitSeanceDuJour();
+        if (p.etat !== ETAT.BROUILLON && p.etat !== ETAT.EN_COURS) return null;
+        return (
+          <div style={{ margin: '0 16px 12px' }}>
+            <CarteSeanceJour />
+          </div>
+        );
+      })()}
       {/* Pas de bloc-titre sous la barre : comme le Journal, la barre
           puis le contenu. Le nom de l'onglet est deja dans la
           navigation du bas — le repeter en 31 px coutait un tiers

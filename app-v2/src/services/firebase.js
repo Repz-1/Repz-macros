@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { SANS_COMPTE } from '../acces-invite.js';
+import { SANS_COMPTE, demanderConnexion } from '../acces-invite.js';
 import {
   initializeAuth, indexedDBLocalPersistence, browserLocalPersistence,
   onAuthStateChanged,
@@ -44,35 +44,78 @@ export const auth = initializeAuth(app, {
 // authPrete   : false tant que Firebase n'a pas repondu (evite le flash ecran login)
 export const utilisateur = signal(null);
 export const authPrete = signal(false);
+export const sortieDemandee = signal(false);
+const CLE_SORTIE = 'belfit_sortie';
 
-// Le mode invite a ete retire : on ouvre desormais un compte des le
-// depart. Le drapeau des anciennes sessions est purge au chargement
-// pour qu'aucun appareil ne reste bloque dans un etat qui n'existe plus.
-try { localStorage.removeItem('belfit_v2_invite'); } catch (e) {}
-
-// Identite courante : uid du compte, sinon null.
 export const identite = computed(() => utilisateur.value ? utilisateur.value.uid : null);
 
-// Ordre de deconnexion porte par l'URL (venu de la page reglages v1,
-// dont la session ne partage pas le meme magasin que la notre) : on
-// coupe notre propre session avant toute chose, puis on nettoie l'URL.
-try {
-  if (new URLSearchParams(window.location.search).get('logout') === '1') {
-    signOut(auth).catch(() => {});
-    history.replaceState(null, '', window.location.pathname);
-  }
-} catch (e) { /* URL intouchable : tant pis, l'ecran de connexion suffira */ }
+function marquerSortie() {
+  sortieDemandee.value = true;
+  demanderConnexion.value = true;
+  try { localStorage.setItem(CLE_SORTIE, '1'); } catch (e) { /* tant pis */ }
+}
+
+function sortieEnCours() {
+  if (sortieDemandee.value) return true;
+  try { return localStorage.getItem(CLE_SORTIE) === '1'; } catch (e) { return false; }
+}
+
+function oublierSortie() {
+  sortieDemandee.value = false;
+  try { localStorage.removeItem(CLE_SORTIE); } catch (e) { /* tant pis */ }
+}
+
+function veutInvite() {
+  if (sortieEnCours() || demanderConnexion.value) return false;
+  try {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get('logout') === '1') return false;
+    if (q.has('invite')) return true;
+    const h = window.location.hostname;
+    if (h === 'localhost' || h === '127.0.0.1') return true;
+    if (!/(^|\.)belfit\.be$/i.test(h)) return true;
+  } catch (e) { /* URL intouchable */ }
+  return SANS_COMPTE;
+}
 
 onAuthStateChanged(auth, (u) => {
-  // Un invite n'a pas de compte Firebase : le listener recoit null et
-  // le mettrait dehors aussitot entre. On ne l'ecrase donc pas.
-  if (!u && utilisateur.value && utilisateur.value.uid === '__invite__') {
+  if (u && sortieEnCours()) {
+    utilisateur.value = null;
+    demanderConnexion.value = true;
+    authPrete.value = true;
+    signOut(auth).catch(() => {});
+    return;
+  }
+  if (u) {
+    oublierSortie();
+    demanderConnexion.value = false;
+    utilisateur.value = u;
     authPrete.value = true;
     return;
   }
-  utilisateur.value = u;
+  if (sortieEnCours() || demanderConnexion.value) {
+    utilisateur.value = null;
+    demanderConnexion.value = true;
+    authPrete.value = true;
+    return;
+  }
+  if (utilisateur.value && utilisateur.value.uid === '__invite__') {
+    authPrete.value = true;
+    return;
+  }
+  if (veutInvite()) {
+    preparerInvite();
+    entrerEnInvite();
+    return;
+  }
+  utilisateur.value = null;
   authPrete.value = true;
 });
+
+if (auth.currentUser && !sortieEnCours()) {
+  utilisateur.value = auth.currentUser;
+  authPrete.value = true;
+}
 
 /**
  * Entree sans compte (voir src/acces-invite.js). Aucun appel a
@@ -80,6 +123,8 @@ onAuthStateChanged(auth, (u) => {
  * services/sync.js reconnait deja pour court-circuiter Firestore.
  */
 export function entrerEnInvite() {
+  oublierSortie();
+  demanderConnexion.value = false;
   utilisateur.value = { uid: '__invite__', email: null, displayName: 'Invité', isAnonymous: true };
   authPrete.value = true;
 }
@@ -101,32 +146,25 @@ export function entrerEnInvite() {
 function preparerInvite() {
   const cle = 'belfit_v2_journal___invite__';
   try {
-    if (localStorage.getItem(cle)) return;
+    const brut = localStorage.getItem(cle);
+    if (brut) {
+      const d = JSON.parse(brut);
+      // v534 : l'invite 2700/fait sautait Tes besoins. On le rouvre
+      // une fois, seulement si rien n'a encore ete encode.
+      if (d && d.calculBaseFait && d.objectifs && d.objectifs.kcal === 2700 && !d.repas) {
+        d.calculBaseFait = false;
+        d.objectifs = { kcal: 4300, prot: 217, carbs: 538, lip: 96 };
+        localStorage.setItem(cle, JSON.stringify(d));
+      }
+      return;
+    }
     localStorage.setItem(cle, JSON.stringify({
-      objectifs: { kcal: 2700, prot: 170, carbs: 300, lip: 80 },
-      calculBaseFait: true,
+      objectifs: { kcal: 4300, prot: 217, carbs: 538, lip: 96 },
+      calculBaseFait: false,
       ts: Date.now(),
     }));
   } catch (e) { /* stockage refuse : « Tes besoins » servira d'entree */ }
 }
-
-// Entree DIRECTE par l'adresse : belfit.be/v2/?invite=1
-// Raci le 10/08 n'arrivait pas a entrer et ne pouvait pas me dire ce
-// qu'il voyait ; belfit.be n'est pas joignable depuis le conteneur,
-// je ne pouvais donc rien constater moi-meme. Une adresse ne depend
-// ni de trouver un lien, ni de reussir un appui : elle marche ou elle
-// ne marche pas, et ca se voit tout de suite.
-// Le parametre est aussi un contournement de cache : une URL
-// differente force GitHub Pages et le navigateur a redemander la
-// page au lieu de servir la copie de dix minutes.
-try {
-  if (new URLSearchParams(location.search).has('invite')) { preparerInvite(); entrerEnInvite(); }
-} catch (e) { /* URL intouchable : le lien sous le formulaire reste */ }
-
-// Periode de test sans compte : la session invite est prete avant le
-// premier rendu. Sans cela, l'app afficherait brievement l'ecran de
-// chargement le temps qu'un effet la cree.
-if (SANS_COMPTE && !utilisateur.value) { preparerInvite(); entrerEnInvite(); }
 
 // --- Actions ---
 /**
@@ -143,6 +181,7 @@ function memoriserPrenom(user) {
 }
 
 export async function connexion(identifiant, mdp) {
+  oublierSortie();
   const cred = await signInWithEmailAndPassword(auth, String(identifiant || '').trim(), mdp);
   // Seules l'inscription et Google memorisaient le prenom : apres une
   // simple reconnexion l'en-tete disait « Bonjour » tout court.
@@ -156,6 +195,7 @@ export async function connexionGoogle() {
   // (le resultat est recupere au rechargement, voir ci-dessous).
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
+  oublierSortie();
   try {
     const cred = await signInWithPopup(auth, provider);
     memoriserPrenom(cred.user);
@@ -196,6 +236,7 @@ function genererCodeParrainage() {
  * abandonne le 25/07 — moins de champs, moins de friction).
  */
 export async function inscription(email, mdp, prenom) {
+  oublierSortie();
   const cred = await createUserWithEmailAndPassword(auth, String(email).trim(), mdp);
   // Le prenom sert a s'adresser a la personne (en-tete, page Premium,
   // e-mails du coach) : displayName = prenom, comme en v1.
@@ -236,7 +277,10 @@ export async function connexionAnonyme() {
 
 export async function deconnexion() {
   adresseConfirmee.value = false;
-  return signOut(auth);
+  marquerSortie();
+  utilisateur.value = null;
+  authPrete.value = true;
+  try { await signOut(auth); } catch (e) { /* pas de session Firebase (invite) */ }
 }
 
 // Messages d'erreur en francais

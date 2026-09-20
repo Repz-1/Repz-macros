@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
 import { enregistrerSeance, supprimerSeance, seanceMemeJour } from '../store/seances.js';
+import { poserBrouillon, demarrerSeanceActive, abandonnerSeance, marquerFaite } from '../store/seance-active.js';
 import { t } from '../i18n/index.js';
 import { EXERCISES, IMG_BASE } from '../data/exercices.js';
 import { SESSION_EXOS } from '../data/sessionExos.js';
 import { retourEntrainer } from './Entrainer.jsx';
+import { ongletActif } from './BottomNav.jsx';
 import '../styles/seance-guidee.css';
 
 // ==========================================================
@@ -178,6 +180,12 @@ function mmss(s) {
 export function SeanceGuidee({ seanceId, titre, retour }) {
   const refs = resoudreExercices(seanceId);
   const revenir = retour || retourEntrainer;
+  const [jeter, setJeter] = useState(false);
+
+  useEffect(() => {
+    poserBrouillon({ titre: titre || 'Séance', origine: 'programme', seanceId });
+    demarrerSeanceActive();
+  }, [seanceId]);
 
   // Reprise : si la meme seance etait en cours, on repart d'ou l'on
   // etait. C'est le point que Raci reclamait — jusqu'ici, quitter
@@ -329,6 +337,7 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
       muscles: [...new Set(exos.map(e => e.mKey).filter(Boolean))],
       exos,
     });
+    marquerFaite();
   };
 
   /**
@@ -487,6 +496,9 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
       <div class="sg-sec">
         <button onClick={passerExercice}>Passer l'exercice</button>
         <button onClick={() => setTermine(true)}>Terminer la séance</button>
+        <button class="sg-jeter" type="button" onClick={() => setJeter(true)}>
+          {t('sea_abandonner')}
+        </button>
       </div>
 
       {choixMateriel && (
@@ -509,6 +521,26 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
               </button>
             ))}
             <button class="sg-swap-x" onClick={() => setChoixMateriel(false)}>Annuler</button>
+          </div>
+        </div>
+      )}
+      {jeter && (
+        <div class="sg-swap-voile" onClick={(e) => { if (e.target === e.currentTarget) setJeter(false); }}>
+          <div class="sg-swap-carte">
+            <div class="sg-swap-t">{t('sea_abandonner_t')}</div>
+            <div class="sg-swap-l">{t('sea_abandonner_q')}</div>
+            <button class="sg-go sg-jeter-ok" type="button"
+              onClick={() => {
+                abandonnerSeance();
+                setJeter(false);
+                ongletActif.value = 'journal';
+                revenir();
+              }}>
+              {t('sea_abandonner_ok')}
+            </button>
+            <button class="sg-swap-x" type="button" onClick={() => setJeter(false)}>
+              {t('sea_abandonner_no')}
+            </button>
           </div>
         </div>
       )}

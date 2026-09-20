@@ -3,6 +3,7 @@ import { ALIAS, normNom, resoudreAliment, noterManque } from '../data/alias-alim
 import { EAT_IDEAS } from '../data/idees.js';
 import { limitesPortion } from '../data/portions.js';
 import { proposerAdaptation } from '../store/adaptations.js';
+import { EXERCISES } from '../data/exercices.js';
 
 const PORTION = {
   'Pain blanc': 120, 'Frites': 200, 'Poulet cuit': 150,
@@ -118,10 +119,129 @@ export function proposerRepas(objectifs, totaux, dejaAjoutes = []) {
   return meilleur;
 }
 
+const MUSCLE_ALIAS = [
+  { k: 'pecs', re: /\b(pecs?|pectoraux?|chest)\b/ },
+  { k: 'biceps', re: /\b(biceps?)\b/ },
+  { k: 'triceps', re: /\b(triceps?)\b/ },
+  { k: 'dos', re: /\b(dos|dorsaux?|back|lats?)\b/ },
+  { k: 'epaules', re: /\b(epaules?|shoulders?|delts?)\b/ },
+  { k: 'jambes', re: /\b(jambes?|cuisses?|legs?|quads?|quadriceps?)\b/ },
+  { k: 'abdos', re: /\b(abdos?|abdominaux?|abs)\b/ },
+  { k: 'trapezes', re: /\b(trapezes?|shrugs?)\b/ },
+];
+
+const COMBOS_CORPS = [
+  { re: /\b(full ?body|tout le corps|corps entier)\b/, ks: ['pecs', 'dos', 'jambes'] },
+  { re: /\b(haut du corps|upper)\b/, ks: ['pecs', 'dos', 'epaules'] },
+  { re: /\b(bas du corps|lower)\b/, ks: ['jambes'] },
+  { re: /\bpush\b/, ks: ['pecs', 'epaules', 'triceps'] },
+  { re: /\bpull\b/, ks: ['dos', 'biceps'] },
+];
+
+const LABEL_MUSCLE = {
+  pecs: 'Pecs', biceps: 'Biceps', triceps: 'Triceps', dos: 'Dos',
+  epaules: 'Épaules', jambes: 'Jambes', abdos: 'Abdos', trapezes: 'Trapèzes',
+};
+
+const PACK = {
+  pecs: [['pecs', 'Développé Couché (Barre)'], ['pecs', 'Développé Couché Incliné (Haltère)'], ['pecs', 'Écarté (Pec Deck) (Machine)']],
+  biceps: [['biceps', 'Curl Biceps (Barre)'], ['biceps', 'Curl Marteau (Haltère)']],
+  triceps: [['triceps', 'Barre au Front (Barre EZ)'], ['triceps', 'Extension Triceps (Poulie)']],
+  dos: [['dos', 'Tractions'], ['dos', 'Rowing (Barre)'], ['dos', 'Tirage Poitrine (Poulie)']],
+  epaules: [['epaules', 'Développé Militaire Debout (Barre)'], ['epaules', 'Élévation Latérale (Haltère)']],
+  jambes: [['jambes', 'Squat (Barre)'], ['jambes', 'Presse à Cuisses (Machine)'], ['jambes', 'Leg Curl Allongé (Machine)']],
+  abdos: [['abdos', 'Crunch'], ['abdos', 'Crunch (Poulie)']],
+  trapezes: [['epaules', 'Shrug (Barre)'], ['epaules', 'Shrug (Haltère)']],
+};
+
+function refParNom(mKey, nom) {
+  const n = normNom(nom);
+  const dans = (k) => {
+    const liste = EXERCISES[k] || [];
+    const i = liste.findIndex((e) => normNom(e.nom) === n);
+    return i >= 0 ? { mKey: k, i, nom: liste[i].nom } : null;
+  };
+  return dans(mKey) || Object.keys(EXERCISES).reduce((trouve, k) => trouve || dans(k), null);
+}
+
+function extraireMuscles(n) {
+  const ks = [];
+  for (const c of COMBOS_CORPS) {
+    if (c.re.test(n)) c.ks.forEach((k) => { if (!ks.includes(k)) ks.push(k); });
+  }
+  for (const a of MUSCLE_ALIAS) {
+    if (a.re.test(n) && !ks.includes(a.k)) ks.push(a.k);
+  }
+  return ks;
+}
+
+export function composerSeance(phrase) {
+  const n = normNom(phrase);
+  const muscles = extraireMuscles(n);
+  if (!muscles.length) return null;
+  const veut = /\b(seance|session|workout|entrainement|entraine|train|composer)\b/.test(n)
+    || /\bje (veux|vais) faire\b/.test(n)
+    || /\bfais[- ]moi\b/.test(n)
+    || /\b(une|la) seance\b/.test(n);
+  if (!veut) return null;
+
+  const parGroupe = muscles.length === 1 ? 4 : muscles.length === 2 ? 3 : 2;
+  const refs = [];
+  const vus = new Set();
+  muscles.forEach((k) => {
+    const pack = PACK[k] || [];
+    pack.slice(0, parGroupe).forEach(([mk, nom]) => {
+      const r = refParNom(mk, nom);
+      if (!r || vus.has(r.mKey + ':' + r.i)) return;
+      vus.add(r.mKey + ':' + r.i);
+      refs.push(r);
+    });
+  });
+  if (!refs.length) return null;
+
+  const titre = muscles.map((k) => LABEL_MUSCLE[k] || k).join(' + ');
+  return {
+    action: 'composerSeance',
+    titre,
+    muscles,
+    refs: refs.map((r) => ({ mKey: r.mKey, i: r.i })),
+    noms: refs.map((r) => r.nom),
+    texte: 'Séance ' + titre + ' — ' + refs.length + ' exercices. Vérifie puis pose.',
+    aliments: [],
+    local: true,
+  };
+}
+
 export function parserLocal(message, contexte = {}) {
   const brut = String(message || '').trim();
   const n = normNom(brut);
   if (!n) return { texte: '', aliments: [], local: true };
+
+  if (/\b(supprime|supprimer|jette|jeter|annule|annuler|abandonne|abandonner|drop|delete|weggooien)\b/.test(n)
+      && /\b(seance|séance|session|workout|entrainement|entraînement)\b/.test(n)) {
+    return {
+      texte: 'On jette cette séance. Rien ne part au journal.',
+      aliments: [],
+      action: 'abandonnerSeance',
+      local: true,
+    };
+  }
+
+  if ((/\b(demarre|demarrer|commence|commencer|lance|lancer|start)\b/.test(n)
+      && /\b(seance|séance|session|workout)\b/.test(n)
+      && !extraireMuscles(n).length)
+      || /\bje m.?entraine\b/.test(n)
+      || /\btime to (train|workout)\b/.test(n)) {
+    return {
+      texte: 'On ouvre ta séance du jour.',
+      aliments: [],
+      action: 'demarrerSeance',
+      local: true,
+    };
+  }
+
+  const composee = composerSeance(brut);
+  if (composee) return composee;
 
   const seance = proposerAdaptation(brut, contexte.seanceRefs);
   if (seance) {

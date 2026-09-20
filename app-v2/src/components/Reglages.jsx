@@ -5,7 +5,7 @@ import { definirPrenom } from '../store/perso.js';
 import { useState, useEffect } from 'preact/hooks';
 import { Component } from 'preact';
 import { t, langue as langueApp, setLangue } from '../i18n/index.js';
-import { utilisateur, auth, app } from '../services/firebase.js';
+import { utilisateur, auth, app, deconnexion } from '../services/firebase.js';
 import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
@@ -467,7 +467,8 @@ export function Reglages() {
           try {
             ['repz_firstName', 'repz_profile', 'belfit_v2_journal'].forEach(k => localStorage.removeItem(k));
           } catch (e) { /* non bloquant */ }
-          auth.signOut().finally(() => { window.location.href = '/v2/?logout=1'; });
+          vueReglages.value = null;
+          deconnexion();
         }}>{t('set_logout')}</button>
       </div>
     </div>

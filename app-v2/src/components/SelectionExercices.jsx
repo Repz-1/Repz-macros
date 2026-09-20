@@ -19,10 +19,8 @@ import { retourEntrainer } from './Entrainer.jsx';
 import { t } from '../i18n/index.js';
 import { GROUPES } from '../store/entrainement.js';
 import '../legacy/selection-exercices.scoped.css';
-// selectionExos vit dans MaSeance.jsx : en etat local ici, la
-// selection disparaissait a chaque aller-retour vers la seance
-// (bug V1/V2 confirme par Raci le 7/08).
-import { seanceRefs, selectionExos } from './MaSeance.jsx';
+import '../styles/seance-jour.css';
+import { selectionExos, poserBrouillon, abandonnerSeance } from '../store/seance-active.js';
 import { allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 
@@ -97,10 +95,11 @@ function useFocale() {
 export function SelectionExercices() {
   const [muscle, setMuscle] = useState(0);          // index dans MUSCLES
   const [filtre, setFiltre] = useState('tout');     // key dans FILTERS
-  // Selection : { muscleKey: Set(index) }
-  // Vue locale du signal module (initialise les Sets au besoin).
-  const selection = selectionExos.value;
-  MUSCLES.forEach(m => { if (!selection[m.key]) selection[m.key] = new Set(); });
+  const [jeter, setJeter] = useState(false);
+  // Copie locale : on n'ecrit PAS dans le signal pendant le rendu.
+  const brut = selectionExos.value;
+  const selection = {};
+  MUSCLES.forEach(m => { selection[m.key] = brut[m.key] || new Set(); });
 
   const [recherche, setRecherche] = useState('');
   // Fiche d'exercice : index dans le groupe courant, ou null.
@@ -146,10 +145,20 @@ export function SelectionExercices() {
 
   const basculer = (i) => {
     const prev = selectionExos.value;
-    const copie = { ...prev, [mKey]: new Set(prev[mKey]) };
+    const copie = { ...prev, [mKey]: new Set(prev[mKey] || []) };
     if (copie[mKey].has(i)) copie[mKey].delete(i);
     else copie[mKey].add(i);
     selectionExos.value = copie;
+    const refs = [];
+    MUSCLES.forEach(m => {
+      [...(copie[m.key] || [])].sort((a, b) => a - b)
+        .forEach(idx => refs.push({ mKey: m.key, i: idx }));
+    });
+    if (refs.length) {
+      poserBrouillon({ titre: t('tr_free_title') || 'Séance libre', refs, origine: 'libre' });
+    } else {
+      abandonnerSeance();
+    }
   };
 
   const stars = (lvl) => {
@@ -290,18 +299,36 @@ export function SelectionExercices() {
       {createPortal(
         <div class={'session-bar pg-selection-portail' + (nbSelectionnes === 0 || ongletActif.value !== 'entrainer' ? ' hidden' : '')}
           onClick={() => {
-            // Ordre v1 : muscle par muscle, index croissant.
             const refs = [];
             MUSCLES.forEach(m => {
               [...(selection[m.key] || [])].sort((a, b) => a - b)
                 .forEach(i => refs.push({ mKey: m.key, i }));
             });
             if (!refs.length) return;
-            seanceRefs.value = refs;
+            poserBrouillon({ titre: t('tr_free_title') || 'Séance libre', refs, origine: 'libre' });
             allerVers('maseance');
           }}>
           <span class="count">{nbSelectionnes} exercices sélectionnés</span>
+          <button class="vider" type="button" onClick={(e) => {
+            e.stopPropagation();
+            setJeter(true);
+          }}>{t('sea_abandonner')}</button>
           <span class="go">Ma séance →</span>
+        </div>,
+        document.body
+      )}
+      {jeter && createPortal(
+        <div class="sj-voile" onClick={() => setJeter(false)}>
+          <div class="sj-voile-carte" onClick={(e) => e.stopPropagation()}>
+            <p>{t('sea_abandonner_t')}</p>
+            <p>{t('sea_abandonner_q')}</p>
+            <button class="sj-go sj-go--danger" type="button" onClick={() => { abandonnerSeance(); setJeter(false); }}>
+              {t('sea_abandonner_ok')}
+            </button>
+            <button class="sj-annuler" type="button" onClick={() => setJeter(false)}>
+              {t('sea_abandonner_no')}
+            </button>
+          </div>
         </div>,
         document.body
       )}

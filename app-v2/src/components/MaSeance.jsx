@@ -1,73 +1,15 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { signal, effect } from '@preact/signals';
 import { EXERCISES, IMG_BASE, PROTOCOLES } from '../data/exercices.js';
 import { niveauPratique } from './SelectionExercices.jsx';
 import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
 import { enregistrerSeance } from '../store/seances.js';
+import { seanceRefs, selectionExos, demarrerSeanceActive, abandonnerSeance, marquerFaite } from '../store/seance-active.js';
 import '../legacy/maseance.scoped.css';
 
-// ==========================================================
-// ECRAN « MA SEANCE » — transpose de ma-seance.html (v1, ecran 2).
-// Banniere, progression, Commencer, pause, liste d'exercices
-// cochables, series kg x reps, confirmation d'arret, ecran de
-// felicitations avec bilan et confettis.
-// Le markup et le CSS sont repris de la v1 ; seule la logique
-// (variables globales, innerHTML, onclick) passe en signals/hooks.
-// ==========================================================
-
-/**
- * La seance libre en cours, conservee sur le disque.
- *
- * Raci, 9/09 : « j'avais deux trois exercices dans seance libre,
- * j'ai quitte la page pour venir te parler, et au retour les
- * exercices ne sont plus la ». Les deux signaux ne vivaient qu'en
- * memoire : Chrome decharge un onglet passe en arriere-plan, et la
- * selection partait avec. La seance GUIDEE avait sa reprise depuis le
- * 5/09 ; la seance libre n'en avait jamais eu.
- *
- * Les Set ne passent pas par JSON : on les ecrit en tableaux et on
- * les rebatit a la lecture.
- */
-const CLE_LIBRE = 'belfit_seance_libre';
-
-function lireLibre() {
-  try {
-    const e = JSON.parse(localStorage.getItem(CLE_LIBRE) || 'null');
-    if (!e) return null;
-    const sel = {};
-    Object.keys(e.selection || {}).forEach(k => { sel[k] = new Set(e.selection[k]); });
-    return { refs: e.refs || [], selection: sel };
-  } catch { return null; }
-}
-
-function ecrireLibre() {
-  try {
-    const refs = seanceRefs.value;
-    const sel = selectionExos.value;
-    const vide = !refs.length && !Object.values(sel).some(x => x && x.size);
-    if (vide) { localStorage.removeItem(CLE_LIBRE); return; }
-    const plat = {};
-    Object.keys(sel).forEach(k => { if (sel[k] && sel[k].size) plat[k] = [...sel[k]]; });
-    localStorage.setItem(CLE_LIBRE, JSON.stringify({ refs, selection: plat }));
-  } catch (e) { /* le stockage plein ne doit pas casser la seance */ }
-}
-
-const reprise = lireLibre();
-
-// Exercices choisis dans SelectionExercices : [{mKey, i}]
-export const seanceRefs = signal(reprise ? reprise.refs : []);
-// Selection d'exercices de l'ecran precedent. Vit ICI (module deja
-// importe par SelectionExercices — l'inverse creerait un cycle) pour
-// survivre a l'aller-retour selection <-> seance, comme en v1.
-// Videe uniquement quand la seance se TERMINE.
-export const selectionExos = signal(reprise ? reprise.selection : {});
-
-// Toute modification part sur le disque : il n'y a pas de « moment »
-// ou sauvegarder, la selection change a chaque tap.
-effect(() => { seanceRefs.value; selectionExos.value; ecrireLibre(); });
+export { seanceRefs, selectionExos };
 
 const NOMS_MUSCLES = {
   pecs: 'Pecs', dos: 'Dos', epaules: 'Épaules', biceps: 'Biceps',
@@ -170,6 +112,7 @@ export function MaSeance() {
   const [ouverts, setOuverts] = useState(() => new Set());
   const [series, setSeries] = useState({});             // { i: [{w,r}] }
   const [arret, setArret] = useState(false);
+  const [jeter, setJeter] = useState(false);
   const [fini, setFini] = useState(null);               // { min, tonnage, records }
 
   const debut = useRef(0);
@@ -192,6 +135,7 @@ export function MaSeance() {
     if (demarree) return;
     debut.current = Date.now();
     setChrono(0); setDemarree(true);
+    demarrerSeanceActive();
   };
 
   const basculerPause = () => {
@@ -256,6 +200,7 @@ export function MaSeance() {
       records: bilan.records,
     });
     sauverSeries(listeExos);
+    marquerFaite();
     setFini({ min: duree ? Math.max(1, Math.round(duree / 60)) : 0, ...bilan });
   };
 
@@ -267,7 +212,14 @@ export function MaSeance() {
   const confirmerArret = () => {
     setArret(false);
     if (faits.size > 0) felicitations();
-    else { seanceRefs.value = []; selectionExos.value = {}; ongletActif.value = 'journal'; retourEntrainer(); }
+    else { abandonnerSeance(); ongletActif.value = 'journal'; retourEntrainer(); }
+  };
+
+  const confirmerJeter = () => {
+    setJeter(false);
+    abandonnerSeance();
+    ongletActif.value = 'journal';
+    retourEntrainer();
   };
 
   const cocher = (i) => {
@@ -333,6 +285,9 @@ export function MaSeance() {
 
       <div class="sess-hero">
         <button class="sh-back" onClick={() => allerVers('selection')} aria-label="Retour">←</button>
+        <button class="sh-jeter" onClick={() => setJeter(true)} aria-label={t('sea_abandonner')}>
+          {t('sea_abandonner')}
+        </button>
         <h1 class="sh-title">{t('ms_session')}</h1>
       </div>
 
@@ -469,11 +424,21 @@ export function MaSeance() {
                 <div class="cg-record">🏆 {t('ms_new_record')} : {fini.records.join(', ')} !</div>
               )}
             </div>
-            <button class="congrats-btn" onClick={() => { seanceRefs.value = []; selectionExos.value = {}; retourEntrainer(); ongletActif.value = 'journal'; }}>
+            <button class="congrats-btn" onClick={() => { marquerFaite(); retourEntrainer(); ongletActif.value = 'journal'; }}>
               {t('ms_back_journal')}
             </button>
           </div>
         )}
+      </div>, document.body)}
+
+      {createPortal(
+      <div class={'congrats-overlay pg-maseance' + (jeter ? ' show' : '')}>
+        <div class="congrats-card">
+          <div class="congrats-title">{t('sea_abandonner_t')}</div>
+          <div class="congrats-text">{t('sea_abandonner_q')}</div>
+          <button class="congrats-btn sea-jeter-ok" onClick={confirmerJeter}>{t('sea_abandonner_ok')}</button>
+          <button class="sc-cancel" onClick={() => setJeter(false)}>{t('sea_abandonner_no')}</button>
+        </div>
       </div>, document.body)}
 
     </div>

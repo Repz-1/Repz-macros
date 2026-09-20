@@ -1,0 +1,219 @@
+/* Bande seance d'une ligne — pas une carte repas. */
+.sj {
+  display: flex;
+  align-items: stretch;
+  min-height: 52px;
+  margin: 0;
+  padding: 0;
+  background: var(--encre, #16130F);
+  color: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.sj--vide,
+.sj--faite {
+  background: var(--carte, #fff);
+  color: var(--encre, #16130F);
+  border: 1px solid var(--bordure, #E5E3DE);
+}
+.sj--live {
+  box-shadow: 0 8px 18px rgba(var(--encre-rvb, 22, 19, 15), .18);
+}
+.sj-ligne {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 6px 12px 6px 14px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.sj-ligne:active { opacity: .88; }
+.sj-ic {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sj-texte {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.sj-nom {
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sj-meta {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--encre-5, #A79F95);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sj--live .sj-meta { color: var(--or, #F8CF01); }
+.sj--faite .sj-meta { color: var(--succes, #10B981); }
+.sj-cta {
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--encre, #16130F);
+  background: var(--or, #F8CF01);
+  border-radius: 10px;
+  padding: 8px 11px;
+  max-width: 42%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sj--vide .sj-cta { max-width: none; }
+.sj-x {
+  flex: none;
+  width: 44px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  opacity: .7;
+}
+.sj-x:active { opacity: 1; }
+
+.sj-go, .sj-jeter, .sj-annuler {
+  flex: 1;
+  min-height: 44px;
+  border: none;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.sj-go {
+  background: #F7B500;
+  color: #181818;
+}
+.sj-go--danger { background: #A0301E; color: #fff; }
+.sj-jeter, .sj-annuler {
+  background: #F2F3F6;
+  color: #181818;
+}
+
+.pg-maseance .sh-jeter {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  height: 38px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 19px;
+  background: rgba(10,10,10,.45);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+.pg-maseance .sea-jeter-ok { background: #A0301E; color: #fff; }
+
+.sg-jeter {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  color: #8A8378;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.moi-bar {
+  padding: 8px 16px 0;
+}
+.moi-reglages {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #EDE5D8;
+  background: #fff;
+  border-radius: 16px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  color: #181818;
+  cursor: pointer;
+}
+
+.session-bar .vider {
+  margin-right: 8px;
+  border: none;
+  background: rgba(255,255,255,.18);
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.sj-voile {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(10, 10, 10, .45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px 16px 96px;
+}
+.sj-voile-carte {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px 16px 16px;
+}
+.sj-voile-carte p {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #181818;
+}
+.sj-voile-carte p + p {
+  font-weight: 600;
+  font-size: 14px;
+  color: #5b6270;
+  margin-bottom: 14px;
+}
+.sj-voile-carte .sj-go,
+.sj-voile-carte .sj-annuler {
+  width: 100%;
+  margin-bottom: 8px;
+  flex: none;
+}

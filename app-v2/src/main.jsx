@@ -16,7 +16,6 @@ import { DayDashboard, ouvrirCalcDemande } from './components/DayDashboard.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
-import { TdeeCalculator } from './components/TdeeCalculator.jsx';
 import { RestTimer } from './components/RestTimer.jsx';
 import { Questionnaire } from './components/Questionnaire.jsx';
 import { PlanifierProgramme } from './components/PlanifierProgramme.jsx';
@@ -34,7 +33,7 @@ import { signal } from '@preact/signals';
 import { Entete, voletProfil } from './components/Entete.jsx';
 
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
-import { Besoins, besoinsRequis } from './components/Besoins.jsx';
+import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
 import { origineCalc } from './components/BelfitPlus.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses } from './components/Courses.jsx';
@@ -45,20 +44,8 @@ import { MesPlats } from './components/MesPlats.jsx';
 
 export function OngletJournal() {
   const [modale, setModale] = useState(false);
-  const [calc, setCalc] = useState(false);
   // Le rappel de recalcul (carte Calories) demande l'ouverture par signal :
   // le composant ne possede pas l'etat de la modale, main.jsx si.
-  if (ouvrirCalcDemande.value) {
-    ouvrirCalcDemande.value = false;
-    // Le calcul de base est offert une fois, consomme a l'inscription.
-    // Ensuite le recalcul est Premium : il vient avec un programme sur
-    // mesure, ce n'est plus la formule qu'on vend.
-    if (estPremium.value || !calculBaseFait.value) setCalc(true);
-    else ongletActif.value = 'premium';
-  }
-  // La goutte d'eau se deforme au fil du defilement : sa mecanique tourne
-  // en boucle d'animation tant que le Journal est monte. Elle se coupe
-  // toute seule si le bouton disparait du document.
   useEffect(() => { animerGoutte(); return arreterGoutte; }, []);
 
   // Colonne unique, ordre de lecture descendant :
@@ -72,15 +59,9 @@ export function OngletJournal() {
         {/* La pilule vit dans la carte Calories ; ici, uniquement le
             panneau qui se deplie, juste sous elle. */}
         <IdeesRepas panneauSeul />
-        {/* Fente reservee a la goutte d'eau a quai. Elle vit ENTRE la
-            carte Calories et la carte de pesee (Raci, 9/08) : quand la
-            carte s'allonge avec le message « journee non cloturee », la
-            goutte reste dans cet espace au lieu de mordre sur le coin de
-            la carte. Quand la carte de pesee disparait, la fente reste le
-            premier creux sous le cadran — la place initiale. Sa position
-            est lue en direct par goutte.js, ne pas la retirer. */}
         <div class="fente-goutte" aria-hidden="true" />
         <WeightNote />
+        <div class="jr-repas-kicker">{t('tes_repas')}</div>
         {/* Le premier repas encore vide est mis en avant : a l'ouverture
             d'une journee c'est le petit-dejeuner, puis la mise en avant
             descend d'elle-meme des qu'un repas recoit son premier
@@ -123,19 +104,6 @@ export function OngletJournal() {
           l'onglet BelFit+ ou la page est restee ouverte. Sans ca, on
           atterrissait sur le Journal, trois ecrans plus loin que d'ou
           l'on venait. */}
-      {calc && (
-        <TdeeCalculator
-          montre={true}
-          retour={origineCalc.value === 'programme' ? 'Mon programme' : undefined}
-          fermer={() => {
-            setCalc(false);
-            if (origineCalc.value === 'programme') {
-              origineCalc.value = null;
-              allerOnglet('plus');
-            }
-          }}
-        />
-      )}
       {ouvrirMesPlats.value && <MesPlats fermer={() => { ouvrirMesPlats.value = false; }} />}
     </div>
   );
@@ -224,27 +192,7 @@ function AvisAccesInvite() {
   });
 
   if (!ACCES_INVITE) return null;
-  const u = utilisateur.value;
-  const invite = u && u.uid === '__invite__';
-  return (
-    <div class="acces-libre-avis" ref={ref}>
-      {/* Le numero de version est AFFICHE ici. Le 10/08, Raci a
-          decrit une banniere qui n'existait plus depuis deux
-          versions : impossible de savoir, a distance, s'il lisait du
-          code ancien ou un vrai defaut. Le numero repond a la
-          question « quelle version lis-tu ? » sans avoir a la poser. */}
-      <b>v{VERSION_APP}</b>{' · '}
-      {invite
-        ? 'Mode invité — données locales'
-        : u
-          /* Connecte avec son vrai compte : lui indiquer ou trouver
-             le lien d'entree invite n'a aucun sens, il est deja
-             entre. Ce qui reste vrai et utile, c'est que la porte est
-             ouverte au public. Defaut vu sur la capture du 10/08. */
-          ? 'Accès invité ouvert au public — à refermer après tes essais'
-          : 'Accès invité ouvert — le lien « Entrer sans compte » est sous le formulaire'}
-    </div>
-  );
+  return null;
 }
 
 export function App() {
@@ -256,7 +204,7 @@ export function App() {
   // Journal. Un seul interrupteur, dans acces-invite.js.
   // Porte de service : depuis les Reglages, on redemande l'ecran de
   // connexion pour rejoindre son vrai compte.
-  if (demanderConnexion.value && (!utilisateur.value || utilisateur.value.uid === '__invite__')) {
+  if (demanderConnexion.value) {
     return <LoginScreen />;
   }
   if (!utilisateur.value && SANS_COMPTE) {
@@ -271,12 +219,13 @@ export function App() {
     return <div style={{textAlign:'center',padding:'80px 20px',color:'#b5b0a4',fontWeight:600}}>{t('chargement')}</div>;
   }
 
-  // Etape 2 de l'inscription. Elle vaut aussi pour les comptes deja
-  // crees qui n'ont jamais pose leurs objectifs : sans ca, on reparait
-  // le probleme pour les nouveaux en le laissant aux anciens. Un compte
-  // Google y passe comme les autres — c'est le chemin le plus emprunte,
-  // l'exempter recreerait exactement le trou qu'on bouche.
-  if (besoinsRequis()) {
+  if (ouvrirCalcDemande.value) {
+    ouvrirCalcDemande.value = false;
+    if (estPremium.value || !calculBaseFait.value) besoinsOuverts.value = true;
+    else ongletActif.value = 'premium';
+  }
+
+  if (besoinsRequis() || besoinsOuverts.value) {
     return <Besoins />;
   }
 

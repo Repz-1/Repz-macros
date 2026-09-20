@@ -67,13 +67,16 @@ function ChampMotDePasse({ valeur, onInput, placeholder, autocomplete }) {
  * formulaire vierge, sans la moindre explication.
  */
 export const erreurPersistante = signal('');
+const CLE_EMAIL = 'belfit_dernier_email';
 
 export function LoginScreen() {
   // Un programme construit pendant l'accueil attend d'etre sauvegarde :
   // on ouvre directement l'inscription, prenom deja rempli.
   const [mode, setMode] = useState('connexion');
   const [accueil] = useState(() => ACCUEILS[Math.floor(Math.random() * ACCUEILS.length)]);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => {
+    try { return localStorage.getItem(CLE_EMAIL) || ''; } catch (e) { return ''; }
+  });
   const [prenom, setPrenom] = useState('');
   const [mdp, setMdp] = useState('');
   const [mdp2, setMdp2] = useState('');
@@ -84,7 +87,9 @@ export function LoginScreen() {
   const [chargement, setChargement] = useState(false);
   // Recuperation de mot de passe : champ dedie et message de reussite,
   // comme le formulaire separe de la v1 (recoveryForm).
-  const [emailRecup, setEmailRecup] = useState('');
+  const [emailRecup, setEmailRecup] = useState(() => {
+    try { return localStorage.getItem(CLE_EMAIL) || ''; } catch (e) { return ''; }
+  });
   const [msgOk, setMsgOk] = useState('');
 
   // Etat du nom d'utilisateur : 'vide' | 'invalide' | 'verif' | 'libre' | 'pris'
@@ -106,6 +111,7 @@ export function LoginScreen() {
     try {
       if (mode === 'connexion') await connexion(email.trim(), mdp);
       else await inscription(email.trim(), mdp, prenom.trim());
+      try { localStorage.setItem(CLE_EMAIL, email.trim()); } catch (e) { /* tant pis */ }
       // onAuthStateChanged fera basculer l'app tout seul
     } catch (err) {
       setErreur(messageErreurAuth(err.code));

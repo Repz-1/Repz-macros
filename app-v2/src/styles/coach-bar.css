@@ -5,6 +5,20 @@
   padding: 10px 12px;
   margin: 0;
 }
+.coach-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--encre-4, #8A8279);
+  margin: 0 2px 6px;
+}
+.coach-bar-ecart {
+  margin: 8px 2px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--encre, #16130F);
+}
 .coach-bar--ouvert {
   padding-bottom: 12px;
 }
@@ -110,6 +124,7 @@
 
 /* Pendant la confirmation : la goutte ne recouvre plus le texte,
    la fente vide sous le cadran se replie. */
+.pg-journal:has(.coach-bar--ouvert) .fab-rangee,
 .pg-journal:has(.coach-bar--ouvert) .water-fab {
   opacity: 0 !important;
   pointer-events: none;

@@ -48,6 +48,7 @@
 .session-bar.pg-selection-portail{ position:fixed; bottom:86px; left:16px; right:16px; max-width:448px; margin:0 auto; background:var(--orange,#F86A0C); color:#181818; border-radius:18px; padding:15px 20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 8px 24px rgba(247,181,0,.4); cursor:pointer; z-index:50; }
 .session-bar.pg-selection-portail.hidden{ display:none; }
 .session-bar.pg-selection-portail .count{ font-size:14px; font-weight:700; }
+.session-bar.pg-selection-portail .vider{ font-size:13px; font-weight:800; background:rgba(24,24,24,.12); border:none; border-radius:12px; padding:8px 10px; color:inherit; margin:0 8px 0 auto; }
 .session-bar.pg-selection-portail .go{ font-size:14px; font-weight:800; }
 
 /* ============================================================

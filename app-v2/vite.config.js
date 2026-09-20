@@ -5,7 +5,17 @@ import preact from '@preact/preset-vite';
 // Le site live (app.html, main.html...) n'est jamais touche par ce chantier.
 export default defineConfig({
   plugins: [preact()],
-  base: '/v2/',
+  base: '/',
+  server: {
+    host: '0.0.0.0',
+    port: 8080,
+    strictPort: true,
+    allowedHosts: true,
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 8080,
+  },
   build: {
     outDir: '../v2',
     emptyOutDir: true,

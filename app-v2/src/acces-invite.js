@@ -46,7 +46,7 @@ import { signal } from '@preact/signals';
 // Referme le 24/08 : l'ecran de connexion redevient le seul chemin,
 // la banniere rouge disparait, et l'application se rouvre sur le
 // Journal (ONGLET_VITRINE suit ce drapeau).
-export const ACCES_INVITE = false;
+export const ACCES_INVITE = true;
 
 // ============================================================
 // SANS COMPTE — PERIODE DE TEST
@@ -78,7 +78,7 @@ export const ACCES_INVITE = false;
 // 3. belfit.be/v2/ devient entierement public. N'importe qui tombant
 //    sur l'adresse entre sans rien demander.
 // ============================================================
-export const SANS_COMPTE = true;
+export const SANS_COMPTE = false;
 
 // Porte de service pendant la periode sans compte : elle rouvre
 // l'ecran de connexion a la demande, depuis les Reglages. Sans elle,
@@ -86,11 +86,9 @@ export const SANS_COMPTE = true;
 // journal sont sous son uid, la session invite est vide.
 export const demanderConnexion = signal(false);
 
-// Le temps des essais publics, l'application s'ouvre sur S'entrainer
-// plutot que sur le Journal : c'est la page que Raci veut montrer en
-// premier. Adosse a ACCES_INVITE pour qu'il n'y ait qu'un interrupteur
-// a remettre a false — aucun reglage ne peut rester en arriere.
-export const ONGLET_VITRINE = ACCES_INVITE ? 'entrainer' : 'journal';
+// Accueil = Aujourd'hui. L'invite ouvre l'app, elle ne change plus
+// la page de depart.
+export const ONGLET_VITRINE = 'journal';
 
 // Identifiant local reconnu par services/sync.js (UID_INVITE).
 export const UID_INVITE = '__invite__';

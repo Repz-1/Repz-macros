@@ -27,7 +27,7 @@
  * ou code) gardent `premium:true` dans Firestore. Refermer
  * l'interrupteur ne leur retire rien.
  */
-export const PREMIUM_OUVERT = true;
+export const PREMIUM_OUVERT = false;
 
 /** Date indicative de fin de test, affichee nulle part. Sert de repere. */
 export const OUVERT_DEPUIS = '2026-08-26';

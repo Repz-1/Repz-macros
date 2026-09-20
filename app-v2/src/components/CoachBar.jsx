@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { parserLocal, proposerRepas } from '../services/coach-local.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
-import { seanceRefs } from './MaSeance.jsx';
-import { DB } from '../data/aliments.js';
+import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT, demandeVueEntrainer, poserBrouillon } from '../store/seance-active.js';
+import { ongletActif } from './BottomNav.jsx';
+import { DB, macrosOf } from '../data/aliments.js';
+import { t } from '../i18n/index.js';
 import '../styles/coach-bar.css';
 
 function repasCible(cle) {
@@ -10,6 +12,15 @@ function repasCible(cle) {
   return liste.find((r) => r.cle === cle) ||
     liste.find((r) => r.ings.length === 0) ||
     liste[liste.length - 1];
+}
+
+function nomRepas(cle) {
+  const r = repas.value.find((x) => x.cle === cle);
+  return r ? r.nom : '';
+}
+
+function kcalDe(l) {
+  return Math.round(macrosOf({ name: l.cle, portion: l.portion }).kcal || 0);
 }
 
 function versLignes(aliments) {
@@ -41,6 +52,53 @@ export function CoachBar() {
   }, [ouvert, lignes.length, diner, seance]);
 
   const appliquer = (out) => {
+    if (out.action === 'abandonnerSeance') {
+      abandonnerSeance();
+      setSeance(null);
+      setLignes([]);
+      setEauLitres(0);
+      setDiner(null);
+      setMsg(out.texte || t('coach_jetee'));
+      setEtat('pret');
+      setTexte('');
+      return;
+    }
+    if (out.action === 'demarrerSeance') {
+      const p = portraitSeanceDuJour();
+      setMsg(out.texte || t('coach_on_y_va'));
+      setEtat('pret');
+      setTexte('');
+      if (p.etat === ETAT.PREVUE && p.seanceId) {
+        ongletActif.value = 'entrainer';
+        demandeVueEntrainer.value = { nom: 'seanceDetail', params: { seanceId: p.seanceId, titre: p.titre, depuis: 'journal' } };
+      } else if (p.etat === ETAT.BROUILLON || p.etat === ETAT.EN_COURS) {
+        ongletActif.value = 'entrainer';
+        demandeVueEntrainer.value = {
+          nom: p.origine === 'programme' ? 'seanceDetail' : 'maseance',
+          params: p.seanceId ? { seanceId: p.seanceId, titre: p.titre } : null,
+        };
+      } else {
+        ongletActif.value = 'entrainer';
+        demandeVueEntrainer.value = { nom: 'selection', params: null };
+      }
+      return;
+    }
+    if (out.action === 'composerSeance') {
+      setSeance({
+        composer: true,
+        titre: out.titre,
+        refs: out.refs,
+        noms: out.noms || [],
+        texte: out.texte,
+      });
+      setLignes([]);
+      setEauLitres(0);
+      setDiner(null);
+      setMsg(out.texte);
+      setEtat('seance');
+      setTexte('');
+      return;
+    }
     if (out.seance) {
       setSeance(out.seance);
       setLignes([]);
@@ -56,7 +114,7 @@ export function CoachBar() {
     setSeance(null);
     setEauLitres(eau);
     setDiner(null);
-    setMsg(out.texte || 'Verifie puis ajoute.');
+    setMsg(out.texte || t('coach_verifie'));
     setLignes(trouves);
     setEtat((trouves.length || eau) ? 'proposition' : 'pret');
     if (trouves.length || eau) setTexte('');
@@ -86,16 +144,33 @@ export function CoachBar() {
     const prop = proposerRepas(objectifs.value, totauxJourAff.value);
     if (prop && prop.ings && prop.ings.length) {
       setDiner(prop);
-      setMsg('C\u2019est dans le journal. Prochain repas possible :');
+      setMsg(t('coach_dans_prochain'));
       setEtat('diner');
     } else {
-      setMsg('C\u2019est dans le journal.');
+      setMsg(t('coach_dans_journal'));
       setEtat('pret');
     }
   };
 
   const confirmerSeance = () => {
     if (!seance) return;
+    if (seance.composer && seance.refs && seance.refs.length) {
+      const sel = {};
+      seance.refs.forEach((r) => {
+        if (!sel[r.mKey]) sel[r.mKey] = new Set();
+        sel[r.mKey].add(r.i);
+      });
+      selectionExos.value = sel;
+      poserBrouillon({
+        titre: seance.titre,
+        refs: seance.refs.map((r) => ({ mKey: r.mKey, i: r.i })),
+        origine: 'libre',
+      });
+      setSeance(null);
+      setMsg(t('coach_seance_posee'));
+      setEtat('pret');
+      return;
+    }
     if (seance.swaps && seance.swaps.length) {
       const next = seanceRefs.value.slice();
       seance.swaps.forEach((s) => {
@@ -107,21 +182,24 @@ export function CoachBar() {
     }
     setSeance(null);
     setMsg(seance.swaps && seance.swaps.length
-      ? 'C\u2019est dans Ma seance. Rouvre S\u2019entrainer pour voir les nouveaux mouvements.'
-      : 'Rien a changer dans cette liste.');
+      ? t('coach_seance_ok')
+      : t('coach_seance_rien'));
     setEtat('pret');
   };
 
   const aConfirmer = lignes.length > 0 || eauLitres > 0;
+  const kcalProp = lignes.reduce((s, l) => s + kcalDe(l), 0);
+  const reste = (objectifs.value.kcal || 0) - (totauxJourAff.value.kcal || 0) - kcalProp;
 
   return (
     <div class={'coach-bar' + (ouvert ? ' coach-bar--ouvert' : '')}>
+      <div class="coach-kicker">{t('coach_kicker')}</div>
       <div class="coach-bar-ligne">
         <input
           class="coach-bar-champ"
           type="text"
           maxlength="240"
-          placeholder="Ex. une pomme, j'ai mal au genou"
+          placeholder={t('coach_placeholder')}
           value={texte}
           onInput={(e) => setTexte(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') envoyer(); }}
@@ -133,18 +211,38 @@ export function CoachBar() {
         <>
           {lignes.map((l, i) => (
             <div class="coach-bar-ligne-alim" key={i}>
-              <span>{l.cle} — {l.portion} g</span>
+              <span>
+                {l.cle} — {l.portion} g
+                {nomRepas(l.repasCle) ? ' · ' + nomRepas(l.repasCle) : ''}
+                {kcalDe(l) ? ' · ' + kcalDe(l) + ' kcal' : ''}
+              </span>
               <button type="button" onClick={() => setLignes(lignes.filter((_, j) => j !== i))}>x</button>
             </div>
           ))}
-          <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmer}>Ajouter au journal</button>
+          {eauLitres > 0 && (
+            <div class="coach-bar-ligne-alim">
+              <span>{String(eauLitres).replace('.', ',')} L · {t('coach_eau')}</span>
+            </div>
+          )}
+          {kcalProp > 0 && (
+            <p class="coach-bar-ecart">
+              {t('coach_kcal').replace('{n}', String(kcalProp))}
+              {objectifs.value.kcal
+                ? ' · ' + (reste > 0
+                  ? t('coach_reste').replace('{n}', String(Math.round(reste)))
+                  : t('coach_depasse').replace('{n}', String(Math.round(-reste))))
+                : ''}
+            </p>
+          )}
+          <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmer}>
+            {t('coach_ajouter')}
+          </button>
         </>
       )}
       {etat === 'diner' && diner && (
         <div class="coach-bar-diner">
           <p class="coach-bar-diner-nom">{diner.nom}</p>
           <p class="coach-bar-diner-macros">{diner.kcal} kcal · P {diner.prot} · G {diner.carbs} · L {diner.lip}</p>
-          <p class="coach-bar-diner-macros">Pour le preparer :</p>
           {diner.ings.map((a, i) => (
             <div class="coach-bar-ligne-alim" key={i}>
               <span>{a.aliment} — {a.quantite} {a.unite === 'piece' ? 'p' : 'g'}</span>
@@ -158,25 +256,35 @@ export function CoachBar() {
               const portion = a.unite === 'piece' && d && d.unit ? a.quantite * d.unit : a.quantite;
               ajouterIngredient(cible.id, a.aliment, Math.round(portion));
             });
-            setDiner(null); setMsg('Liste ajoutee.'); setEtat('pret');
-          }}>Ajouter cette liste au journal</button>
-          <button class="coach-bar-passe" type="button" onClick={() => { setDiner(null); setEtat('pret'); setMsg(''); }}>Pas maintenant</button>
+            setDiner(null); setMsg(t('coach_dans_journal')); setEtat('pret');
+          }}>{t('coach_ajouter_diner')}</button>
+          <button class="coach-bar-passe" type="button" onClick={() => { setDiner(null); setEtat('pret'); setMsg(''); }}>{t('coach_pas_maintenant')}</button>
         </div>
       )}
       {etat === 'seance' && seance && (
         <div class="coach-bar-diner">
           <p class="coach-bar-diner-nom">{seance.titre}</p>
+          {(seance.noms || []).map((nom, i) => (
+            <div class="coach-bar-ligne-alim" key={'n' + i}>
+              <span>{nom}</span>
+            </div>
+          ))}
           {(seance.swaps || []).map((s, i) => (
-            <div class="coach-bar-ligne-alim" key={i}>
+            <div class="coach-bar-ligne-alim" key={'s' + i}>
               <span>{s.deNom} → {s.versNom}</span>
             </div>
           ))}
-          {seance.swaps && seance.swaps.length > 0 && (
+          {seance.composer && seance.refs && seance.refs.length > 0 && (
             <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmerSeance}>
-              Appliquer dans Ma seance
+              {t('coach_poser_seance')}
             </button>
           )}
-          <button class="coach-bar-passe" type="button" onClick={() => { setSeance(null); setEtat('pret'); setMsg(''); }}>Pas maintenant</button>
+          {seance.swaps && seance.swaps.length > 0 && (
+            <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmerSeance}>
+              {t('coach_appliquer_seance')}
+            </button>
+          )}
+          <button class="coach-bar-passe" type="button" onClick={() => { setSeance(null); setEtat('pret'); setMsg(''); }}>{t('coach_pas_maintenant')}</button>
         </div>
       )}
     </div>

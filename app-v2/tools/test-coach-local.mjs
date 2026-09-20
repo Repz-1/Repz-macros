@@ -1,4 +1,4 @@
-import { parserLocal, extraireEau, proposerRepas } from '../src/services/coach-local.js';
+import { parserLocal, extraireEau, proposerRepas, composerSeance } from '../src/services/coach-local.js';
 
 const obj = { kcal: 2700, prot: 170, carbs: 300, lip: 80 };
 const tot = { kcal: 0, prot: 0, carbs: 0, lip: 0 };
@@ -30,5 +30,27 @@ ok('propose un diner apres durum', !!(prop && prop.nom && prop.ings.length), JSO
 const vide = parserLocal('bonjour');
 ok('bonjour sans aliment', vide.aliments.length === 0);
 
+const jet = parserLocal('jette cette séance');
+ok('jette cette séance', jet.action === 'abandonnerSeance', jet.action);
+ok('jette sans aliment', !jet.aliments.length, JSON.stringify(jet.aliments));
+const drop = parserLocal('annule cette session');
+ok('annule session', drop.action === 'abandonnerSeance', drop.action);
+const start = parserLocal('démarre la séance');
+ok('démarre la séance', start.action === 'demarrerSeance', start.action);
+const train = parserLocal("je m'entraine");
+ok("je m'entraine", train.action === 'demarrerSeance', train.action);
+
+const pec = parserLocal('Je veux faire une séance PEC plus bicep');
+ok('pecs + biceps compose', pec.action === 'composerSeance', pec.action);
+ok('titre pecs biceps', pec.titre === 'Pecs + Biceps', pec.titre);
+ok('au moins 4 exos', pec.refs && pec.refs.length >= 4, JSON.stringify(pec.noms));
+ok('noms developpe + curl',
+  (pec.noms || []).some((n) => /D[ée]velopp[ée] Couché/.test(n))
+  && (pec.noms || []).some((n) => /Curl/.test(n)),
+  JSON.stringify(pec.noms));
+const pec2 = composerSeance('seance pecs biceps');
+ok('seance pecs biceps', pec2 && pec2.action === 'composerSeance', pec2 && pec2.action);
+
 if (fails) { console.error(fails + ' echec(s)'); process.exit(1); }
 console.log('tous les tests coach-local passent');
+
