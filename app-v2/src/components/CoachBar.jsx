@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { parserLocal, proposerRepas } from '../services/coach-local.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
-import { enregistrerAdaptations } from '../store/adaptations.js';
+import { seanceRefs } from './MaSeance.jsx';
 import { DB } from '../data/aliments.js';
 import '../styles/coach-bar.css';
 
@@ -31,7 +31,6 @@ export function CoachBar() {
   const [diner, setDiner] = useState(null);
   const [seance, setSeance] = useState(null);
   const ajoutRef = useRef(null);
-
   const ouvert = etat === 'proposition' || etat === 'diner' || etat === 'seance';
 
   useEffect(() => {
@@ -57,7 +56,7 @@ export function CoachBar() {
     setSeance(null);
     setEauLitres(eau);
     setDiner(null);
-    setMsg(out.texte || (trouves.length || eau ? 'Verifie puis ajoute.' : 'Rien a mettre.'));
+    setMsg(out.texte || 'Verifie puis ajoute.');
     setLignes(trouves);
     setEtat((trouves.length || eau) ? 'proposition' : 'pret');
     if (trouves.length || eau) setTexte('');
@@ -66,43 +65,50 @@ export function CoachBar() {
   const envoyer = () => {
     const dit = texte.trim();
     if (!dit) return;
-    appliquer(parserLocal(dit, { objectifs: objectifs.value, totaux: totauxJourAff.value }));
+    appliquer(parserLocal(dit, {
+      objectifs: objectifs.value,
+      totaux: totauxJourAff.value,
+      seanceRefs: seanceRefs.value,
+    }));
   };
 
   const confirmer = () => {
-    const n = lignes.length;
-    const eau = eauLitres;
     lignes.forEach((l) => {
       if (l.portion <= 0) return;
       const cible = repasCible(l.repasCle);
       if (cible) ajouterIngredient(cible.id, l.cle, l.portion);
     });
-    if (eau > 0) ajouterEau(eau);
+    if (eauLitres > 0) ajouterEau(eauLitres);
+    const n = lignes.length || eauLitres;
     setLignes([]);
     setEauLitres(0);
-    if (n || eau) {
-      const prop = proposerRepas(objectifs.value, totauxJourAff.value);
-      if (prop && prop.ings && prop.ings.length) {
-        setDiner(prop);
-        setMsg('C\u2019est dans le journal. Prochain repas possible :');
-        setEtat('diner');
-      } else {
-        setMsg('C\u2019est dans le journal.');
-        setEtat('pret');
-      }
+    if (!n) { setMsg(''); setEtat('pret'); return; }
+    const prop = proposerRepas(objectifs.value, totauxJourAff.value);
+    if (prop && prop.ings && prop.ings.length) {
+      setDiner(prop);
+      setMsg('C\u2019est dans le journal. Prochain repas possible :');
+      setEtat('diner');
     } else {
-      setMsg('');
+      setMsg('C\u2019est dans le journal.');
       setEtat('pret');
     }
   };
 
   const confirmerSeance = () => {
     if (!seance) return;
-    enregistrerAdaptations(seance.swaps || [], seance.motif);
+    if (seance.swaps && seance.swaps.length) {
+      const next = seanceRefs.value.slice();
+      seance.swaps.forEach((s) => {
+        if (s.source === 'libre' && s.vers && typeof s.idx === 'number') {
+          next[s.idx] = { mKey: s.vers.mKey, i: s.vers.i };
+        }
+      });
+      seanceRefs.value = next;
+    }
     setSeance(null);
     setMsg(seance.swaps && seance.swaps.length
-      ? 'C\u2019est note pour aujourd\u2019hui seulement. Le programme ne change pas.'
-      : 'Rien a changer.');
+      ? 'C\u2019est dans Ma seance. Rouvre S\u2019entrainer pour voir les nouveaux mouvements.'
+      : 'Rien a changer dans cette liste.');
     setEtat('pret');
   };
 
@@ -167,7 +173,7 @@ export function CoachBar() {
           ))}
           {seance.swaps && seance.swaps.length > 0 && (
             <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmerSeance}>
-              Appliquer aujourd'hui seulement
+              Appliquer dans Ma seance
             </button>
           )}
           <button class="coach-bar-passe" type="button" onClick={() => { setSeance(null); setEtat('pret'); setMsg(''); }}>Pas maintenant</button>
