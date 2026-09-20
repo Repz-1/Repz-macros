@@ -5,7 +5,6 @@ import { signal } from '@preact/signals';
 export const ouvrirCalcDemande = signal(false);
 import { objectifs, totauxJourAff, kcalRestantes, donneesPretes, poidsCalcul, rappelIgnoreA, dateJour, nouvelleJournee } from '../store/journal.js';
 import { weightLog, enregistrerJour } from '../store/stats.js';
-import { ongletActif } from './BottomNav.jsx';
 import { IdeesRepas } from './IdeesRepas.jsx';
 import { t } from '../i18n/index.js';
 
@@ -124,14 +123,13 @@ export function DayDashboard() {
   const dOuvert = retard ? new Date(dateJour.value + 'T00:00') : null;
   const dateTexte = retard
     ? `${jours[dOuvert.getDay()] || ''} ${dOuvert.getDate()} ${moisCourt[dOuvert.getMonth()] || ''}`
-    : `${t('today')}, ${d.getDate()} ${moisCourt[d.getMonth()] || ''}`;
+    : `${t('today')}, ${d.getDate()} ${moisCourt[dOuvert.getMonth()] || ''}`;
   const jourOuvert = dOuvert
     ? `${(jours[dOuvert.getDay()] || '').toLowerCase()} ${dOuvert.getDate()} ${moisCourt[dOuvert.getMonth()] || ''}`.trim()
     : '';
 
   return (
     <>
-    <CoachBar />
     <section class={'carte carte--relief cal' + (pret ? '' : ' cal--chargement')}
              data-palier={palier || 'ok'}>
       <span class="cal-capte" aria-hidden="true" />
@@ -186,6 +184,7 @@ export function DayDashboard() {
         <span>{t('cloturer_journee')}</span>
       </button>
     </section>
+    <CoachBar />
     </>
   );
 }
