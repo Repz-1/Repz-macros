@@ -33,3 +33,40 @@ const COMBOS = [
     ],
   },
 ];
+
+function repasCle(phrase) {
+  const n = normNom(phrase);
+  if (n.includes('matin') || n.includes('petit dejeuner')) return 'pdej';
+  if (n.includes('midi') || n.includes('dejeuner') || n.includes('lunch')) return 'dej';
+  if (n.includes('soir') || n.includes('diner')) return 'diner';
+  if (n.includes('snack') || n.includes('collation')) return 'snack';
+  const h = new Date().getHours();
+  return h < 11 ? 'pdej' : h < 15 ? 'dej' : h < 21 ? 'diner' : 'snack';
+}
+
+function extraireQuantite(n, apresMot) {
+  const idx = apresMot ? n.indexOf(apresMot) : -1;
+  const zone = idx >= 0 ? n.slice(0, idx + apresMot.length + 12) : n;
+  const cas = zone.match(/(\d+[\.,]?\d*)\s*(cuillere(?:s)?(?: a soupe)?|cas)\b/);
+  if (cas) return parseFloat(cas[1].replace(',', '.')) * 10;
+  const cac = zone.match(/(\d+[\.,]?\d*)\s*(cuillere(?:s)? a cafe|cac)\b/);
+  if (cac) return parseFloat(cac[1].replace(',', '.')) * 5;
+  const g = zone.match(/(\d+[\.,]?\d*)\s*(g|gr|grammes?)\b/);
+  if (g) return parseFloat(g[1].replace(',', '.'));
+  return null;
+}
+
+export function extraireEau(phrase) {
+  const n = normNom(phrase);
+  const parleEau = /\b(eau|bu|bois|boire|verre|verres|bouteille|hydrate)\b/.test(n);
+  if (!parleEau) return null;
+  const l = n.match(/(\d+[\.,]?\d*)\s*l\b/);
+  if (l) return parseFloat(l[1].replace(',', '.'));
+  const cl = n.match(/(\d+[\.,]?\d*)\s*cl\b/);
+  if (cl) return parseFloat(cl[1].replace(',', '.')) / 100;
+  const ml = n.match(/(\d+[\.,]?\d*)\s*ml\b/);
+  if (ml) return parseFloat(ml[1].replace(',', '.')) / 1000;
+  if (/\bbouteille/.test(n)) return 0.5;
+  if (/\bverre/.test(n)) return 0.25;
+  return 0.25;
+}
