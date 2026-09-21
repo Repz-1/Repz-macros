@@ -1,4 +1,4 @@
-import { parserLocal, extraireEau, proposerRepas, composerSeance } from '../src/services/coach-local.js';
+import { parserLocal, extraireEau, proposerRepas, composerSeance, proposerCourses } from '../src/services/coach-local.js';
 
 const obj = { kcal: 2700, prot: 170, carbs: 300, lip: 80 };
 const tot = { kcal: 0, prot: 0, carbs: 0, lip: 0 };
@@ -54,6 +54,21 @@ ok('seance pecs biceps', pec2 && pec2.action === 'composerSeance', pec2 && pec2.
 const mix = parserLocal('séance pecs, une pomme', { objectifs: obj, totaux: tot });
 ok('mix séance + pomme', mix.action === 'composerSeance' && (mix.aliments || []).some((a) => /pomme/i.test(a.aliment)), JSON.stringify(mix.aliments));
 
+const journal = [
+  { ings: [{ name: 'Riz cuit', portion: 200 }, { name: 'Poulet cuit', portion: 150 }] },
+  { ings: [{ name: 'Banane', portion: 120 }] },
+];
+const c7 = parserLocal('fais-moi les courses de la semaine', { repas: journal });
+ok('courses semaine', c7.action === 'majCourses', c7.action);
+ok('courses 7 jours', c7.jours === 7, String(c7.jours));
+ok('courses 3 articles journal', c7.noms && c7.noms.length === 3, JSON.stringify(c7.noms));
+ok('courses noms sans cuit', c7.noms && c7.noms.includes('Riz') && c7.noms.includes('Poulet'), JSON.stringify(c7.noms));
+const c2 = proposerCourses('courses pour 2 personnes 3 jours', journal);
+ok('courses 3j x2', c2 && c2.jours === 3 && c2.pers === 2, JSON.stringify(c2 && { j: c2.jours, p: c2.pers }));
+const cvide = parserLocal('liste de courses', { repas: [] });
+ok('courses journal vide', cvide.action === 'majCourses' && !(cvide.noms || []).length, JSON.stringify(cvide.noms));
+const pasCourse = parserLocal('séance pecs');
+ok('seance n est pas courses', pasCourse.action === 'composerSeance', pasCourse.action);
+
 if (fails) { console.error(fails + ' echec(s)'); process.exit(1); }
 console.log('tous les tests coach-local passent');
-
