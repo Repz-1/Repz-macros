@@ -1,12 +1,54 @@
 # BELFIT — À faire depuis le PC
 
-Dernière mise à jour : 18 juillet 2026
+Dernière mise à jour : 22 septembre 2026
 
 Commence par récupérer le code :
 
 ```bash
 git pull origin main
 ```
+
+---
+
+## 0. CE SOIR — le coach serveur (`coachAgent`)
+
+**Ce que ça débloque :** tout ce que le coach local ne comprend pas
+(« un bol de pâtes carbo chez ma mère ») part à Gemini. L'app appelle
+déjà le serveur depuis la v542 — tant qu'il n'est pas déployé, elle
+retombe proprement sur le coach local, rien ne casse.
+
+**Rien d'autre à configurer :** `coachAgent` utilise la même clé que
+le micro et la photo (`GEMINI_API_KEY`). Si le micro marche déjà en
+ligne, la clé est en place.
+
+```bash
+cd functions
+npm install
+cd ..
+firebase deploy --only functions:coachAgent
+```
+
+**Si le terminal demande la clé Gemini** (elle n'a jamais été posée) :
+
+```bash
+firebase functions:secrets:set GEMINI_API_KEY
+# colle la clé Google AI Studio quand c'est demandé
+firebase deploy --only functions:coachAgent
+```
+
+**Test sur belfit.be, connecté à ton compte :**
+
+1. Dans la barre du coach : `200 g riz` → doit répondre **instantanément**
+   (coach local, le serveur n'est pas appelé)
+2. Puis : `un bol de pates carbo chez ma mere` → « … » pendant une
+   seconde ou deux, puis une proposition d'aliments (coach serveur)
+3. Si l'étape 2 répond « Pas trouvé » : le serveur n'est pas joignable.
+   Console Firebase → Functions → `coachAgent` → onglet **Journaux**
+   pour lire l'erreur.
+
+**Budget :** chaque appel à l'étape 2 est facturé par Gemini. Vérifie
+dans Google Cloud → Facturation qu'une **alerte de budget** existe
+avant d'ouvrir l'app à d'autres testeurs.
 
 ---
 

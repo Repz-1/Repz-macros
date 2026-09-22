@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { parserLocal, proposerRepas } from '../services/coach-local.js';
+import { demanderCoach } from '../services/coach.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
 import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT, demandeVueEntrainer, poserBrouillon } from '../store/seance-active.js';
 import { ongletActif } from './BottomNav.jsx';
@@ -142,15 +143,43 @@ export function CoachBar() {
     if (trouves.length || eau) setTexte('');
   };
 
-  const envoyer = () => {
+  /**
+   * Deux cerveaux, dans cet ordre (22/09).
+   *
+   * Le coach LOCAL repond d'abord : instantane, gratuit, hors ligne. Il
+   * connait les aliments de la base, l'eau, les seances, les courses.
+   * Le coach SERVEUR (coachAgent, Gemini) n'est appele que quand le
+   * local n'a rien compris — c'est lui qui sait lire « un bol de pates
+   * carbo chez ma mere ». Chaque appel Gemini est facture : le serveur
+   * est un filet, pas le premier recours.
+   *
+   * Si le serveur n'est pas deploye, pas connecte ou injoignable, on
+   * garde la reponse locale : la barre ne casse jamais.
+   */
+  const envoyer = async () => {
     const dit = texte.trim();
     if (!dit) return;
-    appliquer(parserLocal(dit, {
+    const contexte = {
       objectifs: objectifs.value,
       totaux: totauxJourAff.value,
       seanceRefs: seanceRefs.value,
       repas: repas.value,
-    }));
+    };
+    const local = parserLocal(dit, contexte);
+    const compris = local.action || (local.aliments || []).length || local.eauLitres;
+    if (compris) { appliquer(local); return; }
+
+    setMsg('…');
+    try {
+      const distant = await demanderCoach(dit, {
+        objectifs: contexte.objectifs,
+        totaux: contexte.totaux,
+      });
+      if ((distant.aliments || []).length || distant.eauLitres) appliquer(distant);
+      else appliquer(local);
+    } catch (e) {
+      appliquer(local);
+    }
   };
 
   const ecrireAliments = () => {
