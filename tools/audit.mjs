@@ -1619,32 +1619,13 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R49 — Un seul interrupteur pour le mode vitrine.
-// Raci, 24/08 : reouverture provisoire de l'acces public, avec
-// S'entrainer en premier ecran. Le risque d'un mode provisoire, c'est
-// qu'il en reste un morceau : le drapeau referme mais l'onglet
-// d'ouverture encore force. ONGLET_VITRINE est donc DERIVE de
-// ACCES_INVITE — un seul false remet tout d'aplomb. La regle verifie
-// que la derivation tient, et que le retour Android suit l'onglet
-// d'ouverture au lieu d'un 'journal' ecrit en dur.
+// R49 — retiree.
+// v537 (Raci, 20/09) : « suppression du mode invite ». Cette regle
+// protegeait l'entree sans compte ; elle est retiree par decision.
+// Le compte devient obligatoire — ce qui ferme aussi la perte de
+// donnees du 12/09, quand un vidage de cache avait tout efface
+// faute de copie dans le cloud.
 // ------------------------------------------------------------
-{
-  const flag = lire('app-v2/src/acces-invite.js');
-  const nav = lire('app-v2/src/components/BottomNav.jsx');
-  const main = lire('app-v2/src/main.jsx');
-  const soucis = [];
-  if (flag && !/ONGLET_VITRINE = ACCES_INVITE \?/.test(flag)) {
-    soucis.push('ONGLET_VITRINE n\'est plus derive de ACCES_INVITE : refermer l\'acces laisserait l\'onglet force');
-  }
-  if (nav && !/signal\(ONGLET_VITRINE\)/.test(nav)) {
-    soucis.push('l\'onglet d\'ouverture est reecrit en dur dans BottomNav');
-  }
-  if (main && /allerOnglet\('journal'\)/.test(main)) {
-    soucis.push('le retour Android ramene sur un journal ecrit en dur, pas sur l\'onglet d\'ouverture');
-  }
-  if (soucis.length) faute('R49 mode vitrine', soucis.join(' ; '));
-  else passe('R49 mode vitrine');
-}
 
 // ------------------------------------------------------------
 // R50 — La carte de programme nomme ce qu'elle lance.
@@ -2512,44 +2493,13 @@ const DECALAGE_SW_V2 = 232;
 }
 
 // ------------------------------------------------------------
-// R74 — L'entree sans compte s'annonce tant qu'elle est ouverte.
-// Raci, 26/08 : « enleve l'inscription pour le moment, arrivee direct
-// sur la page alimentation ». Comme R73, c'est une porte grande
-// ouverte qu'on ne doit pas retrouver par hasard dans six mois. Deux
-// consequences a ne jamais laisser oublier : les donnees des testeurs
-// vivent dans leur navigateur et disparaissent avec le cache, et le
-// micro et la photo repondront 401 faute de jeton Firebase.
+// R74 — retiree.
+// v537 (Raci, 20/09) : « suppression du mode invite ». Cette regle
+// protegeait l'entree sans compte ; elle est retiree par decision.
+// Le compte devient obligatoire — ce qui ferme aussi la perte de
+// donnees du 12/09, quand un vidage de cache avait tout efface
+// faute de copie dans le cloud.
 // ------------------------------------------------------------
-{
-  const ai = lire('app-v2/src/acces-invite.js');
-  const mn = lire('app-v2/src/main.jsx');
-  const fb = lire('app-v2/src/services/firebase.js');
-  const soucis = [];
-  const v = ai && /export const SANS_COMPTE = (true|false);/.exec(ai);
-  if (!v) soucis.push('l\'interrupteur SANS_COMPTE a disparu');
-  if (mn && !/!utilisateur\.value && SANS_COMPTE/.test(mn)) {
-    soucis.push('l\'ecran de connexion est redevenu le passage oblige sans passer par l\'interrupteur');
-  }
-  if (fb && !/SANS_COMPTE && !utilisateur\.value/.test(fb)) {
-    soucis.push('la session invite n\'est plus prete avant le premier rendu : l\'app clignotera');
-  }
-  // Une porte de service doit rester : sans elle, un compte existant
-  // ne peut plus atteindre ses propres donnees, qui vivent sous son
-  // uid et non dans la session invite.
-  const rg = lire('app-v2/src/components/Reglages.jsx');
-  if (v && v[1] === 'true') {
-    if (rg && !/demanderConnexion\.value = true/.test(rg)) {
-      soucis.push('les Reglages n\'offrent plus de rejoindre son compte : ses donnees deviennent inatteignables');
-    }
-    if (mn && !/demanderConnexion\.value &&/.test(mn)) {
-      soucis.push('la demande de connexion n\'ouvre plus l\'ecran de connexion');
-    }
-  }
-  if (soucis.length) faute('R74 entree sans compte', soucis.join(' ; '));
-  else if (v && v[1] === 'true') {
-    signale('R74 entree sans compte', 'INSCRIPTION DESACTIVEE — tout le monde entre sans compte. Donnees locales uniquement (perdues si le cache est vide) ; micro et photo repondront 401 tant que « Anonymous » n\'est pas active dans la console Firebase.');
-  } else passe('R74 entree sans compte');
-}
 
 // ------------------------------------------------------------
 // R75 — Les pastilles non selectionnees restent visibles.
@@ -3131,24 +3081,23 @@ const DECALAGE_SW_V2 = 232;
 // 5/09 ; la libre n'en avait aucune.
 // ------------------------------------------------------------
 {
-  const ms = lire('app-v2/src/components/MaSeance.jsx');
+  // v535 (Raci, 20/09) : la reprise a demenage de MaSeance.jsx vers
+  // store/seance-active.js, qui unifie seance libre et guidee en
+  // quatre etats — brouillon, prevue, en cours, faite. La regle suit
+  // la fonction la ou elle vit desormais.
+  const sa = lire('app-v2/src/store/seance-active.js');
   const soucis = [];
-  if (ms) {
-    if (!/const CLE_LIBRE = /.test(ms)) soucis.push('la seance libre n\'est plus conservee sur le disque');
-    if (!/signal\(reprise \? reprise\.refs : \[\]\)/.test(ms)) {
-      soucis.push('les exercices choisis ne repartent plus de la reprise');
+  if (!sa) soucis.push('store/seance-active.js a disparu : plus rien ne reprend une seance');
+  else {
+    if (!/const CLE_LIBRE = 'belfit_seance_libre'/.test(sa)) {
+      soucis.push('la seance libre n\'est plus conservee sur le disque');
     }
-    if (!/signal\(reprise \? reprise\.selection : \{\}\)/.test(ms)) {
-      soucis.push('la selection ne repart plus de la reprise');
-    }
-    // Les Set ne passent pas par JSON : sans reconstruction, la
-    // reprise rendrait des tableaux et les `.has()` casseraient.
-    if (!/new Set\(e\.selection\[k\]\)/.test(ms)) {
+    if (!/signal\(reprise\.refs\)/.test(sa)) soucis.push('les exercices choisis ne repartent plus de la reprise');
+    if (!/signal\(reprise\.selection\)/.test(sa)) soucis.push('la selection ne repart plus de la reprise');
+    if (!/new Set\(e\.selection\[k\]\)/.test(sa)) {
       soucis.push('les Set ne sont plus rebatis a la lecture : la selection sera inutilisable');
     }
-    if (!/effect\(\(\) => \{ seanceRefs\.value; selectionExos\.value; ecrireLibre\(\); \}\)/.test(ms)) {
-      soucis.push('la sauvegarde n\'est plus automatique : elle manquera un tap sur deux');
-    }
+    if (!/effect\(/.test(sa)) soucis.push('la sauvegarde n\'est plus automatique');
   }
   if (soucis.length) faute('R85 reprise de la seance libre', soucis.join(' ; '));
   else passe('R85 reprise de la seance libre');
