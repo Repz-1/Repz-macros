@@ -3,6 +3,7 @@ import { parserLocal, proposerRepas } from '../services/coach-local.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
 import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT, demandeVueEntrainer, poserBrouillon } from '../store/seance-active.js';
 import { ongletActif } from './BottomNav.jsx';
+import { courses } from './Courses.jsx';
 import { DB, macrosOf } from '../data/aliments.js';
 import { t } from '../i18n/index.js';
 import '../styles/coach-bar.css';
@@ -52,6 +53,27 @@ export function CoachBar() {
   }, [ouvert, lignes.length, diner, seance]);
 
   const appliquer = (out) => {
+    // « Fais-moi les courses de la semaine » (v539, branche le 22/09).
+    // La liste se fabrique deja depuis le journal dans Courses.jsx : le
+    // coach n'a qu'a en regler la duree et le nombre de personnes, puis
+    // l'ouvrir. C'est ce qui en fait un agent plutot qu'une reponse —
+    // il ecrit dans l'outil au lieu de decrire une liste dans une bulle.
+    if (out.action === 'majCourses') {
+      const proche = (v, choix) => choix.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a));
+      courses.value = {
+        ...courses.value,
+        jours: proche(out.jours || 7, [3, 5, 7]),
+        pers: Math.min(4, Math.max(1, out.pers || 1)),
+        genere: true,
+      };
+      setMsg(out.texte || '');
+      setLignes([]);
+      setEtat('pret');
+      setTexte('');
+      if ((out.noms || []).length) ongletActif.value = 'courses';
+      return;
+    }
+
     if (out.action === 'abandonnerSeance') {
       abandonnerSeance();
       setSeance(null);
@@ -127,6 +149,7 @@ export function CoachBar() {
       objectifs: objectifs.value,
       totaux: totauxJourAff.value,
       seanceRefs: seanceRefs.value,
+      repas: repas.value,
     }));
   };
 
