@@ -10,7 +10,36 @@ const PORTION = {
   'Riz cuit': 200, Banane: 120, 'Oeuf entier M (50g)': 50,
   'Whey Iso': 30, "Huile d'olive": 10, 'Pomme de terre cuite': 200,
   'Viande de kebab': 150,
+  // Portions « une » par defaut (23/09) — sans nombre, « une biere »
+  // n'est pas 100 g.
+  'Biere blonde': 250, 'Bière blonde': 250, 'Cafe noir': 150, 'Café noir': 150, Expresso: 40,
+  'Thé noir': 250, 'Café cappuccino': 200, 'Café latte': 250, 'Lait 1/2 écrémé': 250,
+  'Jus orange frais': 200, 'Jus pomme': 200, 'Jus de raisin': 200, 'Vin rouge léger': 150, 'Vin blanc sec': 150,
+  'Smoothie banane': 300, 'Chocolat chaud maison': 250, Pomme: 150, 'Yaourt nature': 125, Skyr: 150,
+  Croissant: 60, 'Gouda': 30, 'Jambon blanc': 40, 'Thon naturel boite': 100, 'Pizza margherita': 350,
+  'Burger classique': 250, 'Sushi 6 pieces': 180, 'Omelette nature': 150, 'Lasagnes': 350,
+  'Soupe de légumes': 300, 'Compote de pomme': 100, 'Gaufre de Liège': 90, 'Salade verte': 80,
+  'Chocolat au lait': 20, 'Lardons': 50, 'Saucisse de Toulouse': 100, 'Boulettes viande': 150,
+  'Avocat': 150, 'Pain complet': 80, 'Flocons d\'avoine': 50, 'Beurre de cacahuète': 20, 'Nutella': 20,
+  'Miel': 15, 'Confiture': 20, 'Beurre': 10, 'Amandes': 25, 'Noix': 25, 'Barre protéinée': 60,
 };
+
+/**
+ * Contenants (23/09) : « un verre de lait », « 2 tasses de cafe »,
+ * « une canette de coca ». Renvoie une quantite en g/ml, ou null.
+ */
+const CONTENANTS = { verre: 250, verres: 250, tasse: 150, tasses: 150, bol: 250, bols: 250,
+  canette: 330, canettes: 330, bouteille: 500, bouteilles: 500, pinte: 500, pintes: 500 };
+const NOMBRES = { un: 1, une: 1, deux: 2, trois: 3, quatre: 4, cinq: 5 };
+function quantiteContenant(n, mot) {
+  const idx = mot ? n.indexOf(mot) : -1;
+  if (idx < 0) return null;
+  const avant = n.slice(Math.max(0, idx - 30), idx);
+  const m = avant.match(/(?:(\d+|un|une|deux|trois|quatre|cinq)\s+)?(verres?|tasses?|bols?|canettes?|bouteilles?|pintes?)\s+(?:de |d )?$/);
+  if (!m) return null;
+  const nb = m[1] ? (NOMBRES[m[1]] || parseFloat(m[1])) : 1;
+  return nb * CONTENANTS[m[2]];
+}
 
 const STOP = new Set([
   'que','qui','une','des','les','aux','pour','avec','dans','plus','mais',
@@ -77,11 +106,14 @@ function extraireQuantite(n, apresMot) {
   return null;
 }
 
+const NOMBRES_EAU = { un: 1, une: 1, deux: 2 };
 export function extraireEau(phrase) {
-  const n = normNom(phrase);
-  const parleEau = /\b(eau|bu|bois|boire|verre|verres|bouteille|hydrate)\b/.test(n);
+  const n = normNom(String(phrase || '').replace(/(\d),(\d)/g, '$1.$2')).replace(/(\d) (\d)/g, '$1.$2');
+  const parleEau = /\b(eau|water|spa|bu|bois|boire|verre|verres|bouteille|hydrate)\b/.test(n);
   if (!parleEau) return null;
-  const l = n.match(/(\d+[\.,]?\d*)\s*l\b/);
+  // « 1 litre », « 1,5 litres », « 1l » (23/09 : « litre » n'etait pas lu)
+  const l = n.match(/(\d+(?:[\.,]\d+)?|un|une|deux)\s*(?:l|litres?)\b/);
+  if (l && NOMBRES_EAU[l[1]]) return NOMBRES_EAU[l[1]];
   if (l) return parseFloat(l[1].replace(',', '.'));
   const cl = n.match(/(\d+[\.,]?\d*)\s*cl\b/);
   if (cl) return parseFloat(cl[1].replace(',', '.')) / 100;
@@ -454,32 +486,43 @@ export function parserLocal(message, contexte = {}) {
     (c.extra || []).forEach((e) => { if (e.si.test(n)) push(e.aliment, e.quantite); });
   }
 
+  // Le texte reconnu est CONSOMME (23/09) : « flocons d'avoine » ne
+  // redonne pas « avoine », « pain complet » ne redonne pas « pain »,
+  // « jus d'orange » ne redonne pas une orange.
   const cles = Object.keys(ALIAS).sort((a, b) => b.length - a.length);
+  let reste = ' ' + n + ' ';
   for (const a of cles) {
     if (STOP.has(a) || skip.has(a) || a.length < 3) continue;
-    if (!new RegExp('(?:^| )' + a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?: |$)').test(n)) continue;
+    const motif = ' ' + a + ' ';
+    if (!reste.includes(motif)) continue;
+    reste = reste.replace(motif, ' '.repeat(motif.length - 1) + ' ');
     const cle = resoudreAliment(a);
-    push(cle, extraireQuantite(n, a) || PORTION[cle] || 100);
+    const d = cle && DB[cle];
+    push(cle, quantiteContenant(n, a) || extraireQuantite(n, a) || PORTION[cle] || (d && d.unit) || 100);
   }
+  // Un « verre » de lait ou une « bouteille » de coca n'est pas de
+  // l'eau : l'eau ne se compte que si elle est nommee.
+  const eauNommee = /\b(eau|water|spa|hydrate)\b/.test(n);
+  const eauFinale = aliments.length && !eauNommee ? 0 : eauLitres;
 
   if (composee) {
     const extra = aliments.length
       ? ' Aussi : ' + aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', ') + '.'
       : '';
-    return { ...composee, aliments, eauLitres: eauLitres || 0, texte: composee.texte + extra };
+    return { ...composee, aliments, eauLitres: eauFinale || 0, texte: composee.texte + extra };
   }
 
   if (seance) {
-    return { texte: seance.texte, aliments, eauLitres: eauLitres || 0, seance, local: true };
+    return { texte: seance.texte, aliments, eauLitres: eauFinale || 0, seance, local: true };
   }
 
-  if (!aliments.length && !eauLitres && lireNouvelleLigne(n)) {
+  if (!aliments.length && !eauFinale && lireNouvelleLigne(n)) {
     const ligne = lireNouvelleLigne(n);
     const nomType = { repas: 'Repas', collation: 'Collation', boisson: 'Boisson' }[ligne];
     return { texte: 'Nouvelle ligne « ' + nomType + ' » ajoutée au journal.', aliments: [], action: 'creerLigne', ligne, local: true };
   }
 
-  if (!aliments.length && !eauLitres) {
+  if (!aliments.length && !eauFinale) {
     noterManque(brut);
     return {
       texte: "Pas trouve. Nourriture, eau, ou « j'ai mal au genou ».",
@@ -498,7 +541,7 @@ export function parserLocal(message, contexte = {}) {
     return {
       texte: 'Nouvelle ligne « ' + nomType + ' » : ' + aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', ')
         + ' \u2248 ' + Math.round(m.kcal) + ' kcal. Verifie puis ajoute.',
-      aliments, eauLitres: eauLitres || 0, nouvelleLigne: ligne,
+      aliments, eauLitres: eauFinale || 0, nouvelleLigne: ligne,
       macros: { kcal: Math.round(m.kcal), prot: Math.round(m.prot), carbs: Math.round(m.carbs), lip: Math.round(m.lip) },
       local: true,
     };
@@ -506,7 +549,7 @@ export function parserLocal(message, contexte = {}) {
 
   const macros = macrosAliments(aliments);
   const bits = [];
-  if (eauLitres) bits.push(String(eauLitres).replace('.', ',') + ' L d\u2019eau');
+  if (eauFinale) bits.push(String(eauFinale).replace('.', ',') + ' L d\u2019eau');
   if (aliments.length) bits.push(aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', '));
   let texte = 'Base BelFit : ' + bits.join(' + ') + '.';
   if (aliments.length) {
@@ -525,7 +568,7 @@ export function parserLocal(message, contexte = {}) {
   return {
     texte,
     aliments,
-    eauLitres: eauLitres || 0,
+    eauLitres: eauFinale || 0,
     macros: { kcal: Math.round(macros.kcal), prot: Math.round(macros.prot), carbs: Math.round(macros.carbs), lip: Math.round(macros.lip) },
     local: true,
   };
