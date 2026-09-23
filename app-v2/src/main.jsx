@@ -37,7 +37,7 @@ import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
 import { origineCalc } from './components/BelfitPlus.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
-import { Courses } from './components/Courses.jsx';
+import { Courses, origineCourses } from './components/Courses.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
 import { MealPage } from './components/MealPage.jsx';
 import { repasOuvertId } from './components/MealCard.jsx';
@@ -234,7 +234,7 @@ export function App() {
 
   const onglet = ongletActif.value;
   const ordre = ['journal', 'entrainer', 'stats', 'premium'];
-  const idx = Math.max(0, ordre.indexOf(onglet === 'courses' ? 'journal' : onglet));
+  const idx = Math.max(0, ordre.indexOf(onglet === 'courses' ? (origineCourses.value || 'journal') : onglet));
 
   // ============================================================
   // RAIL A 4 PANNEAUX — architecture de la v1 (ses 4 iframes).

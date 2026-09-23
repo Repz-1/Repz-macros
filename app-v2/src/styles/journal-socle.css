@@ -3471,3 +3471,6 @@ html.avec-avis .pg-besoins { padding-top: var(--haut-avis, 0px); }
 @media (prefers-reduced-motion: no-preference) {
   .pg-journal .mc--suivant::before { transition: opacity .3s ease; }
 }
+
+/* 23/09 : panneau d'idees ouvert depuis BelFit+ — lien de retour. */
+.eat-retour-plus { display:block; margin:8px 0 0; padding:6px 2px; background:none; border:0; font:inherit; font-weight:600; font-size:14px; color:#B34700; cursor:pointer; }

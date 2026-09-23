@@ -8,7 +8,8 @@ import { macrosOf, DB } from '../data/aliments.js';
 import { ongletActif, allerOnglet } from './BottomNav.jsx';
 import { ouvrirCalcDemande } from './DayDashboard.jsx';
 import { statsAvOuvertes } from './StatsAvancees.jsx';
-import { ideesOuvertes } from './IdeesRepas.jsx';
+import { ideesOuvertes, origineIdees } from './IdeesRepas.jsx';
+import { origineCourses } from './Courses.jsx';
 import { Entete } from './Entete.jsx';
 import '../styles/belfit-plus.css';
 
@@ -234,7 +235,7 @@ export function BelfitPlus() {
       <div class="pg-plus pg-prog">
         <Entete retour={() => setOuvertProg(false)} />
         <div class="prog-corps">
-          <h1 class="prog-titre">Mon programme</h1>
+          <h1 class="prog-titre">Mon plan coach</h1>
 
           {!pret ? (
             <p class="prog-attente">Chargement…</p>
@@ -357,7 +358,7 @@ export function BelfitPlus() {
         <span class="bp-hero-trait" aria-hidden="true" />
         <p class="bp-hero-sous">Tout ce dont tu as besoin pour progresser, réuni au même endroit.</p>
         <button class="bp-hero-cta" onClick={() => setOuvertProg(true)}>
-          Mon programme <span aria-hidden="true">→</span>
+          Mon plan coach <span aria-hidden="true">→</span>
         </button>
       </section>
 
@@ -377,7 +378,7 @@ export function BelfitPlus() {
         </button>
 
         {/* 3. Recettes */}
-        <button class="bp-carte" onClick={() => { allerOnglet('journal'); ideesOuvertes.value = true; }}>
+        <button class="bp-carte" onClick={() => { origineIdees.value = 'premium'; allerOnglet('journal'); ideesOuvertes.value = true; }}>
           <span class="bp-visuel bp-visuel--recettes" aria-hidden="true" />
           <span class="bp-corps">
             <span class="bp-nom">Recettes intelligentes</span>
@@ -387,7 +388,7 @@ export function BelfitPlus() {
         </button>
 
         {/* 4. Courses */}
-        <button class="bp-carte" onClick={() => allerOnglet('courses')}>
+        <button class="bp-carte" onClick={() => { origineCourses.value = 'premium'; allerOnglet('courses'); }}>
           <span class="bp-visuel bp-visuel--courses" aria-hidden="true" />
           <span class="bp-corps">
             <span class="bp-nom">Liste de courses intelligente</span>

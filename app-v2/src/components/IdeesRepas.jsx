@@ -7,7 +7,7 @@ import { DB } from '../data/aliments.js';
 import { IDEA_PREP } from '../data/preparations.js';
 import { objectifs, totauxJourAff, kcalRestantes } from '../store/journal.js';
 import { estPremium } from './PremiumPage.jsx';
-import { ongletActif } from './BottomNav.jsx';
+import { ongletActif, allerOnglet } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
 
 // Macros d'une idee = somme reelle de ses aliments (base DB)
@@ -286,10 +286,19 @@ function FicheRecette({ nom, portion, kcal, prot, fermer, aPrec, aSuiv, prec, su
 }
 
 export const ideesOuvertes = signal(false);
+/** 'premium' quand le panneau est ouvert depuis BelFit+ : un lien
+ *  ramene alors a BelFit+ au lieu de laisser la personne sur le
+ *  Journal (23/09). Remis a null des que le panneau se ferme. */
+export const origineIdees = signal(null);
 
 export function IdeesRepas({ pilulSeule, panneauSeul }) {
   const ouvert = ideesOuvertes.value;
-  const setOuvert = (v) => { ideesOuvertes.value = v; };
+  const setOuvert = (v) => { ideesOuvertes.value = v; if (!v) origineIdees.value = null; };
+  const retourPlus = origineIdees.value === 'premium' && ouvert ? (
+    <button class="eat-retour-plus" type="button" onClick={() => {
+      ideesOuvertes.value = false; origineIdees.value = null; allerOnglet('premium');
+    }}>← {t('eat_retour_plus')}</button>
+  ) : null;
   const [cat, setCat] = useState(null);
   const [fiche, setFiche] = useState(null);
   const [voirTout, setVoirTout] = useState(false);
@@ -347,6 +356,8 @@ export function IdeesRepas({ pilulSeule, panneauSeul }) {
           <span class="eat-fleche">{ouvert ? '\u25B4' : '\u25BE'}</span>
         </button>
       </div>
+
+      {retourPlus}
 
       {ouvert && !estPremium.value && (
         <div class="eat-panneau" onClick={() => { ongletActif.value = 'premium'; }}>

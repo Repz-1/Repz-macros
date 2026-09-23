@@ -25,6 +25,9 @@ const CHOIX_PERS = [1, 2, 3, 4];
 const DEFAUT = { jours: 5, pers: 1, coches: {}, manuels: [], notes: {}, genere: false };
 
 export const courses = signal({ ...DEFAUT });
+/** Onglet d'ou l'on a ouvert les courses : le retour y ramene (23/09).
+ *  Ouvertes depuis BelFit+, la fleche renvoyait au Journal. */
+export const origineCourses = signal('journal');
 
 let uid = null, pret = false;
 
@@ -215,7 +218,7 @@ export function Courses() {
       {/* En-tete : titre centre entre deux boutons ronds, d'apres la
           maquette mesuree (bouton 36 pt, titre 20 pt). */}
       <div class="crs-barre">
-        <button class="crs-rond" onClick={() => allerOnglet('journal')} aria-label="Retour">
+        <button class="crs-rond" onClick={() => allerOnglet(origineCourses.value || 'journal')} aria-label="Retour">
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
         </button>
         <h2>{t('co_title')}</h2>

@@ -6,7 +6,7 @@ import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT
 import { ongletActif } from './BottomNav.jsx';
 import { planifierSeance } from '../store/programme.js';
 import { EXERCISES } from '../data/exercices.js';
-import { courses } from './Courses.jsx';
+import { courses, origineCourses } from './Courses.jsx';
 import { DB, macrosOf } from '../data/aliments.js';
 import { t } from '../i18n/index.js';
 import '../styles/coach-bar.css';
@@ -73,7 +73,7 @@ export function CoachBar() {
       setLignes([]);
       setEtat('pret');
       setTexte('');
-      if ((out.noms || []).length) ongletActif.value = 'courses';
+      if ((out.noms || []).length) { origineCourses.value = 'journal'; ongletActif.value = 'courses'; }
       return;
     }
 

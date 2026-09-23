@@ -4,7 +4,9 @@ import { objectifs } from '../store/journal.js';
 import { musclesParJour } from '../services/muscles-jour.js';
 import { setLog } from './SeanceTracker.jsx';
 import { estPremium } from './PremiumPage.jsx';
-import { ongletActif } from './BottomNav.jsx';
+import { ongletActif, allerOnglet } from './BottomNav.jsx';
+import { seances } from '../store/seances.js';
+import { statsAvOuvertes } from './StatsAvancees.jsx';
 import { t } from '../i18n/index.js';
 import { Entete } from './Entete.jsx';
 import { SILHOUETTE_FACE, SILHOUETTE_DOS, SILHOUETTE_FACE_F, SILHOUETTE_DOS_F } from '../data/silhouette.js';
@@ -482,18 +484,19 @@ export function Stats() {
             {/* Chaque ligne porte son chiffre brut : on voit d'ou vient la
                 note au lieu de la subir (Raci, 9/08). */}
             <div class="score-rows">
-              {[[t('st_row_nutrition'), nutrition, `${joursEncodes}/7 ${t('st_det_jours')}`],
-                [t('st_row_training'), entrainement, `${trainJours} ${t('st_det_seances')}`],
-                [t('st_row_weight'), scorePoids, `${pesees14} ${t('st_det_pesees')}`],
-                [t('st_row_regularity'), regularite, `${joursActifs}/7 ${t('st_det_actifs')}`]].map(([l, v, d]) => (
-                <div class="score-bloc" key={l}>
+              {/* Chaque barre mene la ou on l'ameliore (23/09). */}
+              {[[t('st_row_nutrition'), nutrition, `${joursEncodes}/7 ${t('st_det_jours')}`, () => allerOnglet('journal')],
+                [t('st_row_training'), entrainement, `${trainJours} ${t('st_det_seances')}`, () => allerOnglet('entrainer')],
+                [t('st_row_weight'), scorePoids, `${pesees14} ${t('st_det_pesees')}`, () => setModalePoids(true)],
+                [t('st_row_regularity'), regularite, `${joursActifs}/7 ${t('st_det_actifs')}`, () => allerOnglet('journal')]].map(([l, v, d, aller]) => (
+                <button type="button" class="score-bloc score-bloc--lien" key={l} onClick={aller}>
                   <div class="score-row">
                     <div class="sr-lbl">{l}</div>
                     <div class="sr-bar"><div class="sr-fill" style={{ width: v + '%', background: degradeScore(v) }} /></div>
                     <div class="sr-val">{v}%</div>
                   </div>
-                  <div class="sr-det">{d}</div>
-                </div>
+                  <div class="sr-det">{d}<span class="sr-fl" aria-hidden="true">&rsaquo;</span></div>
+                </button>
               ))}
             </div>
           </div>
@@ -632,6 +635,54 @@ export function Stats() {
             le graphique de charge d'UN exercice suivi dans le temps, et
             l'ecart depuis la premiere seance. Les records restent
             visibles seance par seance, mais plus leur courbe. */}
+        {/* ENTRAINEMENT (23/09) : une courbe de volume par semaine, pas
+            le detail par exercice retire le 16/08. Le tonnage est fiable
+            depuis v546 (les seances guidees s'enregistraient a 0 kg). */}
+        {(() => {
+          const lundiDe = (d) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
+          const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+          const l0 = lundiDe(new Date());
+          const sem = Array.from({ length: 8 }, (_, k) => {
+            const debut = new Date(l0); debut.setDate(l0.getDate() - 7 * (7 - k));
+            const fin = new Date(debut); fin.setDate(debut.getDate() + 7);
+            const liste = seances.value.filter(s => s.iso >= iso(debut) && s.iso < iso(fin));
+            return { cle: iso(debut), lb: debut.getDate() + '/' + (debut.getMonth() + 1), n: liste.length,
+              kg: liste.reduce((a, s) => a + (s.tonnage || 0), 0) };
+          });
+          const cette = sem[7];
+          const maxKg = Math.max(1, ...sem.map(x => x.kg));
+          return (
+            <div class="stat-card acc-blue">
+              <h2><span>{t('st_train')}</span></h2>
+              <div class="card-sub">{t('st_train_sub')}</div>
+              {seances.value.length ? (
+                <>
+                  <div class="stat-summary">
+                    <div class="stat-box"><div class="sb-val">{cette.n}</div><div class="sb-lbl">{t('st_train_semaine')}</div></div>
+                    <div class="stat-box"><div class="sb-val">{Math.round(cette.kg).toLocaleString('fr-BE')} kg</div><div class="sb-lbl">{t('st_train_tonnage')}</div></div>
+                  </div>
+                  <div class="chart-zone">
+                    <div class="chart">
+                      {sem.map(x => (
+                        <div class="chart-bar-wrap" key={x.cle}>
+                          <div class="chart-bar charge" style={{ height: Math.max(3, Math.round((x.kg / maxKg) * 88)) + 'px' }} />
+                          <div class="chart-day">{x.lb}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : <Vide texte={t('st_train_vide')} cta={t('st_train_cta')} onCta={() => allerOnglet('entrainer')} />}
+            </div>
+          );
+        })()}
+
+        {prem && (
+          <button type="button" class="st-avancees" onClick={() => { statsAvOuvertes.value = true; }}>
+            {t('st_avancees')} <span aria-hidden="true">&rsaquo;</span>
+          </button>
+        )}
+
         {/* INVITATION PREMIUM */}
         {!prem && (
           <div class="premium-invite">
