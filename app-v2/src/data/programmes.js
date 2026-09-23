@@ -8,9 +8,9 @@ export const PROGRAMMES = {
             desc:'Le classique pour construire du muscle. La base solide pour progresser.',
             duree:'8 semaines', niveau:'Intermédiaire',
             seances:[
-                {titre:'Jour 1 — Pecs / Triceps', sub:'6 exercices · ~60 min'},
+                {titre:'Jour 1 — Pecs / Triceps / Abdos', sub:'7 exercices · ~65 min'},
                 {titre:'Jour 2 — Dos / Biceps', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 3 — Jambes / Épaules', sub:'6 exercices · ~65 min'},
+                {titre:'Jour 3 — Jambes / Épaules / Abdos', sub:'7 exercices · ~70 min'},
             ]
         },
         {
@@ -18,9 +18,9 @@ export const PROGRAMMES = {
             desc:'Plus de volume par muscle pour progresser plus vite. Pour pratiquants réguliers.',
             duree:'10 semaines', niveau:'Confirmé',
             seances:[
-                {titre:'Jour 1 — Pecs', sub:'5 exercices · ~55 min'},
+                {titre:'Jour 1 — Pecs / Abdos', sub:'7 exercices · ~65 min'},
                 {titre:'Jour 2 — Dos', sub:'5 exercices · ~55 min'},
-                {titre:'Jour 3 — Jambes', sub:'5 exercices · ~60 min'},
+                {titre:'Jour 3 — Jambes / Abdos', sub:'7 exercices · ~70 min'},
                 {titre:'Jour 4 — Épaules / Bras', sub:'6 exercices · ~55 min'},
             ]
         },
@@ -29,10 +29,10 @@ export const PROGRAMMES = {
             desc:'Un muscle par jour pour un volume maximal. Pour les confirmés qui veulent pousser fort.',
             duree:'12 semaines', niveau:'Confirmé',
             seances:[
-                {titre:'Jour 1 — Pecs', sub:'5 exercices · ~55 min'},
+                {titre:'Jour 1 — Pecs / Abdos', sub:'7 exercices · ~65 min'},
                 {titre:'Jour 2 — Dos', sub:'5 exercices · ~60 min'},
                 {titre:'Jour 3 — Jambes', sub:'6 exercices · ~65 min'},
-                {titre:'Jour 4 — Épaules', sub:'5 exercices · ~50 min'},
+                {titre:'Jour 4 — Épaules / Abdos', sub:'7 exercices · ~60 min'},
                 {titre:'Jour 5 — Bras (biceps/triceps)', sub:'6 exercices · ~50 min'},
             ]
         },
@@ -50,9 +50,9 @@ export const PROGRAMMES = {
             desc:'Le grand classique en salle : pousser, tirer, jambes. Efficace et structuré.',
             duree:'10 semaines', niveau:'Intermédiaire',
             seances:[
-                {titre:'Push — Pecs / Épaules / Triceps', sub:'6 exercices · ~60 min'},
+                {titre:'Push — Pecs / Épaules / Triceps / Abdos', sub:'7 exercices · ~65 min'},
                 {titre:'Pull — Dos / Biceps', sub:'6 exercices · ~60 min'},
-                {titre:'Legs — Jambes complètes', sub:'6 exercices · ~65 min'},
+                {titre:'Legs — Jambes complètes / Abdos', sub:'7 exercices · ~70 min'},
             ]
         },
         {
@@ -73,10 +73,10 @@ export const PROGRAMMES = {
             seances:[
                 {titre:'Jour 1 — Push', sub:'6 exercices · ~60 min'},
                 {titre:'Jour 2 — Pull', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 3 — Legs', sub:'6 exercices · ~65 min'},
+                {titre:'Jour 3 — Legs / Abdos', sub:'8 exercices · ~75 min'},
                 {titre:'Jour 4 — Push', sub:'6 exercices · ~60 min'},
                 {titre:'Jour 5 — Pull', sub:'6 exercices · ~60 min'},
-                {titre:'Jour 6 — Legs', sub:'6 exercices · ~65 min'},
+                {titre:'Jour 6 — Legs / Abdos', sub:'8 exercices · ~75 min'},
             ]
         },
     ],

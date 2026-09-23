@@ -32,7 +32,8 @@ export const SESSION_EXOS = {
     "pecs:Écarté (Pec Deck) (Machine)",
     "triceps:Barre au Front (Barre EZ)",
     "triceps:Extension Triceps (Poulie)",
-    "triceps:Dips"
+    "triceps:Dips",
+    "abdos:Crunch (Poulie)"
   ],
   "masse-3j-1": [
     "dos:Rowing (Barre)",
@@ -48,14 +49,17 @@ export const SESSION_EXOS = {
     "jambes:Leg Curl Allongé (Machine)",
     "jambes:Extension Mollets Debout (Machine)",
     "epaules:Développé Militaire Debout (Barre)",
-    "epaules:Élévation Latérale (Haltère)"
+    "epaules:Élévation Latérale (Haltère)",
+    "abdos:Relevé de Jambes Suspendu"
   ],
   "masse-4j-0": [
     "pecs:Développé Couché (Barre)",
     "pecs:Développé Couché Incliné (Haltère)",
     "pecs:Développé Couché (Haltère)",
     "pecs:Écarté (Pec Deck) (Machine)",
-    "pecs:Développé Couché Décliné (Barre)"
+    "pecs:Développé Couché Décliné (Barre)",
+    "abdos:Relevé de Jambes Suspendu",
+    "abdos:Crunch (Poulie)"
   ],
   "masse-4j-1": [
     "dos:Tractions",
@@ -69,7 +73,9 @@ export const SESSION_EXOS = {
     "jambes:Presse à Cuisses (Machine)",
     "jambes:Fentes (Haltère)",
     "jambes:Leg Curl Allongé (Machine)",
-    "jambes:Extension Jambes (Machine)"
+    "jambes:Extension Jambes (Machine)",
+    "abdos:Planche",
+    "abdos:Rotation Russe"
   ],
   "masse-4j-3": [
     "epaules:Développé Militaire Debout (Barre)",
@@ -84,7 +90,9 @@ export const SESSION_EXOS = {
     "pecs:Développé Couché Incliné (Haltère)",
     "pecs:Développé Couché (Haltère)",
     "pecs:Écarté (Pec Deck) (Machine)",
-    "pecs:Développé Couché Décliné (Barre)"
+    "pecs:Développé Couché Décliné (Barre)",
+    "abdos:Relevé de Jambes Suspendu",
+    "abdos:Crunch (Poulie)"
   ],
   "masse-5j-1": [
     "dos:Tractions",
@@ -106,7 +114,9 @@ export const SESSION_EXOS = {
     "epaules:Élévation Latérale (Haltère)",
     "epaules:Élévation Frontale Latérales Avant (Haltère)",
     "epaules:Oiseau Penché Arrière (Haltère)",
-    "epaules:Oiseau Arrière (Poulie)"
+    "epaules:Oiseau Arrière (Poulie)",
+    "abdos:Planche",
+    "abdos:Rotation Russe"
   ],
   "masse-5j-4": [
     "biceps:Curl Biceps (Barre)",
@@ -235,7 +245,8 @@ export const SESSION_EXOS = {
     "epaules:Développé Militaire Debout (Barre)",
     "epaules:Élévation Latérale (Haltère)",
     "triceps:Extension Triceps (Poulie)",
-    "triceps:Barre au Front (Barre EZ)"
+    "triceps:Barre au Front (Barre EZ)",
+    "abdos:Crunch (Poulie)"
   ],
   "salle-ppl-3j-1": [
     "dos:Tractions",
@@ -251,7 +262,8 @@ export const SESSION_EXOS = {
     "jambes:Fentes (Haltère)",
     "jambes:Leg Curl Allongé (Machine)",
     "jambes:Extension Jambes (Machine)",
-    "jambes:Extension Mollets Debout (Machine)"
+    "jambes:Extension Mollets Debout (Machine)",
+    "abdos:Relevé de Jambes Suspendu"
   ],
   "salle-half-4j-0": [
     "pecs:Développé Couché (Barre)",
@@ -307,7 +319,9 @@ export const SESSION_EXOS = {
     "jambes:Fentes (Haltère)",
     "jambes:Leg Curl Allongé (Machine)",
     "jambes:Extension Jambes (Machine)",
-    "jambes:Extension Mollets Debout (Machine)"
+    "jambes:Extension Mollets Debout (Machine)",
+    "abdos:Relevé de Jambes Suspendu",
+    "abdos:Crunch (Poulie)"
   ],
   "salle-ppl-6j-3": [
     "pecs:Développé Couché (Haltère)",
@@ -331,7 +345,9 @@ export const SESSION_EXOS = {
     "jambes:Fentes (Haltère)",
     "jambes:Leg Curl Allongé (Machine)",
     "jambes:Extension Jambes (Machine)",
-    "jambes:Extension Mollets Debout (Machine)"
+    "jambes:Extension Mollets Debout (Machine)",
+    "abdos:Planche",
+    "abdos:Rotation Russe"
   ],
   "maison-pdc-2j-0": [
     "pecs:Pompes",
