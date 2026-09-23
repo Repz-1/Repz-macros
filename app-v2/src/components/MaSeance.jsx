@@ -6,7 +6,7 @@ import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { t } from '../i18n/index.js';
 import { enregistrerSeance } from '../store/seances.js';
-import { seanceRefs, selectionExos, demarrerSeanceActive, abandonnerSeance, marquerFaite } from '../store/seance-active.js';
+import { seanceRefs, selectionExos, seanceActive, demarrerSeanceActive, abandonnerSeance, marquerFaite } from '../store/seance-active.js';
 import '../legacy/maseance.scoped.css';
 
 export { seanceRefs, selectionExos };
@@ -34,6 +34,14 @@ function dernierePerf(nom) {
 }
 
 function protocole() {
+  // Seance posee par le coach : son schema prime sur le niveau (23/09).
+  const a = seanceActive.value;
+  if (a && a.schema && a.schema.series) {
+    return {
+      series: Array.from({ length: a.schema.series }, () => ({ reps: a.schema.reps })),
+      resume: a.schema.resume,
+    };
+  }
   // Libre (null) reste null : rien n'est prerempli ni conseille.
   const p = PROTOCOLES[niveauPratique.value];
   return p === undefined ? PROTOCOLES.intermediaire : p;
@@ -113,7 +121,6 @@ export function MaSeance() {
   const [series, setSeries] = useState({});             // { i: [{w,r}] }
   const [arret, setArret] = useState(false);
   const [jeter, setJeter] = useState(false);
-  const [fini, setFini] = useState(null);               // { min, tonnage, records }
 
   const debut = useRef(0);
   const pauseA = useRef(0);
@@ -121,13 +128,13 @@ export function MaSeance() {
 
   // Chronometre de seance : gele pendant la pause (v1 : dureeInterval)
   useEffect(() => {
-    if (!demarree || fini) return;
+    if (!demarree) return;
     const it = setInterval(() => {
       if (enPause) return;
       setChrono(Math.floor((Date.now() - debut.current) / 1000));
     }, 1000);
     return () => clearInterval(it);
-  }, [demarree, enPause, fini]);
+  }, [demarree, enPause]);
 
   const mmss = (s) => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
 
@@ -180,6 +187,27 @@ export function MaSeance() {
     return out;
   };
 
+  // Un exercice dont on a rempli des series est fait, coche ou non :
+  // sans ca « Terminer » annoncait « aucun exercice, rien d'enregistre »
+  // alors que les charges etaient saisies.
+  function faitsEff(base) {
+    const s = new Set(base || faits);
+    exos.forEach((_, i) => {
+      if ((series[i] || []).some(x => (x.w !== '' && x.w != null) || x.dw)) s.add(i);
+    });
+    return s;
+  }
+
+  const titreSeance = () => {
+    const a = seanceActive.value;
+    return (a && a.titre) || t('tr_free_title');
+  };
+
+  // Action terminale unique (regle produit) : enregistre et rend la
+  // main a S'entrainer, ou le calendrier montre le jour fait. L'ancienne
+  // carte de fin vivait dans la branche « exercices presents » : vider
+  // la seance la demontait, et il ne restait que « Aucun exercice
+  // selectionne » (Raci, 23/09).
   const felicitations = (coches) => {
     if (enregistre.current) return;
     enregistre.current = true;
@@ -190,43 +218,45 @@ export function MaSeance() {
     const duree = debut.current ? Math.floor((Date.now() - debut.current) / 1000) : 0;
     // Journal d'entrainement : la seance est enregistree par compte et
     // synchronisee (users/{uid}.v2Data.seances), plus en localStorage global.
-    const exosJournal = collecterPourJournal(coches);
+    const exosJournal = collecterPourJournal(faitsEff(coches));
     enregistrerSeance({
       duree,
-      titre: t('tr_free_title'),
+      titre: titreSeance(),
       muscles: [...new Set(exosJournal.map(e => e.mKey).filter(Boolean))],
       exos: exosJournal,
       tonnage: bilan.tonnage,
       records: bilan.records,
     });
     sauverSeries(listeExos);
+    retourEntrainer();
     marquerFaite();
-    setFini({ min: duree ? Math.max(1, Math.round(duree / 60)) : 0, ...bilan });
   };
 
   const terminer = () => {
-    if (faits.size === exos.length && exos.length > 0) { felicitations(); return; }
+    const f = faitsEff();
+    if (f.size === exos.length && exos.length > 0) { felicitations(); return; }
     setArret(true);
   };
 
   const confirmerArret = () => {
     setArret(false);
-    if (faits.size > 0) felicitations();
-    else { abandonnerSeance(); ongletActif.value = 'journal'; retourEntrainer(); }
+    if (faitsEff().size > 0) felicitations();
+    else { abandonnerSeance(); retourEntrainer(); }
   };
 
   const confirmerJeter = () => {
     setJeter(false);
     abandonnerSeance();
-    ongletActif.value = 'journal';
     retourEntrainer();
   };
 
+  // Cocher ne termine plus la seance tout seul : on doit pouvoir noter
+  // les series du dernier exercice apres l'avoir coche. « Terminer »
+  // est la seule sortie.
   const cocher = (i) => {
     const s = new Set(faits);
     if (s.has(i)) s.delete(i); else s.add(i);
     setFaits(s);
-    if (exos.length > 0 && s.size === exos.length) setTimeout(() => felicitations(s), 400);
   };
 
   const basculerSeries = (i) => {
@@ -256,7 +286,7 @@ export function MaSeance() {
   const ajouterSerie = (i) => setSeries(p => ({ ...p, [i]: [...(p[i] || []), { w: '', r: '' }] }));
   const retirerSerie = (i, j) => setSeries(p => ({ ...p, [i]: (p[i] || []).filter((_, k) => k !== j) }));
 
-  const pct = exos.length ? (faits.size / exos.length) * 100 : 0;
+  const pct = exos.length ? (faitsEff().size / exos.length) * 100 : 0;
 
   if (!exos.length) {
     return (
@@ -288,12 +318,12 @@ export function MaSeance() {
         <button class="sh-jeter" onClick={() => setJeter(true)} aria-label={t('sea_abandonner')}>
           {t('sea_abandonner')}
         </button>
-        <h1 class="sh-title">{t('ms_session')}</h1>
+        <h1 class="sh-title">{titreSeance()}</h1>
       </div>
 
       <div class="session-progress">
         <div class="sp-line">
-          <span><b>{faits.size}</b><span class="sp-dim">/{exos.length} {t('ms_exercises')}</span></span>
+          <span><b>{faitsEff().size}</b><span class="sp-dim">/{exos.length} {t('ms_exercises')}</span></span>
           <span class={'sp-timer' + (enPause ? ' paused' : '')}>{mmss(chrono)}</span>
         </div>
         <div class="bar"><div class="fill" style={{ width: pct + '%' }} /></div>
@@ -316,7 +346,7 @@ export function MaSeance() {
           const muscle = NOMS_MUSCLES[refs[i].mKey] || '';
           const ouvert = ouverts.has(i);
           return (
-            <div key={i} class={'done-item' + (faits.has(i) ? ' done' : '')}
+            <div key={i} class={'done-item' + (faitsEff().has(i) ? ' done' : '')}
               style="flex-wrap:wrap" onClick={() => basculerSeries(i)}>
               <div class="done-photo">
                 <img src={IMG_BASE + ex.imgId + '/0.jpg'} alt={ex.nom} loading="lazy"
@@ -393,42 +423,13 @@ export function MaSeance() {
           <div class="congrats-emoji">🤔</div>
           <div class="congrats-title">{t('ms_stop_title')}</div>
           <div class="congrats-text">
-            {faits.size > 0
-              ? `Tu as fait ${faits.size} exercice${faits.size > 1 ? 's' : ''} sur ${exos.length}. Ta séance sera quand même comptée 💪`
-              : `Tu n'as coché aucun exercice. La séance ne sera pas enregistrée.`}
+            {faitsEff().size > 0
+              ? `Tu as fait ${faitsEff().size} exercice${faitsEff().size > 1 ? 's' : ''} sur ${exos.length}. Ta séance sera quand même comptée 💪`
+              : `Aucun exercice fait. La séance ne sera pas enregistrée.`}
           </div>
           <button class="congrats-btn" onClick={confirmerArret}>{t('ms_stop_yes')}</button>
           <button class="sc-cancel" onClick={() => setArret(false)}>{t('ms_stop_no')}</button>
         </div>
-      </div>, document.body)}
-
-      {/* Felicitations + bilan */}
-      {createPortal(
-      <div class={'congrats-overlay pg-maseance' + (fini ? ' show' : '')}>
-        {fini && (
-          <div class="congrats-card">
-            <div class="congrats-emoji">🎉</div>
-            <div class="congrats-title">{t('ms_done_title')}</div>
-            <div class="congrats-text">{t('ms_done_text')}</div>
-            <div>
-              <div class="cg-stats">
-                {fini.min > 0 && (
-                  <div class="cg-box"><div class="v">{fini.min} min</div><div class="l">{t('ms_duration')}</div></div>
-                )}
-                {fini.tonnage > 0 && (
-                  <div class="cg-box"><div class="v">{fini.tonnage.toLocaleString('fr-FR')} kg</div><div class="l">{t('ms_total_lifted')}</div></div>
-                )}
-                <div class="cg-box"><div class="v">{exos.length}</div><div class="l">{t('ms_exercises_cap')}</div></div>
-              </div>
-              {fini.records && fini.records.length > 0 && (
-                <div class="cg-record">🏆 {t('ms_new_record')} : {fini.records.join(', ')} !</div>
-              )}
-            </div>
-            <button class="congrats-btn" onClick={() => { marquerFaite(); retourEntrainer(); ongletActif.value = 'journal'; }}>
-              {t('ms_back_journal')}
-            </button>
-          </div>
-        )}
       </div>, document.body)}
 
       {createPortal(

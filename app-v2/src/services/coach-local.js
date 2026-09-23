@@ -143,16 +143,79 @@ const LABEL_MUSCLE = {
   epaules: 'Épaules', jambes: 'Jambes', abdos: 'Abdos', trapezes: 'Trapèzes',
 };
 
-const PACK = {
-  pecs: [['pecs', 'Développé Couché (Barre)'], ['pecs', 'Développé Couché Incliné (Haltère)'], ['pecs', 'Écarté (Pec Deck) (Machine)']],
-  biceps: [['biceps', 'Curl Biceps (Barre)'], ['biceps', 'Curl Marteau (Haltère)']],
-  triceps: [['triceps', 'Barre au Front (Barre EZ)'], ['triceps', 'Extension Triceps (Poulie)']],
-  dos: [['dos', 'Tractions'], ['dos', 'Rowing (Barre)'], ['dos', 'Tirage Poitrine (Poulie)']],
-  epaules: [['epaules', 'Développé Militaire Debout (Barre)'], ['epaules', 'Élévation Latérale (Haltère)']],
-  jambes: [['jambes', 'Squat (Barre)'], ['jambes', 'Presse à Cuisses (Machine)'], ['jambes', 'Leg Curl Allongé (Machine)']],
-  abdos: [['abdos', 'Crunch'], ['abdos', 'Crunch (Poulie)']],
-  trapezes: [['epaules', 'Shrug (Barre)'], ['epaules', 'Shrug (Haltère)']],
+/**
+ * Trois listes par muscle, dans l'ordre de priorite (23/09).
+ * Raci : « Dos lourd et court » et « Dos endurance » sortaient le meme
+ * trio. Le style choisit maintenant la liste, le nombre d'exercices et
+ * le schema series × reps × repos, qui suit la seance jusqu'au bout.
+ */
+const PACKS = {
+  pecs: {
+    force: ['Développé Couché (Barre)', 'Développé Couché Incliné (Barre)', 'Développé Couché (Haltère)', 'Dips', 'Chest Press (Machine)'],
+    hyper: ['Développé Couché (Barre)', 'Développé Couché Incliné (Haltère)', 'Chest Press (Machine)', 'Écarté (Pec Deck) (Machine)', 'Écarté (Poulie)', 'Pompes'],
+    endu: ['Pompes', 'Chest Press (Machine)', 'Écarté (Poulie)', 'Écarté (Pec Deck) (Machine)', 'Pompes Inclinées', 'Chest Press Incliné (Machine)'],
+  },
+  dos: {
+    force: ['Soulevé de Terre (Barre)', 'Tractions', 'Rowing Penché (Barre)', 'Tirage Poitrine (Poulie)', 'Rowing Un Bras (Haltère)'],
+    hyper: ['Tractions', 'Rowing Penché (Barre)', 'Tirage Poitrine Prise Large (Poulie)', 'Rowing Assis (Poulie)', 'Rowing Un Bras (Haltère)', 'Pull-Over (Barre)'],
+    endu: ['Tirage Poitrine (Poulie)', 'Rowing Assis (Poulie)', 'Rowing (Machine)', 'Tirage Poitrine Prise Serrée Avant (Poulie)', 'Extension Dos', 'Superman'],
+  },
+  epaules: {
+    force: ['Développé Militaire Debout (Barre)', 'Push Press (Barre)', 'Presse Épaules (Haltère)', 'Élévation Latérale (Haltère)'],
+    hyper: ['Développé Militaire Assis (Barre)', 'Élévation Latérale (Haltère)', 'Oiseau Penché Arrière (Haltère)', 'Tirage vers Visage (Poulie)', 'Presse Épaules (Machine)'],
+    endu: ['Presse Épaules (Machine)', 'Élévation Latérale (Poulie)', 'Écarté Inversé (Machine)', 'Tirage vers Visage (Poulie)', 'Élévation Latérale (Haltère)'],
+  },
+  biceps: {
+    force: ['Curl Biceps (Barre)', 'Curl Marteau (Haltère)', 'Curl Pupitre (Barre)'],
+    hyper: ['Curl Biceps (Barre)', 'Curl Biceps Incliné (Haltère)', 'Curl Marteau (Haltère)', 'Curl Pupitre (Machine)'],
+    endu: ['Curl Biceps (Poulie)', 'Curl Marteau Corde (Poulie)', 'Curl Concentré (Haltère)', 'Curl Biceps (Machine)'],
+  },
+  triceps: {
+    force: ['Développé Couché Prise Serrée (Barre)', 'Dips', 'Barre au Front (Barre EZ)'],
+    hyper: ['Barre au Front (Barre EZ)', 'Extension Triceps Corde (Poulie)', 'Dips (Machine)', 'Extension Triceps au-dessus de la Tête Corde (Poulie)'],
+    endu: ['Extension Triceps Corde (Poulie)', 'Extension Triceps (Machine)', 'Kickback Triceps (Haltère)', 'Pompes Prise Serrée'],
+  },
+  jambes: {
+    force: ['Squat (Barre)', 'Soulevé de Terre Jambes Tendues (Barre)', 'Presse à Cuisses (Machine)', 'Fentes (Barre)', 'Hip Thrust (Barre)'],
+    hyper: ['Squat (Barre)', 'Presse à Cuisses (Machine)', 'Leg Curl Allongé (Machine)', 'Extension Jambes (Machine)', 'Fentes (Haltère)', 'Extension Mollets Debout (Machine)'],
+    endu: ['Goblet Squat (Kettlebell)', 'Fentes (Haltère)', 'Extension Jambes (Machine)', 'Leg Curl Assis (Machine)', 'Presse à Cuisses (Machine)', 'Extension Mollets Debout (Machine)'],
+  },
+  abdos: {
+    force: ['Relevé de Jambes Suspendu', 'Rollout à Genoux (Barre)', 'Crunch (Poulie)'],
+    hyper: ['Crunch (Poulie)', 'Relevé de Jambes Suspendu', 'Planche', 'Rotation Russe'],
+    endu: ['Planche', 'Crunch Bicyclette', 'Gainage Latéral', 'Ramené de Genoux', 'Crunch'],
+  },
+  trapezes: {
+    force: ['Shrug (Barre)', 'Shrug (Haltère)'],
+    hyper: ['Shrug (Barre)', 'Shrug (Haltère)', 'Shrug (Machine)'],
+    endu: ['Shrug (Poulie)', 'Shrug (Machine)', 'Shrug (Haltère)'],
+  },
 };
+
+export const SCHEMAS = {
+  force: { cle: 'force', label: 'Force', series: 5, reps: 5, repos: 180, resume: '5 × 5 · repos 3 min' },
+  hyper: { cle: 'hyper', label: 'Volume', series: 4, reps: 10, repos: 90, resume: '4 × 10 · repos 1 min 30' },
+  endu: { cle: 'endu', label: 'Endurance', series: 3, reps: 15, repos: 45, resume: '3 × 15 · repos 45 s' },
+};
+
+function lireStyle(n) {
+  const style = /\b(endurance|endu|cardio|leger|legere|circuit|pump|tonifier|tonif\w*|seche)\b/.test(n) ? 'endu'
+    : /\b(lourd|lourde|force|forte|max|maxi|puissance|strength|heavy|5x5)\b/.test(n) ? 'force'
+      : 'hyper';
+  const duree = /\b(court|courte|rapide|express|vite|30 ?min|20 ?min)\b/.test(n) ? 'court'
+    : /\b(long|longue|complete|complet|intense|60 ?min|1h|1 ?heure)\b/.test(n) ? 'long'
+      : 'normal';
+  return { style, duree };
+}
+
+function nbParGroupe(nMuscles, style, duree) {
+  const base = nMuscles === 1 ? 4 : nMuscles === 2 ? 3 : 2;
+  let n = base;
+  if (style === 'endu') n += 1;
+  if (duree === 'court') n = Math.max(nMuscles === 1 ? 3 : 1, base - 1);
+  if (duree === 'long') n = base + 2;
+  return n;
+}
 
 function refParNom(mKey, nom) {
   const n = normNom(nom);
@@ -185,28 +248,38 @@ export function composerSeance(phrase) {
     || /\b(une|la) seance\b/.test(n);
   if (!veut) return null;
 
-  const parGroupe = muscles.length === 1 ? 4 : muscles.length === 2 ? 3 : 2;
+  const { style, duree } = lireStyle(n);
+  const schema = SCHEMAS[style];
+  const parGroupe = nbParGroupe(muscles.length, style, duree);
   const refs = [];
   const vus = new Set();
   muscles.forEach((k) => {
-    const pack = PACK[k] || [];
-    pack.slice(0, parGroupe).forEach(([mk, nom]) => {
+    const liste = (PACKS[k] && PACKS[k][style]) || [];
+    const mk = k === 'trapezes' ? 'trapezes' : k;
+    let pris = 0;
+    for (const nom of liste) {
+      if (pris >= parGroupe) break;
       const r = refParNom(mk, nom);
-      if (!r || vus.has(r.mKey + ':' + r.i)) return;
+      if (!r || vus.has(r.mKey + ':' + r.i)) continue;
       vus.add(r.mKey + ':' + r.i);
       refs.push(r);
-    });
+      pris += 1;
+    }
   });
   if (!refs.length) return null;
 
-  const titre = muscles.map((k) => LABEL_MUSCLE[k] || k).join(' + ');
+  const muscleTitre = muscles.map((k) => LABEL_MUSCLE[k] || k).join(' + ');
+  const titre = style === 'hyper' ? muscleTitre : muscleTitre + ' · ' + schema.label;
   return {
     action: 'composerSeance',
     titre,
     muscles,
+    style,
+    duree,
+    schema,
     refs: refs.map((r) => ({ mKey: r.mKey, i: r.i })),
     noms: refs.map((r) => r.nom),
-    texte: 'Séance ' + titre + ' — ' + refs.length + ' exercices. Vérifie puis pose.',
+    texte: titre + ' — ' + refs.length + ' exercices · ' + schema.resume + '.',
     aliments: [],
     local: true,
   };

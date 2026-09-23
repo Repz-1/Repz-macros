@@ -133,3 +133,13 @@
   height: 8px;
   margin-top: 0;
 }
+
+/* Schema series × reps en face de chaque exercice propose (23/09). */
+.coach-bar-schema {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--or-fonce, #B34700);
+  margin-left: auto;
+  padding-left: 10px;
+  white-space: nowrap;
+}

@@ -97,7 +97,7 @@ effect(() => {
   ecrireJson(CLE_ACTIVE, a);
 });
 
-export function poserBrouillon({ titre, refs, origine, seanceId }) {
+export function poserBrouillon({ titre, refs, origine, seanceId, schema }) {
   if (refs) seanceRefs.value = refs;
   if (refs && !refs.length) {
     const cur = seanceActive.value;
@@ -118,6 +118,9 @@ export function poserBrouillon({ titre, refs, origine, seanceId }) {
     seanceId: seanceId || (meme ? cur.seanceId : null),
     iso: (meme && cur.iso) || isoJour(),
     tsDebut: meme ? cur.tsDebut : undefined,
+    // Schema series × reps × repos pose par le coach (23/09). Garde
+    // quand on retouche la selection, remplace quand le coach repose.
+    schema: schema !== undefined ? schema : (meme ? cur.schema || null : null),
   };
 }
 

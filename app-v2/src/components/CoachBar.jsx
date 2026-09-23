@@ -112,6 +112,7 @@ export function CoachBar() {
         titre: out.titre,
         refs: out.refs,
         noms: out.noms || [],
+        schema: out.schema || null,
         texte: out.texte,
       });
       setLignes(versLignes(out.aliments));
@@ -229,9 +230,10 @@ export function CoachBar() {
         titre: seance.titre,
         refs: seance.refs.map((r) => ({ mKey: r.mKey, i: r.i })),
         origine: 'libre',
+        schema: seance.schema || null,
       });
       setSeance(null);
-      setMsg(t('coach_seance_posee'));
+      setMsg(seance.titre + ' — ' + t('coach_seance_posee'));
       setEtat('seancePosee');
       return;
     }
@@ -331,6 +333,7 @@ export function CoachBar() {
           {(seance.noms || []).map((nom, i) => (
             <div class="coach-bar-ligne-alim" key={'n' + i}>
               <span>{nom}</span>
+              {seance.schema && <span class="coach-bar-schema">{seance.schema.series}×{seance.schema.reps}</span>}
             </div>
           ))}
           {(seance.swaps || []).map((s, i) => (

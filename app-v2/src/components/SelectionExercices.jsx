@@ -20,7 +20,17 @@ import { t } from '../i18n/index.js';
 import { GROUPES } from '../store/entrainement.js';
 import '../legacy/selection-exercices.scoped.css';
 import '../styles/seance-jour.css';
-import { selectionExos, poserBrouillon, abandonnerSeance } from '../store/seance-active.js';
+import { selectionExos, poserBrouillon, abandonnerSeance, seanceRefs } from '../store/seance-active.js';
+
+// Garde l'ordre deja pose (celui du coach : polyarticulaires d'abord)
+// et ajoute les nouveaux a la fin, au lieu de retrier par muscle.
+function gardeOrdre(refs) {
+  const cle = (r) => r.mKey + ':' + r.i;
+  const voulus = new Set(refs.map(cle));
+  const avant = (seanceRefs.value || []).filter((r) => voulus.has(cle(r)));
+  const deja = new Set(avant.map(cle));
+  return avant.concat(refs.filter((r) => !deja.has(cle(r))));
+}
 import { allerVers } from './Entrainer.jsx';
 import { ongletActif } from './BottomNav.jsx';
 
@@ -155,7 +165,7 @@ export function SelectionExercices() {
         .forEach(idx => refs.push({ mKey: m.key, i: idx }));
     });
     if (refs.length) {
-      poserBrouillon({ titre: t('tr_free_title') || 'Séance libre', refs, origine: 'libre' });
+      poserBrouillon({ refs: gardeOrdre(refs), origine: 'libre' });
     } else {
       abandonnerSeance();
     }
@@ -305,7 +315,7 @@ export function SelectionExercices() {
                 .forEach(i => refs.push({ mKey: m.key, i }));
             });
             if (!refs.length) return;
-            poserBrouillon({ titre: t('tr_free_title') || 'Séance libre', refs, origine: 'libre' });
+            poserBrouillon({ refs: gardeOrdre(refs), origine: 'libre' });
             allerVers('maseance');
           }}>
           <span class="count">{nbSelectionnes} exercices sélectionnés</span>
