@@ -13,6 +13,7 @@ import { VERSION_APP } from './version.js';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
 import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
 import { DayDashboard, ouvrirCalcDemande } from './components/DayDashboard.jsx';
+import { CoachBar } from './components/CoachBar.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
 import { MealCard, ouvrirMesPlats } from './components/MealCard.jsx';
 import { AddMealModal } from './components/AddMealModal.jsx';
@@ -60,6 +61,7 @@ export function OngletJournal() {
             panneau qui se deplie, juste sous elle. */}
         <IdeesRepas panneauSeul />
         <div class="fente-goutte" aria-hidden="true" />
+        <CoachBar />
         <WeightNote />
         <div class="jr-repas-kicker">{t('tes_repas')}</div>
         {/* Le premier repas encore vide est mis en avant : a l'ouverture

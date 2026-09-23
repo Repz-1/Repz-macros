@@ -253,7 +253,7 @@
    CARTE CALORIES
    ============================================================ */
 
-.pg-journal .cal { padding: 20px 18px; overflow: visible; }
+.pg-journal .cal { padding: 16px 18px 12px; overflow: visible; }
 
 /* ---------- Ligne date ---------- */
 .pg-journal .cal-date {
@@ -271,7 +271,8 @@
 /* ---------- Corps : consommees | anneau | objectif ---------- */
 .pg-journal .cal-corps {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 6px; padding: 8px 0 4px;
+  gap: 6px; padding: 4px 0 0;
+  margin-bottom: -26px;   /* bas de l'anneau ouvert : vide recupere */
 }
 
 /* Les deux cotes ont la MEME largeur : sans cela l'anneau se decale
@@ -356,7 +357,7 @@
 /* ---------- Action secondaire ---------- */
 .pg-journal .cal-reset {
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  width: auto; margin: 12px auto 0; padding: 8px 14px;
+  width: auto; margin: 6px auto 0; padding: 8px 14px;
   background: none; border: none; cursor: pointer; font-family: inherit;
   font-size: 12.5px; font-weight: 600; color: var(--texte-3);
   border-radius: var(--rayon-puce);
@@ -403,7 +404,7 @@
 
 /* Zone d'action de la carte : la pilule « Repas intelligent » y est
    centree, avec la meme respiration que l'ancienne action secondaire. */
-.pg-journal .cal-action { display: flex; justify-content: center; margin: 16px 0 2px; }
+.pg-journal .cal-action { display: flex; justify-content: center; margin: 12px 0 0; }
 /* Dans la carte, la largeur utile tombe a ~320px : sans resserrage le
    libelle passait sur deux lignes. Une pilule ne se casse jamais. */
 .pg-journal .cal-action .eat-toggle {
@@ -3367,7 +3368,7 @@
    que le rappel de recalcul — pas de couleur d'alerte, pas de pastille
    (Raci, 8/08). */
 .pg-journal .cal-retard {
-  margin: 10px auto 0; max-width: 92%;
+  margin: 8px auto 0; max-width: 92%;
   font-size: 12.5px; line-height: 1.45; text-align: center;
   color: var(--texte-3);
 }

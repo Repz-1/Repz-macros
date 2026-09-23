@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { CoachBar } from './CoachBar.jsx';
 import { signal } from '@preact/signals';
 
 export const ouvrirCalcDemande = signal(false);
@@ -184,7 +183,6 @@ export function DayDashboard() {
         <span>{t('cloturer_journee')}</span>
       </button>
     </section>
-    <CoachBar />
     </>
   );
 }
