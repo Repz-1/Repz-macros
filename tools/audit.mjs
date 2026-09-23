@@ -2058,9 +2058,11 @@ const DECALAGE_SW_V2 = 232;
     const n = (m.match(/<RestTimer \/>/g) || []).length;
     // L'ecran 'seance' (SeanceTracker) etait orphelin : aucun
     // allerVers('seance') n'existait. Retire le 5/09, avec son chrono.
-    if (n !== 2) soucis.push('le chrono est monte ' + n + ' fois au lieu de 2 (accueil, seance en cours)');
+    // 23/09 : la seance en cours a son repos integre (±30 s, arreter),
+    // pour tous les parcours. Le chrono flottant ne reste que sur
+    // l'accueil.
+    if (n !== 1) soucis.push('le chrono est monte ' + n + ' fois au lieu de 1 (accueil)');
     if (!/<Entrainer \/><RestTimer \/>/.test(m)) soucis.push('le chrono a quitte l\'accueil de S\'entrainer');
-    if (!/<MaSeance \/><RestTimer \/>/.test(m)) soucis.push('le chrono a quitte la seance en cours');
     for (const [vue, comp] of [['le choix des exercices', 'SelectionExercices'],
                                ['la planification', 'PlanifierProgramme'], ['« Demarrer une seance »', 'DemarrerSeance']]) {
       if (new RegExp('<' + comp + '[^>]*\\/><RestTimer').test(m)) soucis.push('le chrono est revenu sur ' + vue);
@@ -2776,7 +2778,7 @@ const DECALAGE_SW_V2 = 232;
   if (!sg) soucis.push('l\'ecran de seance guidee a disparu');
   else {
     if (!/const suivant = \(\) => \{/.test(sg)) soucis.push('« Suivant » ne valide plus la serie');
-    if (!/setRepos\(reposDe\(/.test(sg)) soucis.push('le repos ne se declenche plus entre deux series');
+    if (!/setRepos\(reposPour\(/.test(sg)) soucis.push('le repos ne se declenche plus entre deux series');
     // Raci, 5/09 : « le chrono apparait sur la MEME page et je peux
     // l'arreter a n'importe quel moment, en plus de pouvoir le
     // prolonger ou le raccourcir ». Il occupait tout l'ecran et
@@ -2801,20 +2803,23 @@ const DECALAGE_SW_V2 = 232;
     // est en cours. Sans ca on retombe dans l'entre-deux d'aout, ou
     // une seance commencee disparaissait en quittant l'ecran.
     if (!/ecrireEnCours\(/.test(sg)) soucis.push('la seance en cours n\'est plus sauvegardee : quitter l\'ecran perdrait tout');
-    if (!/lireEnCours\(seanceId\)/.test(sg)) soucis.push('une seance interrompue ne se reprend plus');
+    if (!/lireEnCours\(cleCours\)/.test(sg)) soucis.push('une seance interrompue ne se reprend plus');
     if (!/oublierEnCours\(\)/.test(sg)) soucis.push('la seance reste « en cours » apres avoir ete enregistree');
     // Raci, 5/09 : « termine c'est termine ». Atteindre l'ecran de fin
     // vaut enregistrement ; il ne reste ni bouton pour confirmer ni
     // bouton pour revenir en arriere, seulement le retour au menu.
-    if (!/dejaEcrit\.current = true; enregistrer\(\);/.test(sg)) {
+    if (!/dejaEcrit\.current = true;\s*enregistrer\(\);/.test(sg)) {
       soucis.push('l\'ecran de fin n\'enregistre plus tout seul');
     }
     if (/setTermine\(false\)/.test(sg)) soucis.push('« Reprendre » est revenu : une seance terminee se rouvrirait');
-    if (!/setRebours\(/.test(sg)) soucis.push('le compte a rebours de retour a disparu');
+    // 23/09 (Raci, point 1) : une seule fin pour tous les parcours —
+    // enregistrer puis rendre la main a S'entrainer, sans ecran Bravo.
+    if (!/enregistrer\(\);\s*revenir\(\);/.test(sg)) soucis.push('la fin ne rend plus la main a S\'entrainer');
+    if (/sg-scene-fin|setRebours\(/.test(sg)) soucis.push('l\'ecran de fin bloquant est revenu');
     // Raci, 5/09 : « prevoir un temps de repos entre les differents
     // exercices ». Je supposais que le deplacement d'un poste a
     // l'autre suffisait.
-    if (!/setRepos\(reposDe\(refs\[iExo \+ 1\]\.ex\.nom\)\)/.test(sg)) {
+    if (!/setRepos\(reposPour\(refs\[iExo \+ 1\]\.ex\.nom\)\)/.test(sg)) {
       soucis.push('on enchaine deux exercices sans aucun repos');
     }
     // Raci, 5/09 : « un bouton dans le cas ou l'utilisateur ne
@@ -2827,7 +2832,6 @@ const DECALAGE_SW_V2 = 232;
     if (!/const GESTES = \[/.test(sg)) {
       soucis.push('les equivalences ne se font plus par geste : elles retomberont sur des mouvements sans rapport');
     }
-    if (!/class="sg-scene-fin"/.test(sg)) soucis.push('l\'ecran de fin n\'est plus une modale posee sur le voile');
     if (!/seanceMemeJour\(iso, titre/.test(sg)) soucis.push('un second enregistrement du jour n\'ecrase plus le premier');
     if (/class="sd-fini"|class="sd-conflit"|class="sd-terminer"/.test(sg)) {
       soucis.push('les ecrans intermediaires supprimes le 5/09 sont revenus');

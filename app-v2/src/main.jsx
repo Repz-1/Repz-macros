@@ -26,7 +26,7 @@ import { Reglages, vueReglages } from './components/Reglages.jsx';
 import { StatsAvancees, statsAvOuvertes } from './components/StatsAvancees.jsx';
 import { depilerRetour, retourEnAttente } from './services/retour.js';
 import { SeanceGuidee } from './components/SeanceGuidee.jsx';
-import { MaSeance } from './components/MaSeance.jsx';
+import { seanceRefs } from './store/seance-active.js';
 import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif, allerOnglet, scrollSortant, defileur } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
@@ -128,8 +128,13 @@ export function OngletEntrainer() {
   if (vue.nom === 'selection') {
     return <SelectionExercices />;
   }
+  // Seance libre ou coach : le meme lecteur guide que le programme
+  // (23/09). Le repos est integre au lecteur, reglable ±30 s ; le
+  // chrono flottant reste sur l'accueil pour l'usage hors seance.
+  // Sans exercice, on va directement au choix — plus d'ecran vide.
   if (vue.nom === 'maseance') {
-    return (<><MaSeance /><RestTimer /></>);
+    if (!seanceRefs.value.length) return <SelectionExercices />;
+    return <SeanceGuidee libre />;
   }
   // La bibliotheque des 14 programmes est supprimee (5/09). Plus aucun
   // bouton n'y menait, et elle n'avait jamais ete alignee sur l'

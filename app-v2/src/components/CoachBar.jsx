@@ -4,6 +4,8 @@ import { demanderCoach } from '../services/coach.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
 import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT, demandeVueEntrainer, poserBrouillon } from '../store/seance-active.js';
 import { ongletActif } from './BottomNav.jsx';
+import { planifierSeance } from '../store/programme.js';
+import { EXERCISES } from '../data/exercices.js';
 import { courses } from './Courses.jsx';
 import { DB, macrosOf } from '../data/aliments.js';
 import { t } from '../i18n/index.js';
@@ -113,6 +115,8 @@ export function CoachBar() {
         refs: out.refs,
         noms: out.noms || [],
         schema: out.schema || null,
+        iso: out.iso || null,
+        quand: out.quand || null,
         texte: out.texte,
       });
       setLignes(versLignes(out.aliments));
@@ -219,6 +223,26 @@ export function CoachBar() {
     ecrireAliments();
     setLignes([]);
     setEauLitres(0);
+    // Un autre jour que ce soir : la seance part au calendrier, pas en
+    // brouillon (23/09). Elle se lance depuis la tuile ou la fiche du
+    // jour, le moment venu.
+    if (seance.composer && seance.iso && seance.refs && seance.refs.length) {
+      const exos = seance.refs.map((r) => {
+        const ex = EXERCISES[r.mKey] && EXERCISES[r.mKey][r.i];
+        return ex ? r.mKey + ':' + ex.nom : null;
+      }).filter(Boolean);
+      planifierSeance(seance.iso, {
+        seanceId: 'coach-' + seance.iso,
+        titre: seance.titre,
+        sub: exos.length + ' exercices' + (seance.schema ? ' · ' + seance.schema.resume : ''),
+        exos,
+        schema: seance.schema || null,
+      });
+      setSeance(null);
+      setMsg(seance.titre + ' — ' + t('coach_seance_planifiee').replace('{j}', seance.quand || ''));
+      setEtat('pret');
+      return;
+    }
     if (seance.composer && seance.refs && seance.refs.length) {
       const sel = {};
       seance.refs.forEach((r) => {
@@ -352,7 +376,7 @@ export function CoachBar() {
           ))}
           {seance.composer && seance.refs && seance.refs.length > 0 && (
             <button ref={ajoutRef} class="coach-bar-ajout" type="button" onClick={confirmerSeance}>
-              {t('coach_poser_seance')}
+              {seance.quand ? t('coach_poser_pour').replace('{j}', seance.quand) : t('coach_poser_seance')}
             </button>
           )}
           {seance.swaps && seance.swaps.length > 0 && (

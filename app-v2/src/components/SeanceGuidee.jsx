@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { createPortal } from 'preact/compat';
 import { enregistrerSeance, supprimerSeance, seanceMemeJour } from '../store/seances.js';
-import { poserBrouillon, demarrerSeanceActive, abandonnerSeance, marquerFaite } from '../store/seance-active.js';
+import { poserBrouillon, demarrerSeanceActive, abandonnerSeance, marquerFaite, seanceActive, seanceRefs } from '../store/seance-active.js';
+import { planifs } from '../store/programme.js';
 import { t } from '../i18n/index.js';
 import { EXERCISES, IMG_BASE } from '../data/exercices.js';
 import { SESSION_EXOS } from '../data/sessionExos.js';
-import { retourEntrainer } from './Entrainer.jsx';
-import { ongletActif } from './BottomNav.jsx';
+import { retourEntrainer, allerVers } from './Entrainer.jsx';
 import '../styles/seance-guidee.css';
 
 // ==========================================================
@@ -36,7 +35,9 @@ function resoudreExercices(seanceId) {
   // Les references sont des NOMS depuis le 10/08 : « dos:Tractions ».
   // Elles etaient des positions et se sont decalees le jour ou la base
   // a ete retriee. Un nom ne se decale pas.
-  const bruts = SESSION_EXOS[seanceId] || [];
+  // Seance posee par le coach sur une date (23/09) : ses exercices
+  // voyagent avec la planification, elle n'a pas d'entree ici.
+  const bruts = SESSION_EXOS[seanceId] || ((planifDe(seanceId) || {}).exos) || [];
   return bruts.map((ref) => {
     const sep = String(ref).indexOf(':');
     const mKey = String(ref).slice(0, sep);
@@ -44,6 +45,24 @@ function resoudreExercices(seanceId) {
     const ex = (EXERCISES[mKey] || []).find(e => e.nom === nom);
     return ex ? { mKey, ex } : null;
   }).filter(Boolean);
+}
+
+/** La planification portant ce seanceId, s'il y en a une. */
+function planifDe(seanceId) {
+  if (!seanceId) return null;
+  return Object.values(planifs.value || {}).find(p => p && p.seanceId === seanceId) || null;
+}
+
+/** Seance libre ou coach : les exercices choisis, dans leur ordre. */
+function exercicesLibres() {
+  return (seanceRefs.value || []).map(r => {
+    const ex = EXERCISES[r.mKey] && EXERCISES[r.mKey][r.i];
+    return ex ? { mKey: r.mKey, ex } : null;
+  }).filter(Boolean);
+}
+
+function isoLocal(d = new Date()) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
 /**
@@ -177,20 +196,31 @@ function mmss(s) {
   return m + ':' + String(Math.max(0, s) % 60).padStart(2, '0');
 }
 
-export function SeanceGuidee({ seanceId, titre, retour }) {
-  const refs = resoudreExercices(seanceId);
+/**
+ * UN SEUL LECTEUR (23/09). Programme, seance libre et seance du coach
+ * passent tous ici — la liste a cocher « Ma seance » est retiree :
+ * deux lecteurs, c'etaient deux logiques de fin et deux familles de
+ * bugs. `libre` : les exercices viennent de la seance active.
+ * Le schema du coach (series × reps × repos) prime quand il existe.
+ */
+export function SeanceGuidee({ seanceId, titre, retour, libre }) {
+  const refs = libre ? exercicesLibres() : resoudreExercices(seanceId);
+  const cleCours = libre ? 'libre' : seanceId;
+  const active = seanceActive.value;
+  const schema = libre ? (active && active.schema) || null : ((planifDe(seanceId) || {}).schema || null);
+  const titreSeance = libre ? ((active && active.titre) || t('tr_free_title')) : (titre || t('session'));
   const revenir = retour || retourEntrainer;
   const [jeter, setJeter] = useState(false);
 
   useEffect(() => {
-    poserBrouillon({ titre: titre || 'Séance', origine: 'programme', seanceId });
+    if (!libre) poserBrouillon({ titre: titre || 'Séance', origine: 'programme', seanceId });
     demarrerSeanceActive();
-  }, [seanceId]);
+  }, [cleCours]);
 
   // Reprise : si la meme seance etait en cours, on repart d'ou l'on
   // etait. C'est le point que Raci reclamait — jusqu'ici, quitter
   // l'ecran perdait tout.
-  const repris = lireEnCours(seanceId);
+  const repris = lireEnCours(cleCours);
 
   const [iExo, setIExo] = useState(repris ? repris.iExo : 0);
   const [iSerie, setISerie] = useState(repris ? repris.iSerie : 0);
@@ -204,7 +234,9 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
   const [choixMateriel, setChoixMateriel] = useState(false);
 
   const courant = remplaces[iExo] || refs[iExo] || null;
-  const seriesAttendues = courant ? nbSeries(courant.ex.meta) : 0;
+  const seriesDe = (ex) => (schema && schema.series ? schema.series : nbSeries(ex.meta));
+  const reposPour = (nom) => (schema && schema.repos ? schema.repos : reposDe(nom));
+  const seriesAttendues = courant ? seriesDe(courant.ex) : 0;
 
   // Champs de la serie en cours. Pre-remplis avec la derniere serie
   // notee sur CE mouvement : on n'ajuste que ce qui a change.
@@ -228,7 +260,8 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
     }
     const precedente = posees.length ? posees[posees.length - 1] : derniereSerie(courant.ex.nom);
     setKg(precedente && precedente.w != null ? String(precedente.w) : '');
-    setReps(precedente && precedente.r != null ? String(precedente.r) : '');
+    setReps(precedente && precedente.r != null && precedente.r !== ''
+      ? String(precedente.r) : (schema && schema.reps ? String(schema.reps) : ''));
   }, [iExo, iSerie]);
 
   // Chrono de seance : il court tant qu'on n'a pas enregistre.
@@ -249,10 +282,10 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
   // serie sans rien perdre.
   useEffect(() => {
     if (termine) return;
-    ecrireEnCours({ seanceId, iExo, iSerie, journal, secondes });
+    ecrireEnCours({ seanceId: cleCours, iExo, iSerie, journal, secondes });
   }, [iExo, iSerie, journal, secondes, termine]);
 
-  const totalSeries = refs.reduce((n, r) => n + nbSeries(r.ex.meta), 0);
+  const totalSeries = refs.reduce((n, r) => n + seriesDe(r.ex), 0);
   const faitesTotal = Object.values(journal).reduce((n, l) => n + l.length, 0);
   const avance = totalSeries ? Math.round((faitesTotal / totalSeries) * 100) : 0;
 
@@ -273,7 +306,7 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
       if (iExo + 1 < refs.length) {
         setIExo(iExo + 1);
         setISerie(0);
-        setRepos(reposDe(refs[iExo + 1].ex.nom));
+        setRepos(reposPour(refs[iExo + 1].ex.nom));
       } else {
         setRepos(0);
         setTermine(true);
@@ -281,7 +314,7 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
       return;
     }
     setISerie(ligne.length);
-    setRepos(reposDe(courant.ex.nom));
+    setRepos(reposPour(courant.ex.nom));
   };
 
   /**
@@ -322,17 +355,24 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
    * precedente et c'est tout »).
    */
   const enregistrer = () => {
+    // `sets` en plus de `series` : c'est le champ que lit le calcul du
+    // tonnage. Les seances guidees etaient enregistrees a 0 kg.
     const exos = refs
-      .map(({ mKey, ex }, i) => ({ mKey, nom: ex.nom, fait: !!(journal[i] || []).length, series: journal[i] || [] }))
+      .map(({ mKey, ex }, i) => {
+        const l = (remplaces[i] || { ex }).ex;
+        const s = journal[i] || [];
+        return { mKey, nom: l.nom, fait: !!s.length, series: s, sets: s };
+      })
       .filter(e => e.fait);
     oublierEnCours();
-    if (!exos.length) return;
+    if (!exos.length) { abandonnerSeance(); return; }
     memoriserCharges();
-    const iso = new Date().toISOString().slice(0, 10);
-    const deja = seanceMemeJour(iso, titre || t('session'));
+    const iso = isoLocal();
+    const deja = seanceMemeJour(iso, titreSeance);
     if (deja) supprimerSeance(deja.id);
     enregistrerSeance({
-      titre: titre || t('session'),
+      iso,
+      titre: titreSeance,
       duree: secondes,
       muscles: [...new Set(exos.map(e => e.mKey).filter(Boolean))],
       exos,
@@ -341,52 +381,20 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
   };
 
   /**
-   * Raci, 5/09 : « termine c'est termine, on part du principe qu'elle
-   * a ete faite ». Plus de bouton pour confirmer ni pour revenir en
-   * arriere : atteindre l'ecran de fin ENREGISTRE. On felicite, puis
-   * un compte a rebours de 20 s ramene a S'entrainer — et le bouton
-   * du compte a rebours est ce retour, touchable a tout moment.
+   * Fin (23/09) : une seule regle pour tous les parcours. Atteindre la
+   * fin ENREGISTRE et rend la main a S'entrainer, ou la bande du jour
+   * affiche le recap (duree, tonnage). Plus d'ecran « Bravo » a
+   * traverser : le recap reste lisible sur la page, sans rien bloquer.
    */
-  const [rebours, setRebours] = useState(7);   // 20 s etait une attente, pas une pause (Raci, 5/09)
   const dejaEcrit = useRef(false);
   useEffect(() => {
-    if (!termine) return;
-    if (!dejaEcrit.current) { dejaEcrit.current = true; enregistrer(); }
-    const it = setInterval(() => setRebours(r => {
-      if (r <= 1) { clearInterval(it); revenir(); return 0; }
-      return r - 1;
-    }), 1000);
-    return () => clearInterval(it);
+    if (!termine || dejaEcrit.current) return;
+    dejaEcrit.current = true;
+    enregistrer();
+    revenir();
   }, [termine]);
 
-  // ---------- Ecran de fin ----------
-  if (termine) {
-    const nbExos = Object.keys(journal).filter(i => (journal[i] || []).length).length;
-    const tonnage = Object.values(journal).flat()
-      .reduce((n, s) => n + (parseFloat(s.w) || 0) * (parseFloat(s.r) || 0), 0);
-    return createPortal(
-      <div class="sg-scene-fin">
-        <div class="sg-fin">
-          <div class="sg-fin-t">Bravo</div>
-          <div class="sg-fin-s">{titre}</div>
-          <div class="sg-recap">
-            <div><span>Exercices</span><b>{nbExos} / {refs.length}</b></div>
-            <div><span>Séries effectuées</span><b>{faitesTotal} / {totalSeries}</b></div>
-            {tonnage > 0 && <div><span>Tonnage total</span><b>{Math.round(tonnage).toLocaleString('fr-BE')} kg</b></div>}
-            <div><span>Durée</span><b>{mmss(secondes)}</b></div>
-          </div>
-          {/* Le compte a rebours EST le bouton : on n'attend que si on
-              veut relire ses chiffres. Un seul mot — « Revenir a
-              S'entrainer » nommait un ecran, alors que le geste est
-              simplement de fermer ce qui est fini (Raci, 5/09). */}
-          <button class="sg-go sg-fin-b" onClick={revenir}>
-            Terminer <span class="sg-rebours">{rebours}</span>
-          </button>
-        </div>
-      </div>,
-      document.body
-    );
-  }
+  if (termine) return null;
 
   if (!courant) {
     return (
@@ -494,6 +502,7 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
             ? 'Terminer ›' : 'Suivant ›')}
       </button>
       <div class="sg-sec">
+        {libre && <button onClick={() => allerVers('selection')}>{t('ms_ajouter')}</button>}
         <button onClick={passerExercice}>Passer l'exercice</button>
         <button onClick={() => setTermine(true)}>Terminer la séance</button>
         <button class="sg-jeter" type="button" onClick={() => setJeter(true)}>
@@ -533,7 +542,6 @@ export function SeanceGuidee({ seanceId, titre, retour }) {
               onClick={() => {
                 abandonnerSeance();
                 setJeter(false);
-                ongletActif.value = 'journal';
                 revenir();
               }}>
               {t('sea_abandonner_ok')}

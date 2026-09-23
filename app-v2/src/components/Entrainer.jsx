@@ -11,9 +11,10 @@ import { createPortal } from 'preact/compat';
 import { BodyMap } from './Stats.jsx';
 import { DetailSeance } from './Seances.jsx';
 import { programmeActif, seancePrevue, musclesPrevus, planifierSeance, planifs, progParId, normaliserJours } from '../store/programme.js';
-import { seancesDuJour } from '../store/seances.js';
+import { seancesDuJour, seances, enregistrerSeance } from '../store/seances.js';
+import { SESSION_EXOS } from '../data/sessionExos.js';
 import { portraitSeanceDuJour, ETAT, demandeVueEntrainer } from '../store/seance-active.js';
-import { CarteSeanceJour } from './CarteSeanceJour.jsx';
+import { CarteSeanceJour, recapFaite } from './CarteSeanceJour.jsx';
 import { t } from '../i18n/index.js';
 import '../styles/seance-jour.css';
 
@@ -245,7 +246,15 @@ function CarteProgramme({ today, todayIso, allerVers }) {
 
   return (
     <div class="cp">
-      <div class="cp-nom">{prog ? prog.name : t('cp_posees_t')}</div>
+      {/* Point 6 (23/09) : « Modifier le programme en cours » est
+          retire ; c'est le NOM du programme qui ouvre sa gestion
+          (jours, changer, abandonner). Une ligne de moins, et l'acces
+          reste a l'endroit ou l'on lit ce dont il s'agit. */}
+      {prog ? (
+        <button class="cp-nom cp-nom--lien" onClick={() => allerVers('planifier', { prog: actif.id })}>
+          {prog.name}<span class="cp-nom-fl" aria-hidden="true">&rsaquo;</span>
+        </button>
+      ) : <div class="cp-nom">{t('cp_posees_t')}</div>}
       {/* Raci, 5/09 : « 1 seance faite cette semaine » est retiree.
           La barre juste en dessous mesure deja l'avancee, et le
           calendrier compte les seances jour par jour. Reste la seule
@@ -290,7 +299,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
         <div class="cp-tuile cp-tuile--fait">
           <span class="cp-tuile-j">{t('cp_auj')} · {jourLong(today).toUpperCase()}</span>
           <span class="cp-tuile-t">{faitAuj.titre}</span>
-          <span class="cp-tuile-fait">✓ {t('cp_realisee')}</span>
+          <span class="cp-tuile-fait">✓ {t('cp_realisee')}{recapFaite({ duree: faitAuj.duree, tonnage: faitAuj.tonnage }) ? ' · ' + recapFaite({ duree: faitAuj.duree, tonnage: faitAuj.tonnage }) : ''}</span>
         </div>
       ) : (
         /* Jour de repos : la tuile n'a rien a lancer. Une ligne calme
@@ -332,11 +341,11 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           quoi faire : il ouvre les quatre questions, qui menent au
           programme correspondant a son objectif. Pas de carrefour
           intermediaire (Raci, 26/08). */}
-      <button class="cp-gerer" onClick={() => (prog
-        ? allerVers('planifier', { prog: actif.id })
-        : allerVers('questionnaire'))}>
-        {prog ? t('cp_gerer') : t('cp_choisir')}
-      </button>
+      {!prog && (
+        <button class="cp-gerer" onClick={() => allerVers('questionnaire')}>
+          {t('cp_choisir')}
+        </button>
+      )}
       {duJour && (
         <button class="cp-libre" onClick={() => allerVers('selection')}>
           {t('tr_start_session')}
@@ -692,6 +701,7 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
   // nombre de hooks change entre un rendu sans `iso` et un rendu avec,
   // ce que Preact n'accepte pas.
   const [choixOuvert, setChoixOuvert] = useState(false);
+  const [rattrapage, setRattrapage] = useState(false);
   if (!iso) return null;
   const sel = muscleLog.value[iso] || [];
   const isoAuj = wlIso(new Date());
@@ -863,6 +873,35 @@ function ModaleMuscles({ iso, fermer, ouvrirSeance }) {
           )
         )}
 
+        {/* Rattrapage (23/09) : une seance du programme faite sans
+            l'app. Elle s'enregistre sur CE jour, avec ses exercices —
+            le calendrier, la tuile et la progression la comptent. Sans
+            programme, les pastilles plus bas font deja ce travail. */}
+        {type === 'passe' && !faites.length && sessionsProgramme.length > 0 && (
+          rattrapage ? (
+            <div class="ml-choix">
+              <div class="ml-choix-t">{t('ml_rattraper_t')}</div>
+              {sessionsProgramme.map(sa => (
+                <button key={sa.seanceId} class="ml-choix-l"
+                  onClick={() => {
+                    const exos = (SESSION_EXOS[sa.seanceId] || []).map(r => {
+                      const k = String(r).indexOf(':');
+                      return { mKey: r.slice(0, k), nom: r.slice(k + 1), fait: true, sets: [] };
+                    });
+                    enregistrerSeance({ iso, titre: sa.titre, muscles: [...new Set(exos.map(e => e.mKey))], exos });
+                    setRattrapage(false);
+                  }}>
+                  <span class="ml-choix-n">{sa.titre}</span>
+                  <span class="ml-choix-s">{sa.sub}</span>
+                </button>
+              ))}
+              <button class="ml-choix-annul" onClick={() => setRattrapage(false)}>{t('cancel')}</button>
+            </div>
+          ) : (
+            <button class="ml-programmer" onClick={() => setRattrapage(true)}>{t('ml_rattraper')}</button>
+          )
+        )}
+
         {/* Retirer une seance posee a la main sur cette date. */}
         {prevue && prevue.main && !faites.length && (
           <button class="ml-retirer" onClick={() => planifierSeance(iso, null)}>
@@ -1011,10 +1050,18 @@ export function Entrainer() {
       <Entete />
       {(() => {
         const p = portraitSeanceDuJour();
-        if (p.etat !== ETAT.BROUILLON && p.etat !== ETAT.EN_COURS) return null;
+        // Faite : la bande porte le recap (23/09), sauf quand la carte
+        // programme le dit deja dans sa tuile du jour.
+        const carteProg = programmeActif.value || poseeCetteSemaine(new Date());
+        const montre = p.etat === ETAT.BROUILLON || p.etat === ETAT.EN_COURS
+          || (p.etat === ETAT.FAITE && !carteProg);
+        if (!montre) return null;
         return (
           <div style={{ margin: '0 16px 12px' }}>
-            <CarteSeanceJour />
+            <CarteSeanceJour ouvrirFaite={(id) => {
+              const s = seances.value.find(x => x.id === id);
+              if (s) setSeanceOuverte(s);
+            }} />
           </div>
         );
       })()}

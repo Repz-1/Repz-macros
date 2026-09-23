@@ -1168,3 +1168,11 @@
 }
 .pg-planifier .pl-conf-non { background: #F1EDE4; color: #57514A; }
 .pg-planifier .pl-conf-oui { background: #16130F; color: #F5A800; }
+
+/* Nom du programme = acces a sa gestion (23/09). */
+.cp-nom--lien {
+  display: flex; align-items: center; gap: 6px; width: 100%;
+  background: none; border: 0; padding: 0; text-align: left;
+  font-family: inherit; color: inherit; cursor: pointer;
+}
+.cp-nom-fl { margin-left: auto; font-size: 22px; font-weight: 500; color: #B34700; }

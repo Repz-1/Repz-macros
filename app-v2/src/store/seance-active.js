@@ -199,6 +199,8 @@ export function portraitSeanceDuJour(iso = isoJour()) {
       seanceId: null,
       nExos: (s.exos || []).length,
       idLog: s.id,
+      duree: s.duree || 0,
+      tonnage: s.tonnage || 0,
     };
   }
   if (seanceRefs.value.length) {

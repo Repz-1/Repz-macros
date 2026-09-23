@@ -1,4 +1,4 @@
-// Parcours complet coach -> seance -> fin (23/09).
+// Parcours complet coach -> lecteur guide unique -> fin (23/09, v546).
 import { spawn } from 'child_process';
 import { createRequire } from 'module';
 const exiger = createRequire(new URL('../app-v2/package.json', import.meta.url));
@@ -21,22 +21,39 @@ const b = await dire('séance dos endurance');
 ok(a !== b, 'lourd/court et endurance different');
 ok(/Force/.test(a) && /5×5/.test(a), 'lourd = Force 5×5');
 ok(/Endurance/.test(b) && /3×15/.test(b), 'endurance = 3×15');
+
+// Autre jour : part au calendrier
+const d = await dire('demain séance jambes');
+ok(/Poser pour demain/.test(d), 'bouton « Poser pour demain »');
+await page.locator('.coach-bar-ajout').tap(); await page.waitForTimeout(300);
+const planif = await page.evaluate(() => Object.keys(localStorage).map(k => localStorage.getItem(k)).join(' '));
+ok(/posée pour demain/.test(await page.locator('.coach-bar-msg').innerText()), 'message « posée pour demain »');
+
+// Ce soir : brouillon puis lecteur guide
 await dire('ce soir séance dos lourd et court');
 await page.locator('.coach-bar-ajout').tap(); await page.waitForTimeout(300);
-ok(/Dos · Force/.test(await page.locator('.coach-bar-msg').innerText()), 'message posee nomme la seance');
 await page.locator('.coach-bar-ajout').tap(); await page.waitForTimeout(900);
-ok(/Dos · Force/.test(await page.locator('.sh-title').innerText()), 'Ma seance porte le titre');
-await page.locator('.start-session-btn').tap(); await page.waitForTimeout(300);
-await page.locator('.sets-btn').first().tap(); await page.waitForTimeout(300);
-const nbSeries = await page.locator('.sets-panel.open .set-row').count();
-ok(nbSeries === 5, '5 series preremplies ('+nbSeries+')');
-await page.locator('.sets-panel.open .set-row input').first().fill('100'); await page.waitForTimeout(200);
-await page.locator('.sc-stop').tap(); await page.waitForTimeout(400);
-await page.locator('.congrats-overlay.show .congrats-btn').tap(); await page.waitForTimeout(900);
-const vide = await page.locator('text=Aucun exercice sélectionné').count();
-ok(vide === 0, 'pas d\'ecran vide apres la fin');
-ok(await page.locator('.wlog, [class*=wlog]').count() > 0, 'retour a S\'entrainer (calendrier)');
+ok(await page.locator('.sg').count() === 1, 'Commencer ouvre le lecteur guide');
+ok(await page.locator('.sg-pts > *').count() === 5, '5 series attendues (schema force)');
+ok(await page.locator('.sg-ch input').nth(1).inputValue() === '5', 'reps preremplies a 5');
+await page.locator('.sg-ch input').first().fill('100');
+await page.locator('.sg-go').tap(); await page.waitForTimeout(300);
+ok(/3:0|2:5/.test(await page.locator('.sg-repos-c').innerText()), 'repos 3 min lance');
+await page.locator('.sg-sec button').filter({hasText:'Terminer la séance'}).tap(); await page.waitForTimeout(900);
+ok(await page.locator('text=Aucun exercice').count() === 0, 'pas d\'ecran vide');
+ok(await page.locator('.sg-scene-fin').count() === 0, 'pas d\'ecran Bravo');
+const bande = await page.locator('.sj-meta, .cp-tuile-fait').first().innerText().catch(()=> '');
+ok(/✓/.test(bande) && /500 kg/.test(bande), 'bande recap sur S\'entrainer (' + bande + ')');
 const log = await page.evaluate(() => JSON.stringify(localStorage));
 ok(/Dos · Force/.test(log), 'seance enregistree sous son titre');
+
+// Seance libre -> lecteur guide direct
+await page.locator('button').filter({hasText:/Séance libre|Démarrer une séance/}).first().tap().catch(()=>{});
+await page.waitForTimeout(700);
+if (await page.locator('.ex-add').count()) {
+  await page.locator('.ex-add').first().tap(); await page.waitForTimeout(300);
+  await page.locator('.session-bar .go').click(); await page.waitForTimeout(700);
+  ok(await page.locator('.sg').count() === 1, 'seance libre -> lecteur guide');
+} else ok(false, 'choix des exercices introuvable');
 await page.screenshot({path:'/tmp/fin.png'});
 await nav.close(); try { process.kill(-srv.pid); } catch {} srv.kill(); process.exit(code);

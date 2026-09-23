@@ -173,7 +173,13 @@ export function abandonnerProgramme() { ecrire(null); }
 /** Poser ou retirer une seance a la main sur une date. */
 export function planifierSeance(iso, seance) {
   const p = { ...planifs.value };
-  if (seance) p[iso] = { seanceId: seance.seanceId, titre: seance.titre, sub: seance.sub || '' };
+  if (seance) {
+    p[iso] = { seanceId: seance.seanceId, titre: seance.titre, sub: seance.sub || '' };
+    // Seance composee par le coach : ses exercices et son schema
+    // voyagent avec elle (23/09), elle n'existe dans aucun programme.
+    if (seance.exos) p[iso].exos = seance.exos;
+    if (seance.schema) p[iso].schema = seance.schema;
+  }
   else delete p[iso];
   planifs.value = p;
   const u = identite.value;

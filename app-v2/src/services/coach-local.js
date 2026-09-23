@@ -208,6 +208,30 @@ function lireStyle(n) {
   return { style, duree };
 }
 
+/**
+ * Le jour vise (23/09) : « demain », « apres-demain », un jour de la
+ * semaine. Rien, « ce soir » ou « aujourd'hui » = aujourd'hui (null).
+ * Renvoie { iso, libelle } ou null.
+ */
+const JOURS_SEM = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+function isoDe(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+export function lireJourVise(n, maintenant = new Date()) {
+  let dec = null;
+  if (/\bapres[- ]?demain\b/.test(n)) dec = 2;
+  else if (/\bdemain\b/.test(n)) dec = 1;
+  else {
+    const i = JOURS_SEM.findIndex((j) => new RegExp('(^| )' + j + '( |$)').test(n));
+    if (i >= 0) dec = (i - maintenant.getDay() + 7) % 7;
+  }
+  if (!dec) return null;
+  const d = new Date(maintenant.getFullYear(), maintenant.getMonth(), maintenant.getDate() + dec);
+  const libelle = dec === 1 ? 'demain' : dec === 2 ? 'après-demain'
+    : JOURS_SEM[d.getDay()] + ' ' + d.getDate();
+  return { iso: isoDe(d), libelle };
+}
+
 function nbParGroupe(nMuscles, style, duree) {
   const base = nMuscles === 1 ? 4 : nMuscles === 2 ? 3 : 2;
   let n = base;
@@ -249,6 +273,7 @@ export function composerSeance(phrase) {
   if (!veut) return null;
 
   const { style, duree } = lireStyle(n);
+  const jour = lireJourVise(n);
   const schema = SCHEMAS[style];
   const parGroupe = nbParGroupe(muscles.length, style, duree);
   const refs = [];
@@ -279,7 +304,9 @@ export function composerSeance(phrase) {
     schema,
     refs: refs.map((r) => ({ mKey: r.mKey, i: r.i })),
     noms: refs.map((r) => r.nom),
-    texte: titre + ' — ' + refs.length + ' exercices · ' + schema.resume + '.',
+    iso: jour ? jour.iso : null,
+    quand: jour ? jour.libelle : null,
+    texte: titre + (jour ? ' pour ' + jour.libelle : '') + ' — ' + refs.length + ' exercices · ' + schema.resume + '.',
     aliments: [],
     local: true,
   };

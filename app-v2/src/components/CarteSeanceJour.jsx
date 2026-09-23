@@ -17,7 +17,18 @@ function ctaPour(etat) {
   return '';
 }
 
+/** « 42 min · 6 200 kg » — le recap d'une seance faite (23/09). */
+export function recapFaite(p) {
+  const bits = [];
+  const min = p.duree ? Math.max(1, Math.round(p.duree / 60)) : 0;
+  if (min) bits.push(min + ' min');
+  if (p.tonnage) bits.push(Math.round(p.tonnage).toLocaleString('fr-BE') + ' kg');
+  if (!bits.length && p.nExos) bits.push(p.nExos + ' ' + t('ms_exercises'));
+  return bits.join(' · ');
+}
+
 function metaPour(p) {
+  if (p.etat === ETAT.FAITE) return '✓ ' + (recapFaite(p) || t('sj_faite'));
   const bits = [];
   if (p.etat === ETAT.PREVUE) bits.push(t('sj_prevue'));
   else if (p.etat === ETAT.BROUILLON) bits.push(t('sj_brouillon'));
@@ -27,11 +38,15 @@ function metaPour(p) {
   return bits.join(' · ');
 }
 
-export function CarteSeanceJour() {
+export function CarteSeanceJour({ ouvrirFaite }) {
   const p = portraitSeanceDuJour();
   const [confirme, setConfirme] = useState(false);
 
   const ouvrir = () => {
+    if (p.etat === ETAT.FAITE) {
+      if (ouvrirFaite && p.idLog) ouvrirFaite(p.idLog);
+      return;
+    }
     if (p.etat === ETAT.PREVUE && p.seanceId) {
       allerEntrainer('seanceDetail', { seanceId: p.seanceId, titre: p.titre, depuis: 'journal' });
       return;
@@ -53,7 +68,9 @@ export function CarteSeanceJour() {
     setConfirme(false);
   };
 
-  const jetable = p.etat === ETAT.BROUILLON || p.etat === ETAT.EN_COURS || p.etat === ETAT.FAITE;
+  // Une seance FAITE ne se jette pas d'ici (Raci, 5/09 : effacer un
+  // entrainement reel fait mentir le calendrier).
+  const jetable = p.etat === ETAT.BROUILLON || p.etat === ETAT.EN_COURS;
   const live = p.etat === ETAT.BROUILLON || p.etat === ETAT.EN_COURS;
   const cta = ctaPour(p.etat);
   const meta = p.etat === ETAT.VIDE ? '' : metaPour(p);
