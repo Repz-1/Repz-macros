@@ -31,7 +31,8 @@ import { Stats } from './components/Stats.jsx';
 import { BottomNav, ongletActif, allerOnglet, scrollSortant, defileur } from './components/BottomNav.jsx';
 import { t, langue, setLangue, LANGUES } from './i18n/index.js';
 import { signal } from '@preact/signals';
-import { Entete, voletProfil } from './components/Entete.jsx';
+import { Entete, voletProfil, prenomUtilisateur } from './components/Entete.jsx';
+import { weightLog } from './store/stats.js';
 
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
@@ -463,37 +464,36 @@ export function App() {
   const voletUtilisateur = voletProfil.value ? (
     <>
       <div class="profil-voile" onClick={() => { voletProfil.value = false; }} />
+      {/* Icone utilisateur = MON PROFIL (23/09). Qui je suis, ou j'en
+          suis, et les deux gestes qui s'y rattachent. La langue et la
+          deconnexion n'y sont plus : elles vivent dans les Reglages,
+          une seule fois chacune. */}
       <div class="profil-volet">
-        <span class="profil-qui">{utilisateur.value ? (utilisateur.value.displayName || utilisateur.value.email) : ''}</span>
+        <span class="profil-qui">{prenomUtilisateur() || (utilisateur.value ? (utilisateur.value.displayName || utilisateur.value.email) : '')}</span>
         <span class="profil-statut">
           {estPremium.value ? '\u2726 PRO' : t('compte_gratuit')}
         </span>
-        <div class="lang-choix">
-          {LANGUES.map(l => (
-            <button key={l.k} class={langue.value === l.k ? 'actif' : ''} onClick={() => setLangue(l.k)}>{l.label}</button>
-          ))}
-        </div>
-        {/* « Calculer mes besoins » est consomme par l'onglet Journal.
-            Ouvert depuis la page Reglages, la demande partait bien...
-            mais l'onglet n'etait pas rendu, puisque les reglages
-            remplacent toute la page : rien ne se passait, et le calcul
-            apparaissait deja ouvert en revenant en arriere. On ferme
-            donc les reglages et on revient au Journal avant de le
-            demander. */}
+        {objectifs.value && objectifs.value.kcal > 0 && (
+          <span class="profil-obj">
+            <b>{Math.round(objectifs.value.kcal).toLocaleString('fr-BE')} kcal</b>
+            {' · P '}{Math.round(objectifs.value.prot || 0)}{' · G '}{Math.round(objectifs.value.carbs || 0)}{' · L '}{Math.round(objectifs.value.lip || 0)}
+          </span>
+        )}
+        {(() => {
+          const l = weightLog.value || [];
+          const der = l.length ? l.slice().sort((x, y) => (x.iso < y.iso ? -1 : 1))[l.length - 1] : null;
+          return der ? <span class="profil-obj">{t('profil_poids')} <b>{String(der.kg).replace('.', ',')} kg</b></span> : null;
+        })()}
         <button class="profil-calc" onClick={() => {
           voletProfil.value = false;
           if (vueReglages.value) { vueReglages.value = null; ongletActif.value = 'journal'; }
+          else ongletActif.value = 'journal';
           ouvrirCalcDemande.value = true;
-        }}>{t('qa_calc')}</button>
-        {/* La deconnexion laisse la page Reglages montee le temps que
-            Firebase reponde. On la ferme d'abord : sinon l'ecran de
-            connexion apparait apres coup, et un retour arriere
-            ramenerait des reglages qui n'ont plus de compte. */}
-        <button class="profil-sortie" onClick={() => {
+        }}>{t('profil_recalc')}</button>
+        <button class="profil-calc" onClick={() => {
           voletProfil.value = false;
-          vueReglages.value = null;
-          deconnexion();
-        }}>{t('deconnexion')}</button>
+          vueReglages.value = 'compte';
+        }}>{t('profil_compte')}</button>
       </div>
     </>
   ) : null;

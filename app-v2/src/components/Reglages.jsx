@@ -10,6 +10,7 @@ import { estPremium } from './PremiumPage.jsx';
 import { ongletActif } from './BottomNav.jsx';
 import { Entete } from './Entete.jsx';
 import { VERSION_APP } from '../version.js';
+import { PREMIUM_OUVERT } from '../acces-libre.js';
 import '../styles/reglages.css';
 import { sexe } from '../store/perso.js';
 
@@ -115,7 +116,7 @@ function EcranCompte({ retour }) {
     <div class="pg-reglages">
       <Entete retour={retour} />
       <div class="rg-corps">
-        <button class="rg-retour" onClick={retour}>← {t('set_title')}</button>
+        {/* Un seul retour : la fleche de l'en-tete (23/09). */}
         <h1 class="rg-titre">{t('set_account')}</h1>
 
         <div class="rg-carte">
@@ -129,14 +130,6 @@ function EcranCompte({ retour }) {
           </div>
           {/* Le reglage de silhouette a quitte cet ecran pour le
               premier niveau des Reglages : il y etait trop enfoui. */}
-          <div class="rg-champ">
-            <span class="rg-lbl">{t('acc_password')}</span>
-            <span class="rg-val">••••••••</span>
-          </div>
-          <div class="rg-champ">
-            <span class="rg-lbl">{t('acc_units')}</span>
-            <span class="rg-val">{t('acc_units_v')}</span>
-          </div>
         </div>
 
         <button class="rg-principal" onClick={sauver}>
@@ -166,6 +159,79 @@ function EcranCompte({ retour }) {
               <button class="rg-lien" onClick={() => setConfirmeSuppr(false)}>{t('cancel')}</button>
             </div>
           </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------- Sous-ecran : abonnement (23/09) ----------
+// « Gerer l'abonnement » ouvrait l'espace BelFit+, ou il n'y a rien a
+// gerer. Ici : ce qu'on a, par ou on paie, et comment le changer ou
+// l'arreter. La resiliation vit dedans.
+const LIEN_PAIEMENT = {
+  lemonsqueezy: 'https://app.lemonsqueezy.com/my-orders',
+  web: 'https://app.lemonsqueezy.com/my-orders',
+  android: 'https://play.google.com/store/account/subscriptions',
+  ios: 'https://apps.apple.com/account/subscriptions',
+};
+const NOM_CANAL = { lemonsqueezy: 'abo_canal_web', web: 'abo_canal_web', android: 'abo_canal_android', ios: 'abo_canal_ios', code: 'abo_canal_code' };
+const NOM_FORMULE = { mensuel: 'abo_f_mensuel', trimestriel: 'abo_f_trimestriel', annuel: 'abo_f_annuel' };
+
+function EcranAbonnement({ retour }) {
+  const u = utilisateur.value;
+  const [d, setD] = useState(null);
+  useEffect(() => {
+    if (!u) { setD({}); return; }
+    import('firebase/firestore').then(async ({ getFirestore, doc, getDoc }) => {
+      try {
+        const s = await getDoc(doc(getFirestore(app), 'users', u.uid));
+        setD(s.exists() ? s.data() : {});
+      } catch (e) { setD({}); }
+    }).catch(() => setD({}));
+  }, [u]);
+
+  const paye = d && d.premium === true;
+  const canal = (d && d.source) || null;
+  const lien = canal && LIEN_PAIEMENT[canal];
+
+  return (
+    <div class="pg-reglages">
+      <Entete retour={retour} />
+      <div class="rg-corps">
+        <h1 class="rg-titre">{t('set_sub')}</h1>
+        {d === null ? <p class="rg-note">…</p> : (
+          <>
+            <div class="rg-carte">
+              <div class="rg-champ">
+                <span class="rg-lbl">{t('abo_statut')}</span>
+                <span class="rg-val">{paye ? t('abo_actif') : (PREMIUM_OUVERT ? t('abo_test') : t('abo_gratuit'))}</span>
+              </div>
+              {paye && d.formule && (
+                <div class="rg-champ">
+                  <span class="rg-lbl">{t('abo_formule')}</span>
+                  <span class="rg-val">{t(NOM_FORMULE[d.formule] || d.formule)}</span>
+                </div>
+              )}
+              {paye && canal && (
+                <div class="rg-champ">
+                  <span class="rg-lbl">{t('abo_canal')}</span>
+                  <span class="rg-val">{t(NOM_CANAL[canal] || canal)}</span>
+                </div>
+              )}
+            </div>
+            {paye ? (
+              <div class="rg-carte">
+                {lien && <Rangee titre={t('abo_gerer_paiement')} sous={t('abo_gerer_paiement_sub')} href={lien} />}
+                <Rangee titre={t('set_cancel')} sous={t('set_cancel_sub')} danger
+                        onClick={() => { vueReglages.value = 'resilier'; }} />
+              </div>
+            ) : (
+              <button class="rg-principal" onClick={() => { fermerReglages(); ongletActif.value = 'premium'; }}>
+                {t('abo_voir_offre')}
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -205,7 +271,6 @@ function EcranResilier({ retour }) {
     <div class="pg-reglages">
       <Entete retour={retour} />
       <div class="rg-corps">
-        <button class="rg-retour" onClick={retour}>← {t('set_title')}</button>
         <h1 class="rg-titre">{t('rs_title')}</h1>
         <p class="rg-intro">{t('rs_intro')}</p>
 
@@ -304,6 +369,7 @@ export function Reglages() {
   const [coach, setCoach] = useState(true);
   const [code, setCode] = useState('');
   const [copie, setCopie] = useState(false);
+  const [confirmeSortie, setConfirmeSortie] = useState(false);
 
   useEffect(() => {
     try {
@@ -329,9 +395,11 @@ export function Reglages() {
   const auMenu = () => { vueReglages.value = 'menu'; };
   // Sous-ecran ouvert (compte, resiliation) : le retour Android y
   // revient au menu des reglages — un cran, pas trois.
-  useRetour(vue === 'compte' || vue === 'resilier', auMenu);
+  const aAbo = () => { vueReglages.value = 'abonnement'; };
+  useRetour(vue === 'compte' || vue === 'resilier' || vue === 'abonnement', vue === 'resilier' ? aAbo : auMenu);
   if (vue === 'compte') return <Garde retour={auMenu}><EcranCompte retour={auMenu} /></Garde>;
-  if (vue === 'resilier') return <Garde retour={auMenu}><EcranResilier retour={auMenu} /></Garde>;
+  if (vue === 'abonnement') return <Garde retour={auMenu}><EcranAbonnement retour={auMenu} /></Garde>;
+  if (vue === 'resilier') return <Garde retour={aAbo}><EcranResilier retour={aAbo} /></Garde>;
 
   return (
     <div class="pg-reglages">
@@ -343,12 +411,8 @@ export function Reglages() {
         <div class="rg-carte">
           <Rangee titre={t('set_account')} sous={t('set_account_sub')}
                   onClick={() => { vueReglages.value = 'compte'; }} />
-          <Rangee titre={t('set_sub')} sous={t('set_sub_sub')}
-                  onClick={() => { fermerReglages(); ongletActif.value = 'premium'; }} />
-          {prem && (
-            <Rangee titre={t('set_cancel')} sous={t('set_cancel_sub')}
-                    onClick={() => { vueReglages.value = 'resilier'; }} />
-          )}
+          <Rangee titre={t('set_sub')} sous={t('abo_sous')}
+                  onClick={() => { vueReglages.value = 'abonnement'; }} />
         </div>
 
         {/* La silhouette se reglait sous « Parametres du compte », un
@@ -357,6 +421,20 @@ export function Reglages() {
             d'affichage qui se prend une fois et se retrouve vite. */}
         <p class="rg-section">{t('set_sec_affichage')}</p>
         <div class="rg-carte">
+          <div class="rg-rangee rg-rangee--inerte">
+            <span class="rg-txt">
+              <span class="rg-nom">{t('set_lang')}</span>
+              <span class="rg-sous">{t('set_lang_sub')}</span>
+            </span>
+            <span class="rg-seg">
+              {['fr', 'en', 'nl'].map((l) => (
+                <button key={l} class={lg === l ? 'on' : ''}
+                        onClick={() => { setLangue(l); setLg(l); }}>
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </span>
+          </div>
           <div class="rg-rangee rg-rangee--inerte">
             <span class="rg-txt">
               <span class="rg-nom">{t('acc_sexe')}</span>
@@ -373,50 +451,9 @@ export function Reglages() {
           </div>
         </div>
 
-        <p class="rg-section">{t('settings_language')}</p>
-        <div class="rg-carte">
-          <div class="rg-rangee rg-rangee--inerte">
-            <span class="rg-txt">
-              <span class="rg-nom">{t('set_lang')}</span>
-              <span class="rg-sous">{t('set_lang_sub')}</span>
-            </span>
-            <span class="rg-seg">
-              {['fr', 'en', 'nl'].map((l) => (
-                <button key={l} class={lg === l ? 'on' : ''}
-                        onClick={() => { setLangue(l); setLg(l); }}>
-                  {l.toUpperCase()}
-                </button>
-              ))}
-            </span>
-          </div>
-        </div>
-
-        <p class="rg-section">{t('set_sec_notif')}</p>
-        <div class="rg-carte">
-          <div class="rg-rangee rg-rangee--inerte">
-            <span class="rg-txt">
-              <span class="rg-nom">{t('set_notif_weigh')}</span>
-              <span class="rg-sous">{t('set_notif_weigh_sub')}</span>
-            </span>
-            <label class="rg-bascule">
-              <input type="checkbox" checked={pesee}
-                     onChange={(e) => { setPesee(e.target.checked); sauverNotifs(e.target.checked, coach); }} />
-              <span />
-            </label>
-          </div>
-          <div class="rg-rangee rg-rangee--inerte">
-            <span class="rg-txt">
-              <span class="rg-nom">{t('set_notif_coach')}</span>
-              <span class="rg-sous">{t('set_notif_coach_sub')}</span>
-            </span>
-            <label class="rg-bascule">
-              <input type="checkbox" checked={coach}
-                     onChange={(e) => { setCoach(e.target.checked); sauverNotifs(pesee, e.target.checked); }} />
-              <span />
-            </label>
-          </div>
-        </div>
-        <p class="rg-note">{t('set_notif_note')}</p>
+        {/* Notifications retirees le 23/09 : les deux bascules
+            enregistraient un choix que rien ne lisait. Elles reviennent
+            avec l'application native et de vrais rappels. */}
 
         <p class="rg-section">{t('set_sec_social')}</p>
         <div class="rg-carte">
@@ -438,16 +475,12 @@ export function Reglages() {
           )}
         </div>
 
-        <p class="rg-section">{t('set_sec_contact')}</p>
+        <p class="rg-section">{t('set_sec_aide')}</p>
         <div class="rg-carte">
           <Rangee titre={t('set_write')} sous={t('set_write_sub')}
                   href="mailto:contact@belfit.be" />
           <Rangee titre={t('set_suggest')} sous={t('set_suggest_sub')}
                   href="mailto:contact@belfit.be?subject=Suggestion" />
-        </div>
-
-        <p class="rg-section">{t('set_sec_docs')}</p>
-        <div class="rg-carte">
           <Rangee titre={t('set_privacy')} href="https://www.belfit.be/confidentialite.html" />
         </div>
 
@@ -463,13 +496,26 @@ export function Reglages() {
           </button>
         )}
 
-        <button class="rg-deconnexion" onClick={() => {
-          try {
-            ['repz_firstName', 'repz_profile', 'belfit_v2_journal'].forEach(k => localStorage.removeItem(k));
-          } catch (e) { /* non bloquant */ }
-          vueReglages.value = null;
-          deconnexion();
-        }}>{t('set_logout')}</button>
+        {/* Deconnexion confirmee (23/09) : elle efface le journal
+            local du telephone. Un appui par erreur ne doit pas suffire. */}
+        <button class="rg-deconnexion" onClick={() => setConfirmeSortie(true)}>{t('set_logout')}</button>
+        {confirmeSortie && (
+          <div class="rg-modale" onClick={(e) => { if (e.target === e.currentTarget) setConfirmeSortie(false); }}>
+            <div class="rg-modale-boite">
+              <h3>{t('sortie_titre')}</h3>
+              <p>{t('sortie_texte')}</p>
+              <button class="rg-principal rg-principal--danger" onClick={() => {
+                try {
+                  ['repz_firstName', 'repz_profile', 'belfit_v2_journal'].forEach(k => localStorage.removeItem(k));
+                } catch (e) { /* non bloquant */ }
+                setConfirmeSortie(false);
+                vueReglages.value = null;
+                deconnexion();
+              }}>{t('set_logout')}</button>
+              <button class="rg-lien" onClick={() => setConfirmeSortie(false)}>{t('cancel')}</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
