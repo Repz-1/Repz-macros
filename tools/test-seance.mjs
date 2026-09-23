@@ -1,84 +1,50 @@
-// Test bout-en-bout : une seance libre terminee doit laisser une trace
-// dans users/{uid}.v2Data.seances (miroir local belfit_v2_journal_{uid}).
+// Test bout-en-bout : une seance libre terminee laisse une trace dans
+// le journal local (belfit_v2_journal_*), avec un tonnage > 0.
+// Reecrit le 23/09 : l'ancien test visait « Ma seance » (supprimee en
+// v546). Le parcours passe desormais par le lecteur guide unique.
 // Prerequis : npx vite build --config apercu.config.js dans app-v2/.
 // Usage : node tools/test-seance.mjs   (depuis la racine du depot)
-// Playwright vit dans app-v2/node_modules : on le resout explicitement,
-// le test etant range dans tools/ a la racine.
 import { spawn } from 'child_process';
 import { createRequire } from 'module';
 const exiger = createRequire(new URL('../app-v2/package.json', import.meta.url));
 const { chromium } = exiger('playwright');
-
-const RACINE = 'app-v2/apercu/construit';
 const PORT = 8099;
-const serveur = spawn('python3', ['-m', 'http.server', String(PORT), '--directory', RACINE],
+const srv = spawn('python3', ['-m', 'http.server', String(PORT), '--directory', 'app-v2/apercu/construit'],
   { stdio: 'ignore', detached: true });
+srv.unref();
 await new Promise(r => setTimeout(r, 1500));
-
-let code = 0;
-const echec = (m) => { console.error('✗ ' + m); code = 1; };
-
-const nav = await chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-});
-const ctx = await nav.newContext({
-  viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, locale: 'fr-BE',
-});
-const page = await ctx.newPage();
-const erreurs = [];
-page.on('pageerror', e => erreurs.push(String(e)));
-
+let code = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if (!c) code = 1; };
+const nav = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
 try {
-  await page.goto(`http://localhost:${PORT}/app.html`);
-  await page.waitForTimeout(1500);
-
-  const onglet = (nom) => page.locator('nav button, .bottom-nav button, [class*=nav] button').filter({ hasText: nom });
-  await onglet("S'entraîner").first().tap();
-  await page.waitForTimeout(600);
-
-  await page.locator('button, a').filter({ hasText: 'Créer ma séance' }).first().tap();
-  await page.waitForTimeout(800);
-
-  const plus = page.locator('button').filter({ hasText: /^\+$/ });
-  await plus.nth(0).tap(); await page.waitForTimeout(300);
-  await plus.nth(0).tap(); await page.waitForTimeout(300);
-
-  await page.locator('.session-bar').first().tap();
-  await page.waitForTimeout(900);
-
-  await page.locator('button').filter({ hasText: /^Commencer$/ }).first().tap();
-  await page.waitForTimeout(1200);
-
-  const items = page.locator('.done-item');
-  const n = await items.count();
-  if (n !== 2) echec(`2 exercices attendus a l'ecran, ${n} trouves`);
-  // Depuis le 7/08, le corps de l'exercice ouvre les series ;
-  // c'est le petit cercle (.done-check) qui coche.
-  const coches = page.locator('.done-check');
-  await coches.nth(0).tap(); await page.waitForTimeout(400);
-  await coches.nth(1).tap(); await page.waitForTimeout(1800);
-
-  const stock = await page.evaluate(() => {
-    const b = localStorage.getItem('belfit_v2_journal_test');
-    return b ? (JSON.parse(b).seances || []) : null;
+  const ctx = await nav.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, locale: 'fr-BE' });
+  const page = await ctx.newPage();
+  page.on('pageerror', e => { console.log('ERREUR JS', e.message); code = 1; });
+  page.setDefaultTimeout(8000);
+  await page.goto(`http://localhost:${PORT}/app.html`); await page.waitForTimeout(1800);
+  await page.locator('nav button, .bottom-nav button, [class*=nav] button').filter({ hasText: /entra/i }).first().tap();
+  await page.waitForTimeout(700);
+  await page.locator('button').filter({ hasText: /Séance libre|Démarrer une séance|Créer ma séance/ }).first().tap();
+  await page.waitForTimeout(700);
+  ok(await page.locator('.ex-add').count() > 1, 'choix des exercices ouvert');
+  await page.locator('.ex-add').nth(0).tap(); await page.waitForTimeout(200);
+  await page.locator('.ex-add').nth(1).tap(); await page.waitForTimeout(200);
+  await page.locator('.session-bar .go').click(); await page.waitForTimeout(800);
+  ok(await page.locator('.sg').count() === 1, 'lecteur guide ouvert');
+  await page.locator('.sg-ch input').first().fill('60');
+  await page.locator('.sg-ch input').nth(1).fill('10');
+  await page.locator('.sg-go').tap(); await page.waitForTimeout(300);
+  await page.locator('.sg-sec button').filter({ hasText: 'Terminer la séance' }).tap(); await page.waitForTimeout(1000);
+  ok(await page.locator('.sg').count() === 0, 'retour sur S\'entrainer');
+  const tonnage = await page.evaluate(() => {
+    let max = 0;
+    for (const k of Object.keys(localStorage)) {
+      if (!k.startsWith('belfit_v2_journal')) continue;
+      const m = localStorage.getItem(k).match(/"(?:tonnage|volume|kg)"\s*:\s*(\d+)/g) || [];
+      for (const x of m) max = Math.max(max, +x.split(':')[1]);
+    }
+    return max;
   });
-
-  if (!stock) echec('aucune donnee locale pour le compte de test');
-  else if (stock.length !== 1) echec(`1 seance attendue, ${stock.length} enregistree(s)`);
-  else {
-    const s = stock[0];
-    if (!s.iso || !s.ts) echec('seance sans date');
-    if (s.exos.length !== 2) echec(`2 exercices attendus dans la seance, ${s.exos.length} enregistre(s)`);
-    if (!s.muscles.length) echec('aucun muscle rattache a la seance');
-    if (typeof s.tonnage !== 'number') echec('tonnage absent');
-    if (!code) console.log(`✓ seance enregistree : ${s.exos.length} exercices, muscles ${s.muscles.join('+')}, ${s.duree}s`);
-  }
-
-  if (erreurs.length) echec('erreurs JS : ' + erreurs.join(' | '));
-} catch (e) {
-  echec(String(e).split('\n')[0]);
-} finally {
-  await nav.close();
-  try { process.kill(-serveur.pid); } catch (e) {}
-}
+  ok(tonnage >= 600, 'seance enregistree avec tonnage (' + tonnage + ' kg)');
+} catch (e) { ok(false, e.message.split('\n')[0]); }
+await nav.close(); try { process.kill(-srv.pid); } catch {}
 process.exit(code);

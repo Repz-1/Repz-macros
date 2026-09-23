@@ -23,7 +23,9 @@
 //   (cd apercu/construit && python3 -m http.server 8099 &)
 //   node ../tools/fumee.mjs
 // ============================================================
-import { chromium } from 'playwright';
+// Playwright vit dans app-v2/node_modules : resolu depuis la (23/09).
+import { createRequire } from 'module';
+const { chromium } = createRequire(new URL('../app-v2/package.json', import.meta.url))('playwright');
 
 const BASE = process.env.BASE || 'http://localhost:8099';
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -42,7 +44,9 @@ const ecrans = [
     nom: 'Repas (encodage)',
     url: 'repas.html',
     parcours: async (p) => {
-      const champ = await p.$('input[placeholder]');
+      // Depuis la barre du coach (v540), le premier champ de la page est
+      // celui du coach : on vise la recherche d'aliment.
+      const champ = await p.$('input[placeholder]:not(.coach-bar-champ)');
       await champ.tap(); await p.waitForTimeout(500);
       await champ.type('poulet', { delay: 30 }); await p.waitForTimeout(600);
       const r = await p.$('.mc-res-choix');

@@ -3,7 +3,6 @@
 import { render } from 'preact';
 import '../src/styles.css';
 import '../src/styles/design-system.css';
-import '../src/legacy/planifier.scoped.css';
 import { langue } from '../src/i18n/index.js';
 import { programmeActif } from '../src/store/programme.js';
 import { estPremium } from '../src/components/PremiumPage.jsx';
