@@ -44,7 +44,28 @@ function repasCle(phrase) {
   return h < 11 ? 'pdej' : h < 15 ? 'dej' : h < 21 ? 'diner' : 'snack';
 }
 
+/**
+ * Quantite rattachee A CET aliment (23/09). L'ancienne lecture prenait
+ * le premier nombre de la phrase : « 350 g de riz et 250 g de poulet »
+ * donnait 350 g aux deux. On lit d'abord juste avant le mot
+ * (« 250 g de poulet »), puis juste apres (« poulet 250 g »).
+ */
+const UNITE_G = '(g|gr|grammes?)';
+function quantiteCollee(n, mot) {
+  const idx = mot ? n.indexOf(mot) : -1;
+  if (idx < 0) return null;
+  const avant = n.slice(Math.max(0, idx - 30), idx);
+  const mAv = avant.match(new RegExp('(\\d+[.,]?\\d*)\\s*' + UNITE_G + '\\s*(?:de |d )?$'));
+  if (mAv) return parseFloat(mAv[1].replace(',', '.'));
+  const apres = n.slice(idx + mot.length, idx + mot.length + 20);
+  const mAp = apres.match(new RegExp('^\\s*(?:: )?(\\d+[.,]?\\d*)\\s*' + UNITE_G + '(?![a-z])'));
+  if (mAp) return parseFloat(mAp[1].replace(',', '.'));
+  return null;
+}
+
 function extraireQuantite(n, apresMot) {
+  const collee = quantiteCollee(n, apresMot);
+  if (collee != null) return collee;
   const idx = apresMot ? n.indexOf(apresMot) : -1;
   const zone = idx >= 0 ? n.slice(0, idx + apresMot.length + 12) : n;
   const cas = zone.match(/(\d+[\.,]?\d*)\s*(cuillere(?:s)?(?: a soupe)?|cas)\b/);
@@ -363,6 +384,21 @@ export function proposerCourses(message, repas = []) {
   };
 }
 
+/**
+ * « Ajoute un repas supplementaire », « une nouvelle collation »,
+ * « une boisson en plus » (23/09) : le coach cree une LIGNE dans le
+ * journal au lieu de remplir une des quatre lignes fixes.
+ * Renvoie 'repas' | 'collation' | 'boisson' | null.
+ */
+export function lireNouvelleLigne(n) {
+  const type = (m) => (/boisson/.test(m) ? 'boisson' : /collation|snack/.test(m) ? 'collation' : 'repas');
+  const avant = n.match(/\b(?:nouveau|nouvelle|autre|deuxieme|2e|second|seconde|ajoute un|ajoute une|ajouter un|ajouter une|cree un|cree une|creer un|creer une)\s+(repas|collation|snack|boisson)\b/);
+  if (avant) return type(avant[1]);
+  const apres = n.match(/\b(repas|collation|snack|boisson)\s+(?:supplementaire|en plus|de plus|en extra|extra)\b/);
+  if (apres) return type(apres[1]);
+  return null;
+}
+
 export function parserLocal(message, contexte = {}) {
   const brut = String(message || '').trim();
   const n = normNom(brut);
@@ -437,11 +473,33 @@ export function parserLocal(message, contexte = {}) {
     return { texte: seance.texte, aliments, eauLitres: eauLitres || 0, seance, local: true };
   }
 
+  if (!aliments.length && !eauLitres && lireNouvelleLigne(n)) {
+    const ligne = lireNouvelleLigne(n);
+    const nomType = { repas: 'Repas', collation: 'Collation', boisson: 'Boisson' }[ligne];
+    return { texte: 'Nouvelle ligne « ' + nomType + ' » ajoutée au journal.', aliments: [], action: 'creerLigne', ligne, local: true };
+  }
+
   if (!aliments.length && !eauLitres) {
     noterManque(brut);
     return {
       texte: "Pas trouve. Nourriture, eau, ou « j'ai mal au genou ».",
       aliments: [],
+      local: true,
+    };
+  }
+
+  const ligne = lireNouvelleLigne(n);
+  if (ligne) {
+    const nomType = { repas: 'Repas', collation: 'Collation', boisson: 'Boisson' }[ligne];
+    if (!aliments.length) {
+      return { texte: 'Nouvelle ligne « ' + nomType + ' » ajoutée au journal.', aliments: [], action: 'creerLigne', ligne, local: true };
+    }
+    const m = macrosAliments(aliments);
+    return {
+      texte: 'Nouvelle ligne « ' + nomType + ' » : ' + aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', ')
+        + ' \u2248 ' + Math.round(m.kcal) + ' kcal. Verifie puis ajoute.',
+      aliments, eauLitres: eauLitres || 0, nouvelleLigne: ligne,
+      macros: { kcal: Math.round(m.kcal), prot: Math.round(m.prot), carbs: Math.round(m.carbs), lip: Math.round(m.lip) },
       local: true,
     };
   }

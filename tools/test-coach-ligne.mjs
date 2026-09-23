@@ -1,0 +1,27 @@
+// Le coach cree une ligne dans le journal (23/09, v549).
+import { spawn } from 'child_process';
+import { createRequire } from 'module';
+const exiger = createRequire(new URL('../app-v2/package.json', import.meta.url));
+const { chromium } = exiger('playwright');
+const srv = spawn('python3',['-m','http.server','8081','--directory','app-v2/apercu/construit'],{stdio:'ignore',detached:true});
+await new Promise(r=>setTimeout(r,1500));
+let code=0; const ok=(c,m)=>{console.log((c?'✓ ':'✗ ')+m); if(!c) code=1;};
+const nav = await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+const page = await (await nav.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true,locale:'fr-BE'})).newPage();
+page.on('pageerror', e => { console.log('ERREUR JS', e.message); code=1; });
+await page.goto('http://localhost:8081/app.html'); await page.waitForTimeout(1800);
+const nbLignes = () => page.locator('.pg-journal .mc').count();
+const avant = await nbLignes();
+await page.fill('.coach-bar-champ', 'ajoute un repas supplémentaire et dans ce repas là il faut 350 g de riz et 250 g de poulet cuit');
+await page.locator('.coach-bar-go').tap(); await page.waitForTimeout(400);
+const prop = await page.locator('.coach-bar').innerText();
+ok(/Poulet cuit — 250 g/.test(prop) && /Riz cuit — 350 g/.test(prop), 'quantites justes (250 poulet, 350 riz)');
+await page.locator('.coach-bar-ajout').tap(); await page.waitForTimeout(600);
+const apres = await nbLignes();
+ok(apres === avant + 1, 'une ligne en plus dans le journal (' + avant + ' -> ' + apres + ')');
+const txt = await page.locator('body').innerText();
+ok(/Repas \d/.test(txt), 'ligne « Repas N » visible');
+await page.fill('.coach-bar-champ', 'une boisson en plus');
+await page.locator('.coach-bar-go').tap(); await page.waitForTimeout(500);
+ok(await nbLignes() === apres + 1, 'ligne Boisson vide creee directement');
+await nav.close(); try { process.kill(-srv.pid); } catch {} srv.kill(); process.exit(code);

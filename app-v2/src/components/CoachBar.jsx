@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { parserLocal, proposerRepas } from '../services/coach-local.js';
 import { demanderCoach } from '../services/coach.js';
-import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau } from '../store/journal.js';
+import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau, ajouterRepas } from '../store/journal.js';
 import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT, demandeVueEntrainer, poserBrouillon } from '../store/seance-active.js';
 import { ongletActif } from './BottomNav.jsx';
 import { planifierSeance } from '../store/programme.js';
@@ -45,6 +45,8 @@ export function CoachBar() {
   const [eauLitres, setEauLitres] = useState(0);
   const [diner, setDiner] = useState(null);
   const [seance, setSeance] = useState(null);
+  // Type de la ligne a creer au moment d'ajouter (23/09), ou null.
+  const [nouvelleLigne, setNouvelleLigne] = useState(null);
   const ajoutRef = useRef(null);
   const ouvert = etat === 'proposition' || etat === 'diner' || etat === 'seance' || etat === 'seancePosee';
 
@@ -77,6 +79,15 @@ export function CoachBar() {
       return;
     }
 
+    if (out.action === 'creerLigne') {
+      ajouterRepas(out.ligne);
+      setMsg(out.texte);
+      setLignes([]);
+      setNouvelleLigne(null);
+      setEtat('pret');
+      setTexte('');
+      return;
+    }
     if (out.action === 'abandonnerSeance') {
       abandonnerSeance();
       setSeance(null);
@@ -139,6 +150,7 @@ export function CoachBar() {
     }
     const trouves = versLignes(out.aliments);
     const eau = Number(out.eauLitres) || 0;
+    setNouvelleLigne(out.nouvelleLigne || null);
     setSeance(null);
     setEauLitres(eau);
     setDiner(null);
@@ -188,8 +200,12 @@ export function CoachBar() {
   };
 
   const ecrireAliments = () => {
+    // Nouvelle ligne demandee : on la cree, et TOUT y va.
+    const idNouvelle = nouvelleLigne && lignes.length ? ajouterRepas(nouvelleLigne) : null;
+    setNouvelleLigne(null);
     lignes.forEach((l) => {
       if (l.portion <= 0) return;
+      if (idNouvelle) { ajouterIngredient(idNouvelle, l.cle, l.portion); return; }
       const cible = repasCible(l.repasCle);
       if (cible) ajouterIngredient(cible.id, l.cle, l.portion);
     });
@@ -303,7 +319,7 @@ export function CoachBar() {
             <div class="coach-bar-ligne-alim" key={i}>
               <span>
                 {l.cle} — {l.portion} g
-                {nomRepas(l.repasCle) ? ' · ' + nomRepas(l.repasCle) : ''}
+                {!nouvelleLigne && nomRepas(l.repasCle) ? ' · ' + nomRepas(l.repasCle) : ''}
                 {kcalDe(l) ? ' · ' + kcalDe(l) + ' kcal' : ''}
               </span>
               <button type="button" onClick={() => setLignes(lignes.filter((_, j) => j !== i))}>x</button>

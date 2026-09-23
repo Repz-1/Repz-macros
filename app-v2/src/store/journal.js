@@ -250,13 +250,15 @@ export function supprimerIngredient(repasId, ingId) {
 export function ajouterRepas(type) {
   const noms = { repas: 'Repas', collation: 'Collation', boisson: 'Boisson' };
   const nb = repas.value.filter(r => r.type === type).length + 1;
+  const id = ++prochainId;
   repas.value = [...repas.value, {
-    id: ++prochainId,
+    id,
     nom: `${noms[type] || 'Repas'} ${nb}`,
     type,
     ings: [],
     ouvert: true,
   }];
+  return id;
 }
 
 export function supprimerRepas(repasId) {
