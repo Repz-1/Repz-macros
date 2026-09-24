@@ -28,13 +28,16 @@ try { localStorage.setItem('belfit_v2_apercu_premium', '1'); } catch (e) {}
 
 // Firebase repond en differe et remet `utilisateur` a null : on
 // maintient la session simulee le temps du test.
+// ?gratuit : simule un compte non payant (test du lancement, 24/09).
+const GRATUIT = new URLSearchParams(location.search).has('gratuit');
+if (GRATUIT) estPremium.value = false;
 const faux = utilisateur.value;
 setInterval(() => {
   if (!utilisateur.value) utilisateur.value = faux;
   authPrete.value = true;
   donneesPretes.value = true;
   calculBaseFait.value = true;
-  estPremium.value = true;   // l'effet Firestore le remettait a false
+  if (!GRATUIT) estPremium.value = true;   // l'effet Firestore le remettait a false
 }, 100);
 
 render(<App />, document.getElementById('app'));
