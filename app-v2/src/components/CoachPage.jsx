@@ -9,6 +9,7 @@ import { getApps } from 'firebase/app';
 import { BelfitPlus, chargerProgramme, programme, programmeCharge, progOuvert, dossierCoach } from './BelfitPlus.jsx';
 import { QuestionnaireCoach, effacerBrouillon } from './QuestionnaireCoach.jsx';
 import { Entete } from './Entete.jsx';
+import { PlanEnPreparation } from './PlanEnPreparation.jsx';
 import '../styles/coach-page.css';
 import { etatCoach, demandeQuestionnaire, DELAI_QUESTIONNAIRE } from '../store/coach.js';
 
@@ -104,7 +105,7 @@ export function CoachPage() {
 
   const pr = programme.value;
   const j = pr ? joursDepuis(pr.livreLe) : null;
-  const { aRemplir, enPrep, tardif, type: typePaye } = etatCoach(dossierCoach.value, pr);
+  const { aRemplir, enPrep, tardif, type: typePaye, payeLe: payeLeEtat } = etatCoach(dossierCoach.value, pr);
   const occupe = aRemplir || enPrep;
   const rappel = !occupe && j !== null && j >= 30;
 
@@ -127,6 +128,16 @@ export function CoachPage() {
       ))}
     </div>
   );
+
+  // Questionnaire envoye, plan pas encore livre : ecran dedie (26/09).
+  if (enPrep && !pr) {
+    return (
+      <div class="pg-coach">
+        <Entete />
+        <PlanEnPreparation payeLe={payeLeEtat} questionnaire={dossierCoach.value.questionnaire} />
+      </div>
+    );
+  }
 
   return (
     <div class="pg-coach">

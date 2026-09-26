@@ -168,7 +168,13 @@ try {
   await p.locator('.qc-cta', { hasText: 'récapitulatif' }).tap(); await p.waitForTimeout(300);
   await p.locator('.qc-consent input').nth(0).check(); await p.locator('.qc-consent input').nth(1).check();
   await p.locator('.qc-cta', { hasText: 'Envoyer' }).tap(); await p.waitForTimeout(500);
-  ok(/Plan en préparation/.test(await p.locator('.pg-coach').innerText()), 'envoye : « Plan en preparation »');
+  const att = await p.locator('.pg-coach').innerText();
+  ok(/Ton plan arrive/.test(att) && /Livraison au plus tard/.test(att), 'envoye : ecran « Ton plan arrive »');
+  ok(await p.locator('.pp-et').count() === 4 && /≈ 4[78] h restantes/.test(att), 'suivi en 4 etapes, ≈ 48 h restantes');
+  await p.locator('.pp-lien', { hasText: 'Revoir mes réponses' }).tap(); await p.waitForTimeout(300);
+  ok(/Salle de sport/.test(await p.locator('.pp-reponses').innerText()), 'revoir mes reponses : lecture seule');
+  await p.locator('.pp-reponses .cp-bt').tap(); await p.waitForTimeout(200);
+  ok(/mailto:contact@belfit.be/.test(await p.locator('.pp-mail').getAttribute('href')), 'ecrire a mon coach : e-mail');
   const env = await p.evaluate(() => JSON.parse(localStorage.getItem('belfit_qc_dernier') || 'null'));
   ok(env && env.alerteSante && env.allergieGrave && env.consentements.k1 && env.reponses.source.texte === 'Salle de sport', 'envoi : reponses, alertes et consentements');
   await p.context().close();

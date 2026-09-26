@@ -118,3 +118,37 @@
 .pg-qc .qc-roulette-repere { position: absolute; left: 50%; bottom: 2px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #B07400; }
 .pg-qc .qc-info { display: inline-flex; vertical-align: -3px; margin-left: 6px; background: none; border: 0; padding: 0; color: #B07400; cursor: pointer; }
 .pg-qc .qc-info-txt { background: #FFF4CC; color: #8F6200; border-radius: 12px; padding: 10px 12px; font-size: 13px; line-height: 1.45; margin: -2px 0 10px; }
+/* Ecran « Ton plan arrive » (26/09, maquette validee) */
+.pg-coach .pp-sur { font-size: 11px; letter-spacing: .8px; color: #B07400; font-weight: 600; margin: 4px 0 0; }
+.pg-coach .pp-hero { background: #1E232D; border-radius: 22px; padding: 18px 16px; margin-bottom: 10px; }
+.pg-coach .pp-hero-l { font-size: 12px; color: #C9C6BE; margin: 0; }
+.pg-coach .pp-hero-d { font-size: 22px; font-weight: 700; color: #fff; margin: 4px 0 2px; }
+.pg-coach .pp-hero-s { font-size: 13px; color: #F8CF01; margin: 0; }
+.pg-coach .pp-barre { height: 6px; background: #3A3F49; border-radius: 9px; margin: 14px 0 6px; overflow: hidden; }
+.pg-coach .pp-barre i { display: block; height: 100%; background: #F8CF01; border-radius: 9px; }
+.pg-coach .pp-barre-leg { display: flex; justify-content: space-between; font-size: 11px; color: #C9C6BE; }
+.pg-coach .pp-et { display: flex; gap: 12px; align-items: flex-start; position: relative; padding-bottom: 14px; }
+.pg-coach .pp-et:last-child { padding-bottom: 0; }
+.pg-coach .pp-et:not(:last-child)::after { content: ''; position: absolute; left: 13px; top: 28px; bottom: 0; width: 2px; background: #EFEDE8; }
+.pg-coach .pp-et.f:not(:last-child)::after { background: #F8CF01; }
+.pg-coach .pp-pt { flex: 0 0 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #F4F3F0; color: #B4B2A9; position: relative; z-index: 1; box-sizing: border-box; }
+.pg-coach .pp-et.f .pp-pt { background: #F8CF01; color: #191919; }
+.pg-coach .pp-et.c .pp-pt { background: #fff; border: 2px solid #F8CF01; color: #B07400; }
+.pg-coach .pp-et b { display: block; font-size: 14px; font-weight: 600; color: #191919; }
+.pg-coach .pp-et span { font-size: 12px; color: #8E8B85; }
+.pg-coach .pp-et.o b { color: #8E8B85; font-weight: 400; }
+.pg-coach .pp-coach { display: flex; gap: 12px; align-items: center; }
+.pg-coach .pp-av { flex: 0 0 44px; height: 44px; border-radius: 50%; background: #FFF4CC; color: #B07400; display: flex; align-items: center; justify-content: center; }
+.pg-coach .pp-coach p { margin: 0; font-size: 13px; color: #63615C; line-height: 1.45; }
+.pg-coach .pp-coach b { color: #191919; font-weight: 600; }
+.pg-coach .pp-liens { padding: 4px 14px; }
+.pg-coach .pp-lien { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 0; border: 0; border-bottom: 1px solid #EFEDE8; background: none; font-family: inherit; font-size: 14px; color: #191919; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.pg-coach .pp-lien:last-child { border-bottom: 0; }
+.pg-coach .pp-ic { flex: 0 0 32px; height: 32px; border-radius: 10px; background: #FFF4CC; color: #B07400; display: flex; align-items: center; justify-content: center; }
+.pg-coach .pp-fl { margin-left: auto; color: #B4B2A9; display: flex; }
+.pg-coach .pp-mail { display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 14px; color: #B07400; font-weight: 600; padding: 10px; text-decoration: none; }
+.pg-coach .pp-reponses { max-height: 85vh; display: flex; flex-direction: column; }
+.pg-coach .pp-rep-liste { overflow-y: auto; margin: 8px 0; }
+.pg-coach .pp-rep-sec { font-size: 11px; letter-spacing: .6px; color: #B07400; font-weight: 600; margin: 12px 0 4px; text-transform: uppercase; }
+.pg-coach .pp-rep { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #63615C; margin: 5px 0; line-height: 1.4; }
+.pg-coach .pp-rep b { color: #191919; font-weight: 600; text-align: right; max-width: 55%; }

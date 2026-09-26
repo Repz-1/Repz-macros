@@ -24,6 +24,12 @@ const P = {
   'cloud-check': 'M7 18a4.5 4.5 0 01-.6-9A6 6 0 0118 9.5a4 4 0 01-1 8.5zM9.5 13l2 2 3.5-3.5',
   'shield-check': 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM9 12l2 2 4-4',
   check: 'M5 12l5 5 9-10',
+  pencil: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',
+  package: 'M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12L4 7.5',
+  'tools-kitchen': 'M5 3v7a2 2 0 002 2h1a2 2 0 002-2V3M7.5 3v18M17 3c-1.7 0-3 2-3 5s1.3 4 3 4v9',
+  'list-check': 'M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9',
+  mail: 'M3 6h18v12H3zM3 7l9 6 9-6',
+  'chevron-right': 'M9 6l6 6-6 6',
   info: 'M12 21a9 9 0 100-18 9 9 0 000 18zM12 11v5M12 8h.01',
 };
 export function Icone({ nom, taille = 22 }) {
