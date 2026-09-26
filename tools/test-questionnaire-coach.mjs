@@ -100,6 +100,34 @@ try {
   ok(/rejoint la file\./.test(await p.locator('.pg-coach').innerText()) && !/2 semaines/.test(await p.locator('.pg-coach').innerText()), 'plus de 7 jours : file, sans delai affiche');
   await p.context().close();
 
+  // 3b) Bandeau en haut de chaque page
+  {
+    const c2 = await nav.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, locale: 'fr-BE' });
+    const b = await c2.newPage(); b.setDefaultTimeout(8000);
+    b.on('pageerror', e => ok(false, 'erreur JS ' + e.message));
+    await b.goto(`http://localhost:${PORT}/app.html`);
+    await b.evaluate(v => { localStorage.clear(); localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: v })); }, new Date(Date.now() - 2 * 86400000).toISOString());
+    await b.reload(); await b.waitForTimeout(1800);
+    const actif = () => b.locator('.bn-item--actif').innerText();
+    ok(/Aujourd/.test(await actif()), 'depart sur le Journal');
+    const band = b.locator('.bandeau-coach:visible');
+    ok(/5 jours restants/.test(await band.first().innerText()), 'bandeau sur le Journal : 5 jours restants');
+    await b.locator('.bn-item').nth(2).tap(); await b.waitForTimeout(600);
+    ok(await b.locator('.bandeau-coach:visible').count() >= 1, 'bandeau aussi sur Stats');
+    // Le rail garde les 4 onglets montes : on vise le bandeau a l'ecran.
+    await b.evaluate(() => [...document.querySelectorAll('.bandeau-coach')].find(el => { const r = el.getBoundingClientRect(); return r.left >= 0 && r.left < 390 && r.width > 0; }).click());
+    await b.waitForTimeout(800);
+    ok(await b.locator('.pg-qc').count() === 1 && /Coach/.test(await actif()), 'appui : questionnaire ouvert dans l\'onglet Coach');
+    ok(await b.locator('.pg-qc .bandeau-coach').count() === 0, 'pas de bandeau dans le questionnaire');
+    await b.evaluate(v => localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: v })), new Date(Date.now() - 10 * 86400000).toISOString());
+    await b.reload(); await b.waitForTimeout(1800);
+    ok(/rejoint la file/.test(await b.locator('.bandeau-coach:visible').first().innerText()), 'apres 7 jours : bandeau « file »');
+    await b.evaluate(() => localStorage.setItem('belfit_v2_apercu_dossier', JSON.stringify({ commande: null, questionnaire: { envoyeLe: new Date().toISOString() } })));
+    await b.reload(); await b.waitForTimeout(1800);
+    ok(await b.locator('.bandeau-coach').count() === 0, 'questionnaire envoye : plus de bandeau');
+    await c2.close();
+  }
+
   // 4) Mise a jour : 2 etapes
   const vieux = new Date(Date.now() - 34 * 86400000).toISOString();
   p = await ouvrir(v => { localStorage.clear(); localStorage.setItem('belfit_v2_apercu_programme', JSON.stringify({ kcal: 2400, prot: 180, carbs: 250, lip: 70, livreLe: v, repas: [] })); }, vieux);

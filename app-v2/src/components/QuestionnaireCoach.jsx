@@ -116,7 +116,7 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
   if (recap) {
     return (
       <div class="pg-coach pg-qc">
-        <Entete retour={() => setI(etapes.length - 1)} />
+        <Entete sansBandeau retour={() => setI(etapes.length - 1)} />
         <h1 class="cp-titre">Récapitulatif</h1>
         <p class="cp-sous">Vérifie tes réponses avant de les envoyer à ton coach.</p>
         {etapes.map((e, k) => (
@@ -140,7 +140,7 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
 
   return (
     <div class="pg-coach pg-qc">
-      <Entete retour={i ? () => { setErreurs({}); setI(i - 1); } : onFermer} />
+      <Entete sansBandeau retour={i ? () => { setErreurs({}); setI(i - 1); } : onFermer} />
       <div class="qc-haut"><span>Étape {i + 1} sur {etapes.length}</span><span>{type === 'maj' ? '≈ 3 min' : '≈ 7 min'}</span></div>
       <div class="qc-barre"><i style={{ width: Math.round((i + 1) / etapes.length * 100) + '%' }} /></div>
       <h1 class="cp-titre">{et.titre}</h1>

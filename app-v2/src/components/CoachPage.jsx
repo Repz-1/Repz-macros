@@ -10,6 +10,7 @@ import { BelfitPlus, chargerProgramme, programme, programmeCharge, progOuvert, d
 import { QuestionnaireCoach, effacerBrouillon } from './QuestionnaireCoach.jsx';
 import { Entete } from './Entete.jsx';
 import '../styles/coach-page.css';
+import { etatCoach, demandeQuestionnaire, DELAI_QUESTIONNAIRE } from '../store/coach.js';
 
 // Liens LemonSqueezy des deux produits a paiement unique.
 // A REMPLIR par Raci une fois les produits crees. Vides : le bouton
@@ -26,12 +27,8 @@ function joursDepuis(iso) {
   return isNaN(j) ? null : Math.max(0, j);
 }
 
-// Regle du delai (Raci, 26/09, a reporter dans les CGV / FAQ) :
-// le client a DELAI_QUESTIONNAIRE jours apres le paiement pour remplir
-// son questionnaire, et il est livre sous 48 h. Au-dela, il passe dans
-// la file : livraison entre 48 h et DELAI_FILE jours.
-export const DELAI_QUESTIONNAIRE = 7;
-export const DELAI_FILE = 14;
+// Regle du delai : voir store/coach.js (7 jours pour remplir le
+// questionnaire ; au-dela, la file, detaillee dans les CGV / FAQ).
 
 // Retour de LemonSqueezy : le paiement renvoie directement vers le
 // questionnaire (redirect_url). On retient le retour sur l'appareil,
@@ -51,9 +48,6 @@ function lireRetour() {
 // plusieurs fois (rail des onglets), l'URL est deja nettoyee la 2e fois.
 // Il n'est oublie qu'a la fermeture ou a l'envoi du questionnaire.
 let retourEnAttente = lireRetour();
-function payeLocal() {
-  try { return JSON.parse(localStorage.getItem('belfit_qc_paye')); } catch (e) { return null; }
-}
 
 function urlPaiement(lien, type) {
   const u = utilisateur.value;
@@ -87,6 +81,10 @@ export function CoachPage() {
   const [consent2, setConsent2] = useState(false);
   const [remplir, setRemplir] = useState(() => retourEnAttente);  // questionnaire ouvert
   useEffect(() => { if (!programmeCharge.value) chargerProgramme(); }, []);
+  // Appui sur le bandeau depuis une autre page : ouvrir le questionnaire.
+  useEffect(() => {
+    if (demandeQuestionnaire.value) { setRemplir(demandeQuestionnaire.value); demandeQuestionnaire.value = null; }
+  }, [demandeQuestionnaire.value]);
 
   if (progOuvert.value) return <BelfitPlus />;
   if (remplir) {
@@ -104,18 +102,9 @@ export function CoachPage() {
 
   const pr = programme.value;
   const j = pr ? joursDepuis(pr.livreLe) : null;
-  const { commande: cmd, questionnaire: q } = dossierCoach.value;
-  const local = payeLocal();
-  const payeLe = (cmd && cmd.payeLe) || (local && local.le) || null;
-  const typePaye = (cmd && cmd.type) || (local && local.type) || 'plan';
-  const avant = (a, b) => !a || (b && new Date(a) < new Date(b));
-  // Paye, questionnaire pas encore envoye depuis ce paiement.
-  const aRemplir = !!payeLe && avant(q && q.envoyeLe, payeLe);
-  // Questionnaire envoye, plan pas encore livre depuis.
-  const enPrep = !!payeLe && !aRemplir && avant(pr && pr.livreLe, q.envoyeLe);
+  const { aRemplir, enPrep, tardif, type: typePaye } = etatCoach(dossierCoach.value, pr);
   const occupe = aRemplir || enPrep;
   const rappel = !occupe && j !== null && j >= 30;
-  const tardif = aRemplir && joursDepuis(payeLe) > DELAI_QUESTIONNAIRE;
 
   const ouvrirAchat = t => { setAdulte(null); setTca(null); setConsent(false); setConsent2(false); setAchat(t); };
   const bloque = achat === 'plan' && (adulte === 'non' || tca === 'oui');

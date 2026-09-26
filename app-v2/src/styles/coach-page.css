@@ -53,3 +53,8 @@
 .pg-coach .cp-oui-non .qc-chip.on { background: #FFF4CC; border-color: #F8CF01; color: #8F6200; font-weight: 600; }
 .pg-coach .qc-alerte { background: #FFF4CC; border: 1px solid #F8CF01; color: #8F6200; border-radius: 14px; padding: 12px; font-size: 13px; line-height: 1.5; margin: 12px 0 0; }
 .pg-coach .cp-petit { font-size: 12px; color: #8E8B85; margin-top: 8px; }
+/* Bandeau questionnaire en haut de chaque page (26/09) */
+.bandeau-coach { display: flex; align-items: center; gap: 8px; width: 100%; margin: 0 0 10px; box-sizing: border-box; background: #FFF4CC; border: 1px solid #F8CF01; border-radius: 999px; padding: 7px 12px; font-family: inherit; cursor: pointer; text-align: left; }
+.bandeau-coach-point { flex: 0 0 7px; width: 7px; height: 7px; border-radius: 50%; background: #B07400; }
+.bandeau-coach-txt { flex: 1; font-size: 13px; color: #8F6200; }
+.bandeau-coach-fleche { font-size: 14px; font-weight: 600; color: #8F6200; }
