@@ -74,6 +74,13 @@ try {
   await p.locator('.qc-q').first().locator('.qc-chip', { hasText: 'Autre' }).tap();
   await p.locator('.qc-q').first().locator('.qc-champ').fill('Préparer un marathon');
   await remplir(p); await suivant(p); await p.waitForTimeout(200);
+  // Homme : pas de question grossesse ; Femme : elle apparait
+  await p.locator('.qc-q', { hasText: 'Tu es' }).locator('.qc-chip', { hasText: 'Femme' }).tap();
+  ok(await p.locator('.qc-q', { hasText: 'Enceinte' }).count() === 1, 'femme : question grossesse');
+  await p.locator('.qc-q', { hasText: 'Enceinte' }).locator('.qc-chip', { hasText: 'Oui' }).tap();
+  await p.locator('.qc-q', { hasText: 'Tu es' }).locator('.qc-chip', { hasText: 'Homme' }).tap();
+  ok(await p.locator('.qc-q', { hasText: 'Enceinte' }).count() === 0, 'homme : pas de question grossesse');
+  ok(await p.locator('.qc-alerte').count() === 0, 'grossesse effacee en passant a homme : pas d\'alerte');
   await remplir(p);
   await p.locator('.qc-q', { hasText: 'traitement' }).locator('.qc-chip', { hasText: 'Oui' }).tap();
   await p.locator('.qc-q', { hasText: 'Lequel' }).locator('.qc-champ').fill('Levothyrox');

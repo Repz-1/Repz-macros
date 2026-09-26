@@ -18,7 +18,11 @@ export const PREMIER_PLAN = [
     { id: 'echeanceDate', label: 'Quelle date ?', type: 'date', si: r => (r.echeance || {}).valeur === 'Date précise' },
   ]},
   { id: 'sante', titre: 'Ta santé', sous: 'Pour un plan sûr. Tes réponses restent entre toi et ton coach.', sante: true, questions: [
-    { id: 'grossesse', label: 'Enceinte ou allaitante ?', type: 'un', options: ['Non', 'Oui', 'Non concernée'] },
+    // Sexe demande ici, avant la grossesse (Raci, 26/09) : un homme ne
+    // voit pas la question.
+    { id: 'sexe', label: 'Tu es…', type: 'un', options: ['Homme', 'Femme'] },
+    { id: 'grossesse', label: 'Enceinte ou allaitante ?', type: 'un', options: ['Non', 'Oui'],
+      si: r => (r.sexe || {}).valeur === 'Femme' },
     { id: 'maladie', label: 'Une maladie suivie ?', type: 'plusieurs', autre: true, aucun: 'Aucune',
       options: ['Aucune', 'Diabète', 'Hypertension', 'Cholestérol', 'Problème cardiaque', 'Problème rénal', 'Thyroïde', 'Troubles digestifs'] },
     { id: 'troubleAlim', label: 'Un trouble alimentaire, passé ou actuel ?', type: 'un',
@@ -32,7 +36,6 @@ export const PREMIER_PLAN = [
     { id: 'poids', label: 'Poids (kg)', type: 'nombre', min: 30, max: 250 },
     { id: 'taille', label: 'Taille (cm)', type: 'nombre', min: 120, max: 230 },
     { id: 'age', label: 'Âge', type: 'nombre', min: 16, max: 99 },
-    { id: 'sexe', label: 'Sexe', type: 'un', options: ['Homme', 'Femme'] },
     { id: 'activite', label: 'Ta journée, hors sport', type: 'un',
       options: ['Assis la plupart du temps', 'Debout ou je marche', 'Travail physique'] },
   ]},
@@ -95,7 +98,7 @@ export const MISE_A_JOUR = [
 export function alerteSante(r) {
   const v = id => (r[id] || {}).valeur;
   const vs = id => ((r[id] || {}).valeurs || []);
-  return v('grossesse') === 'Oui'
+  return (v('sexe') === 'Femme' && v('grossesse') === 'Oui')
     || vs('maladie').some(x => x !== 'Aucune')
     || /^Oui/.test(v('troubleAlim') || '')
     || v('traitement') === 'Oui' || v('traitementNouveau') === 'Oui';
