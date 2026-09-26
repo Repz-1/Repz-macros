@@ -2,7 +2,6 @@ import { signal } from '@preact/signals';
 import { t } from '../i18n/index.js';
 import { repasOuvertId } from './MealCard.jsx';
 import { vueEntrainer } from './Entrainer.jsx';
-import { estPremium } from './PremiumPage.jsx';
 import { useState, useEffect } from 'preact/hooks';
 import { ONGLET_VITRINE } from '../acces-invite.js';
 
@@ -81,7 +80,7 @@ const ONGLETS = [
     // retrouve son onglet a la meme place, sous un autre nom.
     // Le libelle est resolu au rendu, pas ici : ONGLETS est une
     // constante de module, elle serait figee au chargement.
-    k: 'premium', label: 'nav_premium',
+    k: 'premium', label: 'nav_coach',   // 26/09 : app gratuite, l'onglet vend le coaching
     trace: ['M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z'],
   },
 ];
@@ -154,7 +153,7 @@ export function BottomNav() {
             <svg viewBox="0 0 24 24" aria-hidden="true">
               {o.trace.map((d, i) => <path key={i} d={d} />)}
             </svg>
-            <span>{o.k === 'premium' && estPremium.value ? t('nav_belfitplus') : t(o.label)}</span>
+            <span>{t(o.label)}</span>
             <i class="bn-point" aria-hidden="true" />
           </button>
         );

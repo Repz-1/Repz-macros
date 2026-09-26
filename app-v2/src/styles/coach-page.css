@@ -1,0 +1,28 @@
+/* Onglet Coach (26/09) — palette BELFIT, maquette validee. */
+.pg-coach.cp-portail { padding: 0; min-height: 0; background: none; }
+.pg-coach { padding: 0 16px 120px; background: #F4F3F0; min-height: 100%; }
+.pg-coach .cp-titre { font-size: 28px; font-weight: 700; color: #191919; margin: 8px 0 2px; }
+.pg-coach .cp-sous { font-size: 14px; color: #63615C; margin: 0 0 16px; }
+.pg-coach .cp-sec { font-size: 11px; letter-spacing: .6px; color: #8E8B85; font-weight: 600; margin: 18px 0 8px; }
+.pg-coach .cp-carte { background: #fff; border: 1px solid #E5E3DE; border-radius: 18px; padding: 14px; margin-bottom: 10px; }
+.pg-coach .cp-carte--or { border: 2px solid #F8CF01; }
+.pg-coach .cp-profil { display: flex; gap: 12px; align-items: center; }
+.pg-coach .cp-avatar { flex: 0 0 52px; height: 52px; border-radius: 50%; background: #EDEBE6; color: #8E8B85; display: flex; align-items: center; justify-content: center; }
+.pg-coach .cp-ligne { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.pg-coach .cp-nom { font-size: 15px; font-weight: 600; color: #191919; margin: 0; }
+.pg-coach .cp-prix { font-size: 20px; font-weight: 700; color: #191919; }
+.pg-coach .cp-txt { font-size: 13px; color: #63615C; line-height: 1.5; margin: 4px 0 0; }
+.pg-coach .cp-etape { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+.pg-coach .cp-etape .cp-txt { margin: 2px 0 0; }
+.pg-coach .cp-n { flex: 0 0 24px; height: 24px; border-radius: 50%; background: #FFF4CC; color: #8F6200; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.pg-coach .cp-tag { display: inline-block; font-size: 12px; background: #FFF4CC; color: #8F6200; border-radius: 999px; padding: 4px 10px; margin-top: 8px; }
+.pg-coach .cp-bt { display: block; width: 100%; margin-top: 10px; border-radius: 999px; padding: 11px; font-size: 14px; font-weight: 600; border: 0; cursor: pointer; font-family: inherit; }
+.pg-coach .cp-bt--or { background: #F8CF01; color: #191919; }
+.pg-coach .cp-bt--or:disabled { opacity: .45; }
+.pg-coach .cp-bt--gris { background: #fff; color: #191919; border: 1px solid #E5E3DE; }
+.pg-coach .cp-pied { text-align: center; font-size: 13px; color: #63615C; margin: 8px 0 0; }
+.pg-coach .cp-voile { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: flex-end; z-index: 900; }
+.pg-coach .cp-modale { background: #fff; width: 100%; border-radius: 22px 22px 0 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); }
+.pg-coach .cp-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #63615C; line-height: 1.45; margin: 14px 0 4px; }
+.pg-coach .cp-consent a { color: #8F6200; }
+.pg-coach .cp-consent input { margin-top: 3px; accent-color: #F8CF01; }

@@ -35,6 +35,7 @@ import { Entete, voletProfil, prenomUtilisateur } from './components/Entete.jsx'
 import { weightLog } from './store/stats.js';
 
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
+import { CoachPage } from './components/CoachPage.jsx';
 import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
 import { origineCalc } from './components/BelfitPlus.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
@@ -498,7 +499,7 @@ export function App() {
     </>
   ) : null;
 
-  const PAGES = { journal: OngletJournal, entrainer: OngletEntrainer, stats: Stats, premium: PremiumPage };
+  const PAGES = { journal: OngletJournal, entrainer: OngletEntrainer, stats: Stats, premium: CoachPage };
 
   // Les reglages couvrent l'application entiere : ils s'ouvrent
   // depuis l'en-tete, present sur les quatre onglets, et se ferment

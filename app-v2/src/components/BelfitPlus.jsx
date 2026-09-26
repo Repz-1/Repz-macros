@@ -274,8 +274,8 @@ export function BelfitPlus() {
                 <p class="bp-ecart">
                   Tes objectifs actuels ({o.kcal} kcal) ne sont plus ceux de ton
                   programme ({pr.kcal} kcal). Tu es sorti de l'objectif pour lequel
-                  ce plan a été construit — recharge-le, ou demande un ajustement à
-                  ton coach.
+                  ce plan a été construit — recharge-le, ou demande une mise à jour
+                  de ton plan.
                 </p>
               )}
 
@@ -303,13 +303,11 @@ export function BelfitPlus() {
             </button>
             <button
               class="prog-action"
-              disabled={aj.restants === 0}
-              onClick={() => setDemande('ouvert')}
+              onClick={() => setOuvertProg(false)}
             >
-              <b>Demander un ajustement</b>
-              <em>{aj.restants === 0 ? 'aucun restant ce mois-ci'
-                   : aj.restants !== null ? `il t'en reste ${aj.restants} sur ${aj.quota}`
-                   : 'à ton coach'}</em>
+              {/* 26/09 : la mise a jour se paie (60 EUR, onglet Coach) */}
+              <b>Mettre à jour mon plan</b>
+              <em>60 €, paiement unique</em>
             </button>
           </div>
 
