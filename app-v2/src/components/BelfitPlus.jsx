@@ -44,6 +44,9 @@ export const progOuvert = signal(false);
 export const origineCalc = signal(null);
 export const programme = signal(null);
 export const programmeCharge = signal(false);
+// Dossier coaching (26/09) : dernier questionnaire envoye et derniere
+// commande payee. La commande est ecrite par le webhook LemonSqueezy.
+export const dossierCoach = signal({ questionnaire: null, commande: null });
 /** Ajustements restants ce mois-ci, et quota de la formule. */
 export const ajustements = signal({restants: null, quota: null});
 
@@ -52,8 +55,10 @@ export function chargerProgramme() {
   // un programme de demonstration sans passer par Firestore.
   try {
     const faux = localStorage.getItem('belfit_v2_apercu_programme');
-    if (faux) {
-      programme.value = JSON.parse(faux);
+    const dos = localStorage.getItem('belfit_v2_apercu_dossier');
+    if (faux || dos) {
+      programme.value = faux ? JSON.parse(faux) : null;
+      if (dos) dossierCoach.value = JSON.parse(dos);
       const q = localStorage.getItem('belfit_v2_apercu_ajust');
       ajustements.value = q ? JSON.parse(q) : {restants: 2, quota: 2};
       programmeCharge.value = true;
@@ -69,6 +74,7 @@ export function chargerProgramme() {
     .then(s => {
       const d = s.exists() ? s.data() : null;
       programme.value = (d && d.programme) || null;
+      dossierCoach.value = { questionnaire: (d && d.questionnaireCoach) || null, commande: (d && d.commandeCoach) || null };
       // Le quota suit la formule ; le compteur se remet a zero au
       // changement de mois civil, cote serveur comme ici.
       const QUOTA = {mensuel: 2, trimestriel: 3, annuel: 4};

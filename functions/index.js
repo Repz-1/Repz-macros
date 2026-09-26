@@ -80,6 +80,30 @@ exports.lemonWebhook = onRequest(
         return;
       }
 
+      // 2b) Coaching a paiement unique (26/09) : « Premier plan » (80 EUR)
+      //     ou « Mise a jour » (60 EUR). Nommer les produits LemonSqueezy
+      //     avec ces mots. On note la commande ; le coach livre le plan.
+      if (event === "order_created") {
+        const nomProduit = [attr.first_order_item && attr.first_order_item.product_name,
+          attr.first_order_item && attr.first_order_item.variant_name, attr.product_name]
+          .filter(Boolean).join(" ").toLowerCase();
+        const typeCoach = /mise a jour|mise à jour|update/.test(nomProduit) ? "maj"
+          : /premier plan|plan coach|coaching/.test(nomProduit) ? "plan" : null;
+        if (typeCoach) {
+          await db.collection("users").doc(uid).set({
+            commandeCoach: {
+              type: typeCoach,
+              payeLe: new Date().toISOString(),
+              montant: attr.total_formatted || null,
+              commande: body.data && body.data.id || null,
+            },
+          }, {merge: true});
+          console.log("Commande coaching:", uid, typeCoach);
+          res.status(200).send("ok");
+          return;
+        }
+      }
+
       // 3) Déterminer si Premium actif
       let premium;
       if (event && event.indexOf("subscription_") === 0) {

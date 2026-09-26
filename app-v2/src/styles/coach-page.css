@@ -26,3 +26,22 @@
 .pg-coach .cp-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #63615C; line-height: 1.45; margin: 14px 0 4px; }
 .pg-coach .cp-consent a { color: #8F6200; }
 .pg-coach .cp-consent input { margin-top: 3px; accent-color: #F8CF01; }
+/* Questionnaire coach (26/09) */
+.pg-qc .qc-haut { display: flex; justify-content: space-between; font-size: 13px; color: #63615C; margin-top: 4px; }
+.pg-qc .qc-barre { height: 6px; background: #E5E3DE; border-radius: 99px; margin: 8px 0 18px; overflow: hidden; }
+.pg-qc .qc-barre i { display: block; height: 100%; background: #F8CF01; border-radius: 99px; transition: width .25s; }
+.pg-qc .qc-q { margin: 0 0 16px; }
+.pg-qc .qc-label { font-size: 14px; font-weight: 600; color: #191919; margin: 0 0 8px; }
+.pg-qc .qc-fac { font-weight: 400; color: #8E8B85; font-size: 12px; }
+.pg-qc .qc-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pg-qc .qc-chip { background: #fff; border: 1px solid #E5E3DE; border-radius: 999px; padding: 9px 13px; font-size: 14px; color: #191919; font-family: inherit; cursor: pointer; }
+.pg-qc .qc-chip.on { background: #FFF4CC; border-color: #F8CF01; color: #8F6200; font-weight: 600; }
+.pg-qc .qc-champ { display: block; width: 100%; box-sizing: border-box; margin-top: 8px; background: #fff; border: 1px solid #E5E3DE; border-radius: 12px; padding: 11px 12px; font-size: 16px; font-family: inherit; color: #191919; }
+.pg-qc .qc-champ--court { max-width: 180px; }
+.pg-qc .qc-q--err .qc-label, .pg-qc .cp-consent.qc-q--err { color: #B3261E; }
+.pg-qc .qc-err { font-size: 13px; color: #B3261E; margin: 6px 0 0; }
+.pg-qc .qc-alerte { background: #FFF4CC; border: 1px solid #F8CF01; color: #8F6200; border-radius: 14px; padding: 12px; font-size: 13px; line-height: 1.5; margin: 4px 0 12px; }
+.pg-qc .qc-recap .qc-rl { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #63615C; margin: 6px 0 0; }
+.pg-qc .qc-recap .qc-rl b { color: #191919; font-weight: 600; text-align: right; }
+.pg-qc .qc-modif { background: none; border: 0; color: #8F6200; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; padding: 0; }
+.pg-coach .cp-attente { background: #FFF4CC; border: 1px solid #F8CF01; }

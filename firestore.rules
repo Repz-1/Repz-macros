@@ -14,7 +14,8 @@ service cloud.firestore {
       allow create: if request.auth != null && request.auth.uid == uid
                     && !("pseudo" in request.resource.data.keys())
                     && !("programme" in request.resource.data.keys())
-                    && !("ajustements" in request.resource.data.keys());
+                    && !("ajustements" in request.resource.data.keys())
+                    && !("commandeCoach" in request.resource.data.keys());
       // À la mise à jour, pseudo, programme et ajustements doivent rester
       // inchangés. Sans la protection du compteur, le quota ne vaudrait rien :
       // il suffirait de le remettre à zéro depuis le navigateur.
@@ -24,7 +25,10 @@ service cloud.firestore {
       allow update: if request.auth != null && request.auth.uid == uid
                     && !("pseudo" in request.resource.data.diff(resource.data).affectedKeys())
                     && !("programme" in request.resource.data.diff(resource.data).affectedKeys())
-                    && !("ajustements" in request.resource.data.diff(resource.data).affectedKeys());
+                    && !("ajustements" in request.resource.data.diff(resource.data).affectedKeys())
+                    // 26/09 : la commande coaching n'est ecrite que par le
+                    // webhook de paiement ; sinon on s'offrirait un plan.
+                    && !("commandeCoach" in request.resource.data.diff(resource.data).affectedKeys());
       allow delete: if request.auth != null && request.auth.uid == uid;
     }
 
