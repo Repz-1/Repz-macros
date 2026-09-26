@@ -247,7 +247,7 @@ export function CoachPage() {
                   <input type="checkbox" checked={consent2} onChange={(e) => setConsent2(e.target.checked)} />
                   <span>J'accepte les <a href="https://www.belfit.be/confidentialite.html" target="_blank" rel="noopener">conditions et la FAQ</a>. Je comprends que ce plan n'est pas un avis médical.</span>
                 </label>
-                <p class="cp-txt cp-petit">Questionnaire à remplir dans les {DELAI_QUESTIONNAIRE} jours suivant le paiement pour une livraison sous 48 h. Au-delà, ta demande rejoint la file : livraison entre 48 h et 2 semaines.</p>
+                <p class="cp-txt cp-petit">Questionnaire à remplir dans les {DELAI_QUESTIONNAIRE} jours suivant le paiement pour une livraison sous 48 h. Détails dans les conditions générales.</p>
                 <button class="cp-bt cp-bt--or" disabled={!consent || !consent2} onClick={payer}>Continuer vers le paiement</button>
               </>
             )}

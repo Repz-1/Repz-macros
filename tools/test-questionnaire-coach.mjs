@@ -57,7 +57,7 @@ try {
   ok(await go.isDisabled(), 'une seule case ne suffit pas');
   await m.locator('.cp-consent input').nth(1).check();
   ok(!(await go.isDisabled()), 'deux cases : paiement possible');
-  ok(/dès réception de mon questionnaire/.test(await m.innerText()) && /7 jours/.test(await m.innerText()) && /2 semaines/.test(await m.innerText()), 'texte retractation + regle des 7 jours');
+  ok(/dès réception de mon questionnaire/.test(await m.innerText()) && /7 jours/.test(await m.innerText()) && /conditions générales/.test(await m.innerText()), 'texte retractation + regle des 7 jours');
   await p.context().close();
 
   // 2) Retour de paiement : le questionnaire s'ouvre tout seul
