@@ -157,7 +157,7 @@ export function CoachPage() {
         <div class="cp-carte cp-carte--or">
           <p class="cp-nom">Paiement reçu</p>
           <p class="cp-txt">Remplis ton questionnaire pour que je prépare ton plan. {tardif
-            ? 'Ton délai de 7 jours est passé : ta demande rejoint la file, livraison entre 48 h et 2 semaines.'
+            ? 'Ton délai de 7 jours est passé : ta demande rejoint la file.'
             : `Livraison sous 48 h si tu le remplis dans les ${DELAI_QUESTIONNAIRE} jours suivant ton paiement.`}</p>
           <button class="cp-bt cp-bt--or" onClick={() => setRemplir(typePaye)}>Remplir mon questionnaire</button>
         </div>

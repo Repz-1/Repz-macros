@@ -97,7 +97,7 @@ try {
 
   // 3) Paye il y a 10 jours, rien rempli : delai tardif
   p = await ouvrir(v => { localStorage.clear(); localStorage.setItem('belfit_v2_apercu_dossier', JSON.stringify({ questionnaire: null, commande: { type: 'plan', payeLe: v } })); }, new Date(Date.now() - 10 * 86400000).toISOString());
-  ok(/rejoint la file/.test(await p.locator('.pg-coach').innerText()) && /2 semaines/.test(await p.locator('.pg-coach').innerText()), 'plus de 7 jours : file, 48 h a 2 semaines');
+  ok(/rejoint la file\./.test(await p.locator('.pg-coach').innerText()) && !/2 semaines/.test(await p.locator('.pg-coach').innerText()), 'plus de 7 jours : file, sans delai affiche');
   await p.context().close();
 
   // 4) Mise a jour : 2 etapes
