@@ -1,3 +1,5 @@
+import { BandeauCoach } from './BandeauCoach.jsx';
+import '../styles/coach-page.css';
 import { signal } from '@preact/signals';
 import { utilisateur } from '../services/firebase.js';
 import { prenom } from '../store/perso.js';
@@ -34,9 +36,10 @@ export function prenomUtilisateur() {
 // appartient a la personne, plutot que d'un service qui l'accueille.
 // Trois colonnes (1fr / auto / 1fr) : le centre reste centre quelle que
 // soit la largeur des deux bords.
-export function Entete({ retour } = {}) {
+export function Entete({ retour, sansBandeau } = {}) {
   const p = prenomUtilisateur();
   return (
+    <>
     <header class="j-entete j-entete--perso">
       {/* Logo officiel BF (belfit-logo-bf.png) depuis le 8/08 — le meme
           que le splash v1 — logo-symbol.png etait un reste de l'epoque
@@ -95,5 +98,8 @@ export function Entete({ retour } = {}) {
         </button>
       </div>
     </header>
+    {/* Rappel du questionnaire coach, sur toutes les pages (26/09) */}
+    {!sansBandeau && <BandeauCoach />}
+    </>
   );
 }

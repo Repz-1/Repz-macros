@@ -24,10 +24,10 @@ try {
   const txt = await p.locator('.pg-coach').innerText();
   ok(/Coach BelFit/.test(txt) && !/REPZ/.test(txt), 'profil « Coach BelFit »');
   ok(/80 €/.test(txt) && !/60 €/.test(txt), 'sans plan : premier plan 80 €, pas de mise a jour');
-  // 26/09 : « Demander mon plan » ouvre d'abord le questionnaire
-  // (le paiement est teste dans test-questionnaire-coach.mjs).
+  // 26/09 : on paie d'abord, le questionnaire vient apres le paiement
+  // (parcours complet dans test-questionnaire-coach.mjs).
   await p.locator('.cp-bt', { hasText: 'Demander mon plan' }).tap(); await p.waitForTimeout(400);
-  ok(await p.locator('.pg-qc').count() === 1, 'le bouton ouvre le questionnaire');
+  ok(await p.locator('.cp-modale').count() === 1, 'le bouton ouvre le paiement');
   await p.context().close();
   const vieux = new Date(Date.now() - 34 * 86400000).toISOString();
   p = await ouvrir({ kcal: 2400, prot: 180, carbs: 250, lip: 70, livreLe: vieux, repas: [{ nom: 'Petit dejeuner', ings: [{ name: 'Skyr', portion: 200 }] }] });
