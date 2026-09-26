@@ -77,7 +77,7 @@ function Question({ q, rep, maj, erreur }) {
   );
 }
 
-export function QuestionnaireCoach({ type, prix, onFermer, onTermine }) {
+export function QuestionnaireCoach({ type, onFermer, onTermine }) {
   const etapes = type === 'maj' ? MISE_A_JOUR : PREMIER_PLAN;
   const b = lireBrouillon(type);
   const [rep, setRep] = useState(() => (b && b.rep) || prerempli(type));
@@ -118,7 +118,7 @@ export function QuestionnaireCoach({ type, prix, onFermer, onTermine }) {
       <div class="pg-coach pg-qc">
         <Entete retour={() => setI(etapes.length - 1)} />
         <h1 class="cp-titre">Récapitulatif</h1>
-        <p class="cp-sous">Vérifie tes réponses avant le paiement.</p>
+        <p class="cp-sous">Vérifie tes réponses avant de les envoyer à ton coach.</p>
         {etapes.map((e, k) => (
           <div class="cp-carte qc-recap">
             <div class="cp-ligne"><span class="cp-nom">{e.titre}</span>
@@ -132,7 +132,7 @@ export function QuestionnaireCoach({ type, prix, onFermer, onTermine }) {
           <p class="qc-alerte">Tu as signalé un point de santé. Montre ton plan à ton médecin avant de le commencer.</p>
         )}
         <button class="cp-bt cp-bt--or" onClick={() => onTermine(nettoyer(), alerteSante(rep))}>
-          Continuer vers le paiement · {prix} €
+          Envoyer à mon coach
         </button>
       </div>
     );

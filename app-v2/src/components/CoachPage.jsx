@@ -26,9 +26,39 @@ function joursDepuis(iso) {
   return isNaN(j) ? null : Math.max(0, j);
 }
 
-function urlPaiement(lien) {
+// Regle du delai (26/09, a reporter dans les CGV / FAQ) : les 48 h
+// partent de la reception du questionnaire complet. Rempli plus de
+// DELAI_QUESTIONNAIRE jours apres le paiement : livraison sous
+// DELAI_TARDIF jours au lieu de 48 h. Valeurs a confirmer par Raci.
+export const DELAI_QUESTIONNAIRE = 30;
+export const DELAI_TARDIF = 7;
+
+// Retour de LemonSqueezy : le paiement renvoie directement vers le
+// questionnaire (redirect_url). On retient le retour sur l'appareil,
+// le webhook pouvant arriver apres le client.
+const RETOUR = 'https://belfit.be/v2/?onglet=premium&coach=questionnaire&type=';
+function lireRetour() {
+  try {
+    const u = new URLSearchParams(location.search);
+    if (u.get('coach') !== 'questionnaire') return null;
+    const type = u.get('type') === 'maj' ? 'maj' : 'plan';
+    localStorage.setItem('belfit_qc_paye', JSON.stringify({ type, le: new Date().toISOString() }));
+    history.replaceState(null, '', location.pathname);
+    return type;
+  } catch (e) { return null; }
+}
+// Lu une seule fois, au chargement du module : la page peut etre montee
+// plusieurs fois (rail des onglets), l'URL est deja nettoyee la 2e fois.
+// Il n'est oublie qu'a la fermeture ou a l'envoi du questionnaire.
+let retourEnAttente = lireRetour();
+function payeLocal() {
+  try { return JSON.parse(localStorage.getItem('belfit_qc_paye')); } catch (e) { return null; }
+}
+
+function urlPaiement(lien, type) {
   const u = utilisateur.value;
-  let url = lien + '?checkout[billing_address][country]=BE';
+  let url = lien + '?checkout[billing_address][country]=BE'
+    + '&checkout[product_options][redirect_url]=' + encodeURIComponent(RETOUR + type);
   if (u) {
     url += '&checkout[custom][uid]=' + encodeURIComponent(u.uid);
     if (u.email) url += '&checkout[email]=' + encodeURIComponent(u.email);
@@ -50,42 +80,62 @@ function envoyerQuestionnaire(type, reponses, alerte) {
 }
 
 export function CoachPage() {
-  const [achat, setAchat] = useState(null);      // 'plan' | 'maj' | null
+  const [achat, setAchat] = useState(null);      // modale de paiement : 'plan' | 'maj' | null
+  const [adulte, setAdulte] = useState(null);    // question eliminatoire : 'oui' | 'non'
+  const [tca, setTca] = useState(null);          // suivi pour un trouble alimentaire : 'oui' | 'non'
   const [consent, setConsent] = useState(false);
-  const [remplir, setRemplir] = useState(null);  // questionnaire ouvert : 'plan' | 'maj'
+  const [consent2, setConsent2] = useState(false);
+  const [remplir, setRemplir] = useState(() => retourEnAttente);  // questionnaire ouvert
   useEffect(() => { if (!programmeCharge.value) chargerProgramme(); }, []);
 
   if (progOuvert.value) return <BelfitPlus />;
   if (remplir) {
     return (
-      <QuestionnaireCoach type={remplir} prix={remplir === 'maj' ? 60 : 80}
-        onFermer={() => setRemplir(null)}
+      <QuestionnaireCoach type={remplir}
+        onFermer={() => { retourEnAttente = null; setRemplir(null); }}
         onTermine={(reponses, alerte) => {
-          const t = remplir;
-          envoyerQuestionnaire(t, reponses, alerte);
-          setRemplir(null); setConsent(false); setAchat(t);
+          envoyerQuestionnaire(remplir, reponses, alerte);
+          effacerBrouillon(remplir);
+          retourEnAttente = null;
+          setRemplir(null);
         }} />
     );
   }
 
   const pr = programme.value;
   const j = pr ? joursDepuis(pr.livreLe) : null;
-  const rappel = j !== null && j >= 30;
-  // Paye, plan pas encore livre : on le dit, sinon le client croit que
-  // le paiement a echoue.
-  const cmd = dossierCoach.value.commande;
-  const enAttente = !!(cmd && cmd.payeLe && (!pr || !pr.livreLe || new Date(pr.livreLe) < new Date(cmd.payeLe)));
-  if (enAttente) { effacerBrouillon('plan'); effacerBrouillon('maj'); }
+  const { commande: cmd, questionnaire: q } = dossierCoach.value;
+  const local = payeLocal();
+  const payeLe = (cmd && cmd.payeLe) || (local && local.le) || null;
+  const typePaye = (cmd && cmd.type) || (local && local.type) || 'plan';
+  const avant = (a, b) => !a || (b && new Date(a) < new Date(b));
+  // Paye, questionnaire pas encore envoye depuis ce paiement.
+  const aRemplir = !!payeLe && avant(q && q.envoyeLe, payeLe);
+  // Questionnaire envoye, plan pas encore livre depuis.
+  const enPrep = !!payeLe && !aRemplir && avant(pr && pr.livreLe, q.envoyeLe);
+  const occupe = aRemplir || enPrep;
+  const rappel = !occupe && j !== null && j >= 30;
+  const tardif = aRemplir && joursDepuis(payeLe) > DELAI_QUESTIONNAIRE;
 
+  const ouvrirAchat = t => { setAdulte(null); setTca(null); setConsent(false); setConsent2(false); setAchat(t); };
+  const bloque = achat === 'plan' && (adulte === 'non' || tca === 'oui');
+  const eligible = achat === 'maj' || (adulte === 'oui' && tca === 'non');
   const payer = () => {
     const lien = LIENS_COACH[achat];
     if (!lien) {
       const sujet = achat === 'maj' ? 'Mise a jour de mon plan' : 'Mon premier plan';
       window.location.href = `mailto:${MAIL}?subject=${encodeURIComponent(sujet)}`;
     } else {
-      window.location.href = urlPaiement(lien);
+      window.location.href = urlPaiement(lien, achat);
     }
   };
+  const Choix = ({ val, set }) => (
+    <div class="cp-oui-non">
+      {['oui', 'non'].map(v => (
+        <button type="button" class={'qc-chip' + (val === v ? ' on' : '')} aria-pressed={val === v} onClick={() => set(v)}>{v === 'oui' ? 'Oui' : 'Non'}</button>
+      ))}
+    </div>
+  );
 
   return (
     <div class="pg-coach">
@@ -103,71 +153,105 @@ export function CoachPage() {
         </div>
       </div>
 
+      {aRemplir && (
+        <div class="cp-carte cp-carte--or">
+          <p class="cp-nom">Paiement reçu</p>
+          <p class="cp-txt">Remplis ton questionnaire pour que je prépare ton plan. {tardif
+            ? `Livraison sous ${DELAI_TARDIF} jours après réception.`
+            : 'Livraison sous 48 h après réception.'}</p>
+          <button class="cp-bt cp-bt--or" onClick={() => setRemplir(typePaye)}>Remplir mon questionnaire</button>
+        </div>
+      )}
+      {enPrep && (
+        <div class="cp-carte cp-attente">
+          <p class="cp-nom">Plan en préparation</p>
+          <p class="cp-txt">Questionnaire reçu. Ton coach prépare ton plan, livré dans l'app sous 48 h.</p>
+        </div>
+      )}
+
       {pr && (
         <>
           <p class="cp-sec">MON PLAN</p>
           <div class="cp-carte">
             <div class="cp-ligne"><span class="cp-nom">Mon plan coach</span><span class="cp-txt">{pr.kcal} kcal</span></div>
             <p class="cp-txt">{j === null ? 'Reçu récemment' : j === 0 ? "Reçu aujourd'hui" : `Reçu il y a ${j} jour${j > 1 ? 's' : ''}`}</p>
-            {rappel && !enAttente && <span class="cp-tag">Ton plan a {j} jours : pense à le mettre à jour</span>}
+            {rappel && <span class="cp-tag">Ton plan a {j} jours : pense à le mettre à jour</span>}
             <button class="cp-bt cp-bt--or" onClick={() => { progOuvert.value = true; }}>Voir mon plan</button>
           </div>
         </>
       )}
 
-      {!pr && (
+      {!pr && !occupe && (
         <>
           <p class="cp-sec">COMMENT ÇA MARCHE</p>
           <div class="cp-carte">
-            <div class="cp-etape"><span class="cp-n">1</span><span class="cp-txt">Tu réponds au questionnaire (5 minutes).</span></div>
-            <div class="cp-etape"><span class="cp-n">2</span><span class="cp-txt">Je t'écris ton plan, livré dans l'app sous 48 h.</span></div>
-            <div class="cp-etape"><span class="cp-n">3</span><span class="cp-txt">Quand tu veux, je l'ajuste selon tes progrès.</span></div>
+            <div class="cp-etape"><span class="cp-n">1</span><span class="cp-txt">Tu choisis ta formule et tu paies en ligne.</span></div>
+            <div class="cp-etape"><span class="cp-n">2</span><span class="cp-txt">Tu réponds au questionnaire.</span></div>
+            <div class="cp-etape"><span class="cp-n">3</span><span class="cp-txt">Je t'écris ton plan, livré dans l'app sous 48 h.</span></div>
           </div>
         </>
       )}
 
-      {enAttente && (
-        <div class="cp-carte cp-attente">
-          <p class="cp-nom">Plan en préparation</p>
-          <p class="cp-txt">Paiement reçu. Ton coach prépare ton plan, livré dans l'app sous 48 h.</p>
-        </div>
-      )}
-
-      {!enAttente && <p class="cp-sec">TARIFS</p>}
-      {!enAttente && !pr && (
+      {!occupe && <p class="cp-sec">TARIFS</p>}
+      {!occupe && !pr && (
         <div class="cp-carte cp-carte--or">
           <div class="cp-ligne"><span class="cp-nom">Premier plan</span><span class="cp-prix">80 €</span></div>
           <p class="cp-txt">Bilan complet, plan alimentaire écrit pour toi, livré sous 48 h.</p>
           {COMMANDES_OUVERTES
-            ? <button class="cp-bt cp-bt--or" onClick={() => setRemplir('plan')}>Demander mon plan</button>
+            ? <button class="cp-bt cp-bt--or" onClick={() => ouvrirAchat('plan')}>Demander mon plan</button>
             : <button class="cp-bt cp-bt--gris" disabled>Bientôt disponible</button>}
         </div>
       )}
-      {!enAttente && pr && (
+      {!occupe && pr && (
         <div class={'cp-carte' + (rappel ? ' cp-carte--or' : '')}>
           <div class="cp-ligne"><span class="cp-nom">Mise à jour</span><span class="cp-prix">60 €</span></div>
           <p class="cp-txt">Ton plan ajusté à ton poids, tes résultats et ton objectif. Conseillé chaque mois.</p>
           {COMMANDES_OUVERTES
-            ? <button class={'cp-bt ' + (rappel ? 'cp-bt--or' : 'cp-bt--gris')} onClick={() => setRemplir('maj')}>Mettre à jour mon plan</button>
+            ? <button class={'cp-bt ' + (rappel ? 'cp-bt--or' : 'cp-bt--gris')} onClick={() => ouvrirAchat('maj')}>Mettre à jour mon plan</button>
             : <button class="cp-bt cp-bt--gris" disabled>Bientôt disponible</button>}
         </div>
       )}
 
-      <p class="cp-pied">Paiement unique. Sans abonnement, sans prélèvement.</p>
+      {!occupe && <p class="cp-pied">Paiement unique. Sans abonnement, sans prélèvement.</p>}
 
-      {/* Portail : l'onglet vit dans un rail translate, un position:fixed
-          y serait decale hors de l'ecran. */}
       {achat && createPortal(
         <div class="pg-coach cp-portail"><div class="cp-voile" onClick={(e) => { if (e.target === e.currentTarget) setAchat(null); }}>
           <div class="cp-modale" role="dialog" aria-modal="true">
             <p class="cp-nom">{achat === 'maj' ? 'Mise à jour · 60 €' : 'Premier plan · 80 €'}</p>
-            <p class="cp-txt">Paiement unique et sécurisé. Aucun prélèvement ensuite.</p>
-            <label class="cp-consent">
-              <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-              <span>J'accepte les <a href="https://www.belfit.be/confidentialite.html" target="_blank" rel="noopener">conditions d'utilisation</a> et je confirme avoir lu l'<a href="https://www.belfit.be/confidentialite.html#sante" target="_blank" rel="noopener">avertissement santé</a> (BELFIT n'est pas un service médical).</span>
-            </label>
-            <button class="cp-bt cp-bt--or" disabled={!consent} onClick={payer}>Continuer vers le paiement</button>
-            <button class="cp-bt cp-bt--gris" onClick={() => setAchat(null)}>Annuler</button>
+            <p class="cp-txt">Paiement unique et sécurisé. Tu remplis ensuite ton questionnaire.</p>
+            {achat === 'plan' && (
+              <div class="cp-elim">
+                <p class="cp-q">As-tu 18 ans ou plus ?</p>
+                <Choix val={adulte} set={setAdulte} />
+                <p class="cp-q">Es-tu suivi actuellement pour un trouble alimentaire ?</p>
+                <Choix val={tca} set={setTca} />
+              </div>
+            )}
+            {achat === 'plan' && adulte === 'non' && (
+              <p class="qc-alerte">Le plan coach est réservé aux 18 ans et plus. L'app, elle, reste gratuite pour toi.</p>
+            )}
+            {achat === 'plan' && adulte !== 'non' && tca === 'oui' && (
+              <p class="qc-alerte">Merci de ta confiance. Pendant un suivi en cours, un plan chiffré peut faire plus de mal que de bien : parle de ton alimentation avec le professionnel qui te suit. L'app reste gratuite pour toi.</p>
+            )}
+            {!bloque && eligible && (
+              <>
+                {/* Droit belge (CDE art. VI.53, 1°) : la retractation se perd a
+                    la livraison seulement si le client demande expressement un
+                    demarrage immediat et reconnait cette perte AVANT de payer.
+                    Deux cases distinctes, decochees. Texte a faire valider. */}
+                <label class="cp-consent">
+                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
+                  <span>Je demande que mon coach commence mon plan dès réception de mon questionnaire, pour une livraison sous 48 h. Je reconnais perdre mon droit de rétractation de 14 jours une fois le plan livré.</span>
+                </label>
+                <label class="cp-consent">
+                  <input type="checkbox" checked={consent2} onChange={(e) => setConsent2(e.target.checked)} />
+                  <span>J'accepte les <a href="https://www.belfit.be/confidentialite.html" target="_blank" rel="noopener">conditions et la FAQ</a>. Je comprends que ce plan n'est pas un avis médical.</span>
+                </label>
+                <p class="cp-txt cp-petit">Questionnaire à remplir dans les {DELAI_QUESTIONNAIRE} jours. Au-delà, livraison sous {DELAI_TARDIF} jours.</p>
+                <button class="cp-bt cp-bt--or" disabled={!consent || !consent2} onClick={payer}>Continuer vers le paiement</button>
+              </>
+            )}
+            <button class="cp-bt cp-bt--gris" onClick={() => setAchat(null)}>{bloque ? 'Fermer' : 'Annuler'}</button>
           </div>
         </div></div>,
         document.body

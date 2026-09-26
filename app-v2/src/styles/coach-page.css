@@ -45,3 +45,11 @@
 .pg-qc .qc-recap .qc-rl b { color: #191919; font-weight: 600; text-align: right; }
 .pg-qc .qc-modif { background: none; border: 0; color: #8F6200; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; padding: 0; }
 .pg-coach .cp-attente { background: #FFF4CC; border: 1px solid #F8CF01; }
+/* Questions eliminatoires avant paiement (26/09) */
+.pg-coach .cp-elim { margin-top: 12px; }
+.pg-coach .cp-q { font-size: 14px; font-weight: 600; color: #191919; margin: 10px 0 6px; }
+.pg-coach .cp-oui-non { display: flex; gap: 8px; }
+.pg-coach .cp-oui-non .qc-chip { background: #fff; border: 1px solid #E5E3DE; border-radius: 999px; padding: 8px 18px; font-size: 14px; color: #191919; font-family: inherit; }
+.pg-coach .cp-oui-non .qc-chip.on { background: #FFF4CC; border-color: #F8CF01; color: #8F6200; font-weight: 600; }
+.pg-coach .qc-alerte { background: #FFF4CC; border: 1px solid #F8CF01; color: #8F6200; border-radius: 14px; padding: 12px; font-size: 13px; line-height: 1.5; margin: 12px 0 0; }
+.pg-coach .cp-petit { font-size: 12px; color: #8E8B85; margin-top: 8px; }
