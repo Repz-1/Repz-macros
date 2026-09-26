@@ -62,8 +62,9 @@ function urlPaiement(lien, type) {
 
 // Les reponses partent dans la fiche du client (users/{uid}), la ou
 // le coach depose deja les plans. Une copie reste sur l'appareil.
-function envoyerQuestionnaire(type, reponses, alerte) {
-  const q = { type, reponses, alerteSante: !!alerte, envoyeLe: new Date().toISOString() };
+function envoyerQuestionnaire(type, reponses, alerte, extra = {}) {
+  const q = { type, reponses, alerteSante: !!alerte, allergieGrave: !!extra.allergieGrave,
+    consentements: extra.consentements || {}, envoyeLe: new Date().toISOString() };
   try { localStorage.setItem('belfit_qc_dernier', JSON.stringify(q)); } catch (e) { /* rien */ }
   dossierCoach.value = { ...dossierCoach.value, questionnaire: q, brouillon: null };
   const u = utilisateur.value;
@@ -92,8 +93,8 @@ export function CoachPage() {
     return (
       <QuestionnaireCoach type={remplir}
         onFermer={() => { retourEnAttente = null; setRemplir(null); }}
-        onTermine={(reponses, alerte) => {
-          envoyerQuestionnaire(remplir, reponses, alerte);
+        onTermine={(reponses, alerte, extra) => {
+          envoyerQuestionnaire(remplir, reponses, alerte, extra);
           effacerBrouillon(remplir);
           retourEnAttente = null;
           setRemplir(null);
