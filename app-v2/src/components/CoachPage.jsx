@@ -16,6 +16,9 @@ import '../styles/coach-page.css';
 // ouvre un e-mail au coach, rien n'est casse.
 export const LIENS_COACH = { plan: '', maj: '' };
 const MAIL = 'contact@belfit.be';
+// Interrupteur (26/09, demande de Raci) : questionnaire en relecture,
+// masque en ligne tant qu'il n'est pas valide. true = commandes ouvertes.
+export const COMMANDES_OUVERTES = false;
 
 function joursDepuis(iso) {
   if (!iso) return null;
@@ -135,14 +138,18 @@ export function CoachPage() {
         <div class="cp-carte cp-carte--or">
           <div class="cp-ligne"><span class="cp-nom">Premier plan</span><span class="cp-prix">80 €</span></div>
           <p class="cp-txt">Bilan complet, plan alimentaire écrit pour toi, livré sous 48 h.</p>
-          <button class="cp-bt cp-bt--or" onClick={() => setRemplir('plan')}>Demander mon plan</button>
+          {COMMANDES_OUVERTES
+            ? <button class="cp-bt cp-bt--or" onClick={() => setRemplir('plan')}>Demander mon plan</button>
+            : <button class="cp-bt cp-bt--gris" disabled>Bientôt disponible</button>}
         </div>
       )}
       {!enAttente && pr && (
         <div class={'cp-carte' + (rappel ? ' cp-carte--or' : '')}>
           <div class="cp-ligne"><span class="cp-nom">Mise à jour</span><span class="cp-prix">60 €</span></div>
           <p class="cp-txt">Ton plan ajusté à ton poids, tes résultats et ton objectif. Conseillé chaque mois.</p>
-          <button class={'cp-bt ' + (rappel ? 'cp-bt--or' : 'cp-bt--gris')} onClick={() => setRemplir('maj')}>Mettre à jour mon plan</button>
+          {COMMANDES_OUVERTES
+            ? <button class={'cp-bt ' + (rappel ? 'cp-bt--or' : 'cp-bt--gris')} onClick={() => setRemplir('maj')}>Mettre à jour mon plan</button>
+            : <button class="cp-bt cp-bt--gris" disabled>Bientôt disponible</button>}
         </div>
       )}
 
