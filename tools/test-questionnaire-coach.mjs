@@ -153,6 +153,21 @@ try {
     await c3.close();
   }
 
+  // 3d) Retour de paiement sur un 2e appareil : le questionnaire s'ouvre
+  //     avant le chargement du dossier ; le brouillon distant, arrive
+  //     juste apres, doit etre repris.
+  {
+    const c4 = await nav.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, locale: 'fr-BE' });
+    const b = await c4.newPage(); b.setDefaultTimeout(8000);
+    b.on('pageerror', e => ok(false, 'erreur JS ' + e.message));
+    await b.goto(`http://localhost:${PORT}/app.html`);
+    await b.evaluate(() => { localStorage.clear(); localStorage.setItem('belfit_v2_apercu_dossier', JSON.stringify({ commande: null, questionnaire: null,
+      brouillon: { type: 'plan', i: 2, consentSante: true, majLe: new Date().toISOString(), rep: { poidsVise: { valeur: '70' } } } })); });
+    await b.goto(`http://localhost:${PORT}/app.html?onglet=premium&coach=questionnaire&type=plan`); await b.waitForTimeout(2000);
+    ok(/Étape 3 sur 7/.test(await b.locator('.qc-haut').innerText()), 'brouillon distant arrive apres l\'ouverture : repris (etape 3)');
+    await c4.close();
+  }
+
   // 4) Mise a jour : 2 etapes
   const vieux = new Date(Date.now() - 34 * 86400000).toISOString();
   p = await ouvrir(v => { localStorage.clear(); localStorage.setItem('belfit_v2_apercu_programme', JSON.stringify({ kcal: 2400, prot: 180, carbs: 250, lip: 70, livreLe: v, repas: [] })); }, vieux);

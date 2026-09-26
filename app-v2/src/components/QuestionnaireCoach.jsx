@@ -143,7 +143,21 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
   const recap = i >= etapes.length;
   const et = etapes[Math.min(i, etapes.length - 1)];
   const visibles = e => e.questions.filter(q => !q.si || q.si(rep));
-  const maj = id => v => { setRep(r => ({ ...r, [id]: v })); setErreurs(x => ({ ...x, [id]: false })); };
+  const touche = useRef(false);   // le client a-t-il deja repondu ici ?
+  const maj = id => v => { touche.current = true; setRep(r => ({ ...r, [id]: v })); setErreurs(x => ({ ...x, [id]: false })); };
+
+  // Le brouillon Firestore peut arriver APRES l'ouverture (autre appareil,
+  // reseau lent). S'il est plus recent et que rien n'a ete touche ici,
+  // on le reprend.
+  const distant = dossierCoach.value.brouillon;
+  const ouvertLe = useRef(null);
+  if (ouvertLe.current === null) ouvertLe.current = (b && b.majLe) || '';
+  useEffect(() => {
+    if (touche.current || !distant || distant.type !== type || !distant.rep) return;
+    if ((distant.majLe || '') <= ouvertLe.current) return;
+    ouvertLe.current = distant.majLe;
+    setRep(distant.rep); setI(Math.min(distant.i || 0, etapes.length)); setConsentSante(!!distant.consentSante);
+  }, [distant]);
 
   const suivant = () => {
     const manquantes = {};
@@ -200,7 +214,7 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
       )}
       {et.sante && (
         <label class={'cp-consent' + (erreurs.__consent ? ' qc-q--err' : '')}>
-          <input type="checkbox" checked={consentSante} onChange={e => { setConsentSante(e.currentTarget.checked); setErreurs(x => ({ ...x, __consent: false })); }} />
+          <input type="checkbox" checked={consentSante} onChange={e => { touche.current = true; setConsentSante(e.currentTarget.checked); setErreurs(x => ({ ...x, __consent: false })); }} />
           <span>J'accepte que mon coach utilise ces informations de santé pour construire mon plan.</span>
         </label>
       )}
