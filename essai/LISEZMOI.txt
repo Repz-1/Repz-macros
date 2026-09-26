@@ -1,0 +1,3 @@
+Version d'essai de la branche questionnaire-coach (26/09).
+Construite a part : belfit.be/essai/. L'app des clients (belfit.be/v2/) n'est pas touchee.
+A supprimer apres le test : git rm -r essai
