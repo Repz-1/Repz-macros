@@ -104,3 +104,17 @@
 .pg-qc button { -webkit-tap-highlight-color: transparent; }
 .pg-qc button:focus { outline: none; }
 .pg-qc button:focus-visible { outline: 2px solid #B07400; outline-offset: 2px; }
+/* Saisie directe, roulette, info (26/09) */
+.pg-qc .qc-saisie { display: flex; align-items: baseline; justify-content: center; gap: 6px; background: #F4F3F0; border-radius: 14px; padding: 10px 12px; }
+.pg-qc .qc-saisie input { width: 120px; border: 0; background: transparent; text-align: right; font-size: 30px; font-weight: 700; color: #191919; font-family: inherit; padding: 0; }
+.pg-qc .qc-saisie input::placeholder { color: #C9C6BE; }
+.pg-qc .qc-saisie input:focus { outline: none; }
+.pg-qc .qc-saisie small { font-size: 15px; color: #8E8B85; }
+.pg-qc .qc-roulette { position: relative; background: #F4F3F0; border-radius: 14px; padding: 6px 0; }
+.pg-qc .qc-roulette-piste { display: flex; gap: 6px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 calc(50% - 24px); scrollbar-width: none; }
+.pg-qc .qc-roulette-piste::-webkit-scrollbar { display: none; }
+.pg-qc .qc-roulette-piste button { flex: 0 0 48px; height: 48px; border-radius: 12px; border: 0; background: transparent; font-size: 18px; color: #8E8B85; font-family: inherit; scroll-snap-align: center; cursor: pointer; }
+.pg-qc .qc-roulette-piste button.on { background: #F8CF01; color: #191919; font-weight: 700; font-size: 22px; }
+.pg-qc .qc-roulette-repere { position: absolute; left: 50%; bottom: 2px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #B07400; }
+.pg-qc .qc-info { display: inline-flex; vertical-align: -3px; margin-left: 6px; background: none; border: 0; padding: 0; color: #B07400; cursor: pointer; }
+.pg-qc .qc-info-txt { background: #FFF4CC; color: #8F6200; border-radius: 12px; padding: 10px 12px; font-size: 13px; line-height: 1.45; margin: -2px 0 10px; }

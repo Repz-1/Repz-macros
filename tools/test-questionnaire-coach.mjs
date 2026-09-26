@@ -25,7 +25,13 @@ async function remplir(p) {
   for (let k = 0; k < await cartes.count(); k++) {
     const c = cartes.nth(k);
     if (await c.locator('.qc-fac').count()) continue;
-    if (await c.locator('.qc-tuile, .qc-puce').count()) { if (!(await c.locator('.on').count())) await c.locator('.qc-tuile, .qc-puce').first().tap(); continue; }
+    if (await c.locator('.qc-tuile, .qc-puce').count()) { if (!(await c.locator('.qc-tuile.on, .qc-puce.on').count())) await c.locator('.qc-tuile, .qc-puce').first().tap(); continue; }
+    if (await c.locator('.qc-roulette').count()) { if (!(await c.locator('.qc-roulette .on').count())) await c.locator('.qc-roulette button').nth(3).tap(); continue; }
+    if (await c.locator('.qc-saisie').count()) {
+      const lab = await c.locator('.qc-label').innerText();
+      if (!(await c.locator('.qc-saisie input').inputValue())) await c.locator('.qc-saisie input').fill(/Taille/.test(lab) ? '175' : /Âge/.test(lab) ? '30' : '75');
+      continue;
+    }
     if (await c.locator('.qc-num').count()) { if (!(await c.locator('.qc-num input').inputValue())) await c.locator('.qc-num button').last().tap(); continue; }
     if (await c.locator('.qc-echelle').count()) { if (!(await c.locator('.qc-echelle .on').count())) await c.locator('.qc-echelle button').nth(6).tap(); continue; }
     const champ = c.locator('.qc-champ');
@@ -68,6 +74,8 @@ try {
   ok((await p.locator('.qc-carte:has-text("E-mail") .qc-champ').inputValue()).includes('@'), 'e-mail prerempli depuis le compte');
   await continuer(p);
   ok(await p.locator('.qc-carte--err').count() > 0 && /Section 1/.test(await haut(p)), 'bloque tant que manque une reponse');
+  ok(await p.locator('.qc-carte:has-text("Sexe") .qc-tuile').count() === 2, 'sexe : homme ou femme seulement');
+  ok(await p.locator('.qc-carte:has-text("tutoie")').count() === 0, 'plus de question tutoiement');
   await p.locator('.qc-carte:has-text("Sexe") .qc-tuile', { hasText: 'Homme' }).tap();
   await p.locator('.qc-carte:has-text("connus") .qc-puce', { hasText: 'Autre' }).tap();
   ok(await p.locator('.qc-carte:has-text("connus") .qc-champ').count() === 1, '« Autre » ouvre un champ');
@@ -79,21 +87,37 @@ try {
   ok(await p.locator('.qc-carte:has-text("plus urgent")').count() === 1, 'energie et sante : point le plus urgent');
   await p.locator('.qc-tuile', { hasText: 'Perdre du gras' }).tap();
   ok(await p.locator('.qc-carte:has-text("plus urgent")').count() === 0, 'perdre du gras : question masquee');
+  ok(await p.locator('.qc-carte:has-text("Pourquoi maintenant")').count() === 0, 'plus de « pourquoi maintenant »');
+  ok(await p.locator('.qc-label', { hasText: /^Poids que tu vises/ }).count() === 1 && !(/sens pour toi/.test(await p.locator('.pg-qc').innerText())), 'poids vise sans parenthese');
   await p.locator('.qc-carte:has-text("Motivation") .qc-echelle button').nth(7).tap();
   ok(await p.locator('.qc-carte:has-text("Motivation") .qc-echelle .on').innerText() === '8', 'echelle 1 a 10');
   await remplir(p); await continuer(p);
   // Mesures : compteur
   const poids = p.locator('.qc-carte:has-text("Poids actuel")');
-  await poids.locator('.qc-num input').fill('');
-  await poids.locator('.qc-num button').last().tap();
-  ok(await poids.locator('.qc-num input').inputValue() === '75.5', 'compteur : + part de la valeur par defaut');
+  ok(await poids.locator('.qc-saisie input').count() === 1 && await poids.locator('.qc-num').count() === 0, 'poids : saisie directe, sans + / -');
+  await poids.locator('.qc-saisie input').fill('75.5');
+  ok(!(/plus bas|plus haut|sentais bien/.test(await p.locator('.pg-qc').innerText())), 'poids passes retires');
   await remplir(p); await continuer(p);
-  await remplir(p); await continuer(p);  // rythme
+  // Rythme : roulette, info batch, materiel
+  const rv = p.locator('.qc-carte:has-text("hors collations")');
+  ok(await rv.locator('.qc-roulette button').count() === 10, 'repas voulus : roulette 1 a 10');
+  await rv.locator('.qc-roulette button', { hasText: /^6$/ }).tap(); await p.waitForTimeout(500);
+  ok(await rv.locator('.qc-roulette .on').innerText() === '6', 'roulette : appui = choix');
+  await p.locator('.qc-carte:has-text("batch") .qc-info').tap();
+  ok(/cuisiner en une fois plusieurs repas/.test(await p.locator('.qc-info-txt').innerText()), 'batch : explication au clic');
+  const mat = p.locator('.qc-carte:has-text("Matériel dispo")');
+  await mat.locator('.qc-puce', { hasText: 'Four' }).tap();
+  await mat.locator('.qc-puce', { hasText: 'Cuisine complète' }).tap();
+  ok(await mat.locator('.qc-puce.on').count() === 1, 'cuisine complete : choix exclusif');
+  await remplir(p); await continuer(p);
   // Entrainement : 0 seance masque les details
-  await p.locator('.qc-carte:has-text("Séances par semaine") .qc-puce', { hasText: /^0$/ }).tap();
+  const se = p.locator('.qc-carte:has-text("Séances par semaine")');
+  ok(await se.locator('.qc-roulette button').count() === 15, 'seances : roulette 0 a 14');
+  await se.locator('.qc-roulette button', { hasText: /^0$/ }).tap(); await p.waitForTimeout(500);
   ok(await p.locator('.qc-carte:has-text("Durée typique")').count() === 0, '0 seance : details masques');
-  await p.locator('.qc-carte:has-text("Séances par semaine") .qc-puce', { hasText: '3–4' }).tap();
-  ok(await p.locator('.qc-carte:has-text("Durée typique")').count() === 1, '3-4 seances : details affiches');
+  await se.locator('.qc-roulette button', { hasText: /^4$/ }).tap(); await p.waitForTimeout(500);
+  ok(await p.locator('.qc-carte:has-text("Durée typique")').count() === 1, '4 seances : details affiches');
+  ok(!(/changer les jours|Blessure/.test(await p.locator('.pg-qc').innerText())), 'jours d\'entrainement et blessure retires');
   await remplir(p); await continuer(p);
   // Alimentation : allergie -> lesquelles + reaction grave
   await p.locator('.qc-tuile', { hasText: 'Oui' }).tap();
@@ -102,13 +126,19 @@ try {
   await p.locator('.qc-carte:has-text("que se passe") .qc-puce', { hasText: 'Gonflement' }).tap();
   ok(await p.locator('.qc-alerte-rouge').count() === 1, 'reaction grave : alerte rouge');
   await remplir(p); await continuer(p);
-  // Boissons : sodas sucres -> combien
+  // Boissons : sodas sucres -> combien ; alcool 0
   await p.locator('.qc-carte:has-text("des sodas") .qc-puce', { hasText: 'Oui' }).tap();
   await p.locator('.qc-carte:has-text("light ou") .qc-puce', { hasText: 'Sucrés' }).tap();
   ok(await p.locator('.qc-carte:has-text("Combien de sodas")').count() === 1, 'sodas sucres : combien');
+  await p.locator('.qc-carte:has-text("Alcool par semaine") .qc-puce', { hasText: /^0$/ }).tap();
   await remplir(p); await continuer(p);
+  ok(await p.locator('.qc-carte:has-text("difficultés") .qc-puce', { hasText: /^Alcool$/ }).count() === 0, 'pas d\'alcool : pas repropose dans les difficultes');
+  ok(!(/Tu es plutôt|Pesée/.test(await p.locator('.pg-qc').innerText())), 'style et pesee retires');
   // Difficultes : regime non -> pourquoi
   await p.locator('.qc-carte:has-text("essayé un régime") .qc-puce', { hasText: 'Oui' }).tap();
+  await p.locator('.qc-carte:has-text("fonctionné ?") .qc-puce', { hasText: /^Oui/ }).first().tap();
+  const reg = await p.locator('.qc-carte:has-text("Quel(s) régime")').innerText();
+  ok(/Coach/.test(reg) && !/GLP-1|Coach déjà/.test(reg), 'regimes : « Coach », sans GLP-1');
   await p.locator('.qc-carte:has-text("fonctionné ?") .qc-puce', { hasText: /^Non/ }).first().tap();
   ok(await p.locator('.qc-carte:has-text("Pourquoi ça n")').count() === 1, 'regime rate : pourquoi');
   await remplir(p); await continuer(p);
@@ -117,6 +147,8 @@ try {
   await p.locator('.qc-carte:has-text("médecin") .qc-puce', { hasText: 'Thyroïde' }).tap();
   ok(await p.locator('.qc-carte:has-text("Traitements prescrits")').count() === 1, 'suivi medical : traitements demandes');
   await p.locator('.qc-carte:has-text("Traitements prescrits") .qc-champ').fill('Levothyrox 50');
+  await p.locator('.qc-carte:has-text("Trouble alimentaire") .qc-puce', { hasText: 'Antérieur' }).tap();
+  ok(await p.locator('.qc-carte:has-text("Lequel")').count() === 1, 'trouble alimentaire : lequel ?');
   await remplir(p); await continuer(p);
   await remplir(p); await continuer(p);  // sommeil
   ok(/Bonus/.test(await haut(p)), 'bonus facultatif');

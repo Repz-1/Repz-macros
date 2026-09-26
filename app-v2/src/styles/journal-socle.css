@@ -2133,6 +2133,7 @@
 .pg-premium .j-entete--perso,
 .pg-plus .j-entete--perso,
 .pg-reglages .j-entete--perso,
+.pg-coach .j-entete--perso,
 .pg-stats .j-entete--perso {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -2143,6 +2144,7 @@
 .pg-premium .j-entete--perso .j-symbole,
 .pg-plus .j-entete--perso .j-symbole,
 .pg-reglages .j-entete--perso .j-symbole,
+.pg-coach .j-entete--perso .j-symbole,
 .pg-stats .j-entete--perso .j-symbole {
   height: 34px; width: auto; display: block; justify-self: start;
   filter: drop-shadow(0 4px 16px rgba(247, 181, 0, .15));
@@ -2152,6 +2154,7 @@
 .pg-premium .j-entete--perso .j-entete-actions,
 .pg-plus .j-entete--perso .j-entete-actions,
 .pg-reglages .j-entete--perso .j-entete-actions,
+.pg-coach .j-entete--perso .j-entete-actions,
 .pg-stats .j-entete--perso .j-entete-actions { justify-self: end; }
 .pg-journal .j-prenom,
 .pg-entrainer .j-prenom,

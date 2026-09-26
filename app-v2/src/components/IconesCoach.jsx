@@ -24,6 +24,7 @@ const P = {
   'cloud-check': 'M7 18a4.5 4.5 0 01-.6-9A6 6 0 0118 9.5a4 4 0 01-1 8.5zM9.5 13l2 2 3.5-3.5',
   'shield-check': 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM9 12l2 2 4-4',
   check: 'M5 12l5 5 9-10',
+  info: 'M12 21a9 9 0 100-18 9 9 0 000 18zM12 11v5M12 8h.01',
 };
 export function Icone({ nom, taille = 22 }) {
   const d = P[nom] || P.user;

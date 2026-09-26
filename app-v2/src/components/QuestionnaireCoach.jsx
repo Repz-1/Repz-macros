@@ -62,6 +62,56 @@ export function effacerBrouillon(type) {
 
 // ---------- Champs ----------
 
+// Saisie directe d'un nombre (poids, taille…) : clavier numerique.
+function Saisie({ q, r, maj }) {
+  return (
+    <div class="qc-saisie">
+      <input inputMode="decimal" value={r.valeur ?? ''} placeholder="—"
+        onInput={e => maj({ ...r, valeur: e.currentTarget.value.replace(/[^0-9.,]/g, '') })} />
+      {q.unite && <small>{q.unite}</small>}
+    </div>
+  );
+}
+
+// Roulette horizontale (Raci, 26/09) : on fait defiler, le chiffre au
+// centre est choisi. Un appui sur un chiffre le choisit aussi.
+function Roulette({ q, r, maj }) {
+  const ref = useRef(null);
+  const minuteur = useRef(null);
+  const nombres = [];
+  for (let n = q.min; n <= q.max; n++) nombres.push(n);
+  const choisi = r.valeur === undefined || r.valeur === '' ? null : +r.valeur;
+  const centrer = (n, doux) => {
+    const el = ref.current && ref.current.querySelector('[data-n="' + n + '"]');
+    if (el) ref.current.scrollTo({ left: el.offsetLeft - ref.current.clientWidth / 2 + el.clientWidth / 2, behavior: doux ? 'smooth' : 'auto' });
+  };
+  useEffect(() => { if (choisi !== null) centrer(choisi, false); }, []);
+  const auDefilement = () => {
+    clearTimeout(minuteur.current);
+    minuteur.current = setTimeout(() => {
+      const box = ref.current; if (!box) return;
+      const milieu = box.scrollLeft + box.clientWidth / 2;
+      let meilleur = null, ecart = Infinity;
+      box.querySelectorAll('[data-n]').forEach(el => {
+        const d = Math.abs(el.offsetLeft + el.clientWidth / 2 - milieu);
+        if (d < ecart) { ecart = d; meilleur = +el.dataset.n; }
+      });
+      if (meilleur !== null && meilleur !== choisi) maj({ ...r, valeur: String(meilleur) });
+    }, 120);
+  };
+  return (
+    <div class="qc-roulette">
+      <div class="qc-roulette-piste" ref={ref} onScroll={auDefilement}>
+        {nombres.map(n => (
+          <button type="button" data-n={n} class={n === choisi ? 'on' : ''} aria-pressed={n === choisi}
+            onClick={() => { maj({ ...r, valeur: String(n) }); centrer(n, true); }}>{n}</button>
+        ))}
+      </div>
+      <span class="qc-roulette-repere" aria-hidden="true" />
+    </div>
+  );
+}
+
 function Compteur({ q, r, maj }) {
   const pas = q.pas || 1;
   const n = parseFloat(String(r.valeur ?? '').replace(',', '.'));
@@ -85,19 +135,28 @@ function Question({ q, rep, toutes, maj, erreur }) {
   const r = rep || {};
   const opts = optionsDe(q, toutes);
   const icones = Object.fromEntries((q.options || []).filter(Array.isArray));
+  const [info, setInfo] = useState(false);
+  const exclusifs = q.exclusifs || (q.aucun ? [q.aucun] : []);
   const actif = o => q.type === 'plusieurs' ? (r.valeurs || []).includes(o) : r.valeur === o;
   const choisir = o => {
     if (q.type !== 'plusieurs') return maj({ ...r, valeur: o });
     let vs = r.valeurs || [];
     if (vs.includes(o)) vs = vs.filter(x => x !== o);
-    else if (o === q.aucun) vs = [o];
-    else vs = [...vs.filter(x => x !== q.aucun), o];
+    else if (exclusifs.includes(o)) vs = [o];
+    else vs = [...vs.filter(x => !exclusifs.includes(x)), o];
     maj({ ...r, valeurs: vs });
   };
   const autreOuvert = q.type === 'plusieurs' ? (r.valeurs || []).includes('Autre') : r.valeur === 'Autre';
   return (
     <div class={'qc-carte' + (erreur ? ' qc-carte--err' : '')}>
-      <p class="qc-label">{q.label}{q.facultatif && <span class="qc-fac">facultatif</span>}</p>
+      <p class="qc-label">{q.label}{q.facultatif && <span class="qc-fac">facultatif</span>}
+        {q.info && (
+          <button type="button" class={'qc-info' + (info ? ' on' : '')} aria-label="Explication" aria-expanded={info} onClick={() => setInfo(!info)}>
+            <Icone nom="info" taille={16} />
+          </button>
+        )}
+      </p>
+      {q.info && info && <p class="qc-info-txt">{q.info}</p>}
       {q.type === 'tuiles' && (
         <div class="qc-tuiles">
           {opts.map(o => (
@@ -118,7 +177,8 @@ function Question({ q, rep, toutes, maj, erreur }) {
       {autreOuvert && (
         <input class="qc-champ" placeholder="Précise…" value={r.autre || ''} onInput={e => maj({ ...r, autre: e.currentTarget.value })} />
       )}
-      {q.type === 'nombre' && <Compteur q={q} r={r} maj={maj} />}
+      {q.type === 'nombre' && (q.saisie ? <Saisie q={q} r={r} maj={maj} /> : <Compteur q={q} r={r} maj={maj} />)}
+      {q.type === 'roulette' && <Roulette q={q} r={r} maj={maj} />}
       {q.type === 'echelle' && (
         <>
           <div class="qc-echelle">
