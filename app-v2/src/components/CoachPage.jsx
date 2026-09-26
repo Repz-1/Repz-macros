@@ -26,12 +26,12 @@ function joursDepuis(iso) {
   return isNaN(j) ? null : Math.max(0, j);
 }
 
-// Regle du delai (26/09, a reporter dans les CGV / FAQ) : les 48 h
-// partent de la reception du questionnaire complet. Rempli plus de
-// DELAI_QUESTIONNAIRE jours apres le paiement : livraison sous
-// DELAI_TARDIF jours au lieu de 48 h. Valeurs a confirmer par Raci.
-export const DELAI_QUESTIONNAIRE = 30;
-export const DELAI_TARDIF = 7;
+// Regle du delai (Raci, 26/09, a reporter dans les CGV / FAQ) :
+// le client a DELAI_QUESTIONNAIRE jours apres le paiement pour remplir
+// son questionnaire, et il est livre sous 48 h. Au-dela, il passe dans
+// la file : livraison entre 48 h et DELAI_FILE jours.
+export const DELAI_QUESTIONNAIRE = 7;
+export const DELAI_FILE = 14;
 
 // Retour de LemonSqueezy : le paiement renvoie directement vers le
 // questionnaire (redirect_url). On retient le retour sur l'appareil,
@@ -157,8 +157,8 @@ export function CoachPage() {
         <div class="cp-carte cp-carte--or">
           <p class="cp-nom">Paiement reçu</p>
           <p class="cp-txt">Remplis ton questionnaire pour que je prépare ton plan. {tardif
-            ? `Livraison sous ${DELAI_TARDIF} jours après réception.`
-            : 'Livraison sous 48 h après réception.'}</p>
+            ? 'Ton délai de 7 jours est passé : ta demande rejoint la file, livraison entre 48 h et 2 semaines.'
+            : `Livraison sous 48 h si tu le remplis dans les ${DELAI_QUESTIONNAIRE} jours suivant ton paiement.`}</p>
           <button class="cp-bt cp-bt--or" onClick={() => setRemplir(typePaye)}>Remplir mon questionnaire</button>
         </div>
       )}
@@ -247,7 +247,7 @@ export function CoachPage() {
                   <input type="checkbox" checked={consent2} onChange={(e) => setConsent2(e.target.checked)} />
                   <span>J'accepte les <a href="https://www.belfit.be/confidentialite.html" target="_blank" rel="noopener">conditions et la FAQ</a>. Je comprends que ce plan n'est pas un avis médical.</span>
                 </label>
-                <p class="cp-txt cp-petit">Questionnaire à remplir dans les {DELAI_QUESTIONNAIRE} jours. Au-delà, livraison sous {DELAI_TARDIF} jours.</p>
+                <p class="cp-txt cp-petit">Questionnaire à remplir dans les {DELAI_QUESTIONNAIRE} jours suivant le paiement pour une livraison sous 48 h. Au-delà, ta demande rejoint la file : livraison entre 48 h et 2 semaines.</p>
                 <button class="cp-bt cp-bt--or" disabled={!consent || !consent2} onClick={payer}>Continuer vers le paiement</button>
               </>
             )}

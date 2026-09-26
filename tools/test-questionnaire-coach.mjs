@@ -57,7 +57,7 @@ try {
   ok(await go.isDisabled(), 'une seule case ne suffit pas');
   await m.locator('.cp-consent input').nth(1).check();
   ok(!(await go.isDisabled()), 'deux cases : paiement possible');
-  ok(/dès réception de mon questionnaire/.test(await m.innerText()) && /30 jours/.test(await m.innerText()), 'texte retractation + regle des 30 jours');
+  ok(/dès réception de mon questionnaire/.test(await m.innerText()) && /7 jours/.test(await m.innerText()) && /2 semaines/.test(await m.innerText()), 'texte retractation + regle des 7 jours');
   await p.context().close();
 
   // 2) Retour de paiement : le questionnaire s'ouvre tout seul
@@ -95,9 +95,9 @@ try {
   ok(envoye && envoye.alerteSante === true && envoye.reponses.objectif.texte === 'Préparer un marathon', 'reponses enregistrees');
   await ctx.close();
 
-  // 3) Paye il y a 40 jours, rien rempli : delai tardif
-  p = await ouvrir(v => { localStorage.clear(); localStorage.setItem('belfit_v2_apercu_dossier', JSON.stringify({ questionnaire: null, commande: { type: 'plan', payeLe: v } })); }, new Date(Date.now() - 40 * 86400000).toISOString());
-  ok(/sous 7 jours/.test(await p.locator('.pg-coach').innerText()), 'plus de 30 jours : livraison sous 7 jours');
+  // 3) Paye il y a 10 jours, rien rempli : delai tardif
+  p = await ouvrir(v => { localStorage.clear(); localStorage.setItem('belfit_v2_apercu_dossier', JSON.stringify({ questionnaire: null, commande: { type: 'plan', payeLe: v } })); }, new Date(Date.now() - 10 * 86400000).toISOString());
+  ok(/rejoint la file/.test(await p.locator('.pg-coach').innerText()) && /2 semaines/.test(await p.locator('.pg-coach').innerText()), 'plus de 7 jours : file, 48 h a 2 semaines');
   await p.context().close();
 
   // 4) Mise a jour : 2 etapes
