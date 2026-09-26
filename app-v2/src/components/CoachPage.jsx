@@ -65,11 +65,12 @@ function urlPaiement(lien, type) {
 function envoyerQuestionnaire(type, reponses, alerte) {
   const q = { type, reponses, alerteSante: !!alerte, envoyeLe: new Date().toISOString() };
   try { localStorage.setItem('belfit_qc_dernier', JSON.stringify(q)); } catch (e) { /* rien */ }
-  dossierCoach.value = { ...dossierCoach.value, questionnaire: q };
+  dossierCoach.value = { ...dossierCoach.value, questionnaire: q, brouillon: null };
   const u = utilisateur.value;
   if (!u || !getApps().length) return Promise.resolve();
-  return import('firebase/firestore').then(({ getFirestore, doc, setDoc }) =>
-    setDoc(doc(getFirestore(getApps()[0]), 'users', u.uid), { questionnaireCoach: q }, { merge: true }))
+  // Le brouillon distant est efface avec l'envoi : plus rien a reprendre.
+  return import('firebase/firestore').then(({ getFirestore, doc, setDoc, deleteField }) =>
+    setDoc(doc(getFirestore(getApps()[0]), 'users', u.uid), { questionnaireCoach: q, brouillonCoach: deleteField() }, { merge: true }))
     .catch(e => console.warn('questionnaire non envoye', e));
 }
 

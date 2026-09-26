@@ -128,6 +128,31 @@ try {
     await c2.close();
   }
 
+  // 3c) Reprise sur un autre appareil : le brouillon Firestore, plus
+  //     recent, l'emporte sur l'absence de brouillon local.
+  {
+    const c3 = await nav.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, locale: 'fr-BE' });
+    const b = await c3.newPage(); b.setDefaultTimeout(8000);
+    b.on('pageerror', e => ok(false, 'erreur JS ' + e.message));
+    await b.goto(`http://localhost:${PORT}/app.html`);
+    await b.evaluate(() => {
+      localStorage.clear();
+      localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: new Date().toISOString() }));
+      localStorage.setItem('belfit_v2_apercu_dossier', JSON.stringify({ commande: null, questionnaire: null,
+        brouillon: { type: 'plan', i: 3, consentSante: true, majLe: new Date().toISOString(),
+          rep: { objectif: { valeur: 'Autre', autre: 'Repris ailleurs' }, poidsVise: { valeur: '75' } } } }));
+    });
+    await b.reload(); await b.waitForTimeout(1800);
+    await b.evaluate(() => [...document.querySelectorAll('.bandeau-coach')].find(el => { const r = el.getBoundingClientRect(); return r.left >= 0 && r.left < 390 && r.width > 0; }).click());
+    await b.waitForTimeout(800);
+    ok(/Étape 4 sur 7/.test(await b.locator('.qc-haut').innerText()), 'autre appareil : reprise a l\'etape 4');
+    await b.locator('.qc-chip').first().tap(); await b.waitForTimeout(300);
+    ok(await b.locator('.qc-sauve').count() === 1, 'indicateur de sauvegarde affiche');
+    await b.waitForTimeout(6500);
+    ok(/✓ Enregistré|Gardé sur ce téléphone/.test(await b.locator('.qc-sauve').innerText()), 'sauvegarde conclue : ' + await b.locator('.qc-sauve').innerText());
+    await c3.close();
+  }
+
   // 4) Mise a jour : 2 etapes
   const vieux = new Date(Date.now() - 34 * 86400000).toISOString();
   p = await ouvrir(v => { localStorage.clear(); localStorage.setItem('belfit_v2_apercu_programme', JSON.stringify({ kcal: 2400, prot: 180, carbs: 250, lip: 70, livreLe: v, repas: [] })); }, vieux);

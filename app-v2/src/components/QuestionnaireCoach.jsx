@@ -2,7 +2,10 @@
 // Premier plan : 7 etapes. Mise a jour : 2 etapes. Puis recapitulatif,
 // et la page Coach enchaine sur le paiement. Le brouillon est garde
 // sur l'appareil : quitter en route ne perd rien.
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
+import { getApps } from 'firebase/app';
+import { utilisateur } from '../services/firebase.js';
+import { dossierCoach } from './BelfitPlus.jsx';
 import { Entete } from './Entete.jsx';
 import { useRetour } from '../services/retour.js';
 import { profilBesoins, poidsCalcul } from '../store/journal.js';
@@ -24,9 +27,30 @@ function prerempli(type) {
 }
 
 function lireBrouillon(type) {
-  try { const b = JSON.parse(localStorage.getItem(cleBrouillon(type))); if (b && b.rep) return b; }
+  // Deux copies : l'appareil et Firestore. On garde la plus recente,
+  // pour reprendre sur un autre telephone ou sur l'ordinateur.
+  let local = null;
+  try { const b = JSON.parse(localStorage.getItem(cleBrouillon(type))); if (b && b.rep) local = b; }
   catch (e) { /* brouillon illisible : on repart de zero */ }
-  return null;
+  const d = dossierCoach.value.brouillon;
+  const distant = d && d.type === type && d.rep ? d : null;
+  if (local && distant) return (distant.majLe || '') > (local.majLe || '') ? distant : local;
+  return local || distant;
+}
+
+// Sauvegarde du brouillon dans la fiche du client (users/{uid}).
+function sauverDistant(type, b) {
+  const u = utilisateur.value;
+  if (!u || !getApps().length) return Promise.resolve(false);
+  return import('firebase/firestore').then(({ getFirestore, doc, setDoc }) =>
+    setDoc(doc(getFirestore(getApps()[0]), 'users', u.uid), { brouillonCoach: { type, ...b } }, { merge: true }))
+    .then(() => true);
+}
+// Hors reseau, Firestore garde l'ecriture et l'envoie plus tard, mais
+// la promesse attend le serveur : sans limite, « Enregistrement… »
+// resterait affiche. Au bout de 5 s, on dit la verite : garde ici.
+function sauverAvecDelai(type, b) {
+  return Promise.race([sauverDistant(type, b), new Promise(r => setTimeout(() => r(false), 5000))]);
 }
 
 export function effacerBrouillon(type) {
@@ -84,12 +108,36 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
   const [i, setI] = useState(() => (b && Math.min(b.i || 0, etapes.length)) || 0);
   const [consentSante, setConsentSante] = useState(!!(b && b.consentSante));
   const [erreurs, setErreurs] = useState({});
+  // 'ok' | 'envoi' | 'local' : rassure le client sur la sauvegarde.
+  const [etatSauve, setEtatSauve] = useState('ok');
+  const minuteur = useRef(null);
+  const premier = useRef(true);
+  const premierEtape = useRef(true);
   useRetour(true, onFermer);
 
   useEffect(() => {
-    try { localStorage.setItem(cleBrouillon(type), JSON.stringify({ rep, i, consentSante })); }
-    catch (e) { /* stockage plein : le questionnaire marche quand meme */ }
-  }, [rep, i, consentSante]);
+    if (premier.current) { premier.current = false; return; }  // rien de neuf a l'ouverture
+    const b = { rep, i, consentSante, majLe: new Date().toISOString() };
+    try { localStorage.setItem(cleBrouillon(type), JSON.stringify(b)); }
+    catch (e) { /* stockage plein : Firestore prend le relais */ }
+    setEtatSauve('envoi');
+    clearTimeout(minuteur.current);
+    // Changement d'etape : tout de suite. Saisie : on attend une pause.
+    minuteur.current = setTimeout(() => {
+      sauverAvecDelai(type, b)
+        .then(ok => setEtatSauve(ok ? 'ok' : 'local'))
+        .catch(() => setEtatSauve('local'));
+    }, 1200);
+    return () => clearTimeout(minuteur.current);
+  }, [rep, consentSante]);
+  useEffect(() => {
+    if (premierEtape.current) { premierEtape.current = false; return; }
+    const b = { rep, i, consentSante, majLe: new Date().toISOString() };
+    try { localStorage.setItem(cleBrouillon(type), JSON.stringify(b)); } catch (e) { /* rien */ }
+    clearTimeout(minuteur.current);
+    setEtatSauve('envoi');
+    sauverAvecDelai(type, b).then(ok => setEtatSauve(ok ? 'ok' : 'local')).catch(() => setEtatSauve('local'));
+  }, [i]);
   useEffect(() => { window.scrollTo && window.scrollTo(0, 0); }, [i]);
 
   const recap = i >= etapes.length;
@@ -141,7 +189,8 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
   return (
     <div class="pg-coach pg-qc">
       <Entete sansBandeau retour={i ? () => { setErreurs({}); setI(i - 1); } : onFermer} />
-      <div class="qc-haut"><span>Étape {i + 1} sur {etapes.length}</span><span>{type === 'maj' ? '≈ 3 min' : '≈ 7 min'}</span></div>
+      <div class="qc-haut"><span>Étape {i + 1} sur {etapes.length}</span>
+        <span class={'qc-sauve qc-sauve--' + etatSauve}>{etatSauve === 'envoi' ? 'Enregistrement…' : etatSauve === 'local' ? 'Gardé sur ce téléphone' : '✓ Enregistré'}</span></div>
       <div class="qc-barre"><i style={{ width: Math.round((i + 1) / etapes.length * 100) + '%' }} /></div>
       <h1 class="cp-titre">{et.titre}</h1>
       <p class="cp-sous">{et.sous}</p>

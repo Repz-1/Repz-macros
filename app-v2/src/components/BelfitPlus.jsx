@@ -74,7 +74,7 @@ export function chargerProgramme() {
     .then(s => {
       const d = s.exists() ? s.data() : null;
       programme.value = (d && d.programme) || null;
-      dossierCoach.value = { questionnaire: (d && d.questionnaireCoach) || null, commande: (d && d.commandeCoach) || null };
+      dossierCoach.value = { questionnaire: (d && d.questionnaireCoach) || null, commande: (d && d.commandeCoach) || null, brouillon: (d && d.brouillonCoach) || null };
       // Le quota suit la formule ; le compteur se remet a zero au
       // changement de mois civil, cote serveur comme ici.
       const QUOTA = {mensuel: 2, trimestriel: 3, annuel: 4};
