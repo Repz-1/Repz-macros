@@ -1,3 +1,5 @@
+// Deploiement : automatique via GitHub Actions (.github/workflows/serveur.yml)
+// a chaque changement de ce dossier, depuis le 27/09. Plus besoin du PC.
 const {onRequest} = require("firebase-functions/v2/https");
 const {defineSecret} = require("firebase-functions/params");
 const admin = require("firebase-admin");
