@@ -4,7 +4,7 @@ import { signal, effect, computed } from '@preact/signals';
 import { Icone } from './IconesCoach.jsx';
 import { getApps } from 'firebase/app';
 import { utilisateur } from '../services/firebase.js';
-import { setObjectifs, objectifs, repas } from '../store/journal.js';
+import { setObjectifs, objectifs, repas, cleDuNom } from '../store/journal.js';
 import { macrosOf, DB } from '../data/aliments.js';
 import { ongletActif, allerOnglet } from './BottomNav.jsx';
 import { statsAvOuvertes } from './StatsAvancees.jsx';
@@ -220,8 +220,8 @@ export function BelfitPlus() {
       repas.value = pr.repas.map((r) => ({
         id: ++n,
         nom: r.nom,
-        type: 'repas',
-        cle: null,
+        type: cleDuNom(r.nom) === 'snack' ? 'collation' : 'repas',
+        cle: cleDuNom(r.nom),
         fixe: false,
         ouvert: false,
         ings: r.ings.map((i, k) => ({ id: n * 1000 + k, name: i.name, portion: i.portion })),

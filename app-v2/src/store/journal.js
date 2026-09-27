@@ -101,11 +101,26 @@ const CLE_PAR_NOM = {
   'snacks': 'snack', 'collations': 'snack', 'collation': 'snack', 'tussendoortjes': 'snack',
 };
 
+/** Cle d'illustration d'apres le nom d'un repas, meme ecrit librement
+ *  (« Petit-déjeuner », « Collation de l'après-midi », « Dîner ») : les
+ *  repas d'un plan coach en ont besoin pour garder leur logo (27/09). */
+export function cleDuNom(nom) {
+  const n = String(nom || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[-_]/g, ' ').trim();
+  if (CLE_PAR_NOM[n]) return CLE_PAR_NOM[n];
+  if (/petit|breakfast|ontbijt|matinal/.test(n)) return 'pdej';
+  if (/collation|gouter|snack|en cas|tussendoor/.test(n)) return 'snack';
+  if (/diner|souper|soir|dinner|avond/.test(n)) return 'diner';
+  if (/dejeuner|lunch|midi/.test(n)) return 'dej';
+  return null;
+}
+
 function migrerRepas(liste) {
   const sortie = liste.map(r => {
     if (r.cle) return r;
-    const cle = CLE_PAR_NOM[(r.nom || '').trim().toLowerCase()];
-    return cle ? { ...r, cle, fixe: true } : r;
+    const exacte = CLE_PAR_NOM[(r.nom || '').trim().toLowerCase()];
+    if (exacte) return { ...r, cle: exacte, fixe: true };
+    const cle = cleDuNom(r.nom);
+    return cle ? { ...r, cle } : r;
   });
 
   // Les quatre repas fixes doivent exister : un ancien enregistrement
