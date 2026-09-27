@@ -24,7 +24,7 @@ async function remplir(p) {
   const cartes = p.locator('.pg-qc .qc-ouvert .qc-carte:has(.qc-label)');
   for (let k = 0; k < await cartes.count(); k++) {
     const c = cartes.nth(k);
-    if (await c.locator('.qc-fac').count()) continue;
+    if (await c.getAttribute('data-facultatif') !== null) continue;
     if (await c.locator('.qc-tuile, .qc-puce').count()) { if (!(await c.locator('.qc-tuile.on, .qc-puce.on').count())) await c.locator('.qc-tuile, .qc-puce').first().tap(); continue; }
     if (await c.locator('.qc-roulette').count()) { if (!(await c.locator('.qc-roulette .on').count())) await c.locator('.qc-roulette button').nth(3).tap(); continue; }
     if (await c.locator('.qc-saisie').count()) {
@@ -80,8 +80,8 @@ try {
   ok(await p.locator('.qc-ouvert .qc-carte:has-text("tutoie")').count() === 0, 'plus de question tutoiement');
   await p.locator('.qc-ouvert .qc-carte:has-text("Sexe") .qc-tuile', { hasText: 'Homme' }).tap();
   await p.locator('.qc-ouvert .qc-carte:has-text("connus") .qc-puce', { hasText: 'Autre' }).tap();
-  ok(await p.locator('.qc-ouvert .qc-carte:has-text("connus") .qc-champ').count() === 1, '« Autre » ouvre un champ');
-  await p.locator('.qc-ouvert .qc-carte:has-text("connus") .qc-champ').fill('Salle de sport');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("connus") .qc-champ').count() === 0, '« Autre » sans champ a preciser');
+  ok(await p.locator('.qc-fac').count() === 0 && !/facultatif/.test(await p.locator('.qc-ouvert').innerText()), 'questions facultatives sans le mot « facultatif »');
   await remplir(p); await continuer(p);
   ok(/^Ton objectif/.test(await haut(p)) && await p.locator('.qc-ligne .qc-ok').count() === 1, 'section 1 validee : cochee, la suivante s\'ouvre');
   // Objectif : energie -> question « point le plus urgent »
@@ -93,6 +93,7 @@ try {
   ok(await p.locator('.qc-label', { hasText: /^Poids que tu vises/ }).count() === 1 && !(/sens pour toi/.test(await p.locator('.pg-qc').innerText())), 'poids vise sans parenthese');
   await p.locator('.qc-ouvert .qc-carte:has-text("Motivation") .qc-echelle button').nth(7).tap();
   ok(await p.locator('.qc-ouvert .qc-carte:has-text("Motivation") .qc-echelle .on').innerText() === '8', 'echelle 1 a 10');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Motivation") .qc-echelle .on').evaluate(e => getComputedStyle(e).backgroundColor) === 'rgb(248, 207, 1)', 'echelle : chiffre choisi colore en jaune');
   await remplir(p); await continuer(p);
   // Mesures : compteur
   const poids = p.locator('.qc-ouvert .qc-carte:has-text("Poids actuel")');
@@ -107,7 +108,9 @@ try {
   ok(await rv.locator('.qc-roulette .on').innerText() === '6', 'roulette : appui = choix');
   await p.locator('.qc-ouvert .qc-carte:has-text("batch") .qc-info').tap();
   ok(/cuisiner en une fois plusieurs repas/.test(await p.locator('.qc-info-txt').innerText()), 'batch : explication au clic');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("hors domicile") .qc-puce', { hasText: /^Aucun$/ }).count() === 1, 'repas hors domicile : « Aucun »');
   const mat = p.locator('.qc-ouvert .qc-carte:has-text("Matériel dispo")');
+  ok(await mat.locator('.qc-puce', { hasText: 'vraie cuisine' }).count() === 0, 'materiel : « pas de vraie cuisine » retire');
   await mat.locator('.qc-puce', { hasText: 'Four' }).tap();
   await mat.locator('.qc-puce', { hasText: 'Cuisine complète' }).tap();
   ok(await mat.locator('.qc-puce.on').count() === 1, 'cuisine complete : choix exclusif');
@@ -132,9 +135,8 @@ try {
   await p.locator('.qc-ouvert .qc-carte:has-text("des sodas") .qc-puce', { hasText: 'Oui' }).tap();
   await p.locator('.qc-ouvert .qc-carte:has-text("light ou") .qc-puce', { hasText: 'Sucrés' }).tap();
   ok(await p.locator('.qc-ouvert .qc-carte:has-text("Combien de sodas")').count() === 1, 'sodas sucres : combien');
-  await p.locator('.qc-ouvert .qc-carte:has-text("Alcool par semaine") .qc-puce', { hasText: /^0$/ }).tap();
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Alcool par semaine")').count() === 0, 'alcool par semaine retire');
   await remplir(p); await continuer(p);
-  ok(await p.locator('.qc-ouvert .qc-carte:has-text("difficultés") .qc-puce', { hasText: /^Alcool$/ }).count() === 0, 'pas d\'alcool : pas repropose dans les difficultes');
   ok(!(/Tu es plutôt|Pesée/.test(await p.locator('.pg-qc').innerText())), 'style et pesee retires');
   // Difficultes : regime non -> pourquoi
   await p.locator('.qc-ouvert .qc-carte:has-text("essayé un régime") .qc-puce', { hasText: 'Oui' }).tap();
@@ -157,10 +159,14 @@ try {
   await p.locator('.qc-passer').tap(); await p.waitForTimeout(300);
   ok(/Tout est bon/.test(await p.locator('.pg-qc').innerText()), 'recapitulatif');
   const rec = await p.locator('.pg-qc').innerText();
-  ok(/Salle de sport/.test(rec) && /Levothyrox/.test(rec) && /75.5 kg/.test(rec), 'recap reprend les reponses');
+  ok(/Autre/.test(rec) && /Levothyrox/.test(rec) && /75.5 kg/.test(rec), 'recap reprend les reponses');
   ok(await p.locator('.qc-alerte').count() === 1, 'alerte sante au recap');
-  await p.locator('.qc-cta', { hasText: 'Envoyer' }).tap(); await p.waitForTimeout(300);
-  ok(/Tout est bon/.test(await p.locator('.pg-qc').innerText()) && /obligatoires/.test(await p.locator('.pg-qc').innerText()), 'consentements K obligatoires');
+  const envoyer = p.locator('.qc-cta', { hasText: 'Envoyer' });
+  ok(await p.locator('.qc-consent input').count() === 3 && await p.locator('.qc-consent input:checked').count() === 0, '3 consentements, decoches');
+  ok(await envoyer.isDisabled(), 'envoi grise sans les cases');
+  await p.locator('.qc-consent input').nth(0).check(); await p.locator('.qc-consent input').nth(1).check();
+  ok(await envoyer.isDisabled(), 'deux cases ne suffisent pas');
+  ok(/confidentialite\.html/.test(await p.locator('.qc-consent a').first().getAttribute('href')), 'lien confidentialite');
   // Brouillon : quitter et revenir
   await p.reload(); await p.waitForTimeout(1800);
   await p.locator('.bn-item').last().tap(); await p.waitForTimeout(500);
@@ -168,17 +174,17 @@ try {
   await p.locator('.cp-bt', { hasText: 'Remplir mon questionnaire' }).tap(); await p.waitForTimeout(400);
   ok(await p.locator('.qc-ok').count() >= 9, 'accueil : sections faites cochees');
   await p.locator('.qc-cta', { hasText: 'récapitulatif' }).tap(); await p.waitForTimeout(300);
-  await p.locator('.qc-consent input').nth(0).check(); await p.locator('.qc-consent input').nth(1).check();
+  for (let k = 0; k < 3; k++) await p.locator('.qc-consent input').nth(k).check();
   await p.locator('.qc-cta', { hasText: 'Envoyer' }).tap(); await p.waitForTimeout(500);
   const att = await p.locator('.pg-coach').innerText();
   ok(/Ton plan arrive/.test(att) && /Livraison au plus tard/.test(att), 'envoye : ecran « Ton plan arrive »');
   ok(await p.locator('.pp-et').count() === 4 && /≈ 4[78] h restantes/.test(att), 'suivi en 4 etapes, ≈ 48 h restantes');
   await p.locator('.pp-lien', { hasText: 'Revoir mes réponses' }).tap(); await p.waitForTimeout(300);
-  ok(/Salle de sport/.test(await p.locator('.pp-reponses').innerText()), 'revoir mes reponses : lecture seule');
+  ok(/Levothyrox/.test(await p.locator('.pp-reponses').innerText()), 'revoir mes reponses : lecture seule');
   await p.locator('.pp-reponses .cp-bt').tap(); await p.waitForTimeout(200);
   ok(/mailto:contact@belfit.be/.test(await p.locator('.pp-mail').getAttribute('href')), 'ecrire a mon coach : e-mail');
   const env = await p.evaluate(() => JSON.parse(localStorage.getItem('belfit_qc_dernier') || 'null'));
-  ok(env && env.alerteSante && env.allergieGrave && env.consentements.k1 && env.reponses.source.texte === 'Salle de sport', 'envoi : reponses, alertes et consentements');
+  ok(env && env.alerteSante && env.allergieGrave && env.consentements.k1 && env.consentements.k3 && env.reponses.source.texte === 'Autre', 'envoi : reponses, alertes et consentements');
   await p.context().close();
 
   // 3) Bandeau + 7 jours

@@ -167,3 +167,8 @@
 .pg-qc .qc-ouvert .qc-carte { padding: 12px; border-radius: 16px; margin-bottom: 6px; }
 .pg-qc .qc-ouvert .qc-label { font-size: 14px; margin: 0 0 8px; }
 .pg-qc .qc-ouvert .qc-champ { padding: 10px 12px; margin-top: 0; }
+/* Echelles 1 a 10 : choix bien visible (Raci, 27/09) */
+.pg-qc .qc-echelle button.on, .pg-qc .qc-ouvert .qc-echelle button.on { background: #F8CF01; color: #191919; font-weight: 700; box-shadow: inset 0 0 0 2px #B07400; }
+.pg-qc .qc-liens { display: block; margin-top: 4px; }
+.pg-qc .qc-liens a { color: #8F6200; text-decoration: underline; }
+.pg-qc .qc-cta--gris, .pg-qc .qc-cta:disabled { background: #E5E3DE; color: #8E8B85; cursor: default; }

@@ -12,7 +12,7 @@ import { Entete } from './Entete.jsx';
 import { Icone } from './IconesCoach.jsx';
 import { useRetour } from '../services/retour.js';
 import { profilBesoins, poidsCalcul } from '../store/journal.js';
-import { PREMIER_PLAN, MISE_A_JOUR, CONSENTEMENTS, repondue, lisible, alerteSante, allergieGrave, optionsDe } from '../data/questionnaire-coach.js';
+import { PREMIER_PLAN, MISE_A_JOUR, CONSENTEMENTS, LIENS_LEGAUX, repondue, lisible, alerteSante, allergieGrave, optionsDe } from '../data/questionnaire-coach.js';
 
 const cleBrouillon = type => 'belfit_qc_brouillon_' + type;
 
@@ -146,10 +146,11 @@ function Question({ q, rep, toutes, maj, erreur }) {
     else vs = [...vs.filter(x => !exclusifs.includes(x)), o];
     maj({ ...r, valeurs: vs });
   };
-  const autreOuvert = q.type === 'plusieurs' ? (r.valeurs || []).includes('Autre') : r.valeur === 'Autre';
+  // Champ a preciser seulement si la question le demande (`autre`).
+  const autreOuvert = !!q.autre && (q.type === 'plusieurs' ? (r.valeurs || []).includes('Autre') : r.valeur === 'Autre');
   return (
-    <div class={'qc-carte' + (erreur ? ' qc-carte--err' : '')}>
-      <p class="qc-label">{q.label}{q.facultatif && <span class="qc-fac">facultatif</span>}
+    <div class={'qc-carte' + (erreur ? ' qc-carte--err' : '')} data-facultatif={q.facultatif ? '' : undefined}>
+      <p class="qc-label">{q.label}
         {q.info && (
           <button type="button" class={'qc-info' + (info ? ' on' : '')} aria-label="Explication" aria-expanded={info} onClick={() => setInfo(!info)}>
             <Icone nom="info" taille={16} />
@@ -355,18 +356,20 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
         })}
         {alerteSante(rep) && <p class="qc-alerte">Tu as signalé un point de santé. Montre ton plan à ton médecin avant de le commencer.</p>}
         <div class="qc-carte">
-          {CONSENTEMENTS.map(c => (
-            <label class={'qc-consent' + (erreurs['k_' + c.id] ? ' qc-carte--err' : '')}>
-              <input type="checkbox" checked={!!consent[c.id]} onChange={e => { touche.current = true; setConsent(x => ({ ...x, [c.id]: e.currentTarget.checked })); setErreurs(x => ({ ...x, ['k_' + c.id]: false })); }} />
-              <span>{c.texte}{!c.requis && <em> (facultatif)</em>}</span>
-            </label>
-          ))}
+          {CONSENTEMENTS.map(c => {
+            const liens = (c.liens || []).filter(([, cle]) => LIENS_LEGAUX[cle]);
+            return (
+              <label class="qc-consent">
+                <input type="checkbox" checked={!!consent[c.id]} onChange={e => { touche.current = true; setConsent(x => ({ ...x, [c.id]: e.currentTarget.checked })); }} />
+                <span>{c.texte}
+                  {liens.length > 0 && <span class="qc-liens">{liens.map(([nom, cle], n) => <>{n > 0 && ' · '}<a href={LIENS_LEGAUX[cle]} target="_blank" rel="noopener">{nom}</a></>)}</span>}
+                </span>
+              </label>
+            );
+          })}
         </div>
-        {manqueK.some(c => erreurs['k_' + c.id]) && <p class="qc-err">Coche les cases obligatoires pour envoyer.</p>}
-        <button class="qc-cta" onClick={() => {
-          if (manqueK.length) { setErreurs(Object.fromEntries(manqueK.map(c => ['k_' + c.id, true]))); return; }
-          onTermine(nettoyer(), alerteSante(rep), { allergieGrave: allergieGrave(rep), consentements: consent });
-        }}>Envoyer à mon coach</button>
+        <button class={'qc-cta' + (manqueK.length ? ' qc-cta--gris' : '')} disabled={manqueK.length > 0}
+          onClick={() => { if (!manqueK.length) onTermine(nettoyer(), alerteSante(rep), { allergieGrave: allergieGrave(rep), consentements: consent }); }}>Envoyer à mon coach</button>
         <p class="qc-note">Tu recevras ton plan dans l'app et par e-mail.</p>
       </div>
     );

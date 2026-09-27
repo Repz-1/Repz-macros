@@ -23,7 +23,8 @@ export const PREMIER_PLAN = [
     { id: 'telephone', label: 'Téléphone', type: 'texte', clavier: 'tel', facultatif: true },
     { id: 'age', label: 'Âge', type: 'nombre', saisie: true, unite: 'ans', min: 18, max: 90 },
     { id: 'sexe', label: 'Sexe', type: 'tuiles', options: [['Femme', 'gender-female'], ['Homme', 'gender-male']] },
-    { id: 'source', label: 'Comment tu nous as connus ?', type: 'un', autre: true, options: ['Instagram', 'TikTok', 'Un pote', 'Google', 'Un influenceur'] },
+    // « Autre » sans champ a preciser (Raci, 27/09).
+    { id: 'source', label: 'Comment tu nous as connus ?', type: 'un', options: ['Instagram', 'TikTok', 'Un pote', 'Google', 'Un influenceur', 'Autre'] },
   ]},
   { id: 'objectif', icone: 'target', titre: "Qu'est-ce que tu veux obtenir ?", nom: 'Ton objectif', sous: 'Un seul choix : ton plan sera construit autour.', questions: [
     { id: 'objectif', label: 'Ton objectif principal', type: 'tuiles', options: [['Perdre du gras', 'flame'], ['Prendre du muscle', 'barbell'], ['Recomposition', 'arrows-exchange'], ['Énergie et santé', 'bolt']] },
@@ -44,7 +45,7 @@ export const PREMIER_PLAN = [
     { id: 'tourHanches', label: 'Tour de hanches', type: 'nombre', saisie: true, unite: 'cm', min: 50, max: 200, facultatif: true },
     { id: 'masseGrasse', label: '% masse grasse si tu le connais', type: 'nombre', saisie: true, unite: '%', min: 3, max: 60, facultatif: true },
     { id: 'activite', label: "Niveau d'activité au quotidien (hors sport)", type: 'un', options: ['Assis la plupart de la journée', 'Debout ou marche au travail', 'Métier physique'] },
-    { id: 'pas', label: 'Pas par jour', type: 'un', options: ['< 4 000', '4–7 000', '7–10 000', '> 10 000', 'Je ne sais pas'] },
+    { id: 'pas', label: 'Pas par jour', type: 'un', facultatif: true, options: ['< 4 000', '4–7 000', '7–10 000', '> 10 000', 'Je ne sais pas'] },
   ]},
   { id: 'rythme', icone: 'clock', titre: 'Ton rythme et tes repas', nom: 'Ton rythme', sous: 'Pour caler les repas sur ta vraie journée.', questions: [
     { id: 'repasVoulus', label: 'Nombre de repas par jour que tu veux dans le plan (hors collations)', type: 'roulette', min: 1, max: 10 },
@@ -57,9 +58,9 @@ export const PREMIER_PLAN = [
     { id: 'batch', label: 'Tu es ok pour cuisiner en avance (batch) ?', type: 'un', options: ['Déjà en place', 'OK pour apprendre', "Je n'aime pas réchauffer", 'Impossible'],
       info: "Le batch cooking, c'est cuisiner en une fois plusieurs repas à l'avance (par exemple le dimanche), puis les garder au frigo ou au congélateur pour la semaine." },
     { id: 'niveau', label: 'Niveau en cuisine', type: 'un', options: ['Je réchauffe', 'Les bases', "À l'aise", 'Passionné'] },
-    { id: 'dehors', label: 'Repas hors domicile par semaine (midi + soir + week-end)', type: 'un', options: ['0–1', '2–4', '5 et plus'] },
-    { id: 'materiel', label: 'Matériel dispo', type: 'plusieurs', exclusifs: ['Cuisine complète', 'Pas de vraie cuisine'],
-      options: ['Cuisine complète', 'Four', 'Micro-ondes', 'Mixeur', 'Airfryer', 'Cuiseur riz', 'Congélo', 'Pas de vraie cuisine'] },
+    { id: 'dehors', label: 'Repas hors domicile par semaine (midi + soir + week-end)', type: 'un', options: ['Aucun', '1', '2–4', '5 et plus'] },
+    { id: 'materiel', label: 'Matériel dispo', type: 'plusieurs', exclusifs: ['Cuisine complète'],
+      options: ['Cuisine complète', 'Four', 'Micro-ondes', 'Mixeur', 'Airfryer', 'Cuiseur riz', 'Congélo'] },
   ]},
   { id: 'entrainement', icone: 'barbell', titre: 'Ton entraînement', nom: 'Ton entraînement', sous: 'Ton plan suit ta dépense.', questions: [
     { id: 'seances', label: 'Séances par semaine', type: 'roulette', min: 0, max: 14 },
@@ -91,14 +92,10 @@ export const PREMIER_PLAN = [
       options: ['Light / zéro', 'Sucrés (Coca, Orangina, ice tea sucré…)', 'Les deux'] },
     { id: 'sodaNb', label: 'Combien de sodas sucrés par semaine ?', type: 'nombre', min: 0, max: 50, defaut: 3,
       si: r => ['Sucrés (Coca, Orangina, ice tea sucré…)', 'Les deux'].includes(val(r, 'sodaType')) },
-    { id: 'alcool', label: 'Alcool par semaine', type: 'un',
-      options: ['0', '1–3 verres', 'Presque chaque soir', 'Gros week-end', "Je ne veux pas qu'on touche à ça"] },
   ]},
   { id: 'difficultes', icone: 'puzzle', titre: 'Tes difficultés', nom: 'Tes difficultés', sous: 'Pour un plan qui tient dans la vraie vie.', questions: [
     { id: 'difficultes', label: "Tes difficultés aujourd'hui", type: 'plusieurs', aucun: 'Aucune',
-      options: ['Grignotage', 'Sucre', 'Restaurants', 'Alcool', 'Pas le temps de cuisiner', 'Week-end qui annule la semaine', 'Faim entre les repas', 'Soirées difficiles', 'Aucune'],
-      // Pas d'alcool declare : on ne le repropose pas ici (Raci, 26/09).
-      filtre: (o, r) => o !== 'Alcool' || val(r, 'alcool') !== '0' },
+      options: ['Grignotage', 'Sucre', 'Restaurants', 'Alcool', 'Pas le temps de cuisiner', 'Week-end qui annule la semaine', 'Faim entre les repas', 'Soirées difficiles', 'Aucune'] },
     { id: 'regimeEssaye', label: 'As-tu déjà essayé un régime ?', type: 'un', options: ['Non', 'Oui'] },
     { id: 'regimeMarche', label: 'Est-ce que ça a fonctionné ?', type: 'un', si: r => val(r, 'regimeEssaye') === 'Oui',
       options: ["Oui, j'avais eu des résultats", "Non, ça n'a pas tenu ou pas marché"] },
@@ -154,10 +151,17 @@ export const MISE_A_JOUR = [
 ];
 
 // Consentements K (sur le recapitulatif, avant l'envoi).
+// Trois cases obligatoires, decochees ; bouton grise tant qu'une manque
+// (Raci, 27/09). Societe = BELFIT, comme dans confidentialite.html.
+// Pas encore de page CGV ni FAQ : lien affiche des que l'adresse existe.
+export const LIENS_LEGAUX = { confidentialite: '/confidentialite.html', cgv: null, faq: null };
 export const CONSENTEMENTS = [
-  { id: 'k1', texte: "J'accepte que ces informations, y compris de santé, servent à construire mon plan.", requis: true },
-  { id: 'k2', texte: "Je comprends que ce n'est pas un avis médical et que je dois signaler une pathologie ou une grossesse.", requis: true },
-  { id: 'k4', texte: "J'accepte d'être contacté pour le suivi de mon plan.", requis: false },
+  { id: 'k1', requis: true, liens: [['Confidentialité', 'confidentialite']],
+    texte: "J'accepte que mes informations, y compris de santé, soient utilisées par BELFIT et mon coach pour construire et m'envoyer mon plan." },
+  { id: 'k2', requis: true,
+    texte: "Je comprends que ce n'est pas un avis médical. Je dois signaler une pathologie, une grossesse ou un traitement." },
+  { id: 'k3', requis: true, liens: [['CGV', 'cgv'], ['FAQ', 'faq']],
+    texte: "Je demande à recevoir mon plan tout de suite. Une fois livré, je perds mon droit de rétractation de 14 jours. Remboursement : voir FAQ." },
 ];
 
 /** Vrai si une reponse demande l'avis d'un medecin avant le plan. */
@@ -191,10 +195,10 @@ export function repondue(q, rep) {
   if (q.type === 'echelle') return +r.valeur >= 1 && +r.valeur <= 10;
   if (q.type === 'roulette') return r.valeur !== undefined && r.valeur !== '' && +r.valeur >= q.min && +r.valeur <= q.max;
   if (q.type === 'texte' || q.type === 'long' || q.type === 'date') return !vide;
-  if (q.type === 'un' || q.type === 'tuiles') return !!r.valeur && (r.valeur !== 'Autre' || !!String(r.autre || '').trim());
+  if (q.type === 'un' || q.type === 'tuiles') return !!r.valeur && (r.valeur !== 'Autre' || !q.autre || !!String(r.autre || '').trim());
   if (q.type === 'plusieurs') {
     const vs = r.valeurs || [];
-    return vs.length > 0 && (!vs.includes('Autre') || !!String(r.autre || '').trim());
+    return vs.length > 0 && (!vs.includes('Autre') || !q.autre || !!String(r.autre || '').trim());
   }
   return true;
 }
