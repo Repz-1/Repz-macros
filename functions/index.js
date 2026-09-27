@@ -1214,6 +1214,7 @@ exports.deposerProgramme = onRequest(
 // verifie ICI : la page seule ne peut rien lire ni ecrire.
 //   action "verifier" : le code est-il bon ?
 //   action "dossiers" : questionnaires recus, a traiter ou livres
+//   action "proposer" : brouillon de plan par l'IA (Gemini), relu par Raci
 //   action "deposer"  : programme vers un client (app + e-mail)
 // ============================================================
 
@@ -1243,8 +1244,114 @@ function reponseTexte(reponses, id) {
   return r ? String(r.texte || r.valeur || "").slice(0, 120) : "";
 }
 
+/** Besoins du jour d'apres le questionnaire (Mifflin-St Jeor, comme
+ *  le calcul de l'app). Sert de cible a l'IA ; le coach tranche. */
+function besoinsDe(rep) {
+  const v = (id) => (rep[id] || {}).valeur;
+  const n = (id) => parseFloat(String(v(id) || "").replace(",", "."));
+  const poids = n("poids"), taille = n("taille"), age = n("age");
+  if (!(poids > 30) || !(taille > 120) || !(age > 10)) return null;
+  const homme = v("sexe") !== "Femme";
+  const bmr = 10 * poids + 6.25 * taille - 5 * age + (homme ? 5 : -161);
+  const base = {"Assis la plupart de la journée": 1.2,
+    "Debout ou marche au travail": 1.375, "Métier physique": 1.55}[v("activite")] || 1.3;
+  const seances = Math.min(14, Math.max(0, n("seances") || 0));
+  const facteur = Math.min(2.2, base + seances * 0.03);
+  const ajust = {"Perdre du gras": -400, "Prendre du muscle": 300,
+    "Recomposition": -150}[v("objectif")] || 0;
+  const kcal = Math.round((bmr * facteur + ajust) / 10) * 10;
+  const prot = Math.round(poids * (v("objectif") === "Prendre du muscle" ? 2.0 : 1.8));
+  const lip = Math.round(kcal * 0.27 / 9);
+  const carbs = Math.max(0, Math.round((kcal - prot * 4 - lip * 9) / 4));
+  return {kcal, prot, carbs, lip};
+}
+
+/** Appel Gemini en JSON, avec la meme liste de repli que le reste. */
+async function geminiJSON(prompt) {
+  const MODELES = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-2.5-flash"];
+  const corps = {
+    contents: [{parts: [{text: prompt}]}],
+    generationConfig: {temperature: 0.4, responseMimeType: "application/json"},
+  };
+  let dernier = "";
+  for (const modele of MODELES) {
+    const url = "https://generativelanguage.googleapis.com/v1beta/models/" +
+      modele + ":generateContent?key=" + GEMINI_API_KEY.value();
+    const r = await fetch(url, {method: "POST",
+      headers: {"Content-Type": "application/json"}, body: JSON.stringify(corps)});
+    if (r.ok) {
+      const d = await r.json();
+      const t = d.candidates && d.candidates[0] && d.candidates[0].content &&
+        d.candidates[0].content.parts && d.candidates[0].content.parts[0].text || "{}";
+      return JSON.parse(String(t).replace(/```json|```/g, "").trim());
+    }
+    dernier = (await r.text()).slice(0, 200);
+    console.error("Gemini (coach)", modele, r.status, dernier);
+    if (r.status !== 404) break;
+  }
+  throw new Error("gemini: " + dernier);
+}
+
+/** Brouillon de plan par l'IA, a partir du questionnaire et/ou d'une
+ *  demande du coach. Seuls les aliments de la base de l'app sont gardes. */
+async function proposerPlan(corps) {
+  const liste = Array.isArray(corps.aliments) ? corps.aliments.slice(0, 2500).map(String) : [];
+  const noms = new Map();
+  liste.forEach((l) => { const nom = l.split(";")[0]; if (nom) noms.set(nom, /pièce=/.test(l)); });
+  if (!noms.size) return [400, {ok: false, motif: "aliments"}];
+
+  let reponses = null;
+  if (corps.uid) {
+    const doc = await db.collection("users").doc(String(corps.uid)).get();
+    reponses = doc.exists && doc.data().questionnaireCoach ? doc.data().questionnaireCoach.reponses || {} : null;
+  }
+  const actuel = Array.isArray(corps.planActuel) ? corps.planActuel.slice(0, 10) : [];
+  const demande = String(corps.demande || "").slice(0, 600).trim();
+  if (!reponses && !actuel.length) return [400, {ok: false, motif: "vide"}];
+
+  const cible = reponses ? besoinsDe(reponses) : null;
+  const nbRepas = reponses ? parseInt((reponses.repasVoulus || {}).valeur, 10) || 3 : null;
+  const lignesRep = reponses ? Object.values(reponses)
+    .filter((r) => r && r.question && r.texte && r.texte !== "—")
+    .map((r) => "- " + r.question + " : " + r.texte).join("\n") : "";
+
+  const prompt = [
+    "Tu es l'assistant d'un coach en nutrition belge. Tu prepares un BROUILLON de plan alimentaire",
+    "pour une journee type. Le coach le relit et le corrige avant de l'envoyer.",
+    cible ? `CIBLE DU JOUR : ${cible.kcal} kcal, ${cible.prot} g de proteines, ${cible.carbs} g de glucides, ${cible.lip} g de lipides.` : "",
+    nbRepas ? `NOMBRE DE REPAS : ${nbRepas} (tu peux ajouter une collation si c'est utile).` : "",
+    lignesRep ? "REPONSES DU CLIENT AU QUESTIONNAIRE :\n" + lignesRep : "",
+    actuel.length ? "PLAN ACTUEL (a modifier selon la demande du coach, garde ce qui n'est pas concerne) :\n" + JSON.stringify(actuel) : "",
+    demande ? "DEMANDE DU COACH (prioritaire) : " + demande : "",
+    "REGLES STRICTES :",
+    "- Utilise UNIQUEMENT des aliments de la LISTE ci-dessous, avec leur nom EXACT, caractere pour caractere.",
+    "- Exclus tout aliment lie a une allergie ou intolerance declaree, tout aliment refuse, et respecte le regime declare (halal, sans porc, vegetarien, vegan...).",
+    "- portion = grammes ; pour les aliments marques « pièce=Ng », portion = nombre de pieces.",
+    "- Des repas simples, courants en Belgique, adaptes au temps de cuisine, au materiel et au rythme declares.",
+    cible ? "- Vise la cible a 5 % pres, surtout pour les calories et les proteines." : "",
+    "- Noms de repas en francais (Petit-dejeuner, Dejeuner, Collation, Diner...).",
+    "Reponds UNIQUEMENT avec ce JSON : {\"repas\":[{\"nom\":\"...\",\"ings\":[{\"name\":\"...\",\"portion\":nombre}]}],\"remarque\":\"une phrase pour le coach : points d'attention, allergies, choix faits\"}",
+    "LISTE (nom;kcal;proteines;glucides;lipides pour 100 g) :",
+    liste.join("\n"),
+  ].filter(Boolean).join("\n");
+
+  const brut = await geminiJSON(prompt);
+  const repas = (Array.isArray(brut.repas) ? brut.repas : []).slice(0, 8).map((r) => ({
+    nom: String((r && r.nom) || "Repas").slice(0, 60),
+    ings: (Array.isArray(r && r.ings) ? r.ings : []).slice(0, 14)
+      .filter((i) => i && noms.has(String(i.name)))
+      .map((i) => {
+        const piece = noms.get(String(i.name));
+        const q = Number(i.portion) || 0;
+        return {name: String(i.name), portion: piece ? Math.min(20, Math.max(1, Math.round(q))) : Math.min(1500, Math.max(5, Math.round(q / 5) * 5))};
+      }),
+  })).filter((r) => r.ings.length);
+  if (!repas.length) return [502, {ok: false, motif: "ia"}];
+  return [200, {ok: true, repas, cible, remarque: String(brut.remarque || "").slice(0, 400)}];
+}
+
 exports.espaceCoach = onRequest(
-  {secrets: [RESEND_API_KEY, COACH_CODE], region: "europe-west1", cors: true},
+  {secrets: [RESEND_API_KEY, COACH_CODE, GEMINI_API_KEY], region: "europe-west1", cors: true, timeoutSeconds: 120},
   async (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -1298,6 +1405,12 @@ exports.espaceCoach = onRequest(
           };
         });
         res.json({ok: true, dossiers});
+        return;
+      }
+
+      if (action === "proposer") {
+        const [statut, rep] = await proposerPlan(corps);
+        res.status(statut).json(rep);
         return;
       }
 
