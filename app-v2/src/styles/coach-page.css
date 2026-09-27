@@ -152,3 +152,18 @@
 .pg-coach .pp-rep-sec { font-size: 11px; letter-spacing: .6px; color: #B07400; font-weight: 600; margin: 12px 0 4px; text-transform: uppercase; }
 .pg-coach .pp-rep { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #63615C; margin: 5px 0; line-height: 1.4; }
 .pg-coach .pp-rep b { color: #191919; font-weight: 600; text-align: right; max-width: 55%; }
+/* Accueil : liste gardee, section en cours ouverte dedans (maquette validee 27/09) */
+.pg-qc .qc-haut .qc-sur { font-size: 12px; }
+.pg-qc .qc-titre--accueil { font-size: 22px; margin: 2px 0 14px; }
+.pg-qc .qc-bloc { border-bottom: 1px solid #EFEDE8; padding-bottom: 14px; scroll-margin-top: 72px; }
+.pg-qc .qc-bloc:last-child { border-bottom: 0; }
+.pg-qc .qc-ligne--ouverte { border-bottom: 0; font-weight: 600; }
+.pg-qc .qc-ligne--ouverte .qc-ic { background: #F8CF01; color: #191919; }
+.pg-qc .qc-chev { margin-left: auto; color: #8E8B85; display: flex; }
+.pg-qc .qc-ouvert .qc-carte { background: #F4F3F0; margin-bottom: 8px; }
+.pg-qc .qc-ouvert .qc-champ, .pg-qc .qc-ouvert .qc-num, .pg-qc .qc-ouvert .qc-saisie, .pg-qc .qc-ouvert .qc-roulette, .pg-qc .qc-ouvert .qc-echelle button { background: #fff; }
+.pg-qc .qc-ouvert .qc-num > button { background: #F4F3F0; }
+.pg-qc .qc-cta--noir { background: #191919; color: #fff; margin-top: 12px; }
+.pg-qc .qc-ouvert .qc-carte { padding: 12px; border-radius: 16px; margin-bottom: 6px; }
+.pg-qc .qc-ouvert .qc-label { font-size: 14px; margin: 0 0 8px; }
+.pg-qc .qc-ouvert .qc-champ { padding: 10px 12px; margin-top: 0; }

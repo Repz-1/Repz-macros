@@ -30,6 +30,8 @@ const P = {
   'list-check': 'M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9',
   mail: 'M3 6h18v12H3zM3 7l9 6 9-6',
   'chevron-right': 'M9 6l6 6-6 6',
+  'chevron-up': 'M6 15l6-6 6 6',
+  'chevron-down': 'M6 9l6 6 6-6',
   info: 'M12 21a9 9 0 100-18 9 9 0 000 18zM12 11v5M12 8h.01',
 };
 export function Icone({ nom, taille = 22 }) {

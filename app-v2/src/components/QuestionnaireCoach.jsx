@@ -212,7 +212,10 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
   const b = lireBrouillon(type);
   const [rep, setRep] = useState(() => (b && b.rep) || prerempli(type));
   const [i, setI] = useState(() => (b && Math.min(b.i || 0, sections.length)) || 0);
-  const [vue, setVue] = useState('accueil');            // accueil | section | recap
+  const [vue, setVue] = useState('accueil');            // accueil | recap
+  // Liste des sections avec la section en cours deja ouverte dedans
+  // (maquette validee 27/09) : plus d'ecran separe par section.
+  const [ouverte, setOuverte] = useState(() => { const d = (b && Math.min(b.i || 0, sections.length)) || 0; return d >= sections.length ? -1 : d; });
   const [consent, setConsent] = useState(() => (b && b.consent) || {});
   const [erreurs, setErreurs] = useState({});
   const [etatSauve, setEtatSauve] = useState('ok');     // ok | envoi | local
@@ -241,21 +244,30 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
     if (touche.current || !distant || distant.type !== type || !distant.rep) return;
     if ((distant.majLe || '') <= ouvertLe.current) return;
     ouvertLe.current = distant.majLe;
-    setRep(distant.rep); setI(Math.min(distant.i || 0, sections.length)); setConsent(distant.consent || {});
+    const d = Math.min(distant.i || 0, sections.length);
+    setRep(distant.rep); setI(d); setOuverte(d >= sections.length ? -1 : d); setConsent(distant.consent || {});
   }, [distant]);
 
-  useEffect(() => { try { document.querySelector('.pg-qc') && document.querySelector('.pg-qc').scrollIntoView(); } catch (e) { /* rien */ } }, [i, vue]);
+  // Section ouverte plus bas que la premiere : on l'amene en haut.
+  useEffect(() => {
+    try {
+      const el = vue === 'accueil' && ouverte > 0 ? document.querySelector('.pg-qc .qc-bloc') : document.querySelector('.pg-qc');
+      if (el) el.scrollIntoView({ block: 'start' });
+    } catch (e) { /* rien */ }
+  }, [vue, ouverte]);
 
   const maj = id => v => { touche.current = true; setRep(r => ({ ...r, [id]: v })); setErreurs(x => ({ ...x, [id]: false })); };
   const visibles = s => s.questions.filter(q => !q.si || q.si(rep));
   const complete = s => visibles(s).every(q => repondue(q, rep[q.id]));
-  const suivant = () => {
-    const s = sections[i];
+  const ouvrir = k => { setErreurs({}); setOuverte(k); if (vue !== 'accueil') setVue('accueil'); };
+  const valider = k => {
     const manque = {};
-    visibles(s).forEach(q => { if (!repondue(q, rep[q.id])) manque[q.id] = true; });
+    visibles(sections[k]).forEach(q => { if (!repondue(q, rep[q.id])) manque[q.id] = true; });
     if (Object.keys(manque).length) { setErreurs(manque); return; }
     setErreurs({});
-    if (i + 1 >= sections.length) { setI(sections.length); setVue('recap'); } else setI(i + 1);
+    const n = k + 1;
+    setI(x => Math.max(x, n));
+    if (n >= sections.length) { setOuverte(-1); setVue('recap'); } else setOuverte(n);
   };
   const nettoyer = () => {
     const out = {};
@@ -272,34 +284,46 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
     <div class="qc-seg">{sections.map((s, k) => <i class={k < jusque ? 'f' : k === jusque ? 'c' : ''} />)}</div>
   );
 
-  // ----- Accueil : les sections et ou on en est -----
+  // ----- Accueil : les sections, celle en cours ouverte -----
   if (vue === 'accueil') {
     const courante = Math.min(i, sections.length - 1);
     const fini = i >= sections.length;
     return (
       <div class="pg-coach pg-qc">
         <Entete sansBandeau retour={onFermer} />
-        <div class="qc-haut"><span>Questionnaire</span><Sauve /></div>
-        <p class="qc-sur">{type === 'maj' ? 'MISE À JOUR' : 'PAIEMENT REÇU'}</p>
-        <h1 class="qc-titre">{type === 'maj' ? 'Ton bilan du mois' : 'Ton programme commence ici'}</h1>
-        <p class="qc-sous">{sections.filter(x => !x.facultative).length} petites sections{sections.some(x => x.facultative) ? ' et un bonus' : ''}. Tu peux t'arrêter quand tu veux, tout est gardé.</p>
+        <div class="qc-haut"><span class="qc-sur">{type === 'maj' ? 'MISE À JOUR' : 'PAIEMENT REÇU'}</span><Sauve /></div>
+        <h1 class="qc-titre qc-titre--accueil">{type === 'maj' ? 'Ton bilan du mois' : 'Ton programme commence ici'}</h1>
         <div class="qc-carte qc-liste">
           {sections.map((s, k) => {
             const ok = k < i && complete(s);
-            const accessible = k <= i;
+            const Etat = () => ok ? <span class="qc-ok"><Icone nom="circle-check" taille={18} /></span>
+              : k === courante && !fini && (i > 0 || touche.current || b) ? <span class="qc-encours">En cours</span> : null;
+            if (k === ouverte) return (
+              <div class="qc-bloc">
+                <button type="button" class="qc-ligne qc-ligne--ouverte" onClick={() => setOuverte(-1)}>
+                  <span class="qc-ic"><Icone nom={s.icone} taille={17} /></span>
+                  <span class="qc-ligne-nom">{s.nom}{s.facultative && <em> · facultatif</em>}</span>
+                  <span class="qc-chev"><Icone nom="chevron-up" taille={18} /></span>
+                </button>
+                <div class="qc-ouvert">
+                  {visibles(s).map(q => <Question key={q.id} q={q} rep={rep[q.id]} toutes={rep} maj={maj(q.id)} erreur={erreurs[q.id]} />)}
+                  {Object.values(erreurs).some(Boolean) && <p class="qc-err qc-err--bas">Il manque une réponse plus haut.</p>}
+                  <button class="qc-cta qc-cta--noir" onClick={() => valider(k)}>{k === sections.length - 1 ? 'Voir le récapitulatif' : 'Continuer'}</button>
+                  {s.facultative && <button class="qc-passer" onClick={() => { setErreurs({}); setI(sections.length); setOuverte(-1); setVue('recap'); }}>Passer cette section</button>}
+                </div>
+              </div>
+            );
             return (
-              <button type="button" class="qc-ligne" disabled={!accessible} onClick={() => { setI(k); setVue('section'); }}>
+              <button type="button" class="qc-ligne" disabled={k > i} onClick={() => ouvrir(k)}>
                 <span class="qc-ic"><Icone nom={s.icone} taille={17} /></span>
                 <span class="qc-ligne-nom">{s.nom}{s.facultative && <em> · facultatif</em>}</span>
-                {ok ? <span class="qc-ok"><Icone nom="circle-check" taille={18} /></span>
-                  : k === courante && !fini ? <span class="qc-encours">{i === 0 && !touche.current && !b ? '' : 'En cours'}</span> : null}
+                <Etat />
               </button>
             );
           })}
         </div>
-        <button class="qc-cta" onClick={() => setVue(fini ? 'recap' : 'section')}>
-          {fini ? 'Voir le récapitulatif' : (i === 0 && !b ? 'Commencer' : 'Reprendre · ' + sections[courante].nom)}
-        </button>
+        {fini ? <button class="qc-cta" onClick={() => setVue('recap')}>Voir le récapitulatif</button>
+          : ouverte < 0 && <button class="qc-cta" onClick={() => ouvrir(courante)}>Reprendre · {sections[courante].nom}</button>}
       </div>
     );
   }
@@ -309,7 +333,7 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
     const manqueK = CONSENTEMENTS.filter(c => c.requis && !consent[c.id]);
     return (
       <div class="pg-coach pg-qc">
-        <Entete sansBandeau retour={() => { setI(sections.length - 1); setVue('section'); }} />
+        <Entete sansBandeau retour={() => ouvrir(sections.length - 1)} />
         <div class="qc-haut"><span>Récapitulatif</span><Sauve /></div>
         <Segments jusque={sections.length} />
         <p class="qc-sur">DERNIÈRE ÉTAPE</p>
@@ -323,7 +347,7 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
               <div class="qc-recap-tete">
                 <span class="qc-ic"><Icone nom={s.icone} taille={17} /></span>
                 <span class="qc-ligne-nom">{s.nom}</span>
-                <button class="qc-modif" onClick={() => { setI(k); setVue('section'); }}>Modifier</button>
+                <button class="qc-modif" onClick={() => ouvrir(k)}>Modifier</button>
               </div>
               {lignes.map(q => <p class="qc-rl"><span>{q.label}</span><b>{lisible(q, rep[q.id])}</b></p>)}
             </div>
@@ -347,22 +371,5 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
       </div>
     );
   }
-
-  // ----- Une section -----
-  const s = sections[i];
-  return (
-    <div class="pg-coach pg-qc">
-      <Entete sansBandeau retour={() => { setErreurs({}); if (i === 0) setVue('accueil'); else setI(i - 1); }} />
-      <div class="qc-haut"><span>{s.facultative ? 'Bonus' : `Section ${i + 1} sur ${sections.filter(x => !x.facultative).length}`}</span><Sauve /></div>
-      <Segments jusque={i} />
-      <p class="qc-sur">{s.nom.toUpperCase()}</p>
-      <h1 class="qc-titre">{s.titre}</h1>
-      <p class="qc-sous">{s.sous}</p>
-      {visibles(s).map(q => <Question key={q.id} q={q} rep={rep[q.id]} toutes={rep} maj={maj(q.id)} erreur={erreurs[q.id]} />)}
-      {Object.values(erreurs).some(Boolean) && <p class="qc-err qc-err--bas">Il manque une réponse plus haut.</p>}
-      <button class="qc-cta" onClick={suivant}>{i === sections.length - 1 ? 'Voir le récapitulatif' : 'Continuer'}</button>
-      {s.facultative && <button class="qc-passer" onClick={() => { setErreurs({}); setI(sections.length); setVue('recap'); }}>Passer cette section</button>}
-      <button class="qc-pause" onClick={() => setVue('accueil')}>Finir plus tard</button>
-    </div>
-  );
+  return null;
 }

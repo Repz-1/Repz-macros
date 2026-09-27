@@ -21,7 +21,7 @@ async function page(prepa, arg) {
 const clicEcran = (p, sel) => p.evaluate(s => [...document.querySelectorAll(s)].find(el => { const r = el.getBoundingClientRect(); return r.left >= 0 && r.left < 390 && r.width > 0; }).click(), sel);
 // Remplit la section affichee : premier choix, compteurs, echelles, textes.
 async function remplir(p) {
-  const cartes = p.locator('.pg-qc .qc-carte:has(.qc-label)');
+  const cartes = p.locator('.pg-qc .qc-ouvert .qc-carte:has(.qc-label)');
   for (let k = 0; k < await cartes.count(); k++) {
     const c = cartes.nth(k);
     if (await c.locator('.qc-fac').count()) continue;
@@ -40,8 +40,9 @@ async function remplir(p) {
     }
   }
 }
-const continuer = async p => { await p.locator('.pg-qc .qc-cta').tap(); await p.waitForTimeout(250); };
-const haut = p => p.locator('.qc-haut span').first().innerText();
+const continuer = async p => { await p.locator('.pg-qc .qc-bloc .qc-cta').tap(); await p.waitForTimeout(250); };
+// Section ouverte dans la liste (27/09 : plus d'ecran separe par section).
+const haut = p => p.locator('.qc-bloc .qc-ligne-nom').innerText().catch(() => '');
 
 try {
   // 1) Avant paiement
@@ -69,89 +70,90 @@ try {
   await p.goto(RETOUR + 'plan'); await p.waitForTimeout(1800);
   ok(/Ton programme commence ici/.test(await p.locator('.pg-qc').innerText()), 'retour de paiement : accueil du questionnaire');
   ok(await p.locator('.qc-ligne').count() === 11, '10 sections + bonus listees');
-  await p.locator('.qc-cta', { hasText: 'Commencer' }).tap(); await p.waitForTimeout(300);
-  ok(/Section 1 sur 10/.test(await haut(p)), 'section 1 sur 10');
-  ok((await p.locator('.qc-carte:has-text("E-mail") .qc-champ').inputValue()).includes('@'), 'e-mail prerempli depuis le compte');
+  ok(!/arrêter quand tu veux/.test(await p.locator('.pg-qc').innerText()), 'accueil : phrase « tu peux t\'arreter » retiree');
+  ok(await p.locator('.qc-bloc').count() === 1 && /^Toi/.test(await haut(p)), 'accueil : premiere section deja ouverte');
+  ok(await p.locator('.pg-qc > .qc-cta').count() === 0, 'accueil : pas de bouton Commencer');
+  ok((await p.locator('.qc-ouvert .qc-carte:has-text("E-mail") .qc-champ').inputValue()).includes('@'), 'e-mail prerempli depuis le compte');
   await continuer(p);
-  ok(await p.locator('.qc-carte--err').count() > 0 && /Section 1/.test(await haut(p)), 'bloque tant que manque une reponse');
-  ok(await p.locator('.qc-carte:has-text("Sexe") .qc-tuile').count() === 2, 'sexe : homme ou femme seulement');
-  ok(await p.locator('.qc-carte:has-text("tutoie")').count() === 0, 'plus de question tutoiement');
-  await p.locator('.qc-carte:has-text("Sexe") .qc-tuile', { hasText: 'Homme' }).tap();
-  await p.locator('.qc-carte:has-text("connus") .qc-puce', { hasText: 'Autre' }).tap();
-  ok(await p.locator('.qc-carte:has-text("connus") .qc-champ').count() === 1, '« Autre » ouvre un champ');
-  await p.locator('.qc-carte:has-text("connus") .qc-champ').fill('Salle de sport');
+  ok(await p.locator('.qc-carte--err').count() > 0 && /^Toi/.test(await haut(p)), 'bloque tant que manque une reponse');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Sexe") .qc-tuile').count() === 2, 'sexe : homme ou femme seulement');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("tutoie")').count() === 0, 'plus de question tutoiement');
+  await p.locator('.qc-ouvert .qc-carte:has-text("Sexe") .qc-tuile', { hasText: 'Homme' }).tap();
+  await p.locator('.qc-ouvert .qc-carte:has-text("connus") .qc-puce', { hasText: 'Autre' }).tap();
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("connus") .qc-champ').count() === 1, '« Autre » ouvre un champ');
+  await p.locator('.qc-ouvert .qc-carte:has-text("connus") .qc-champ').fill('Salle de sport');
   await remplir(p); await continuer(p);
-  ok(/Section 2 sur 10/.test(await haut(p)), 'section 1 validee');
+  ok(/^Ton objectif/.test(await haut(p)) && await p.locator('.qc-ligne .qc-ok').count() === 1, 'section 1 validee : cochee, la suivante s\'ouvre');
   // Objectif : energie -> question « point le plus urgent »
   await p.locator('.qc-tuile', { hasText: 'Énergie et santé' }).tap();
-  ok(await p.locator('.qc-carte:has-text("plus urgent")').count() === 1, 'energie et sante : point le plus urgent');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("plus urgent")').count() === 1, 'energie et sante : point le plus urgent');
   await p.locator('.qc-tuile', { hasText: 'Perdre du gras' }).tap();
-  ok(await p.locator('.qc-carte:has-text("plus urgent")').count() === 0, 'perdre du gras : question masquee');
-  ok(await p.locator('.qc-carte:has-text("Pourquoi maintenant")').count() === 0, 'plus de « pourquoi maintenant »');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("plus urgent")').count() === 0, 'perdre du gras : question masquee');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Pourquoi maintenant")').count() === 0, 'plus de « pourquoi maintenant »');
   ok(await p.locator('.qc-label', { hasText: /^Poids que tu vises/ }).count() === 1 && !(/sens pour toi/.test(await p.locator('.pg-qc').innerText())), 'poids vise sans parenthese');
-  await p.locator('.qc-carte:has-text("Motivation") .qc-echelle button').nth(7).tap();
-  ok(await p.locator('.qc-carte:has-text("Motivation") .qc-echelle .on').innerText() === '8', 'echelle 1 a 10');
+  await p.locator('.qc-ouvert .qc-carte:has-text("Motivation") .qc-echelle button').nth(7).tap();
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Motivation") .qc-echelle .on').innerText() === '8', 'echelle 1 a 10');
   await remplir(p); await continuer(p);
   // Mesures : compteur
-  const poids = p.locator('.qc-carte:has-text("Poids actuel")');
+  const poids = p.locator('.qc-ouvert .qc-carte:has-text("Poids actuel")');
   ok(await poids.locator('.qc-saisie input').count() === 1 && await poids.locator('.qc-num').count() === 0, 'poids : saisie directe, sans + / -');
   await poids.locator('.qc-saisie input').fill('75.5');
   ok(!(/plus bas|plus haut|sentais bien/.test(await p.locator('.pg-qc').innerText())), 'poids passes retires');
   await remplir(p); await continuer(p);
   // Rythme : roulette, info batch, materiel
-  const rv = p.locator('.qc-carte:has-text("hors collations")');
+  const rv = p.locator('.qc-ouvert .qc-carte:has-text("hors collations")');
   ok(await rv.locator('.qc-roulette button').count() === 10, 'repas voulus : roulette 1 a 10');
   await rv.locator('.qc-roulette button', { hasText: /^6$/ }).tap(); await p.waitForTimeout(500);
   ok(await rv.locator('.qc-roulette .on').innerText() === '6', 'roulette : appui = choix');
-  await p.locator('.qc-carte:has-text("batch") .qc-info').tap();
+  await p.locator('.qc-ouvert .qc-carte:has-text("batch") .qc-info').tap();
   ok(/cuisiner en une fois plusieurs repas/.test(await p.locator('.qc-info-txt').innerText()), 'batch : explication au clic');
-  const mat = p.locator('.qc-carte:has-text("Matériel dispo")');
+  const mat = p.locator('.qc-ouvert .qc-carte:has-text("Matériel dispo")');
   await mat.locator('.qc-puce', { hasText: 'Four' }).tap();
   await mat.locator('.qc-puce', { hasText: 'Cuisine complète' }).tap();
   ok(await mat.locator('.qc-puce.on').count() === 1, 'cuisine complete : choix exclusif');
   await remplir(p); await continuer(p);
   // Entrainement : 0 seance masque les details
-  const se = p.locator('.qc-carte:has-text("Séances par semaine")');
+  const se = p.locator('.qc-ouvert .qc-carte:has-text("Séances par semaine")');
   ok(await se.locator('.qc-roulette button').count() === 15, 'seances : roulette 0 a 14');
   await se.locator('.qc-roulette button', { hasText: /^0$/ }).tap(); await p.waitForTimeout(500);
-  ok(await p.locator('.qc-carte:has-text("Durée typique")').count() === 0, '0 seance : details masques');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Durée typique")').count() === 0, '0 seance : details masques');
   await se.locator('.qc-roulette button', { hasText: /^4$/ }).tap(); await p.waitForTimeout(500);
-  ok(await p.locator('.qc-carte:has-text("Durée typique")').count() === 1, '4 seances : details affiches');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Durée typique")').count() === 1, '4 seances : details affiches');
   ok(!(/changer les jours|Blessure/.test(await p.locator('.pg-qc').innerText())), 'jours d\'entrainement et blessure retires');
   await remplir(p); await continuer(p);
   // Alimentation : allergie -> lesquelles + reaction grave
   await p.locator('.qc-tuile', { hasText: 'Oui' }).tap();
-  ok(await p.locator('.qc-carte:has-text("Lesquelles")').count() === 1, 'allergie oui : lesquelles');
-  await p.locator('.qc-carte:has-text("Lesquelles") .qc-puce', { hasText: 'Fruits à coque' }).tap();
-  await p.locator('.qc-carte:has-text("que se passe") .qc-puce', { hasText: 'Gonflement' }).tap();
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Lesquelles")').count() === 1, 'allergie oui : lesquelles');
+  await p.locator('.qc-ouvert .qc-carte:has-text("Lesquelles") .qc-puce', { hasText: 'Fruits à coque' }).tap();
+  await p.locator('.qc-ouvert .qc-carte:has-text("que se passe") .qc-puce', { hasText: 'Gonflement' }).tap();
   ok(await p.locator('.qc-alerte-rouge').count() === 1, 'reaction grave : alerte rouge');
   await remplir(p); await continuer(p);
   // Boissons : sodas sucres -> combien ; alcool 0
-  await p.locator('.qc-carte:has-text("des sodas") .qc-puce', { hasText: 'Oui' }).tap();
-  await p.locator('.qc-carte:has-text("light ou") .qc-puce', { hasText: 'Sucrés' }).tap();
-  ok(await p.locator('.qc-carte:has-text("Combien de sodas")').count() === 1, 'sodas sucres : combien');
-  await p.locator('.qc-carte:has-text("Alcool par semaine") .qc-puce', { hasText: /^0$/ }).tap();
+  await p.locator('.qc-ouvert .qc-carte:has-text("des sodas") .qc-puce', { hasText: 'Oui' }).tap();
+  await p.locator('.qc-ouvert .qc-carte:has-text("light ou") .qc-puce', { hasText: 'Sucrés' }).tap();
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Combien de sodas")').count() === 1, 'sodas sucres : combien');
+  await p.locator('.qc-ouvert .qc-carte:has-text("Alcool par semaine") .qc-puce', { hasText: /^0$/ }).tap();
   await remplir(p); await continuer(p);
-  ok(await p.locator('.qc-carte:has-text("difficultés") .qc-puce', { hasText: /^Alcool$/ }).count() === 0, 'pas d\'alcool : pas repropose dans les difficultes');
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("difficultés") .qc-puce', { hasText: /^Alcool$/ }).count() === 0, 'pas d\'alcool : pas repropose dans les difficultes');
   ok(!(/Tu es plutôt|Pesée/.test(await p.locator('.pg-qc').innerText())), 'style et pesee retires');
   // Difficultes : regime non -> pourquoi
-  await p.locator('.qc-carte:has-text("essayé un régime") .qc-puce', { hasText: 'Oui' }).tap();
-  await p.locator('.qc-carte:has-text("fonctionné ?") .qc-puce', { hasText: /^Oui/ }).first().tap();
-  const reg = await p.locator('.qc-carte:has-text("Quel(s) régime")').innerText();
+  await p.locator('.qc-ouvert .qc-carte:has-text("essayé un régime") .qc-puce', { hasText: 'Oui' }).tap();
+  await p.locator('.qc-ouvert .qc-carte:has-text("fonctionné ?") .qc-puce', { hasText: /^Oui/ }).first().tap();
+  const reg = await p.locator('.qc-ouvert .qc-carte:has-text("Quel(s) régime")').innerText();
   ok(/Coach/.test(reg) && !/GLP-1|Coach déjà/.test(reg), 'regimes : « Coach », sans GLP-1');
-  await p.locator('.qc-carte:has-text("fonctionné ?") .qc-puce', { hasText: /^Non/ }).first().tap();
-  ok(await p.locator('.qc-carte:has-text("Pourquoi ça n")').count() === 1, 'regime rate : pourquoi');
+  await p.locator('.qc-ouvert .qc-carte:has-text("fonctionné ?") .qc-puce', { hasText: /^Non/ }).first().tap();
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Pourquoi ça n")').count() === 1, 'regime rate : pourquoi');
   await remplir(p); await continuer(p);
   // Sante : homme -> pas de grossesse ; suivi -> traitements
   ok(await p.locator('.qc-puce', { hasText: 'Grossesse' }).count() === 0, 'homme : pas de grossesse proposee');
-  await p.locator('.qc-carte:has-text("médecin") .qc-puce', { hasText: 'Thyroïde' }).tap();
-  ok(await p.locator('.qc-carte:has-text("Traitements prescrits")').count() === 1, 'suivi medical : traitements demandes');
-  await p.locator('.qc-carte:has-text("Traitements prescrits") .qc-champ').fill('Levothyrox 50');
-  await p.locator('.qc-carte:has-text("Trouble alimentaire") .qc-puce', { hasText: 'Antérieur' }).tap();
-  ok(await p.locator('.qc-carte:has-text("Lequel")').count() === 1, 'trouble alimentaire : lequel ?');
+  await p.locator('.qc-ouvert .qc-carte:has-text("médecin") .qc-puce', { hasText: 'Thyroïde' }).tap();
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Traitements prescrits")').count() === 1, 'suivi medical : traitements demandes');
+  await p.locator('.qc-ouvert .qc-carte:has-text("Traitements prescrits") .qc-champ').fill('Levothyrox 50');
+  await p.locator('.qc-ouvert .qc-carte:has-text("Trouble alimentaire") .qc-puce', { hasText: 'Antérieur' }).tap();
+  ok(await p.locator('.qc-ouvert .qc-carte:has-text("Lequel")').count() === 1, 'trouble alimentaire : lequel ?');
   await remplir(p); await continuer(p);
   await remplir(p); await continuer(p);  // sommeil
-  ok(/Bonus/.test(await haut(p)), 'bonus facultatif');
+  ok(/facultatif/.test(await haut(p)), 'bonus facultatif');
   await p.locator('.qc-passer').tap(); await p.waitForTimeout(300);
   ok(/Tout est bon/.test(await p.locator('.pg-qc').innerText()), 'recapitulatif');
   const rec = await p.locator('.pg-qc').innerText();
@@ -194,7 +196,7 @@ try {
   p = await page(() => { localStorage.clear(); localStorage.setItem('belfit_v2_apercu_dossier', JSON.stringify({ commande: null, questionnaire: null,
     brouillon: { type: 'plan', i: 3, consent: {}, majLe: new Date().toISOString(), rep: { prenom: { valeur: 'Repris' } } } })); });
   await p.goto(RETOUR + 'plan'); await p.waitForTimeout(2000);
-  ok(/Reprendre · Ton rythme/.test(await p.locator('.qc-cta').innerText()), 'autre appareil : reprise a la section 4');
+  ok(/^Ton rythme/.test(await haut(p)), 'autre appareil : reprise a la section 4, ouverte');
   await p.context().close();
 
   // 5) Mise a jour
