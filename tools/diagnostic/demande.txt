@@ -1,0 +1,2 @@
+Modifier ce fichier relance le diagnostic serveur (journaux + Resend).
+Demande : e-mail de confirmation non recu pour coach@belfit.be (27/09).
