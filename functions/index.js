@@ -1065,6 +1065,108 @@ function nombreValide(v, min, max) {
   return Number.isFinite(n) && n >= min && n <= max ? Math.round(n) : null;
 }
 
+/** Depot d'un programme chez un client (27/09) : partage par
+ *  deposerProgramme (compte coach) et espaceCoach (code coach).
+ *  Renvoie [statut HTTP, reponse]. */
+async function deposerChez(corps, parCoach) {
+  // 3. Quel client ? Par courriel ou par pseudo, au choix.
+  const cible = String((corps && corps.client) || "").trim();
+  if (!cible) { return [400, {ok: false, motif: "client"}]; }
+
+  let client = null;
+  if (cible.startsWith("uid:")) {
+    try { client = await admin.auth().getUser(cible.slice(4)); }
+    catch (e) { client = null; }
+  } else if (cible.includes("@")) {
+    try { client = await admin.auth().getUserByEmail(cible.toLowerCase()); }
+    catch (e) { client = null; }
+  } else {
+    // La table des pseudos n'est pas lisible cote client, mais
+    // l'admin SDK la traverse : meme chemin que connexionParPseudo.
+    const p = await db.collection("usernames").doc(cible.toLowerCase()).get();
+    if (p.exists && p.data().uid) {
+      try { client = await admin.auth().getUser(p.data().uid); }
+      catch (e) { client = null; }
+    }
+  }
+  if (!client) { return [404, {ok: false, motif: "introuvable"}]; }
+
+  // 4. Le plan tient-il debout ?
+  const b = corps || {};
+  const prog = {
+    kcal: nombreValide(b.kcal, 800, 8000),
+    prot: nombreValide(b.prot, 20, 600),
+    carbs: nombreValide(b.carbs, 20, 1200),
+    lip: nombreValide(b.lip, 10, 400),
+  };
+  if (prog.kcal === null || prog.prot === null ||
+      prog.carbs === null || prog.lip === null) {
+    return [400, {ok: false, motif: "valeurs"}];
+  }
+  // Les repas : c'est le programme lui-meme. Les totaux ci-dessus
+  // en sont la consequence, calcules par la page a partir de la
+  // meme base d'aliments que l'app — on ne les recalcule pas ici,
+  // on les borne seulement.
+  const repasBruts = Array.isArray(b.repas) ? b.repas : [];
+  const repas = repasBruts.slice(0, 12).map((r) => ({
+    nom: String((r && r.nom) || "Repas").slice(0, 60),
+    ings: (Array.isArray(r && r.ings) ? r.ings : []).slice(0, 40)
+      .map((i) => ({
+        name: String((i && i.name) || "").slice(0, 90),
+        portion: Math.max(0, Math.round(Number(i && i.portion) || 0)),
+      }))
+      .filter((i) => i.name && i.portion > 0),
+  })).filter((r) => r.ings.length);
+
+  if (!repas.length) {
+    return [400, {ok: false, motif: "repas"}];
+  }
+  prog.repas = repas;
+  prog.note = String(b.note || "").slice(0, 600);
+  prog.livreLe = new Date().toISOString();
+  prog.parCoach = parCoach;
+
+  // 5. Ecriture. C'est le seul chemin : la regle Firestore
+  //    interdit au client de toucher ce champ lui-meme.
+  await db.collection("users").doc(client.uid).set(
+    {programme: prog}, {merge: true},
+  );
+
+  // 6. Courriel. Un echec d'envoi ne doit PAS annuler le depot :
+  //    le plan est deja dans l'app, c'est le canal qui fait foi.
+  let mailEnvoye = false;
+  if (client.email) {
+    const langue = String(b.langue || "fr").slice(0, 2);
+    const T = TEXTES_PROG[langue] || TEXTES_PROG.fr;
+    try {
+      const envoi = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY.value()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: EXPEDITEUR,
+          reply_to: "coach@belfit.be",
+          to: [client.email],
+          subject: T.objet,
+          html: modeleProgramme(prog, langue),
+        }),
+      });
+      mailEnvoye = envoi.ok;
+      if (!envoi.ok) console.error("Resend a refuse :", await envoi.text());
+    } catch (e) {
+      console.error("Envoi du programme :", e);
+    }
+  }
+
+  return [200, {
+    ok: true,
+    client: {uid: client.uid, email: client.email || null},
+    mailEnvoye,
+  }];
+}
+
 exports.deposerProgramme = onRequest(
   {secrets: [RESEND_API_KEY], region: "europe-west1", cors: true},
   async (req, res) => {
@@ -1093,101 +1195,120 @@ exports.deposerProgramme = onRequest(
         res.status(403).json({ok: false, motif: "acces"}); return;
       }
 
-      // 3. Quel client ? Par courriel ou par pseudo, au choix.
-      const cible = String((req.body && req.body.client) || "").trim();
-      if (!cible) { res.status(400).json({ok: false, motif: "client"}); return; }
-
-      let client = null;
-      if (cible.includes("@")) {
-        try { client = await admin.auth().getUserByEmail(cible.toLowerCase()); }
-        catch (e) { client = null; }
-      } else {
-        // La table des pseudos n'est pas lisible cote client, mais
-        // l'admin SDK la traverse : meme chemin que connexionParPseudo.
-        const p = await db.collection("usernames").doc(cible.toLowerCase()).get();
-        if (p.exists && p.data().uid) {
-          try { client = await admin.auth().getUser(p.data().uid); }
-          catch (e) { client = null; }
-        }
-      }
-      if (!client) { res.status(404).json({ok: false, motif: "introuvable"}); return; }
-
-      // 4. Le plan tient-il debout ?
-      const b = req.body || {};
-      const prog = {
-        kcal: nombreValide(b.kcal, 800, 8000),
-        prot: nombreValide(b.prot, 20, 600),
-        carbs: nombreValide(b.carbs, 20, 1200),
-        lip: nombreValide(b.lip, 10, 400),
-      };
-      if (prog.kcal === null || prog.prot === null ||
-          prog.carbs === null || prog.lip === null) {
-        res.status(400).json({ok: false, motif: "valeurs"}); return;
-      }
-      // Les repas : c'est le programme lui-meme. Les totaux ci-dessus
-      // en sont la consequence, calcules par la page a partir de la
-      // meme base d'aliments que l'app — on ne les recalcule pas ici,
-      // on les borne seulement.
-      const repasBruts = Array.isArray(b.repas) ? b.repas : [];
-      const repas = repasBruts.slice(0, 12).map((r) => ({
-        nom: String((r && r.nom) || "Repas").slice(0, 60),
-        ings: (Array.isArray(r && r.ings) ? r.ings : []).slice(0, 40)
-          .map((i) => ({
-            name: String((i && i.name) || "").slice(0, 90),
-            portion: Math.max(0, Math.round(Number(i && i.portion) || 0)),
-          }))
-          .filter((i) => i.name && i.portion > 0),
-      })).filter((r) => r.ings.length);
-
-      if (!repas.length) {
-        res.status(400).json({ok: false, motif: "repas"}); return;
-      }
-      prog.repas = repas;
-      prog.note = String(b.note || "").slice(0, 600);
-      prog.livreLe = new Date().toISOString();
-      prog.parCoach = coach.uid;
-
-      // 5. Ecriture. C'est le seul chemin : la regle Firestore
-      //    interdit au client de toucher ce champ lui-meme.
-      await db.collection("users").doc(client.uid).set(
-        {programme: prog}, {merge: true},
-      );
-
-      // 6. Courriel. Un echec d'envoi ne doit PAS annuler le depot :
-      //    le plan est deja dans l'app, c'est le canal qui fait foi.
-      let mailEnvoye = false;
-      if (client.email) {
-        const langue = String(b.langue || "fr").slice(0, 2);
-        const T = TEXTES_PROG[langue] || TEXTES_PROG.fr;
-        try {
-          const envoi = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${RESEND_API_KEY.value()}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              from: EXPEDITEUR,
-              reply_to: "coach@belfit.be",
-              to: [client.email],
-              subject: T.objet,
-              html: modeleProgramme(prog, langue),
-            }),
-          });
-          mailEnvoye = envoi.ok;
-          if (!envoi.ok) console.error("Resend a refuse :", await envoi.text());
-        } catch (e) {
-          console.error("Envoi du programme :", e);
-        }
-      }
-
-      res.json({
-        ok: true,
-        client: {uid: client.uid, email: client.email || null},
-        mailEnvoye,
-      });
+      const [statut, rep] = await deposerChez(req.body, coach.uid);
+      res.status(statut).json(rep);
     } catch (e) {
       console.error("deposerProgramme :", e);
+      res.status(500).json({ok: false});
+    }
+  },
+);
+
+// ============================================================
+// ESPACE COACH (27/09) : la plateforme de Raci, SANS compte BELFIT.
+//
+// Acces par un code personnel (secret COACH_CODE, pose par le
+// deploiement automatique depuis le secret GitHub du meme nom). La
+// page le garde sur l'appareil ; chaque appel le renvoie et il est
+// verifie ICI : la page seule ne peut rien lire ni ecrire.
+//   action "verifier" : le code est-il bon ?
+//   action "dossiers" : questionnaires recus, a traiter ou livres
+//   action "deposer"  : programme vers un client (app + e-mail)
+// ============================================================
+
+const COACH_CODE = defineSecret("COACH_CODE");
+
+/** Comparaison a temps constant : la duree ne trahit pas le code. */
+function codeCoachValide(saisi) {
+  const attendu = String(COACH_CODE.value() || "");
+  if (!attendu || !saisi) return false;
+  const h = (x) => crypto.createHash("sha256").update(String(x)).digest();
+  return crypto.timingSafeEqual(h(saisi), h(attendu));
+}
+
+/** Freinage des essais : par adresse IP, sur l'instance en cours. */
+const essaisCoach = new Map();
+function tropDEssais(ip) {
+  const maintenant = Date.now();
+  const e = essaisCoach.get(ip) || {n: 0, depuis: maintenant};
+  if (maintenant - e.depuis > 15 * 60 * 1000) { e.n = 0; e.depuis = maintenant; }
+  essaisCoach.set(ip, e);
+  return e.n >= 8;
+}
+
+/** Texte lisible d'une reponse du questionnaire, ou "". */
+function reponseTexte(reponses, id) {
+  const r = reponses && reponses[id];
+  return r ? String(r.texte || r.valeur || "").slice(0, 120) : "";
+}
+
+exports.espaceCoach = onRequest(
+  {secrets: [RESEND_API_KEY, COACH_CODE], region: "europe-west1", cors: true},
+  async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+    if (req.method !== "POST") { res.status(405).json({ok: false}); return; }
+
+    const ip = String(req.get("x-forwarded-for") || req.ip || "?").split(",")[0].trim();
+    try {
+      const corps = req.body || {};
+      if (tropDEssais(ip)) { res.status(429).json({ok: false, motif: "attente"}); return; }
+      if (!codeCoachValide(corps.code)) {
+        const e = essaisCoach.get(ip); e.n += 1;
+        await new Promise((r) => setTimeout(r, 800));
+        res.status(403).json({ok: false, motif: "code"}); return;
+      }
+      essaisCoach.delete(ip);
+
+      const action = String(corps.action || "");
+      if (action === "verifier") { res.json({ok: true}); return; }
+
+      if (action === "dossiers") {
+        const snap = await db.collection("users")
+          .orderBy("questionnaireCoach.envoyeLe", "desc").limit(60).get();
+        const docs = snap.docs.map((d) => ({uid: d.id, d: d.data()}));
+        const emails = {};
+        for (let k = 0; k < docs.length; k += 100) {
+          const lot = docs.slice(k, k + 100).map((x) => ({uid: x.uid}));
+          if (!lot.length) continue;
+          const r = await admin.auth().getUsers(lot);
+          r.users.forEach((u) => { emails[u.uid] = u.email || null; });
+        }
+        const dossiers = docs.map(({uid, d}) => {
+          const q = d.questionnaireCoach || {};
+          const rep = q.reponses || {};
+          const livreLe = (d.programme && d.programme.livreLe) || null;
+          return {
+            uid,
+            email: emails[uid] || null,
+            prenom: reponseTexte(rep, "prenom"),
+            nom: reponseTexte(rep, "nom"),
+            objectif: reponseTexte(rep, "objectif"),
+            type: q.type || "plan",
+            envoyeLe: q.envoyeLe || null,
+            payeLe: (d.commandeCoach && d.commandeCoach.payeLe) || null,
+            livreLe,
+            aTraiter: !livreLe || (q.envoyeLe && new Date(livreLe) < new Date(q.envoyeLe)),
+            alerteSante: !!q.alerteSante,
+            allergieGrave: !!q.allergieGrave,
+            reponses: rep,
+          };
+        });
+        res.json({ok: true, dossiers});
+        return;
+      }
+
+      if (action === "deposer") {
+        const [statut, rep] = await deposerChez(corps, "espace-coach");
+        res.status(statut).json(rep);
+        return;
+      }
+
+      res.status(400).json({ok: false, motif: "action"});
+    } catch (e) {
+      console.error("espaceCoach :", e);
       res.status(500).json({ok: false});
     }
   },

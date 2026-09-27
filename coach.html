@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F4F3F0">
 <title>Espace coach — BELFIT</title>
-<link rel="icon" href="/belfit-logo-bf.png">
+<link rel="icon" href="/favicon-32-v9.png">
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
@@ -107,94 +108,99 @@ button.principal:disabled{opacity:.5;cursor:default}
   box-shadow:inset 0 0 0 1px rgba(138,35,24,.12)}
 .deco{text-align:center;margin-top:20px;font-size:12px}
 .deco a{color:var(--or-lis);font-weight:600}
-#connexion,#travail{display:none}
+
+
+/* Plateforme coach (27/09) : sans compte, code personnel */
+#ecranCode,#ecranTravail{display:none}
+header a.quitter{margin-left:auto;font-size:12px;color:var(--tx3);text-decoration:none}
+.dos{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;
+  padding:12px 0;border-bottom:1px solid var(--filet);font:inherit;text-align:left;cursor:pointer;color:var(--tx)}
+.dos-bloc:last-child .dos{border-bottom:0}
+.av{flex:none;width:38px;height:38px;border-radius:50%;background:#FDF1CC;color:#8F6200;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.dos-txt{flex:1;min-width:0}
+.dos-nom{font-size:15px;font-weight:600}
+.dos-sous{font-size:12px;color:var(--tx3);margin-top:2px}
+.tag{flex:none;font-size:11.5px;font-weight:600;border-radius:999px;padding:4px 9px;background:#F1EFE8;color:#5F5E5A}
+.tag.rouge{background:#FCEBEB;color:#A32D2D}.tag.ambre{background:#FAEEDA;color:#854F0B}.tag.vert{background:#E9F5EE;color:#1C5334}
+.detail{padding:4px 0 14px;border-bottom:1px solid var(--filet)}
+.detail .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.sec{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--tx3);text-transform:uppercase;margin:14px 0 4px}
+.rl{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--tx2);padding:4px 0;line-height:1.4}
+.rl b{color:var(--tx);font-weight:600;text-align:right;max-width:55%}
+.chip{display:flex;align-items:center;gap:10px;background:#FFF8E1;border-radius:12px;padding:10px 12px;font-size:14px}
+.chip b{flex:1}
+.chip button{border:0;background:none;font-size:18px;color:var(--tx3);cursor:pointer}
+.vide{font-size:13.5px;color:var(--tx3);padding:10px 0;margin:0}
+button.second{display:block;width:100%;font:inherit;font-size:14px;font-weight:600;cursor:pointer;
+  color:var(--tx);background:#FFF8E1;border:0;border-radius:12px;padding:12px;margin-top:12px}
 </style>
 </head>
 <body>
+<!-- ============================================================
+     ESPACE COACH (27/09) : plateforme de Raci, sans compte BELFIT.
+     Un code personnel, demande une fois par appareil, verifie par le
+     serveur (fonction espaceCoach) a chaque appel.
+     ============================================================ -->
 <div class="enveloppe">
 
-  <header>
-    <img src="/belfit-logo-bf.png" alt="BELFIT">
-    <b>Espace coach</b>
-    <span id="qui"></span>
-  </header>
-
-  <section id="connexion">
-    <h1>Connexion</h1>
-    <p class="sous">Réservé aux coachs BELFIT.</p>
+  <section id="ecranCode">
+    <header><img src="/belfit-logo-bf.png" alt="BELFIT"><b>Espace coach</b></header>
+    <h1>Espace coach</h1>
+    <p class="sous">Entre ton code. Il est demandé une seule fois sur cet appareil.</p>
     <div class="carte">
-      <div><label for="cEmail">Adresse e-mail</label>
-        <input id="cEmail" type="email" autocomplete="username" inputmode="email"></div>
-      <div style="margin-top:13px"><label for="cMdp">Mot de passe</label>
-        <input id="cMdp" type="password" autocomplete="current-password"></div>
+      <label for="code">Code</label>
+      <input id="code" type="password" autocomplete="current-password">
     </div>
-    <button class="principal" id="btnConnexion">Se connecter</button>
-    <div id="msgCo" class="msg"></div>
+    <button class="principal" id="btnCode">Entrer</button>
+    <div id="msgCode" class="msg"></div>
   </section>
 
-  <section id="refus" style="display:none">
-    <h1>Accès réservé</h1>
-    <p class="sous" id="refusTxt"></p>
-    <button class="principal" id="btnChanger">Changer de compte</button>
-  </section>
+  <section id="ecranTravail">
+    <header><img src="/belfit-logo-bf.png" alt="BELFIT"><b>Espace coach</b><a href="#" class="quitter" id="btnQuitter">Quitter</a></header>
+    <h1>Bonjour Raci</h1>
+    <p class="sous" id="resume">Chargement…</p>
 
-  <section id="travail">
-    <h1>Composer un programme</h1>
-    <p class="sous">Le plan est déposé dans l'application du client et lui est
-      envoyé par e-mail. Les calories se calculent toutes seules.</p>
+    <p class="lb">À traiter</p>
+    <div class="carte" id="aTraiter" style="padding:0 15px"></div>
 
+    <div id="blocLivres">
+      <p class="lb">Livrés</p>
+      <div class="carte" id="livres" style="padding:0 15px"></div>
+    </div>
+
+    <p class="lb" id="ancreComposer">Envoyer un programme</p>
     <div class="carte">
-      <label for="client">Client</label>
-      <input id="client" type="text" placeholder="e-mail ou pseudo"
-             autocapitalize="off" spellcheck="false">
-      <p class="aide">Au choix : <b>raci@exemple.be</b> ou <b>raci</b>.</p>
+      <label for="client">Destinataire</label>
+      <div id="choisi" class="chip" style="display:none"><b id="choisiNom"></b><button id="btnDeselect" aria-label="Changer de destinataire">×</button></div>
+      <input id="client" type="text" placeholder="e-mail ou pseudo" autocapitalize="off" spellcheck="false">
+      <p class="aide">Touche un questionnaire plus haut pour le remplir tout seul.</p>
     </div>
 
     <p class="lb">Les repas</p>
     <div id="repas"></div>
     <button class="plus" id="btnRepas">+ Ajouter un repas</button>
-
     <div class="total" id="total"></div>
-
     <div class="carte">
       <label for="note">Note pour le client</label>
-      <textarea id="note" maxlength="600"
-        placeholder="Facultatif — durée du plan, contexte, prochaine étape…"></textarea>
+      <textarea id="note" maxlength="600" placeholder="Facultatif — durée du plan, contexte, prochaine étape…"></textarea>
     </div>
-
-    <button class="principal" id="btnEnvoi">Déposer et envoyer</button>
+    <button class="principal" id="btnEnvoi">Envoyer · app + e-mail</button>
     <div id="msg" class="msg"></div>
-
-    <p class="deco"><a href="#" id="btnDeco">Se déconnecter</a></p>
   </section>
 
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script type="module">
-// La base d'aliments est CELLE DE L'APPLICATION, pas une copie : les
-// grammages saisis ici donneront exactement les memes calories dans le
-// journal du client. Une copie aurait derive au premier ajout d'aliment.
+// Base d'aliments de l'app (meme fichier) : memes calories chez le client.
 import { DB, NOMS_ALIMENTS, macrosOf } from '/app-v2/src/data/aliments.js';
 
-// Instance a part (27/09) : sans cela, la page reprenait la session
-// ouverte dans l'app sur le meme domaine (le compte client), et
-// « Se deconnecter » ici deconnectait aussi l'app.
-const appCoach = firebase.initializeApp({
-  apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
-  authDomain: "repz-baf60.firebaseapp.com",
-  projectId: "repz-baf60",
-  storageBucket: "repz-baf60.firebasestorage.app",
-  messagingSenderId: "403252293048",
-  appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
-}, 'espace-coach');
-const auth = appCoach.auth();
-// Meme liste que COACHS dans functions/index.js. Ce n'est qu'un confort :
-// le droit reel est verifie par deposerProgramme.
-const COACHS = ['coach@belfit.be', 'contact@belfit.be'];
-const URL_DEPOT = "https://europe-west1-repz-baf60.cloudfunctions.net/deposerProgramme";
+const URL_COACH = 'https://europe-west1-repz-baf60.cloudfunctions.net/espaceCoach';
+const CLE = 'belfit_espace_coach';
 const $ = (id) => document.getElementById(id);
+let code = '';
+try { code = localStorage.getItem(CLE) || ''; } catch (e) { /* rien */ }
+let choisi = null;   // dossier selectionne (destinataire)
 
 let plan = [
   { nom: 'Repas 1', ings: [] },
@@ -373,79 +379,182 @@ function afficher(el, texte, ok) {
   el.className = 'msg ' + (ok ? 'ok' : 'ko');
 }
 
-$('btnConnexion').addEventListener('click', () => {
-  const b = $('btnConnexion'); b.disabled = true;
-  auth.signInWithEmailAndPassword($('cEmail').value.trim(), $('cMdp').value)
-    .catch(() => afficher($('msgCo'), 'Adresse ou mot de passe incorrect.', false))
+function appel(action, extra) {
+  return fetch(URL_COACH, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, action, ...(extra || {}) }),
+  }).then((r) => r.json().catch(() => ({ ok: false })).then((d) => {
+    if (d && d.motif === 'code') { oublier('Code refusé.'); throw new Error('code'); }
+    return d;
+  }));
+}
+
+function ecran(nom) {
+  $('ecranCode').style.display = nom === 'code' ? 'block' : 'none';
+  $('ecranTravail').style.display = nom === 'travail' ? 'block' : 'none';
+}
+
+function oublier(msg) {
+  code = '';
+  try { localStorage.removeItem(CLE); } catch (e) { /* rien */ }
+  ecran('code');
+  if (msg) afficher($('msgCode'), msg, false);
+}
+
+// ---------- Dossiers ----------
+const H48 = 48 * 3600 * 1000;
+function quand(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-BE', { weekday: 'short', day: 'numeric', month: 'short' }) +
+    ' à ' + d.getHours() + ' h ' + String(d.getMinutes()).padStart(2, '0');
+}
+function nomDe(d) { return [d.prenom, d.nom].filter(Boolean).join(' ') || d.email || 'Client'; }
+function initiales(d) {
+  const n = nomDe(d).split(/[\s@.]+/).filter(Boolean);
+  return ((n[0] || '?')[0] + ((n[1] || '')[0] || '')).toUpperCase();
+}
+function echeance(d) {
+  if (d.payeLe && d.envoyeLe && (new Date(d.envoyeLe) - new Date(d.payeLe)) >= 7 * 86400000) return ['File', ''];
+  const reste = Math.round((new Date(d.envoyeLe).getTime() + H48 - Date.now()) / 3600000);
+  if (reste < 0) return ['En retard', 'rouge'];
+  return [reste + ' h', reste <= 24 ? 'rouge' : 'ambre'];
+}
+
+function el(tag, cls, texte) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (texte != null) e.textContent = texte;
+  return e;
+}
+
+function detail(d) {
+  const box = el('div', 'detail');
+  const tags = el('div', 'tags');
+  tags.append(el('span', 'tag', d.type === 'maj' ? 'Mise à jour' : 'Premier plan'));
+  if (d.alerteSante) tags.append(el('span', 'tag rouge', 'Point de santé'));
+  if (d.allergieGrave) tags.append(el('span', 'tag rouge', 'Allergie grave'));
+  box.append(tags);
+  if (d.email) box.append(el('p', 'dos-sous', d.email));
+  const groupes = {};
+  Object.values(d.reponses || {}).forEach((r) => {
+    if (!r || !r.question) return;
+    (groupes[r.section || 'Réponses'] = groupes[r.section || 'Réponses'] || []).push(r);
+  });
+  Object.keys(groupes).forEach((s) => {
+    box.append(el('p', 'sec', s));
+    groupes[s].forEach((r) => {
+      const l = el('div', 'rl');
+      l.append(el('span', '', r.question), el('b', '', r.texte || ''));
+      box.append(l);
+    });
+  });
+  const b = el('button', 'second', 'Composer son programme');
+  b.addEventListener('click', () => choisir(d));
+  box.append(b);
+  return box;
+}
+
+function ligne(d, aTraiter) {
+  const bloc = el('div', 'dos-bloc');
+  const b = el('button', 'dos');
+  const txt = el('span', 'dos-txt');
+  txt.append(el('div', 'dos-nom', nomDe(d)),
+    el('div', 'dos-sous', (d.objectif ? d.objectif + ' · ' : '') + (aTraiter ? 'reçu ' + quand(d.envoyeLe) : 'livré ' + quand(d.livreLe))));
+  const [t, c] = aTraiter ? echeance(d) : ['Livré', 'vert'];
+  b.append(el('span', 'av', initiales(d)), txt, el('span', 'tag ' + c, t));
+  let ouvert = null;
+  b.addEventListener('click', () => {
+    if (ouvert) { ouvert.remove(); ouvert = null; return; }
+    ouvert = detail(d); bloc.append(ouvert);
+  });
+  bloc.append(b);
+  return bloc;
+}
+
+function chargerDossiers() {
+  return appel('dossiers').then((r) => {
+    if (!r || !r.ok) { $('resume').textContent = 'Impossible de charger les questionnaires.'; return; }
+    const a = r.dossiers.filter((d) => d.aTraiter);
+    const l = r.dossiers.filter((d) => !d.aTraiter).slice(0, 10);
+    $('resume').textContent = a.length ? a.length + ' questionnaire' + (a.length > 1 ? 's' : '') + ' à traiter' : 'Aucun questionnaire à traiter';
+    const hA = $('aTraiter'); hA.innerHTML = '';
+    if (!a.length) hA.append(el('p', 'vide', 'Rien pour le moment.'));
+    a.sort((x, y) => new Date(x.envoyeLe) - new Date(y.envoyeLe)).forEach((d) => hA.append(ligne(d, true)));
+    const hL = $('livres'); hL.innerHTML = '';
+    $('blocLivres').style.display = l.length ? 'block' : 'none';
+    l.forEach((d) => hL.append(ligne(d, false)));
+  }).catch(() => {});
+}
+
+function choisir(d) {
+  choisi = d;
+  $('choisiNom').textContent = nomDe(d) + (d.email ? ' · ' + d.email : '');
+  $('choisi').style.display = 'flex';
+  $('client').style.display = 'none';
+  $('ancreComposer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+$('btnDeselect').addEventListener('click', () => {
+  choisi = null;
+  $('choisi').style.display = 'none';
+  $('client').style.display = 'block';
+});
+
+// ---------- Entree ----------
+$('btnCode').addEventListener('click', () => {
+  const b = $('btnCode');
+  code = $('code').value.trim();
+  if (!code) return;
+  b.disabled = true;
+  appel('verifier').then((r) => {
+    if (r && r.ok) {
+      try { localStorage.setItem(CLE, code); } catch (e) { /* rien */ }
+      ouvrir();
+    } else if (r && r.motif === 'attente') {
+      afficher($('msgCode'), 'Trop d\'essais. Réessaie dans 15 minutes.', false);
+    }
+  }).catch((e) => { if (e.message !== 'code') afficher($('msgCode'), 'Réseau indisponible.', false); })
     .finally(() => { b.disabled = false; });
 });
-$('btnDeco').addEventListener('click', (e) => { e.preventDefault(); auth.signOut(); });
-$('btnChanger').addEventListener('click', () => auth.signOut());
-auth.onAuthStateChanged((u) => {
-  const email = u && u.email ? u.email.toLowerCase() : '';
-  const coach = !!u && COACHS.includes(email) && u.emailVerified;
-  $('connexion').style.display = u ? 'none' : 'block';
-  $('refus').style.display = u && !coach ? 'block' : 'none';
-  $('travail').style.display = coach ? 'block' : 'none';
-  $('qui').textContent = email;
-  if (u && !coach) {
-    $('refusTxt').textContent = COACHS.includes(email)
-      ? "Confirme d'abord l'adresse " + email + " : ouvre l'e-mail de confirmation reçu sur cette boîte, puis reconnecte-toi."
-      : "Le compte " + email + " n'est pas un compte coach. Connecte-toi avec coach@belfit.be.";
-  }
-  if (coach) dessiner();
-});
+$('code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('btnCode').click(); });
+$('btnQuitter').addEventListener('click', (e) => { e.preventDefault(); oublier(); });
+
+function ouvrir() { ecran('travail'); dessiner(); chargerDossiers(); }
 
 $('btnEnvoi').addEventListener('click', () => {
   const b = $('btnEnvoi'), msg = $('msg');
   msg.className = 'msg';
-
-  const client = $('client').value.trim();
-  if (!client) { afficher(msg, 'Indique le client.', false); return; }
-
-  const repas = plan
-    .filter((r) => r.ings.length)
-    .map((r) => ({
-      nom: (r.nom || '').trim() || 'Repas',
-      ings: r.ings.map((i) => ({ name: i.name, portion: +i.portion || 0 })),
-    }));
-  if (!repas.length) {
-    afficher(msg, 'Le programme est vide — ajoute au moins un aliment.', false);
-    return;
-  }
-
+  const client = choisi ? 'uid:' + choisi.uid : $('client').value.trim();
+  if (!client) { afficher(msg, 'Indique le destinataire.', false); return; }
+  const repas = plan.filter((r) => r.ings.length).map((r) => ({
+    nom: (r.nom || '').trim() || 'Repas',
+    ings: r.ings.map((i) => ({ name: i.name, portion: +i.portion || 0 })),
+  }));
+  if (!repas.length) { afficher(msg, 'Le programme est vide : ajoute au moins un aliment.', false); return; }
   const T = totalPlan();
-  b.disabled = true; b.textContent = 'Envoi\u2026';
-
-  auth.currentUser.getIdToken()
-    .then((jeton) => fetch(URL_DEPOT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jeton },
-      body: JSON.stringify({
-        client: client, repas: repas, note: $('note').value.trim(), langue: 'fr',
-        kcal: arrondi(T.kcal), prot: arrondi(T.prot),
-        carbs: arrondi(T.carbs), lip: arrondi(T.lip),
-      }),
-    }))
-    .then((r) => r.json())
-    .then((d) => {
-      if (d && d.ok) {
-        afficher(msg, d.mailEnvoye
-          ? 'Programme déposé. L\'e-mail est parti.'
-          : 'Programme déposé dans l\'application. L\'e-mail n\'a pas pu partir \u2014 le client le voit quand même.', true);
-      } else {
-        const m = d && d.motif;
-        afficher(msg,
-          m === 'acces' ? 'Ce compte n\'est pas coach.' :
-          m === 'introuvable' ? 'Aucun client avec cet e-mail ou ce pseudo.' :
-          m === 'valeurs' ? 'Une valeur est hors des bornes acceptées.' :
-          m === 'repas' ? 'Le programme est vide.' :
-          'Le dépôt a échoué. Réessaie.', false);
-      }
-    })
-    .catch(() => afficher(msg, 'Réseau indisponible.', false))
-    .finally(() => { b.disabled = false; b.textContent = 'Déposer et envoyer'; });
+  b.disabled = true; b.textContent = 'Envoi…';
+  appel('deposer', {
+    client, repas, note: $('note').value.trim(), langue: 'fr',
+    kcal: arrondi(T.kcal), prot: arrondi(T.prot), carbs: arrondi(T.carbs), lip: arrondi(T.lip),
+  }).then((d) => {
+    if (d && d.ok) {
+      afficher(msg, d.mailEnvoye ? 'Programme envoyé : dans l\'app et par e-mail.'
+        : 'Programme déposé dans l\'app. L\'e-mail n\'a pas pu partir, le client le voit quand même.', true);
+      chargerDossiers();
+    } else {
+      const m = d && d.motif;
+      afficher(msg,
+        m === 'introuvable' ? 'Aucun compte BELFIT avec cet e-mail ou ce pseudo.' :
+        m === 'valeurs' ? 'Une valeur est hors des bornes (calories ou macros).' :
+        m === 'repas' ? 'Le programme est vide.' :
+        'L\'envoi a échoué. Réessaie.', false);
+    }
+  }).catch((e) => { if (e.message !== 'code') afficher(msg, 'Réseau indisponible.', false); })
+    .finally(() => { b.disabled = false; b.textContent = 'Envoyer · app + e-mail'; });
 });
+
+if (code) ouvrir(); else ecran('code');
 </script>
 </body>
 </html>

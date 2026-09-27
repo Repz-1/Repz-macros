@@ -4,7 +4,8 @@ name: Deploy serveur (Firebase)
 # le PC (27/09). Se lance quand functions/ ou firestore.rules changent,
 # ou a la main depuis l'onglet Actions de GitHub.
 # Prerequis, une seule fois : le secret FIREBASE_SA_KEY (cle JSON d'un
-# compte de service du projet repz-baf60) dans Settings > Secrets.
+# compte de service du projet repz-baf60) et COACH_CODE (code de
+# l'espace coach) dans Settings > Secrets.
 
 on:
   push:
@@ -43,9 +44,23 @@ jobs:
       - name: Dependances des fonctions
         run: npm ci --prefix functions
 
+      # Code de l'espace coach : copie du secret GitHub COACH_CODE vers
+      # Firebase, seulement s'il a change (une version par changement).
+      - name: Code coach
+        env:
+          CODE: ${{ secrets.COACH_CODE }}
+        run: |
+          if [ -z "$CODE" ]; then echo "Secret COACH_CODE absent."; exit 1; fi
+          ACTUEL=$(npx --yes firebase-tools@latest functions:secrets:access COACH_CODE --project repz-baf60 2>/dev/null || true)
+          if [ "$ACTUEL" != "$CODE" ]; then
+            printf '%s' "$CODE" > "$RUNNER_TEMP/code.txt"
+            npx --yes firebase-tools@latest functions:secrets:set COACH_CODE --data-file="$RUNNER_TEMP/code.txt" --project repz-baf60 --non-interactive --force
+            rm -f "$RUNNER_TEMP/code.txt"
+          fi
+
       - name: Deploiement
         run: npx --yes firebase-tools@latest deploy --only functions,firestore:rules --project repz-baf60 --non-interactive --force
 
       - name: Nettoyage
         if: always()
-        run: rm -f "$RUNNER_TEMP/cle.json"
+        run: rm -f "$RUNNER_TEMP/cle.json" "$RUNNER_TEMP/code.txt"
