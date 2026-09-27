@@ -37,7 +37,15 @@ try {
   await p.locator('.cp-bt', { hasText: 'Voir mon plan' }).tap(); await p.waitForTimeout(500);
   ok(await p.locator('.pg-prog').count() === 1, 'plan ouvert');
   ok(/Mettre à jour mon plan/.test(await p.locator('.pg-prog').innerText()), 'plus d\'ajustement gratuit : bouton mise a jour');
+  const tp = await p.locator('.pg-prog').innerText();
+  ok(!/Modifier mes objectifs/.test(tp) && await p.locator('.pc-hero').count() === 1 && await p.locator('.pc-repas').count() === 1, 'plan : nouvelle mise en page, sans « Modifier mes objectifs »');
+  await p.screenshot({ path: '/tmp/plan.png' });
   await p.locator('.prog-action', { hasText: 'Mettre à jour' }).tap(); await p.waitForTimeout(400);
+  await p.locator('.bn-item').first().tap(); await p.waitForTimeout(700);
+  ok(/2[\s\u202f.]?400/.test(await p.locator('body').innerText()), 'objectif du journal = total du plan (2400 kcal)');
+  await p.locator('button[aria-label="Profil"]').first().tap(); await p.waitForTimeout(500);
+  const vol = await p.locator('body').innerText();
+  ok(/Objectifs fixés par ton plan coach/.test(vol) && !/Recalculer mes besoins/.test(vol), 'plan actif : plus de « Recalculer mes besoins »');
   ok(await p.locator('.pg-coach').count() === 1, 'retour sur la page Coach');
 } catch (e) { ok(false, e.message.split('\n')[0]); }
 await nav.close(); try { process.kill(-srv.pid); } catch {}

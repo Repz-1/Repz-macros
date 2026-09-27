@@ -37,7 +37,7 @@ import { weightLog } from './store/stats.js';
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { CoachPage } from './components/CoachPage.jsx';
 import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
-import { origineCalc } from './components/BelfitPlus.jsx';
+import { origineCalc, planCoachActif } from './components/BelfitPlus.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses, origineCourses } from './components/Courses.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
@@ -225,11 +225,15 @@ export function App() {
 
   if (ouvrirCalcDemande.value) {
     ouvrirCalcDemande.value = false;
-    if (estPremium.value || !calculBaseFait.value) besoinsOuverts.value = true;
-    else ongletActif.value = 'premium';
+    // Plan coach actif : les objectifs viennent du plan (27/09), le
+    // calcul n'est plus ouvert.
+    if (!planCoachActif.value) {
+      if (estPremium.value || !calculBaseFait.value) besoinsOuverts.value = true;
+      else ongletActif.value = 'premium';
+    }
   }
 
-  if (besoinsRequis() || besoinsOuverts.value) {
+  if ((besoinsRequis() && !planCoachActif.value) || besoinsOuverts.value) {
     return <Besoins />;
   }
 
@@ -484,12 +488,16 @@ export function App() {
           const der = l.length ? l.slice().sort((x, y) => (x.iso < y.iso ? -1 : 1))[l.length - 1] : null;
           return der ? <span class="profil-obj">{t('profil_poids')} <b>{String(der.kg).replace('.', ',')} kg</b></span> : null;
         })()}
-        <button class="profil-calc" onClick={() => {
-          voletProfil.value = false;
-          if (vueReglages.value) { vueReglages.value = null; ongletActif.value = 'journal'; }
-          else ongletActif.value = 'journal';
-          ouvrirCalcDemande.value = true;
-        }}>{t('profil_recalc')}</button>
+        {planCoachActif.value ? (
+          <span class="profil-obj">Objectifs fixés par ton plan coach</span>
+        ) : (
+          <button class="profil-calc" onClick={() => {
+            voletProfil.value = false;
+            if (vueReglages.value) { vueReglages.value = null; ongletActif.value = 'journal'; }
+            else ongletActif.value = 'journal';
+            ouvrirCalcDemande.value = true;
+          }}>{t('profil_recalc')}</button>
+        )}
         <button class="profil-calc" onClick={() => {
           voletProfil.value = false;
           vueReglages.value = 'compte';

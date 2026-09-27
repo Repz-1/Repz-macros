@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { planCoachActif } from './BelfitPlus.jsx';
 import { signal } from '@preact/signals';
 
 export const ouvrirCalcDemande = signal(false);
@@ -192,6 +193,8 @@ const SEUIL_RECALCUL_KG = 3;
 function RappelRecalcul() {
   const base = poidsCalcul.value;
   const log = weightLog.value;
+  // Plan coach actif (27/09) : pas d'invitation a recalculer.
+  if (planCoachActif.value) return null;
   if (!base || !log.length) return null;
   const actuel = parseFloat(log[log.length - 1].weight ?? log[log.length - 1].kg);
   if (!isFinite(actuel)) return null;

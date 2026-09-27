@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
-import { signal, effect } from '@preact/signals';
+import { signal, effect, computed } from '@preact/signals';
+import { Icone } from './IconesCoach.jsx';
 import { getApps } from 'firebase/app';
 import { utilisateur } from '../services/firebase.js';
 import { setObjectifs, objectifs, repas } from '../store/journal.js';
 import { macrosOf, DB } from '../data/aliments.js';
 import { ongletActif, allerOnglet } from './BottomNav.jsx';
-import { ouvrirCalcDemande } from './DayDashboard.jsx';
 import { statsAvOuvertes } from './StatsAvancees.jsx';
 import { ideesOuvertes, origineIdees } from './IdeesRepas.jsx';
 import { origineCourses } from './Courses.jsx';
@@ -53,16 +53,32 @@ export const ajustements = signal({restants: null, quota: null});
 // Compte pour lequel le dossier a ete charge (27/09) : au changement de
 // compte sur le meme appareil, tout ce qui appartenait au precedent
 // (plan, questionnaire, commande) est oublie puis recharge.
+// Charge aussi le dossier des l'ouverture de l'app (27/09) : le plan
+// fixe les objectifs du journal, il doit etre connu hors de l'onglet Coach.
 let chargePour = null;
 effect(() => {
   const u = utilisateur.value;
   const uid = u ? u.uid : null;
-  if (!programmeCharge.peek() || chargePour === uid) return;
-  programme.value = null;
-  dossierCoach.value = { questionnaire: null, commande: null };
-  ajustements.value = { restants: null, quota: null };
-  programmeCharge.value = false;
+  if (programmeCharge.peek() && chargePour === uid) return;
+  if (chargePour === uid && uid) return; // chargement deja en cours
+  if (programmeCharge.peek()) {
+    programme.value = null;
+    dossierCoach.value = { questionnaire: null, commande: null };
+    ajustements.value = { restants: null, quota: null };
+    programmeCharge.value = false;
+  }
   if (uid) chargerProgramme();
+});
+
+/** Un plan coach est actif : ses totaux SONT les objectifs du journal,
+ *  et le client ne peut plus les modifier lui-meme (Raci, 27/09). */
+export const planCoachActif = computed(() => !!(programme.value && +programme.value.kcal > 0));
+effect(() => {
+  const pr = programme.value;
+  const o = objectifs.value;
+  if (!pr || !(+pr.kcal > 0)) return;
+  if (o.kcal === pr.kcal && o.prot === pr.prot && o.carbs === pr.carbs && o.lip === pr.lip) return;
+  setObjectifs({ kcal: pr.kcal, prot: pr.prot, carbs: pr.carbs, lip: pr.lip });
 });
 
 export function chargerProgramme() {
@@ -106,6 +122,15 @@ export function chargerProgramme() {
 }
 
 /** « il y a 3 jours », a partir d'une date ISO. */
+/** Icone d'un repas d'apres son nom. */
+function iconeRepas(nom) {
+  const n = String(nom || '').toLowerCase();
+  if (/petit/.test(n)) return 'sun';
+  if (/collation|goûter|gouter|snack/.test(n)) return 'apple';
+  if (/dîner|diner|souper|soir/.test(n)) return 'moon';
+  return 'tools-kitchen';
+}
+
 function depuis(iso) {
   if (!iso) return null;
   const j = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
@@ -179,13 +204,6 @@ export function BelfitPlus() {
   const o = objectifs.value;
   const dejaApplique = pr && o.kcal === pr.kcal && o.prot === pr.prot
     && o.carbs === pr.carbs && o.lip === pr.lip;
-  // Ecart : le programme a ete charge un jour, puis les objectifs ont
-  // bouge. Tant qu'il n'a jamais ete charge, il n'y a pas d'ecart —
-  // seulement un plan qui attend.
-  // La trace du chargement est persistee : sans cela l'avertissement
-  // disparaitrait au premier rechargement de la page, c'est-a-dire
-  // exactement quand il devient utile.
-  const ecart = pr && !dejaApplique && (charge || dejaCharge(pr));
 
   const aRepas = !!(pr && pr.repas && pr.repas.length);
   const aj = ajustements.value;
@@ -268,61 +286,66 @@ export function BelfitPlus() {
             </div>
           ) : (
             <>
-              <div class="bp-macros">
-                <div><b>{pr.kcal}</b><em>kcal</em></div>
-                <div><b>{pr.prot} g</b><em>protéines</em></div>
-                <div><b>{pr.carbs} g</b><em>glucides</em></div>
-                <div><b>{pr.lip} g</b><em>lipides</em></div>
-              </div>
+              {/* Mise en page du 27/09 (Raci : « pas attirante ») : un
+                  bandeau des totaux, puis une carte par repas. */}
+              <p class="pc-sous">Reçu {depuis(pr.livreLe) || 'récemment'} · actif dans ton journal</p>
+              <section class="pc-hero">
+                <p class="pc-hero-lb">Par jour</p>
+                <p class="pc-kcal"><b>{Number(pr.kcal).toLocaleString('fr-BE')}</b><span>kcal</span></p>
+                {(() => {
+                  const kp = pr.prot * 4, kg = pr.carbs * 4, kl = pr.lip * 9, tot = kp + kg + kl || 1;
+                  return (
+                    <div class="pc-barre" aria-hidden="true">
+                      <i class="pc-p" style={{ width: (kp / tot * 100) + '%' }} />
+                      <i class="pc-g" style={{ width: (kg / tot * 100) + '%' }} />
+                      <i class="pc-l" style={{ width: (kl / tot * 100) + '%' }} />
+                    </div>
+                  );
+                })()}
+                <div class="pc-macros">
+                  <div><span class="pc-pt pc-p" /><b>{pr.prot} g</b><em>protéines</em></div>
+                  <div><span class="pc-pt pc-g" /><b>{pr.carbs} g</b><em>glucides</em></div>
+                  <div><span class="pc-pt pc-l" /><b>{pr.lip} g</b><em>lipides</em></div>
+                </div>
+              </section>
 
               {(pr.repas || []).map((r, i) => (
-                <div class="bp-repas" key={i}>
-                  <div class="bp-repas-tete">
-                    <span>{r.nom}</span>
+                <section class="pc-repas" key={i}>
+                  <header>
+                    <span class="pc-ic"><Icone nom={iconeRepas(r.nom)} taille={17} /></span>
+                    <b>{r.nom}</b>
                     <em>{Math.round(kcalRepas(r))} kcal</em>
-                  </div>
+                  </header>
                   {r.ings.map((ing, j) => (
-                    <div class="bp-ing" key={j}>
+                    <div class="pc-ing" key={j}>
                       <span>{ing.name}</span>
                       <em>{ing.portion} {unite(ing.name)}</em>
                     </div>
                   ))}
-                </div>
+                </section>
               ))}
 
-              {pr.note && <p class="bp-note">{pr.note}</p>}
-
-              {ecart && (
-                <p class="bp-ecart">
-                  Tes objectifs actuels ({o.kcal} kcal) ne sont plus ceux de ton
-                  programme ({pr.kcal} kcal). Tu es sorti de l'objectif pour lequel
-                  ce plan a été construit — recharge-le, ou demande une mise à jour
-                  de ton plan.
-                </p>
+              {pr.note && (
+                <section class="pc-note">
+                  <span class="pc-av"><Icone nom="user" taille={17} /></span>
+                  <div><b>Le mot de ton coach</b><p>{pr.note}</p></div>
+                </section>
               )}
 
               {aRepas && (
                 <button class="bp-appliquer" onClick={charger}>
-                  {charge ? 'Programme chargé dans ton journal' : 'Charger dans mon journal'}
+                  {charge ? 'Repas ajoutés à ton journal' : 'Mettre ces repas dans mon journal'}
                 </button>
               )}
               {aRepas && (
-                <p class="bp-avis">Tes repas du jour seront remplacés par ceux du programme.</p>
+                <p class="bp-avis">Tes repas du jour seront remplacés par ceux du plan.</p>
               )}
             </>
           )}
 
-          {/* Les deux actions, cote a cote, toujours accessibles —
-              y compris sans programme : c'est justement quand on n'en
-              a pas qu'on veut ecrire au coach. */}
-          <div class="prog-actions">
-            <button
-              class="prog-action"
-              onClick={() => { origineCalc.value = 'programme'; allerOnglet('journal'); ouvrirCalcDemande.value = true; }}
-            >
-              <b>Modifier mes objectifs</b>
-              <em>poids, taille, activité</em>
-            </button>
+          {/* Plus de « Modifier mes objectifs » (27/09) : les objectifs
+              viennent du plan du coach. */}
+          <div class="prog-actions prog-actions--seul">
             <button
               class="prog-action"
               onClick={() => setOuvertProg(false)}
