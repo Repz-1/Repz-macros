@@ -40,8 +40,8 @@ jobs:
             echo "=== Erreurs detaillees (24 h) ==="
             gcloud auth activate-service-account --key-file="$RUNNER_TEMP/cle.json" >/dev/null 2>&1 || true
             gcloud logging read 'resource.type="cloud_run_revision" AND (resource.labels.service_name="espacecoach" OR resource.labels.service_name="mailverification") AND severity>=WARNING AND timestamp>="'"$(date -u -d '-24 hours' +%FT%TZ)"'"' --project repz-baf60 --limit 30 --format='value(timestamp,resource.labels.service_name,severity,textPayload,jsonPayload.message)' 2>&1 | cut -c1-400 || true
-            echo "=== Erreurs espaceCoach en JSON ==="
-            gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="espacecoach" AND severity>=ERROR AND timestamp>="'"$(date -u -d '-24 hours' +%FT%TZ)"'"' --project repz-baf60 --limit 3 --format=json 2>&1 | grep -v '"insertId"\|"logName"\|"receiveTimestamp"' | cut -c1-600 | head -120 || true
+            echo "=== Journaux applicatifs espaceCoach ==="
+            gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="espacecoach" AND NOT httpRequest.status>0 AND timestamp>="'"$(date -u -d '-24 hours' +%FT%TZ)"'"' --project repz-baf60 --limit 20 --format='value(timestamp,severity,textPayload)' 2>&1 | cut -c1-700 || true
             echo "=== Requetes HTTP (24 h) ==="
             gcloud logging read 'resource.type="cloud_run_revision" AND (resource.labels.service_name="espacecoach" OR resource.labels.service_name="mailverification") AND httpRequest.status>0 AND timestamp>="'"$(date -u -d '-24 hours' +%FT%TZ)"'"' --project repz-baf60 --limit 30 --format='value(timestamp,resource.labels.service_name,httpRequest.status,httpRequest.latency)' 2>&1 || true
             echo "=== Resend ==="
