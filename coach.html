@@ -188,6 +188,7 @@ button.second{display:block;width:100%;font:inherit;font-size:14px;font-weight:6
     </div>
 
     <p class="lb">Les repas</p>
+    <div id="iaEtat" class="msg"></div>
     <div id="cible" class="cible" style="display:none"></div>
     <div id="repas"></div>
     <button class="plus" id="btnRepas">+ Ajouter un repas</button>
@@ -527,10 +528,14 @@ const LISTE = NOMS_ALIMENTS.map((n) => {
   return [n, r1(d.kcal), r1(d.prot), r1(d.carbs), r1(d.lip)].join(';') + (d.unit ? ';pièce=' + d.unit + 'g' : '');
 });
 
+// Etat de l'IA affiche EN HAUT des repas (27/09) : c'est la que la page
+// defile ; en bas, Raci ne voyait ni l'attente ni l'erreur.
 function proposer(extra) {
-  const msg = $('msgIa'), b = $('btnAjuster');
-  b.disabled = true; b.textContent = 'L\'IA prépare le plan… (15 s environ)';
-  msg.className = 'msg';
+  const msg = $('iaEtat'), b = $('btnAjuster');
+  b.disabled = true; b.textContent = 'L\'IA prépare le plan…';
+  document.querySelectorAll('.ia-go').forEach((x) => { x.disabled = true; x.textContent = 'L\'IA prépare le plan…'; });
+  $('msgIa').className = 'msg';
+  afficher(msg, 'L\'IA prépare le plan… (15 à 30 secondes)', true);
   $('ancreComposer').scrollIntoView({ behavior: 'smooth', block: 'start' });
   return appel('proposer', { aliments: LISTE, ...extra }).then((d) => {
     if (d && d.ok) {
@@ -542,10 +547,14 @@ function proposer(extra) {
       }
       afficher(msg, (d.remarque ? d.remarque + ' ' : '') + 'Relis tout avant d\'envoyer, surtout les allergies.', true);
     } else {
-      afficher(msg, d && d.motif === 'vide' ? 'Choisis un questionnaire ou compose d\'abord un plan.' : 'L\'IA n\'a pas pu répondre. Réessaie.', false);
+      afficher(msg, d && d.motif === 'vide' ? 'Choisis un questionnaire ou compose d\'abord un plan.'
+        : 'L\'IA n\'a pas pu répondre. Réessaie.' + (d && (d.detail || d.motif) ? ' (' + (d.detail || d.motif) + ')' : ''), false);
     }
-  }).catch((e) => { if (e.message !== 'code') afficher(msg, 'Réseau indisponible.', false); })
-    .finally(() => { b.disabled = false; b.textContent = 'Ajuster avec l\'IA'; });
+  }).catch((e) => { if (e.message !== 'code') afficher(msg, 'Réseau indisponible ou délai dépassé. Réessaie.', false); })
+    .finally(() => {
+      b.disabled = false; b.textContent = 'Ajuster avec l\'IA';
+      document.querySelectorAll('.ia-go').forEach((x) => { x.disabled = false; x.textContent = 'Proposer un plan avec l\'IA'; });
+    });
 }
 
 $('btnAjuster').addEventListener('click', () => {

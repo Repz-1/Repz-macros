@@ -1423,7 +1423,7 @@ exports.espaceCoach = onRequest(
       res.status(400).json({ok: false, motif: "action"});
     } catch (e) {
       console.error("espaceCoach :", e);
-      res.status(500).json({ok: false});
+      res.status(500).json({ok: false, detail: String((e && e.message) || e).slice(0, 200)});
     }
   },
 );
