@@ -158,9 +158,13 @@ export function totauxRepas(r) {
   return t;
 }
 
+// Repas « prevus » (plan coach charge dans le journal, 27/09) : ils ne
+// comptent qu'une fois valides par « Terminer ». Sinon le cadran etait
+// plein des le matin et ne servait plus a rien (Raci).
 export const totauxJour = computed(() => {
   const t = { kcal: 0, prot: 0, carbs: 0, lip: 0 };
   for (const r of repas.value) {
+    if (r.prevu) continue;
     const tr = totauxRepas(r);
     t.kcal += tr.kcal; t.prot += tr.prot; t.carbs += tr.carbs; t.lip += tr.lip;
   }
@@ -175,6 +179,7 @@ export const totauxJour = computed(() => {
 export const totauxJourAff = computed(() => {
   const t = { kcal: 0, prot: 0, carbs: 0, lip: 0 };
   for (const r of repas.value) {
+    if (r.prevu) continue;
     const m = totauxRepas(r);
     t.kcal += Math.round(m.kcal); t.prot += Math.round(m.prot);
     t.carbs += Math.round(m.carbs); t.lip += Math.round(m.lip);
@@ -278,6 +283,11 @@ export function ajouterRepas(type) {
 
 export function supprimerRepas(repasId) {
   repas.value = repas.value.filter(r => r.id !== repasId);
+}
+
+/** Repas prevu -> mange : il compte desormais dans le cadran. */
+export function validerRepas(repasId) {
+  repas.value = repas.value.map(r => r.id === repasId && r.prevu ? { ...r, prevu: false } : r);
 }
 
 export function renommerRepas(repasId, nom) {

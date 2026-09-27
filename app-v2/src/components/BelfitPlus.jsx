@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { majJusqua } from '../store/coach.js';
 import { useRetour } from '../services/retour.js';
 import { signal, effect, computed } from '@preact/signals';
 import { Icone } from './IconesCoach.jsx';
@@ -205,6 +206,8 @@ export function BelfitPlus() {
   const dejaApplique = pr && o.kcal === pr.kcal && o.prot === pr.prot
     && o.carbs === pr.carbs && o.lip === pr.lip;
 
+  const limMaj = majJusqua(dossierCoach.value, pr);
+  const majPossible = !!limMaj && Date.now() < limMaj.getTime();
   const aRepas = !!(pr && pr.repas && pr.repas.length);
   const aj = ajustements.value;
 
@@ -221,6 +224,7 @@ export function BelfitPlus() {
         id: ++n,
         nom: r.nom,
         type: cleDuNom(r.nom) === 'snack' ? 'collation' : 'repas',
+        prevu: true,
         cle: cleDuNom(r.nom),
         fixe: false,
         ouvert: false,
@@ -338,7 +342,7 @@ export function BelfitPlus() {
                 </button>
               )}
               {aRepas && (
-                <p class="bp-avis">Tes repas du jour seront remplacés par ceux du plan.</p>
+                <p class="bp-avis">Ils arrivent comme « prévus » : ouvre un repas et touche Terminer quand tu l'as mangé, il compte alors dans ta journée.</p>
               )}
             </>
           )}
@@ -350,9 +354,10 @@ export function BelfitPlus() {
               class="prog-action"
               onClick={() => setOuvertProg(false)}
             >
-              {/* 26/09 : la mise a jour se paie (60 EUR, onglet Coach) */}
-              <b>Mettre à jour mon plan</b>
-              <em>60 €, paiement unique</em>
+              {/* 26/09 : la mise a jour se paie (60 EUR, onglet Coach) ;
+                  27/09 : seulement dans les 3 mois du dernier paiement. */}
+              {majPossible ? <b>Mettre à jour mon plan</b> : <b>Commander un nouveau plan</b>}
+              <em>{majPossible ? '60 €, paiement unique' : '80 €, paiement unique'}</em>
             </button>
           </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { repas, totauxRepas, fourchetteRepas, renommerRepas } from '../store/journal.js';
+import { repas, totauxRepas, fourchetteRepas, renommerRepas, validerRepas } from '../store/journal.js';
 import { macrosOf } from '../data/aliments.js';
 import { enregistrerPlat } from '../store/perso.js';
 import { Recherche, LigneIngredient, repasOuvertId } from './MealCard.jsx';
@@ -203,7 +203,7 @@ export function MealPage() {
                   {t('rp_total_court')}
                   <span class="rp-total-val">{totAff.kcal}<span>kcal</span></span>
                 </span>
-                <button class="rp-total-fin" onClick={() => { repasOuvertId.value = null; }}>
+                <button class="rp-total-fin" onClick={() => { validerRepas(r.id); repasOuvertId.value = null; }}>
                   {t('rp_terminer')}
                 </button>
               </div>

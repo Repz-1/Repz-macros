@@ -34,6 +34,15 @@ try {
   const t2 = await p.locator('.pg-coach').innerText();
   ok(/Mon plan coach/.test(t2) && /60 €/.test(t2) && !/80 €/.test(t2), 'avec plan : carte plan + mise a jour 60 €');
   ok(/34 jours/.test(t2), 'rappel apres 30 jours');
+  ok(/À ce tarif jusqu'au/.test(t2), 'mise a jour : date limite affichee');
+  await p.context().close();
+  p = await ouvrir({ kcal: 2400, prot: 180, carbs: 250, lip: 70, livreLe: new Date(Date.now() - 100 * 86400000).toISOString(), repas: [{ nom: 'Petit dejeuner', ings: [{ name: 'Skyr', portion: 200 }] }] });
+  const t3 = await p.locator('.pg-coach').innerText();
+  ok(!/Mise à jour/.test(t3) && /Nouveau plan/.test(t3) && /80 €/.test(t3), 'plus de 3 mois apres le paiement : nouveau plan 80 €, plus de mise a jour');
+  await p.locator('.cp-bt', { hasText: 'Voir mon plan' }).tap(); await p.waitForTimeout(500);
+  ok(/Commander un nouveau plan/.test(await p.locator('.pg-prog').innerText()), 'plan de plus de 3 mois : bouton nouveau plan');
+  await p.context().close();
+  p = await ouvrir({ kcal: 2400, prot: 180, carbs: 250, lip: 70, livreLe: vieux, repas: [{ nom: 'Petit dejeuner', ings: [{ name: 'Skyr', portion: 200 }] }] });
   await p.locator('.cp-bt', { hasText: 'Voir mon plan' }).tap(); await p.waitForTimeout(500);
   ok(await p.locator('.pg-prog').count() === 1, 'plan ouvert');
   ok(/Mettre à jour mon plan/.test(await p.locator('.pg-prog').innerText()), 'plus d\'ajustement gratuit : bouton mise a jour');

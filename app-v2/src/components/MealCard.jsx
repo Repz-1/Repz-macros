@@ -514,7 +514,7 @@ export function MealCard({ r, aSuivre, fait }) {
   // centres sur la meme ligne : places separement, ils se retrouvaient
   // l'un en haut, l'autre au milieu.
   return (
-    <div class={'mc' + (aSuivre ? ' mc--suivant' : '') + (fait ? ' mc--fait' : '')}>
+    <div class={'mc' + (aSuivre ? ' mc--suivant' : '') + (fait ? ' mc--fait' : '') + (r.prevu ? ' mc--prevu' : '')}>
       <div class="mc-tete" onClick={() => { if (!edite) repasOuvertId.value = r.id; }}>
 
         <div class="mc-vignette" dangerouslySetInnerHTML={{ __html: illustration(r) }} />
@@ -534,7 +534,7 @@ export function MealCard({ r, aSuivre, fait }) {
             <h3 class="mc-titre">{r.nom}</h3>
           )}
           <p class="mc-sous">{
-            !vide ? `${tot.kcal.toFixed(0)} kcal`
+            !vide ? (r.prevu ? `Prévu · ${tot.kcal.toFixed(0)} kcal` : `${tot.kcal.toFixed(0)} kcal`)
               : (() => {
                   const f = fourchetteRepas(r.cle);
                   return f ? `${t('mc_reco')} ${f.min} – ${f.max} kcal` : t('mc_empty');

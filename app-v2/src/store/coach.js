@@ -60,3 +60,18 @@ export function etatCoach(dossier, pr) {
     restants: Math.max(0, DELAI_QUESTIONNAIRE - ecoules),
   };
 }
+
+// Fenetre de mise a jour (Raci, 27/09) : chaque paiement couvre son mois
+// + 2 mois. La mise a jour a 60 EUR reste possible jusqu'a 3 mois apres
+// le DERNIER paiement ; au-dela, c'est un nouveau plan a 80 EUR.
+export const MOIS_MAJ = 3;
+/** Date limite de la mise a jour, ou null (pas de plan, pas de paiement). */
+export function majJusqua(dossier, pr) {
+  if (!pr) return null;
+  const e = etatCoach(dossier, pr);
+  const base = e.payeLe || pr.livreLe;
+  if (!base) return null;
+  const d = new Date(base);
+  d.setMonth(d.getMonth() + MOIS_MAJ);
+  return d;
+}

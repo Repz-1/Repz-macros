@@ -11,7 +11,7 @@ import { QuestionnaireCoach, effacerBrouillon } from './QuestionnaireCoach.jsx';
 import { Entete } from './Entete.jsx';
 import { PlanEnPreparation } from './PlanEnPreparation.jsx';
 import '../styles/coach-page.css';
-import { etatCoach, demandeQuestionnaire, DELAI_QUESTIONNAIRE, marquerPaye } from '../store/coach.js';
+import { etatCoach, demandeQuestionnaire, DELAI_QUESTIONNAIRE, marquerPaye, majJusqua } from '../store/coach.js';
 
 // Liens LemonSqueezy des deux produits a paiement unique.
 // A REMPLIR par Raci une fois les produits crees. Vides : le bouton
@@ -108,6 +108,9 @@ export function CoachPage() {
   const { aRemplir, enPrep, tardif, type: typePaye, payeLe: payeLeEtat } = etatCoach(dossierCoach.value, pr);
   const occupe = aRemplir || enPrep;
   const rappel = !occupe && j !== null && j >= 30;
+  // Fenetre de mise a jour : 3 mois apres le dernier paiement (27/09).
+  const limiteMaj = majJusqua(dossierCoach.value, pr);
+  const majOk = !!limiteMaj && Date.now() < limiteMaj.getTime();
 
   const ouvrirAchat = t => { setAdulte(null); setTca(null); setConsent(false); setConsent2(false); setAchat(t); };
   const bloque = achat === 'plan' && (adulte === 'non' || tca === 'oui');
@@ -195,19 +198,22 @@ export function CoachPage() {
       )}
 
       {!occupe && <p class="cp-sec">TARIFS</p>}
-      {!occupe && !pr && (
+      {!occupe && !majOk && (
         <div class="cp-carte cp-carte--or">
-          <div class="cp-ligne"><span class="cp-nom">Premier plan</span><span class="cp-prix">80 €</span></div>
-          <p class="cp-txt">Bilan complet, plan alimentaire écrit pour toi, livré sous 48 h.</p>
+          <div class="cp-ligne"><span class="cp-nom">{pr ? 'Nouveau plan' : 'Premier plan'}</span><span class="cp-prix">80 €</span></div>
+          <p class="cp-txt">{pr
+            ? 'Ta période de mise à jour est terminée : on repart d\'un bilan complet, plan écrit pour toi, livré sous 48 h.'
+            : 'Bilan complet, plan alimentaire écrit pour toi, livré sous 48 h.'}</p>
           {COMMANDES_OUVERTES
             ? <button class="cp-bt cp-bt--or" onClick={() => ouvrirAchat('plan')}>Demander mon plan</button>
             : <button class="cp-bt cp-bt--gris" disabled>Bientôt disponible</button>}
         </div>
       )}
-      {!occupe && pr && (
+      {!occupe && majOk && (
         <div class={'cp-carte' + (rappel ? ' cp-carte--or' : '')}>
           <div class="cp-ligne"><span class="cp-nom">Mise à jour</span><span class="cp-prix">60 €</span></div>
           <p class="cp-txt">Ton plan ajusté à ton poids, tes résultats et ton objectif. Conseillé chaque mois.</p>
+          <p class="cp-txt cp-jusqua">À ce tarif jusqu'au {limiteMaj.toLocaleDateString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
           {COMMANDES_OUVERTES
             ? <button class={'cp-bt ' + (rappel ? 'cp-bt--or' : 'cp-bt--gris')} onClick={() => ouvrirAchat('maj')}>Mettre à jour mon plan</button>
             : <button class="cp-bt cp-bt--gris" disabled>Bientôt disponible</button>}
@@ -219,7 +225,7 @@ export function CoachPage() {
       {achat && createPortal(
         <div class="pg-coach cp-portail"><div class="cp-voile" onClick={(e) => { if (e.target === e.currentTarget) setAchat(null); }}>
           <div class="cp-modale" role="dialog" aria-modal="true">
-            <p class="cp-nom">{achat === 'maj' ? 'Mise à jour · 60 €' : 'Premier plan · 80 €'}</p>
+            <p class="cp-nom">{achat === 'maj' ? 'Mise à jour · 60 €' : (pr ? 'Nouveau plan · 80 €' : 'Premier plan · 80 €')}</p>
             <p class="cp-txt">Paiement unique et sécurisé. Tu remplis ensuite ton questionnaire.</p>
             {achat === 'plan' && (
               <div class="cp-elim">

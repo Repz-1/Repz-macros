@@ -79,7 +79,7 @@ export function OngletJournal() {
           return repas.value.map(r => (
             <MealCard key={r.id} r={r}
               aSuivre={aSuivre && r.id === aSuivre.id}
-              fait={r.ings.length > 0} />
+              fait={r.ings.length > 0 && !r.prevu} />
           ));
         })()}
         {/* L'ajout d'un repas vit desormais dans le flux, sous le

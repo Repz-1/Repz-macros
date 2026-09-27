@@ -172,3 +172,4 @@
 .pg-qc .qc-liens { display: block; margin-top: 4px; }
 .pg-qc .qc-liens a { color: #8F6200; text-decoration: underline; }
 .pg-qc .qc-cta--gris, .pg-qc .qc-cta:disabled { background: #E5E3DE; color: #8E8B85; cursor: default; }
+.pg-coach .cp-jusqua { margin-top: 4px; font-size: 12.5px; color: #8F6200; }
