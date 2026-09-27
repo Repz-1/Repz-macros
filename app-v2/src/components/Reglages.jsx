@@ -481,6 +481,7 @@ export function Reglages() {
                   href="mailto:contact@belfit.be" />
           <Rangee titre={t('set_suggest')} sous={t('set_suggest_sub')}
                   href="mailto:contact@belfit.be?subject=Suggestion" />
+          <Rangee titre={t('set_coach_cgv')} href="https://www.belfit.be/cgv.html" />
           <Rangee titre={t('set_privacy')} href="https://www.belfit.be/confidentialite.html" />
         </div>
 

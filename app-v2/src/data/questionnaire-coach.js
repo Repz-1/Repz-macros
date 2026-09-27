@@ -153,8 +153,8 @@ export const MISE_A_JOUR = [
 // Consentements K (sur le recapitulatif, avant l'envoi).
 // Trois cases obligatoires, decochees ; bouton grise tant qu'une manque
 // (Raci, 27/09). Societe = BELFIT, comme dans confidentialite.html.
-// Pas encore de page CGV ni FAQ : lien affiche des que l'adresse existe.
-export const LIENS_LEGAUX = { confidentialite: '/confidentialite.html', cgv: null, faq: null };
+// CGV et FAQ du coaching : page cgv.html (27/09, en relecture).
+export const LIENS_LEGAUX = { confidentialite: '/confidentialite.html', cgv: '/cgv.html#cgv', faq: '/cgv.html#faq' };
 export const CONSENTEMENTS = [
   { id: 'k1', requis: true, liens: [['Confidentialité', 'confidentialite']],
     texte: "J'accepte que mes informations, y compris de santé, soient utilisées par BELFIT et mon coach pour construire et m'envoyer mon plan." },

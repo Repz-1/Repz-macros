@@ -167,6 +167,7 @@ try {
   await p.locator('.qc-consent input').nth(0).check(); await p.locator('.qc-consent input').nth(1).check();
   ok(await envoyer.isDisabled(), 'deux cases ne suffisent pas');
   ok(/confidentialite\.html/.test(await p.locator('.qc-consent a').first().getAttribute('href')), 'lien confidentialite');
+  ok((await p.locator('.qc-consent a').evaluateAll(a => a.map(x => x.getAttribute('href')))).join(' ') === '/confidentialite.html /cgv.html#cgv /cgv.html#faq', 'liens CGV et FAQ');
   // Brouillon : quitter et revenir
   await p.reload(); await p.waitForTimeout(1800);
   await p.locator('.bn-item').last().tap(); await p.waitForTimeout(500);
