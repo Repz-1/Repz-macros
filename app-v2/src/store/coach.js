@@ -2,6 +2,7 @@
 // en haut de chaque page (26/09). Une seule regle de calcul, pour que
 // le bandeau et la page ne se contredisent jamais.
 import { signal } from '@preact/signals';
+import { utilisateur } from '../services/firebase.js';
 
 // Delai pour remplir le questionnaire apres paiement (regle de Raci).
 export const DELAI_QUESTIONNAIRE = 7;
@@ -10,8 +11,28 @@ export const DELAI_QUESTIONNAIRE = 7;
 // (appui sur le bandeau). La page Coach la consomme.
 export const demandeQuestionnaire = signal(null);
 
+// Marque « paiement recu » posee au retour du paiement (27/09) : elle
+// appartient a UN compte. Posee avant que la session soit connue, elle
+// est rattachee au premier compte vu pendant ce meme chargement ; une
+// marque sans compte d'un chargement precedent est ignoree. Sans cela,
+// un autre compte ouvert sur le meme telephone heritait du paiement.
+let retourCeChargement = false;
+export function marquerPaye(type) {
+  retourCeChargement = true;
+  const u = utilisateur.peek();
+  try { localStorage.setItem('belfit_qc_paye', JSON.stringify({ type, le: new Date().toISOString(), uid: u ? u.uid : null })); } catch (e) { /* rien */ }
+}
 export function payeLocal() {
-  try { return JSON.parse(localStorage.getItem('belfit_qc_paye')); } catch (e) { return null; }
+  let m = null;
+  try { m = JSON.parse(localStorage.getItem('belfit_qc_paye')); } catch (e) { return null; }
+  if (!m) return null;
+  const u = utilisateur.peek();
+  if (!u) return null;
+  if (m.uid) return m.uid === u.uid ? m : null;
+  if (!retourCeChargement) return null;
+  m.uid = u.uid;
+  try { localStorage.setItem('belfit_qc_paye', JSON.stringify(m)); } catch (e) { /* rien */ }
+  return m;
 }
 
 function jours(iso) {

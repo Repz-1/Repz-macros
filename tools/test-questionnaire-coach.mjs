@@ -190,14 +190,23 @@ try {
   await p.context().close();
 
   // 3) Bandeau + 7 jours
-  p = await page(v => { localStorage.clear(); localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: v })); }, new Date(Date.now() - 2 * 86400000).toISOString());
+  p = await page(v => { localStorage.clear(); localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: v, uid: 'test' })); }, new Date(Date.now() - 2 * 86400000).toISOString());
   await p.reload(); await p.waitForTimeout(1800);
   ok(/5 jours restants/.test(await p.locator('.bandeau-coach:visible').first().innerText()), 'bandeau : 5 jours restants');
   await clicEcran(p, '.bandeau-coach'); await p.waitForTimeout(700);
   ok(await p.locator('.pg-qc').count() === 1, 'bandeau : ouvre le questionnaire');
-  await p.evaluate(v => localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: v })), new Date(Date.now() - 10 * 86400000).toISOString());
+  await p.evaluate(v => localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: v, uid: 'test' })), new Date(Date.now() - 10 * 86400000).toISOString());
   await p.reload(); await p.waitForTimeout(1800);
   ok(/rejoint la file/.test(await p.locator('.bandeau-coach:visible').first().innerText()), 'apres 7 jours : file');
+  await p.context().close();
+
+  // 3b) Autre compte sur le meme telephone : n'herite pas du paiement
+  p = await page(v => { localStorage.clear(); localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: v, uid: 'autre-compte' })); }, new Date().toISOString());
+  await p.reload(); await p.waitForTimeout(1800);
+  ok(await p.locator('.bandeau-coach:visible').count() === 0, 'autre compte : pas de bandeau herite');
+  await p.evaluate(v => localStorage.setItem('belfit_qc_paye', JSON.stringify({ type: 'plan', le: v })), new Date().toISOString());
+  await p.reload(); await p.waitForTimeout(1800);
+  ok(await p.locator('.bandeau-coach:visible').count() === 0, 'ancienne marque sans compte : ignoree');
   await p.context().close();
 
   // 4) Autre appareil : brouillon Firestore arrive apres l'ouverture

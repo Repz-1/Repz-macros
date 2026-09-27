@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
-import { signal } from '@preact/signals';
+import { signal, effect } from '@preact/signals';
 import { getApps } from 'firebase/app';
 import { utilisateur } from '../services/firebase.js';
 import { setObjectifs, objectifs, repas } from '../store/journal.js';
@@ -50,7 +50,23 @@ export const dossierCoach = signal({ questionnaire: null, commande: null });
 /** Ajustements restants ce mois-ci, et quota de la formule. */
 export const ajustements = signal({restants: null, quota: null});
 
+// Compte pour lequel le dossier a ete charge (27/09) : au changement de
+// compte sur le meme appareil, tout ce qui appartenait au precedent
+// (plan, questionnaire, commande) est oublie puis recharge.
+let chargePour = null;
+effect(() => {
+  const u = utilisateur.value;
+  const uid = u ? u.uid : null;
+  if (!programmeCharge.peek() || chargePour === uid) return;
+  programme.value = null;
+  dossierCoach.value = { questionnaire: null, commande: null };
+  ajustements.value = { restants: null, quota: null };
+  programmeCharge.value = false;
+  if (uid) chargerProgramme();
+});
+
 export function chargerProgramme() {
+  chargePour = utilisateur.peek() ? utilisateur.peek().uid : null;
   // Apercu local : le meme drapeau que l'apercu Premium sert a poser
   // un programme de demonstration sans passer par Firestore.
   try {

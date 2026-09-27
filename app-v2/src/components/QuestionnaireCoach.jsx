@@ -14,7 +14,9 @@ import { useRetour } from '../services/retour.js';
 import { profilBesoins, poidsCalcul } from '../store/journal.js';
 import { PREMIER_PLAN, MISE_A_JOUR, CONSENTEMENTS, LIENS_LEGAUX, repondue, lisible, alerteSante, allergieGrave, optionsDe } from '../data/questionnaire-coach.js';
 
-const cleBrouillon = type => 'belfit_qc_brouillon_' + type;
+// Par compte (27/09) : un autre compte sur le meme appareil ne reprend
+// pas le brouillon du precedent.
+const cleBrouillon = type => 'belfit_qc_brouillon_' + type + '_' + ((utilisateur.peek() || {}).uid || 'anonyme');
 
 function prerempli(type) {
   const p = profilBesoins.value || {};

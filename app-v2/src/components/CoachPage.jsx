@@ -11,7 +11,7 @@ import { QuestionnaireCoach, effacerBrouillon } from './QuestionnaireCoach.jsx';
 import { Entete } from './Entete.jsx';
 import { PlanEnPreparation } from './PlanEnPreparation.jsx';
 import '../styles/coach-page.css';
-import { etatCoach, demandeQuestionnaire, DELAI_QUESTIONNAIRE } from '../store/coach.js';
+import { etatCoach, demandeQuestionnaire, DELAI_QUESTIONNAIRE, marquerPaye } from '../store/coach.js';
 
 // Liens LemonSqueezy des deux produits a paiement unique.
 // A REMPLIR par Raci une fois les produits crees. Vides : le bouton
@@ -40,7 +40,7 @@ function lireRetour() {
     const u = new URLSearchParams(location.search);
     if (u.get('coach') !== 'questionnaire') return null;
     const type = u.get('type') === 'maj' ? 'maj' : 'plan';
-    localStorage.setItem('belfit_qc_paye', JSON.stringify({ type, le: new Date().toISOString() }));
+    marquerPaye(type);
     history.replaceState(null, '', location.pathname);
     return type;
   } catch (e) { return null; }
