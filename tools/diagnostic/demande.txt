@@ -4,3 +4,4 @@ Relance 2 (sortie chiffree).
 Relance 3 : envoi de test Resend + journaux detailles.
 Relance 4 : erreurs espaceCoach en JSON.
 Relance 5 : journaux applicatifs espaceCoach.
+Relance 6 : test reel de l'IA coach.
