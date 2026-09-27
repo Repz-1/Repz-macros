@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f7efd9">
 <link rel="manifest" href="manifest.json">
-<script src="i18n-strings.js?v=40"></script>
+<script src="i18n-strings.js?v=42"></script>
 <script src="i18n.js?v=4"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -39,7 +39,7 @@ a { color:#8F6200; font-weight:700; }
 <div class="container">
     <a href="/v2/" class="back-btn">←</a>
     <h1 data-i18n="cf_title">Politique de confidentialité & conditions d'utilisation</h1>
-    <div class="maj" data-i18n-html="cf_maj">Version 1 · Dernière mise à jour : juillet 2026<br>BELFIT — Belgique · Contact : <a href="mailto:contact@belfit.be">contact@belfit.be</a></div>
+    <div class="maj" data-i18n-html="cf_maj">Version 2 · Dernière mise à jour : septembre 2026<br>BELFIT — Belgique · Contact : <a href="mailto:contact@belfit.be">contact@belfit.be</a></div>
 
     <div class="warn" data-i18n="cf_intro">Ce document explique de façon claire comment BELFIT traite tes données, dans le respect du Règlement général sur la protection des données (RGPD) et du droit belge. Il vaut information au sens des articles 13 et 14 du RGPD.</div>
 
@@ -57,15 +57,16 @@ a { color:#8F6200; font-weight:700; }
 
     </div><div data-i18n-html="cf_a2"><h3>2. Données que nous traitons</h3>
     <ul>
-        <li><strong>Identité & compte</strong> : prénom, adresse e-mail, mot de passe (chiffré par Firebase, jamais accessible en clair).</li>
-        <li><strong>Caractéristiques</strong> : date de naissance, sexe, taille, niveau d'activité.</li>
-        <li><strong>Données de santé et de forme</strong> : poids et évolution, objectif, allergies et intolérances, préférences alimentaires (végétarien, végan, etc.), pathologies éventuellement déclarées, réponses au questionnaire.</li>
-        <li><strong>Contenus d'utilisation</strong> : journal alimentaire, repas, aliments créés, séances d'entraînement, hydratation, photo de profil.</li>
+        <li><strong>Identité & compte</strong> : prénom, pseudo, adresse e-mail, mot de passe (chiffré par Firebase, jamais accessible en clair).</li>
+        <li><strong>Caractéristiques</strong> : âge, sexe, taille, niveau d'activité.</li>
+        <li><strong>Données de santé et de forme</strong> : poids et évolution, mensurations, objectif, allergies et intolérances, préférences alimentaires, pathologies, grossesse ou traitements éventuellement déclarés, réponses au questionnaire du coach.</li>
+        <li><strong>Contenus d'utilisation</strong> : journal alimentaire, repas, aliments et plats créés, séances d'entraînement, hydratation.</li>
+        <li><strong>Photos, messages vocaux et assistant</strong> : les photos de repas, les messages vocaux et les messages écrits à l'assistant, quand tu utilises ces fonctions. Ils sont analysés pour te proposer des aliments, puis ne sont pas conservés par BELFIT.</li>
         <li><strong>Correspondance</strong> : messages envoyés au coach ou à l'assistance.</li>
-        <li><strong>Données d'abonnement & paiement</strong> : formule choisie, statut Premium, historique de commande. Les données bancaires sont traitées uniquement par notre prestataire de paiement, jamais par nous.</li>
+        <li><strong>Commandes de coaching</strong> : plan commandé, date et suivi de la commande. Le paiement en ligne est traité par notre prestataire de paiement : nous ne voyons jamais les données de ta carte. En cas de paiement par virement, nous recevons de notre banque le nom du titulaire du compte, son numéro de compte (IBAN) et la communication du virement.</li>
         <li><strong>Données techniques</strong> : informations minimales de connexion nécessaires au fonctionnement et à la sécurité.</li>
     </ul>
-    <p>La majorité de ces données te concernant (journal, pesées, aliments personnalisés) est stockée <strong>localement sur ton appareil</strong> et ne transite pas par nos serveurs.</p>
+    <p>Ton journal, tes pesées et tes réglages sont enregistrés sur ton appareil <strong>et synchronisés avec ton compte</strong>, pour que tu les retrouves sur tous tes appareils.</p>
 
     </div><div data-i18n-html="cf_a3"><h3>3. Origine des données</h3>
     <p>Nous obtenons ces données directement de toi (inscription, questionnaire, saisies dans l'app). Si tu te connectes via un service tiers (par ex. Google), certaines informations de base (nom, e-mail) peuvent nous être transmises par ce service selon les autorisations que tu accordes.</p>
@@ -73,9 +74,10 @@ a { color:#8F6200; font-weight:700; }
     </div><div data-i18n-html="cf_a4"><h3>4. Finalités & bases légales</h3>
     <ul>
         <li><strong>Créer et gérer ton compte, te fournir l'app</strong> — base : exécution du contrat.</li>
-        <li><strong>Construire et ajuster ton programme personnalisé</strong> (questionnaire, demandes d'ajustement traitées par ton coach) — base : exécution du contrat et, pour les données de santé, ton consentement explicite.</li>
+        <li><strong>Analyser tes photos, messages vocaux et messages à l'assistant</strong> pour te proposer des aliments à ajouter — base : exécution du contrat, pour les fonctions que tu choisis d'utiliser.</li>
+        <li><strong>Construire et ajuster ton plan coach</strong> (questionnaire, demandes d'ajustement traitées par ton coach) — base : exécution du contrat et, pour les données de santé, ton consentement explicite.</li>
         <li><strong>Assurer l'assistance et te répondre</strong> — base : exécution du contrat et intérêt légitime.</li>
-        <li><strong>Gérer l'abonnement, la facturation et les obligations comptables</strong> — base : exécution du contrat et obligation légale.</li>
+        <li><strong>Gérer tes commandes de coaching, la facturation et les obligations comptables</strong> — base : exécution du contrat et obligation légale.</li>
         <li><strong>Sécuriser le service et prévenir les usages abusifs</strong> — base : intérêt légitime.</li>
         <li><strong>Améliorer l'app à partir de données agrégées/anonymisées</strong> — base : intérêt légitime.</li>
     </ul>
@@ -84,20 +86,22 @@ a { color:#8F6200; font-weight:700; }
     <p>Le poids, les mensurations, les objectifs, les allergies et les pathologies déclarées sont des données concernant la santé, considérées comme sensibles par le RGPD. Elles ne sont traitées qu'avec <strong>ton consentement explicite</strong>, donné au moment où tu remplis le questionnaire ou renseignes ces informations. Elles servent uniquement à personnaliser ton suivi et tes recommandations. Tu peux retirer ce consentement à tout moment (voir tes droits, point 10).</p>
 
     </div><div data-i18n-html="cf_a6"><h3>6. Destinataires & sous-traitants</h3>
-    <p>Seules les personnes de BELFIT qui en ont besoin accèdent à tes données. Nous faisons appel à des sous-traitants, liés par contrat au sens de l'article 28 du RGPD :</p>
+    <p>Seules les personnes de BELFIT qui en ont besoin, dont ton coach, accèdent à tes données. Nous faisons appel à des sous-traitants, liés par contrat au sens de l'article 28 du RGPD :</p>
     <ul>
-        <li><strong>Google Firebase</strong> — authentification et base de données (statut Premium).</li>
-        <li><strong>EmailJS</strong> — acheminement des e-mails (questionnaire, ajustements, assistance) vers le coach.</li>
-        <li><strong>Lemon Squeezy</strong> — paiement et gestion des abonnements, en tant que « Merchant of Record ».</li>
+        <li><strong>Google Firebase</strong> — authentification, base de données et fonctions serveur (compte, journal synchronisé, questionnaire du coach).</li>
+        <li><strong>Google Gemini</strong> — analyse des photos de repas, des messages vocaux et des messages à l'assistant.</li>
+        <li><strong>Resend</strong> — envoi des e-mails (vérification, mot de passe, plan du coach).</li>
+        <li><strong>Lemon Squeezy</strong> — paiement en ligne du coaching, en tant que « Merchant of Record ».</li>
         <li><strong>GitHub Pages</strong> — hébergement de l'application.</li>
     </ul>
+    <p>Quand tu scannes un code-barres, l'app interroge la base publique <strong>Open Food Facts</strong> : seul le code-barres est transmis.</p>
     <p>Nous ne vendons jamais tes données et ne les partageons pas à des fins publicitaires tierces. Une transmission n'a lieu que si la loi l'exige ou avec ton consentement préalable.</p>
 
     </div><div data-i18n-html="cf_a7"><h3>7. Transferts hors de l'Union européenne</h3>
-    <p>Certains de nos sous-traitants (par ex. Google, Lemon Squeezy) peuvent traiter des données en dehors de l'Espace économique européen. Le cas échéant, ces transferts sont encadrés par des garanties appropriées : décision d'adéquation de la Commission européenne, cadre « EU-U.S. Data Privacy Framework » ou clauses contractuelles types (SCC) approuvées par la Commission.</p>
+    <p>Certains de nos sous-traitants (Google, Resend, Lemon Squeezy) peuvent traiter des données en dehors de l'Espace économique européen. Le cas échéant, ces transferts sont encadrés par des garanties appropriées : décision d'adéquation de la Commission européenne, cadre « EU-U.S. Data Privacy Framework » ou clauses contractuelles types (SCC) approuvées par la Commission.</p>
 
-    </div><div data-i18n-html="cf_a8"><h3>8. Absence de décision automatisée</h3>
-    <p>Ton programme est établi par un coach humain. Nous ne prenons pas de décision produisant des effets juridiques à ton égard sur la seule base d'un traitement automatisé au sens de l'article 22 du RGPD.</p>
+    </div><div data-i18n-html="cf_a8"><h3>8. Intelligence artificielle & décisions automatisées</h3>
+    <p>Certaines fonctions utilisent une intelligence artificielle (Google Gemini) : l'ajout d'un aliment par photo ou par la voix, et l'assistant de l'app. Elles te font des propositions : rien n'est ajouté à ton journal sans ta confirmation. Ton plan coach, lui, est établi par un coach humain. Nous ne prenons aucune décision produisant des effets juridiques à ton égard sur la seule base d'un traitement automatisé, au sens de l'article 22 du RGPD.</p>
 
     </div><div data-i18n-html="cf_a9"><h3>9. Durée de conservation</h3>
     <p>Nous conservons tes données de compte tant que ton compte est actif. En cas d'inactivité prolongée ou si tu supprimes ton compte, nous supprimons ou anonymisons tes données, sauf obligation légale de conservation (par ex. comptabilité). Les données stockées localement sur ton appareil restent sous ton contrôle : tu peux les effacer à tout moment via ton navigateur.</p>
@@ -117,7 +121,7 @@ a { color:#8F6200; font-weight:700; }
     <p>Pour exercer tes droits : <a href="mailto:contact@belfit.be">contact@belfit.be</a>. La suppression du compte et le retrait des consentements se font aussi depuis Paramètres. Autorité compétente en Belgique : Autorité de protection des données (APD), <a href="https://www.autoriteprotectiondonnees.be">autoriteprotectiondonnees.be</a>.</p>
 
     </div><div data-i18n-html="cf_a11"><h3>11. Mineurs</h3>
-    <p>BELFIT n'est pas destiné aux personnes de moins de 13 ans (âge du consentement numérique en Belgique). Si tu es mineur, l'accord d'un parent ou tuteur peut être requis. Si nous apprenons qu'un enfant sous cet âge nous a communiqué des données sans autorisation, nous les supprimons.</p>
+    <p>BELFIT n'est pas destiné aux personnes de moins de 13 ans (âge du consentement numérique en Belgique). Si tu es mineur, l'accord d'un parent ou tuteur peut être requis. Le coaching payant est réservé aux personnes de 18 ans et plus. Si nous apprenons qu'un enfant de moins de 13 ans nous a communiqué des données sans autorisation, nous les supprimons.</p>
     </div></div>
 
     <!-- ============ PARTIE B ============ -->
@@ -126,7 +130,7 @@ a { color:#8F6200; font-weight:700; }
     <p data-i18n="cf_b_intro">En créant un compte ou en utilisant BELFIT, tu acceptes ces conditions. Si tu ne les acceptes pas, n'utilise pas le service.</p>
 
     <div data-i18n-html="cf_b1"><h3>1. Objet du service</h3>
-    <p>BELFIT t'aide à suivre ton alimentation, ton hydratation, ton poids et tes entraînements, et te met en relation avec un coach qui construit ton programme personnalisé. Le service est destiné à un usage personnel et non commercial.</p>
+    <p>BELFIT t'aide à suivre ton alimentation, ton hydratation, ton poids et tes entraînements. L'application est gratuite. En option, tu peux commander un plan alimentaire personnalisé, construit par un coach (voir article 4). Le service est destiné à un usage personnel et non commercial.</p>
 
     </div><div data-i18n-html="cf_b2"><h3>2. Ton compte</h3>
     <ul>
@@ -139,12 +143,11 @@ a { color:#8F6200; font-weight:700; }
     </div><h3 data-i18n="cf_b3_h">3. Santé & information nutritionnelle</h3>
     <p id="sante" data-i18n-html="cf_b3_p">Tu es responsable de ta santé. BELFIT n'est pas un service médical et ne fournit ni diagnostic ni avis médical. Le service a une vocation de bien-être et de forme physique. <strong>Consulte un médecin avant de démarrer un régime ou un programme d'entraînement</strong>, en cas de pathologie, de grossesse, ou si tu ressens une douleur ou une gêne. Les valeurs nutritionnelles de la base d'aliments sont fournies à titre indicatif et peuvent comporter des imprécisions ; BELFIT ne garantit aucun résultat de poids, de forme ou de santé.</p>
 
-    <div data-i18n-html="cf_b4"><h3>4. Abonnement Premium</h3>
+    <div data-i18n-html="cf_b4"><h3>4. Coaching payant</h3>
     <ul>
-        <li>L'abonnement (1, 3 ou 12 mois) est payé d'avance via notre partenaire Lemon Squeezy.</li>
-        <li>Tu peux résilier à tout moment ; ton accès reste actif jusqu'à la fin de la période déjà payée. La gestion et la résiliation se font via le lien reçu dans ton e-mail de confirmation d'achat, ou en nous écrivant.</li>
-        <li><strong>Droit de rétractation :</strong> conformément au droit de l'UE, tu disposes de 14 jours pour te rétracter d'un achat de service numérique. En choisissant d'accéder immédiatement au service (livraison du programme, accès Premium), tu demandes son exécution immédiate et reconnais perdre ton droit de rétractation une fois le service pleinement fourni. Pour exercer ce droit lorsqu'il s'applique, écris à contact@belfit.be ; tout montant dû est remboursé sous 30 jours.</li>
-        <li>Le programme personnalisé est livré sous 24 à 48h ouvrées après réception du questionnaire complet.</li>
+        <li>L'application est gratuite, sans abonnement.</li>
+        <li>Le coaching se paie à l'unité : 80 € pour le premier plan, 60 € pour une mise à jour. Il n'y a ni abonnement ni prélèvement automatique.</li>
+        <li>La commande, les délais de livraison, le droit de rétractation et les remboursements sont décrits dans les <a href="/cgv.html">conditions de vente du coaching</a>.</li>
     </ul>
 
     </div><div data-i18n-html="cf_b5"><h3>5. Utilisation acceptable</h3>
