@@ -132,6 +132,12 @@ button.principal:disabled{opacity:.5;cursor:default}
     <div id="msgCo" class="msg"></div>
   </section>
 
+  <section id="refus" style="display:none">
+    <h1>Accès réservé</h1>
+    <p class="sous" id="refusTxt"></p>
+    <button class="principal" id="btnChanger">Changer de compte</button>
+  </section>
+
   <section id="travail">
     <h1>Composer un programme</h1>
     <p class="sous">Le plan est déposé dans l'application du client et lui est
@@ -172,15 +178,21 @@ button.principal:disabled{opacity:.5;cursor:default}
 // journal du client. Une copie aurait derive au premier ajout d'aliment.
 import { DB, NOMS_ALIMENTS, macrosOf } from '/app-v2/src/data/aliments.js';
 
-firebase.initializeApp({
+// Instance a part (27/09) : sans cela, la page reprenait la session
+// ouverte dans l'app sur le meme domaine (le compte client), et
+// « Se deconnecter » ici deconnectait aussi l'app.
+const appCoach = firebase.initializeApp({
   apiKey: "AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I",
   authDomain: "repz-baf60.firebaseapp.com",
   projectId: "repz-baf60",
   storageBucket: "repz-baf60.firebasestorage.app",
   messagingSenderId: "403252293048",
   appId: "1:403252293048:web:e7db6aed4ba92f0ebfb34d"
-});
-const auth = firebase.auth();
+}, 'espace-coach');
+const auth = appCoach.auth();
+// Meme liste que COACHS dans functions/index.js. Ce n'est qu'un confort :
+// le droit reel est verifie par deposerProgramme.
+const COACHS = ['coach@belfit.be', 'contact@belfit.be'];
 const URL_DEPOT = "https://europe-west1-repz-baf60.cloudfunctions.net/deposerProgramme";
 const $ = (id) => document.getElementById(id);
 
@@ -368,11 +380,20 @@ $('btnConnexion').addEventListener('click', () => {
     .finally(() => { b.disabled = false; });
 });
 $('btnDeco').addEventListener('click', (e) => { e.preventDefault(); auth.signOut(); });
+$('btnChanger').addEventListener('click', () => auth.signOut());
 auth.onAuthStateChanged((u) => {
+  const email = u && u.email ? u.email.toLowerCase() : '';
+  const coach = !!u && COACHS.includes(email) && u.emailVerified;
   $('connexion').style.display = u ? 'none' : 'block';
-  $('travail').style.display = u ? 'block' : 'none';
-  $('qui').textContent = u ? (u.email || '') : '';
-  if (u) dessiner();
+  $('refus').style.display = u && !coach ? 'block' : 'none';
+  $('travail').style.display = coach ? 'block' : 'none';
+  $('qui').textContent = email;
+  if (u && !coach) {
+    $('refusTxt').textContent = COACHS.includes(email)
+      ? "Confirme d'abord l'adresse " + email + " : ouvre l'e-mail de confirmation reçu sur cette boîte, puis reconnecte-toi."
+      : "Le compte " + email + " n'est pas un compte coach. Connecte-toi avec coach@belfit.be.";
+  }
+  if (coach) dessiner();
 });
 
 $('btnEnvoi').addEventListener('click', () => {
