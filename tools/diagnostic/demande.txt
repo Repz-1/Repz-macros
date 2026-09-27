@@ -1,3 +1,4 @@
 Modifier ce fichier relance le diagnostic serveur (journaux + Resend).
 Demande : e-mail de confirmation non recu pour coach@belfit.be (27/09).
 Relance 2 (sortie chiffree).
+Relance 3 : envoi de test Resend + journaux detailles.

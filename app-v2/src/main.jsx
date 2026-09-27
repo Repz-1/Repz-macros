@@ -160,7 +160,6 @@ export function OngletEntrainer() {
   return (
     <div class="pg-entrainer">
       <button class="v2-retour v2-retour--mot" onClick={retourEntrainer}>←&nbsp; Retour</button>
-      <BandeauConfirmation />
     </div>
   );
 }
@@ -618,7 +617,10 @@ window.addEventListener('unhandledrejection', (e) => {
   montrerErreur((r && (r.message || r)) || 'promesse rejetee', r && r.stack ? String(r.stack).split('\n')[1] : '');
 });
 
-if (racine) render(<><AvisAccesInvite /><App /></>, racine);
+// BandeauConfirmation a la racine (27/09) : il n'etait monte que dans
+// un ecran de S'entrainer rarement ouvert, si bien que le courriel de
+// confirmation ne partait jamais a l'inscription (signale par Raci).
+if (racine) render(<><AvisAccesInvite /><BandeauConfirmation /><App /></>, racine);
 
 // Retrait du splash.
 //
