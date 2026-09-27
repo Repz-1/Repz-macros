@@ -56,6 +56,7 @@ export function PlanEnPreparation({ payeLe, questionnaire }) {
   const ecoule = envoye ? Date.now() - new Date(envoye).getTime() : 0;
   const part = Math.min(0.97, Math.max(0.03, ecoule / H48));
   const restant = limite ? Math.round((limite - Date.now()) / 3600000) : null;
+  const ecrit = !dansLaFile && ecoule >= H48 / 2;
 
   return (
     <>
@@ -87,7 +88,10 @@ export function PlanEnPreparation({ payeLe, questionnaire }) {
       <div class="cp-carte pp-etapes">
         <div class="pp-et f"><span class="pp-pt"><Icone nom="check" taille={15} /></span><div><b>Paiement reçu</b><span>{quand(payeLe)}</span></div></div>
         <div class="pp-et f"><span class="pp-pt"><Icone nom="check" taille={15} /></span><div><b>Questionnaire envoyé</b><span>{quand(envoye)}</span></div></div>
-        <div class="pp-et c"><span class="pp-pt"><Icone nom="pencil" taille={15} /></span><div><b>Ton coach écrit ton plan</b><span>En cours</span></div></div>
+        {/* Etape ajoutee le 27/09 (Raci). Pas de signal du coach : la
+            premiere moitie du delai = elaboration, la seconde = ecriture. */}
+        <div class={'pp-et ' + (ecrit ? 'f' : 'c')}><span class="pp-pt"><Icone nom={ecrit ? 'check' : 'list-check'} taille={15} /></span><div><b>Programme en cours d'élaboration</b><span>{ecrit ? 'Tes besoins sont calculés' : 'En cours'}</span></div></div>
+        <div class={'pp-et ' + (ecrit ? 'c' : 'o')}><span class="pp-pt"><Icone nom="pencil" taille={15} /></span><div><b>Ton coach écrit ton plan</b><span>{ecrit ? 'En cours' : 'À venir'}</span></div></div>
         <div class="pp-et o"><span class="pp-pt"><Icone nom="package" taille={15} /></span><div><b>Plan livré</b><span>Dans l'app et par e-mail</span></div></div>
       </div>
 
