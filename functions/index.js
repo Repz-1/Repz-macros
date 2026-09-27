@@ -1,5 +1,6 @@
 // Deploiement : automatique via GitHub Actions (.github/workflows/serveur.yml)
 // a chaque changement de ce dossier, depuis le 27/09. Plus besoin du PC.
+// Espace coach : secret COACH_CODE pose depuis GitHub (27/09).
 const {onRequest} = require("firebase-functions/v2/https");
 const {defineSecret} = require("firebase-functions/params");
 const admin = require("firebase-admin");
