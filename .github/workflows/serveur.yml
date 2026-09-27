@@ -1,0 +1,51 @@
+name: Deploy serveur (Firebase)
+
+# Deploie les fonctions serveur et les regles Firestore sans passer par
+# le PC (27/09). Se lance quand functions/ ou firestore.rules changent,
+# ou a la main depuis l'onglet Actions de GitHub.
+# Prerequis, une seule fois : le secret FIREBASE_SA_KEY (cle JSON d'un
+# compte de service du projet repz-baf60) dans Settings > Secrets.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'functions/**'
+      - 'firestore.rules'
+      - 'firebase.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: serveur
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cle du compte de service
+        env:
+          CLE: ${{ secrets.FIREBASE_SA_KEY }}
+        run: |
+          if [ -z "$CLE" ]; then echo "Secret FIREBASE_SA_KEY absent : rien a deployer."; exit 1; fi
+          printf '%s' "$CLE" > "$RUNNER_TEMP/cle.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/cle.json" >> "$GITHUB_ENV"
+
+      - name: Dependances des fonctions
+        run: npm ci --prefix functions
+
+      - name: Deploiement
+        run: npx --yes firebase-tools@latest deploy --only functions,firestore:rules --project repz-baf60 --non-interactive --force
+
+      - name: Nettoyage
+        if: always()
+        run: rm -f "$RUNNER_TEMP/cle.json"
