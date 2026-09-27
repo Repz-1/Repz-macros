@@ -1287,6 +1287,7 @@ async function geminiJSON(prompt) {
     }
     dernier = (await r.text()).slice(0, 200);
     console.error("Gemini (coach)", modele, r.status, dernier);
+    if (r.status === 402) { const e = new Error("credit"); e.credit = true; throw e; }
     if (r.status !== 404) break;
   }
   throw new Error("gemini: " + dernier);
@@ -1335,7 +1336,12 @@ async function proposerPlan(corps) {
     liste.join("\n"),
   ].filter(Boolean).join("\n");
 
-  const brut = await geminiJSON(prompt);
+  let brut;
+  try { brut = await geminiJSON(prompt); } catch (e) {
+    // Credit prepaye Gemini epuise (27/09) : a recharger dans AI Studio.
+    if (e.credit) return [402, {ok: false, motif: "credit"}];
+    throw e;
+  }
   const repas = (Array.isArray(brut.repas) ? brut.repas : []).slice(0, 8).map((r) => ({
     nom: String((r && r.nom) || "Repas").slice(0, 60),
     ings: (Array.isArray(r && r.ings) ? r.ings : []).slice(0, 14)

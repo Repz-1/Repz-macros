@@ -547,7 +547,8 @@ function proposer(extra) {
       }
       afficher(msg, (d.remarque ? d.remarque + ' ' : '') + 'Relis tout avant d\'envoyer, surtout les allergies.', true);
     } else {
-      afficher(msg, d && d.motif === 'vide' ? 'Choisis un questionnaire ou compose d\'abord un plan.'
+      afficher(msg, d && d.motif === 'credit' ? 'Le crédit Gemini est épuisé : recharge-le sur ai.studio/projects (Facturation), puis réessaie.'
+        : d && d.motif === 'vide' ? 'Choisis un questionnaire ou compose d\'abord un plan.'
         : 'L\'IA n\'a pas pu répondre. Réessaie.' + (d && (d.detail || d.motif) ? ' (' + (d.detail || d.motif) + ')' : ''), false);
     }
   }).catch((e) => { if (e.message !== 'code') afficher(msg, 'Réseau indisponible ou délai dépassé. Réessaie.', false); })
