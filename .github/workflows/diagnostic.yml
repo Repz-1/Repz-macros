@@ -11,7 +11,7 @@ on:
       - 'tools/diagnostic/demande.txt'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   diagnostic:
@@ -27,13 +27,29 @@ jobs:
         run: |
           printf '%s' "$CLE" > "$RUNNER_TEMP/cle.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/cle.json" >> "$GITHUB_ENV"
-      - name: Journaux mailVerification
-        run: npx --yes firebase-tools@latest functions:log --only mailVerification --project repz-baf60 2>&1 | tail -60 || true
-      - name: Journaux espaceCoach
-        run: npx --yes firebase-tools@latest functions:log --only espaceCoach --project repz-baf60 2>&1 | tail -40 || true
-      - name: Domaine Resend
+      # Sortie chiffree (cle publique du depot) puis poussee sur la branche
+      # diagnostic-sortie : les journaux contiennent des adresses e-mail et
+      # le depot est public. Seul le detenteur de la cle privee peut lire.
+      - name: Collecte
         run: |
-          RESEND_CLE=$(npx --yes firebase-tools@latest functions:secrets:access RESEND_API_KEY --project repz-baf60 2>/dev/null) node tools/diagnostic/resend.mjs || true
+          {
+            echo "=== mailVerification ==="
+            npx --yes firebase-tools@latest functions:log --only mailVerification --project repz-baf60 2>&1 | tail -80 || true
+            echo "=== espaceCoach ==="
+            npx --yes firebase-tools@latest functions:log --only espaceCoach --project repz-baf60 2>&1 | tail -60 || true
+            echo "=== Resend ==="
+            RESEND_CLE=$(npx --yes firebase-tools@latest functions:secrets:access RESEND_API_KEY --project repz-baf60 2>/dev/null) node tools/diagnostic/resend.mjs 2>&1 || true
+          } > "$RUNNER_TEMP/sortie.txt"
+          openssl rand -hex 32 > "$RUNNER_TEMP/k.txt"
+          openssl enc -aes-256-cbc -pbkdf2 -salt -in "$RUNNER_TEMP/sortie.txt" -out "$RUNNER_TEMP/sortie.enc" -pass file:"$RUNNER_TEMP/k.txt"
+          openssl pkeyutl -encrypt -pubin -inkey tools/diagnostic/cle-publique.pem -in "$RUNNER_TEMP/k.txt" -out "$RUNNER_TEMP/k.enc"
+          mkdir -p "$RUNNER_TEMP/out" && cp "$RUNNER_TEMP/sortie.enc" "$RUNNER_TEMP/k.enc" "$RUNNER_TEMP/out/"
+          cd "$RUNNER_TEMP/out"
+          git init -q && git checkout -q -b diagnostic-sortie
+          git config user.email "coach@belfit.be" && git config user.name "BelFit Diagnostic"
+          git add . && git commit -qm "diagnostic $(date -u +%FT%TZ)"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" diagnostic-sortie
+          rm -f "$RUNNER_TEMP/sortie.txt" "$RUNNER_TEMP/k.txt"
       - name: Nettoyage
         if: always()
         run: rm -f "$RUNNER_TEMP/cle.json"
