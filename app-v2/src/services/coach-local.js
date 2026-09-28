@@ -254,7 +254,8 @@ export const SCHEMAS = {
 function lireStyle(n) {
   const style = /\b(endurance|endu|cardio|leger|legere|circuit|pump|tonifier|tonif\w*|seche)\b/.test(n) ? 'endu'
     : /\b(lourd|lourde|force|forte|max|maxi|puissance|strength|heavy|5x5)\b/.test(n) ? 'force'
-      : 'hyper';
+      : /\b(volume|hypertrophie|masse|muscle|prise|4x10)\b/.test(n) ? 'hyper'
+        : null;
   const duree = /\b(court|courte|rapide|express|vite|30 ?min|20 ?min)\b/.test(n) ? 'court'
     : /\b(long|longue|complete|complet|intense|60 ?min|1h|1 ?heure)\b/.test(n) ? 'long'
       : 'normal';
@@ -315,7 +316,9 @@ function extraireMuscles(n) {
   return ks;
 }
 
-export function composerSeance(phrase) {
+// styleChoisi : reponse a la question « quel objectif ? » (28/09). Sans
+// objectif dans la phrase, on le DEMANDE au lieu d'imposer 4 x 10 (Raci).
+export function composerSeance(phrase, styleChoisi) {
   const n = normNom(phrase);
   const muscles = extraireMuscles(n);
   if (!muscles.length) return null;
@@ -325,7 +328,20 @@ export function composerSeance(phrase) {
     || /\b(une|la) seance\b/.test(n);
   if (!veut) return null;
 
-  const { style, duree } = lireStyle(n);
+  const lu = lireStyle(n);
+  const duree = lu.duree;
+  const style = styleChoisi || lu.style;
+  if (!style) {
+    const titreM = muscles.map((k) => LABEL_MUSCLE[k] || k).join(' + ');
+    return {
+      action: 'choixStyle',
+      phrase,
+      titre: titreM,
+      texte: 'Séance ' + titreM + ' : quel objectif ?',
+      aliments: [],
+      local: true,
+    };
+  }
   const jour = lireJourVise(n);
   const schema = SCHEMAS[style];
   const parGroupe = nbParGroupe(muscles.length, style, duree);

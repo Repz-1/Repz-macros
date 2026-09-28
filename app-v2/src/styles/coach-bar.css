@@ -143,3 +143,13 @@
   padding-left: 10px;
   white-space: nowrap;
 }
+
+/* Choix de l'objectif d'une seance (28/09) */
+.coach-bar-style-bt {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  width: 100%; margin: 8px 0 0; padding: 13px 14px; border-radius: 14px;
+  background: #fff; border: 1.5px solid #EDE5D8; font-family: inherit; cursor: pointer; text-align: left;
+}
+.coach-bar-style-bt b { font-size: 15px; font-weight: 700; color: #191919; }
+.coach-bar-style-bt span { font-family: 'DM Mono', ui-monospace, monospace; font-size: 12.5px; color: #8F6200; }
+.coach-bar-style-bt:active { transform: scale(.99); background: #FFF8E1; }

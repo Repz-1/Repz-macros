@@ -23,7 +23,11 @@ ok(/Force/.test(a) && /5×5/.test(a), 'lourd = Force 5×5');
 ok(/Endurance/.test(b) && /3×15/.test(b), 'endurance = 3×15');
 
 // Autre jour : part au calendrier
-const d = await dire('demain séance jambes');
+await dire('demain séance jambes');
+ok(await page.locator('.coach-bar-style-bt').count() === 3 && /quel objectif/.test(await page.locator('.coach-bar-msg').innerText()), 'sans objectif : le coach le demande (3 choix)');
+await page.locator('.coach-bar-style-bt', { hasText: 'Prise de muscle' }).tap(); await page.waitForTimeout(400);
+const d = await page.locator('.coach-bar-diner').innerText().catch(() => '');
+ok(/4×10/.test(d), 'prise de muscle = 4×10');
 ok(/Poser pour demain/.test(d), 'bouton « Poser pour demain »');
 await page.locator('.coach-bar-ajout').tap(); await page.waitForTimeout(300);
 const planif = await page.evaluate(() => Object.keys(localStorage).map(k => localStorage.getItem(k)).join(' '));

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { parserLocal, proposerRepas } from '../services/coach-local.js';
+import { parserLocal, proposerRepas, composerSeance, SCHEMAS } from '../services/coach-local.js';
 import { demanderCoach } from '../services/coach.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau, ajouterRepas } from '../store/journal.js';
 import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT, demandeVueEntrainer, poserBrouillon } from '../store/seance-active.js';
@@ -48,7 +48,9 @@ export function CoachBar() {
   // Type de la ligne a creer au moment d'ajouter (23/09), ou null.
   const [nouvelleLigne, setNouvelleLigne] = useState(null);
   const ajoutRef = useRef(null);
-  const ouvert = etat === 'proposition' || etat === 'diner' || etat === 'seance' || etat === 'seancePosee';
+  const ouvert = etat === 'proposition' || etat === 'diner' || etat === 'seance' || etat === 'seancePosee' || etat === 'style';
+  // Seance sans objectif precise : on le demande (28/09).
+  const [styleDemande, setStyleDemande] = useState(null);
 
   useEffect(() => {
     if (!ouvert) return;
@@ -119,7 +121,18 @@ export function CoachBar() {
       }
       return;
     }
+    if (out.action === 'choixStyle') {
+      setStyleDemande({ phrase: out.phrase, titre: out.titre });
+      setSeance(null);
+      setLignes([]);
+      setDiner(null);
+      setMsg(out.texte);
+      setEtat('style');
+      setTexte('');
+      return;
+    }
     if (out.action === 'composerSeance') {
+      setStyleDemande(null);
       setSeance({
         composer: true,
         titre: out.titre,
@@ -365,6 +378,18 @@ export function CoachBar() {
             setDiner(null); setMsg(t('coach_dans_journal')); setEtat('pret');
           }}>{t('coach_ajouter_diner')}</button>
           <button class="coach-bar-passe" type="button" onClick={() => { setDiner(null); setEtat('pret'); setMsg(''); }}>{t('coach_pas_maintenant')}</button>
+        </div>
+      )}
+      {etat === 'style' && styleDemande && (
+        <div class="coach-bar-diner coach-bar-style">
+          <p class="coach-bar-diner-nom">{styleDemande.titre}</p>
+          {Object.values(SCHEMAS).map((s) => (
+            <button class="coach-bar-style-bt" type="button" key={s.cle}
+              onClick={() => { const out = composerSeance(styleDemande.phrase, s.cle); if (out) appliquer(out); }}>
+              <b>{s.label === 'Volume' ? 'Prise de muscle' : s.label}</b><span>{s.resume}</span>
+            </button>
+          ))}
+          <button class="coach-bar-passe" type="button" onClick={() => { setStyleDemande(null); setEtat('pret'); setMsg(''); }}>{t('coach_pas_maintenant')}</button>
         </div>
       )}
       {etat === 'seance' && seance && (
