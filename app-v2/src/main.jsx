@@ -1,4 +1,5 @@
 import { render } from 'preact';
+import { createPortal } from 'preact/compat';
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { animerGoutte, arreterGoutte } from './services/goutte.js';
 import './styles.css';
@@ -466,7 +467,9 @@ export function App() {
   // droite sur 390 px — « Deconnexion » etait coupe. C'est desormais
   // un menu ancre sous le bouton qui l'ouvre, en colonne, avec un
   // voile qui le referme au premier appui a cote.
-  const voletUtilisateur = voletProfil.value ? (
+  // Rendu dans <body> (28/09) : dans la page, un parent transforme (le
+  // rail des onglets) empechait le volet d'etre centre a l'ecran.
+  const voletUtilisateur = voletProfil.value ? createPortal((
     <>
       <div class="profil-voile" onClick={() => { voletProfil.value = false; }} />
       {/* Icone utilisateur = MON PROFIL (23/09). Qui je suis, ou j'en
@@ -493,7 +496,7 @@ export function App() {
             const p = cible > 0 ? Math.min(100, Math.round((val || 0) / cible * 100)) : 0;
             return (
               <div class="pv-an">
-                <div class="pv-rond" style={{ background: 'conic-gradient(' + coul + ' 0 ' + p + '%, #ECE7DD 0)' }}>
+                <div class="pv-rond" style={{ background: 'conic-gradient(' + coul + ' 0 ' + p + '%, #2A2C33 0)' }}>
                   <span>{Math.round(cible || 0)}</span>
                 </div>
                 <em>{lib}</em>
@@ -515,7 +518,7 @@ export function App() {
                   <p class="pv-lb">OBJECTIF DU JOUR</p>
                   <p class="pv-kcal"><b>{Math.round(o.kcal).toLocaleString('fr-BE')}</b> <span>kcal</span></p>
                   <div class="pv-anneaux">
-                    {anneau(c.prot, o.prot, '#1F1F1F', 'Prot.')}
+                    {anneau(c.prot, o.prot, '#F4F4F2', 'Prot.')}
                     {anneau(c.carbs, o.carbs, '#F5A800', 'Gluc.')}
                     {anneau(c.lip, o.lip, '#E4610B', 'Lip.')}
                     <div class="pv-an">
@@ -547,7 +550,7 @@ export function App() {
         })()}
       </div>
     </>
-  ) : null;
+  ), document.body) : null;
 
   const PAGES = { journal: OngletJournal, entrainer: OngletEntrainer, stats: Stats, premium: CoachPage };
 
