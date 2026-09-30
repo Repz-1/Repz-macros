@@ -68,6 +68,17 @@ function ChampMotDePasse({ valeur, onInput, placeholder, autocomplete }) {
 export const erreurPersistante = signal('');
 const CLE_EMAIL = 'belfit_dernier_email';
 
+// Fond « aurore » commun a tous les ecrans de connexion (28/09) : Raci
+// voyait l'ecran de connexion en noir uni, sans la maquette validee.
+function Aurore() {
+  return (
+    <>
+      <div class="la-aurore" aria-hidden="true"><i class="la-b la-b1" /><i class="la-b la-b2" /><i class="la-b la-b3" /></div>
+      <div class="la-voile" aria-hidden="true" />
+    </>
+  );
+}
+
 export function LoginScreen() {
   // Un programme construit pendant l'accueil attend d'etre sauvegarde :
   // on ouvre directement l'inscription, prenom deja rempli.
@@ -140,7 +151,7 @@ export function LoginScreen() {
     };
 
     return (
-      <div class="login-fond"><div class="login-ecran">
+      <div class="login-fond login-fond--accueil"><Aurore /><div class="login-ecran login-ecran--aurore">
         <img src="/belfit-logo-bf.png" alt="BelFit" class="login-logo" />
         <h1 class="login-titre">{t('recup_titre')}</h1>
 
@@ -176,8 +187,7 @@ export function LoginScreen() {
   if (mode === 'accueil') {
     return (
       <div class="login-fond login-fond--accueil">
-        <div class="la-aurore" aria-hidden="true"><i class="la-b la-b1" /><i class="la-b la-b2" /><i class="la-b la-b3" /></div>
-        <div class="la-voile" aria-hidden="true" />
+        <Aurore />
         <div class="login-accueil">
           <img src="/belfit-logo-bf.png" alt="BelFit" class="la-logo" />
           <p class="la-marque">BELFIT</p>
@@ -200,7 +210,7 @@ export function LoginScreen() {
   }
 
   return (
-    <div class="login-fond"><div class="login-ecran">
+    <div class="login-fond login-fond--accueil"><Aurore /><div class="login-ecran login-ecran--aurore">
       <img src="/belfit-logo-bf.png" alt="BelFit" class="login-logo" />
       <h1 class="login-titre">
         {mode === 'connexion' ? t(accueil)
