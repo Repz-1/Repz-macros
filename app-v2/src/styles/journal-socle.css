@@ -585,7 +585,7 @@
    decroche du doigt (Raci, 8/08). */
 .pg-journal .water-fab {
   position: absolute; left: 12px; top: 0;
-  width: 81px; height: 46px;
+  width: 92px; height: 46px;
   background: none; border: none; padding: 0; cursor: pointer;
   color: var(--txt-inverse-2); font-size: 14px; font-weight: 700;
   font-family: inherit; white-space: nowrap;

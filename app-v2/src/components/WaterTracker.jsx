@@ -24,6 +24,12 @@ function litresTxt(l) {
   return String(parseFloat((ml / 1000).toFixed(3))).replace('.', ',') + ' L';
 }
 
+// Pastille (28/09) : 2 decimales au plus, sinon « 0,675 L » debordait de
+// la goutte (largeur fixe, animee par goutte.js). La fenetre garde le detail.
+function litresCourt(ml) {
+  return String(parseFloat((ml / 1000).toFixed(2))).replace('.', ',') + ' L';
+}
+
 export function WaterTracker() {
   const [ouvert, setOuvert] = useState(false);
   // Bouteille qui vient d'etre terminee : on la montre pleine 450 ms
@@ -54,7 +60,7 @@ export function WaterTracker() {
         <span class="wf-corps" />
         <span class="wf-contenu">
           <span style={{ fontSize: '18px' }}>💧</span>
-          <span class="wf-count">{litresTxt(total)}</span>
+          <span class="wf-count">{litresCourt(total)}</span>
         </span>
         <span class="wf-perles" aria-hidden="true">
           <i /><i /><i /><i /><i /><i /><i />

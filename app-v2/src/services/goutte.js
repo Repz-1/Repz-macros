@@ -20,7 +20,7 @@
 // qu'a transform / width / height / left.
 // ============================================================
 
-const PASTILLE_L = 81;   // largeur de la pastille « 0,0 L »
+const PASTILLE_L = 92;   // largeur de la pastille (« 1,25 L » tient, 28/09)
 const PASTILLE_H = 46;
 const AMAS_L     = 12;   // colonne de gouttelettes
 // 70px : le creux entre « Pense a te peser » et le premier repas en fait
