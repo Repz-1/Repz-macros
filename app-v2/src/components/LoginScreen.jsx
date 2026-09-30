@@ -73,7 +73,7 @@ const CLE_EMAIL = 'belfit_dernier_email';
 function Aurore() {
   return (
     <>
-      <div class="la-aurore" aria-hidden="true"><i class="la-b la-b1" /><i class="la-b la-b2" /><i class="la-b la-b3" /></div>
+      <div class="la-aurore" aria-hidden="true"><i class="la-b la-b1" /><i class="la-b la-b2" /><i class="la-b la-b3" /><i class="la-b4" /></div>
       <div class="la-voile" aria-hidden="true" />
     </>
   );
