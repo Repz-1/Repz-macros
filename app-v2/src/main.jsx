@@ -37,7 +37,8 @@ import { weightLog } from './store/stats.js';
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { CoachPage } from './components/CoachPage.jsx';
 import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
-import { origineCalc, planCoachActif, programme } from './components/BelfitPlus.jsx';
+import { origineCalc, planCoachActif, programme, dossierCoach } from './components/BelfitPlus.jsx';
+import { majJusqua } from './store/coach.js';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses, origineCourses } from './components/Courses.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
@@ -484,11 +485,15 @@ export function App() {
           const kg = der ? (der.weight != null ? der.weight : der.kg) : null;
           const pr = programme.value;
           const jours = pr && pr.livreLe ? Math.max(0, Math.floor((Date.now() - new Date(pr.livreLe).getTime()) / 86400000)) : null;
+          // PRO (28/09) : accès actif = paiement coach dans sa fenetre
+          // (mois du plan + 2 mois). Les codes s'y ajouteront.
+          const finPro = majJusqua(dossierCoach.value, pr);
+          const pro = !!finPro && Date.now() < finPro.getTime();
           const anneau = (val, cible, coul, lib) => {
             const p = cible > 0 ? Math.min(100, Math.round((val || 0) / cible * 100)) : 0;
             return (
               <div class="pv-an">
-                <div class="pv-rond" style={{ background: 'conic-gradient(' + coul + ' 0 ' + p + '%, #2A2C33 0)' }}>
+                <div class="pv-rond" style={{ background: 'conic-gradient(' + coul + ' 0 ' + p + '%, #ECE7DD 0)' }}>
                   <span>{Math.round(cible || 0)}</span>
                 </div>
                 <em>{lib}</em>
@@ -500,7 +505,8 @@ export function App() {
               <div class="pv-tete">
                 <span class="pv-av"><span>{(nom || '?').trim().charAt(0).toUpperCase()}</span></span>
                 <div class="pv-id">
-                  <b>{nom}</b>
+                  <b>{nom}{pro && <span class="pv-pro">PRO</span>}</b>
+                  {pro && <span class="pv-fin">Accès jusqu'au {finPro.toLocaleDateString('fr-BE', { day: 'numeric', month: 'short', year: 'numeric' })}</span>}
                   <span>{planCoachActif.value ? 'Plan coach actif' + (jours !== null ? ' · depuis ' + (jours === 0 ? "aujourd'hui" : jours + ' j') : '') : t('compte_gratuit')}</span>
                 </div>
               </div>
@@ -509,7 +515,7 @@ export function App() {
                   <p class="pv-lb">OBJECTIF DU JOUR</p>
                   <p class="pv-kcal"><b>{Math.round(o.kcal).toLocaleString('fr-BE')}</b> <span>kcal</span></p>
                   <div class="pv-anneaux">
-                    {anneau(c.prot, o.prot, '#F4F4F2', 'Prot.')}
+                    {anneau(c.prot, o.prot, '#1F1F1F', 'Prot.')}
                     {anneau(c.carbs, o.carbs, '#F5A800', 'Gluc.')}
                     {anneau(c.lip, o.lip, '#E4610B', 'Lip.')}
                     <div class="pv-an">
