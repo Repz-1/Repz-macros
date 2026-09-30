@@ -989,3 +989,12 @@ button{cursor:pointer}
 .profil-volet.pv .pv-bt{background:#F4F1EA;border-color:#EDE5D8;color:#191919}
 .profil-volet.pv .pv-bt i{color:#8E8B85}
 .pv-id .pv-pro{color:#141414}
+
+/* Volet profil : l'arriere-plan est voile (28/09). Sans cela, le cadran
+   coupe net sous le volet donnait l'impression d'un ecran casse. */
+.profil-voile{position:fixed;inset:0;z-index:39;background:rgba(25,18,12,.38);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:pv-fondu .18s ease-out}
+.profil-volet.pv{animation:pv-entree .2s ease-out}
+@keyframes pv-fondu{from{opacity:0}to{opacity:1}}
+@keyframes pv-entree{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+.profil-voile{z-index:70}.profil-volet{z-index:71}
