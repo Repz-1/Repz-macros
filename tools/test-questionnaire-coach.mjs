@@ -25,6 +25,14 @@ async function remplir(p) {
   for (let k = 0; k < await cartes.count(); k++) {
     const c = cartes.nth(k);
     if (await c.getAttribute('data-facultatif') !== null) continue;
+    if (await c.locator('.qc-alim').count()) {
+      const cats = c.locator('.qc-alim-cat');
+      for (let j = 0; j < await cats.count(); j++) {
+        const cat = cats.nth(j); const min = +(await cat.getAttribute('data-min')) || 0;
+        for (let x = await cat.locator('.qc-puce.on').count(); x < min; x++) await cat.locator('.qc-puce:not(.on)').first().tap();
+      }
+      continue;
+    }
     if (await c.locator('.qc-tuile, .qc-puce').count()) { if (!(await c.locator('.qc-tuile.on, .qc-puce.on').count())) await c.locator('.qc-tuile, .qc-puce').first().tap(); continue; }
     if (await c.locator('.qc-roulette').count()) { if (!(await c.locator('.qc-roulette .on').count())) await c.locator('.qc-roulette button').nth(3).tap(); continue; }
     if (await c.locator('.qc-saisie').count()) {
@@ -69,7 +77,7 @@ try {
   p = await page();
   await p.goto(RETOUR + 'plan'); await p.waitForTimeout(1800);
   ok(/Ton programme commence ici/.test(await p.locator('.pg-qc').innerText()), 'retour de paiement : accueil du questionnaire');
-  ok(await p.locator('.qc-ligne').count() === 11, '10 sections + bonus listees');
+  ok(await p.locator('.qc-ligne').count() === 12, '11 sections + bonus listees');
   ok(!/arrêter quand tu veux/.test(await p.locator('.pg-qc').innerText()), 'accueil : phrase « tu peux t\'arreter » retiree');
   ok(await p.locator('.qc-bloc').count() === 1 && /^Toi/.test(await haut(p)), 'accueil : premiere section deja ouverte');
   ok(await p.locator('.pg-qc > .qc-cta').count() === 0, 'accueil : pas de bouton Commencer');
@@ -130,6 +138,15 @@ try {
   await p.locator('.qc-ouvert .qc-carte:has-text("Lesquelles") .qc-puce', { hasText: 'Fruits à coque' }).tap();
   await p.locator('.qc-ouvert .qc-carte:has-text("que se passe") .qc-puce', { hasText: 'Gonflement' }).tap();
   ok(await p.locator('.qc-alerte-rouge').count() === 1, 'reaction grave : alerte rouge');
+  await remplir(p); await continuer(p);
+  // Tes aliments (28/09) : au moins 3 par categorie principale, recherche dans la base
+  ok(/^Tes aliments/.test(await haut(p)) && await p.locator('.qc-alim-cat').count() === 6, 'tes aliments : 6 categories');
+  await continuer(p);
+  ok(/^Tes aliments/.test(await haut(p)), 'tes aliments : bloque sous 3 par categorie');
+  await p.locator('.qc-alim-cherche input').fill('saumon fum'); await p.waitForTimeout(200);
+  ok(await p.locator('.qc-alim-props button').count() > 0, 'recherche dans la base');
+  await p.locator('.qc-alim-props button').first().tap(); await p.waitForTimeout(150);
+  ok(await p.locator('.qc-alim-autres .qc-puce').count() === 1, 'aliment de la base ajoute');
   await remplir(p); await continuer(p);
   // Boissons : sodas sucres -> combien ; alcool 0
   await p.locator('.qc-ouvert .qc-carte:has-text("des sodas") .qc-puce', { hasText: 'Oui' }).tap();

@@ -12,7 +12,8 @@ import { Entete } from './Entete.jsx';
 import { Icone } from './IconesCoach.jsx';
 import { useRetour } from '../services/retour.js';
 import { profilBesoins, poidsCalcul } from '../store/journal.js';
-import { PREMIER_PLAN, MISE_A_JOUR, CONSENTEMENTS, LIENS_LEGAUX, repondue, lisible, alerteSante, allergieGrave, optionsDe } from '../data/questionnaire-coach.js';
+import { PREMIER_PLAN, MISE_A_JOUR, CONSENTEMENTS, LIENS_LEGAUX, repondue, lisible, alerteSante, allergieGrave, optionsDe , optionsAliments } from '../data/questionnaire-coach.js';
+import { NOMS_ALIMENTS } from '../data/aliments.js';
 
 // Par compte (27/09) : un autre compte sur le meme appareil ne reprend
 // pas le brouillon du precedent.
@@ -133,6 +134,55 @@ function Compteur({ q, r, maj }) {
   );
 }
 
+// « Tes aliments » (28/09) : puces par categorie avec compteur, et une
+// recherche dans la base BELFIT pour ajouter ce qui manque.
+const sansAccent = (x) => String(x).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+function ChoixAliments({ q, r, toutes, maj }) {
+  const vs = r.valeurs || [];
+  const [cherche, setCherche] = useState('');
+  const basculer = (o) => maj({ ...r, valeurs: vs.includes(o) ? vs.filter((x) => x !== o) : [...vs, o] });
+  const connus = new Set((q.categories || []).flatMap((c) => c.options));
+  const autres = vs.filter((x) => !connus.has(x));
+  const n = sansAccent(cherche.trim());
+  const props = n.length < 2 ? [] : NOMS_ALIMENTS.filter((nom) => sansAccent(nom).includes(n) && !vs.includes(nom)).slice(0, 6);
+  return (
+    <div class="qc-alim">
+      {(q.categories || []).map((c) => {
+        const opts = optionsAliments(c, toutes || {});
+        if (!opts.length) return null;
+        const pris = opts.filter((o) => vs.includes(o)).length;
+        const min = Math.min(c.min || 0, opts.length);
+        return (
+          <div class="qc-alim-cat" data-min={min}>
+            <p class="qc-alim-tete"><b>{c.nom}</b>
+              <em class={pris >= min ? 'ok' : ''}>{min ? (pris >= min ? pris + ' choisi' + (pris > 1 ? 's' : '') : pris + ' / ' + min + ' min.') : (pris ? pris + ' choisi' + (pris > 1 ? 's' : '') : 'facultatif')}</em>
+            </p>
+            <div class="qc-puces">
+              {opts.map((o) => (
+                <button type="button" class={'qc-puce' + (vs.includes(o) ? ' on' : '')} aria-pressed={vs.includes(o)} onClick={() => basculer(o)}>{o}</button>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+      {autres.length > 0 && (
+        <div class="qc-puces qc-alim-autres">
+          {autres.map((o) => <button type="button" class="qc-puce on" onClick={() => basculer(o)}>{o} ×</button>)}
+        </div>
+      )}
+      <div class="qc-alim-cherche">
+        <Icone nom="search" taille={16} />
+        <input class="qc-champ" placeholder="Ajouter un autre aliment…" value={cherche} onInput={(e) => setCherche(e.currentTarget.value)} />
+      </div>
+      {props.length > 0 && (
+        <div class="qc-alim-props">
+          {props.map((nom) => <button type="button" onClick={() => { basculer(nom); setCherche(''); }}>{nom}</button>)}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Question({ q, rep, toutes, maj, erreur }) {
   const r = rep || {};
   const opts = optionsDe(q, toutes);
@@ -180,6 +230,7 @@ function Question({ q, rep, toutes, maj, erreur }) {
       {autreOuvert && (
         <input class="qc-champ" placeholder="Précise…" value={r.autre || ''} onInput={e => maj({ ...r, autre: e.currentTarget.value })} />
       )}
+      {q.type === 'aliments' && <ChoixAliments q={q} r={r} toutes={toutes} maj={maj} />}
       {q.type === 'nombre' && (q.saisie ? <Saisie q={q} r={r} maj={maj} /> : <Compteur q={q} r={r} maj={maj} />)}
       {q.type === 'roulette' && <Roulette q={q} r={r} maj={maj} />}
       {q.type === 'echelle' && (
@@ -261,11 +312,11 @@ export function QuestionnaireCoach({ type, onFermer, onTermine }) {
 
   const maj = id => v => { touche.current = true; setRep(r => ({ ...r, [id]: v })); setErreurs(x => ({ ...x, [id]: false })); };
   const visibles = s => s.questions.filter(q => !q.si || q.si(rep));
-  const complete = s => visibles(s).every(q => repondue(q, rep[q.id]));
+  const complete = s => visibles(s).every(q => repondue(q, rep[q.id], rep));
   const ouvrir = k => { setErreurs({}); setOuverte(k); if (vue !== 'accueil') setVue('accueil'); };
   const valider = k => {
     const manque = {};
-    visibles(sections[k]).forEach(q => { if (!repondue(q, rep[q.id])) manque[q.id] = true; });
+    visibles(sections[k]).forEach(q => { if (!repondue(q, rep[q.id], rep)) manque[q.id] = true; });
     if (Object.keys(manque).length) { setErreurs(manque); return; }
     setErreurs({});
     const n = k + 1;

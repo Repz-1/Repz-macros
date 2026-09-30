@@ -173,3 +173,21 @@
 .pg-qc .qc-liens a { color: #8F6200; text-decoration: underline; }
 .pg-qc .qc-cta--gris, .pg-qc .qc-cta:disabled { background: #E5E3DE; color: #8E8B85; cursor: default; }
 .pg-coach .cp-jusqua { margin-top: 4px; font-size: 12.5px; color: #8F6200; }
+
+/* « Tes aliments » (28/09) */
+.pg-qc .qc-alim-cat { background: #fff; border-radius: 14px; padding: 11px 12px; margin-bottom: 8px; }
+.pg-qc .qc-alim-tete { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; font-size: 14px; }
+.pg-qc .qc-alim-tete b { font-weight: 700; color: #191919; }
+.pg-qc .qc-alim-tete em { font-style: normal; font-size: 12px; color: #A32D2D; }
+.pg-qc .qc-alim-tete em.ok { color: #8F6200; }
+.pg-qc .qc-alim .qc-puce { background: #F4F3F0; }
+.pg-qc .qc-alim .qc-puce.on { background: #F8CF01; border-color: #F8CF01; color: #191919; font-weight: 700; }
+.pg-qc .qc-alim-autres { margin: 4px 0 8px; }
+.pg-qc .qc-alim-cherche { position: relative; }
+.pg-qc .qc-alim-cherche svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8E8B85; }
+.pg-qc .qc-alim-cherche .qc-champ { padding-left: 36px; background: #fff; }
+.pg-qc .qc-alim-props { background: #fff; border-radius: 12px; margin-top: 6px; overflow: hidden; border: 1px solid #EDE5D8; }
+.pg-qc .qc-alim-props button { display: block; width: 100%; text-align: left; padding: 11px 14px; background: none; border: 0; border-bottom: 1px solid #F1EEE7; font: inherit; font-size: 14px; color: #191919; cursor: pointer; }
+.pg-qc .qc-alim-props button:last-child { border-bottom: 0; }
+.pg-qc .qc-alim .qc-puces { gap: 6px; }
+.pg-qc .qc-alim .qc-puce { padding: 7px 11px; font-size: 13px; min-height: 0; }

@@ -1326,6 +1326,7 @@ async function proposerPlan(corps) {
     demande ? "DEMANDE DU COACH (prioritaire) : " + demande : "",
     "REGLES STRICTES :",
     "- Utilise UNIQUEMENT des aliments de la LISTE ci-dessous, avec leur nom EXACT, caractere pour caractere.",
+    "- Construis le plan EN PRIORITE avec les aliments preferes coches par le client (Tes aliments preferes), rattaches a leur nom exact dans la LISTE ; n'en ajoute d'autres que si c'est necessaire.",
     "- Exclus tout aliment lie a une allergie ou intolerance declaree, tout aliment refuse, et respecte le regime declare (halal, sans porc, vegetarien, vegan...).",
     "- portion = grammes ; pour les aliments marques « pièce=Ng », portion = nombre de pieces.",
     "- Des repas simples, courants en Belgique, adaptes au temps de cuisine, au materiel et au rythme declares.",

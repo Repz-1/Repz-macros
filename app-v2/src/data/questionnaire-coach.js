@@ -15,6 +15,30 @@
 const val = (r, id) => (r[id] || {}).valeur;
 const vals = (r, id) => (r[id] || {}).valeurs || [];
 
+// Aliments populaires par categorie (28/09). Libelles simples, proches
+// des noms de la base : l'IA du coach les rattache a la base BELFIT.
+const VIANDES = ['Blanc de poulet', 'Dinde', 'Bœuf haché 5%', 'Steak de bœuf', 'Jambon de dinde', 'Jambon'];
+const POISSONS = ['Saumon', 'Thon', 'Cabillaud', 'Crevettes'];
+const ANIMAUX = ['Œufs', 'Whey', 'Skyr', 'Yaourt nature', 'Fromage blanc', 'Lait demi-écrémé', 'Cottage cheese', 'Mozzarella', 'Emmental'];
+export const CATEGORIES_ALIMENTS = [
+  { nom: 'Protéines', min: 3, options: ['Blanc de poulet', 'Dinde', 'Bœuf haché 5%', 'Steak de bœuf', 'Saumon', 'Thon', 'Cabillaud', 'Crevettes', 'Œufs', 'Jambon de dinde', 'Jambon', 'Tofu', 'Lentilles', 'Pois chiches', 'Whey'] },
+  { nom: 'Féculents', min: 3, options: ['Riz', 'Riz complet', 'Pâtes', 'Pâtes complètes', 'Pomme de terre', 'Patate douce', 'Quinoa', "Flocons d'avoine", 'Pain complet', 'Pain blanc', 'Wrap', 'Semoule', 'Boulgour'] },
+  { nom: 'Légumes', min: 3, options: ['Brocoli', 'Courgette', 'Haricots verts', 'Épinards', 'Poivron', 'Carotte', 'Tomate', 'Champignons', 'Chou-fleur', 'Salade', 'Concombre', 'Poireau'] },
+  { nom: 'Fruits', min: 3, options: ['Banane', 'Pomme', 'Fraises', 'Myrtilles', 'Orange', 'Kiwi', 'Mangue', 'Ananas', 'Poire', 'Raisin'] },
+  { nom: 'Laitiers', min: 0, options: ['Skyr', 'Yaourt nature', 'Fromage blanc', 'Lait demi-écrémé', 'Cottage cheese', 'Mozzarella', 'Emmental', "Lait d'amande"] },
+  { nom: 'Collations', min: 0, options: ['Amandes', 'Noix', 'Beurre de cacahuète', 'Chocolat noir', 'Barre protéinée', 'Galettes de riz', 'Fruits secs', 'Compote'] },
+];
+/** Options d'une categorie compatibles avec le regime declare. */
+export function optionsAliments(cat, rep) {
+  const regime = val(rep, 'regime');
+  return cat.options.filter((o) => {
+    if ((regime === 'Végétarien' || regime === 'Végan') && (VIANDES.includes(o) || POISSONS.includes(o))) return false;
+    if (regime === 'Végan' && ANIMAUX.includes(o)) return false;
+    if ((regime === 'Sans porc' || regime === 'Halal' || regime === 'Casher') && o === 'Jambon') return false;
+    return true;
+  });
+}
+
 export const PREMIER_PLAN = [
   { id: 'toi', icone: 'user', titre: 'Faisons connaissance', nom: 'Toi', sous: 'Pour personnaliser ton plan et nos échanges.', questions: [
     { id: 'prenom', label: 'Prénom', type: 'texte' },
@@ -84,6 +108,11 @@ export const PREMIER_PLAN = [
     { id: 'pain', label: 'Pain / viennoiseries par semaine', type: 'un', options: ['Jamais', '2–3 fois', 'Tous les jours', 'Plusieurs fois par jour'] },
     { id: 'fastfood', label: 'Fast-food par semaine', type: 'nombre', min: 0, max: 30, defaut: 0 },
     { id: 'sucreries', label: 'Sucreries / chocolat', type: 'un', options: ['Jamais', 'Rare', 'Quelques fois', 'Tous les jours'] },
+  ]},
+  // Aliments preferes (28/09, maquette validee) : ton plan est construit
+  // avec eux en priorite (coach et IA). Au moins 3 par categorie principale.
+  { id: 'favoris', icone: 'tools-kitchen', titre: 'Tes aliments', nom: 'Tes aliments', sous: 'Coche ce que tu aimes et manges facilement.', questions: [
+    { id: 'favoris', label: 'Tes aliments préférés (au moins 3 par catégorie principale)', type: 'aliments', categories: CATEGORIES_ALIMENTS },
   ]},
   { id: 'boissons', icone: 'cup', titre: 'Tes boissons', nom: 'Tes boissons', sous: 'Les calories qui passent souvent inaperçues.', questions: [
     { id: 'cafe', label: 'Café par jour', type: 'nombre', unite: 'tasses', min: 0, max: 15, defaut: 0 },
@@ -184,8 +213,16 @@ export function optionsDe(q, r) {
 }
 
 /** Une question est-elle correctement remplie ? */
-export function repondue(q, rep) {
+export function repondue(q, rep, toutesRep) {
   const r = rep || {};
+  if (q.type === 'aliments') {
+    const vs = r.valeurs || [];
+    return (q.categories || []).every((c) => {
+      const opts = optionsAliments(c, toutesRep || {});
+      const min = Math.min(c.min || 0, opts.length);
+      return opts.filter((o) => vs.includes(o)).length >= min;
+    });
+  }
   const vide = q.type === 'plusieurs' ? !(r.valeurs || []).length : r.valeur === undefined || r.valeur === null || String(r.valeur).trim() === '';
   if (q.facultatif && vide) return true;
   if (q.type === 'nombre') {
@@ -207,6 +244,17 @@ export function repondue(q, rep) {
 export function lisible(q, rep) {
   const r = rep || {};
   if (q.type === 'plusieurs') return (r.valeurs || []).map(x => x === 'Autre' ? (r.autre || 'Autre') : x).join(', ') || '—';
+  if (q.type === 'aliments') {
+    const vs = r.valeurs || [];
+    const connus = new Set((q.categories || []).flatMap((c) => c.options));
+    const parties = (q.categories || []).map((c) => {
+      const pris = c.options.filter((o) => vs.includes(o));
+      return pris.length ? c.nom + ' : ' + pris.join(', ') : '';
+    }).filter(Boolean);
+    const autres = vs.filter((x) => !connus.has(x));
+    if (autres.length) parties.push('Autres : ' + autres.join(', '));
+    return parties.join(' · ') || '—';
+  }
   if (r.valeur === 'Autre') return r.autre || 'Autre';
   const v = String(r.valeur ?? '').trim();
   if (!v) return '—';

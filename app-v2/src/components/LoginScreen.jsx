@@ -71,7 +71,11 @@ const CLE_EMAIL = 'belfit_dernier_email';
 export function LoginScreen() {
   // Un programme construit pendant l'accueil attend d'etre sauvegarde :
   // on ouvre directement l'inscription, prenom deja rempli.
-  const [mode, setMode] = useState('connexion');
+  // Accueil sombre (28/09, maquette validee) pour un nouveau venu ; celui
+  // qui s'est deja connecte sur cet appareil retombe sur la connexion.
+  const [mode, setMode] = useState(() => {
+    try { return localStorage.getItem(CLE_EMAIL) ? 'connexion' : 'accueil'; } catch (e) { return 'accueil'; }
+  });
   const [accueil] = useState(() => ACCUEILS[Math.floor(Math.random() * ACCUEILS.length)]);
   const [email, setEmail] = useState(() => {
     try { return localStorage.getItem(CLE_EMAIL) || ''; } catch (e) { return ''; }
@@ -136,7 +140,7 @@ export function LoginScreen() {
     };
 
     return (
-      <div class="login-ecran">
+      <div class="login-fond"><div class="login-ecran">
         <img src="/belfit-logo-bf.png" alt="BelFit" class="login-logo" />
         <h1 class="login-titre">{t('recup_titre')}</h1>
 
@@ -159,12 +163,43 @@ export function LoginScreen() {
         >
           {t('recup_retour')}
         </button>
-      </div>
+      </div></div>
+    );
+  }
+
+  const logoGoogle = (
+    <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.1 18.9 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.2 5.2C41 35.4 44 30.2 44 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+  );
+
+  // ----- Accueil d'un nouveau venu -----
+  if (mode === 'accueil') {
+    return (
+      <div class="login-fond login-fond--accueil"><div class="login-ecran login-accueil">
+        <div class="la-halo" aria-hidden="true" />
+        <img src="/belfit-logo-bf.png" alt="BelFit" class="la-logo" />
+        <p class="la-marque">BELFIT</p>
+        <h1 class="la-titre">Mange juste.<br />Progresse <span>vraiment.</span></h1>
+        <p class="la-sous">Ton journal, tes séances et un vrai coach, dans une seule app.</p>
+        <ul class="la-atouts">
+          <li><span class="la-ic la-ic--1"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg></span>Scan, photo ou voix pour noter un repas</li>
+          <li><span class="la-ic la-ic--2"><svg viewBox="0 0 24 24"><path d="M3 12h2M19 12h2M6 8v8M18 8v8M9 10v4M15 10v4M9 12h6" /></svg></span>Séances guidées, repos chronométré</li>
+          <li><span class="la-ic la-ic--3"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6" /></svg></span>Un plan écrit pour toi par ton coach</li>
+        </ul>
+        <button class="la-cta" onClick={() => { setMode('inscription'); setErreur(''); }}>Créer mon compte</button>
+        <button class="la-google" onClick={async () => {
+          setErreur('');
+          try { await connexionGoogle(); }
+          catch (e) { setErreur(messageErreurAuth(e && e.code)); }
+        }}>{logoGoogle}{t('auth_google')}</button>
+        {erreur && <div class="login-erreur">{erreur}</div>}
+        <p class="la-deja">Déjà un compte ? <button onClick={() => { setMode('connexion'); setErreur(''); }}>Se connecter</button></p>
+        <p class="la-pied"><a href="https://www.belfit.be/cgv.html" target="_blank" rel="noopener">Conditions</a> · <a href="https://www.belfit.be/confidentialite.html" target="_blank" rel="noopener">Confidentialité</a></p>
+      </div></div>
     );
   }
 
   return (
-    <div class="login-ecran">
+    <div class="login-fond"><div class="login-ecran">
       <img src="/belfit-logo-bf.png" alt="BelFit" class="login-logo" />
       <h1 class="login-titre">
         {mode === 'connexion' ? t(accueil)
@@ -268,6 +303,6 @@ export function LoginScreen() {
           {t('mdp_oublie')}
         </button>
       )}
-    </div>
+    </div></div>
   );
 }
