@@ -918,3 +918,35 @@ button{cursor:pointer}
 .login-fond .login-ecran--aurore{min-height:100vh;min-height:100dvh;justify-content:center;padding-top:calc(90px + env(safe-area-inset-top,0px))}
 .login-fond .login-ecran--aurore .login-logo{filter:drop-shadow(0 6px 22px rgba(248,106,12,.6))}
 .login-fond .login-ecran--aurore ~ .la-voile,.login-fond--accueil .login-ecran--aurore{position:relative;z-index:1}
+
+/* Volet profil sombre, lueur d'aurore (28/09, maquette A) */
+.profil-volet.pv{background:#111217;border:1px solid #23252C;border-radius:24px;padding:18px 16px 16px;gap:0;
+  width:min(300px,calc(100vw - 32px));max-width:none;overflow:hidden;color:#F4F4F2;
+  box-shadow:0 18px 40px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.2)}
+.pv-lueur{position:absolute;top:-80px;right:-60px;width:220px;height:180px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(248,106,12,.45),rgba(250,196,8,.12) 60%,transparent);filter:blur(10px);pointer-events:none}
+.pv-tete{position:relative;display:flex;align-items:center;gap:12px}
+.pv-av{flex:none;width:48px;height:48px;border-radius:50%;padding:2px;box-sizing:border-box;background:linear-gradient(135deg,#FAC408,#F86A0C,#E53B1E)}
+.pv-av span{display:flex;width:100%;height:100%;border-radius:50%;background:#111217;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff}
+.pv-id{min-width:0}
+.pv-id b{display:block;font-size:18px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv-id span{font-size:12px;color:#9EA1A8}
+.pv-lb{position:relative;font-size:11px;letter-spacing:.14em;color:#9EA1A8;margin:18px 0 2px;font-weight:700}
+.pv-kcal{position:relative;margin:0 0 14px}
+.pv-kcal b{font-size:38px;font-weight:700;letter-spacing:-.04em;
+  background:linear-gradient(100deg,#FFE27A,#FAC408 35%,#F86A0C 70%,#E53B1E);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pv-kcal span{font-size:13px;color:#9EA1A8}
+.pv-anneaux{position:relative;display:flex;justify-content:space-between;margin-bottom:14px}
+.pv-an{text-align:center}
+.pv-an em{display:block;font-style:normal;font-size:11px;color:#9EA1A8;margin-top:4px}
+.pv-rond{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.pv-rond span{width:40px;height:40px;border-radius:50%;background:#111217;display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',ui-monospace,monospace;font-size:11.5px;color:#F4F4F2}
+.pv-rond--kg{background:#1B1D23;border:1px solid #2A2C33;box-sizing:border-box}
+.pv-rond--kg span{background:transparent}
+.pv-verrou{position:relative;display:flex;align-items:center;gap:8px;font-size:12px;color:#9EA1A8;margin:0 0 12px}
+.pv-verrou svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8}
+.profil-volet.pv .pv-bt{position:relative;display:flex;justify-content:space-between;align-items:center;width:100%;
+  background:#1B1D23;border:1px solid #2A2C33;border-radius:14px;padding:12px 14px;margin-top:8px;
+  font-size:14.5px;font-weight:600;color:#F4F4F2;text-align:left}
+.profil-volet.pv .pv-bt i{font-style:normal;color:#9EA1A8;font-size:18px;line-height:1}

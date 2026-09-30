@@ -11,7 +11,7 @@ import { LoginScreen } from './components/LoginScreen.jsx';
 import { ACCES_INVITE, ONGLET_VITRINE, demanderConnexion } from './acces-invite.js';
 import { VERSION_APP } from './version.js';
 import { BandeauConfirmation } from './components/BandeauConfirmation.jsx';
-import { repas, objectifs, donneesPretes, calculBaseFait } from './store/journal.js';
+import { repas, objectifs, donneesPretes, calculBaseFait, totauxJourAff } from './store/journal.js';
 import { DayDashboard, ouvrirCalcDemande } from './components/DayDashboard.jsx';
 import { CoachBar } from './components/CoachBar.jsx';
 import { WaterTracker } from './components/WaterTracker.jsx';
@@ -37,7 +37,7 @@ import { weightLog } from './store/stats.js';
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { CoachPage } from './components/CoachPage.jsx';
 import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
-import { origineCalc, planCoachActif } from './components/BelfitPlus.jsx';
+import { origineCalc, planCoachActif, programme } from './components/BelfitPlus.jsx';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses, origineCourses } from './components/Courses.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
@@ -472,36 +472,73 @@ export function App() {
           suis, et les deux gestes qui s'y rattachent. La langue et la
           deconnexion n'y sont plus : elles vivent dans les Reglages,
           une seule fois chacune. */}
-      <div class="profil-volet">
-        <span class="profil-qui">{prenomUtilisateur() || (utilisateur.value ? (utilisateur.value.displayName || utilisateur.value.email) : '')}</span>
-        <span class="profil-statut">
-          {estPremium.value ? '\u2726 PRO' : t('compte_gratuit')}
-        </span>
-        {objectifs.value && objectifs.value.kcal > 0 && (
-          <span class="profil-obj">
-            <b>{Math.round(objectifs.value.kcal).toLocaleString('fr-BE')} kcal</b>
-            {' · P '}{Math.round(objectifs.value.prot || 0)}{' · G '}{Math.round(objectifs.value.carbs || 0)}{' · L '}{Math.round(objectifs.value.lip || 0)}
-          </span>
-        )}
+      {/* Volet profil sombre, lueur d'aurore (28/09, maquette A validee) */}
+      <div class="profil-volet pv">
+        <div class="pv-lueur" aria-hidden="true" />
         {(() => {
+          const nom = prenomUtilisateur() || (utilisateur.value ? (utilisateur.value.displayName || utilisateur.value.email || '') : '');
+          const o = objectifs.value || {};
+          const c = totauxJourAff.value || {};
           const l = weightLog.value || [];
           const der = l.length ? l.slice().sort((x, y) => (x.iso < y.iso ? -1 : 1))[l.length - 1] : null;
-          return der ? <span class="profil-obj">{t('profil_poids')} <b>{String(der.kg).replace('.', ',')} kg</b></span> : null;
+          const kg = der ? (der.weight != null ? der.weight : der.kg) : null;
+          const pr = programme.value;
+          const jours = pr && pr.livreLe ? Math.max(0, Math.floor((Date.now() - new Date(pr.livreLe).getTime()) / 86400000)) : null;
+          const anneau = (val, cible, coul, lib) => {
+            const p = cible > 0 ? Math.min(100, Math.round((val || 0) / cible * 100)) : 0;
+            return (
+              <div class="pv-an">
+                <div class="pv-rond" style={{ background: 'conic-gradient(' + coul + ' 0 ' + p + '%, #2A2C33 0)' }}>
+                  <span>{Math.round(cible || 0)}</span>
+                </div>
+                <em>{lib}</em>
+              </div>
+            );
+          };
+          return (
+            <>
+              <div class="pv-tete">
+                <span class="pv-av"><span>{(nom || '?').trim().charAt(0).toUpperCase()}</span></span>
+                <div class="pv-id">
+                  <b>{nom}</b>
+                  <span>{planCoachActif.value ? 'Plan coach actif' + (jours !== null ? ' · depuis ' + (jours === 0 ? "aujourd'hui" : jours + ' j') : '') : t('compte_gratuit')}</span>
+                </div>
+              </div>
+              {o.kcal > 0 && (
+                <>
+                  <p class="pv-lb">OBJECTIF DU JOUR</p>
+                  <p class="pv-kcal"><b>{Math.round(o.kcal).toLocaleString('fr-BE')}</b> <span>kcal</span></p>
+                  <div class="pv-anneaux">
+                    {anneau(c.prot, o.prot, '#F4F4F2', 'Prot.')}
+                    {anneau(c.carbs, o.carbs, '#F5A800', 'Gluc.')}
+                    {anneau(c.lip, o.lip, '#E4610B', 'Lip.')}
+                    <div class="pv-an">
+                      <div class="pv-rond pv-rond--kg"><span>{kg != null ? String(kg).replace('.', ',') : '—'}</span></div>
+                      <em>kg</em>
+                    </div>
+                  </div>
+                </>
+              )}
+              {planCoachActif.value ? (
+                <p class="pv-verrou">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 018 0v3" /></svg>
+                  Objectifs fixés par ton coach
+                </p>
+              ) : (
+                <button class="pv-bt" onClick={() => {
+                  voletProfil.value = false;
+                  if (vueReglages.value) { vueReglages.value = null; ongletActif.value = 'journal'; }
+                  else ongletActif.value = 'journal';
+                  ouvrirCalcDemande.value = true;
+                }}>{t('profil_recalc')}<i>›</i></button>
+              )}
+              <button class="pv-bt" onClick={() => {
+                voletProfil.value = false;
+                vueReglages.value = 'compte';
+              }}>{t('profil_compte')}<i>›</i></button>
+            </>
+          );
         })()}
-        {planCoachActif.value ? (
-          <span class="profil-obj">Objectifs fixés par ton plan coach</span>
-        ) : (
-          <button class="profil-calc" onClick={() => {
-            voletProfil.value = false;
-            if (vueReglages.value) { vueReglages.value = null; ongletActif.value = 'journal'; }
-            else ongletActif.value = 'journal';
-            ouvrirCalcDemande.value = true;
-          }}>{t('profil_recalc')}</button>
-        )}
-        <button class="profil-calc" onClick={() => {
-          voletProfil.value = false;
-          vueReglages.value = 'compte';
-        }}>{t('profil_compte')}</button>
       </div>
     </>
   ) : null;
