@@ -985,3 +985,27 @@ button{cursor:pointer}
 .pv-id .pv-fin{display:block;font-size:11.5px;color:#FAC408}
 @keyframes pv-fondu{from{opacity:0}to{opacity:1}}
 @keyframes pv-entree{from{opacity:0;transform:translate(-50%,-47%) scale(.97)}to{opacity:1;transform:translate(-50%,-50%)}}
+
+/* Volet profil « cadran » bleu nuit du journal (28/09, maquette G).
+   Plus clair que le noir, fond autour a peine voile. */
+.profil-voile{background:rgba(30,26,22,.28);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.profil-volet.pv{background:linear-gradient(180deg,#2E3442,#232834);border:1px solid rgba(255,255,255,.06);color:#F2F3F5;
+  box-shadow:0 18px 38px rgba(30,25,20,.35)}
+.pv-lueur{background:radial-gradient(closest-side,rgba(248,106,12,.35),transparent)}
+.pv-av span{background:#2B303C}
+.pv-id span{color:#A9AFBC}
+.pvg-cadran{display:block;width:100%;margin:6px 0 -6px;position:relative}
+.pvg-kc{fill:#F2F3F5;font:700 34px Satoshi,system-ui,sans-serif;letter-spacing:-1px}
+.pvg-sur{fill:#A9AFBC;font:500 12px Satoshi,system-ui,sans-serif}
+.pvg-macros{position:relative;display:flex;gap:12px;margin:10px 0 14px}
+.pvg-mb{flex:1;min-width:0;display:flex;flex-direction:column}
+.pvg-ml{font-size:10.5px;color:#A9AFBC}
+.pvg-mv{font-family:'DM Mono',ui-monospace,monospace;font-size:12px;color:#F2F3F5;white-space:nowrap}
+.pvg-mt{display:block;height:5px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:5px}
+.pvg-mt i{display:block;height:100%;border-radius:3px}
+.pvg-ligne{position:relative;display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:#A9AFBC;margin-bottom:4px}
+.pvg-ligne span{display:flex;align-items:center;gap:6px}
+.pvg-ligne svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8}
+.pvg-ligne b{color:#F2F3F5;font-weight:600}
+.profil-volet.pv .pv-bt{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:#F2F3F5}
+.pvg-cadran{margin:0 0 -6px}
