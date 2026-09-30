@@ -54,7 +54,7 @@ try {
   ok(/2[\s\u202f.]?400/.test(await p.locator('body').innerText()), 'objectif du journal = total du plan (2400 kcal)');
   await p.locator('button[aria-label="Profil"]').first().tap(); await p.waitForTimeout(500);
   const vol = await p.locator('body').innerText();
-  ok(/Objectifs fixés par ton coach/.test(vol) && !/Recalculer mes besoins/.test(vol), 'plan actif : plus de « Recalculer mes besoins »');
+  ok(/Fixé par ton coach/.test(vol) && !/Recalculer mes besoins/.test(vol), 'plan actif : plus de « Recalculer mes besoins »');
   ok(await p.locator('.pg-coach').count() === 1, 'retour sur la page Coach');
 } catch (e) { ok(false, e.message.split('\n')[0]); }
 await nav.close(); try { process.kill(-srv.pid); } catch {}
