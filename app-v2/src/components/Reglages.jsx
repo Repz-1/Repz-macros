@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { codeOuvert, CodeAcces } from './CodeAcces.jsx';
 import { SANS_COMPTE, demanderConnexion } from '../acces-invite.js';
 import { useRetour } from '../services/retour.js';
 import { definirPrenom } from '../store/perso.js';
@@ -481,6 +482,8 @@ export function Reglages() {
                   href="mailto:contact@belfit.be" />
           <Rangee titre={t('set_suggest')} sous={t('set_suggest_sub')}
                   href="mailto:contact@belfit.be?subject=Suggestion" />
+          <Rangee titre="J'ai un code" sous="Débloquer l'accès PRO" onClick={() => { codeOuvert.value = true; }} />
+          <CodeAcces />
           <Rangee titre={t('set_coach_cgv')} href="https://www.belfit.be/cgv.html" />
           <Rangee titre={t('set_privacy')} href="https://www.belfit.be/confidentialite.html" />
         </div>

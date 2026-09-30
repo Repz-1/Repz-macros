@@ -1069,11 +1069,8 @@ function nombreValide(v, min, max) {
 /** Depot d'un programme chez un client (27/09) : partage par
  *  deposerProgramme (compte coach) et espaceCoach (code coach).
  *  Renvoie [statut HTTP, reponse]. */
-async function deposerChez(corps, parCoach) {
-  // 3. Quel client ? Par courriel ou par pseudo, au choix.
-  const cible = String((corps && corps.client) || "").trim();
-  if (!cible) { return [400, {ok: false, motif: "client"}]; }
-
+/** Compte BELFIT designe par « uid:… », un e-mail ou un pseudo. */
+async function trouverCompte(cible) {
   let client = null;
   if (cible.startsWith("uid:")) {
     try { client = await admin.auth().getUser(cible.slice(4)); }
@@ -1090,6 +1087,14 @@ async function deposerChez(corps, parCoach) {
       catch (e) { client = null; }
     }
   }
+  return client;
+}
+
+async function deposerChez(corps, parCoach) {
+  // 3. Quel client ? Par courriel ou par pseudo, au choix.
+  const cible = String((corps && corps.client) || "").trim();
+  if (!cible) { return [400, {ok: false, motif: "client"}]; }
+  const client = await trouverCompte(cible);
   if (!client) { return [404, {ok: false, motif: "introuvable"}]; }
 
   // 4. Le plan tient-il debout ?
@@ -1415,6 +1420,45 @@ exports.espaceCoach = onRequest(
         return;
       }
 
+      // ----- Acces PRO (28/09) : offert a une adresse, ou code a partager -----
+      const MOIS = {"1m": 1, "3m": 3, "illimite": null};
+      if (action === "offrirAcces") {
+        const cible = String(corps.client || "").trim();
+        if (!cible || !(corps.duree in MOIS)) { res.status(400).json({ok: false, motif: "donnees"}); return; }
+        const compte = await trouverCompte(cible);
+        if (!compte) { res.status(404).json({ok: false, motif: "introuvable"}); return; }
+        const mois = MOIS[corps.duree];
+        const jusqu = mois ? new Date(Date.now() + mois * 30 * 864e5).toISOString() : null;
+        const le = new Date().toISOString();
+        await db.collection("users").doc(compte.uid).set({
+          accesPro: {jusqu, source: "offert", le},
+          premium: true, premiumJusqu: jusqu,
+        }, {merge: true});
+        await db.collection("accesOfferts").add({uid: compte.uid, email: compte.email || cible, jusqu, duree: corps.duree, le});
+        res.json({ok: true, jusqu, email: compte.email || cible});
+        return;
+      }
+      if (action === "creerCode") {
+        // « nomCode » : « code » est deja le code d'acces de l'espace coach.
+        const code = String(corps.nomCode || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+        const max = Math.max(1, Math.min(1000, parseInt(corps.max, 10) || 1));
+        if (code.length < 4 || code.length > 32 || !(corps.duree in MOIS)) { res.status(400).json({ok: false, motif: "donnees"}); return; }
+        const ref = db.collection("codesPremium").doc(code);
+        if ((await ref.get()).exists) { res.status(409).json({ok: false, motif: "existe"}); return; }
+        await ref.set({mois: MOIS[corps.duree], max, utilisations: 0, uids: [], cree: new Date().toISOString(), parCoach: true});
+        res.json({ok: true, code});
+        return;
+      }
+      if (action === "acces") {
+        const codes = (await db.collection("codesPremium").orderBy("cree", "desc").limit(50).get()).docs
+          .map((d) => ({code: d.id, mois: d.data().mois || null, max: d.data().max || 1,
+            utilisations: d.data().utilisations != null ? d.data().utilisations : (d.data().utilise ? 1 : 0)}));
+        const offerts = (await db.collection("accesOfferts").orderBy("le", "desc").limit(30).get()).docs
+          .map((d) => ({email: d.data().email, jusqu: d.data().jusqu || null, le: d.data().le}));
+        res.json({ok: true, codes, offerts});
+        return;
+      }
+
       if (action === "proposer") {
         const [statut, rep] = await proposerPlan(corps);
         res.status(statut).json(rep);
@@ -1608,6 +1652,19 @@ exports.utiliserCode = onRequest(
         if (!snap.exists) return {ok: false, raison: "inconnu"};
         const d = snap.data() || {};
 
+        // Code a plusieurs utilisations (espace coach, 28/09).
+        if (d.max) {
+          const uids = d.uids || [];
+          if (uids.includes(uid)) return {ok: true, raison: "deja_le_tien"};
+          if ((d.utilisations || 0) >= d.max) return {ok: false, raison: "epuise"};
+          const jusqu2 = d.mois ? new Date(Date.now() + d.mois * 30 * 864e5).toISOString() : null;
+          tx.update(refCode, {utilisations: (d.utilisations || 0) + 1, uids: [...uids, uid]});
+          tx.set(refUser, {
+            premium: true, source: "code", codeUtilise: code, premiumJusqu: jusqu2,
+            accesPro: {jusqu: jusqu2, source: "code", code, le: new Date().toISOString()},
+          }, {merge: true});
+          return {ok: true, raison: "active", jusqu: jusqu2};
+        }
         // Deja utilise par quelqu'un d'autre : refus. Deja utilise par
         // CE compte : on ne refuse pas, on confirme — reappuyer sur le
         // bouton ne doit pas ressembler a une erreur.
@@ -1632,6 +1689,7 @@ exports.utiliserCode = onRequest(
           source: "code",
           codeUtilise: code,
           premiumJusqu: jusqu,
+          accesPro: {jusqu, source: "code", code, le: new Date().toISOString()},
         }, {merge: true});
 
         return {ok: true, raison: "active", jusqu};

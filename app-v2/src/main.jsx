@@ -39,7 +39,7 @@ import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { CoachPage } from './components/CoachPage.jsx';
 import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
 import { origineCalc, planCoachActif, programme, dossierCoach } from './components/BelfitPlus.jsx';
-import { majJusqua } from './store/coach.js';
+import { finAcces } from './store/coach.js';
 import { IdeesRepas } from './components/IdeesRepas.jsx';
 import { Courses, origineCourses } from './components/Courses.jsx';
 import { WeightNote } from './components/WeightNote.jsx';
@@ -488,7 +488,8 @@ export function App() {
           const der = l.length ? l.slice().sort((x, y) => (x.iso < y.iso ? -1 : 1))[l.length - 1] : null;
           const kg = der ? (der.weight != null ? der.weight : der.kg) : null;
           const pr = programme.value;
-          const finPro = majJusqua(dossierCoach.value, pr);
+          const acces = finAcces(dossierCoach.value, pr);
+          const finPro = acces && acces.fin;
           const pro = !!finPro && Date.now() < finPro.getTime();
           const fr = (n) => Math.round(n || 0).toLocaleString('fr-BE');
           const part = o.kcal > 0 ? Math.min(1, (c.kcal || 0) / o.kcal) : 0;
@@ -509,7 +510,7 @@ export function App() {
                 <div class="pv-id">
                   <b>{nom}{pro && <span class="pv-pro">PRO</span>}</b>
                   {pro
-                    ? <span class="pv-fin">Accès jusqu'au {finPro.toLocaleDateString('fr-BE', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    ? <span class="pv-fin">{acces.illimite ? 'Accès illimité' : 'Accès jusqu\'au ' + finPro.toLocaleDateString('fr-BE', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     : <span>{t('compte_gratuit')}</span>}
                 </div>
               </div>

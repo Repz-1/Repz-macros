@@ -75,3 +75,19 @@ export function majJusqua(dossier, pr) {
   d.setMonth(d.getMonth() + MOIS_MAJ);
   return d;
 }
+
+// Fin de l'acces PRO (28/09) : la plus lointaine entre la fenetre du
+// dernier paiement coach et un acces offert ou debloque par code.
+// Acces illimite : date tres lointaine (illimite = true).
+export function finAcces(dossier, pr) {
+  const dates = [];
+  const m = majJusqua(dossier, pr);
+  if (m) dates.push(m);
+  const a = dossier && dossier.accesPro;
+  if (a) {
+    if (!a.jusqu) return { fin: new Date(8.64e15), illimite: true };
+    dates.push(new Date(a.jusqu));
+  }
+  if (!dates.length) return null;
+  return { fin: new Date(Math.max(...dates.map((d) => d.getTime()))), illimite: false };
+}
