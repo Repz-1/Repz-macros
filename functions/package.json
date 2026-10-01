@@ -1,6 +1,6 @@
 {
   "name": "functions",
-  "description": "REPZ Cloud Functions - webhook LemonSqueezy + coach",
+  "description": "BELFIT Cloud Functions - webhook LemonSqueezy + coach",
   "engines": {
     "node": "22"
   },
