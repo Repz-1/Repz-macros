@@ -1025,3 +1025,29 @@ button{cursor:pointer}
   color:#141414;background:linear-gradient(90deg,#FFD84A,#FAC408 40%,#F86A0C);cursor:pointer}
 .ca-bt:disabled{opacity:.55}
 .ca-annuler{position:relative;display:block;margin:8px auto 0;background:none;border:0;color:#A9AFBC;font:inherit;font-size:13.5px;cursor:pointer;padding:8px}
+
+/* Connexion « creme » (01/10, piste B validee par Raci) : fond creme du
+   logo, lumiere chaude legere en haut, bouton noir, plus de rouge. */
+.login-fond,.login-fond--accueil{background:#F8F2E8;color:#151515}
+.la-b1{width:340px;height:240px;background:#FAC408;top:-120px;left:-60px;opacity:.35;filter:blur(70px)}
+.la-b2{width:260px;height:200px;background:#F86A0C;top:-110px;right:-90px;opacity:.22;filter:blur(70px)}
+.la-b3,.la-b4,.la-voile{display:none}
+.la-marque{color:#B34700}
+.la-logo,.login-fond .login-ecran--aurore .login-logo{filter:none}
+.la-titre,.login-fond .login-titre{color:#151515}
+.la-titre span{background:none;color:#B34700;-webkit-text-fill-color:#B34700}
+.la-sous,.la-deja{color:#5A554D}
+.la-cta,.login-fond .login-btn{background:#151515;color:#F8F2E8;box-shadow:none}
+.la-cta::after{opacity:.25}
+.la-google,.login-fond .login-google{background:#fff;border:1px solid #E5E1D6;color:#151515}
+.la-deja button,.login-fond .login-bascule,.login-fond .login-consent a{color:#B34700}
+.la-pied a{color:#8E8B85}
+.login-fond .login-form input,.login-fond .pw-wrap input{background:#fff;border:1px solid #E5E1D6;color:#151515}
+.login-fond .login-form input:focus{border-color:#B34700;background:#fff}
+.login-fond .login-ou,.login-fond .login-oubli{color:#8E8B85}
+.login-fond .login-ou::before,.login-fond .login-ou::after{background:#E5E1D6}
+.login-fond .login-consent,.login-fond .login-consent span,.login-fond .login-pseudo-note{color:#5A554D}
+.login-fond .login-pseudo-note--libre{color:#2E7D4F}
+.login-fond .login-ok{background:#fff;color:#151515}
+.login-fond .login-pw-jauge{background:#E5E1D6}
+.login-fond .login-consent input{accent-color:#151515}
