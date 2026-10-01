@@ -8,6 +8,7 @@ import {
   updateProfile,
   sendPasswordResetEmail,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  browserPopupRedirectResolver,
 } from 'firebase/auth';
 import { signal, computed } from '@preact/signals';
 
@@ -36,6 +37,9 @@ export const app = initializeApp({
 // memoire vive.
 export const auth = initializeAuth(app, {
   persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+  // Sans ce resolveur, initializeAuth refuse popup et redirection Google
+  // (auth/argument-error, 01/10). getAuth() l'ajoutait tout seul.
+  popupRedirectResolver: browserPopupRedirectResolver,
 });
 
 
