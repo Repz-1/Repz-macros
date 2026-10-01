@@ -220,8 +220,14 @@ export function messageErreurAuth(code) {
     'pseudo/pris': 'Ce nom d\'utilisateur est déjà pris',
     'pseudo/invalide': 'Choisis un nom d\'utilisateur valide et disponible',
     'pseudo/reseau': 'Le serveur ne repond pas. Ton compte n\'a pas ete cree — reessaie dans un instant.',
+    // Google (01/10) : messages precis au lieu de l'erreur generique.
+    'auth/account-exists-with-different-credential': 'Un compte existe déjà avec cet e-mail : connecte-toi avec ton mot de passe',
+    'auth/unauthorized-domain': 'Connexion Google refusée sur cette adresse du site',
+    'auth/operation-not-allowed': 'Connexion Google désactivée côté serveur',
+    'auth/web-storage-unsupported': 'Ton navigateur bloque la connexion Google (navigation privée ?)',
   };
-  return messages[code] || 'Erreur de connexion, réessaie';
+  // Code affiche entre parentheses : une capture suffit pour diagnostiquer.
+  return messages[code] || ('Erreur de connexion, réessaie' + (code ? ' (' + code + ')' : ''));
 }
 
 /**
