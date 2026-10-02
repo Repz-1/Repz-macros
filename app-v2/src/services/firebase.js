@@ -20,7 +20,9 @@ import { signal, computed } from '@preact/signals';
 
 export const app = initializeApp({
   apiKey: 'AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I',
-  authDomain: 'repz-baf60.firebaseapp.com',
+  // belfit.be (02/10) : la fenetre Google affiche notre domaine. Les
+  // pages /__/auth/ sont copiees au build (tools/auth-helper.mjs).
+  authDomain: 'belfit.be',
   projectId: 'repz-baf60',
   storageBucket: 'repz-baf60.firebasestorage.app',
   messagingSenderId: '403252293048',
