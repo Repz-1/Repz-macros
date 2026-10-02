@@ -17,7 +17,6 @@ const FICHIERS = [
   ['/__/auth/experiments.js', '__/auth/experiments.js', 'facultatif'],
   ['/__/auth/iframe', '__/auth/iframe.html'],
   ['/__/auth/iframe.js', '__/auth/iframe.js'],
-  ['/__/firebase/init.json', '__/firebase/init.json', 'facultatif'],
 ];
 
 // « ::error:: » / « ::warning:: » : message visible dans le resume GitHub.
@@ -39,4 +38,16 @@ for (const [chemin, cible, facultatif] of FICHIERS) {
   writeFileSync(dest, texte);
   console.log(`::notice::auth-helper ${cible} : ${texte.length} o`);
 }
+// init.json n'existe pas sur firebaseapp.com (pas d'hebergement Firebase) :
+// on l'ecrit nous-memes, memes valeurs publiques que l'app.
+const init = join(RACINE, '__/firebase/init.json');
+mkdirSync(dirname(init), { recursive: true });
+writeFileSync(init, JSON.stringify({
+  apiKey: 'AIzaSyAN07MM-t2wIPSwoo0shrV1OfMfIDC-Z0I',
+  authDomain: 'belfit.be',
+  projectId: 'repz-baf60',
+  storageBucket: 'repz-baf60.firebasestorage.app',
+  messagingSenderId: '403252293048',
+  appId: '1:403252293048:web:e7db6aed4ba92f0ebfb34d',
+}));
 if (echec) process.exit(1);
