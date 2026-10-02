@@ -137,7 +137,7 @@ export function CoachPage() {
     return (
       <div class="pg-coach">
         <Entete />
-        <PlanEnPreparation payeLe={payeLeEtat} questionnaire={dossierCoach.value.questionnaire} />
+        <PlanEnPreparation payeLe={payeLeEtat} questionnaire={dossierCoach.value.questionnaire} commande={dossierCoach.value.commande} />
       </div>
     );
   }

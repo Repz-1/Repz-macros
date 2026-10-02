@@ -1475,6 +1475,7 @@ exports.espaceCoach = onRequest(
             type: q.type || "plan",
             envoyeLe: q.envoyeLe || null,
             payeLe: (d.commandeCoach && d.commandeCoach.payeLe) || null,
+            virement: (d.commandeCoach && d.commandeCoach.virement) || null,
             livreLe,
             aTraiter: !livreLe || (q.envoyeLe && new Date(livreLe) < new Date(q.envoyeLe)),
             alerteSante: !!q.alerteSante,
@@ -1539,6 +1540,24 @@ exports.espaceCoach = onRequest(
         res.json({ok: true, code, type, lien: "https://belfit.be/?invitation=" + code});
         return;
       }
+      if (action === "virementRecu") {
+        const uid = String(corps.uid || "");
+        if (!uid) { res.status(400).json({ok: false, motif: "donnees"}); return; }
+        const ref = db.collection("users").doc(uid);
+        const sn = await ref.get();
+        const cmd = sn.exists ? sn.data().commandeCoach : null;
+        if (!cmd || !cmd.virement) { res.status(404).json({ok: false, motif: "introuvable"}); return; }
+        const le = new Date().toISOString();
+        await ref.set({commandeCoach: {virement: {statut: "recu", recuLe: le}}}, {merge: true});
+        const refQ = db.collection("quotasIA").doc(uid);
+        const sq = await refQ.get();
+        const fin = sq.exists && sq.data().illimiteJusqu ? Date.parse(sq.data().illimiteJusqu) : 0;
+        const base = Math.max(Date.now(), fin || 0);
+        await refQ.set({illimiteJusqu: new Date(base + IA_JOURS_COACHING * 864e5).toISOString()}, {merge: true});
+        if (cmd.commande) await db.collection("invitations").doc(cmd.commande).set({virementRecuLe: le}, {merge: true});
+        res.json({ok: true, recuLe: le});
+        return;
+      }
       if (action === "invitations") {
         const liste = (await db.collection("invitations").orderBy("cree", "desc").limit(30).get()).docs
             .map((d) => ({code: d.id, type: d.data().type, note: d.data().note || "",
@@ -1598,18 +1617,16 @@ exports.utiliserInvitation = onRequest(
           if (inv.utilisePar === uid) return {ok: true, type: inv.type, deja: true};
           const le = new Date().toISOString();
           tx.set(ref, {utilisePar: uid, utiliseLe: le, email}, {merge: true});
+          // Virement (02/10) : le questionnaire s'ouvre tout de suite, le
+          // coach marque « Virement recu » depuis l'espace coach.
+          const montant = inv.type === "maj" ? 60 : 80;
           tx.set(db.collection("users").doc(uid), {
-            commandeCoach: {type: inv.type || "plan", payeLe: le, source: "invitation", commande: code},
+            commandeCoach: {type: inv.type || "plan", payeLe: le, source: "invitation", commande: code,
+              virement: {statut: "attente", montant, communication: code}},
           }, {merge: true});
           return {ok: true, type: inv.type || "plan"};
         });
-        if (resultat.ok && !resultat.deja) {
-          const refQ = db.collection("quotasIA").doc(uid);
-          const sq = await refQ.get();
-          const fin = sq.exists && sq.data().illimiteJusqu ? Date.parse(sq.data().illimiteJusqu) : 0;
-          const base = Math.max(Date.now(), fin || 0);
-          await refQ.set({illimiteJusqu: new Date(base + IA_JOURS_COACHING * 864e5).toISOString()}, {merge: true});
-        }
+        // IA illimitee : a la reception du virement, pas a l'ouverture du lien.
         res.status(resultat.ok ? 200 : 409).json(resultat);
       } catch (e) {
         console.error("utiliserInvitation :", e);

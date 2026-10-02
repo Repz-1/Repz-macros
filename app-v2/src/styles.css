@@ -1058,3 +1058,12 @@ button{cursor:pointer}
 /* Connexion Apple (02/10) : bouton noir, logo blanc (charte Apple). */
 .la-google.bt-apple,.login-fond .login-google.bt-apple{background:#000;border-color:#000;color:#fff}
 .bt-apple svg{width:18px;height:18px}
+
+/* Virement en attente (02/10), ecran « Ton plan arrive ». */
+.pv{padding:16px}
+.pv-t{font-weight:700;font-size:16px;margin:0 0 10px}
+.pv-l{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid rgba(0,0,0,.07)}
+.pv-l span{color:#6B6760;font-size:13px;flex:none;width:104px}
+.pv-l b{flex:1;font-size:14px;font-variant-numeric:tabular-nums;word-break:break-all}
+.pv-cp{flex:none;border:1px solid #E5E1D6;background:#fff;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;color:#151515}
+.pv-n{margin:10px 0 0;font-size:13px;color:#5A554D;line-height:1.45}

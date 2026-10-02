@@ -147,6 +147,8 @@ button.ia-go{display:block;width:100%;font:inherit;font-size:14px;font-weight:60
 .durees button.on{background:#F8CF01;font-weight:700}
 button.second{display:block;width:100%;font:inherit;font-size:14px;font-weight:600;cursor:pointer;
   color:var(--tx);background:#FFF8E1;border:0;border-radius:12px;padding:12px;margin-top:12px}
+  .vir{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0 12px 46px;font-size:13px;color:#9A5B00}
+  .vir .second{width:auto;margin:0;padding:7px 12px;font-size:13px;flex:none}
 </style>
 </head>
 <body>
@@ -525,6 +527,24 @@ function ligne(d, aTraiter) {
     ouvert = detail(d); bloc.append(ouvert);
   });
   bloc.append(b);
+  // Virement (02/10) : clients invites par lien.
+  const v = d.virement;
+  if (v && v.statut === 'attente') {
+    const r = el('div', 'vir');
+    const bt = el('button', 'second', 'Virement reçu');
+    r.append(el('span', '', 'Virement en attente · ' + v.montant + ' € · communication ' + v.communication), bt);
+    bt.addEventListener('click', () => {
+      if (!confirm('Confirmer la réception de ' + v.montant + ' € (communication ' + v.communication + ') ?')) return;
+      bt.disabled = true;
+      appel('virementRecu', { uid: d.uid }).then((x) => {
+        if (x && x.ok) { r.innerHTML = ''; r.append(el('span', '', 'Virement reçu ✓')); r.style.color = '#1C5334'; }
+        else { bt.disabled = false; alert('Échec. Réessaie.'); }
+      }).catch(() => { bt.disabled = false; });
+    });
+    bloc.append(r);
+  } else if (v && v.statut === 'recu') {
+    const r = el('div', 'vir', 'Virement reçu ✓'); r.style.color = '#1C5334'; bloc.append(r);
+  }
   return bloc;
 }
 

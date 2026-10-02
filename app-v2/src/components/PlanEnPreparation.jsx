@@ -44,7 +44,38 @@ function Reponses({ q, fermer }) {
   );
 }
 
-export function PlanEnPreparation({ payeLe, questionnaire }) {
+// Virement (02/10) : clients invites par lien, paiement hors app.
+const IBAN = 'BE52 3632 1142 7809';
+const BENEFICIAIRE = ''; // a renseigner (nom exact du compte)
+
+function copier(texte) {
+  try { navigator.clipboard.writeText(texte.replace(/ /g, '')); } catch (e) { /* rien */ }
+}
+
+function Virement({ v }) {
+  const [copie, setCopie] = useState('');
+  const ligne = (label, val, cle) => (
+    <div class="pv-l">
+      <span>{label}</span>
+      <b>{val}</b>
+      {cle && <button type="button" class="pv-cp" onClick={() => { copier(val); setCopie(cle); }}>{copie === cle ? 'Copié' : 'Copier'}</button>}
+    </div>
+  );
+  return (
+    <div class="cp-carte pv">
+      <p class="pv-t">En attente de ton virement</p>
+      {ligne('Montant', v.montant + ' €')}
+      {ligne('IBAN', IBAN, 'iban')}
+      {BENEFICIAIRE && ligne('Bénéficiaire', BENEFICIAIRE)}
+      {ligne('Communication', v.communication, 'com')}
+      <p class="pv-n">Ton plan est préparé dès réception du virement. Mets bien la communication, c'est elle qui relie le paiement à ton dossier.</p>
+    </div>
+  );
+}
+
+export function PlanEnPreparation({ payeLe, questionnaire, commande }) {
+  const vir = commande && commande.virement;
+  const virAttente = !!(vir && vir.statut === 'attente');
   const [, tic] = useState(0);
   const [voir, setVoir] = useState(false);
   useEffect(() => { const t = setInterval(() => tic(x => x + 1), 60000); return () => clearInterval(t); }, []);
@@ -64,6 +95,7 @@ export function PlanEnPreparation({ payeLe, questionnaire }) {
       <h1 class="cp-titre">Ton plan arrive</h1>
       <p class="cp-sous">Questionnaire bien reçu. Je m'occupe de toi.</p>
 
+      {virAttente ? <Virement v={vir} /> : (
       <div class="pp-hero">
         {dansLaFile ? (
           <>
@@ -84,9 +116,12 @@ export function PlanEnPreparation({ payeLe, questionnaire }) {
           </>
         )}
       </div>
+      )}
 
       <div class="cp-carte pp-etapes">
-        <div class="pp-et f"><span class="pp-pt"><Icone nom="check" taille={15} /></span><div><b>Paiement reçu</b><span>{quand(payeLe)}</span></div></div>
+        {virAttente
+          ? <div class="pp-et c"><span class="pp-pt"><Icone nom="clock" taille={15} /></span><div><b>Virement en attente</b><span>{vir.montant} € · communication {vir.communication}</span></div></div>
+          : <div class="pp-et f"><span class="pp-pt"><Icone nom="check" taille={15} /></span><div><b>Paiement reçu</b><span>{quand((vir && vir.recuLe) || payeLe)}</span></div></div>}
         <div class="pp-et f"><span class="pp-pt"><Icone nom="check" taille={15} /></span><div><b>Questionnaire envoyé</b><span>{quand(envoye)}</span></div></div>
         {/* Etape ajoutee le 27/09 (Raci). Pas de signal du coach : la
             premiere moitie du delai = elaboration, la seconde = ecriture. */}
