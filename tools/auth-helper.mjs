@@ -14,19 +14,29 @@ const SOURCE = 'https://repz-baf60.firebaseapp.com';
 const FICHIERS = [
   ['/__/auth/handler', '__/auth/handler.html'],
   ['/__/auth/handler.js', '__/auth/handler.js'],
-  ['/__/auth/experiments.js', '__/auth/experiments.js'],
+  ['/__/auth/experiments.js', '__/auth/experiments.js', 'facultatif'],
   ['/__/auth/iframe', '__/auth/iframe.html'],
   ['/__/auth/iframe.js', '__/auth/iframe.js'],
-  ['/__/firebase/init.json', '__/firebase/init.json'],
+  ['/__/firebase/init.json', '__/firebase/init.json', 'facultatif'],
 ];
 
-for (const [chemin, cible] of FICHIERS) {
-  const r = await fetch(SOURCE + chemin);
-  if (!r.ok) throw new Error(`auth-helper : ${chemin} -> HTTP ${r.status}`);
-  const texte = await r.text();
-  if (texte.length < 20) throw new Error(`auth-helper : ${chemin} vide`);
+// « ::error:: » / « ::warning:: » : message visible dans le resume GitHub.
+let echec = false;
+for (const [chemin, cible, facultatif] of FICHIERS) {
+  let statut = '', texte = '';
+  try {
+    const r = await fetch(SOURCE + chemin);
+    statut = 'HTTP ' + r.status;
+    if (r.ok) texte = await r.text();
+  } catch (e) { statut = String(e && e.message || e); }
+  if (texte.length < 20) {
+    console.log(`::${facultatif ? 'warning' : 'error'}::auth-helper ${chemin} : ${statut}, ${texte.length} o`);
+    if (!facultatif) echec = true;
+    continue;
+  }
   const dest = join(RACINE, cible);
   mkdirSync(dirname(dest), { recursive: true });
   writeFileSync(dest, texte);
-  console.log(`auth-helper : ${cible} (${texte.length} o)`);
+  console.log(`::notice::auth-helper ${cible} : ${texte.length} o`);
 }
+if (echec) process.exit(1);
