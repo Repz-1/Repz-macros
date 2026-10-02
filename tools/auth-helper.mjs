@@ -25,7 +25,7 @@ let echec = false;
 for (const [chemin, cible, facultatif] of FICHIERS) {
   let statut = '', texte = '';
   try {
-    const r = await fetch(SOURCE + chemin);
+    const r = await fetch(SOURCE + chemin, { signal: AbortSignal.timeout(15000) });
     statut = 'HTTP ' + r.status;
     if (r.ok) texte = await r.text();
   } catch (e) { statut = String(e && e.message || e); }
