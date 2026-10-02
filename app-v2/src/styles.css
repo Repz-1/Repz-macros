@@ -1051,3 +1051,6 @@ button{cursor:pointer}
 .login-fond .login-ok{background:#fff;color:#151515}
 .login-fond .login-pw-jauge{background:#E5E1D6}
 .login-fond .login-consent input{accent-color:#151515}
+
+/* Avantage IA inclus dans un achat coaching (02/10). */
+.pg-coach .cp-inclus{font-weight:600;color:#151515}

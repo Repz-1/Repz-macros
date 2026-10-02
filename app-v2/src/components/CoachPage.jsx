@@ -220,13 +220,15 @@ export function CoachPage() {
         </div>
       )}
 
-      {!occupe && <p class="cp-pied">Paiement unique. Sans abonnement, sans prélèvement.</p>}
+      {!occupe && <p class="cp-pied">Paiement unique. Sans abonnement, sans prélèvement. IA illimitée 30 jours incluse.</p>}
 
       {achat && createPortal(
         <div class="pg-coach cp-portail"><div class="cp-voile" onClick={(e) => { if (e.target === e.currentTarget) setAchat(null); }}>
           <div class="cp-modale" role="dialog" aria-modal="true">
             <p class="cp-nom">{achat === 'maj' ? 'Mise à jour · 60 €' : (pr ? 'Nouveau plan · 80 €' : 'Premier plan · 80 €')}</p>
             <p class="cp-txt">Paiement unique et sécurisé. Tu remplis ensuite ton questionnaire.</p>
+            {/* 02/10 : avantage IA annonce explicitement avant le paiement. */}
+            <p class="cp-txt cp-inclus">Inclus : analyses IA (photo et micro) illimitées pendant 30 jours à partir du paiement.</p>
             {achat === 'plan' && (
               <div class="cp-elim">
                 <p class="cp-q">As-tu 18 ans ou plus ?</p>

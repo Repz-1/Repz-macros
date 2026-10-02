@@ -9,19 +9,10 @@ const crypto = require("crypto");
 admin.initializeApp();
 const db = admin.firestore();
 
-/* ============================================================
- * PERIODE DE TEST OUVERTE
- * A `true`, les fonctions payantes repondent a tout compte connecte.
- * Doit valoir la meme chose que PREMIUM_OUVERT dans
- * app-v2/src/acces-libre.js : l'interface et le serveur ouvrent ou
- * ferment ensemble, sinon le micro repond 403 sur une app qui promet
- * l'acces.
- *
- * Le compte doit rester CONNECTE : sans jeton, ces fonctions
- * deviendraient un service Gemini gratuit et anonyme, appelable par
- * n'importe qui depuis n'importe ou.
- * ============================================================ */
-const PREMIUM_OUVERT = true;
+/* Periode de test ouverte : retiree le 02/10. Le micro et la photo
+ * suivent desormais le QUOTA IA (voir consommerQuotaIA). Le compte doit
+ * rester connecte : sans jeton, ces fonctions deviendraient un service
+ * Gemini gratuit et anonyme. */
 
 // Secret partagé avec LemonSqueezy (défini via: firebase functions:secrets:set LEMON_WEBHOOK_SECRET)
 const LEMON_WEBHOOK_SECRET = defineSecret("LEMON_WEBHOOK_SECRET");
@@ -101,6 +92,13 @@ exports.lemonWebhook = onRequest(
               commande: body.data && body.data.id || null,
             },
           }, {merge: true});
+          // IA illimitee 30 jours apres chaque achat coaching (02/10).
+          // Prolonge a partir de la date la plus lointaine.
+          const refQ = db.collection("quotasIA").doc(uid);
+          const sq = await refQ.get();
+          const finActuelle = sq.exists && sq.data().illimiteJusqu ? Date.parse(sq.data().illimiteJusqu) : 0;
+          const base = Math.max(Date.now(), finActuelle || 0);
+          await refQ.set({illimiteJusqu: new Date(base + IA_JOURS_COACHING * 864e5).toISOString()}, {merge: true});
           console.log("Commande coaching:", uid, typeCoach);
           res.status(200).send("ok");
           return;
@@ -167,6 +165,66 @@ exports.lemonWebhook = onRequest(
 // ============================================================
 const GEMINI_API_KEY = defineSecret("GEMINI_API_KEY");
 
+
+/* ============================================================
+ * QUOTA IA (02/10, decision Raci) : photo et micro.
+ *   - 7 premiers jours apres l'inscription : 25 utilisations par jour ;
+ *   - ensuite : 8 par jour ;
+ *   - illimite : 30 jours apres chaque achat coaching (plan ou mise a
+ *     jour), ou acces PRO offert / code (premium:true, premiumJusqu).
+ * Compte cote serveur (quotasIA/{uid}, ecriture admin seulement) :
+ * impossible a remettre a zero depuis le navigateur.
+ * Jour = jour calendaire de Bruxelles.
+ * ============================================================ */
+const IA_JOURS_DECOUVERTE = 7;
+const IA_QUOTA_DECOUVERTE = 25;
+const IA_QUOTA_JOUR = 8;
+const IA_JOURS_COACHING = 30;
+
+function jourBruxelles() {
+  return new Intl.DateTimeFormat("fr-CA", {timeZone: "Europe/Brussels"}).format(new Date());
+}
+
+/** Reserve une utilisation. Renvoie {ok, limite, restant, illimite}. */
+async function consommerQuotaIA(uid, userData) {
+  const maintenant = Date.now();
+  const u = userData || {};
+  const proActif = u.premium === true &&
+    (!u.premiumJusqu || Date.parse(u.premiumJusqu) > maintenant);
+  const ref = db.collection("quotasIA").doc(uid);
+  const snap = await ref.get();
+  const q = snap.exists ? snap.data() : {};
+  const coachingActif = q.illimiteJusqu && Date.parse(q.illimiteJusqu) > maintenant;
+  if (proActif || coachingActif) return {ok: true, illimite: true};
+
+  let creeLe = maintenant;
+  try {
+    const compte = await admin.auth().getUser(uid);
+    creeLe = Date.parse(compte.metadata.creationTime) || maintenant;
+  } catch (e) { /* compte introuvable : traite comme nouveau */ }
+  const decouverte = maintenant - creeLe < IA_JOURS_DECOUVERTE * 864e5;
+  const limite = decouverte ? IA_QUOTA_DECOUVERTE : IA_QUOTA_JOUR;
+  const jour = jourBruxelles();
+
+  return db.runTransaction(async (tx) => {
+    const s2 = await tx.get(ref);
+    const d = s2.exists ? s2.data() : {};
+    const n = d.jour === jour ? (d.n || 0) : 0;
+    if (n >= limite) return {ok: false, limite, restant: 0};
+    tx.set(ref, {jour, n: n + 1}, {merge: true});
+    return {ok: true, limite, restant: limite - n - 1};
+  });
+}
+
+/** Rend l'utilisation si l'IA a echoue : l'echec ne doit pas compter. */
+async function rendreQuotaIA(uid, q) {
+  if (!q || !q.ok || q.illimite) return;
+  try {
+    await db.collection("quotasIA").doc(uid).set(
+        {n: admin.firestore.FieldValue.increment(-1)}, {merge: true});
+  } catch (e) { /* sans gravite */ }
+}
+
 exports.transcrireVocal = onRequest(
   {secrets: [GEMINI_API_KEY], region: "europe-west1", cors: true, timeoutSeconds: 60},
   async (req, res) => {
@@ -177,8 +235,9 @@ exports.transcrireVocal = onRequest(
     if (req.method === "OPTIONS") { res.status(204).send(""); return; }
     if (req.method !== "POST") { res.status(405).json({error: "method"}); return; }
 
+    let quota = null; let uidQuota = null;
     try {
-      // 1) Verifier que l'utilisateur est connecte ET Premium (gating serveur)
+      // 1) Verifier que l'utilisateur est connecte, puis son quota IA
       const authHeader = req.get("Authorization") || "";
       const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
       if (!token) { res.status(401).json({error: "no_auth"}); return; }
@@ -190,11 +249,12 @@ exports.transcrireVocal = onRequest(
       } catch (e) {
         res.status(401).json({error: "bad_token"}); return;
       }
+      uidQuota = uid;
 
       const userDoc = await db.collection("users").doc(uid).get();
-      const estPremium = PREMIUM_OUVERT ||
-        (userDoc.exists && userDoc.data().premium === true);
-      if (!estPremium) { res.status(403).json({error: "not_premium"}); return; }
+      quota = await consommerQuotaIA(uid, userDoc.exists ? userDoc.data() : null);
+      if (!quota.ok) { res.status(429).json({error: "quota", limite: quota.limite}); return; }
+      res.set("X-Quota-Restant", quota.illimite ? "illimite" : String(quota.restant));
 
       // 2) Recuperer l'audio (base64) et son type
       const {audioBase64, mimeType} = req.body || {};
@@ -249,6 +309,7 @@ Regles :
         // Le detail remonte jusqu'a l'ecran du telephone via le diagnostic.
         let detail = "";
         try { detail = (JSON.parse(dernierErr).error || {}).message || ""; } catch (e) { detail = dernierErr; }
+        await rendreQuotaIA(uidQuota, quota);
         res.status(502).json({error: "gemini_failed", detail: String(detail).slice(0, 160)});
         return;
       }
@@ -274,6 +335,7 @@ Regles :
       res.status(200).json({aliments});
     } catch (err) {
       console.error("transcrireVocal error", err);
+      await rendreQuotaIA(uidQuota, quota);
       res.status(500).json({error: "server"});
     }
   }
@@ -300,8 +362,9 @@ exports.analyserPhoto = onRequest(
     if (req.method === "OPTIONS") { res.status(204).send(""); return; }
     if (req.method !== "POST") { res.status(405).json({error: "method"}); return; }
 
+    let quota = null; let uidQuota = null;
     try {
-      // 1) Connecte ET Premium (gating serveur, comme le vocal)
+      // 1) Connecte, puis quota IA (comme le vocal)
       const authHeader = req.get("Authorization") || "";
       const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
       if (!token) { res.status(401).json({error: "no_auth"}); return; }
@@ -313,11 +376,12 @@ exports.analyserPhoto = onRequest(
       } catch (e) {
         res.status(401).json({error: "bad_token"}); return;
       }
+      uidQuota = uid;
 
       const userDoc = await db.collection("users").doc(uid).get();
-      const estPremium = PREMIUM_OUVERT ||
-        (userDoc.exists && userDoc.data().premium === true);
-      if (!estPremium) { res.status(403).json({error: "not_premium"}); return; }
+      quota = await consommerQuotaIA(uid, userDoc.exists ? userDoc.data() : null);
+      if (!quota.ok) { res.status(429).json({error: "quota", limite: quota.limite}); return; }
+      res.set("X-Quota-Restant", quota.illimite ? "illimite" : String(quota.restant));
 
       // 2) Recuperer l'image (base64) et son type
       const {imageBase64, mimeType} = req.body || {};
@@ -373,6 +437,7 @@ Regles :
       if (!gRes || !gRes.ok) {
         let detail = "";
         try { detail = (JSON.parse(dernierErr).error || {}).message || ""; } catch (e) { detail = dernierErr; }
+        await rendreQuotaIA(uidQuota, quota);
         res.status(502).json({error: "gemini_failed", detail: String(detail).slice(0, 160)});
         return;
       }
@@ -398,6 +463,7 @@ Regles :
       res.status(200).json({aliments});
     } catch (err) {
       console.error("analyserPhoto error", err);
+      await rendreQuotaIA(uidQuota, quota);
       res.status(500).json({error: "server"});
     }
   }

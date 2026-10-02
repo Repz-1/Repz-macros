@@ -61,6 +61,8 @@ export function PhotoModal({ fermer, repasId }) {
         body: JSON.stringify({ imageBase64: b64, mimeType: 'image/jpeg' }),
       });
       if (rep.status === 403) { setMsg('Réservé aux membres Premium'); setEtat('pret'); return; }
+      // Quota IA du jour atteint (02/10) : compte par le serveur.
+      if (rep.status === 429) { let lim = ''; try { lim = (await rep.json()).limite || ''; } catch (e) {} setMsg('Tu as utilisé tes ' + lim + ' analyses IA d\'aujourd\'hui. Reviens demain, ou profite de l\'IA illimitée 30 jours avec un plan coaching.'); setEtat('pret'); return; }
       if (rep.status === 404) { setMsg('Service pas encore activé'); setEtat('pret'); return; }
       if (!rep.ok) {
         // Meme fonction Gemini que le vocal, donc memes pannes : un
