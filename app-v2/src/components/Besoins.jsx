@@ -415,9 +415,9 @@ export function Besoins() {
         <button class="bs-valider" onClick={valider} disabled={envoi || (mode === 'manuel' && !(+man.kcal > 0))}>
           {envoi ? '…' : "C'est parti"}
         </button>
-        {mode === 'calc' ? (
-          <button class="bs-lien" type="button" onClick={passerManuel}>Je connais déjà mes calories</button>
-        ) : (
+        {/* 02/10 (Raci) : plus de saisie manuelle des calories, le calcul
+            est le seul chemin. passerManuel reste en place, inutilise. */}
+        {mode !== 'calc' && (
           <button class="bs-lien" type="button" onClick={() => setMode('calc')}>Revenir au calcul</button>
         )}
         {!peutFermer && (
