@@ -13,3 +13,6 @@ android/*.keystore
 android/android-keystore.jks
 android/app/
 android/build/
+
+# Pages de connexion Firebase, telechargees au build (tools/auth-helper.mjs)
+/__/

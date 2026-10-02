@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node ../tools/auth-helper.mjs && vite build",
     "preview": "vite preview",
     "smoke": "node smoke.mjs"
   },
