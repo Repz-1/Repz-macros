@@ -37,6 +37,7 @@ import { weightLog } from './store/stats.js';
 
 import { PremiumPage, estPremium } from './components/PremiumPage.jsx';
 import { CoachPage } from './components/CoachPage.jsx';
+import './services/invitation.js';
 import { Besoins, besoinsRequis, besoinsOuverts } from './components/Besoins.jsx';
 import { origineCalc, planCoachActif, programme, dossierCoach } from './components/BelfitPlus.jsx';
 import { finAcces } from './store/coach.js';

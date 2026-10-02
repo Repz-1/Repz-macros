@@ -1525,6 +1525,28 @@ exports.espaceCoach = onRequest(
         return;
       }
 
+      // ----- Invitations par lien (02/10) : paiement gere hors app -----
+      if (action === "creerInvitation") {
+        const type = corps.type === "maj" ? "maj" : "plan";
+        const note = String(corps.note || "").trim().slice(0, 80);
+        const ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let code = "";
+        for (let essai = 0; essai < 5; essai++) {
+          code = Array.from(crypto.randomBytes(8)).map((b) => ALPHA[b % ALPHA.length]).join("");
+          if (!(await db.collection("invitations").doc(code).get()).exists) break;
+        }
+        await db.collection("invitations").doc(code).set({type, note, cree: new Date().toISOString(), utilisePar: null});
+        res.json({ok: true, code, type, lien: "https://belfit.be/?invitation=" + code});
+        return;
+      }
+      if (action === "invitations") {
+        const liste = (await db.collection("invitations").orderBy("cree", "desc").limit(30).get()).docs
+            .map((d) => ({code: d.id, type: d.data().type, note: d.data().note || "",
+              cree: d.data().cree, utiliseLe: d.data().utiliseLe || null, email: d.data().email || null}));
+        res.json({ok: true, invitations: liste});
+        return;
+      }
+
       if (action === "proposer") {
         const [statut, rep] = await proposerPlan(corps);
         res.status(statut).json(rep);
@@ -1543,6 +1565,57 @@ exports.espaceCoach = onRequest(
       res.status(500).json({ok: false, detail: String((e && e.message) || e).slice(0, 200)});
     }
   },
+);
+
+// ============================================================
+// INVITATION PAR LIEN (02/10).
+// Le coach envoie belfit.be/?invitation=CODE ; la personne cree son
+// compte, l'app appelle cette fonction. Elle ecrit la commande coaching
+// (comme un paiement : le questionnaire s'ouvre) et l'IA illimitee
+// 30 jours. Un lien ne sert qu'a un seul compte.
+// ============================================================
+exports.utiliserInvitation = onRequest(
+    {region: "europe-west1", cors: true},
+    async (req, res) => {
+      res.set("Access-Control-Allow-Origin", "*");
+      res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+      res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+      if (req.method !== "POST") { res.status(405).json({ok: false}); return; }
+      try {
+        const h = req.get("Authorization") || "";
+        const token = h.startsWith("Bearer ") ? h.slice(7) : "";
+        let uid; let email = null;
+        try { const d = await admin.auth().verifyIdToken(token); uid = d.uid; email = d.email || null; } catch (e) { res.status(401).json({ok: false, motif: "auth"}); return; }
+        const code = String((req.body || {}).code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (code.length < 6) { res.status(400).json({ok: false, motif: "code"}); return; }
+        const ref = db.collection("invitations").doc(code);
+        const resultat = await db.runTransaction(async (tx) => {
+          const s2 = await tx.get(ref);
+          if (!s2.exists) return {ok: false, motif: "inconnue"};
+          const inv = s2.data();
+          if (inv.utilisePar && inv.utilisePar !== uid) return {ok: false, motif: "utilisee"};
+          if (inv.utilisePar === uid) return {ok: true, type: inv.type, deja: true};
+          const le = new Date().toISOString();
+          tx.set(ref, {utilisePar: uid, utiliseLe: le, email}, {merge: true});
+          tx.set(db.collection("users").doc(uid), {
+            commandeCoach: {type: inv.type || "plan", payeLe: le, source: "invitation", commande: code},
+          }, {merge: true});
+          return {ok: true, type: inv.type || "plan"};
+        });
+        if (resultat.ok && !resultat.deja) {
+          const refQ = db.collection("quotasIA").doc(uid);
+          const sq = await refQ.get();
+          const fin = sq.exists && sq.data().illimiteJusqu ? Date.parse(sq.data().illimiteJusqu) : 0;
+          const base = Math.max(Date.now(), fin || 0);
+          await refQ.set({illimiteJusqu: new Date(base + IA_JOURS_COACHING * 864e5).toISOString()}, {merge: true});
+        }
+        res.status(resultat.ok ? 200 : 409).json(resultat);
+      } catch (e) {
+        console.error("utiliserInvitation :", e);
+        res.status(500).json({ok: false, motif: "serveur"});
+      }
+    },
 );
 
 // ============================================================

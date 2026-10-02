@@ -37,6 +37,10 @@ service cloud.firestore {
     // d'énumérer les utilisateurs. Seules les Cloud Functions y accèdent.
     // Quota IA (02/10) : lisible par son proprietaire, ecrit par le
     // serveur seulement (sinon on remettrait son compteur a zero).
+    // Invitations par lien (02/10) : serveur seulement.
+    match /invitations/{code} {
+      allow read, write: if false;
+    }
     match /quotasIA/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false;

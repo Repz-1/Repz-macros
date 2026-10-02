@@ -182,6 +182,20 @@ button.second{display:block;width:100%;font:inherit;font-size:14px;font-weight:6
       <div class="carte" id="livres" style="padding:0 15px"></div>
     </div>
 
+    <p class="lb">Inviter un client</p>
+    <div class="carte">
+      <label for="invNote">Pour qui (note pour toi)</label>
+      <input id="invNote" type="text" placeholder="ex. Kevin, salle Uccle" spellcheck="false">
+      <div class="durees" data-cible="inv"><button data-d="plan" class="on">Premier plan</button><button data-d="maj">Mise à jour</button></div>
+      <button class="second" id="btnInviter">Créer le lien</button>
+      <div id="msgInviter" class="msg"></div>
+      <div id="lienInv" style="display:none;margin-top:8px">
+        <input id="lienInvTxt" type="text" readonly style="font-family:'DM Mono',monospace;font-size:13px">
+        <button class="second" id="btnCopierInv">Copier le lien</button>
+      </div>
+    </div>
+    <div class="carte" id="listeInv" style="padding:6px 15px"></div>
+
     <p class="lb">Accès</p>
     <div class="carte">
       <label for="accesMail">Offrir l'accès à une adresse</label>
@@ -633,6 +647,39 @@ $('btnCode2').addEventListener('click', () => {
   }).catch((e) => { if (e.message !== 'code') afficher(m, 'Réseau indisponible.', false); }).finally(() => { b.disabled = false; });
 });
 
+// ---------- Invitations par lien (02/10) ----------
+function chargerInvitations() {
+  appel('invitations').then((r) => {
+    const h = $('listeInv'); h.innerHTML = '';
+    if (!r || !r.ok) return;
+    if (!r.invitations.length) { h.append(el('p', 'vide', 'Aucune invitation pour le moment.')); return; }
+    r.invitations.forEach((i) => {
+      const l = el('div', 'rl');
+      l.append(el('span', '', (i.note || i.code) + ' · ' + (i.type === 'maj' ? 'mise à jour' : 'plan')),
+        el('b', '', i.utiliseLe ? 'utilisé · ' + (i.email || '') : 'en attente'));
+      if (i.utiliseLe) l.lastChild.style.color = '#1C5334';
+      h.append(l);
+    });
+  }).catch(() => {});
+}
+$('btnInviter').addEventListener('click', () => {
+  const b = $('btnInviter'), m = $('msgInviter');
+  b.disabled = true;
+  appel('creerInvitation', { type: duree('inv'), note: $('invNote').value.trim() }).then((d) => {
+    if (d && d.ok) {
+      afficher(m, 'Lien créé. Il ne fonctionne que pour un seul compte.', true);
+      $('lienInvTxt').value = d.lien; $('lienInv').style.display = '';
+      $('invNote').value = ''; chargerInvitations();
+    } else afficher(m, 'Échec. Réessaie.', false);
+  }).catch((e) => { if (e.message !== 'code') afficher(m, 'Réseau indisponible.', false); }).finally(() => { b.disabled = false; });
+});
+$('btnCopierInv').addEventListener('click', () => {
+  const t = $('lienInvTxt').value;
+  const ok = () => afficher($('msgInviter'), 'Lien copié. Envoie-le par WhatsApp ou e-mail.', true);
+  if (navigator.clipboard) navigator.clipboard.writeText(t).then(ok).catch(() => { $('lienInvTxt').select(); });
+  else { $('lienInvTxt').select(); document.execCommand('copy'); ok(); }
+});
+
 // ---------- Entree ----------
 $('btnCode').addEventListener('click', () => {
   const b = $('btnCode');
@@ -652,7 +699,7 @@ $('btnCode').addEventListener('click', () => {
 $('code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('btnCode').click(); });
 $('btnQuitter').addEventListener('click', (e) => { e.preventDefault(); oublier(); });
 
-function ouvrir() { ecran('travail'); dessiner(); chargerDossiers(); chargerAcces(); }
+function ouvrir() { ecran('travail'); dessiner(); chargerDossiers(); chargerAcces(); chargerInvitations(); }
 
 $('btnEnvoi').addEventListener('click', () => {
   const b = $('btnEnvoi'), msg = $('msg');
