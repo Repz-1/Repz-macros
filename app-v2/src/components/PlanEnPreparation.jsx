@@ -46,7 +46,7 @@ function Reponses({ q, fermer }) {
 
 // Virement (02/10) : clients invites par lien, paiement hors app.
 const IBAN = 'BE52 3632 1142 7809';
-const BENEFICIAIRE = ''; // a renseigner (nom exact du compte)
+const BENEFICIAIRE = 'RSH FIT NUTRITION';
 
 function copier(texte) {
   try { navigator.clipboard.writeText(texte.replace(/ /g, '')); } catch (e) { /* rien */ }
