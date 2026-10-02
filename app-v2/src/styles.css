@@ -1054,3 +1054,7 @@ button{cursor:pointer}
 
 /* Avantage IA inclus dans un achat coaching (02/10). */
 .pg-coach .cp-inclus{font-weight:600;color:#151515}
+
+/* Connexion Apple (02/10) : bouton noir, logo blanc (charte Apple). */
+.la-google.bt-apple,.login-fond .login-google.bt-apple{background:#000;border-color:#000;color:#fff}
+.bt-apple svg{width:18px;height:18px}

@@ -7,7 +7,7 @@ import {
   signInAnonymously,
   updateProfile,
   sendPasswordResetEmail,
-  GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  GoogleAuthProvider, OAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   browserPopupRedirectResolver,
 } from 'firebase/auth';
 import { signal, computed } from '@preact/signals';
@@ -134,6 +134,33 @@ export async function connexionGoogle() {
       || e.code === 'auth/cancelled-popup-request')) {
       await signInWithRedirect(auth, provider);
       return null;   // la page va se recharger
+    }
+    throw e;
+  }
+}
+
+/**
+ * Connexion avec Apple (02/10). Le bouton n'apparait que si APPLE_ACTIF :
+ * il faut d'abord configurer Apple dans Firebase (Services ID, cle),
+ * sinon le clic renverrait une erreur. Meme flux que Google.
+ */
+export const APPLE_ACTIF = false;
+export async function connexionApple() {
+  const provider = new OAuthProvider('apple.com');
+  provider.addScope('email');
+  provider.addScope('name');
+  provider.setCustomParameters({ locale: 'fr_FR' });
+  oublierSortie();
+  try {
+    const cred = await signInWithPopup(auth, provider);
+    memoriserPrenom(cred.user);
+    return cred.user;
+  } catch (e) {
+    if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user'
+      || e.code === 'auth/operation-not-supported-in-this-environment'
+      || e.code === 'auth/cancelled-popup-request')) {
+      await signInWithRedirect(auth, provider);
+      return null;
     }
     throw e;
   }

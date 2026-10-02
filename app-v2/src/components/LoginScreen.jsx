@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { connexion, connexionGoogle, inscription, messageErreurAuth, envoyerLienReinitialisation } from '../services/firebase.js';
+import { connexion, connexionGoogle, connexionApple, APPLE_ACTIF, inscription, messageErreurAuth, envoyerLienReinitialisation } from '../services/firebase.js';
 import { t, langue } from '../i18n/index.js';
 import { signal } from '@preact/signals';
 
@@ -182,6 +182,17 @@ export function LoginScreen() {
     <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.1 18.9 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.2 5.2C41 35.4 44 30.2 44 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
   );
 
+  const logoApple = (
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 5c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>
+  );
+  const boutonApple = (classe) => APPLE_ACTIF && (
+    <button class={classe + ' bt-apple'} onClick={async () => {
+      setErreur('');
+      try { await connexionApple(); }
+      catch (e) { setErreur(messageErreurAuth(e && e.code)); }
+    }}>{logoApple}Continuer avec Apple</button>
+  );
+
   // ----- Accueil d'un nouveau venu : aurore aux couleurs du logo -----
   // (maquette « A sans cadre » validee le 28/09, contenu remonte vers le centre)
   if (mode === 'accueil') {
@@ -200,6 +211,7 @@ export function LoginScreen() {
               try { await connexionGoogle(); }
               catch (e) { setErreur(messageErreurAuth(e && e.code)); }
             }}>{logoGoogle}{t('auth_google')}</button>
+            {boutonApple('la-google')}
             {erreur && <div class="login-erreur">{erreur}</div>}
             <p class="la-deja">Déjà un compte ? <button onClick={() => { setMode('connexion'); setErreur(''); }}>Se connecter</button></p>
           </div>
@@ -228,6 +240,7 @@ export function LoginScreen() {
         <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.1 18.9 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.2 5.2C41 35.4 44 30.2 44 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
         {t('auth_google')}
       </button>
+      {boutonApple('login-google')}
       <div class="login-ou"><span>{t('ou')}</span></div>
 
       <form onSubmit={valider} class="login-form">
