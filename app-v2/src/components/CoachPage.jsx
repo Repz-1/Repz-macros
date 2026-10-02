@@ -83,10 +83,19 @@ export function CoachPage() {
   const [consent, setConsent] = useState(false);
   const [consent2, setConsent2] = useState(false);
   const [remplir, setRemplir] = useState(() => retourEnAttente);  // questionnaire ouvert
+  // Clients invites par lien (02/10) : memes verifications qu'a l'achat
+  // (18 ans, trouble alimentaire, retractation), avant le questionnaire.
+  const cmdInv = dossierCoach.value.commande;
+  const invite = !!(cmdInv && cmdInv.source === 'invitation');
+  const [accordInv, setAccordInv] = useState(() => { try { return JSON.parse(localStorage.getItem('belfit_accord_inv') || 'null'); } catch (e) { return null; } });
+  const ouvrirQuestionnaire = (type) => {
+    if (invite && !(accordInv && accordInv.code === cmdInv.commande)) { setAdulte(null); setTca(null); setConsent(false); setConsent2(false); setAchat('invitation:' + type); return; }
+    setRemplir(type);
+  };
   useEffect(() => { if (!programmeCharge.value) chargerProgramme(); }, []);
   // Appui sur le bandeau depuis une autre page : ouvrir le questionnaire.
   useEffect(() => {
-    if (demandeQuestionnaire.value) { setRemplir(demandeQuestionnaire.value); demandeQuestionnaire.value = null; }
+    if (demandeQuestionnaire.value) { ouvrirQuestionnaire(demandeQuestionnaire.value); demandeQuestionnaire.value = null; }
   }, [demandeQuestionnaire.value]);
 
   if (progOuvert.value) return <BelfitPlus />;
@@ -95,7 +104,9 @@ export function CoachPage() {
       <QuestionnaireCoach type={remplir}
         onFermer={() => { retourEnAttente = null; setRemplir(null); }}
         onTermine={(reponses, alerte, extra) => {
-          envoyerQuestionnaire(remplir, reponses, alerte, extra);
+          // Accords donnes par un client invite : joints au questionnaire.
+          const ex = invite && accordInv ? { ...extra, consentements: { ...((extra && extra.consentements) || {}), invitation: accordInv } } : extra;
+          envoyerQuestionnaire(remplir, reponses, alerte, ex);
           effacerBrouillon(remplir);
           retourEnAttente = null;
           setRemplir(null);
@@ -113,8 +124,16 @@ export function CoachPage() {
   const majOk = !!limiteMaj && Date.now() < limiteMaj.getTime();
 
   const ouvrirAchat = t => { setAdulte(null); setTca(null); setConsent(false); setConsent2(false); setAchat(t); };
-  const bloque = achat === 'plan' && (adulte === 'non' || tca === 'oui');
-  const eligible = achat === 'maj' || (adulte === 'oui' && tca === 'non');
+  const viaInv = !!achat && achat.startsWith('invitation:');
+  const typeAchat = viaInv ? achat.slice(11) : achat;
+  const bloque = typeAchat === 'plan' && (adulte === 'non' || tca === 'oui');
+  const eligible = typeAchat === 'maj' || (adulte === 'oui' && tca === 'non');
+  const accepterInv = () => {
+    const a = { code: cmdInv.commande, le: new Date().toISOString(), adulte: typeAchat === 'plan' ? true : null,
+      tcaSuivi: typeAchat === 'plan' ? false : null, demarrageImmediat: true, cgv: true };
+    try { localStorage.setItem('belfit_accord_inv', JSON.stringify(a)); } catch (e) { /* rien */ }
+    setAccordInv(a); setAchat(null); setRemplir(typeAchat);
+  };
   const payer = () => {
     const lien = LIENS_COACH[achat];
     if (!lien) {
@@ -160,11 +179,11 @@ export function CoachPage() {
 
       {aRemplir && (
         <div class="cp-carte cp-carte--or">
-          <p class="cp-nom">Paiement reçu</p>
+          <p class="cp-nom">{invite ? 'Invitation de ton coach' : 'Paiement reçu'}</p>
           <p class="cp-txt">Remplis ton questionnaire pour que je prépare ton plan. {tardif
             ? 'Ton délai de 7 jours est passé : ta demande rejoint la file.'
             : `Livraison sous 48 h si tu le remplis dans les ${DELAI_QUESTIONNAIRE} jours suivant ton paiement.`}</p>
-          <button class="cp-bt cp-bt--or" onClick={() => setRemplir(typePaye)}>Remplir mon questionnaire</button>
+          <button class="cp-bt cp-bt--or" onClick={() => ouvrirQuestionnaire(typePaye)}>Remplir mon questionnaire</button>
         </div>
       )}
       {enPrep && (
@@ -225,11 +244,11 @@ export function CoachPage() {
       {achat && createPortal(
         <div class="pg-coach cp-portail"><div class="cp-voile" onClick={(e) => { if (e.target === e.currentTarget) setAchat(null); }}>
           <div class="cp-modale" role="dialog" aria-modal="true">
-            <p class="cp-nom">{achat === 'maj' ? 'Mise à jour · 60 €' : (pr ? 'Nouveau plan · 80 €' : 'Premier plan · 80 €')}</p>
-            <p class="cp-txt">Paiement unique et sécurisé. Tu remplis ensuite ton questionnaire.</p>
+            <p class="cp-nom">{typeAchat === 'maj' ? 'Mise à jour · 60 €' : (pr ? 'Nouveau plan · 80 €' : 'Premier plan · 80 €')}</p>
+            <p class="cp-txt">{viaInv ? 'Paiement par virement, après ton questionnaire. Ton plan est préparé dès réception.' : 'Paiement unique et sécurisé. Tu remplis ensuite ton questionnaire.'}</p>
             {/* 02/10 : avantage IA annonce explicitement avant le paiement. */}
-            <p class="cp-txt cp-inclus">Inclus : analyses IA (photo et micro) illimitées pendant 30 jours à partir du paiement.</p>
-            {achat === 'plan' && (
+            <p class="cp-txt cp-inclus">Inclus : analyses IA (photo et micro) illimitées pendant 30 jours à partir {viaInv ? 'de la réception du virement' : 'du paiement'}.</p>
+            {typeAchat === 'plan' && (
               <div class="cp-elim">
                 <p class="cp-q">As-tu 18 ans ou plus ?</p>
                 <Choix val={adulte} set={setAdulte} />
@@ -237,10 +256,10 @@ export function CoachPage() {
                 <Choix val={tca} set={setTca} />
               </div>
             )}
-            {achat === 'plan' && adulte === 'non' && (
+            {typeAchat === 'plan' && adulte === 'non' && (
               <p class="qc-alerte">Le plan coach est réservé aux 18 ans et plus. L'app, elle, reste gratuite pour toi.</p>
             )}
-            {achat === 'plan' && adulte !== 'non' && tca === 'oui' && (
+            {typeAchat === 'plan' && adulte !== 'non' && tca === 'oui' && (
               <p class="qc-alerte">Merci de ta confiance. Pendant un suivi en cours, un plan chiffré peut faire plus de mal que de bien : parle de ton alimentation avec le professionnel qui te suit. L'app reste gratuite pour toi.</p>
             )}
             {!bloque && eligible && (
@@ -251,14 +270,16 @@ export function CoachPage() {
                     Deux cases distinctes, decochees. Texte a faire valider. */}
                 <label class="cp-consent">
                   <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-                  <span>Je demande que mon coach commence mon plan dès réception de mon questionnaire, pour une livraison sous 48 h. Je reconnais perdre mon droit de rétractation de 14 jours une fois le plan livré.</span>
+                  <span>Je demande que mon coach commence mon plan dès réception de mon {viaInv ? 'virement' : 'questionnaire'}, pour une livraison sous 48 h. Je reconnais perdre mon droit de rétractation de 14 jours une fois le plan livré.</span>
                 </label>
                 <label class="cp-consent">
                   <input type="checkbox" checked={consent2} onChange={(e) => setConsent2(e.target.checked)} />
                   <span>J'accepte les <a href="https://www.belfit.be/cgv.html" target="_blank" rel="noopener">conditions et la FAQ</a>. Je comprends que ce plan n'est pas un avis médical.</span>
                 </label>
-                <p class="cp-txt cp-petit">Questionnaire à remplir dans les {DELAI_QUESTIONNAIRE} jours suivant le paiement pour une livraison sous 48 h. Détails dans les conditions générales.</p>
-                <button class="cp-bt cp-bt--or" disabled={!consent || !consent2} onClick={payer}>Continuer vers le paiement</button>
+                {viaInv
+                  ? <p class="cp-txt cp-petit">Livraison sous 48 h après la réception du virement. Détails dans les conditions générales.</p>
+                  : <p class="cp-txt cp-petit">Questionnaire à remplir dans les {DELAI_QUESTIONNAIRE} jours suivant le paiement pour une livraison sous 48 h. Détails dans les conditions générales.</p>}
+                <button class="cp-bt cp-bt--or" disabled={!consent || !consent2} onClick={viaInv ? accepterInv : payer}>{viaInv ? 'Continuer vers le questionnaire' : 'Continuer vers le paiement'}</button>
               </>
             )}
             <button class="cp-bt cp-bt--gris" onClick={() => setAchat(null)}>{bloque ? 'Fermer' : 'Annuler'}</button>
