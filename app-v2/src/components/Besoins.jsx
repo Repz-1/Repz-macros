@@ -421,7 +421,7 @@ export function Besoins() {
           <button class="bs-lien" type="button" onClick={() => setMode('calc')}>Revenir au calcul</button>
         )}
         {!peutFermer && (
-          <button class="bs-lien" type="button" onClick={() => deconnexion()}>J'ai déjà un compte</button>
+          <button class="bs-lien" type="button" onClick={() => deconnexion()}>Se déconnecter</button>
         )}
         </div>
       </div>
