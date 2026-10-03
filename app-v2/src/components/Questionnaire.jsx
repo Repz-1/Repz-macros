@@ -277,7 +277,8 @@ export function Questionnaire() {
                 qu'on regarde avant de lire combien. */}
             <div class="qz-stats">
               <span><small>durée</small><b>{prog ? prog.duree : '—'}</b></span>
-              <span><small>niveau</small><b>{prog ? prog.niveau : '—'}</b></span>
+              {/* 02/10 : le niveau choisi par la personne, pas celui de la fiche. */}
+              <span><small>niveau</small><b>{({ debutant: 'Débutant', intermediaire: 'Intermédiaire', confirme: 'Avancé' })[reponses.niveau] || (prog ? prog.niveau : '—')}</b></span>
               <span><small>séances</small><b>{prog ? prog.seances.length : 0}</b></span>
             </div>
           </div>
