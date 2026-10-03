@@ -225,7 +225,9 @@ export function StatsAvancees({ fermer }) {
                   {cibleKcalObj && (
                     <p class="sa-note">
                       {Math.abs(cibleKcalObj - tdeeReel) < 120
-                        ? 'Ton objectif colle à ta dépense réelle : tu es en maintenance.'
+                        // 03/10 : c'est l'objectif qui est en maintenance, pas
+                        // forcement la personne (elle peut manger moins).
+                        ? 'Ton objectif correspond à ta dépense réelle : si tu le tiens, ton poids restera stable.'
                         : cibleKcalObj > tdeeReel
                           ? `Ton objectif est ${cibleKcalObj - tdeeReel} kcal au-dessus de ta dépense : surplus réel d'environ ${Math.round((cibleKcalObj - tdeeReel) / 7700 * 7000)} g par semaine si tu le tiens.`
                           : `Ton objectif est ${tdeeReel - cibleKcalObj} kcal sous ta dépense : déficit réel d'environ ${Math.round((tdeeReel - cibleKcalObj) / 7700 * 7000)} g par semaine si tu le tiens.`}

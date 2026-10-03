@@ -486,8 +486,8 @@ export function Stats() {
             <div class="score-rows">
               {/* Chaque barre mene la ou on l'ameliore (23/09). */}
               {[[t('st_row_nutrition'), nutrition, `${joursEncodes}/7 ${t('st_det_jours')}`, () => allerOnglet('journal')],
-                [t('st_row_training'), entrainement, `${trainJours} ${t('st_det_seances')}`, () => allerOnglet('entrainer')],
-                [t('st_row_weight'), scorePoids, `${pesees14} ${t('st_det_pesees')}`, () => setModalePoids(true)],
+                [t('st_row_training'), entrainement, `${trainJours} ${trainJours === 1 ? t('st_det_seances').replace(/s$/, '') : t('st_det_seances')}`, () => allerOnglet('entrainer')],
+                [t('st_row_weight'), scorePoids, `${pesees14} ${pesees14 === 1 ? t('st_det_pesees').replace(/^(\S+?)s\b/, '$1') : t('st_det_pesees')}`, () => setModalePoids(true)],
                 [t('st_row_regularity'), regularite, `${joursActifs}/7 ${t('st_det_actifs')}`, () => allerOnglet('journal')]].map(([l, v, d, aller]) => (
                 <button type="button" class="score-bloc score-bloc--lien" key={l} onClick={aller}>
                   <div class="score-row">
