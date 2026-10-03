@@ -366,3 +366,6 @@
 @media (max-height: 620px) {
   .qz--resultat .qz-seance { padding: 8px 12px; }
 }
+
+/* Note de realisme (02/10) : plus de jours que de seances utiles. */
+.qz-note { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; background: #FFF6DA; color: #5A4300; font-size: 13px; font-weight: 500; line-height: 1.45; }

@@ -85,7 +85,6 @@ const QUESTIONS = {
   },
 };
 
-/** Recommandation : logique v1 (test.html) inchangee. 7 jours -> 6. */
 // Chaque option de materiel porte l'equipement qu'elle implique. Le
 // reste du code lit une LISTE de materiels : cette table evite d'avoir
 // a le changer, et garde le filtrage des exercices d'isolation.
@@ -101,68 +100,46 @@ export function materielsDe(rep) {
   return MATERIEL_PAR_CHOIX[rep] || [];
 }
 
+// Recommandation realiste (02/10, Raci) : chaque objectif et niveau a un
+// plafond de seances de musculation utiles par semaine. Au-dela, la
+// recuperation ne suit plus et le programme est abandonne. Si la
+// personne a plus de jours que le plafond, on le lui dit clairement.
+//   Prise de muscle / Force : debutant 3, intermediaire 4, avance 5.
+//   Perte de poids : debutant 3, intermediaire 5, avance 6 (dont cardio).
+//   Forme / Sante : debutant 3, sinon 4.
+const PROGS = {
+  masse: { 2: 'masse-2j', 3: 'masse-3j', 4: 'masse-4j', 5: 'masse-5j' },
+  seche: { 2: 'seche-2j', 3: 'seche-full-3j', 4: 'seche-circuit-4j', 5: 'seche-5j', 6: 'seche-6j' },
+  sante: { 2: 'deb-2j', 3: 'deb-full-3j', 4: 'salle-half-4j' },
+};
+const PLAFOND = {
+  masse: { debutant: 3, intermediaire: 4, confirme: 5 },
+  seche: { debutant: 3, intermediaire: 5, confirme: 6 },
+  sante: { debutant: 3, intermediaire: 4, confirme: 4 },
+};
+
 function recommander({ objectif, niveau, frequence }) {
-  const jours = Math.min(6, parseInt(frequence, 10) || 3);
-  let conseil = '';
-  let progId;
+  const voulu = Math.min(7, Math.max(2, parseInt(frequence, 10) || 3));
+  // Force : memes mouvements lourds que la prise de muscle.
+  const obj = objectif === 'masse' || objectif === 'force' ? 'masse' : objectif === 'seche' ? 'seche' : 'sante';
+  const niv = PLAFOND[obj][niveau] ? niveau : 'intermediaire';
+  const jours = Math.min(voulu, PLAFOND[obj][niv]);
+  let progId = PROGS[obj][jours];
+  // Debutant en 3 jours : corps complet, la meilleure base.
+  if (niv === 'debutant' && jours === 3 && obj === 'masse') progId = 'deb-full-3j';
 
-  // « Force / Performance » n'a pas de programmes a lui : la
-  // bibliotheque n'en contient aucun. Il emprunte ceux de prise de
-  // muscle, batis sur les memes mouvements lourds. Assume et ecrit ici
-  // plutot que dissimule dans une egalite silencieuse.
-  if (objectif === 'force') objectif = 'masse';
-
-  if (objectif === 'masse') {
-    const debMasse = "Pour débuter la prise de masse, un corps complet 3 jours donne souvent les meilleurs résultats : plus de récupération, une meilleure technique. On te conseille de commencer là — mais c'est toi qui choisis, voici le programme que tu as demandé.";
-    if (niveau === 'debutant' && jours === 3) {
-      progId = 'deb-full-3j';
-      conseil = "Pour débuter, un corps complet 3 jours est la meilleure base : tu construiras du muscle en apprenant la technique. Mange en léger surplus calorique pour la prise de masse.";
-    } else if (jours <= 2) {
-      progId = 'masse-2j';
-      conseil = (niveau === 'debutant')
-        ? "2 jours par semaine, c'est un rythme parfait pour débuter sans se blesser. Mieux vaut 2 séances tenues que 5 abandonnées — la régularité prime."
-        : "2 jours par semaine, c'est un rythme tenable sur le long terme. Avec un programme bien construit, tu peux quand même progresser — la régularité prime.";
-    } else if (jours >= 5) {
-      progId = 'masse-5j';
-      if (niveau === 'debutant') conseil = debMasse;
-    } else if (jours === 4) {
-      progId = 'masse-4j';
-      if (niveau === 'debutant') conseil = debMasse;
-    } else {
-      progId = 'masse-3j';
-    }
-  } else if (objectif === 'seche') {
-    if (jours <= 2) {
-      progId = 'seche-2j';
-      conseil = "2 jours, c'est un bon début. En perte de poids, ce que tu manges compte autant que l'entraînement : soigne ton alimentation et reste actif au quotidien (marche, escaliers).";
-    } else if (jours === 3) { progId = 'seche-full-3j'; }
-    else if (jours === 4) { progId = 'seche-circuit-4j'; }
-    else if (jours === 5) { progId = 'seche-5j'; }
-    else {
-      progId = 'seche-6j';
-      conseil = (niveau === 'debutant')
-        ? "6 jours c'est ambitieux ! Possible, mais en perte de poids attention à garder ton muscle : mange assez de protéines, dors bien, et écoute ton corps. Si c'est trop, réduis sans culpabiliser."
-        : "6 jours par semaine, c'est intense. Assure-toi de bien récupérer et de manger suffisamment de protéines pour ne pas perdre de muscle pendant ta sèche.";
-    }
-  } else {
-    const debSalle = "Pour débuter, 3 séances corps complet par semaine suffisent largement à progresser vite, avec assez de repos. On te conseille de commencer là — mais tu choisis, voici ton programme.";
-    if (niveau === 'debutant' && jours <= 2) { progId = 'deb-2j'; }
-    else if (niveau === 'debutant' && jours === 3) { progId = 'deb-full-3j'; }
-    else if (jours >= 6) { progId = 'salle-ppl-6j'; if (niveau === 'debutant') conseil = debSalle; }
-    else if (jours >= 4) { progId = 'salle-half-4j'; if (niveau === 'debutant') conseil = debSalle; }
-    else { progId = 'salle-ppl-3j'; }
-  }
-
-  if (jours <= 2 && !conseil) {
-    conseil = "2 jours par semaine, c'est un rythme tenable sur le long terme. La régularité bat l'intensité.";
+  let note = '';
+  if (jours < voulu) {
+    note = `Tu as ${voulu} jours, mais ${jours} séances de musculation suffisent pour progresser à ton niveau : au-delà, la récupération ne suit plus. `
+      + (obj === 'seche' ? 'Les autres jours : marche rapide ou vélo, ça aide la perte de poids.' : 'Les autres jours : marche, vélo ou repos.');
   }
 
   let desc;
-  if (objectif === 'masse') desc = 'Construis du muscle avec un programme structuré et une progression régulière sur les charges.';
-  else if (objectif === 'seche') desc = 'Brûle des calories avec des séances dynamiques qui combinent musculation et cardio.';
+  if (obj === 'masse') desc = 'Construis du muscle avec un programme structuré et une progression régulière sur les charges.';
+  else if (obj === 'seche') desc = 'Brûle des calories avec des séances dynamiques qui combinent musculation et cardio.';
   else desc = 'Reprends en douceur avec des séances complètes et progressives pour tout le corps.';
 
-  return { progId, conseil, desc, jours };
+  return { progId, desc, note, jours };
 }
 
 /* `conseilsPersonnels()` est retiree le 9/09 avec le bloc « Les
@@ -270,7 +247,7 @@ export function Questionnaire() {
 
   // ---------- Resultat ----------
   if (surResultat) {
-    const { progId, desc } = recommander(reponses);
+    const { progId, desc, note } = recommander(reponses);
     const prog = programmeParId(progId);
     // La phrase « Tu veux prendre du muscle, 3 jours par semaine… »
     // est retiree le 5/09 (Raci) : elle recitait les reponses de
@@ -295,6 +272,7 @@ export function Questionnaire() {
 
           <div class="qz-carte">
             <p class="qz-desc">{desc}</p>
+            {note && <p class="qz-note">{note}</p>}
             {/* Libelle d'abord, valeur ensuite (Raci, 5/09) : on lit ce
                 qu'on regarde avant de lire combien. */}
             <div class="qz-stats">
