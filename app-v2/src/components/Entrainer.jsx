@@ -1,3 +1,4 @@
+import { CoachBar } from './CoachBar.jsx';
 import { useState } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
 import { signal, effect } from '@preact/signals';
@@ -570,6 +571,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
         </button>
       </div>
       )}
+
+      {/* Barre seance (04/10, Raci) : « aujourd'hui je fais pecs biceps »,
+          quatre questions, une seance proposee. Plus rapide que le choix
+          manuel des exercices. La barre repas reste sur Aujourd'hui. */}
+      <div style={{ margin: '12px 0 0' }}><CoachBar mode="seance" /></div>
 
       {/* 3 — Calendrier */}
       <div class="ent-bloc">

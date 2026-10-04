@@ -5,7 +5,7 @@ import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau, ajouter
 import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT, demandeVueEntrainer, poserBrouillon } from '../store/seance-active.js';
 import { ongletActif } from './BottomNav.jsx';
 import { planifierSeance } from '../store/programme.js';
-import { EXERCISES } from '../data/exercices.js';
+import { EXERCISES, FILTERS } from '../data/exercices.js';
 import { courses, origineCourses } from './Courses.jsx';
 import { DB, macrosOf } from '../data/aliments.js';
 import { t } from '../i18n/index.js';
@@ -37,7 +37,46 @@ function versLignes(aliments) {
   }).filter(Boolean);
 }
 
-export function CoachBar() {
+// Barre seance (04/10) : quatre questions avant de composer.
+const QUESTIONS_SEANCE = [
+  { cle: 'style', titre: 'Ton objectif', choix: [['hyper', 'Prise de muscle'], ['force', 'Force'], ['endu', 'Endurance / sèche']] },
+  { cle: 'duree', titre: 'Ton temps', choix: [['court', '30 min'], ['normal', '45 min'], ['long', '1 h ou plus']] },
+  { cle: 'mat', titre: 'Ton matériel', choix: [['salle', 'Salle complète'], ['halteres', 'Haltères'], ['rien', 'Poids du corps']] },
+  { cle: 'niveau', titre: 'Ton niveau', choix: [['debutant', 'Débutant'], ['intermediaire', 'Intermédiaire'], ['confirme', 'Avancé']] },
+];
+const MOT_DUREE = { court: ' 30 min', normal: '', long: ' 1h' };
+
+/** Compose la seance selon les 4 reponses : materiel respecte, volume selon le niveau. */
+function composerAvecReponses(phrase, rep) {
+  const out = composerSeance('seance ' + phrase + MOT_DUREE[rep.duree], rep.style);
+  if (!out || out.action !== 'composerSeance') return out;
+  const mats = (FILTERS.find((f) => f.key === rep.mat) || {}).mats;
+  // Les exercices a l'elastique sont ranges avec les halteres dans le
+  // catalogue : on les ecarte si la personne a dit « Halteres ».
+  const okMat = (e) => (!mats || mats.includes(e.mat) || (rep.mat === 'salle' && e.mat === 'halteres'))
+    && !(rep.mat === 'halteres' && /lastique/i.test(e.nom));
+  const vus = new Set(out.refs.map((r) => r.mKey + ':' + r.i));
+  const refs = out.refs.map((r) => {
+    const e = (EXERCISES[r.mKey] || [])[r.i];
+    if (e && okMat(e)) return r;
+    const liste = EXERCISES[r.mKey] || [];
+    const j = liste.findIndex((x, k) => okMat(x) && !vus.has(r.mKey + ':' + k));
+    if (j < 0) return null;
+    vus.add(r.mKey + ':' + j);
+    return { mKey: r.mKey, i: j };
+  }).filter(Boolean);
+  if (!refs.length) return { action: 'aucuneSeance', texte: 'Je ne trouve pas d\'exercice pour ce matériel. Essaie un autre choix.' };
+  const delta = rep.niveau === 'debutant' ? -1 : rep.niveau === 'confirme' ? 1 : 0;
+  const schema = { ...out.schema, series: Math.max(2, out.schema.series + delta) };
+  schema.resume = schema.series + ' × ' + schema.reps + out.schema.resume.replace(/^\d+ × \d+/, '');
+  const noms = refs.map((r) => EXERCISES[r.mKey][r.i].nom);
+  return { ...out, refs, noms, schema,
+    texte: out.titre + ' — ' + refs.length + ' exercices · ' + schema.resume + '.' };
+}
+
+export function CoachBar({ mode = 'repas' }) {
+  const enSeance = mode === 'seance';
+  const [quiz, setQuiz] = useState(null); // { phrase, titre, etape, rep }
   const [texte, setTexte] = useState('');
   const [etat, setEtat] = useState('pret');
   const [msg, setMsg] = useState('');
@@ -48,7 +87,7 @@ export function CoachBar() {
   // Type de la ligne a creer au moment d'ajouter (23/09), ou null.
   const [nouvelleLigne, setNouvelleLigne] = useState(null);
   const ajoutRef = useRef(null);
-  const ouvert = etat === 'proposition' || etat === 'diner' || etat === 'seance' || etat === 'seancePosee' || etat === 'style';
+  const ouvert = etat === 'proposition' || etat === 'diner' || etat === 'seance' || etat === 'seancePosee' || etat === 'style' || etat === 'quiz';
   // Seance sans objectif precise : on le demande (28/09).
   const [styleDemande, setStyleDemande] = useState(null);
 
@@ -94,8 +133,9 @@ export function CoachBar() {
     // vivent dans S'entrainer (programmes prets, seance libre) : une
     // demande de seance est renvoyee la-bas, les aliments eventuels de
     // la meme phrase restent notes.
-    if (out.action === 'abandonnerSeance' || out.action === 'demarrerSeance' || out.action === 'choixStyle'
-      || out.action === 'composerSeance' || out.seance) {
+    if (out.action === 'aucuneSeance') { setMsg(out.texte); setEtat('pret'); return; }
+    if (!enSeance && (out.action === 'abandonnerSeance' || out.action === 'demarrerSeance' || out.action === 'choixStyle'
+      || out.action === 'composerSeance' || out.seance)) {
       const restes = versLignes(out.aliments);
       const eauS = Number(out.eauLitres) || 0;
       setSeance(null); setStyleDemande(null); setDiner(null); setNouvelleLigne(null);
@@ -211,6 +251,22 @@ export function CoachBar() {
       seanceRefs: seanceRefs.value,
       repas: repas.value,
     };
+    if (enSeance) {
+      // Muscles reconnus : les quatre questions. Sinon on guide.
+      const essai = composerSeance('seance ' + dit, 'hyper');
+      if (essai && essai.action === 'composerSeance') {
+        setSeance(null); setLignes([]); setTexte('');
+        setQuiz({ phrase: dit, titre: (essai.muscles || []).length ? essai.titre.replace(/ · .*$/, '') : essai.titre, etape: 0, rep: {} });
+        setMsg(''); setEtat('quiz');
+        return;
+      }
+      const l2 = parserLocal(dit, contexte);
+      setMsg((l2.aliments || []).length || l2.eauLitres
+        ? 'Pour noter un repas, utilise la barre de l\'onglet Aujourd\'hui.'
+        : 'Dis-moi les muscles à travailler, par exemple « pecs biceps » ou « jambes ».');
+      setEtat('pret');
+      return;
+    }
     const local = parserLocal(dit, contexte);
     const compris = local.action || (local.aliments || []).length || local.eauLitres;
     if (compris) { appliquer(local); return; }
@@ -334,7 +390,7 @@ export function CoachBar() {
           class="coach-bar-champ"
           type="text"
           maxlength="240"
-          placeholder={t('coach_placeholder')}
+          placeholder={enSeance ? 'Ex. aujourd\'hui je fais pecs biceps' : t('coach_placeholder')}
           value={texte}
           onInput={(e) => setTexte(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') envoyer(); }}
@@ -396,6 +452,24 @@ export function CoachBar() {
           <button class="coach-bar-passe" type="button" onClick={() => { setDiner(null); setEtat('pret'); setMsg(''); }}>{t('coach_pas_maintenant')}</button>
         </div>
       )}
+      {etat === 'quiz' && quiz && (() => {
+        const q = QUESTIONS_SEANCE[quiz.etape];
+        return (
+          <div class="coach-bar-diner coach-bar-style">
+            <p class="coach-bar-diner-nom">{quiz.titre} · {quiz.etape + 1}/4 · {q.titre}</p>
+            {q.choix.map(([v, lib]) => (
+              <button class="coach-bar-style-bt" type="button" key={v} onClick={() => {
+                const rep = { ...quiz.rep, [q.cle]: v };
+                if (quiz.etape < 3) { setQuiz({ ...quiz, etape: quiz.etape + 1, rep }); return; }
+                setQuiz(null);
+                const out = composerAvecReponses(quiz.phrase, rep);
+                if (out) appliquer(out); else { setMsg('Je n\'ai pas pu composer cette séance.'); setEtat('pret'); }
+              }}><b>{lib}</b></button>
+            ))}
+            <button class="coach-bar-passe" type="button" onClick={() => { setQuiz(null); setEtat('pret'); setMsg(''); }}>{t('coach_pas_maintenant')}</button>
+          </div>
+        );
+      })()}
       {etat === 'style' && styleDemande && (
         <div class="coach-bar-diner coach-bar-style">
           <p class="coach-bar-diner-nom">{styleDemande.titre}</p>
