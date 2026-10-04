@@ -90,6 +90,22 @@ export function CoachBar() {
       setTexte('');
       return;
     }
+    // 04/10 (Raci) : la barre sert aux repas et a l'eau. Les seances
+    // vivent dans S'entrainer (programmes prets, seance libre) : une
+    // demande de seance est renvoyee la-bas, les aliments eventuels de
+    // la meme phrase restent notes.
+    if (out.action === 'abandonnerSeance' || out.action === 'demarrerSeance' || out.action === 'choixStyle'
+      || out.action === 'composerSeance' || out.seance) {
+      const restes = versLignes(out.aliments);
+      const eauS = Number(out.eauLitres) || 0;
+      setSeance(null); setStyleDemande(null); setDiner(null); setNouvelleLigne(null);
+      setEauLitres(eauS);
+      setLignes(restes);
+      setMsg(t('coach_vers_entrainer'));
+      setEtat((restes.length || eauS) ? 'proposition' : 'pret');
+      setTexte('');
+      return;
+    }
     if (out.action === 'abandonnerSeance') {
       abandonnerSeance();
       setSeance(null);
