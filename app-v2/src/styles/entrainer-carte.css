@@ -1176,3 +1176,13 @@
   font-family: inherit; color: inherit; cursor: pointer;
 }
 .cp-nom-fl { margin-left: auto; font-size: 22px; font-weight: 500; color: #B34700; }
+
+/* Barre seance (04/10) : meme carte que les autres blocs de l'onglet. */
+.pg-entrainer--carte .ent-coach { margin: 0 0 14px; }
+.pg-entrainer--carte .ent-coach .coach-bar {
+  padding: 12px 14px 14px; border-radius: 18px; background: #FFF;
+  border: 1px solid rgba(28,24,18,.06);
+  box-shadow: 0 1px 2px rgba(24,24,24,.03), 0 6px 18px rgba(60,50,40,.07);
+}
+.pg-entrainer--carte .ent-coach .coach-kicker { margin: 0 2px 8px; }
+.pg-entrainer--carte .ent-coach .coach-bar-champ { padding: 11px 14px; }

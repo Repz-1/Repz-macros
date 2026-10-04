@@ -510,6 +510,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
           un programme actif, ou des seances posees a la main sur la
           semaine. Sinon elle renvoie null et le bloc d'origine
           s'affiche. */}
+      {/* Barre seance (04/10, Raci) : en tete de l'onglet, au-dessus du
+          bloc du jour. « Aujourd'hui je fais pecs biceps », quatre
+          questions, une seance proposee : plus rapide que le choix manuel.
+          La barre repas reste sur Aujourd'hui. */}
+      <div class="ent-coach"><CoachBar mode="seance" /></div>
       {(programmeActif.value || poseeCetteSemaine(today))
         ? <CarteProgramme today={today} todayIso={todayIso} allerVers={allerVers} />
         : (
@@ -571,11 +576,6 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
         </button>
       </div>
       )}
-
-      {/* Barre seance (04/10, Raci) : « aujourd'hui je fais pecs biceps »,
-          quatre questions, une seance proposee. Plus rapide que le choix
-          manuel des exercices. La barre repas reste sur Aujourd'hui. */}
-      <div style={{ margin: '12px 0 0' }}><CoachBar mode="seance" /></div>
 
       {/* 3 — Calendrier */}
       <div class="ent-bloc">
