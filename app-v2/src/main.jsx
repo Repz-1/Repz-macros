@@ -545,10 +545,7 @@ export function App() {
                   ouvrirCalcDemande.value = true;
                 }}>{t('profil_recalc')}<i>›</i></button>
               )}
-              <button class="pv-bt" onClick={() => {
-                voletProfil.value = false;
-                vueReglages.value = 'compte';
-              }}>{t('profil_compte')}<i>›</i></button>
+              {/* 03/10 (Raci) : « Mon compte » retire, doublon de Parametres. */}
             </>
           );
         })()}
