@@ -287,7 +287,12 @@ export function CoachBar({ mode = 'repas' }) {
         const hh = new Date().getHours();
         const repasDit = distant.repas || (local.aliments && local.aliments[0] && local.aliments[0].repasCle)
           || (hh < 11 ? 'pdej' : hh < 15 ? 'dej' : hh < 21 ? 'diner' : 'snack');
-        const aliments = (distant.aliments || []).map((a) => ({ ...a, repasCle: repasDit || a.repasCle }));
+        // Filet de securite : un aliment lu localement que l'IA a oublie
+        // (meme premier mot absent de sa reponse) est ajoute.
+        const premier = (x) => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(/[\s(]/)[0];
+        const vusIA = new Set((distant.aliments || []).map((a) => premier(a.aliment)));
+        const oublies = (local.aliments || []).filter((a) => !vusIA.has(premier(a.aliment)));
+        const aliments = [...(distant.aliments || []), ...oublies].map((a) => ({ ...a, repasCle: repasDit || a.repasCle }));
         const m = aliments.reduce((t, a) => t + (macrosOf({ name: a.aliment, portion: portionJournal(a.aliment, a.quantite, a.unite) }).kcal || 0), 0);
         appliquer({ aliments, eauLitres: distant.eauLitres || 0,
           texte: 'Coach : ' + aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', ')

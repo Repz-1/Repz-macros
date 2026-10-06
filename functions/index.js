@@ -391,7 +391,8 @@ exports.coachAgent = onRequest(
 Reponds UNIQUEMENT avec un objet JSON valide, sans texte autour :
 {"aliments":[{"aliment":string,"quantite":number,"hors_base":boolean,"kcal":number,"prot":number,"carbs":number,"lip":number}],"eauLitres":number,"repas":"pdej"|"dej"|"diner"|"snack"|null}
 Regles :
-- "aliment" : copie EXACTEMENT un nom de la BASE ci-dessous (sans la mention entre crochets) quand c'est le meme aliment. Feculents, viandes et poissons : prends la version cuite si rien n'est precise. Alors hors_base=false et ne mets pas kcal/prot/carbs/lip.
+- Chaque aliment cite = une entree. N'en oublie AUCUN (ex: « 200 g de pommes, du riz et du poulet » = 3 entrees). « pomme(s) » seul = le fruit, pas la pomme de terre.
+- "aliment" : copie EXACTEMENT un nom de la BASE ci-dessous (sans la mention entre crochets) quand c'est le meme aliment. Respecte « cru » / « cuit » quand c'est dit ; sinon, feculents, viandes et poissons : version cuite. Alors hors_base=false et ne mets pas kcal/prot/carbs/lip.
 - Si aucun nom de la base ne correspond vraiment (plat specifique, marque, recette etrangere) : "aliment" = nom court en francais, hors_base=true, et kcal/prot/carbs/lip = valeurs realistes POUR 100 g. Un plat compose peut rester une seule entree.
 - "quantite" : TOUJOURS en grammes (ou ml pour les boissons), jamais en pieces. Convertis : 1 oeuf 50 g, 1 jaune 17 g, 1 blanc 33 g, 1 tranche de pain 35 g, 1 cuillere a soupe d'huile 10 g, 1 cuillere a cafe 5 g, 1 sachet de riz cuit 125 g, 1 verre 250 ml, 1 canette 330 ml, 1 banane 120 g, 1 pomme 150 g. « 2 sachets de 125 g » = 250. « 9 blancs de 30 g » = 270.
 - L'eau pure va dans "eauLitres" (pas dans aliments). 0 si aucune.

@@ -91,7 +91,7 @@ function quantiteCollee(n, mot) {
   if (mAv) return parseFloat(mAv[1].replace(',', '.'));
   const apres = n.slice(idx + mot.length, idx + mot.length + 20);
   // « 2 steaks de 150 g » : nombre devant, poids unitaire derriere.
-  const nbDevant = avant.match(/(\d+|un|une|deux|trois|quatre|cinq)\s+$/);
+  const nbDevant = avant.match(/(\d+|un|une|deux|trois|quatre|cinq)\s+(?:(?:sachets?|paquets?|pots?|barquettes?|portions?|boites?|tranches?)\s+(?:de\s+|d\s+)?)?$/);
   const poidsDerriere = apres.match(new RegExp('^\\s*de\\s+(\\d+[.,]?\\d*)\\s*' + UNITE_G + '(?![a-z])'));
   if (nbDevant && poidsDerriere) return (NOMBRES[nbDevant[1]] || parseFloat(nbDevant[1])) * parseFloat(poidsDerriere[1].replace(',', '.'));
   const mAp = apres.match(new RegExp('^\\s*(?:: )?(\\d+[.,]?\\d*)\\s*' + UNITE_G + '(?![a-z])'));
@@ -474,6 +474,7 @@ const MOTS_NEUTRES = new Set(['et','avec','puis','aussi','ai','jai','mange','man
   'portion','portions','boite','boites','piece','pieces','kg','litre','litres','cuillere','cuilleres','soupe',
   'cas','cac','gr','grammes','gramme','des','une','les','pour','petit','dejeuner','diner','collation','snack',
   'deux','trois','quatre','cinq','six','sept','huit','neuf','dix','environ','peu','bien','tout','fait','aussi',
+  'cru','crue','crus','crues','cuit','cuite','cuits','cuites','au','aux','sachet',
   'verre','verres','tasse','tasses','bol','bols','canette','canettes','bouteille','bouteilles','pinte','pintes']);
 let dernierReste = '';
 let portionInconnue = false;
@@ -572,13 +573,26 @@ function parserLocalBrut(message, contexte = {}) {
     const motif = ' ' + a + ' ';
     if (!reste.includes(motif)) continue;
     reste = reste.replace(motif, ' '.repeat(motif.length - 1) + ' ');
-    const cle = resoudreAliment(sing);
+    let cle = resoudreAliment(sing);
     const d = cle && DB[cle];
     // « 3 bananes » : 3 portions (04/10), pas une seule.
     const base = PORTION[cle] || (d && d.unit) || 100;
     const iMot = n.indexOf(a);
     const mNb = iMot >= 0 ? n.slice(Math.max(0, iMot - 12), iMot).match(/(\d+|une|un|deux|trois|quatre|cinq|six)\s+$/) : null;
     const nbPieces = mNb ? (NOMBRES[mNb[1]] || { six: 6 }[mNb[1]] || parseFloat(mNb[1])) : 1;
+    // « riz ... cru » / « poulet cuit » : la variante dite (04/10).
+    const iA = n.indexOf(a);
+    const suite = iA >= 0 ? n.slice(iA + a.length, iA + a.length + 24) : '';
+    const etat = /^(?:\s+de\s+\d+[.,]?\d*\s*g)?\s+crue?s?\b/.test(suite) ? 'cru'
+      : /^(?:\s+de\s+\d+[.,]?\d*\s*g)?\s+cuite?s?\b/.test(suite) ? 'cuit' : null;
+    if (etat) {
+      const racineNom = cle.replace(/\s*\(?(crue?s?|cuite?s?)\)?\s*$/i, '');
+      const essais = etat === 'cru'
+        ? [racineNom + ' cru', racineNom + ' crue', racineNom + ' crues', racineNom + ' (cru)', racineNom + ' (crue)']
+        : [racineNom + ' cuit', racineNom + ' cuite', racineNom + ' cuites', racineNom + ' (cuit)', racineNom + ' (cuite)'];
+      const v = essais.find((x) => DB[x]);
+      if (v) cle = v;
+    }
     const qDite = quantiteContenant(n, a) || extraireQuantite(n, a);
     // Ni quantite dite, ni portion connue (« un bo bun ») : 100 g serait
     // faux ; le coach IA estime la portion.
