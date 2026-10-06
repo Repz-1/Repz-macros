@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { parserLocal, proposerRepas, composerSeance, SCHEMAS } from '../services/coach-local.js';
+import { parserLocal, proposerRepas, composerSeance, SCHEMAS, portionJournal } from '../services/coach-local.js';
 import { demanderCoach } from '../services/coach.js';
 import { repas, objectifs, totauxJourAff, ajouterIngredient, ajouterEau, ajouterRepas } from '../store/journal.js';
 import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT, demandeVueEntrainer, poserBrouillon } from '../store/seance-active.js';
@@ -31,9 +31,8 @@ function versLignes(aliments) {
   return (aliments || []).map((a) => {
     const cle = DB[a.aliment] ? a.aliment : null;
     if (!cle) return null;
-    const d = DB[cle];
-    const portion = a.unite === 'piece' && d && d.unit ? a.quantite * d.unit : a.quantite;
-    return { cle, portion: Math.round(portion), repasCle: a.repasCle };
+    // 04/10 : aliment a l'unite = nombre de pieces dans le journal.
+    return { cle, portion: portionJournal(cle, a.quantite, a.unite), repasCle: a.repasCle };
   }).filter(Boolean);
 }
 
@@ -403,7 +402,7 @@ export function CoachBar({ mode = 'repas' }) {
           {lignes.map((l, i) => (
             <div class="coach-bar-ligne-alim" key={i}>
               <span>
-                {l.cle} — {l.portion} g
+                {l.cle} — {l.portion} {DB[l.cle] && DB[l.cle].unit ? (DB[l.cle].unitLabel || 'pièce') + (l.portion > 1 ? 's' : '') : 'g'}
                 {!nouvelleLigne && nomRepas(l.repasCle) ? ' · ' + nomRepas(l.repasCle) : ''}
                 {kcalDe(l) ? ' · ' + kcalDe(l) + ' kcal' : ''}
               </span>
@@ -499,7 +498,7 @@ export function CoachBar({ mode = 'repas' }) {
           {lignes.map((l, i) => (
             <div class="coach-bar-ligne-alim" key={'a' + i}>
               <span>
-                {l.cle} — {l.portion} g
+                {l.cle} — {l.portion} {DB[l.cle] && DB[l.cle].unit ? (DB[l.cle].unitLabel || 'pièce') + (l.portion > 1 ? 's' : '') : 'g'}
                 {kcalDe(l) ? ' · ' + kcalDe(l) + ' kcal' : ''}
               </span>
               <button type="button" onClick={() => setLignes(lignes.filter((_, j) => j !== i))}>x</button>

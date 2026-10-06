@@ -84,9 +84,16 @@ function quantiteCollee(n, mot) {
   const idx = mot ? n.indexOf(mot) : -1;
   if (idx < 0) return null;
   const avant = n.slice(Math.max(0, idx - 30), idx);
+  // « 2 sachets de 125 g de riz » : 2 x 125 (04/10).
+  const mMul = avant.match(new RegExp('(\\d+|un|une|deux|trois|quatre|cinq)\\s+(?:sachets?|paquets?|pots?|barquettes?|portions?|boites?|tranches?|pieces?)\\s+(?:de |d )?(\\d+[.,]?\\d*)\\s*' + UNITE_G + '\\s*(?:de |d )?$'));
+  if (mMul) return (NOMBRES[mMul[1]] || parseFloat(mMul[1])) * parseFloat(mMul[2].replace(',', '.'));
   const mAv = avant.match(new RegExp('(\\d+[.,]?\\d*)\\s*' + UNITE_G + '\\s*(?:de |d )?$'));
   if (mAv) return parseFloat(mAv[1].replace(',', '.'));
   const apres = n.slice(idx + mot.length, idx + mot.length + 20);
+  // « 2 steaks de 150 g » : nombre devant, poids unitaire derriere.
+  const nbDevant = avant.match(/(\d+|un|une|deux|trois|quatre|cinq)\s+$/);
+  const poidsDerriere = apres.match(new RegExp('^\\s*de\\s+(\\d+[.,]?\\d*)\\s*' + UNITE_G + '(?![a-z])'));
+  if (nbDevant && poidsDerriere) return (NOMBRES[nbDevant[1]] || parseFloat(nbDevant[1])) * parseFloat(poidsDerriere[1].replace(',', '.'));
   const mAp = apres.match(new RegExp('^\\s*(?:: )?(\\d+[.,]?\\d*)\\s*' + UNITE_G + '(?![a-z])'));
   if (mAp) return parseFloat(mAp[1].replace(',', '.'));
   return null;
@@ -124,9 +131,22 @@ export function extraireEau(phrase) {
   return 0.25;
 }
 
+/**
+ * Portion a ecrire au journal (04/10). Les aliments a l'unite (oeuf,
+ * dose, canette) se comptent en PIECES dans le journal ; le coach lit
+ * des grammes. 50 g d'oeuf = 1 oeuf, pas 50 oeufs (le bug donnait
+ * 3 875 kcal pour « 4 jaunes »).
+ */
+export function portionJournal(cle, quantite, unite) {
+  const d = DB[cle];
+  if (!d || !d.unit) return Math.round(quantite);
+  if (unite === 'piece') return Math.max(1, Math.round(quantite));
+  return Math.max(1, Math.round(quantite / d.unit));
+}
+
 export function macrosAliments(aliments) {
   return (aliments || []).reduce((t, a) => {
-    const m = macrosOf({ name: a.aliment, portion: a.quantite });
+    const m = macrosOf({ name: a.aliment, portion: portionJournal(a.aliment, a.quantite, a.unite) });
     t.kcal += m.kcal; t.prot += m.prot; t.carbs += m.carbs; t.lip += m.lip;
     return t;
   }, { kcal: 0, prot: 0, carbs: 0, lip: 0 });
@@ -502,19 +522,44 @@ export function parserLocal(message, contexte = {}) {
     (c.extra || []).forEach((e) => { if (e.si.test(n)) push(e.aliment, e.quantite); });
   }
 
+  // Oeufs (04/10) : « 4 jaunes d'oeufs », « 9 blancs de 30 g »,
+  // « 3 oeufs ». Jaune ~17 g, blanc ~33 g ; un oeuf compte en pieces.
+  let nOeufs = ' ' + n + ' ';
+  const NB = '(\\d+|un|une|deux|trois|quatre|cinq|six|huit|dix)';
+  const nb = (x) => NOMBRES[x] || { six: 6, huit: 8, dix: 10 }[x] || parseFloat(x);
+  const partie = (re, cle, poidsDefaut) => {
+    const m = nOeufs.match(re);
+    if (!m) return;
+    const poids = m[2] ? parseFloat(m[2].replace(',', '.')) : poidsDefaut;
+    push(cle, nb(m[1]) * poids);
+    nOeufs = nOeufs.replace(m[0], ' ');
+  };
+  partie(new RegExp(NB + '\\s+jaunes?(?:\\s+d\\s*oeufs?)?(?:\\s+de\\s+(\\d+[.,]?\\d*)\\s*g)?(?![a-z])'), "Jaune d'oeuf", 17);
+  partie(new RegExp(NB + '\\s+blancs?(?:\\s+d\\s*oeufs?)?(?:\\s+de\\s+(\\d+[.,]?\\d*)\\s*g)?(?![a-z])(?!\\s+de\\s+(?:poulet|dinde))'), "Blanc d'oeuf", 33);
+  const mOe = nOeufs.match(new RegExp(NB + '\\s+oeufs?(?![a-z])'));
+  if (mOe) { push('Oeuf entier M (50g)', nb(mOe[1]) * 50); nOeufs = nOeufs.replace(mOe[0], ' '); }
+
   // Le texte reconnu est CONSOMME (23/09) : « flocons d'avoine » ne
   // redonne pas « avoine », « pain complet » ne redonne pas « pain »,
   // « jus d'orange » ne redonne pas une orange.
-  const cles = Object.keys(ALIAS).sort((a, b) => b.length - a.length);
-  let reste = ' ' + n + ' ';
+  // Pluriels (04/10) : « 2 steaks », « 3 bananes » -> alias au singulier.
+  const cles = Object.keys(ALIAS).flatMap((a) => (a.endsWith('s') || a.includes(' ') ? [a] : [a, a + 's']))
+    .sort((a, b) => b.length - a.length);
+  let reste = nOeufs;
   for (const a of cles) {
-    if (STOP.has(a) || skip.has(a) || a.length < 3) continue;
+    const sing = ALIAS[a] ? a : a.slice(0, -1);
+    if (STOP.has(sing) || skip.has(sing) || a.length < 3) continue;
     const motif = ' ' + a + ' ';
     if (!reste.includes(motif)) continue;
     reste = reste.replace(motif, ' '.repeat(motif.length - 1) + ' ');
-    const cle = resoudreAliment(a);
+    const cle = resoudreAliment(sing);
     const d = cle && DB[cle];
-    push(cle, quantiteContenant(n, a) || extraireQuantite(n, a) || PORTION[cle] || (d && d.unit) || 100);
+    // « 3 bananes » : 3 portions (04/10), pas une seule.
+    const base = PORTION[cle] || (d && d.unit) || 100;
+    const iMot = n.indexOf(a);
+    const mNb = iMot >= 0 ? n.slice(Math.max(0, iMot - 12), iMot).match(/(\d+|une|un|deux|trois|quatre|cinq|six)\s+$/) : null;
+    const nbPieces = mNb ? (NOMBRES[mNb[1]] || { six: 6 }[mNb[1]] || parseFloat(mNb[1])) : 1;
+    push(cle, quantiteContenant(n, a) || extraireQuantite(n, a) || base * (nbPieces > 0 && nbPieces < 20 ? nbPieces : 1));
   }
   // Un « verre » de lait ou une « bouteille » de coca n'est pas de
   // l'eau : l'eau ne se compte que si elle est nommee.
