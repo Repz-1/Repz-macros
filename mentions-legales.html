@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mentions légales — BelFit</title>
+  <meta name="description" content="Mentions légales du site BelFit : éditeur, hébergeur, contact et informations d’entreprise.">
+  <link rel="canonical" href="https://www.belfit.be/mentions-legales.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.belfit.be/mentions-legales.html">
+  <meta property="og:title" content="Mentions légales — BelFit">
+  <meta property="og:description" content="Mentions légales du site BelFit : éditeur, hébergeur, contact et informations d’entreprise.">
+  <meta property="og:image" content="https://www.belfit.be/belfit-logo-bf.png">
+  <meta name="theme-color" content="#F4F3F0">
+  <!-- noindex tant que l'adresse du siege n'est pas renseignee
+       ([ADRESSE_SIEGE] ci-dessous, a fournir par Raci). Une fois
+       l'adresse posee : retirer cette ligne et ajouter la page a
+       sitemap.xml. -->
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon-32-v9.png" type="image/png" sizes="32x32">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@300,400,500,700,800,900&display=swap">
+  <style>
+    :root {
+      --bg: #F4F3F0;
+      --bg-card: #FFFFFF;
+      --bg-soft: #EBE9E4;
+      --text: #16130F;
+      --text-muted: #5C564E;
+      --accent: #B34700;
+      --accent-hover: #8F3800;
+      --gold: #8F6200;
+      --yellow: #F7B500;
+      --border: rgba(22, 19, 15, 0.08);
+      --shadow: 0 8px 32px rgba(22, 19, 15, 0.06);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --max: 720px;
+      --font: "Satoshi", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+
+    img { display: block; max-width: 100%; height: auto; }
+
+    .wrap {
+      width: min(100% - 2rem, var(--max));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(244, 243, 240, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      gap: 1rem;
+      width: min(100% - 2rem, 1080px);
+      margin-inline: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--text);
+    }
+
+    .brand:hover { color: var(--text); }
+
+    .brand img { width: 42px; height: auto; }
+
+    .brand-word {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.875rem;
+      padding: 0.55rem 1rem;
+      border-radius: 999px;
+      border: 2px solid transparent;
+      text-decoration: none;
+      transition: background 0.18s ease, color 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #2a2520;
+      color: #fff;
+    }
+
+    main {
+      padding: 2.75rem 0 3.5rem;
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .lead {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1.05rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card dl {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .card dt {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.15rem;
+    }
+
+    .card dd {
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card p:last-child { margin-bottom: 0; }
+
+    .placeholder {
+      display: inline-block;
+      background: rgba(179, 71, 0, 0.1);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    .links-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .links-row a {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 0 2rem;
+    }
+
+    .footer-inner {
+      width: min(100% - 2rem, 1080px);
+      margin-inline: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.5rem;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .footer-inner a {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .footer-inner a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/">
+        <img src="/belfit-logo-bf.png" width="42" height="17" alt="BelFit">
+        <span class="brand-word">BelFit</span>
+      </a>
+      <a class="btn btn-primary" href="/">Retour à l’accueil</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <h1>Mentions légales</h1>
+      <p class="lead">
+        Informations légales relatives au site BelFit.
+      </p>
+
+      <article class="card">
+        <h2>1. Éditeur du site</h2>
+        <dl>
+          <div>
+            <dt>Nom commercial</dt>
+            <dd>BelFit</dd>
+          </div>
+          <div>
+            <dt>Responsable / éditeur</dt>
+            <dd>Raci Shkëlqim</dd>
+          </div>
+          <div>
+            <dt>Numéro d’entreprise (BCE) / TVA</dt>
+            <dd>BE 0767.899.411</dd>
+          </div>
+          <div>
+            <dt>Siège social</dt>
+            <dd><span class="placeholder">[ADRESSE_SIEGE]</span></dd>
+          </div>
+          <div>
+            <dt>Contact</dt>
+            <dd><a href="mailto:contact@belfit.be">contact@belfit.be</a></dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h2>2. Hébergeur</h2>
+        <dl>
+          <div>
+            <dt>Service</dt>
+            <dd>GitHub Pages</dd>
+          </div>
+          <div>
+            <dt>Société</dt>
+            <dd>GitHub, Inc.</dd>
+          </div>
+          <div>
+            <dt>Adresse</dt>
+            <dd>88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis</dd>
+          </div>
+          <div>
+            <dt>Site</dt>
+            <dd><a href="https://pages.github.com/" rel="noopener noreferrer" target="_blank">pages.github.com</a></dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h2>3. Propriété intellectuelle</h2>
+        <p>
+          L’ensemble des éléments du site BelFit (textes, graphismes, logo, interface, structure)
+          est protégé par le droit d’auteur et, le cas échéant, par d’autres droits de propriété intellectuelle.
+          Toute reproduction, représentation ou exploitation non autorisée est interdite.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>4. Données personnelles &amp; conditions</h2>
+        <p>
+          Pour les conditions de vente et le traitement des données personnelles, veuillez consulter
+          les documents suivants&nbsp;:
+        </p>
+        <div class="links-row">
+          <a href="/cgv.html">Conditions générales de vente (CGV)</a>
+          <a href="/confidentialite.html">Politique de confidentialité</a>
+          <a href="/">Accueil BelFit</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>5. Responsabilité</h2>
+        <p>
+          BelFit s’efforce de fournir des informations exactes et à jour. Toutefois, des inexactitudes
+          ou omissions peuvent survenir. L’éditeur ne saurait être tenu responsable des dommages
+          directs ou indirects résultant de l’accès ou de l’utilisation du site, dans les limites
+          prévues par le droit belge applicable.
+        </p>
+        <p>
+          Les conseils nutritionnels fournis via BelFit ne se substituent pas à un avis médical.
+          En cas de pathologie ou de doute, consultez un professionnel de santé.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>6. Droit applicable</h2>
+        <p>
+          Les présentes mentions sont régies par le droit belge. En cas de litige, et à défaut de
+          résolution amiable, les tribunaux belges compétents seront saisis.
+        </p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2026 BelFit · BCE/TVA BE 0767.899.411</span>
+      <span>
+        <a href="/">Accueil</a>
+        ·
+        <a href="/cgv.html">CGV</a>
+        ·
+        <a href="/confidentialite.html">Confidentialité</a>
+      </span>
+    </div>
+  </footer>
+</body>
+</html>

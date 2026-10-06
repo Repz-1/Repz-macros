@@ -2,7 +2,7 @@
   "id": "/",
   "name": "BELFIT",
   "short_name": "BELFIT",
-  "start_url": "./main.html",
+  "start_url": "/v2/",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -45,7 +45,7 @@
     {
       "name": "Mon journal",
       "short_name": "Journal",
-      "url": "./main.html#0",
+      "url": "/v2/?onglet=journal",
       "icons": [
         {
           "src": "icon-192-v9.png",
@@ -56,7 +56,7 @@
     {
       "name": "M'entrainer",
       "short_name": "Training",
-      "url": "./main.html#1",
+      "url": "/v2/?onglet=entrainer",
       "icons": [
         {
           "src": "icon-192-v9.png",
@@ -67,7 +67,7 @@
     {
       "name": "Mes stats",
       "short_name": "Stats",
-      "url": "./main.html#2",
+      "url": "/v2/?onglet=stats",
       "icons": [
         {
           "src": "icon-192-v9.png",

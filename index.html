@@ -1,42 +1,840 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BELFIT</title>
-<meta name="theme-color" content="#F4F3F0">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon-192-v9.png">
-<!-- ============================================================
-     belfit.be redirige vers l'application v2.
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- ============================================================
+       Racine = page d'accueil marketing (Raci, oct. 2026). L'app reste
+       sous /v2/.
 
-     La v1 n'est plus utilisee (Raci, 2 aout 2026). Son ancienne page
-     d'accueil reste disponible sous index-v1.html : rien n'est
-     detruit, et le retour en arriere consiste a remettre ce fichier.
+       Compatibilite : la racine etait une redirection pure vers /v2/.
+       Des liens et des appareils comptent encore dessus, on les renvoie
+       donc vers l'app comme avant, avant tout affichage :
+       - adresse avec parametres ou ancre (?invitation=, ?ref=, retours
+         de paiement, liens de connexion...) -> /v2/ + parametres + ancre.
+         Seules exceptions : les ancres internes de cette page (#offre,
+         #processus), pour qu'un lien partage vers une section marche ;
+       - PWA installee (display-mode standalone / fullscreen / minimal-ui,
+         ou navigator.standalone sur iOS) et appli Android (TWA, qui
+         ouvre /index.html en mode standalone) -> /v2/.
 
-     Trois chemins de redirection, du plus rapide au plus sur :
-     - remplacement d'historique en JS, pour que le bouton retour du
-       telephone ne renvoie pas ici et ne cree pas de boucle ;
-     - rafraichissement meta si le JS est desactive ;
-     - lien visible si les deux echouent.
-     ============================================================ -->
-<script>location.replace('/v2/' + location.search + location.hash);</script>
-<meta http-equiv="refresh" content="0; url=/v2/">
-<style>
-  html,body{margin:0;height:100%;background:#F4F3F0;
-    font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#16130F}
-  .b{height:100%;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;gap:14px;padding:24px;text-align:center}
-  img{width:64px;height:64px;border-radius:18px}
-  p{margin:0;font-size:14px;color:#57514A}
-  a{color:#B34700;font-weight:700;font-size:15px}
-</style>
+       Retour en arriere : voir index-redirect-v2.html (ancienne racine,
+       a recopier sur index.html).
+       ============================================================ -->
+  <script>
+    (function () {
+      var l = window.location;
+      var ancresPage = { '#offre': 1, '#processus': 1 };
+      var installee = false;
+      try {
+        installee = window.navigator.standalone === true ||
+          ['standalone', 'fullscreen', 'minimal-ui'].some(function (m) {
+            return window.matchMedia && window.matchMedia('(display-mode: ' + m + ')').matches;
+          });
+      } catch (e) { /* matchMedia indisponible : on affiche la page */ }
+      var aRenvoyer = l.search || (l.hash && !ancresPage[l.hash]);
+      if (installee || aRenvoyer) {
+        // Pas de flash de la page d'accueil pendant le renvoi.
+        document.documentElement.style.visibility = 'hidden';
+        l.replace('/v2/' + l.search + l.hash);
+      }
+    })();
+  </script>
+  <title>BelFit — Coaching nutrition personnalisé</title>
+  <meta name="description" content="BelFit : un plan alimentaire coaché, personnalisé pour vous. Questionnaire dans l'app, plan livré sous 48 h. Premier plan 80 €, mise à jour 60 €.">
+  <link rel="canonical" href="https://www.belfit.be/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.belfit.be/">
+  <meta property="og:title" content="BelFit — Coaching nutrition personnalisé">
+  <meta property="og:description" content="Un plan alimentaire coaché, personnalisé pour vous. Questionnaire dans l'app, plan livré sous 48 h. Premier plan 80 €, mise à jour 60 €.">
+  <meta property="og:image" content="https://www.belfit.be/belfit-logo-bf.png">
+  <meta property="og:image:width" content="480">
+  <meta property="og:image:height" content="198">
+  <meta property="og:image:alt" content="Logo BelFit">
+  <meta property="og:site_name" content="BelFit">
+  <meta property="og:locale" content="fr_BE">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="BelFit — Coaching nutrition personnalisé">
+  <meta name="twitter:description" content="Un plan alimentaire coaché, personnalisé pour vous. Questionnaire dans l'app, plan livré sous 48 h.">
+  <meta name="twitter:image" content="https://www.belfit.be/belfit-logo-bf.png">
+  <meta name="theme-color" content="#F4F3F0">
+  <link rel="icon" href="/favicon-32-v9.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="/icon-192-v9.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v9.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@300,400,500,700,800,900&display=swap">
+  <style>
+    :root {
+      --bg: #F4F3F0;
+      --bg-card: #FFFFFF;
+      --bg-soft: #EBE9E4;
+      --text: #16130F;
+      --text-muted: #5C564E;
+      --accent: #B34700;
+      --accent-hover: #8F3800;
+      --gold: #8F6200;
+      --yellow: #F7B500;
+      --yellow-soft: #FFC933;
+      --border: rgba(22, 19, 15, 0.08);
+      --shadow: 0 8px 32px rgba(22, 19, 15, 0.06);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --max: 1080px;
+      --font: "Satoshi", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      font-weight: 400;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+
+    img { display: block; max-width: 100%; height: auto; }
+
+    .wrap {
+      width: min(100% - 2rem, var(--max));
+      margin-inline: auto;
+    }
+
+    /* Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(244, 243, 240, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--text);
+    }
+
+    .brand:hover { color: var(--text); }
+
+    .brand img {
+      width: 42px;
+      height: auto;
+    }
+
+    .brand-word {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a.nav-link {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.7rem;
+    }
+
+    .nav a.nav-link:hover { color: var(--text); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.85rem 1.35rem;
+      border-radius: 999px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #2a2520;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-ghost {
+      background: var(--bg-soft);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover {
+      background: #e0ddd6;
+      color: var(--text);
+    }
+
+    .btn-sm {
+      padding: 0.55rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 3.5rem 0 3rem;
+      text-align: center;
+    }
+
+    .hero-logo {
+      width: min(180px, 55vw);
+      margin: 0 auto 1.75rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(247, 181, 0, 0.18);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5.5vw, 3.15rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.12;
+      max-width: 16ch;
+      margin: 0 auto 1.1rem;
+    }
+
+    .hero-lead {
+      font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+      color: var(--text-muted);
+      max-width: 36rem;
+      margin: 0 auto 2rem;
+      font-weight: 400;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.75rem;
+      max-width: 520px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .hero-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-card strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* Sections */
+    section {
+      padding: 3.5rem 0;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.65rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-intro {
+      color: var(--text-muted);
+      max-width: 36rem;
+      margin-bottom: 2rem;
+      font-size: 1.05rem;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 2.25rem;
+    }
+
+    .section-head .section-intro {
+      margin-inline: auto;
+      margin-bottom: 0;
+    }
+
+    /* Offer cards */
+    .offer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .offer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .offer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .offer-card.featured {
+      border-color: rgba(179, 71, 0, 0.35);
+    }
+
+    .offer-card.featured::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--yellow));
+    }
+
+    .offer-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(179, 71, 0, 0.1);
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+
+    .offer-card h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+      margin: 0.75rem 0 1rem;
+    }
+
+    .price-amount {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .price-note {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .offer-card ul {
+      list-style: none;
+      margin: 0 0 1.5rem;
+      flex: 1;
+    }
+
+    .offer-card li {
+      position: relative;
+      padding-left: 1.4rem;
+      margin-bottom: 0.55rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .offer-card li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--yellow);
+    }
+
+    /* Process */
+    .process {
+      background: var(--bg-soft);
+      border-radius: calc(var(--radius) + 8px);
+      padding: 2.5rem 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .process { padding: 3rem 2.5rem; }
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      counter-reset: step;
+    }
+
+    @media (min-width: 768px) {
+      .steps { grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
+    }
+
+    .step {
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      counter-increment: step;
+    }
+
+    .step-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 50%;
+      background: var(--text);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-num::before {
+      content: counter(step);
+    }
+
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.45rem;
+    }
+
+    .step p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Value strip */
+    .value-strip {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .value-strip { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .value-item {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .value-item .icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.65rem;
+      line-height: 1;
+    }
+
+    .value-item h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.015em;
+    }
+
+    .value-item p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* CTA band */
+    .cta-band {
+      background: var(--text);
+      color: #fff;
+      border-radius: calc(var(--radius) + 4px);
+      padding: 2.75rem 1.75rem;
+      text-align: center;
+    }
+
+    .cta-band h2 {
+      font-size: clamp(1.45rem, 3vw, 1.9rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.65rem;
+    }
+
+    .cta-band p {
+      color: rgba(255, 255, 255, 0.72);
+      max-width: 32rem;
+      margin: 0 auto 1.75rem;
+      font-size: 1.05rem;
+    }
+
+    .cta-band .btn-primary {
+      background: var(--yellow);
+      color: var(--text);
+    }
+
+    .cta-band .btn-primary:hover {
+      background: var(--yellow-soft);
+      color: var(--text);
+    }
+
+    .cta-band .btn-secondary {
+      border-color: rgba(255, 255, 255, 0.45);
+      color: #fff;
+    }
+
+    .cta-band .btn-secondary:hover {
+      background: #fff;
+      color: var(--text);
+      border-color: #fff;
+    }
+
+    .cta-band .hero-ctas {
+      margin-bottom: 0;
+    }
+
+    /* Footer */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0 2rem;
+      margin-top: 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 1.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .footer-grid {
+        grid-template-columns: 1.4fr 1fr;
+        align-items: start;
+      }
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-brand img {
+      width: 36px;
+      height: auto;
+    }
+
+    .footer-brand span {
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      max-width: 28rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    @media (min-width: 640px) {
+      .footer-links { align-items: flex-end; text-align: right; }
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-meta {
+      margin-top: 2rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+  </style>
 </head>
 <body>
-  <div class="b">
-    <img src="belfit-logo-bf.png" alt="BELFIT">
-    <p>Ouverture de BELFIT…</p>
-    <a href="/v2/">Continuer</a>
-  </div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <img src="belfit-logo-bf.png" width="42" height="17" alt="BelFit">
+        <span class="brand-word">BelFit</span>
+      </a>
+      <nav class="nav" aria-label="Navigation principale">
+        <a class="nav-link" href="#offre">Offre</a>
+        <a class="nav-link" href="#processus">Processus</a>
+        <a class="btn btn-primary btn-sm" href="/v2/">Ouvrir l’app</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <img class="hero-logo" src="belfit-logo-bf.png" width="180" height="74" alt="BelFit">
+        <div class="eyebrow">Belgique · Coaching nutrition</div>
+        <h1>Votre plan alimentaire, coaché et personnalisé</h1>
+        <p class="hero-lead">
+          BelFit combine un accompagnement nutritionnel sur mesure et une application simple pour suivre votre plan au quotidien.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="/v2/">Ouvrir l’app</a>
+          <a class="btn btn-secondary" href="/v2/">Acheter un plan</a>
+          <a class="btn btn-ghost" href="mailto:contact@belfit.be">Contacter</a>
+        </div>
+        <div class="hero-card">
+          <p>
+            <strong>Paiement unique</strong> — pas d’abonnement.
+            Après paiement, vous remplissez le questionnaire dans l’app&nbsp;;
+            votre plan est livré <strong>sous 48&nbsp;h</strong> si le formulaire est envoyé dans les 7&nbsp;jours.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="offre">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="section-label">Offre</p>
+          <h2 class="section-title">Des plans clairs, un paiement unique</h2>
+          <p class="section-intro">
+            Choisissez votre premier plan coaché ou une mise à jour. Paiement en ligne (Lemon Squeezy) ou virement sur invitation.
+          </p>
+        </div>
+
+        <div class="offer-grid">
+          <article class="offer-card featured">
+            <span class="offer-badge">Recommandé</span>
+            <h3>Premier plan alimentaire coaché</h3>
+            <div class="price">
+              <span class="price-amount">80&nbsp;€</span>
+              <span class="price-note">paiement unique</span>
+            </div>
+            <ul>
+              <li>Plan nutrition personnalisé</li>
+              <li>Questionnaire dans l’application</li>
+              <li>Livraison sous 48&nbsp;h (formulaire sous 7&nbsp;jours)</li>
+              <li>Accès à l’app BelFit</li>
+            </ul>
+            <a class="btn btn-accent" href="/v2/">Acheter — 80&nbsp;€</a>
+          </article>
+
+          <article class="offer-card">
+            <span class="offer-badge" style="color: var(--gold); background: rgba(143,98,0,0.12);">Mise à jour</span>
+            <h3>Mise à jour de plan</h3>
+            <div class="price">
+              <span class="price-amount">60&nbsp;€</span>
+              <span class="price-note">paiement unique</span>
+            </div>
+            <ul>
+              <li>Ajustement de votre plan existant</li>
+              <li>Adapté à vos nouveaux objectifs</li>
+              <li>Même processus via l’app</li>
+              <li>Idéal pour progresser dans la durée</li>
+            </ul>
+            <a class="btn btn-secondary" href="/v2/">Acheter — 60&nbsp;€</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="processus">
+      <div class="wrap">
+        <div class="process">
+          <div class="section-head">
+            <p class="section-label">Processus</p>
+            <h2 class="section-title">En 3 étapes</h2>
+            <p class="section-intro">Simple, rapide, sans abonnement.</p>
+          </div>
+          <ol class="steps">
+            <li class="step">
+              <div class="step-num" aria-hidden="true"></div>
+              <h3>Payez votre plan</h3>
+              <p>Paiement unique en ligne via Lemon Squeezy, ou virement bancaire sur invitation.</p>
+            </li>
+            <li class="step">
+              <div class="step-num" aria-hidden="true"></div>
+              <h3>Remplissez le questionnaire</h3>
+              <p>Dans l’app BelFit, décrivez vos objectifs, habitudes et contraintes alimentaires.</p>
+            </li>
+            <li class="step">
+              <div class="step-num" aria-hidden="true"></div>
+              <h3>Recevez votre plan</h3>
+              <p>Votre plan coaché est livré sous 48&nbsp;h si le formulaire est envoyé dans les 7&nbsp;jours.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="value-strip">
+          <div class="value-item">
+            <div class="icon" aria-hidden="true">◆</div>
+            <h3>Personnalisé</h3>
+            <p>Un plan adapté à vous, pas un PDF générique.</p>
+          </div>
+          <div class="value-item">
+            <div class="icon" aria-hidden="true">◇</div>
+            <h3>App intégrée</h3>
+            <p>Questionnaire et suivi directement dans BelFit.</p>
+          </div>
+          <div class="value-item">
+            <div class="icon" aria-hidden="true">●</div>
+            <h3>Sans abonnement</h3>
+            <p>80&nbsp;€ ou 60&nbsp;€ — vous payez une fois.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="cta-band">
+          <h2>Prêt à démarrer&nbsp;?</h2>
+          <p>Ouvrez l’application BelFit pour acheter votre plan ou poursuivre votre coaching nutrition.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="/v2/">Ouvrir l’app</a>
+            <a class="btn btn-secondary" href="mailto:contact@belfit.be">Contacter</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <img src="belfit-logo-bf.png" width="36" height="15" alt="">
+            <span>BelFit</span>
+          </div>
+          <p class="footer-copy">
+            Coaching fitness &amp; nutrition. Plan alimentaire personnalisé, livré via l’application.
+          </p>
+        </div>
+        <nav class="footer-links" aria-label="Liens légaux">
+          <a href="/cgv.html">Conditions générales (CGV)</a>
+          <a href="/confidentialite.html">Confidentialité</a>
+          <a href="/mentions-legales.html">Mentions légales</a>
+          <a href="mailto:contact@belfit.be">contact@belfit.be</a>
+        </nav>
+      </div>
+      <div class="footer-meta">
+        <span>© 2026 BelFit · BCE/TVA BE 0767.899.411</span>
+        <span>Coaching nutrition · Belgique</span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

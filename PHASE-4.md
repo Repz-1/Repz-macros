@@ -33,8 +33,11 @@ Tant qu'une case n'est pas cochée, on ne bascule pas.
 
 ## 2. Points d'entrée à modifier
 
-- [ ] `manifest.json` : `start_url` `./main.html` → `/v2/`
+- [x] `manifest.json` : `start_url` `./main.html` → `/v2/`
       (sinon toutes les icônes déjà installées ouvrent une page morte)
+      — fait le 6/10 (branche landing-seo), raccourcis compris
+      (`/v2/?onglet=…`). `id` laissé à `/` pour ne pas dédoubler les
+      installations existantes.
 - [ ] Wrapper Android (`android/`) : vérifier l'URL chargée
 - [ ] LemonSqueezy : URL de retour après paiement
 - [ ] EmailJS : liens dans les modèles d'e-mails
