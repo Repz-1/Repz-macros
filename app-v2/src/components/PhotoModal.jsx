@@ -1,3 +1,4 @@
+import { portionJournal } from '../services/coach-local.js';
 import { useState, useRef } from 'preact/hooks';
 import { auth } from '../services/firebase.js';
 import { DB, NOMS_ALIMENTS } from '../data/aliments.js';
@@ -79,7 +80,8 @@ export function PhotoModal({ fermer, repasId }) {
         const cle = trouverAliment(a.aliment);
         if (!cle) return null;
         const d = DB[cle];
-        const portion = a.unite === 'piece' && d.unit ? a.quantite * d.unit : a.quantite;
+        // 04/10 : aliment a l'unite = nombre de pieces au journal.
+        const portion = portionJournal(cle, a.quantite, a.unite);
         return { cle, portion: Math.round(portion), dit: a.aliment };
       }).filter(Boolean);
       if (!trouves.length) { setMsg('Rien de reconnu sur la photo, réessaie'); setEtat('pret'); return; }
@@ -142,7 +144,7 @@ export function PhotoModal({ fermer, repasId }) {
                       type="number" inputmode="decimal" min="0"
                       value={p.portion}
                       onInput={(e) => majPortion(i, e.target.value)}
-                    /> g · vu : « {p.dit} »
+                    /> {DB[p.cle] && DB[p.cle].unit ? (DB[p.cle].unitLabel || 'pièce') + (p.portion > 1 ? 's' : '') : 'g'} · vu : « {p.dit} »
                   </div>
                 </div>
                 <button onClick={() => setProps(props.filter((_, j) => j !== i))}>✕</button>

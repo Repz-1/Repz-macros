@@ -1,3 +1,4 @@
+import { portionJournal } from '../services/coach-local.js';
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { VERSION_APP } from '../version.js';
 import { auth } from '../services/firebase.js';
@@ -192,7 +193,8 @@ export function VocalModal({ fermer, repasId }) {
         const cle = trouverAliment(a.aliment);
         if (!cle) return null;
         const d = DB[cle];
-        const portion = a.unite === 'piece' && d.unit ? a.quantite * d.unit : a.quantite;
+        // 04/10 : aliment a l'unite = nombre de pieces au journal.
+        const portion = portionJournal(cle, a.quantite, a.unite);
         return { cle, portion: Math.round(portion * 10) / 10, dit: a.aliment };
       }).filter(Boolean);
       if (!trouves.length) { setMsg("Aucun aliment reconnu, reformule"); setEtat('pret'); return; }
@@ -255,7 +257,7 @@ export function VocalModal({ fermer, repasId }) {
               <div class="idee" key={i}>
                 <div class="idee-info">
                   <div class="idee-nom">{p.cle}</div>
-                  <div class="idee-mac">{p.portion} g · reconnu : « {p.dit} »</div>
+                  <div class="idee-mac">{p.portion} {DB[p.cle] && DB[p.cle].unit ? (DB[p.cle].unitLabel || 'pièce') + (p.portion > 1 ? 's' : '') : 'g'} · reconnu : « {p.dit} »</div>
                 </div>
                 <button onClick={() => setProps(props.filter((_, j) => j !== i))}>✕</button>
               </div>

@@ -467,7 +467,27 @@ export function lireNouvelleLigne(n) {
   return null;
 }
 
+// Mots que la lecture locale n'a pas compris (04/10) : s'il en reste,
+// la barre passe la phrase au coach IA du serveur.
+const MOTS_NEUTRES = new Set(['et','avec','puis','aussi','ai','jai','mange','manger','bu','boire','ce','cette',
+  'aujourd','hui','ce','matin','midi','soir','sachet','sachets','tranche','tranches','paquet','paquets','pot','pots',
+  'portion','portions','boite','boites','piece','pieces','kg','litre','litres','cuillere','cuilleres','soupe',
+  'cas','cac','gr','grammes','gramme','des','une','les','pour','petit','dejeuner','diner','collation','snack',
+  'deux','trois','quatre','cinq','six','sept','huit','neuf','dix','environ','peu','bien','tout','fait','aussi',
+  'verre','verres','tasse','tasses','bol','bols','canette','canettes','bouteille','bouteilles','pinte','pintes']);
+let dernierReste = '';
+let portionInconnue = false;
+
 export function parserLocal(message, contexte = {}) {
+  dernierReste = ''; portionInconnue = false;
+  const r = parserLocalBrut(message, contexte);
+  const incompris = dernierReste.split(/\s+/).filter((w) => w.length >= 3 && !/\d/.test(w)
+    && !STOP.has(w) && !MOTS_NEUTRES.has(w));
+  if (portionInconnue) incompris.push('(portion)');
+  return { ...r, incompris };
+}
+
+function parserLocalBrut(message, contexte = {}) {
   const brut = String(message || '').trim();
   const n = normNom(brut);
   if (!n) return { texte: '', aliments: [], local: true };
@@ -559,8 +579,13 @@ export function parserLocal(message, contexte = {}) {
     const iMot = n.indexOf(a);
     const mNb = iMot >= 0 ? n.slice(Math.max(0, iMot - 12), iMot).match(/(\d+|une|un|deux|trois|quatre|cinq|six)\s+$/) : null;
     const nbPieces = mNb ? (NOMBRES[mNb[1]] || { six: 6 }[mNb[1]] || parseFloat(mNb[1])) : 1;
-    push(cle, quantiteContenant(n, a) || extraireQuantite(n, a) || base * (nbPieces > 0 && nbPieces < 20 ? nbPieces : 1));
+    const qDite = quantiteContenant(n, a) || extraireQuantite(n, a);
+    // Ni quantite dite, ni portion connue (« un bo bun ») : 100 g serait
+    // faux ; le coach IA estime la portion.
+    if (!qDite && !PORTION[cle] && !(d && d.unit)) portionInconnue = true;
+    push(cle, qDite || base * (nbPieces > 0 && nbPieces < 20 ? nbPieces : 1));
   }
+  dernierReste = [...skip].reduce((t, w) => t.replace(new RegExp('\\b' + w + '\\b', 'g'), ' '), reste);
   // Un « verre » de lait ou une « bouteille » de coca n'est pas de
   // l'eau : l'eau ne se compte que si elle est nommee.
   const eauNommee = /\b(eau|water|spa|hydrate)\b/.test(n);

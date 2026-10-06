@@ -352,6 +352,98 @@ Regles :
 // ne les connait pas.
 // ============================================================
 
+/* ============================================================
+ * COACH IA TEXTE (04/10, Raci : « c'est un coach IA qui fonctionne ou
+ * pas »). La barre repas lit d'abord ses phrases simples sans IA ;
+ * tout ce qu'elle ne comprend pas arrive ici. Gemini rattache chaque
+ * aliment a un nom EXACT de la base (aliments-noms.json) ; s'il n'y en
+ * a aucun, il estime les valeurs pour 100 g (aliment « hors base »).
+ * Les quantites reviennent toujours en grammes / ml.
+ * Compte dans le quota IA, comme la photo et le micro.
+ * ============================================================ */
+const NOMS_ALIMENTS = require("./aliments-noms.json");
+
+exports.coachAgent = onRequest(
+    {secrets: [GEMINI_API_KEY], region: "europe-west1", cors: true, timeoutSeconds: 30},
+    async (req, res) => {
+      res.set("Access-Control-Allow-Origin", "*");
+      res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+      res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      if (req.method === "OPTIONS") { res.status(204).send(""); return; }
+      if (req.method !== "POST") { res.status(405).json({error: "method"}); return; }
+
+      let quota = null; let uidQuota = null;
+      try {
+        const h = req.get("Authorization") || "";
+        const token = h.startsWith("Bearer ") ? h.slice(7) : "";
+        let uid;
+        try { uid = (await admin.auth().verifyIdToken(token)).uid; } catch (e) { res.status(401).json({error: "no_auth"}); return; }
+        uidQuota = uid;
+        const message = String((req.body || {}).message || "").trim().slice(0, 600);
+        if (!message) { res.status(400).json({error: "vide"}); return; }
+
+        const userDoc = await db.collection("users").doc(uid).get();
+        quota = await consommerQuotaIA(uid, userDoc.exists ? userDoc.data() : null);
+        if (!quota.ok) { res.status(429).json({error: "quota", limite: quota.limite}); return; }
+        res.set("X-Quota-Restant", quota.illimite ? "illimite" : String(quota.restant));
+
+        const prompt = `Tu es le coach nutrition de l'app BELFIT. L'utilisateur ecrit ce qu'il a mange ou bu, en francais (parfois avec des fautes ou en abrege).
+Reponds UNIQUEMENT avec un objet JSON valide, sans texte autour :
+{"aliments":[{"aliment":string,"quantite":number,"hors_base":boolean,"kcal":number,"prot":number,"carbs":number,"lip":number}],"eauLitres":number,"repas":"pdej"|"dej"|"diner"|"snack"|null}
+Regles :
+- "aliment" : copie EXACTEMENT un nom de la BASE ci-dessous (sans la mention entre crochets) quand c'est le meme aliment. Feculents, viandes et poissons : prends la version cuite si rien n'est precise. Alors hors_base=false et ne mets pas kcal/prot/carbs/lip.
+- Si aucun nom de la base ne correspond vraiment (plat specifique, marque, recette etrangere) : "aliment" = nom court en francais, hors_base=true, et kcal/prot/carbs/lip = valeurs realistes POUR 100 g. Un plat compose peut rester une seule entree.
+- "quantite" : TOUJOURS en grammes (ou ml pour les boissons), jamais en pieces. Convertis : 1 oeuf 50 g, 1 jaune 17 g, 1 blanc 33 g, 1 tranche de pain 35 g, 1 cuillere a soupe d'huile 10 g, 1 cuillere a cafe 5 g, 1 sachet de riz cuit 125 g, 1 verre 250 ml, 1 canette 330 ml, 1 banane 120 g, 1 pomme 150 g. « 2 sachets de 125 g » = 250. « 9 blancs de 30 g » = 270.
+- L'eau pure va dans "eauLitres" (pas dans aliments). 0 si aucune.
+- "repas" seulement si l'utilisateur le dit (matin, midi, soir, collation), sinon null.
+- Si le message ne parle pas de nourriture ni de boisson : {"aliments":[],"eauLitres":0,"repas":null}.
+BASE : ${NOMS_ALIMENTS.join(" | ")}
+
+Message : ${JSON.stringify(message)}`;
+
+        const MODELES = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-2.5-flash"];
+        const corps = {contents: [{parts: [{text: prompt}]}],
+          generationConfig: {temperature: 0.1, responseMimeType: "application/json"}};
+        let gRes = null; let dernierErr = "";
+        for (const modele of MODELES) {
+          gRes = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + modele +
+            ":generateContent?key=" + GEMINI_API_KEY.value(),
+          {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(corps)});
+          if (gRes.ok) break;
+          dernierErr = (await gRes.text()).slice(0, 300);
+          console.error("coachAgent Gemini", modele, gRes.status, dernierErr);
+          if (gRes.status !== 404) break;
+        }
+        if (!gRes || !gRes.ok) {
+          await rendreQuotaIA(uidQuota, quota);
+          res.status(502).json({error: "gemini_failed"}); return;
+        }
+        const gData = await gRes.json();
+        const texte = (((gData.candidates || [])[0] || {}).content || {parts: [{}]}).parts[0].text || "{}";
+        let out = {};
+        try { out = JSON.parse(texte); } catch (e) { out = {}; }
+        const noms = new Set(NOMS_ALIMENTS.map((n) => n.replace(/ \[piece \d+ g\]$/, "")));
+        const num = (x) => Math.max(0, Math.round(Number(x) || 0));
+        const aliments = (Array.isArray(out.aliments) ? out.aliments : []).slice(0, 15).map((a) => {
+          const nom = String(a.aliment || "").replace(/ \[piece \d+ g\]$/, "").trim().slice(0, 60);
+          const q = num(a.quantite);
+          if (!nom || !q) return null;
+          if (noms.has(nom)) return {aliment: nom, quantite: q, unite: "g"};
+          return {aliment: nom, quantite: q, unite: "g", horsBase: {
+            kcal: num(a.kcal), prot: Number(a.prot) || 0, carbs: Number(a.carbs) || 0, lip: Number(a.lip) || 0}};
+        }).filter(Boolean);
+        const eauLitres = Math.min(5, Math.max(0, Number(out.eauLitres) || 0));
+        const repas = ["pdej", "dej", "diner", "snack"].includes(out.repas) ? out.repas : null;
+        if (!aliments.length && !eauLitres) await rendreQuotaIA(uidQuota, quota);
+        res.json({aliments, eauLitres, repas, ia: true});
+      } catch (err) {
+        console.error("coachAgent error", err);
+        await rendreQuotaIA(uidQuota, quota);
+        res.status(500).json({error: "server"});
+      }
+    },
+);
+
 exports.analyserPhoto = onRequest(
   {secrets: [GEMINI_API_KEY], region: "europe-west1", cors: true, timeoutSeconds: 60},
   async (req, res) => {

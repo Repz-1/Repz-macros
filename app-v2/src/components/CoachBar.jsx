@@ -6,6 +6,7 @@ import { seanceRefs, selectionExos, abandonnerSeance, portraitSeanceDuJour, ETAT
 import { ongletActif } from './BottomNav.jsx';
 import { planifierSeance } from '../store/programme.js';
 import { EXERCISES, FILTERS } from '../data/exercices.js';
+import { customFoods } from './Scanner.jsx';
 import { courses, origineCourses } from './Courses.jsx';
 import { DB, macrosOf } from '../data/aliments.js';
 import { t } from '../i18n/index.js';
@@ -29,7 +30,7 @@ function kcalDe(l) {
 
 function versLignes(aliments) {
   return (aliments || []).map((a) => {
-    const cle = DB[a.aliment] ? a.aliment : null;
+    const cle = DB[a.aliment] || (customFoods.value || {})[a.aliment] ? a.aliment : null;
     if (!cle) return null;
     // 04/10 : aliment a l'unite = nombre de pieces dans le journal.
     return { cle, portion: portionJournal(cle, a.quantite, a.unite), repasCle: a.repasCle };
@@ -268,7 +269,9 @@ export function CoachBar({ mode = 'repas' }) {
     }
     const local = parserLocal(dit, contexte);
     const compris = local.action || (local.aliments || []).length || local.eauLitres;
-    if (compris) { appliquer(local); return; }
+    // Tout compris sans IA (phrase simple) : instantane et gratuit.
+    // Sinon le coach IA du serveur lit la phrase entiere (04/10).
+    if (compris && (local.action || !(local.incompris || []).length)) { appliquer(local); return; }
 
     setMsg('…');
     try {
@@ -276,9 +279,24 @@ export function CoachBar({ mode = 'repas' }) {
         objectifs: contexte.objectifs,
         totaux: contexte.totaux,
       });
-      if ((distant.aliments || []).length || distant.eauLitres) appliquer(distant);
-      else appliquer(local);
+      if ((distant.aliments || []).length || distant.eauLitres) {
+        // Aliments hors base : memorises comme aliments perso (valeurs IA).
+        const nouveaux = {};
+        (distant.aliments || []).forEach((a) => { if (a.horsBase && !DB[a.aliment]) nouveaux[a.aliment] = a.horsBase; });
+        if (Object.keys(nouveaux).length) customFoods.value = { ...customFoods.value, ...nouveaux };
+        const hh = new Date().getHours();
+        const repasDit = distant.repas || (local.aliments && local.aliments[0] && local.aliments[0].repasCle)
+          || (hh < 11 ? 'pdej' : hh < 15 ? 'dej' : hh < 21 ? 'diner' : 'snack');
+        const aliments = (distant.aliments || []).map((a) => ({ ...a, repasCle: repasDit || a.repasCle }));
+        const m = aliments.reduce((t, a) => t + (macrosOf({ name: a.aliment, portion: portionJournal(a.aliment, a.quantite, a.unite) }).kcal || 0), 0);
+        appliquer({ aliments, eauLitres: distant.eauLitres || 0,
+          texte: 'Coach : ' + aliments.map((a) => a.aliment + ' ' + a.quantite + ' g').join(', ')
+            + (distant.eauLitres ? (aliments.length ? ' + ' : '') + distant.eauLitres + ' L d\'eau' : '')
+            + (aliments.length ? ' \u2248 ' + Math.round(m) + ' kcal.' : '') + ' Vérifie puis ajoute.' });
+      } else if (compris) appliquer(local);
+      else { setMsg('Je n\'ai trouvé ni aliment ni boisson dans ta phrase.'); setEtat('pret'); }
     } catch (e) {
+      if (e && e.status === 429) { setMsg('Tu as utilisé tes analyses IA d\'aujourd\'hui. Les phrases simples (« 200 g de riz ») restent comprises.'); setEtat('pret'); return; }
       appliquer(local);
     }
   };
