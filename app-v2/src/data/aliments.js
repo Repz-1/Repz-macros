@@ -1353,7 +1353,18 @@ export function motsCles(s) {
  * puis les noms courts, qui sont les aliments les plus generiques
  * (« Riz cru » avant « Riz cantonais rechauffe »).
  */
+// Synonymes de recherche (04/10, Raci) : « patate » et « pdt » sont la
+// pomme de terre ordinaire, pas seulement la patate douce.
+function synonymes(s) {
+  return String(s || '').toLowerCase()
+    .replace(/\bpatates?\b(?!\s+douces?)/g, 'pomme de terre')
+    .replace(/\bpdt\b/g, 'pomme de terre')
+    // « pates » seul : les pates alimentaires avant la pate a tartiner.
+    .replace(/^\s*p[aâ]tes\s*$/, 'pâtes blanches');
+}
+
 export function scoreRecherche(saisie, nom) {
+  saisie = synonymes(saisie);
   const req = motsCles(saisie);
   if (!req.length) return 0;
   const cible = sansAccents(nom);
@@ -1373,9 +1384,12 @@ export function scoreRecherche(saisie, nom) {
     else return 0;               // un mot demande manque : on ecarte
   }
 
-  const tout = sansAccents(saisie);
-  if (cible === tout) score += 40;              // nom exact
-  else if (cible.startsWith(tout)) score += 12; // commence par la saisie
+  // Compare les racines (singulier) : « pommes de terre » ne doit pas
+  // favoriser « Pommes de terre grenaille » face a « Pomme de terre ».
+  const tout = req.join(' ');
+  const cibleR = dispo.join(' ');
+  if (cibleR === tout) score += 40;              // nom exact
+  else if (cibleR.startsWith(tout)) score += 12; // commence par la saisie
   if (dispo.length === req.length) score += 6;  // aucun mot superflu
 
   // Aliment de base plutot que plat cuisine : quand les seuls mots en
