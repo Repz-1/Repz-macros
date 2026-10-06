@@ -359,7 +359,7 @@ Regles :
  * aliment a un nom EXACT de la base (aliments-noms.json) ; s'il n'y en
  * a aucun, il estime les valeurs pour 100 g (aliment « hors base »).
  * Les quantites reviennent toujours en grammes / ml.
- * Compte dans le quota IA, comme la photo et le micro.
+ * Compte dans le quota IA, comme la photo et le micro (relance 05/10).
  * ============================================================ */
 const NOMS_ALIMENTS = require("./aliments-noms.json");
 
