@@ -1,4 +1,5 @@
 import { CoachBar } from './CoachBar.jsx';
+import { Icone } from './IconesCoach.jsx';
 import { useState } from 'preact/hooks';
 import { useRetour } from '../services/retour.js';
 import { signal, effect } from '@preact/signals';
@@ -155,7 +156,7 @@ function poseeCetteSemaine(today) {
   return false;
 }
 
-function CarteProgramme({ today, todayIso, allerVers, statut }) {
+function CarteProgramme({ today, todayIso, allerVers }) {
   const actif = programmeActif.value;
   const prog = actif && progParId(actif.id);
   const aff = prog ? normaliserJours(actif.jours, prog.seances.length) : {};
@@ -247,7 +248,7 @@ function CarteProgramme({ today, todayIso, allerVers, statut }) {
   }
 
   return (
-    <div class="cp cp--hero">
+    <div class="cp">
       {/* Point 6 (23/09) : « Modifier le programme en cours » est
           retire ; c'est le NOM du programme qui ouvre sa gestion
           (jours, changer, abandonner). Une ligne de moins, et l'acces
@@ -272,9 +273,6 @@ function CarteProgramme({ today, todayIso, allerVers, statut }) {
           <span style={{ width: Math.min(100, Math.round(semaine / total * 100)) + '%' }} />
         </div>
       )}
-      {/* Resume de la semaine (7/10) : la meme ligne que la carte sans
-          programme, pour qu'on lise ou l'on en est sans descendre. */}
-      {statut && <div class="cp-statut">{statut}</div>}
 
       {/* Maquette C, retenue par Raci le 5/09 : « on va enlever et
           laisser juste la seance d'aujourd'hui ». La semaine entiere
@@ -367,18 +365,19 @@ function CarteProgramme({ today, todayIso, allerVers, statut }) {
  * Accueil de S'entrainer — proposition de mise en page du 7/10.
  *
  * Raci, 7/10 : « je n'aime pas toute la mise en page ». Le calendrier
- * du mois occupait presque tout l'ecran, la barre coach etait posee
- * en tete sans contexte, et rien de ce qui avait ete fait n'etait
- * visible sans descendre. Rien n'est RETIRE, tout est reordonne :
- *   1. carte du jour (graphite) — date, etat de la semaine, action
- *      principale : la seance du programme s'il y en a une, sinon
- *      « Seance libre » ; « Trouver mon programme » en second
- *   2. barre coach, avec un libelle qui dit a quoi elle sert
+ * du mois occupait presque tout l'ecran, la barre coach se fondait
+ * dans les gris et collait aux blocs voisins, la hierarchie ne se
+ * lisait pas. Rien n'est RETIRE, tout est reordonne :
+ *   1. barre coach, EN TETE comme avant (Raci, 7/10), mais detachee
+ *      des gris voisins et espacee
+ *   2. carte du jour (graphite) — date, etat de la semaine, « Seance
+ *      libre », « Trouver mon programme » en second. Avec un programme
+ *      actif : la carte de pilotage, telle que validee le 5/09
+ *      (maquette C, carte blanche et tuile noire), sans retouche
  *   3. calendrier : la SEMAINE par defaut (sept jours, memes disques
  *      que le mois), « Voir le mois » deplie le calendrier complet,
  *      inchange — navigation, planification, legende
- *   4. dernieres seances : trois lignes, chacune ouvre son detail
- *   5. semaine + silhouette, comme avant
+ *   4. semaine + silhouette, comme avant
  * Le resume (« 2 seances cette semaine · derniere : hier ») vit DANS
  * la carte du jour et non au-dessus : Raci avait refuse des pastilles
  * flottant entre l'en-tete et l'action (21/08, regle R43).
@@ -543,12 +542,12 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
 
   return (
     <>
-      {/* L'encart « Seances enregistrees » a quitte le HAUT de la page
-          le 5/09 : « je ne veux pas voir ca, je veux voir juste la
-          seance Jour 1 qui est en dessous ». Il ouvrait l'onglet sur ce
-          qui est derriere soi, avant ce qu'on doit faire. Les dernieres
-          seances reviennent le 7/10, mais SOUS l'action et le
-          calendrier, en trois lignes. */}
+      {/* L'encart « Seances enregistrees » a quitte cette page le 5/09 :
+          « je ne veux pas voir ca, je veux voir juste la seance Jour 1
+          qui est en dessous ». Une liste « Dernieres seances » proposee
+          le 7/10 a ete refusee le jour meme (Raci) : l'historique se lit
+          dans le calendrier — un jour, sa fiche, « Voir la seance » — et
+          dans Stats. */}
 
       {/* Le bandeau d'accueil « Ta premiere seance t'attend » est
           retire le 9/09 (Raci). Il occupait le haut de page pour dire
@@ -556,14 +555,33 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
           propose deja « Seance libre » et « Trouver mon programme » —
           l'invitation et l'action, l'une sur l'autre. La carte suffit. */}
 
-      {/* 1 — Carte du jour.
+      {/* 1 — Barre coach (04/10, Raci) : « Aujourd'hui je fais pecs
+          biceps », quatre questions, une seance proposee. Elle reste EN
+          TETE (Raci, 7/10 : « le coach d'abord ») ; ce qui n'allait pas,
+          c'est qu'elle se fondait dans les gris voisins et collait aux
+          blocs. Elle prend donc une identite propre — pastille, libelle,
+          champ cerne, bouton jaune plein — et de l'air autour.
+          La barre repas reste sur Aujourd'hui. */}
+      <div class="ent-coach">
+        <CoachBar mode="seance" titre={(
+          <span class="ent-coach-tete">
+            <span class="ent-coach-ic"><Icone nom="sparkles" taille={15} /></span>
+            <span class="ent-coach-txt">
+              <span class="ent-coach-k">{t('coach_kicker')}</span>
+              <span class="ent-coach-t">{t('ent_coach_titre')}</span>
+            </span>
+          </span>
+        )} />
+      </div>
+
+      {/* 2 — Carte du jour.
           AVEC un programme actif (ou des seances posees cette semaine),
           c'est la carte de pilotage : la seance du jour nommee, avec son
           bouton (Raci, 24/08 — « je viens piloter mon programme »).
           SANS programme, le bloc graphite mene au choix d'exercices et
           au questionnaire. Les deux portent le resume de la semaine. */}
       {(programmeActif.value || poseeCetteSemaine(today))
-        ? <CarteProgramme today={today} todayIso={todayIso} allerVers={allerVers} statut={statut} />
+        ? <CarteProgramme today={today} todayIso={todayIso} allerVers={allerVers} />
         : (
       <div class="ent-action">
         <div class="ent-action-jour">{jourLong(today)}</div>
@@ -608,13 +626,6 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
         </button>
       </div>
       )}
-
-      {/* 2 — Barre coach (04/10, Raci) : « Aujourd'hui je fais pecs
-          biceps », quatre questions, une seance proposee. Elle passe
-          SOUS la carte du jour (7/10) : c'est une aide pour composer sa
-          seance, pas l'action principale — et son libelle le dit. La
-          barre repas reste sur Aujourd'hui. */}
-      <div class="ent-coach"><CoachBar mode="seance" titre={t('ent_coach_titre')} /></div>
 
       {/* 3 — Calendrier. La semaine par defaut, le mois a la demande :
           le mois entier prenait l'ecran a lui seul (Raci, 7/10). */}
@@ -691,11 +702,7 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
         )}
       </div>
 
-      {/* 4 — Dernieres seances : ce qui a ete fait, visible sans
-          descendre au fond de la page. Absent tant qu'il n'y a rien. */}
-      <DernieresSeances ouvrirSeance={ouvrirSeance} todayIso={todayIso} />
-
-      {/* 5 — Semaine + silhouette. La meme lecture que dans la modale
+      {/* 4 — Semaine + silhouette. La meme lecture que dans la modale
           d'un jour, mais visible sans rien ouvrir : ce qui a ete
           travaille depuis lundi, et ce qui n'a pas ete touche. */}
       <div class="ent-bloc">
@@ -722,56 +729,6 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
       </div>
 
     </>
-  );
-}
-
-// ==========================================================
-// Dernieres seances (proposition du 7/10)
-// Trois lignes, les plus recentes d'abord ; « Voir plus » rallonge
-// la liste SUR PLACE (Raci, 5/09 : pas d'ecran plein en plus). Une
-// ligne ouvre le detail de la seance, comme depuis la fiche d'un
-// jour. Pas de suppression ici : une seance faite ne s'efface pas
-// (Raci, 5/09).
-// ==========================================================
-function DernieresSeances({ ouvrirSeance, todayIso }) {
-  const [plus, setPlus] = useState(false);
-  const toutes = [...(seances.value || [])].sort((a, b) => (b.ts || 0) - (a.ts || 0));
-  // Rien a montrer : le bloc ne s'affiche pas (regle R65).
-  if (!toutes.length) return null;
-  const liste = toutes.slice(0, plus ? 10 : 3);
-  return (
-    <div class="ent-bloc ent-ds">
-      <h3>{t('ent_dernieres')}</h3>
-      <div class="ent-ds-liste">
-        {liste.map(s => {
-          const mus = [...new Set([...(s.muscles || []), ...(s.exos || []).map(e => e && e.mKey)])]
-            .filter(k => COULEUR[k]);
-          const min = s.duree >= 60 ? Math.round(s.duree / 60) + ' min' : '';
-          const kg = s.tonnage ? s.tonnage.toLocaleString('fr-BE') + ' kg' : '';
-          return (
-            <button key={s.id} class="ent-ds-l" onClick={() => ouvrirSeance && ouvrirSeance(s)}>
-              <span class="ent-ds-pts" aria-hidden="true">
-                {(mus.length ? mus.slice(0, 3) : [null]).map((k, i) => (
-                  <i key={i} style={k ? { background: COULEUR[k] } : {}} />
-                ))}
-              </span>
-              <span class="ent-ds-txt">
-                <span class="ent-ds-t">{s.titre}</span>
-                <span class="ent-ds-m">
-                  {[s.iso ? quandCourt(s.iso, todayIso) : '', min, kg].filter(Boolean).join(' · ')}
-                </span>
-              </span>
-              <span class="ent-ds-fl" aria-hidden="true">&rsaquo;</span>
-            </button>
-          );
-        })}
-      </div>
-      {toutes.length > 3 && (
-        <button class="ent-ds-plus" onClick={() => setPlus(!plus)}>
-          {plus ? t('ent_voir_moins') : t('ent_voir_plus')}
-        </button>
-      )}
-    </div>
   );
 }
 

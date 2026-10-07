@@ -1,12 +1,96 @@
 /* ============================================================
    S'ENTRAINER — ACCUEIL, proposition de mise en page du 7/10.
-   Charge APRES entrainer-carte.css : ce fichier ne fait que
-   reordonner et resserrer, il ne redefinit ni la palette ni les
-   ombres (memes jetons, memes valeurs que le reste de l'onglet).
+   Charge APRES entrainer-carte.css : ce fichier reordonne et donne
+   de l'air, il ne redefinit ni la palette ni les ombres des cartes
+   (memes jetons, memes valeurs que le reste de l'onglet).
    ============================================================ */
 
-/* ---------- 1. Carte du jour (sans programme) ---------- */
-.pg-entrainer--carte .ent-action { padding: 16px 16px 14px; margin-bottom: 16px; }
+/* ---------- Rythme vertical : un seul ecart ----------
+   Raci, 7/10 : les blocs se collaient, chacun avec sa marge (14, 18,
+   26 px). Un pas unique de 22 px entre toutes les cartes. */
+.pg-entrainer--carte { --ent-ecart: 22px; }
+/* L'en-tete portait margin-bottom:-4px (entete-commune.css) : la
+   premiere carte remontait SOUS le logo. 14 px la posent a 73 px du
+   haut, la hauteur de reference du Journal et de Stats. */
+.pg-entrainer--carte .j-entete--perso.j-entete--perso.j-entete--perso { margin-bottom: 14px; }
+.pg-entrainer--carte .ent-coach,
+.pg-entrainer--carte .ent-action,
+.pg-entrainer--carte .cp,
+.pg-entrainer--carte .ent-bloc { margin-bottom: var(--ent-ecart); }
+.pg-entrainer--carte .ent-bloc:last-of-type { margin-bottom: 0; }
+
+/* ---------- 1. Coach : espacements internes rendus ----------
+   La feuille legacy pose `.pg-entrainer * { margin:0; padding:0 }`,
+   chargee APRES coach-bar.css et de meme poids : sur cet onglet, la
+   proposition du coach (questions, lignes, boutons) perdait tous ses
+   espacements et s'empilait collee aux bords. Defaut present depuis
+   l'arrivee de la barre ici (04/10). On reprend les valeurs de
+   coach-bar.css, telles quelles, avec un cran de specificite. */
+.pg-entrainer--carte .ent-coach .coach-bar-ecart { margin: 8px 2px 0; }
+.pg-entrainer--carte .ent-coach .coach-bar--ouvert { padding-bottom: 12px; }
+.pg-entrainer--carte .ent-coach .coach-bar-msg { margin: 6px 2px 0; }
+.pg-entrainer--carte .ent-coach .coach-bar-ligne-alim { margin-top: 6px; padding: 8px 10px; }
+.pg-entrainer--carte .ent-coach .coach-bar-ajout { margin-top: 8px; padding: 12px; }
+.pg-entrainer--carte .ent-coach .coach-bar-diner { margin-top: 8px; padding: 10px 12px; }
+.pg-entrainer--carte .ent-coach .coach-bar-diner-nom { margin: 0; }
+.pg-entrainer--carte .ent-coach .coach-bar-diner-macros { margin: 4px 0 6px; }
+.pg-entrainer--carte .ent-coach .coach-bar-passe { margin-top: 4px; padding: 8px; }
+.pg-entrainer--carte .ent-coach .coach-bar-schema { margin-left: auto; padding-left: 10px; }
+.pg-entrainer--carte .ent-coach .coach-bar-style-bt { margin: 8px 0 0; padding: 13px 14px; }
+
+/* ---------- 1. Coach : en tete, avec une identite ----------
+   La barre se fondait : champ gris sur carte blanche, bouton OK pale
+   tant que rien n'etait tape. Elle garde la carte blanche de l'onglet
+   mais prend un lavis creme dore en haut et un filet dore, une
+   pastille-icone, un champ blanc cerne et un bouton jaune plein. */
+.pg-entrainer--carte .ent-coach .coach-bar {
+  padding: 14px 14px 14px; border-radius: 18px;
+  background: linear-gradient(180deg, var(--or-creme) 0%, #FFF 70%);
+  border: 1px solid rgba(var(--or-trait-rvb), .28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8),
+              0 1px 2px rgba(24, 24, 24, .03),
+              0 6px 18px rgba(60, 50, 40, .07);
+}
+.pg-entrainer--carte .ent-coach .coach-kicker {
+  margin: 0 0 12px; text-transform: none; letter-spacing: 0;
+}
+.pg-entrainer--carte .ent-coach-tete { display: flex; align-items: center; gap: 10px; }
+.pg-entrainer--carte .ent-coach-ic {
+  flex: 0 0 30px; height: 30px; border-radius: 10px;
+  display: grid; place-items: center;
+  background: var(--or); color: var(--encre);
+  box-shadow: 0 3px 10px rgba(var(--or-trait-rvb), .25);
+}
+.pg-entrainer--carte .ent-coach-txt { display: flex; flex-direction: column; min-width: 0; }
+.pg-entrainer--carte .ent-coach-k {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--or-fonce); line-height: 1.2;
+}
+.pg-entrainer--carte .ent-coach-t {
+  font-size: 15px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--txt-1); line-height: 1.3;
+}
+.pg-entrainer--carte .ent-coach .coach-bar-champ {
+  background: #FFF; border: 1.5px solid #DCD4C6;
+  padding: 12px 14px; font-size: 15px;
+}
+.pg-entrainer--carte .ent-coach .coach-bar-champ::placeholder { color: var(--txt-3); }
+.pg-entrainer--carte .ent-coach .coach-bar-champ:focus {
+  border-color: var(--or-trait); outline: 3px solid rgba(248, 207, 1, .35); outline-offset: 0;
+}
+.pg-entrainer--carte .ent-coach .coach-bar-go {
+  height: 46px; min-width: 56px; border-radius: 12px;
+  background: var(--or); color: var(--encre); font-weight: 700; font-size: 15px;
+  box-shadow: 0 4px 14px rgba(var(--or-trait-rvb), .28);
+}
+/* Vide, le bouton reste jaune : c'est son texte qui s'eteint, pas sa
+   couleur — sinon il redevient la tache pale que Raci ne voyait pas. */
+.pg-entrainer--carte .ent-coach .coach-bar-go:disabled {
+  opacity: 1; color: rgba(var(--encre-rvb), .45); box-shadow: none;
+}
+
+/* ---------- 2. Carte du jour (sans programme) ---------- */
+.pg-entrainer--carte .ent-action { padding: 16px 16px 14px; }
 .pg-entrainer--carte .ent-action-jour { margin-bottom: 6px; }
 .pg-entrainer--carte .ent-action-titre {
   font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15;
@@ -18,60 +102,11 @@
 }
 .pg-entrainer--carte .ent-action .ent-go { padding: 16px; }
 .pg-entrainer--carte .ent-action .ent-prog { margin-top: 10px; }
-
-/* ---------- 1 bis. Carte de pilotage, passee en graphite ----------
-   Meme role que le bloc sans programme : c'est LA carte du jour, elle
-   en prend donc le fond. La tuile noire devient un panneau a peine
-   plus clair, son bouton jaune reste le seul aplat plein. */
-.pg-entrainer--carte .cp--hero {
-  background: var(--degrade-graphite);
-  border: 1px solid rgba(255, 255, 255, .07);
-  border-radius: 18px; padding: 16px 16px 6px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 10px 28px rgba(23, 28, 36, .28);
-  margin-bottom: 16px;
-  color: var(--sur-graphite);
-}
-.pg-entrainer--carte .cp--hero .cp-nom { color: var(--sur-graphite); font-weight: 700; font-size: 17px; }
-.pg-entrainer--carte .cp--hero .cp-nom-fl { color: #FAC408; }
-.pg-entrainer--carte .cp--hero .cp-av { color: var(--sur-graphite-3); font-weight: 500; }
-.pg-entrainer--carte .cp--hero .cp-barre { background: rgba(255, 255, 255, .12); margin: 10px 0 4px; }
-.pg-entrainer--carte .cp--hero .cp-statut {
-  margin-top: 8px; font-size: 13px; font-weight: 500; line-height: 1.35;
-  color: var(--sur-graphite-2);
-}
-.pg-entrainer--carte .cp--hero .cp-tuile {
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .10);
-  margin-top: 12px;
-}
-.pg-entrainer--carte .cp--hero .cp-tuile-go { box-shadow: 0 6px 26px rgba(250, 196, 8, .26); }
-.pg-entrainer--carte .cp--hero .cp-repos { color: var(--sur-graphite-3); }
-.pg-entrainer--carte .cp--hero .cp-go {
-  background: var(--or, #FAC408); color: #16130F;
-  box-shadow: 0 6px 26px rgba(250, 196, 8, .26);
-}
-.pg-entrainer--carte .cp--hero .cp-gerer {
-  background: rgba(255, 255, 255, .06); color: #FAC408;
-  border: 1px solid rgba(255, 255, 255, .10);
-}
-.pg-entrainer--carte .cp--hero .cp-gerer:active { background: rgba(255, 255, 255, .10); }
-.pg-entrainer--carte .cp--hero .cp-libre {
-  margin-top: 12px; padding: 14px 0 12px;
-  border-top-color: rgba(255, 255, 255, .10);
-  color: var(--sur-graphite);
-}
-.pg-entrainer--carte .cp--hero .cp-libre:active { color: var(--sur-graphite-3); }
-
-/* ---------- 2. Barre coach : une aide, avec son libelle ---------- */
-.pg-entrainer--carte .ent-coach { margin: 0 0 16px; }
-.pg-entrainer--carte .ent-coach .coach-kicker {
-  margin: 0 2px 9px;
-  font-size: 14px; font-weight: 700; letter-spacing: -.01em;
-  text-transform: none; color: var(--txt-1);
-}
+/* La carte programme (maquette C, 5/09) n'est PAS retouchee : seule sa
+   marge basse rejoint le pas commun ci-dessus. */
 
 /* ---------- 3. Calendrier : semaine, mois a la demande ---------- */
-.pg-entrainer--carte .ent-cal { padding: 14px 14px 10px; margin-bottom: 16px; }
+.pg-entrainer--carte .ent-cal { padding: 16px 14px 12px; }
 .pg-entrainer--carte .ent-cal-tete {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
@@ -88,52 +123,23 @@
   transform: rotate(90deg); transition: transform .15s ease;
 }
 .pg-entrainer--carte .ent-cal-chev.haut { transform: rotate(-90deg); }
-.pg-entrainer--carte .ent-cal .wlog-cal-head { padding: 10px 0 6px; }
-.pg-entrainer--carte .ent-cal-tete + .wlog-cal-head { margin-top: 2px; }
+.pg-entrainer--carte .ent-cal .wlog-cal-head { padding: 12px 0 8px; }
 .pg-entrainer--carte .ent-sem-head .wlog-cal-titre { text-transform: none; letter-spacing: .02em; }
 .pg-entrainer--carte .ent-sem-grille { padding-bottom: 6px; }
 .pg-entrainer--carte .ent-sem-legende { padding-bottom: 4px; }
 
-/* ---------- 4. Dernieres seances ---------- */
-.pg-entrainer--carte .ent-ds { padding: 14px 14px 8px; margin-bottom: 16px; }
-.pg-entrainer--carte .ent-ds > h3 { margin-bottom: 6px; }
-.pg-entrainer--carte .ent-ds-liste { display: flex; flex-direction: column; }
-.pg-entrainer--carte .ent-ds-l {
-  display: flex; align-items: center; gap: 12px; width: 100%;
-  background: none; border: none; text-align: left; cursor: pointer;
-  font-family: inherit; color: inherit;
-  padding: 11px 2px; border-top: 1px solid var(--bordure-fine);
-}
-.pg-entrainer--carte .ent-ds-l:first-child { border-top: none; }
-.pg-entrainer--carte .ent-ds-l:active { background: rgba(var(--filet-rvb), .03); }
-.pg-entrainer--carte .ent-ds-pts {
-  flex: 0 0 34px; height: 34px; border-radius: 11px;
-  background: var(--fond);
-  display: flex; align-items: center; justify-content: center; gap: 3px;
-}
-.pg-entrainer--carte .ent-ds-pts i {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--txt-3);
-}
-.pg-entrainer--carte .ent-ds-txt { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
-.pg-entrainer--carte .ent-ds-t {
-  font-size: 15px; font-weight: 700; letter-spacing: -.01em; color: var(--txt-1);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.pg-entrainer--carte .ent-ds-m { margin-top: 2px; font-size: 13px; color: var(--txt-2); }
-.pg-entrainer--carte .ent-ds-fl { flex: 0 0 auto; font-size: 20px; color: var(--txt-3); }
-.pg-entrainer--carte .ent-ds-plus {
-  display: block; width: 100%; margin-top: 2px; padding: 10px 0 6px;
-  background: none; border: none; border-top: 1px solid var(--bordure-fine);
-  font-family: inherit; font-size: 13.5px; font-weight: 700; color: var(--or-fonce);
-  cursor: pointer;
-}
-
 /* ---------- Titres de section : un seul style ----------
    Les rubriques prennent un vrai titre, sombre et en casse normale,
    plutot que la petite capitale grise : sur une page reordonnee, c'est
-   lui qui dit ou l'on est. Meme rendu pour les quatre cartes. */
+   lui qui dit ou l'on est. */
 .pg-entrainer--carte .ent-bloc > h3,
 .pg-entrainer--carte .ent-cal-tete h3 {
   font-size: 16px; font-weight: 700; letter-spacing: -.015em;
   text-transform: none; color: var(--txt-1); line-height: 1.25;
 }
+
+/* « Pas encore touche » s'affichait dans un cadre a ombre : un
+   selecteur orphelin (`.ent-sem-oubli,` sans regle) dans
+   entrainer-carte.css lui donnait la bordure et l'ombre des cartes.
+   Defaut anterieur a cette refonte, neutralise ici. */
+.pg-entrainer--carte .ent-sem-oubli { border: none; box-shadow: none; }
