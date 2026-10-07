@@ -39,6 +39,7 @@ function fond(fichier) {
 }
 import '../legacy/entrainer.scoped.css';
 import '../styles/entrainer-carte.css';
+import '../styles/entrainer-accueil.css';
 
 // ==========================================================
 // PAGE S'ENTRAINER — portage a l'identique de entrainements.html.
@@ -154,7 +155,7 @@ function poseeCetteSemaine(today) {
   return false;
 }
 
-function CarteProgramme({ today, todayIso, allerVers }) {
+function CarteProgramme({ today, todayIso, allerVers, statut }) {
   const actif = programmeActif.value;
   const prog = actif && progParId(actif.id);
   const aff = prog ? normaliserJours(actif.jours, prog.seances.length) : {};
@@ -246,7 +247,7 @@ function CarteProgramme({ today, todayIso, allerVers }) {
   }
 
   return (
-    <div class="cp">
+    <div class="cp cp--hero">
       {/* Point 6 (23/09) : « Modifier le programme en cours » est
           retire ; c'est le NOM du programme qui ouvre sa gestion
           (jours, changer, abandonner). Une ligne de moins, et l'acces
@@ -271,6 +272,9 @@ function CarteProgramme({ today, todayIso, allerVers }) {
           <span style={{ width: Math.min(100, Math.round(semaine / total * 100)) + '%' }} />
         </div>
       )}
+      {/* Resume de la semaine (7/10) : la meme ligne que la carte sans
+          programme, pour qu'on lise ou l'on en est sans descendre. */}
+      {statut && <div class="cp-statut">{statut}</div>}
 
       {/* Maquette C, retenue par Raci le 5/09 : « on va enlever et
           laisser juste la seance d'aujourd'hui ». La semaine entiere
@@ -357,29 +361,33 @@ function CarteProgramme({ today, todayIso, allerVers }) {
 }
 
 // ==========================================================
-// Journal d'entrainement : calendrier mensuel (classes wlog-*)
+// Journal d'entrainement : semaine, mois a la demande (classes wlog-*)
 // ==========================================================
 /**
- * Journal d'entrainement — desormais TOUTE la page S'entrainer.
+ * Accueil de S'entrainer — proposition de mise en page du 7/10.
  *
- * Refonte demandee par Raci le 10/08. Les deux cartes « Seance libre »
- * et « Creer mon programme » sont retirees : elles occupaient les deux
- * tiers du premier ecran pour deux liens, et reléguaient le calendrier
- * en troisieme position, replie derriere un bouton « Ouvrir ». La page
- * est maintenant le journal seul, dans un ordre d'action :
- *   1. pastilles de resume
- *   2. zone d'action — demarrer une seance, adapter son programme
- *   3. calendrier
- *   4. semaine + silhouette
- *   5. seances enregistrees
- * Les deux destinations retirees sont reprises par la zone d'action :
- * `selection` par le gros bouton, `questionnaire` par le lien.
- *
- * Plus d'etat replie : le calendrier est l'objet de la page, le
- * masquer derriere un bouton n'avait plus de sens une fois seul.
+ * Raci, 7/10 : « je n'aime pas toute la mise en page ». Le calendrier
+ * du mois occupait presque tout l'ecran, la barre coach etait posee
+ * en tete sans contexte, et rien de ce qui avait ete fait n'etait
+ * visible sans descendre. Rien n'est RETIRE, tout est reordonne :
+ *   1. carte du jour (graphite) — date, etat de la semaine, action
+ *      principale : la seance du programme s'il y en a une, sinon
+ *      « Seance libre » ; « Trouver mon programme » en second
+ *   2. barre coach, avec un libelle qui dit a quoi elle sert
+ *   3. calendrier : la SEMAINE par defaut (sept jours, memes disques
+ *      que le mois), « Voir le mois » deplie le calendrier complet,
+ *      inchange — navigation, planification, legende
+ *   4. dernieres seances : trois lignes, chacune ouvre son detail
+ *   5. semaine + silhouette, comme avant
+ * Le resume (« 2 seances cette semaine · derniere : hier ») vit DANS
+ * la carte du jour et non au-dessus : Raci avait refuse des pastilles
+ * flottant entre l'en-tete et l'action (21/08, regle R43).
  */
 function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
   const [offset, setOffset] = useState(0);
+  // Vue du calendrier : la semaine par defaut, le mois a la demande.
+  const [moisOuvert, setMoisOuvert] = useState(false);
+  const [semOffset, setSemOffset] = useState(0);
 
   // Source unique : marquage manuel + seances enregistrees, reunis a
   // la lecture (services/muscles-jour.js). Le calendrier ne depend
@@ -407,13 +415,13 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
   // l'infini.
   const apresBorne = offset >= 12;
 
-  // Grille du mois, semaine demarrant le lundi
-  const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
-  const decal = (new Date(ref.getFullYear(), ref.getMonth(), 1).getDay() + 6) % 7;
-  const cellules = [];
-  for (let i = 0; i < decal; i++) cellules.push(<div key={'v' + i} />);
-  for (let j = 1; j <= njours; j++) {
-    const iso = wlIso(new Date(ref.getFullYear(), ref.getMonth(), j));
+  /**
+   * Un jour du calendrier, tel qu'il se dessine dans le MOIS comme
+   * dans la SEMAINE : les deux vues partagent exactement les memes
+   * disques, couleurs et marques. `vus` (facultatif) recueille les
+   * couleurs affichees, pour la legende courte de la semaine.
+   */
+  const cellule = (iso, j, vus) => {
     const vals = (log[iso] || []).filter(v => COULEUR[v] || v === 'repos');
     const repos = vals.includes('repos');
     let muscles = vals.filter(v => v !== 'repos');
@@ -454,7 +462,11 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
     }
     if (iso === todayIso) cls += ' today';
     if (futur) cls += ' futur' + (muscles.length || repos ? ' prevu' : '');
-    cellules.push(
+    if (vus) {
+      if (muscles.length && COULEUR[muscles[0]]) vus.add(muscles[0]);
+      if (repos) vus.add('repos');
+    }
+    return (
       <div key={iso} class={cls} style={style}
         onClick={(e) => { e.stopPropagation(); ouvrirJour(iso); }}>
         {/* Jour de repos : une COCHE VERTE, pas le chiffre (Raci,
@@ -467,6 +479,15 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
         {muscles.length > 1 && <i class="wlog-more">+{muscles.length - 1}</i>}
       </div>
     );
+  };
+
+  // Grille du mois, semaine demarrant le lundi
+  const njours = new Date(ref.getFullYear(), ref.getMonth() + 1, 0).getDate();
+  const decal = (new Date(ref.getFullYear(), ref.getMonth(), 1).getDay() + 6) % 7;
+  const cellules = [];
+  for (let i = 0; i < decal; i++) cellules.push(<div key={'v' + i} />);
+  for (let j = 1; j <= njours; j++) {
+    cellules.push(cellule(wlIso(new Date(ref.getFullYear(), ref.getMonth(), j)), j));
   }
 
   // Silhouette de la semaine en cours, du lundi a aujourd'hui : la
@@ -484,14 +505,50 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
   const travailles = GROUPES.filter(g => COULEUR[g.k] && compteSemaine[g.k]);
   const oublies = GROUPES.filter(g => COULEUR[g.k] && !compteSemaine[g.k]);
 
+  // ---- Bande de la semaine ----
+  // Meme borne que le mois vers le passe (deux semaines retenues),
+  // un an vers l'avant pour planifier.
+  const lundiSem = new Date(lundi);
+  lundiSem.setDate(lundi.getDate() + semOffset * 7);
+  const dimSem = new Date(lundiSem);
+  dimSem.setDate(lundiSem.getDate() + 6);
+  const semAvantBorne = wlIso(lundiSem) <= borneCalendrier();
+  const semApresBorne = semOffset >= 52;
+  const vusSemaine = new Set();
+  const joursSemaine = [];
+  for (let k = 0; k < 7; k++) {
+    const d = new Date(lundiSem);
+    d.setDate(lundiSem.getDate() + k);
+    joursSemaine.push(cellule(wlIso(d), d.getDate(), vusSemaine));
+  }
+  const moisMin = t('months_min').split('|');
+  const plage = lundiSem.getMonth() === dimSem.getMonth()
+    ? `${lundiSem.getDate()} – ${dimSem.getDate()} ${moisMin[dimSem.getMonth()]}`
+    : `${lundiSem.getDate()} ${moisMin[lundiSem.getMonth()]} – ${dimSem.getDate()} ${moisMin[dimSem.getMonth()]}`;
+  // Ouvrir le mois sur celui de la semaine affichee : on ne perd pas
+  // le fil quand on a deja avance de quelques semaines.
+  const ouvrirMois = () => {
+    const jeudi = new Date(lundiSem); jeudi.setDate(lundiSem.getDate() + 3);
+    setOffset((jeudi.getFullYear() - today.getFullYear()) * 12 + jeudi.getMonth() - today.getMonth());
+    setMoisOuvert(true);
+  };
+
+  // ---- Resume, porte par la carte du jour ----
+  const derniere = (seances.value || []).reduce((m, s) => (!m || (s.ts || 0) > (m.ts || 0) ? s : m), null);
+  const statut = [
+    seancesSemaine === 0 ? t('ent_sem_0')
+      : seancesSemaine === 1 ? t('ent_sem_1') : t('ent_sem_n', { n: seancesSemaine }),
+    derniere && derniere.iso ? t('ent_derniere', { q: quandCourt(derniere.iso, todayIso) }) : '',
+  ].filter(Boolean).join(' · ');
+
   return (
     <>
-      {/* L'encart « Seances enregistrees » a quitte cette page le 5/09 :
-          « je ne veux pas voir ca, je veux voir juste la seance Jour 1
-          qui est en dessous ». Il ouvrait l'onglet sur ce qui est
-          derriere soi, avant ce qu'on doit faire. L'historique se lit
-          dans le calendrier — un jour, sa fiche, « Voir la seance » —
-          et dans Stats. */}
+      {/* L'encart « Seances enregistrees » a quitte le HAUT de la page
+          le 5/09 : « je ne veux pas voir ca, je veux voir juste la
+          seance Jour 1 qui est en dessous ». Il ouvrait l'onglet sur ce
+          qui est derriere soi, avant ce qu'on doit faire. Les dernieres
+          seances reviennent le 7/10, mais SOUS l'action et le
+          calendrier, en trois lignes. */}
 
       {/* Le bandeau d'accueil « Ta premiere seance t'attend » est
           retire le 9/09 (Raci). Il occupait le haut de page pour dire
@@ -499,27 +556,19 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
           propose deja « Seance libre » et « Trouver mon programme » —
           l'invitation et l'action, l'une sur l'autre. La carte suffit. */}
 
-      {/* 2 — Zone d'action.
-          AVEC un programme actif, c'est la carte de pilotage : la
-          semaine du programme ecrite en clair (Raci, 24/08 — « je viens
-          piloter mon programme »). Le bouton generique « Demarrer une
-          seance » ne disait pas laquelle ; il fallait deviner.
-          SANS programme, rien ne change : le bloc noir d'origine mene
-          au choix d'exercices et au questionnaire. */}
-      {/* La carte prend la main des qu'il y a QUELQUE CHOSE a piloter :
-          un programme actif, ou des seances posees a la main sur la
-          semaine. Sinon elle renvoie null et le bloc d'origine
-          s'affiche. */}
-      {/* Barre seance (04/10, Raci) : en tete de l'onglet, au-dessus du
-          bloc du jour. « Aujourd'hui je fais pecs biceps », quatre
-          questions, une seance proposee : plus rapide que le choix manuel.
-          La barre repas reste sur Aujourd'hui. */}
-      <div class="ent-coach"><CoachBar mode="seance" /></div>
+      {/* 1 — Carte du jour.
+          AVEC un programme actif (ou des seances posees cette semaine),
+          c'est la carte de pilotage : la seance du jour nommee, avec son
+          bouton (Raci, 24/08 — « je viens piloter mon programme »).
+          SANS programme, le bloc graphite mene au choix d'exercices et
+          au questionnaire. Les deux portent le resume de la semaine. */}
       {(programmeActif.value || poseeCetteSemaine(today))
-        ? <CarteProgramme today={today} todayIso={todayIso} allerVers={allerVers} />
+        ? <CarteProgramme today={today} todayIso={todayIso} allerVers={allerVers} statut={statut} />
         : (
       <div class="ent-action">
         <div class="ent-action-jour">{jourLong(today)}</div>
+        <div class="ent-action-titre">{t('ent_seance_jour')}</div>
+        <div class="ent-action-statut">{statut}</div>
         {/* Schema de Raci du 10/08 : avec un programme actif on
             demande d'abord quoi faire, sans programme on entre
             directement en seance libre. L'ecran de choix n'apparait
@@ -534,19 +583,9 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
             sujet, et une ligne qui dit ce qui attend derriere — sans
             rivaliser avec le bouton jaune, seul aplat plein de la page. */}
         {/* Avec un programme actif, la carte mene a sa GESTION plutot
-            qu'au questionnaire. C'est la qu'on replace les seances,
-            qu'on en change, et qu'on supprime le programme — le bouton
-            d'abandon existait mais n'etait atteignable qu'apres avoir
-            refait les quatre questions, ce qui revient a le cacher
-            (Raci, 17/08 : « je ne trouve pas comment supprimer »). */}
-        {/* Raci, 5/09 : « cette page apparait quand un client clique sur
-            trouver mon programme » — la bibliotheque des 14 programmes.
-            Deux boutons portaient le meme libelle et menaient a deux
-            endroits differents : celui de la carte du jour ouvrait les
-            quatre questions, celui-ci la liste brute. Meme mot, meme
-            destination : le questionnaire. Cela revient sur le choix du
-            26/08, ou la bibliotheque avait ete preferee au peage des
-            quatre questions. */}
+            qu'au questionnaire (Raci, 17/08 : « je ne trouve pas
+            comment supprimer »). Sans programme, meme mot, meme
+            destination que partout : le questionnaire (5/09). */}
         <button class="ent-prog" onClick={() => (programmeActif.value
           ? allerVers('planifier', { prog: programmeActif.value.id })
           : allerVers('questionnaire'))}>
@@ -557,17 +596,10 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
               <path d="M12 11v5M9.5 13.5h5" />
             </svg>
           </span>
-          {/* Titre seul (Raci, 21/08). Le sous-titre « Replacer les
-              seances, en changer ou l'arreter » passait sur deux lignes
-              et faisait de la carte secondaire le bloc le plus haut de
-              la zone d'action — juste sous le bouton qui doit dominer.
-              Ce qu'il annoncait se decouvre de toute facon en entrant. */}
+          {/* Titre seul (Raci, 21/08). Le libelle suit l'etat : « Mon
+              programme » quand il y en a un, « Choisir un programme »
+              quand il n'y en a pas (Raci, 26/08). */}
           <span class="ent-prog-txt">
-            {/* Le libelle suit l'etat : « Mon programme » quand il y en
-                a un, « Choisir un programme » quand il n'y en a pas.
-                Raci, 26/08 : il appuyait sur « Mon programme » et
-                tombait sur la bibliotheque — le mot promettait un
-                programme qu'il n'avait pas encore adopte. */}
             <span class="ent-prog-t">
               {programmeActif.value ? t('tr_prog_gerer') : t('tr_adapt_prog')}
             </span>
@@ -577,17 +609,53 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
       </div>
       )}
 
-      {/* 3 — Calendrier */}
-      <div class="ent-bloc">
-        {/* Raci, 5/09 : « finalement ca aussi ca sert a rien ». La
-            phrase decrivait un geste qu'on decouvre en touchant un
-            jour, et les deux pastilles redisaient ce que le calendrier
-            montre deja — les jours colores comptent les seances du
-            mois, le plus recent est cerne. Repliees le matin, puis
-            retirees. Le pliage n'a plus d'objet : le titre seul reste.
-            Le compte du mois se lit dans Stats. */}
-        <h3>{t('tr_log_title')}</h3>
+      {/* 2 — Barre coach (04/10, Raci) : « Aujourd'hui je fais pecs
+          biceps », quatre questions, une seance proposee. Elle passe
+          SOUS la carte du jour (7/10) : c'est une aide pour composer sa
+          seance, pas l'action principale — et son libelle le dit. La
+          barre repas reste sur Aujourd'hui. */}
+      <div class="ent-coach"><CoachBar mode="seance" titre={t('ent_coach_titre')} /></div>
 
+      {/* 3 — Calendrier. La semaine par defaut, le mois a la demande :
+          le mois entier prenait l'ecran a lui seul (Raci, 7/10). */}
+      <div class="ent-bloc ent-cal">
+        <div class="ent-cal-tete">
+          <h3>{t('tr_log_title')}</h3>
+          <button class="ent-cal-bascule" aria-expanded={moisOuvert ? 'true' : 'false'}
+            onClick={(e) => { e.stopPropagation(); if (moisOuvert) setMoisOuvert(false); else ouvrirMois(); }}>
+            {moisOuvert ? t('ent_voir_semaine') : t('ent_voir_mois')}
+            <span class={'ent-cal-chev' + (moisOuvert ? ' haut' : '')} aria-hidden="true">&rsaquo;</span>
+          </button>
+        </div>
+
+        {!moisOuvert ? (
+          <>
+            <div class="wlog-cal-head ent-sem-head">
+              <button class={'wlog-nav' + (semAvantBorne ? ' off' : '')} aria-label={t('ent_sem_prec')}
+                onClick={(e) => { e.stopPropagation(); if (!semAvantBorne) setSemOffset(semOffset - 1); }}>‹</button>
+              <div class="wlog-cal-titre">{plage}</div>
+              <button class={'wlog-nav wlog-nav--avant' + (semApresBorne ? ' off' : '')} aria-label={t('ent_sem_suiv')}
+                onClick={(e) => { e.stopPropagation(); if (!semApresBorne) setSemOffset(semOffset + 1); }}>›</button>
+            </div>
+            <div class="wlog-grid ent-sem-grille">
+              {t('days_min').split('|').map((j, i) => <div key={'sd' + i} class="wlog-wd">{j}</div>)}
+              {joursSemaine}
+            </div>
+            {/* Legende courte : seulement les couleurs presentes sur
+                la semaine affichee. La legende complete est dans le
+                mois. Rien a nommer : rien ne s'affiche. */}
+            {vusSemaine.size > 0 && (
+              <div class="wlog-legende ent-sem-legende">
+                {GROUPES.filter(g => vusSemaine.has(g.k)).map(g => (
+                  g.k === 'repos'
+                    ? <span key={g.k}><i class="dot repos" />{t('mus_repos')}</span>
+                    : <span key={g.k}><i class="dot" style={{ background: COULEUR[g.k] }} />{nomMuscle(g.k)}</span>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <>
         {/* Le calendrier ne retient plus que deux semaines (v355) :
             reculer au-dela n'ouvre que des mois vides, ce qui se lit
             comme une perte de donnees plutot que comme une limite.
@@ -610,10 +678,8 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
           {cellules}
         </div>
 
-        {/* Toujours affichee : neuf pastilles de couleur ne disent rien
-            tant qu'on ne peut pas les nommer. Le bouton « i » qui la
-            repliait a ete retire — sa seule action etait de retirer
-            une information utile. */}
+        {/* Toujours affichee avec le mois : neuf pastilles de couleur ne
+            disent rien tant qu'on ne peut pas les nommer. */}
         <div class="wlog-legende">
           {GROUPES.filter(g => COULEUR[g.k]).map(g => (
             <span key={g.k}><i class="dot" style={{ background: COULEUR[g.k] }} />{nomMuscle(g.k)}</span>
@@ -621,9 +687,15 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
           <span><i class="dot repos" />{t('mus_repos')}</span>
           <span><i class="dot today" />{t('today')}</span>
         </div>
+          </>
+        )}
       </div>
 
-      {/* 4 — Semaine + silhouette. La meme lecture que dans la modale
+      {/* 4 — Dernieres seances : ce qui a ete fait, visible sans
+          descendre au fond de la page. Absent tant qu'il n'y a rien. */}
+      <DernieresSeances ouvrirSeance={ouvrirSeance} todayIso={todayIso} />
+
+      {/* 5 — Semaine + silhouette. La meme lecture que dans la modale
           d'un jour, mais visible sans rien ouvrir : ce qui a ete
           travaille depuis lundi, et ce qui n'a pas ete touche. */}
       <div class="ent-bloc">
@@ -650,6 +722,56 @@ function JournalEntrainement({ ouvrirJour, ouvrirSeance }) {
       </div>
 
     </>
+  );
+}
+
+// ==========================================================
+// Dernieres seances (proposition du 7/10)
+// Trois lignes, les plus recentes d'abord ; « Voir plus » rallonge
+// la liste SUR PLACE (Raci, 5/09 : pas d'ecran plein en plus). Une
+// ligne ouvre le detail de la seance, comme depuis la fiche d'un
+// jour. Pas de suppression ici : une seance faite ne s'efface pas
+// (Raci, 5/09).
+// ==========================================================
+function DernieresSeances({ ouvrirSeance, todayIso }) {
+  const [plus, setPlus] = useState(false);
+  const toutes = [...(seances.value || [])].sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  // Rien a montrer : le bloc ne s'affiche pas (regle R65).
+  if (!toutes.length) return null;
+  const liste = toutes.slice(0, plus ? 10 : 3);
+  return (
+    <div class="ent-bloc ent-ds">
+      <h3>{t('ent_dernieres')}</h3>
+      <div class="ent-ds-liste">
+        {liste.map(s => {
+          const mus = [...new Set([...(s.muscles || []), ...(s.exos || []).map(e => e && e.mKey)])]
+            .filter(k => COULEUR[k]);
+          const min = s.duree >= 60 ? Math.round(s.duree / 60) + ' min' : '';
+          const kg = s.tonnage ? s.tonnage.toLocaleString('fr-BE') + ' kg' : '';
+          return (
+            <button key={s.id} class="ent-ds-l" onClick={() => ouvrirSeance && ouvrirSeance(s)}>
+              <span class="ent-ds-pts" aria-hidden="true">
+                {(mus.length ? mus.slice(0, 3) : [null]).map((k, i) => (
+                  <i key={i} style={k ? { background: COULEUR[k] } : {}} />
+                ))}
+              </span>
+              <span class="ent-ds-txt">
+                <span class="ent-ds-t">{s.titre}</span>
+                <span class="ent-ds-m">
+                  {[s.iso ? quandCourt(s.iso, todayIso) : '', min, kg].filter(Boolean).join(' · ')}
+                </span>
+              </span>
+              <span class="ent-ds-fl" aria-hidden="true">&rsaquo;</span>
+            </button>
+          );
+        })}
+      </div>
+      {toutes.length > 3 && (
+        <button class="ent-ds-plus" onClick={() => setPlus(!plus)}>
+          {plus ? t('ent_voir_moins') : t('ent_voir_plus')}
+        </button>
+      )}
+    </div>
   );
 }
 

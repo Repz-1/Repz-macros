@@ -74,7 +74,9 @@ function composerAvecReponses(phrase, rep) {
     texte: out.titre + ' — ' + refs.length + ' exercices · ' + schema.resume + '.' };
 }
 
-export function CoachBar({ mode = 'repas' }) {
+// `titre` : libelle optionnel a la place de « Coach ». S'entrainer
+// s'en sert pour dire a quoi sert la barre (proposition du 7/10).
+export function CoachBar({ mode = 'repas', titre }) {
   const enSeance = mode === 'seance';
   const [quiz, setQuiz] = useState(null); // { phrase, titre, etape, rep }
   const [texte, setTexte] = useState('');
@@ -406,7 +408,7 @@ export function CoachBar({ mode = 'repas' }) {
 
   return (
     <div class={'coach-bar' + (ouvert ? ' coach-bar--ouvert' : '')}>
-      <div class="coach-kicker">{t('coach_kicker')}</div>
+      <div class="coach-kicker">{titre || t('coach_kicker')}</div>
       <div class="coach-bar-ligne">
         <input
           class="coach-bar-champ"
